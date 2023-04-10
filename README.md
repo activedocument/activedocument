@@ -65,7 +65,7 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 
 ## Roadmap
 
-Refer to the (Roadmap issue)[https://github.com/tablecheck/mongoid-ultra/issues/13].
+Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/13).
 
 ## Notable Differences from MongoDB Mongoid
 
