@@ -141,7 +141,7 @@ module Mongoid
 
     # Get all child +Documents+ to this +Document+
     #
-    # @return [ Array<Document> ] All child documents in the hierarchy.
+    # @return [ Array<Mongoid::Document> ] All child documents in the hierarchy.
     #
     # @api private
     def _children
@@ -155,7 +155,7 @@ module Mongoid
     # always be preferred, since they are optimized calls... This operation
     # can get expensive in domains with large hierarchies.
     #
-    # @return [ Array<Document> ] All descendant documents in the hierarchy.
+    # @return [ Array<Mongoid::Document> ] All descendant documents in the hierarchy.
     #
     # @api private
     def _descendants
@@ -164,7 +164,7 @@ module Mongoid
 
     # Collect all the children of this document.
     #
-    # @return [ Array<Document> ] The children.
+    # @return [ Array<Mongoid::Document> ] The children.
     #
     # @api private
     def collect_children
@@ -182,7 +182,7 @@ module Mongoid
 
     # Collect all the descendants of this document.
     #
-    # @return [ Array<Document> ] The descendants.
+    # @return [ Array<Mongoid::Document> ] The descendants.
     #
     # @api private
     def collect_descendants
@@ -215,7 +215,7 @@ module Mongoid
 
     # Marks all descendants as being persisted.
     #
-    # @return [ Array<Document> ] The flagged descendants.
+    # @return [ Array<Mongoid::Document> ] The flagged descendants.
     def flag_descendants_persisted
       _descendants.each do |child|
         child.new_record = false
@@ -238,9 +238,9 @@ module Mongoid
     # @example Set the parent document.
     #   document.parentize(parent)
     #
-    # @param [ Document ] document The parent document.
+    # @param [ Mongoid::Document ] document The parent document.
     #
-    # @return [ Document ] The parent document.
+    # @return [ Mongoid::Document ] The parent document.
     def parentize(document)
       self._parent = document
     end
@@ -253,7 +253,7 @@ module Mongoid
     # @example Remove the child.
     #   document.remove_child(child)
     #
-    # @param [ Document ] child The child (embedded) document to remove.
+    # @param [ Mongoid::Document ] child The child (embedded) document to remove.
     def remove_child(child)
       name = child.association_name
       if child.embedded_one?
@@ -268,7 +268,7 @@ module Mongoid
     # After descendants are persisted we can call this to move all their
     # changes and flag them as persisted in one call.
     #
-    # @return [ Array<Document> ] The descendants.
+    # @return [ Array<Mongoid::Document> ] The descendants.
     def reset_persisted_descendants
       _descendants.each do |child|
         child.move_changes
@@ -295,7 +295,7 @@ module Mongoid
     # @example Get the root document in the hierarchy.
     #   document._root
     #
-    # @return [ Document ] The root document in the hierarchy.
+    # @return [ Mongoid::Document ] The root document in the hierarchy.
     def _root
       object = self
       while (object._parent) do object = object._parent; end

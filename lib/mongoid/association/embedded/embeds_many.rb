@@ -121,7 +121,7 @@ module Mongoid
         # @example Get the path calculator.
         #   Proxy.path(document)
         #
-        # @param [ Document ] document The document to calculate on.
+        # @param [ Mongoid::Document ] document The document to calculate on.
         #
         # @return [ Mongoid::Atomic::Paths::Embedded::Many ]
         #   The embedded many atomic path calculator.
@@ -131,8 +131,8 @@ module Mongoid
 
         # Get a criteria object for searching given a parent and children documents.
         #
-        # @param [ Document ] base The base document.
-        # @param [ Document ] target The children documents.
+        # @param [ Mongoid::Document ] base The base document.
+        # @param [ Mongoid::Document ] target The children documents.
         def criteria(base, target)
           criterion = klass.scoped
           criterion.embedded = true

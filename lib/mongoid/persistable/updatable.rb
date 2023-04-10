@@ -167,7 +167,7 @@ module Mongoid
       # well. Note that timeless is cleared in the before_update callback.
       #
       # @param [ Hash ] options The options.
-      # @param [ Array<Document> ] children The children that the :update
+      # @param [ Array<Mongoid::Document> ] children The children that the :update
       #   callbacks will be executed on.
       #
       # @option options [ true | false ] :touch Whether or not the updated_at

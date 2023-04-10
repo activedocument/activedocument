@@ -24,7 +24,7 @@ module Mongoid
       # @param [ [ Symbol | Hash ]... ] *relations The names of the association(s)
       #   to eager load.
       #
-      # @return [ Criteria ] The cloned criteria.
+      # @return [ Mongoid::Criteria ] The cloned criteria.
       def includes(*relations)
         extract_includes_list(klass, nil, relations)
         clone

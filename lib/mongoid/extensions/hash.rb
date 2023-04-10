@@ -172,7 +172,7 @@ module Mongoid
       # @example Convert the hash to a criteria.
       #   { klass: Band, where: { name: "Depeche Mode" }.to_criteria
       #
-      # @return [ Criteria ] The criteria.
+      # @return [ Mongoid::Criteria ] The criteria.
       def to_criteria
         criteria = Criteria.new(delete(:klass) || delete("klass"))
         each_pair do |method, args|

@@ -31,7 +31,7 @@ module Mongoid
       # @param [ Hash ] attributes The attributes to create with.
       # @param [ Class ] type The optional type of document to create.
       #
-      # @return [ Document ] The newly created document.
+      # @return [ Mongoid::Document ] The newly created document.
       def create(attributes = nil, type = nil, &block)
         if attributes.is_a?(::Array)
           attributes.map { |attrs| create(attrs, type, &block) }
@@ -54,7 +54,7 @@ module Mongoid
       #
       # @raise [ Errors::Validations ] If validation failed.
       #
-      # @return [ Document ] The newly created document.
+      # @return [ Mongoid::Document ] The newly created document.
       def create!(attributes = nil, type = nil, &block)
         if attributes.is_a?(::Array)
           attributes.map { |attrs| create!(attrs, type, &block) }
@@ -79,7 +79,7 @@ module Mongoid
       #  @param [ Hash ] attrs The attributes to search or create with.
       #  @param [ Class ] type The optional type of document to create.
       #
-      # @return [ Document ] An existing document or newly created one.
+      # @return [ Mongoid::Document ] An existing document or newly created one.
       def find_or_create_by(attrs = {}, type = nil, &block)
         find_or(:create, attrs, type, &block)
       end
@@ -95,7 +95,7 @@ module Mongoid
       #
       # @raise [ Errors::Validations ] If validation failed.
       #
-      # @return [ Document ] An existing document or newly created one.
+      # @return [ Mongoid::Document ] An existing document or newly created one.
       def find_or_create_by!(attrs = {}, type = nil, &block)
         find_or(:create!, attrs, type, &block)
       end
@@ -109,7 +109,7 @@ module Mongoid
       # @param [ Hash ] attrs The attributes to search or initialize with.
       # @param [ Class ] type The optional subclass to build.
       #
-      # @return [ Document ] An existing document or newly instantiated one.
+      # @return [ Mongoid::Document ] An existing document or newly instantiated one.
       def find_or_initialize_by(attrs = {}, type = nil, &block)
         find_or(:build, attrs, type, &block)
       end
@@ -143,7 +143,7 @@ module Mongoid
       # @example Get the scoped association.
       #   relation.scoped
       #
-      # @return [ Criteria ] The scoped criteria.
+      # @return [ Mongoid::Criteria ] The scoped criteria.
       def scoped
         criteria
       end
@@ -172,7 +172,7 @@ module Mongoid
       # @example Get the unscoped criteria.
       #   person.addresses.unscoped
       #
-      # @return [ Criteria ] The unscoped criteria.
+      # @return [ Mongoid::Criteria ] The unscoped criteria.
       def unscoped
         criteria.unscoped
       end
@@ -192,7 +192,7 @@ module Mongoid
       #   @param [ Hash ] attrs The attributes to search or build with.
       #   @param [ Class ] type The optional subclass to build.
       #
-      # @return [ Document ] A matching document or a new/created one.
+      # @return [ Mongoid::Document ] A matching document or a new/created one.
       def find_or(method, attrs = {}, type = nil, &block)
         attrs[klass.discriminator_key] = type.discriminator_value if type
         where(attrs).first || send(method, attrs, type, &block)

@@ -17,7 +17,7 @@ module Mongoid
       #
       # @raise [ Errors::DocumentNotFound ] If nothing returned.
       #
-      # @return [ Document | Array<Document> ] The document(s).
+      # @return [ Mongoid::Document | Array<Mongoid::Document> ] The document(s).
       def execute_or_raise(ids, multi)
         result = multiple_from_db(ids)
         check_for_missing_documents!(result, ids)
@@ -37,7 +37,7 @@ module Mongoid
       #
       # @param [ [ Object | Array<Object> ]... ] *args The id(s) to find.
       #
-      # @return [ Document | Array<Document> ] The matching document(s).
+      # @return [ Mongoid::Document | Array<Mongoid::Document> ] The matching document(s).
       def find(*args)
         ids = args.__find_args__
         raise_invalid if ids.any?(&:nil?)
@@ -54,7 +54,7 @@ module Mongoid
       #
       # @param [ Array ] ids The array of ids.
       #
-      # @return [ Criteria ] The cloned criteria.
+      # @return [ Mongoid::Criteria ] The cloned criteria.
       def for_ids(ids)
         ids = mongoize_ids(ids)
         if ids.size > 1
@@ -72,7 +72,7 @@ module Mongoid
       #
       # @param [ Array<Object> ] ids The searched ids.
       #
-      # @return [ Array<Document> ] The found documents.
+      # @return [ Array<Mongoid::Document> ] The found documents.
       def multiple_from_db(ids)
         return entries if embedded?
         ids = mongoize_ids(ids)
@@ -102,7 +102,7 @@ module Mongoid
       #
       # @param [ Array<Object> ] ids The ids to fetch with.
       #
-      # @return [ Array<Document> ] The matching documents.
+      # @return [ Array<Mongoid::Document> ] The matching documents.
       def from_database(ids)
         from_database_selector(ids).entries
       end

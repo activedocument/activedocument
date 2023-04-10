@@ -13,7 +13,7 @@ module Mongoid
       # @example Apply the default scope.
       #   criteria.apply_default_scope
       #
-      # @return [ Criteria ] The criteria.
+      # @return [ Mongoid::Criteria ] The criteria.
       def apply_default_scope
         klass.without_default_scope do
           merge!(klass.default_scoping.call)
@@ -28,9 +28,9 @@ module Mongoid
       # argument is nil, the receiver is returned without modification,
       # otherwise a new criteria object is returned.
       #
-      # @param [ Proc | Symbol | Criteria | nil ] scope The scope to apply.
+      # @param [ Proc | Symbol | Mongoid::Criteria | nil ] scope The scope to apply.
       #
-      # @return [ Criteria ] The criteria with the scope applied.
+      # @return [ Mongoid::Criteria ] The criteria with the scope applied.
       #
       # @api private
       def apply_scope(scope)
@@ -52,9 +52,9 @@ module Mongoid
       # @example Remove the scoping.
       #   criteria.remove_scoping(other)
       #
-      # @param [ Criteria ] other The other criteria.
+      # @param [ Mongoid::Criteria ] other The other criteria.
       #
-      # @return [ Criteria ] The criteria with scoping removed.
+      # @return [ Mongoid::Criteria ] The criteria with scoping removed.
       def remove_scoping(other)
         if other
           reject_matching(other, :selector, :options)
@@ -72,7 +72,7 @@ module Mongoid
       #
       # @param [ Hash ] options Additional query options.
       #
-      # @return [ Criteria ] The scoped criteria.
+      # @return [ Mongoid::Criteria ] The scoped criteria.
       def scoped(options = nil)
         crit = clone
         crit.options.merge!(options || {})
@@ -97,7 +97,7 @@ module Mongoid
       # @example Clear all scoping from the criteria.
       #   criteria.unscoped
       #
-      # @return [ Criteria ] The unscoped criteria.
+      # @return [ Mongoid::Criteria ] The unscoped criteria.
       def unscoped
         crit = clone
         unless unscoped?
@@ -147,7 +147,7 @@ module Mongoid
       # @example Get the criteria with the default scope.
       #   criteria.with_default_scope
       #
-      # @return [ Criteria ] The criteria.
+      # @return [ Mongoid::Criteria ] The criteria.
       def with_default_scope
         crit = clone
         if klass.default_scopable? && !unscoped? && !scoped?

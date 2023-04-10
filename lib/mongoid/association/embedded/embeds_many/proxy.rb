@@ -25,7 +25,7 @@ module Mongoid
           # @example Push a document.
           #   person.addresses.push(address)
           #
-          # @param [ Document... ] *args Any number of documents.
+          # @param [ Mongoid::Document... ] *args Any number of documents.
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
@@ -54,9 +54,9 @@ module Mongoid
           # @example Concat with other documents.
           #   person.addresses.concat([ address_one, address_two ])
           #
-          # @param [ Array<Document> ] docs The docs to add.
+          # @param [ Array<Mongoid::Document> ] docs The docs to add.
           #
-          # @return [ Array<Document> ] The documents.
+          # @return [ Array<Mongoid::Document> ] The documents.
           def concat(docs)
             batch_insert(docs) unless docs.empty?
             self
@@ -71,7 +71,7 @@ module Mongoid
           # @param [ Hash ] attributes The attributes to build the document with.
           # @param [ Class ] type Optional class to build the document with.
           #
-          # @return [ Document ] The new document.
+          # @return [ Mongoid::Document ] The new document.
           def build(attributes = {}, type = nil)
             doc = Factory.execute_build(type || _association.klass, attributes, execute_callbacks: false)
             append(doc)
@@ -139,9 +139,9 @@ module Mongoid
           # @example Delete the document from the association.
           #   person.addresses.delete(address)
           #
-          # @param [ Document ] document The document to be deleted.
+          # @param [ Mongoid::Document ] document The document to be deleted.
           #
-          # @return [ Document | nil ] The deleted document or nil if nothing deleted.
+          # @return [ Mongoid::Document | nil ] The deleted document or nil if nothing deleted.
           def delete(document)
             execute_callbacks_around(:remove, document) do
               doc = _target.delete_one(document)
@@ -245,7 +245,7 @@ module Mongoid
           # @param &block Optional block to pass.
           # @yield [ Object ] Yields each enumerable element to the block.
           #
-          # @return [ Document | Array<Document> | nil ] A document or matching documents.
+          # @return [ Mongoid::Document | Array<Mongoid::Document> | nil ] A document or matching documents.
           def find(*args, &block)
             criteria.find(*args, &block)
           end
@@ -255,8 +255,8 @@ module Mongoid
           # @example Create the new association.
           #   Many.new(person, addresses, association)
           #
-          # @param [ Document ] base The document this association hangs off of.
-          # @param [ Array<Document> ] target The child documents of the association.
+          # @param [ Mongoid::Document ] base The document this association hangs off of.
+          # @param [ Array<Mongoid::Document> ] target The child documents of the association.
           # @param [ Mongoid::Association::Relatable ] association The association metadata.
           #
           # @return [ Many ] The proxy.
@@ -277,7 +277,7 @@ module Mongoid
           # @example Get the in memory documents.
           #   relation.in_memory
           #
-          # @return [ Array<Document> ] The documents in memory.
+          # @return [ Array<Mongoid::Document> ] The documents in memory.
           def in_memory
             _target
           end
@@ -294,7 +294,7 @@ module Mongoid
           # @param [ Integer ] count The number of documents to pop, or 1 if not
           #   provided.
           #
-          # @return [ Document | Array<Document> ] The popped document(s).
+          # @return [ Mongoid::Document | Array<Mongoid::Document> ] The popped document(s).
           def pop(count = nil)
             if count
               if docs = _target[_target.size - count, _target.size]
@@ -319,7 +319,7 @@ module Mongoid
           # @param [ Integer ] count The number of documents to shift, or 1 if not
           #   provided.
           #
-          # @return [ Document | Array<Document> ] The shifted document(s).
+          # @return [ Mongoid::Document | Array<Mongoid::Document> ] The shifted document(s).
           def shift(count = nil)
             if count
               if _target.size > 0 && docs = _target[0, count]
@@ -338,7 +338,7 @@ module Mongoid
           # @example Substitute the association's target.
           #   person.addresses.substitute([ address ])
           #
-          # @param [ Array<Document> | Array<Hash> ] docs The replacement docs.
+          # @param [ Array<Mongoid::Document> | Array<Hash> ] docs The replacement docs.
           #
           # @return [ Many ] The proxied association.
           def substitute(docs)
@@ -353,7 +353,7 @@ module Mongoid
           # @example Get the unscoped documents.
           #   person.addresses.unscoped
           #
-          # @return [ Criteria ] The unscoped association.
+          # @return [ Mongoid::Criteria ] The unscoped association.
           def unscoped
             criterion = klass.unscoped
             criterion.embedded = true
@@ -373,7 +373,7 @@ module Mongoid
           # @example Append to the document.
           #   relation.append(document)
           #
-          # @param [ Document ] document The document to append to the target.
+          # @param [ Mongoid::Document ] document The document to append to the target.
           def append(document)
             execute_callback :before_add, document
             unless object_already_related?(document)
@@ -399,7 +399,7 @@ module Mongoid
           # Returns the +Criteria+ object for the target class with its
           # documents set to the list of target documents in the association.
           #
-          # @return [ Criteria ] A new criteria.
+          # @return [ Mongoid::Criteria ] A new criteria.
           def criteria
             _association.criteria(_base, _target)
           end
@@ -411,7 +411,7 @@ module Mongoid
           # @example Delete one document.
           #   relation.delete_one(doc)
           #
-          # @param [ Document ] document The document to delete.
+          # @param [ Mongoid::Document ] document The document to delete.
           def delete_one(document)
             _target.delete_one(document)
             _unscoped.delete_one(document)
@@ -425,7 +425,7 @@ module Mongoid
           # @example Integrate the document.
           #   relation.integrate(document)
           #
-          # @param [ Document ] document The document to integrate.
+          # @param [ Mongoid::Document ] document The document to integrate.
           def integrate(document)
             characterize_one(document)
             bind_one(document)
@@ -440,7 +440,7 @@ module Mongoid
           # @param [ Object... ] *args The method args.
           # @param &block Optional block to pass.
           #
-          # @return [ Criteria | Object ] A Criteria or return value from the target.
+          # @return [ Mongoid::Criteria | Object ] A Criteria or return value from the target.
           ruby2_keywords def method_missing(name, *args, &block)
             return super if _target.respond_to?(name)
             klass.send(:with_scope, criteria) do
@@ -476,9 +476,9 @@ module Mongoid
           # @example Apply scoping.
           #   person.addresses.scope(target)
           #
-          # @param [ Array<Document> ] docs The documents to scope.
+          # @param [ Array<Mongoid::Document> ] docs The documents to scope.
           #
-          # @return [ Array<Document> ] The scoped docs.
+          # @return [ Array<Mongoid::Document> ] The scoped docs.
           def scope(docs)
             unless _association.order || _association.klass.default_scoping?
               return docs
@@ -513,7 +513,7 @@ module Mongoid
           # @example Get the unscoped documents.
           #   relation._unscoped
           #
-          # @return [ Array<Document> ] The unscoped documents.
+          # @return [ Array<Mongoid::Document> ] The unscoped documents.
           def _unscoped
             @_unscoped ||= []
           end
@@ -523,9 +523,9 @@ module Mongoid
           # @example Set the unscoped documents.
           #   relation._unscoped = docs
           #
-          # @param [ Array<Document> ] docs The documents.
+          # @param [ Array<Mongoid::Document> ] docs The documents.
           #
-          # @return [ Array<Document ] The unscoped docs.
+          # @return [ Array<Mongoid::Document> ] The unscoped docs.
           def _unscoped=(docs)
             @_unscoped = docs
           end

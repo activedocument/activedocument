@@ -83,6 +83,7 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 - ✅ Use a publicly visible CI (Github Actions) as the primary CI. Remove Evergreen CI.
 - ✅ Remove MRSS submodules and other MongoDB corporate baloney.
 - ✅ [MONGOID-5570](https://jira.mongodb.org/browse/MONGOID-5570) - Code Docs: Ensure 100% documentation coverage, enforced with Rubocop.
+- ✅ [MONGOID-5564](https://jira.mongodb.org/browse/MONGOID-5564) - Code Docs: Use full namespaces in docs.
 - More to come soon!
 
 ## Documentation

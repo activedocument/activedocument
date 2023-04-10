@@ -15,7 +15,7 @@ module Mongoid
           # @example Bind one document.
           #   person.preferences.bind_one(preference)
           #
-          # @param [ Document ] doc The single document to bind.
+          # @param [ Mongoid::Document ] doc The single document to bind.
           def bind_one(doc)
             binding do
               inverse_keys = doc.you_must(_association.inverse_foreign_key)

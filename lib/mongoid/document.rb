@@ -46,7 +46,7 @@ module Mongoid
     # @example Freeze the document
     #   document.freeze
     #
-    # @return [ Document ] The document.
+    # @return [ Mongoid::Document ] The document.
     def freeze
       as_attributes.freeze and self
     end
@@ -99,7 +99,7 @@ module Mongoid
     #
     # @param [ Hash ] attrs The attributes to set up the document with.
     #
-    # @return [ Document ] A new document.
+    # @return [ Mongoid::Document ] A new document.
     def initialize(attrs = nil, &block)
       construct_document(attrs, execute_callbacks: true, &block)
     end
@@ -173,7 +173,7 @@ module Mongoid
     #
     # @param [ Class ] klass The class to become.
     #
-    # @return [ Document ] An instance of the specified class.
+    # @return [ Mongoid::Document ] An instance of the specified class.
     def becomes(klass)
       unless klass.include?(Mongoid::Document)
         raise ArgumentError, "A class which includes Mongoid::Document is expected"
@@ -211,7 +211,7 @@ module Mongoid
     # @param [ true | false ] execute_callbacks Flag specifies whether callbacks
     #   should be run.
     #
-    # @return [ Document ] A new document.
+    # @return [ Mongoid::Document ] A new document.
     #
     # @api private
     def construct_document(attrs = nil, execute_callbacks: true)
@@ -293,7 +293,7 @@ module Mongoid
       # @param [ true | false ] execute_callbacks Flag specifies whether callbacks
       #   should be run.
       #
-      # @return [ Document ] A new document.
+      # @return [ Mongoid::Document ] A new document.
       def instantiate(attrs = nil, selected_fields = nil, &block)
         instantiate_document(attrs, selected_fields, execute_callbacks: true, &block)
       end
@@ -306,7 +306,7 @@ module Mongoid
       # @param [ true | false ] execute_callbacks Flag specifies whether callbacks
       #   should be run.
       #
-      # @return [ Document ] A new document.
+      # @return [ Mongoid::Document ] A new document.
       #
       # @api private
       def instantiate_document(attrs = nil, selected_fields = nil, execute_callbacks: true)
@@ -336,7 +336,7 @@ module Mongoid
       # @param [ true | false ] execute_callbacks Flag specifies whether callbacks
       #   should be run.
       #
-      # @return [ Document ] A new document.
+      # @return [ Mongoid::Document ] A new document.
       #
       # @api private
       def construct_document(attrs = nil, execute_callbacks: true)

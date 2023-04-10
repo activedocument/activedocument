@@ -115,7 +115,7 @@ module Mongoid
       # @example Create the new context.
       #   Null.new(criteria)
       #
-      # @param [ Criteria ] criteria The criteria.
+      # @param [ Mongoid::Criteria ] criteria The criteria.
       def initialize(criteria)
         @criteria, @klass = criteria, criteria.klass
       end

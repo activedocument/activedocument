@@ -14,7 +14,7 @@ module Mongoid
     #
     # @raise [ Errors::DocumentNotFound ] If the document was deleted.
     #
-    # @return [ Document ] The document, reloaded.
+    # @return [ Mongoid::Document ] The document, reloaded.
     def reload
       if @atomic_selector
         # Clear atomic_selector cache for sharded clusters. MONGOID-5076

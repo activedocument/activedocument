@@ -29,8 +29,8 @@ module Mongoid
           # @example Create the new proxy.
           #   One.new(person, name, association)
           #
-          # @param [ Document ] base The document this association hangs off of.
-          # @param [ Document ] target The child document in the association.
+          # @param [ Mongoid::Document ] base The document this association hangs off of.
+          # @param [ Mongoid::Document ] target The child document in the association.
           # @param [ Mongoid::Association::Relatable ] association The association metadata.
           def initialize(base, target, association)
             init(base, target, association) do
@@ -49,9 +49,9 @@ module Mongoid
           # @example Substitute the new document.
           #   person.name.substitute(new_name)
           #
-          # @param [ Document | Hash ] replacement A document to replace the target.
+          # @param [ Mongoid::Document | Hash ] replacement A document to replace the target.
           #
-          # @return [ Document | nil ] The association or nil.
+          # @return [ Mongoid::Document | nil ] The association or nil.
           def substitute(replacement)
             if replacement != self
               if _assigning?
@@ -132,7 +132,7 @@ module Mongoid
 
           # Update the _base's attributes hash with the _target's attributes
           #
-          # @param replacement [ Document | nil ] The doc to use to update the
+          # @param replacement [ Mongoid::Document | nil ] The doc to use to update the
           #   attributes hash.
           #
           # @api private
@@ -174,7 +174,7 @@ module Mongoid
             # @example Get the path calculator.
             #   Proxy.path(document)
             #
-            # @param [ Document ] document The document to calculate on.
+            # @param [ Mongoid::Document ] document The document to calculate on.
             #
             # @return [ Mongoid::Atomic::Paths::Embedded::One ]
             #   The embedded one atomic path calculator.

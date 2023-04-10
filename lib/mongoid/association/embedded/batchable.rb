@@ -16,7 +16,7 @@ module Mongoid
         # @example Execute the batch push.
         #   batchable.batch_insert([ doc_one, doc_two ])
         #
-        # @param [ Array<Document> ] docs The docs to add.
+        # @param [ Array<Mongoid::Document> ] docs The docs to add.
         #
         # @return [ Array<Hash> ] The inserts.
         def batch_insert(docs)
@@ -28,7 +28,7 @@ module Mongoid
         # @example Clear all docs.
         #   batchable.batch_clear(docs)
         #
-        # @param [ Array<Document> ] docs The docs to clear.
+        # @param [ Array<Mongoid::Document> ] docs The docs to clear.
         #
         # @return [ Array ] The empty array.
         def batch_clear(docs)
@@ -53,7 +53,7 @@ module Mongoid
         # @example Batch remove the documents.
         #   batchable.batch_remove([ doc_one, doc_two ])
         #
-        # @param [ Array<Document> ] docs The docs to remove.
+        # @param [ Array<Mongoid::Document> ] docs The docs to remove.
         # @param [ Symbol ] method Delete or destroy.
         def batch_remove(docs, method = :delete)
           # If the _id is nil, we cannot use $pull and delete by searching for
@@ -95,7 +95,7 @@ module Mongoid
         # @example Batch replace the documents.
         #   batchable.batch_replace([ doc_one, doc_two ])
         #
-        # @param [ Array<Document> | Array<Hash> ] docs The docs to replace with.
+        # @param [ Array<Mongoid::Document> | Array<Hash> ] docs The docs to replace with.
         #
         # @return [ Array<Hash> ] The inserts.
         def batch_replace(docs)
@@ -148,7 +148,7 @@ module Mongoid
         # @example Perform a batch $set.
         #   batchable.execute_batch_set(docs)
         #
-        # @param [ Array<Document> ] docs The docs to persist.
+        # @param [ Array<Mongoid::Document> ] docs The docs to persist.
         #
         # @return [ Array<Hash> ] The inserts.
         def execute_batch_set(docs)
@@ -171,7 +171,7 @@ module Mongoid
         # @example Perform a batch push.
         #   batchable.execute_batch_push(docs)
         #
-        # @param [ Array<Document> ] docs The docs to persist.
+        # @param [ Array<Mongoid::Document> ] docs The docs to persist.
         #
         # @return [ Array<Hash> ] The inserts.
         def execute_batch_push(docs)
@@ -233,9 +233,9 @@ module Mongoid
         # @example Normalize the docs.
         #   batchable.normalize_docs(docs)
         #
-        # @param [ Array<Document> | Array<Hash> ] docs The docs to normalize.
+        # @param [ Array<Mongoid::Document> | Array<Hash> ] docs The docs to normalize.
         #
-        # @return [ Array<Document> ] The docs.
+        # @return [ Array<Mongoid::Document> ] The docs.
         def normalize_docs(docs)
           if docs.first.is_a?(::Hash)
             docs.map do |doc|
@@ -308,7 +308,7 @@ module Mongoid
         # @example Pre process the documents.
         #   batchable.pre_process_batch_insert(docs)
         #
-        # @param [ Array<Document> ] docs The documents.
+        # @param [ Array<Mongoid::Document> ] docs The documents.
         #
         # @return [ Array<Hash> ] The documents as an array of hashes.
         def pre_process_batch_insert(docs)
@@ -334,7 +334,7 @@ module Mongoid
         # @example Pre process the documents.
         #   batchable.pre_process_batch_remove(docs, :delete)
         #
-        # @param [ Array<Document> ] docs The documents.
+        # @param [ Array<Mongoid::Document> ] docs The documents.
         # @param [ Symbol ] method Delete or destroy.
         #
         # @return [ Array<Hash> ] The documents as hashes.
@@ -361,7 +361,7 @@ module Mongoid
         # @example Post process the documents.
         #   batchable.post_process_batch_insert(docs)
         #
-        # @param [ Array<Documents> ] docs The inserted docs.
+        # @param [ Array<Mongoid::Document> ] docs The inserted docs.
         #
         # @return [ Enumerable ] The document enum.
         def post_process_batch_insert(docs)
@@ -379,10 +379,10 @@ module Mongoid
         # @example Post process the documents.
         #   batchable.post_process_batch_remove(docs, :delete)
         #
-        # @param [ Array<Document> ] docs The documents.
+        # @param [ Array<Mongoid::Document> ] docs The documents.
         # @param [ Symbol ] method Delete or destroy.
         #
-        # @return [ Array<Document> ] The documents.
+        # @return [ Array<Mongoid::Document> ] The documents.
         def post_process_batch_remove(docs, method)
           docs.each do |doc|
             doc.run_after_callbacks(:destroy) if method == :destroy

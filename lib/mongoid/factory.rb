@@ -23,7 +23,7 @@ module Mongoid
     # @param [ true | false ] execute_callbacks Flag specifies whether callbacks
     #   should be run.
     #
-    # @return [ Document ] The instantiated document.
+    # @return [ Mongoid::Document ] The instantiated document.
     def build(klass, attributes = nil)
       execute_build(klass, attributes, execute_callbacks: true)
     end
@@ -35,7 +35,7 @@ module Mongoid
     # @param [ true | false ] execute_callbacks Flag specifies whether callbacks
     #   should be run.
     #
-    # @return [ Document ] The instantiated document.
+    # @return [ Mongoid::Document ] The instantiated document.
     #
     # @api private
     def execute_build(klass, attributes = nil, execute_callbacks: true)
@@ -69,12 +69,12 @@ module Mongoid
     #
     # @param [ Class ] klass The class to instantiate from if _type is not present.
     # @param [ Hash ] attributes The document attributes.
-    # @param [ Criteria ] criteria Optional criteria object.
+    # @param [ Mongoid::Criteria ] criteria Optional criteria object.
     # @param [ Hash ] selected_fields Fields which were retrieved via
     #   #only. If selected_fields are specified, fields not listed in it
     #   will not be accessible in the returned document.
     #
-    # @return [ Document ] The instantiated document.
+    # @return [ Mongoid::Document ] The instantiated document.
     def from_db(klass, attributes = nil, criteria = nil, selected_fields = nil)
       execute_from_db(klass, attributes, criteria, selected_fields, execute_callbacks: true)
     end
@@ -83,7 +83,7 @@ module Mongoid
     #
     # @param [ Class ] klass The class to instantiate from if _type is not present.
     # @param [ Hash ] attributes The document attributes.
-    # @param [ Criteria ] criteria Optional criteria object.
+    # @param [ Mongoid::Criteria ] criteria Optional criteria object.
     # @param [ Hash ] selected_fields Fields which were retrieved via
     #   #only. If selected_fields are specified, fields not listed in it
     #   will not be accessible in the returned document.
@@ -94,7 +94,7 @@ module Mongoid
     #   later time. Use this option to defer callback execution until the
     #   entire object graph containing embedded associations is constructed.
     #
-    # @return [ Document ] The instantiated document.
+    # @return [ Mongoid::Document ] The instantiated document.
     #
     # @api private
     def execute_from_db(klass, attributes = nil, criteria = nil, selected_fields = nil, execute_callbacks: true)

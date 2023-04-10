@@ -20,8 +20,8 @@ module Mongoid
           # @example Create the new proxy.
           #   Association::BelongsTo::Proxy.new(game, person, association)
           #
-          # @param [ Document ] base The document this association hangs off of.
-          # @param [ Document | Array<Document> ] target The target (parent) of the
+          # @param [ Mongoid::Document ] base The document this association hangs off of.
+          # @param [ Mongoid::Document | Array<Mongoid::Document> ] target The target (parent) of the
           #   association.
           # @param [ Mongoid::Association::Relatable ] association The association object.
           def initialize(base, target, association)
@@ -48,7 +48,7 @@ module Mongoid
           # @example Substitute the association.
           #   name.substitute(new_name)
           #
-          # @param [ Document | Array<Document> ] replacement The replacement.
+          # @param [ Mongoid::Document | Array<Mongoid::Document> ] replacement The replacement.
           #
           # @return [ self | nil ] The association or nil.
           def substitute(replacement)
@@ -79,9 +79,9 @@ module Mongoid
           # @example Normalize the substitute.
           #   proxy.normalize(id)
           #
-          # @param [ Document | Object ] replacement The replacement object.
+          # @param [ Mongoid::Document | Object ] replacement The replacement object.
           #
-          # @return [ Document ] The document.
+          # @return [ Mongoid::Document ] The document.
           def normalize(replacement)
             return replacement if replacement.is_a?(Document)
             _association.build(klass, replacement)
@@ -104,7 +104,7 @@ module Mongoid
             # @example Get the eager loader object
             #
             # @param [ Mongoid::Association::Relatable ] association The association object.
-            # @param [ Array<Document> ] docs The array of documents.
+            # @param [ Array<Mongoid::Document> ] docs The array of documents.
             #
             # @return [ Mongoid::Association::Referenced::BelongsTo::Eager ]
             #   The eager loader.

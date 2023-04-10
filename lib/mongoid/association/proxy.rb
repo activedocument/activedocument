@@ -47,8 +47,8 @@ module Mongoid
       # @example Initialize the proxy.
       #   proxy.init(person, name, association)
       #
-      # @param [ Document ] base The base document on the proxy.
-      # @param [ Document | Array<Document> ] target The target of the proxy.
+      # @param [ Mongoid::Document ] base The base document on the proxy.
+      # @param [ Mongoid::Document | Array<Mongoid::Document> ] target The target of the proxy.
       # @param [ Mongoid::Association::Relatable ] association The association metadata.
       def init(base, target, association)
         @_base, @_target, @_association = base, target, association
@@ -109,7 +109,7 @@ module Mongoid
       # @example Set the association metadata.
       #   proxt.characterize_one(name)
       #
-      # @param [ Document ] document The document to set on.
+      # @param [ Mongoid::Document ] document The document to set on.
       def characterize_one(document)
         document._association = _association unless document._association
       end
@@ -151,7 +151,7 @@ module Mongoid
       # @example Raise the error.
       #   relation.raise_unsaved(post)
       #
-      # @param [ Document ] doc The child document getting created.
+      # @param [ Mongoid::Document ] doc The child document getting created.
       #
       # @raise [ Errors::UnsavedDocument ] The error.
       def raise_unsaved(doc)
@@ -193,10 +193,10 @@ module Mongoid
         # @example Apply the ordering.
         #   Proxy.apply_ordering(criteria, association)
         #
-        # @param [ Criteria ] criteria The criteria to modify.
+        # @param [ Mongoid::Criteria ] criteria The criteria to modify.
         # @param [ Mongoid::Association::Relatable ] association The association metadata.
         #
-        # @return [ Criteria ] The ordered criteria.
+        # @return [ Mongoid::Criteria ] The ordered criteria.
         def apply_ordering(criteria, association)
           association.order ? criteria.order_by(association.order) : criteria
         end

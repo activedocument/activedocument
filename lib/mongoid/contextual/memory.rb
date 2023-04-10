@@ -138,7 +138,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Document ] The first document.
+      # @return [ Mongoid::Document ] The first document.
       def first(limit = nil)
         if limit
           eager_load(documents.first(limit))
@@ -155,7 +155,7 @@ module Mongoid
       # @example Get the first document.
       #   context.first!
       #
-      # @return [ Document ] The first document.
+      # @return [ Mongoid::Document ] The first document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -168,7 +168,7 @@ module Mongoid
       # @example Create the new context.
       #   Memory.new(criteria)
       #
-      # @param [ Criteria ] criteria The criteria.
+      # @param [ Mongoid::Criteria ] criteria The criteria.
       def initialize(criteria)
         @criteria, @klass = criteria, criteria.klass
         @documents = criteria.documents.select do |doc|
@@ -201,7 +201,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Document ] The last document.
+      # @return [ Mongoid::Document ] The last document.
       def last(limit = nil)
         if limit
           eager_load(documents.last(limit))
@@ -216,7 +216,7 @@ module Mongoid
       # @example Get the last document.
       #   context.last!
       #
-      # @return [ Document ] The last document.
+      # @return [ Mongoid::Document ] The last document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -299,7 +299,7 @@ module Mongoid
       #
       # @param [ Integer | nil ] limit The number of documents to take or nil.
       #
-      # @return [ Document ] The document.
+      # @return [ Mongoid::Document ] The document.
       def take(limit = nil)
         if limit
           eager_load(documents.take(limit))
@@ -314,7 +314,7 @@ module Mongoid
       # @example Take a document.
       #   context.take
       #
-      # @return [ Document ] The document.
+      # @return [ Mongoid::Document ] The document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -379,7 +379,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Document ] The second document.
+      # @return [ Mongoid::Document ] The second document.
       def second
         eager_load([documents.second]).first
       end
@@ -390,7 +390,7 @@ module Mongoid
       # @example Get the second document.
       #   context.second!
       #
-      # @return [ Document ] The second document.
+      # @return [ Mongoid::Document ] The second document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -405,7 +405,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Document ] The third document.
+      # @return [ Mongoid::Document ] The third document.
       def third
         eager_load([documents.third]).first
       end
@@ -416,7 +416,7 @@ module Mongoid
       # @example Get the third document.
       #   context.third!
       #
-      # @return [ Document ] The third document.
+      # @return [ Mongoid::Document ] The third document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -431,7 +431,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Document ] The fourth document.
+      # @return [ Mongoid::Document ] The fourth document.
       def fourth
         eager_load([documents.fourth]).first
       end
@@ -442,7 +442,7 @@ module Mongoid
       # @example Get the fourth document.
       #   context.fourth!
       #
-      # @return [ Document ] The fourth document.
+      # @return [ Mongoid::Document ] The fourth document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -457,7 +457,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Document ] The fifth document.
+      # @return [ Mongoid::Document ] The fifth document.
       def fifth
         eager_load([documents.fifth]).first
       end
@@ -468,7 +468,7 @@ module Mongoid
       # @example Get the fifth document.
       #   context.fifth!
       #
-      # @return [ Document ] The fifth document.
+      # @return [ Mongoid::Document ] The fifth document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -483,7 +483,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Document ] The second to last document.
+      # @return [ Mongoid::Document ] The second to last document.
       def second_to_last
         eager_load([documents.second_to_last]).first
       end
@@ -494,7 +494,7 @@ module Mongoid
       # @example Get the second to last document.
       #   context.second_to_last!
       #
-      # @return [ Document ] The second to last document.
+      # @return [ Mongoid::Document ] The second to last document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -509,7 +509,7 @@ module Mongoid
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ Document ] The third to last document.
+      # @return [ Mongoid::Document ] The third to last document.
       def third_to_last
         eager_load([documents.third_to_last]).first
       end
@@ -520,7 +520,7 @@ module Mongoid
       # @example Get the third to last document.
       #   context.third_to_last!
       #
-      # @return [ Document ] The third to last document.
+      # @return [ Mongoid::Document ] The third to last document.
       #
       # @raises [ Mongoid::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
@@ -537,7 +537,7 @@ module Mongoid
       # @example Get the documents for iteration.
       #   context.documents_for_iteration
       #
-      # @return [ Array<Document> ] The docs to iterate.
+      # @return [ Array<Mongoid::Document> ] The docs to iterate.
       def documents_for_iteration
         docs = documents[skipping || 0, limiting || documents.length] || []
         if eager_loadable?
@@ -554,7 +554,7 @@ module Mongoid
       #   context.update_documents({}, doc)
       #
       # @param [ Hash ] attributes The attributes.
-      # @param [ Array<Document> ] docs The docs to update.
+      # @param [ Array<Mongoid::Document> ] docs The docs to update.
       def update_documents(attributes, docs)
         return false if !attributes || docs.empty?
         updates = { "$set" => {}}
@@ -679,7 +679,7 @@ module Mongoid
       # @example Prepare for removal.
       #   context.prepare_remove(doc)
       #
-      # @param [ Document ] doc The document.
+      # @param [ Mongoid::Document ] doc The document.
       def prepare_remove(doc)
         @selector ||= root.atomic_selector
         @path ||= doc.atomic_path
@@ -753,7 +753,7 @@ module Mongoid
 
       # Pluck the field values from the given document.
       #
-      # @param [ Document ] doc The document to pluck from.
+      # @param [ Mongoid::Document ] doc The document to pluck from.
       # @param [ [ String | Symbol ]... ] *fields Field(s) to pluck.
       #
       # @return [ Object | Array<Object> ] The plucked values.

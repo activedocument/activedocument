@@ -109,7 +109,7 @@ module Mongoid
     # @example Begin autosave.
     #   Threaded.begin_autosave(doc)
     #
-    # @param [ Document ] document The document to autosave.
+    # @param [ Mongoid::Document ] document The document to autosave.
     def begin_autosave(document)
       autosaves_for(document.class).push(document._id)
     end
@@ -119,7 +119,7 @@ module Mongoid
     # @example Begin validation.
     #   Threaded.begin_validate(doc)
     #
-    # @param [ Document ] document The document to validate.
+    # @param [ Mongoid::Document ] document The document to validate.
     def begin_validate(document)
       validations_for(document.class).push(document._id)
     end
@@ -129,7 +129,7 @@ module Mongoid
     # @example Exit autosave.
     #   Threaded.exit_autosave(doc)
     #
-    # @param [ Document ] document The document to autosave.
+    # @param [ Mongoid::Document ] document The document to autosave.
     def exit_autosave(document)
       autosaves_for(document.class).delete_one(document._id)
     end
@@ -139,7 +139,7 @@ module Mongoid
     # @example Exit validation.
     #   Threaded.exit_validate(doc)
     #
-    # @param [ Document ] document The document to validate.
+    # @param [ Mongoid::Document ] document The document to validate.
     def exit_validate(document)
       validations_for(document.class).delete_one(document._id)
     end
@@ -198,7 +198,7 @@ module Mongoid
     #
     # @param [ Klass ] klass The class type of the scope.
     #
-    # @return [ Criteria ] The scope.
+    # @return [ Mongoid::Criteria ] The scope.
     def current_scope(klass = nil)
       if klass && Thread.current[CURRENT_SCOPE_KEY].respond_to?(:keys)
         Thread.current[CURRENT_SCOPE_KEY][
@@ -214,9 +214,9 @@ module Mongoid
     # @example Set the scope.
     #   Threaded.current_scope = scope
     #
-    # @param [ Criteria ] scope The current scope.
+    # @param [ Mongoid::Criteria ] scope The current scope.
     #
-    # @return [ Criteria ] The scope.
+    # @return [ Mongoid::Criteria ] The scope.
     def current_scope=(scope)
       Thread.current[CURRENT_SCOPE_KEY] = scope
     end
@@ -226,10 +226,10 @@ module Mongoid
     # @example Set the scope.
     #   Threaded.current_scope(scope, klass)
     #
-    # @param [ Criteria ] scope The current scope.
+    # @param [ Mongoid::Criteria ] scope The current scope.
     # @param [ Class ] klass The current model class.
     #
-    # @return [ Criteria ] The scope.
+    # @return [ Mongoid::Criteria ] The scope.
     def set_current_scope(scope, klass)
       if scope.nil?
         if Thread.current[CURRENT_SCOPE_KEY]
@@ -259,7 +259,7 @@ module Mongoid
     # @example Is the document autosaved?
     #   Threaded.autosaved?(doc)
     #
-    # @param [ Document ] document The document to check.
+    # @param [ Mongoid::Document ] document The document to check.
     #
     # @return [ true | false ] If the document is autosaved.
     def autosaved?(document)
@@ -271,7 +271,7 @@ module Mongoid
     # @example Is the document validated?
     #   Threaded.validated?(doc)
     #
-    # @param [ Document ] document The document to check.
+    # @param [ Mongoid::Document ] document The document to check.
     #
     # @return [ true | false ] If the document is validated.
     def validated?(document)
