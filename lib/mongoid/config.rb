@@ -349,10 +349,17 @@ module Mongoid
       end
     end
 
+    # Mixin used to deprecate Mongoid configuration options.
     module DeprecatedOptions
       OPTIONS = %i[]
 
       if RUBY_VERSION < '3.0'
+
+        # Used for DeprecatedOptions mixin behavior.
+        #
+        # @param klass [ Class ] The class to prepend to.
+        #
+        # @api private
         def self.prepended(klass)
           klass.class_eval do
             OPTIONS.each do |option|

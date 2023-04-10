@@ -10,7 +10,9 @@ AllCops:
   TargetRubyVersion: 2.6
   NewCops: enable
   Exclude:
+    - 'perf/**/*'
     - 'spec/shared/lib/mrss/**/*'
+    - 'test-apps/**/*'
     - 'vendor/**/*'
 
 # -----------------------------------
@@ -51,6 +53,19 @@ Security:
 Style:
   Enabled: false
 
+Style/Documentation:
+  Enabled: true
+  AllowedConstants: ['ClassMethods']
+  Exclude:
+    - 'gemfiles/**/*'
+    - 'spec/**/*'
+
+Style/DocumentationMethod:
+  Enabled: true
+  Exclude:
+    - 'gemfiles/**/*'
+    - 'spec/**/*'
+
 # --------------------------------------
 # Cops below this line set intentionally
 # --------------------------------------
@@ -64,7 +79,3 @@ Gemspec/OrderedDependencies:
 # Not used by Mongoid
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
-
-Style/Documentation:
-  Exclude:
-    - 'spec/**/*'
