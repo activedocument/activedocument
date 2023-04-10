@@ -152,7 +152,7 @@ describe Mongoid::Extensions::Time do
 
       it "returns the timestamp as a Time" do
         expect(Time.demongoize(BSON::Timestamp.new(1000, 1)))
-          .to be == Time.at(1000)
+          .to eq Time.at(1000)
       end
     end
 

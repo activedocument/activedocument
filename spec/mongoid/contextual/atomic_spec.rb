@@ -306,7 +306,7 @@ describe Mongoid::Contextual::Atomic do
     context "when the field does not exist" do
 
       it "does not error on the inc" do
-        expect(smiths.reload.likes).to be == 10
+        expect(smiths.reload.likes).to eq 10
       end
     end
 
@@ -371,7 +371,7 @@ describe Mongoid::Contextual::Atomic do
     context "when the field does not exist" do
 
       it "sets undefined fields to zero" do
-        expect(smiths.reload.likes).to be == 0
+        expect(smiths.reload.likes).to eq 0
       end
     end
 
@@ -1016,8 +1016,8 @@ describe Mongoid::Contextual::Atomic do
       shared_examples_for 'a min-able context' do
         it 'chooses the smaller value' do
           context.send(min_method, "member_count" => given_members, views: given_views)
-          expect(band.reload.member_count).to be == [ member_count, given_members ].min
-          expect(band.views).to be == [ views, given_views ].min
+          expect(band.reload.member_count).to eq [ member_count, given_members ].min
+          expect(band.views).to eq [ views, given_views ].min
         end
       end
   
@@ -1045,14 +1045,14 @@ describe Mongoid::Contextual::Atomic do
       context 'when the named field does not yet exist on the document' do
         it 'sets the field to the argument' do
           context.send(min_method, new_field: 100)
-          expect(band.reload.new_field).to be == 100
+          expect(band.reload.new_field).to eq 100
         end
       end
 
       context 'when arguments are dates/times' do
         it 'picks the earliest date' do
           context.send(min_method, founded: founded - 1)
-          expect(band.reload.founded).to be == founded - 1
+          expect(band.reload.founded).to eq(founded - 1)
         end
       end
     end
@@ -1088,8 +1088,8 @@ describe Mongoid::Contextual::Atomic do
       shared_examples_for 'a max-able context' do
         it 'chooses the larger value' do
           context.send(max_method, "member_count" => given_members, views: given_views)
-          expect(band.reload.member_count).to be == [ member_count, given_members ].max
-          expect(band.views).to be == [ views, given_views ].max
+          expect(band.reload.member_count).to eq [ member_count, given_members ].max
+          expect(band.views).to eq [ views, given_views ].max
         end
       end
 
@@ -1117,14 +1117,14 @@ describe Mongoid::Contextual::Atomic do
       context 'when the named field does not yet exist on the document' do
         it 'sets the field to the argument' do
           context.send(max_method, new_field: 100)
-          expect(band.reload.new_field).to be == 100
+          expect(band.reload.new_field).to eq 100
         end
       end
 
       context 'when arguments are dates/times' do
         it 'picks the earliest date' do
           context.send(max_method, founded: founded + 1)
-          expect(band.reload.founded).to be == founded + 1
+          expect(band.reload.founded).to eq(founded + 1)
         end
       end
     end

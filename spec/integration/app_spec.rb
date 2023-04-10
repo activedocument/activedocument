@@ -45,7 +45,7 @@ describe 'Mongoid application tests' do
             uri = URI.parse('http://localhost:4567/posts')
             resp = JSON.parse(uri.open.read)
 
-            resp.should == []
+            expect(resp).to eq([])
 
           end
         end
@@ -64,7 +64,7 @@ describe 'Mongoid application tests' do
             uri = URI.parse('http://localhost:3000/posts')
             resp = JSON.parse(uri.open.read)
 
-            resp.should == []
+            expect(resp).to eq([])
           end
         end
       end
@@ -95,7 +95,7 @@ describe 'Mongoid application tests' do
       # Puma on JRuby exits with status 1 when it receives a TERM signal.
       allowed_statuses << 1
     end
-    allowed_statuses.should include(status)
+    expect(allowed_statuses).to include(status)
 
     rv
   end
@@ -125,8 +125,8 @@ describe 'Mongoid application tests' do
 
         # https://jira.mongodb.org/browse/MONGOID-4885
         comment_text = File.read('app/models/comment.rb')
-        comment_text.should =~ /belongs_to :post/
-        comment_text.should_not =~ /embedded_in :post/
+        expect(comment_text).to match(/belongs_to :post/)
+        expect(comment_text).not_to match(/embedded_in :post/)
       end
     end
 
@@ -134,9 +134,9 @@ describe 'Mongoid application tests' do
       prepare_new_rails_app 'mongoid-test-config' do
         mongoid_config_file = File.join(TMP_BASE, 'mongoid-test-config/config/mongoid.yml')
 
-        File.exist?(mongoid_config_file).should be false
+        expect(File.exist?(mongoid_config_file)).to be false
         check_call(%w(rails g mongoid:config), env: clean_env)
-        File.exist?(mongoid_config_file).should be true
+        expect(File.exist?(mongoid_config_file)).to be true
 
         config_text = File.read(mongoid_config_file)
         expect(config_text).to match /mongoid_test_config_development/
@@ -159,9 +159,9 @@ describe 'Mongoid application tests' do
       prepare_new_rails_app 'mongoid-test-init' do
         mongoid_initializer = File.join(TMP_BASE, 'mongoid-test-init/config/initializers/mongoid.rb')
 
-        File.exist?(mongoid_initializer).should be false
+        expect(File.exist?(mongoid_initializer)).to be false
         check_call(%w(rails g mongoid:config), env: clean_env)
-        File.exist?(mongoid_initializer).should be true
+        expect(File.exist?(mongoid_initializer)).to be true
       end
     end
   end
@@ -215,7 +215,7 @@ describe 'Mongoid application tests' do
                 index = client['posts'].indexes.detect do |index|
                   index['key'] == {'subject' => 1}
                 end
-                index.should be nil
+                expect(index).to be nil
 
                 check_call(%w(bundle exec rake db:mongoid:create_indexes -t),
                   cwd: APP_PATH, env: env)
@@ -223,7 +223,7 @@ describe 'Mongoid application tests' do
                 index = client['posts'].indexes.detect do |index|
                   index['key'] == {'subject' => 1}
                 end
-                index.should be_a(Hash)
+                expect(index).to be_a(Hash)
               end
             end
           end

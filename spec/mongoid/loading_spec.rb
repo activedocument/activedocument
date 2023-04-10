@@ -30,13 +30,13 @@ describe Mongoid::Loadable do
       end
 
       it "should return Rails' \"app/models\" paths" do
-        expect(Mongoid.model_paths).to be == %w( app/models )
+        expect(Mongoid.model_paths).to eq %w( app/models )
       end
     end
 
     context "when Rails is not defined" do
       it "should return Mongoid's default model paths" do
-        expect(Mongoid.model_paths).to be == %w( ./app/models ./lib/models )
+        expect(Mongoid.model_paths).to eq %w( ./app/models ./lib/models )
       end
     end
 
@@ -44,7 +44,7 @@ describe Mongoid::Loadable do
       before { Mongoid.model_paths = %w( /infra/models ) }
       
       it "should return the given value" do
-        expect(Mongoid.model_paths).to be == %w( /infra/models )
+        expect(Mongoid.model_paths).to eq %w( /infra/models )
       end
     end
   end
@@ -68,8 +68,8 @@ describe Mongoid::Loadable do
       end
 
       it "should find models in the default paths" do
-        expect(defined?(AppModelsMessage)).to be == "constant"
-        expect(defined?(LibModelsMessage)).to be == "constant"
+        expect(defined?(AppModelsMessage)).to eq "constant"
+        expect(defined?(LibModelsMessage)).to eq "constant"
         expect(defined?(SandboxMessage)).to be_nil
       end
     end
@@ -82,7 +82,7 @@ describe Mongoid::Loadable do
       end
 
       it "should find models in the specified paths" do
-        expect(defined?(AppModelsMessage)).to be == "constant"
+        expect(defined?(AppModelsMessage)).to eq "constant"
         expect(defined?(LibModelsMessage)).to be_nil
         expect(defined?(SandboxMessage)).to be_nil
       end
@@ -95,10 +95,10 @@ describe Mongoid::Loadable do
       end
 
       it "should find models in the specified paths" do
-        expect(defined?(AppModelsMessage)).to be == "constant"
-        expect(defined?(LibModelsMessage)).to be == "constant"
-        expect(defined?(SandboxMessage)).to be == "constant"
-        expect(defined?(SandboxComment)).to be == "constant"
+        expect(defined?(AppModelsMessage)).to eq "constant"
+        expect(defined?(LibModelsMessage)).to eq "constant"
+        expect(defined?(SandboxMessage)).to eq "constant"
+        expect(defined?(SandboxComment)).to eq "constant"
       end
     end
   end

@@ -28,9 +28,9 @@ describe Mongoid::Persistable::Minable do
           end
 
           it 'sets the fields to smaller of current vs. given' do
-            expect(band.reload.name).to be == [ initial_name, given_name ].min
-            expect(band.member_count).to be == [ initial_members, given_members ].min
-            expect(band.founded).to be == [ initial_founded, given_founded ].min
+            expect(band.reload.name).to eq [ initial_name, given_name ].min
+            expect(band.member_count).to eq [ initial_members, given_members ].min
+            expect(band.founded).to eq [ initial_founded, given_founded ].min
           end
 
           it "resets dirty changes" do
@@ -85,9 +85,9 @@ describe Mongoid::Persistable::Minable do
           end
 
           it 'sets the fields to smaller of current vs. given' do
-            expect(address.reload.city).to be == [ initial_city, given_city ].min
-            expect(address.number).to be == [ initial_number, given_number ].min
-            expect(address.end_date).to be == [ initial_end_date, given_end_date ].min
+            expect(address.reload.city).to eq [ initial_city, given_city ].min
+            expect(address.number).to eq [ initial_number, given_number ].min
+            expect(address.end_date).to eq [ initial_end_date, given_end_date ].min
           end
 
           it "resets dirty changes" do
@@ -127,7 +127,7 @@ describe Mongoid::Persistable::Minable do
           band.atomically do
             band.send(min_method, member_count: 5, name: "Manhattan Transfer")
             expect(band.changes)
-              .to be == { "member_count" => [10, 5] }
+              .to eq({ "member_count" => [10, 5] })
           end
         end
       end

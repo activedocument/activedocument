@@ -31,9 +31,9 @@ describe Mongoid::Persistable::Deletable do
       end
 
       it 'deletes the matching document from the database' do
-        lambda do
+        expect do
           person.reload
-        end.should raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
+        end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
     end
 
@@ -348,9 +348,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Bolt.count.should == 1
+            expect(Bolt.count).to eq(1)
             parent.delete
-            Bolt.count.should == 1
+            expect(Bolt.count).to eq(1)
           end
         end
 
@@ -360,9 +360,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Threadlocker.count.should == 1
+            expect(Threadlocker.count).to eq(1)
             parent.delete
-            Threadlocker.count.should == 1
+            expect(Threadlocker.count).to eq(1)
           end
         end
 
@@ -372,9 +372,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Sealer.count.should == 1
+            expect(Sealer.count).to eq(1)
             parent.delete
-            Sealer.count.should == 1
+            expect(Sealer.count).to eq(1)
           end
         end
       end
@@ -387,9 +387,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Nut.count.should == 1
+            expect(Nut.count).to eq(1)
             parent.delete
-            Nut.count.should == 1
+            expect(Nut.count).to eq(1)
           end
         end
 
@@ -399,9 +399,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Washer.count.should == 1
+            expect(Washer.count).to eq(1)
             parent.delete
-            Washer.count.should == 1
+            expect(Washer.count).to eq(1)
           end
         end
 
@@ -411,9 +411,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Spacer.count.should == 1
+            expect(Spacer.count).to eq(1)
             parent.delete
-            Spacer.count.should == 1
+            expect(Spacer.count).to eq(1)
           end
         end
       end
@@ -506,9 +506,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Bolt.count.should == 1
+            expect(Bolt.count).to eq(1)
             Hole.delete_all
-            Bolt.count.should == 1
+            expect(Bolt.count).to eq(1)
           end
         end
 
@@ -518,9 +518,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Threadlocker.count.should == 1
+            expect(Threadlocker.count).to eq(1)
             Hole.delete_all
-            Threadlocker.count.should == 1
+            expect(Threadlocker.count).to eq(1)
           end
         end
 
@@ -530,9 +530,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Sealer.count.should == 1
+            expect(Sealer.count).to eq(1)
             Hole.delete_all
-            Sealer.count.should == 1
+            expect(Sealer.count).to eq(1)
           end
         end
       end
@@ -545,9 +545,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Nut.count.should == 1
+            expect(Nut.count).to eq(1)
             Hole.delete_all
-            Nut.count.should == 1
+            expect(Nut.count).to eq(1)
           end
         end
 
@@ -557,9 +557,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Washer.count.should == 1
+            expect(Washer.count).to eq(1)
             Hole.delete_all
-            Washer.count.should == 1
+            expect(Washer.count).to eq(1)
           end
         end
 
@@ -569,9 +569,9 @@ describe Mongoid::Persistable::Deletable do
           end
 
           it 'does not destroy dependent documents' do
-            Spacer.count.should == 1
+            expect(Spacer.count).to eq(1)
             Hole.delete_all
-            Spacer.count.should == 1
+            expect(Spacer.count).to eq(1)
           end
         end
       end

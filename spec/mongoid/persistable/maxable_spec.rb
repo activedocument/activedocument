@@ -28,9 +28,9 @@ describe Mongoid::Persistable::Maxable do
           end
 
           it 'sets the fields to larger of current vs. given' do
-            expect(band.reload.name).to be == [ initial_name, given_name ].max
-            expect(band.member_count).to be == [ initial_members, given_members ].max
-            expect(band.founded).to be == [ initial_founded, given_founded ].max
+            expect(band.reload.name).to eq [ initial_name, given_name ].max
+            expect(band.member_count).to eq [ initial_members, given_members ].max
+            expect(band.founded).to eq [ initial_founded, given_founded ].max
           end
 
           it "resets dirty changes" do
@@ -85,9 +85,9 @@ describe Mongoid::Persistable::Maxable do
           end
 
           it 'sets the fields to smaller of current vs. given' do
-            expect(address.reload.city).to be == [ initial_city, given_city ].max
-            expect(address.number).to be == [ initial_number, given_number ].max
-            expect(address.end_date).to be == [ initial_end_date, given_end_date ].max
+            expect(address.reload.city).to eq [ initial_city, given_city ].max
+            expect(address.number).to eq [ initial_number, given_number ].max
+            expect(address.end_date).to eq [ initial_end_date, given_end_date ].max
           end
 
           it "resets dirty changes" do
@@ -127,7 +127,7 @@ describe Mongoid::Persistable::Maxable do
           band.atomically do
             band.send(max_method, member_count: 15, name: "Manhattan Transfer")
             expect(band.changes)
-              .to be == { "member_count" => [10, 15] }
+              .to eq({ "member_count" => [10, 15] })
           end
         end
       end

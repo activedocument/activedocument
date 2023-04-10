@@ -41,7 +41,7 @@ describe Mongoid::Config::Introspection do
 
         it "should be parsed by the introspection scraper" do
           expect(option).not_to be_nil
-          expect(option.default).to be == default_value.inspect
+          expect(option.default).to eq default_value.inspect
           expect(option.comment.strip).not_to be_empty
         end
 
@@ -49,7 +49,7 @@ describe Mongoid::Config::Introspection do
           if option.deprecated?
             expect(live_option).to be_nil
           else
-            expect(live_option).to be == option
+            expect(live_option).to eq option
           end
         end
       end
@@ -65,32 +65,32 @@ describe Mongoid::Config::Introspection do
     context ".from_captures" do
       it "populates the option's fields" do
         option = Mongoid::Config::Introspection::Option.from_captures([nil, "# comment", "name", "default"])
-        expect(option.name).to be == "name"
-        expect(option.default).to be == "default"
-        expect(option.comment).to be == "# comment"
+        expect(option.name).to eq "name"
+        expect(option.default).to eq "default"
+        expect(option.comment).to eq "# comment"
       end
     end
 
     context "#initialize" do
       it "unindents the given comment" do
-        expect(option.name).to be == "name"
-        expect(option.default).to be == "default"
-        expect(option.comment).to be == "# line 1\n# line 2"
+        expect(option.name).to eq "name"
+        expect(option.default).to eq "default"
+        expect(option.comment).to eq "# line 1\n# line 2"
       end
     end
 
     context "#indented_comment" do
       it "has defaults" do
-        expect(option.indented_comment).to be == "# line 1\n  # line 2"
+        expect(option.indented_comment).to eq "# line 1\n  # line 2"
       end
 
       it "allows indentation to be specified" do
-        expect(option.indented_comment(indent: 3)).to be == "# line 1\n   # line 2"
+        expect(option.indented_comment(indent: 3)).to eq "# line 1\n   # line 2"
       end
 
       it "allows the first line to be indented" do
         expect(option.indented_comment(indent: 3, indent_first_line: true))
-          .to be == "   # line 1\n   # line 2"
+          .to eq "   # line 1\n   # line 2"
       end
     end
 

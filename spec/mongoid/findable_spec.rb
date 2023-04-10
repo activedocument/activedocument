@@ -914,7 +914,7 @@ describe Mongoid::Findable do
       end
 
       it 'uses activesupport time zone' do
-        distinct.should be_a(DateTime)
+        expect(distinct).to be_a(DateTime)
         # Time and DateTime have different stringifications:
         # 2022-03-16T21:12:32+00:00
         # 2022-03-16 21:12:32 UTC
