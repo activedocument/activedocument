@@ -69,13 +69,26 @@ In addition, support for ``config.load_defaults`` versions 7.5 and
 prior has been dropped (you must use a minimum of version 8.0.)
 
 
-Removal of Deprecated Functionality
------------------------------------
+Deprecated functionality removed
+--------------------------------
 
-The following deprecated functionality is now removed:
+The following previously deprecated functionality is now removed:
 
 - ``Document#as_json :compact`` option is removed. Please call ```#compact``
   on the returned ``Hash`` object instead.
+- ``Criteria#geo_near`` is removed as MongoDB server versions 4.2
+  and later no longer support the ``$geoNear`` command. Please use the
+  `$geoNear stage of the aggregation pipeline
+  <https://www.mongodb.com/docs/manual/reference/operator/aggregation/geoNear/>`_
+  instead.
+- ``Criteria#max_scan`` is removed as MongoDB server versions 4.2
+  and later no longer support the ``maxScan`` query option. Please use
+  ``Criteria#max_time_ms`` instead.
+- The ``:background_indexing`` global option and ``:background`` index
+  specification argument have been removed. These options do not have any effect
+  in MongoDB server versions 4.2 and later. You may safely remove
+  ``:background_indexing`` from your config ``:background`` from any index
+  definitions without replacement.
 
 
 ``touch`` method now clears changed state
