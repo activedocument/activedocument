@@ -1,6 +1,9 @@
+![Mongoid: Ultra Edition](https://repository-images.githubusercontent.com/298015080/6028fc36-ae5d-46c1-af7a-19dc3c7f56f1)
+
 # Mongoid: Ultra Edition
+
+[![Build Status][build-img]][build-url]
 [![Gem Version][rubygems-img]][rubygems-url]
-[![Inline Docs][inch-img]][inch-url]
 [![License][license-img]][license-url]
 
 The no-baloney fork of Mongoid. Made by the community, for the community.
@@ -42,14 +45,17 @@ This fork will merge in changes at least once-per-month from [mongodb/mongoid](h
 as its "upstream" repo. We may backport PRs to upstream where it makes sense to do so, but cannot guarantee that
 the upstream will merge them.
 
-## Versioning
+## Releases & Versioning
+
+**Important:** Mongoid Ultra is currently in `alpha` state. The first full release will be `9.0.0.0`.
 
 For the time being, version numbers will shadow those of `mongodb/mongoid` with an additional "patch" number added:
 
 `X.Y.Z.P`
 
 Where `X.Y.Z` is the latest upstream release version, and `P` is the patch version of this repo.
-We will also use `-beta1`, `-rc1`, etc. suffixes to denote pre-releases, which may be unstable.
+`P` will be reset to zero anytime the major version `X` changes, but will not be reset when the minor or tiny `Y`/`Z` version changes.
+We will also use `-alpha`, `-beta`, `-rc`, etc. suffixes to denote pre-releases.
 
 **Semver**: For the time being will follow the major version component of semver, i.e. not breaking or
 removing functionality *except* in major (`X`) releases. We may introduce new features in new patch (`P`) releases,
@@ -60,8 +66,6 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 ## Roadmap
 
 - [ ] Establish maintainers and governance board.
-- [x] Use a publicly visible CI (Github Actions) as the primary CI.
-- [ ] Remove Evergreen CI, MRSS submodule, and other MongoDB corporate baloney.
 - [ ] Publish documentation.
 - [ ] Drop support for old Ruby, Rails, and MongoDB server versions.
 - [ ] Full documentation coverage.
@@ -76,7 +80,9 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 
 ## Notable Differences from MongoDB Mongoid
 
-- At the moment, none. We are working on it!
+- ✅ Use a publicly visible CI (Github Actions) as the primary CI. Remove Evergreen CI.
+- ✅ Remove MRSS submodules and other MongoDB corporate baloney.
+- More to come soon!
 
 ## Documentation
 
@@ -116,7 +122,8 @@ Mongoid Ultra is shepherded by the team at TableCheck. TableCheck have been avid
 contributing over 150 PRs to Mongoid and MongoDB Ruby projects. TableCheck uses Mongoid to power millions of
 restaurant reservations each month, and are *personally invested* in the making the best user experience possible.
 
-We invite all in the community to apply for co-maintainership, please raise a Github issue if interested.
+We invite experienced Mongoid hands in the community to apply for co-maintainership.
+Please raise a [Mongoid Ultra Github issue](https://github.com/tablecheck/mongoid-ultra/issues) if interested.
 
 ## Reasons for Forking
 
@@ -141,9 +148,9 @@ MongoDB, Mongo, and the leaf logo are registered trademarks of MongoDB, Inc. and
 [MongoDB Inc.'s Trademark Usage Guidelines](https://www.mongodb.com/legal/trademark-usage-guidelines).
 Any usage herein should not be construed as an endorsement or affiliation with this project.
 
+[build-img]: https://github.com/tablecheck/mongoid-ultra/actions/workflows/test.yml/badge.svg
+[build-url]: https://github.com/tablecheck/mongoid-ultra/actions
 [rubygems-img]: https://badge.fury.io/rb/mongoid-ultra.svg
 [rubygems-url]: http://badge.fury.io/rb/mongoid-ultra
-[inch-img]: http://inch-ci.org/github/tablecheck/mongoid-ultra.svg?branch=master
-[inch-url]: http://inch-ci.org/github/tablecheck/mongoid-ultra
 [license-img]: https://img.shields.io/badge/license-MIT-green.svg
 [license-url]: https://www.opensource.org/licenses/MIT
