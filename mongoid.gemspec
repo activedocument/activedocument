@@ -24,21 +24,20 @@ Gem::Specification.new do |s|
     'source_code_uri' => 'https://github.com/tablecheck/mongoid',
   }
 
-  s.required_ruby_version     = ">= 2.6"
-  s.required_rubygems_version = ">= 1.3.6"
+  s.required_ruby_version = ">= 2.7"
 
-  # Ruby 3.0 requires ActiveModel 6.0 or higher.
   # activemodel 7.0.0 cannot be used due to Class#descendants issue
   # See: https://github.com/rails/rails/pull/43951
-  s.add_dependency("activemodel", ['>=5.1', '<7.1', '!= 7.0.0'])
-  s.add_dependency("mongo", ['>=2.18.0', '<3.0.0'])
+  s.add_dependency("activemodel", ['>= 6.0', '< 7.1', '!= 7.0.0'])
+  s.add_dependency("mongo", ['>= 2.18.0', '< 3.0.0'])
   s.add_dependency("concurrent-ruby", ['>= 1.0.5', '< 2.0'])
 
-  # The ruby2_keywords gem is used to handling argument delegation issues.
-  # It can be removed after support for Ruby 2.7 is dropped.
+  # The ruby2_keywords gem normalizes Ruby 2.7's arg delegation.
+  # It can be removed when Ruby 2.7 is removed.
+  # See: https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/#delegation
   s.add_dependency("ruby2_keywords", "~> 0.0.5")
 
-  s.add_development_dependency("bson", ['>=4.14.0', '<5.0.0'])
+  s.add_development_dependency("bson", ['>= 4.14.0', '< 5.0.0'])
 
   s.files        = Dir.glob("lib/**/*") + %w[LICENSE README.md Rakefile]
   s.test_files   = Dir.glob("spec/**/*")

@@ -568,25 +568,28 @@ describe Mongoid::Config do
       let(:client) { Mongoid.default_client }
 
       it 'passes uuid to driver' do
-        expect(Mongo::Client).to receive(:new).with(SpecConfig.instance.addresses,
-          auto_encryption_options: {
-            'key_vault_namespace' => 'admin.datakeys',
-            'kms_providers' => {'local' => {'key' => 'z7iYiYKLuYymEWtk4kfny1ESBwwFdA58qMqff96A8ghiOcIK75lJGPUIocku8LOFjQuEgeIP4xlln3s7r93FV9J5sAE7zg8U'}},
-            'schema_map' => {'blog_development.comments' => {
-              'bsonType' => 'object',
-              'properties' => {
-                'message' => {'encrypt' => {
-                  'algorithm' => 'AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic',
-                  'bsonType' => 'string',
-                  'keyId' => [BSON::Binary.new("G\xF0 5\xCC@HX\xA2%b\x97\xA9a\xA8\xE7", :uuid)],
-                }},
-              },
-            }}},
-          database: 'mongoid_test',
-          platform: "mongoid-#{Mongoid::VERSION}",
-          wrapping_libraries: [
-            {'name' => 'Mongoid', 'version' => Mongoid::VERSION},
-          ],
+        expect(Mongo::Client).to receive(:new).with(
+          SpecConfig.instance.addresses,
+          {
+            auto_encryption_options: {
+              'key_vault_namespace' => 'admin.datakeys',
+              'kms_providers' => {'local' => {'key' => 'z7iYiYKLuYymEWtk4kfny1ESBwwFdA58qMqff96A8ghiOcIK75lJGPUIocku8LOFjQuEgeIP4xlln3s7r93FV9J5sAE7zg8U'}},
+              'schema_map' => {'blog_development.comments' => {
+                'bsonType' => 'object',
+                'properties' => {
+                  'message' => {'encrypt' => {
+                    'algorithm' => 'AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic',
+                    'bsonType' => 'string',
+                    'keyId' => [BSON::Binary.new("G\xF0 5\xCC@HX\xA2%b\x97\xA9a\xA8\xE7", :uuid)],
+                  }},
+                },
+              }}},
+            database: 'mongoid_test',
+            platform: "mongoid-#{Mongoid::VERSION}",
+            wrapping_libraries: [
+              {'name' => 'Mongoid', 'version' => Mongoid::VERSION},
+            ]
+          }
         )
 
         client
