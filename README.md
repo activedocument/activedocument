@@ -65,18 +65,7 @@ All new versions will undergo battle-testing in production at TableCheck prior t
 
 ## Roadmap
 
-- [ ] Establish maintainers and governance board.
-- [ ] Publish documentation.
-- [ ] Drop support for old Ruby, Rails, and MongoDB server versions.
-- [ ] Full documentation coverage.
-- [ ] Full Rubocop compliance and coverage.
-- [ ] Remove all monkey-patching.
-- [ ] Merge patches rejected by MongoDB.
-- [ ] Refactor persistence type-validation (mongoize, etc.)
-- [ ] Extract unsafe chaining `and` and `or` operators to a gem. Require usage of `all_of` and `any_of` instead.
-- [ ] Extract `:field.in => [1, 2, 3]` query syntax to a gem. Require usage of `field: { '$in' => [1, 2, 3] }` instead.
-- [ ] Allow symbol instead of classes in `field :type` declarations.
-- [ ] Refactor relations (`belongs_to_one`, `belongs_to_many`)
+Refer to the (Roadmap issue)[https://github.com/tablecheck/mongoid-ultra/issues/13].
 
 ## Notable Differences from MongoDB Mongoid
 
