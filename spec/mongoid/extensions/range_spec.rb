@@ -70,18 +70,8 @@ describe Mongoid::Extensions::Range do
       let(:hash) { { "min" => 1, "max" => nil } }
 
       context 'kernel can support endless range' do
-        ruby_version_gte '2.6'
-
         it "returns an alphabetic range" do
           is_expected.to eq(eval('1..'))
-        end
-      end
-
-      context 'kernel cannot support endless range' do
-        ruby_version_lt '2.6'
-
-        it "returns nil" do
-          is_expected.to be nil
         end
       end
     end
@@ -90,18 +80,8 @@ describe Mongoid::Extensions::Range do
       let(:hash) { { "min" => 1, "max" => nil, "exclude_end" => true } }
 
       context 'kernel can support endless range' do
-        ruby_version_gte '2.6'
-
         it "returns an alphabetic range" do
           is_expected.to eq(eval('1...'))
-        end
-      end
-
-      context 'kernel cannot support endless range' do
-        ruby_version_lt '2.6'
-
-        it "returns nil" do
-          is_expected.to be nil
         end
       end
     end
@@ -110,18 +90,8 @@ describe Mongoid::Extensions::Range do
       let(:hash) { { "min" => nil, "max" => 3 } }
 
       context 'kernel can support beginning-less range' do
-        ruby_version_gte '2.7'
-
         it "returns an alphabetic range" do
           is_expected.to eq(nil..3)
-        end
-      end
-
-      context 'kernel cannot support beginning-less range' do
-        ruby_version_lt '2.7'
-
-        it "returns nil" do
-          is_expected.to be nil
         end
       end
     end
@@ -130,18 +100,8 @@ describe Mongoid::Extensions::Range do
       let(:hash) { { "min" => nil, "max" => 3, "exclude_end" => true } }
 
       context 'kernel can support endless range' do
-        ruby_version_gte '2.7'
-
         it "returns an alphabetic beginning-less" do
           is_expected.to eq(eval('...3'))
-        end
-      end
-
-      context 'kernel cannot support beginning-less range' do
-        ruby_version_lt '2.7'
-
-        it "returns nil" do
-          is_expected.to be nil
         end
       end
     end
@@ -198,8 +158,6 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given an endless range' do
-      ruby_version_gte '2.6'
-
       let(:range) { eval('5..') }
 
       it "returns the object hash" do
@@ -208,8 +166,6 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given an endless range not inclusive' do
-      ruby_version_gte '2.6'
-
       let(:range) { eval('5...') }
 
       it "returns the object hash" do
@@ -218,8 +174,6 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given a beginning-less range' do
-      ruby_version_gte '2.7'
-
       let(:range) { eval('..5') }
 
       it "returns the object hash" do
@@ -228,8 +182,6 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given an endless range not inclusive' do
-      ruby_version_gte '2.7'
-
       let(:range) { eval('...5') }
 
       it "returns the object hash" do

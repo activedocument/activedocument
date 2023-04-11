@@ -509,7 +509,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       context 'when fallbacks are enabled with a locale list' do
-        require_fallbacks
+        with_i18n_fallbacks
         with_default_i18n_configs
 
         before do
@@ -524,7 +524,7 @@ describe Mongoid::Contextual::Memory do
           I18n.locale = :en
           Dictionary.create!(description: 'english-text')
           I18n.locale = :he
-          distinct.should == "english-text"
+          expect(distinct).to eq "english-text"
         end
       end
 
@@ -1689,7 +1689,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       context 'when fallbacks are enabled with a locale list' do
-        require_fallbacks
+        with_i18n_fallbacks
         with_default_i18n_configs
 
         before do
@@ -1704,7 +1704,7 @@ describe Mongoid::Contextual::Memory do
           I18n.locale = :en
           Dictionary.create!(description: 'english-text')
           I18n.locale = :he
-          plucked.should == "english-text"
+          expect(plucked).to eq "english-text"
         end
       end
 

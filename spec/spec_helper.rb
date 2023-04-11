@@ -6,38 +6,10 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'shared', 'lib'))
 
 autoload :Timecop, 'timecop'
 require 'support/spec_config'
-require 'mrss/lite_constraints'
 require 'mrss/session_registry'
 Mrss.patch_mongo_for_session_registry
 
 require 'mongoid'
-
-if SpecConfig.instance.mri? && !SpecConfig.instance.windows?
-  require 'timeout_interrupt'
-else
-  require 'timeout'
-  TimeoutInterrupt = Timeout
-end
-
-RSpec.configure do |config|
-  config.expect_with(:rspec) do |c|
-    c.syntax = [:should, :expect]
-  end
-
-  if SpecConfig.instance.ci?
-    config.add_formatter(RSpec::Core::Formatters::JsonFormatter, File.join(File.dirname(__FILE__), '../tmp/rspec.json'))
-  end
-
-  if SpecConfig.instance.ci? && !%w(1 true yes).include?(ENV['INTERACTIVE']&.downcase)
-    config.around(:each) do |example|
-      TimeoutInterrupt.timeout(30) do
-        example.run
-      end
-    end
-  end
-
-  config.extend(Mrss::LiteConstraints)
-end
 
 # require all shared examples
 Dir['./spec/support/shared/*.rb'].sort.each { |file| require file }
@@ -71,7 +43,6 @@ end
 begin
   require 'mrss/cluster_config'
   require 'support/client_registry'
-  require 'mrss/constraints'
   require 'mrss/event_subscriber'
 rescue LoadError => exc
   raise LoadError.new <<~MSG.strip
@@ -177,7 +148,6 @@ RSpec.configure do |config|
   config.raise_errors_for_deprecations!
   config.include(Helpers)
   config.include(Mongoid::Expectations)
-  config.extend(Mrss::Constraints)
   config.extend(Constraints)
   config.extend(Mongoid::Macros)
 
@@ -198,6 +168,20 @@ RSpec.configure do |config|
     end
     Mongoid.default_client.collections.each do |coll|
       coll.delete_many
+    end
+  end
+
+  if SpecConfig.instance.mri? && !SpecConfig.instance.windows?
+    require 'timeout_interrupt'
+    timeout_lib = TimeoutInterrupt
+  else
+    require 'timeout'
+    timeout_lib = Timeout
+  end
+
+  if SpecConfig.instance.ci? && !%w(1 true yes).include?(ENV['INTERACTIVE']&.downcase)
+    config.around(:each) do |example|
+      timeout_lib.timeout(30) { example.run }
     end
   end
 end

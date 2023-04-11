@@ -151,8 +151,12 @@ It's time to do better! 💪 We hope this project encourages MongoDB Inc. to imp
 ## Disclaimer
 
 MongoDB, Mongo, and the leaf logo are registered trademarks of MongoDB, Inc. and are used in compliance with
-[MongoDB Inc.'s Trademark Usage Guidelines](https://www.mongodb.com/legal/trademark-usage-guidelines).
-Any usage herein should not be construed as an endorsement or affiliation with this project.
+[MongoDB's Trademark Usage Guidelines](https://www.mongodb.com/legal/trademark-usage-guidelines).
+Any usage herein should not be construed as an endorsement or affiliation of MongoDB, Inc. with this project.
+
+Code from the following related repos is incorporated under the MIT License:
+- [mongodb-labs/mongo-ruby-spec-shared](https://github.com/mongodb-labs/mongo-ruby-spec-shared)
+- [mongoid/mongoid-test-apps](https://github.com/mongoid/mongoid-test-apps)
 
 [build-img]: https://github.com/tablecheck/mongoid-ultra/actions/workflows/test.yml/badge.svg
 [build-url]: https://github.com/tablecheck/mongoid-ultra/actions

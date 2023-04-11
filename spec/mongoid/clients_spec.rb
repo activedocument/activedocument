@@ -1153,8 +1153,6 @@ describe Mongoid::Clients do
     end
 
     context 'when using on different objects' do
-      require_mri
-
       let(:first_band) do
         Band.create!(name: "The Beatles")
       end
@@ -1173,9 +1171,7 @@ describe Mongoid::Clients do
         end
         expect(Symbol.all_symbols.size).to be <= initial_symbols_count
       end
-
     end
-
   end
 
   context "when overriding the default database" do

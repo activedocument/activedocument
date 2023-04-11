@@ -72,8 +72,6 @@ describe Range do
     end
 
     context "when the range is endless" do
-      ruby_version_gte '2.7'
-
       subject(:evolved) { eval('(min..)').__evolve_date__ }
       let(:min_time) { Time.utc(2010, 1, 1, 0, 0, 0, 0) }
       let(:min) { min_time.to_i }
@@ -84,8 +82,6 @@ describe Range do
     end
 
     context "when the range is beginning-less" do
-      ruby_version_gte '2.7'
-
       subject(:evolved) { eval('(..max)').__evolve_date__ }
       let(:max_time) { Time.utc(2010, 1, 3, 0, 0, 0, 0) }
       let(:max) { max_time.to_i }
@@ -96,8 +92,6 @@ describe Range do
     end
 
     context "when the range is beginning-less not inclusive" do
-      ruby_version_gte '2.7'
-
       subject(:evolved) { eval('(...max)').__evolve_date__ }
       let(:max_time) { Time.utc(2010, 1, 3, 0, 0, 0, 0) }
       let(:max) { max_time.to_i }
@@ -185,8 +179,6 @@ describe Range do
     end
 
     context "when the range is endless" do
-      ruby_version_gte '2.7'
-
       subject(:evolved) { eval('(min..)').__evolve_time__ }
       let(:min_time) { Time.utc(2010, 1, 1, 0, 0, 0, 0) }
       let(:min) { min_time.to_i }
@@ -197,8 +189,6 @@ describe Range do
     end
 
     context "when the range is beginning-less" do
-      ruby_version_gte '2.7'
-
       subject(:evolved) { eval('(..max)').__evolve_time__ }
       let(:max_time) { Time.utc(2010, 1, 3, 0, 0, 0, 0) }
       let(:max) { max_time.to_i }
@@ -209,8 +199,6 @@ describe Range do
     end
 
     context "when the range is beginning-less not inclusive" do
-      ruby_version_gte '2.7'
-
       subject(:evolved) { eval('(...max)').__evolve_time__ }
       let(:max_time) { Time.utc(2010, 1, 3, 0, 0, 0, 0) }
       let(:max) { max_time.to_i }
@@ -241,8 +229,6 @@ describe Range do
       end
 
       context "when the range is endless" do
-        ruby_version_gte '2.7'
-
         let(:range) { eval('1..') }
 
         it "returns the endless range criterion" do
@@ -251,8 +237,6 @@ describe Range do
       end
 
       context "when the range is endless not inclusive" do
-        ruby_version_gte '2.7'
-
         let(:range) { eval('1...') }
 
         it "returns the endless range criterion" do
@@ -261,8 +245,6 @@ describe Range do
       end
 
       context "when the range is beginning-less" do
-        ruby_version_gte '2.7'
-
         let(:range) { eval('..1') }
 
         it "returns the endless range criterion" do
@@ -271,8 +253,6 @@ describe Range do
       end
 
       context "when the range is beginning-less not inclusive" do
-        ruby_version_gte '2.7'
-
         let(:range) { eval('...1') }
 
         it "returns the endless range criterion" do
