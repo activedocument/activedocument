@@ -425,23 +425,29 @@ module Mongoid
       #   # => { [ 1, 2 ] => 1 }
       #
       # @param [ String | Symbol ] field The field name.
+      # @param [ Boolean ] :unwind Whether to tally array
+      #   member values individually. Default false.
       #
       # @return [ Hash ] The hash of counts.
-      def tally(field)
+      def tally(field, unwind: false)
         name = klass.cleanse_localized_field_names(field)
+        is_translation = "#{name}_translations" == field.to_s
+
+        # Must add a $project stage when using $unwind with nested fields
+        # due to a bug in MongoDB. See: https://jira.mongodb.org/browse/SERVER-59713
+        projected = 'p' if unwind && (is_translation || name.include?('.'))
 
         fld = klass.traverse_association_tree(name)
-        pipeline = [ { "$group" => { _id: "$#{name}", counts: { "$sum": 1 } } } ]
-        pipeline.unshift("$match" => view.filter) unless view.filter.blank?
+        pipeline = []
+        pipeline << { "$match" => view.filter } if view.filter.present?
+        pipeline << { "$project" => { "#{projected}" => "$#{name}" } } if projected
+        pipeline << { "$unwind" => "$#{projected || name}" } if unwind
+        pipeline << { "$group" => { _id: "$#{projected || name}", counts: { "$sum": 1 } } }
 
-        collection.aggregate(pipeline).reduce({}) do |tallies, doc|
-          is_translation = "#{name}_translations" == field.to_s
+        collection.aggregate(pipeline).each_with_object({}) do |doc, tallies|
           val = doc["_id"]
-
           key = if val.is_a?(Array)
-            val.map do |v|
-              demongoize_with_field(fld, v, is_translation)
-            end
+            val.map { |v| demongoize_with_field(fld, v, is_translation) }
           else
             demongoize_with_field(fld, val, is_translation)
           end
@@ -455,7 +461,6 @@ module Mongoid
           # which can be the same across multiple of those unequal hashes.
           tallies[key] ||= 0
           tallies[key] += doc["counts"]
-          tallies
         end
       end
 

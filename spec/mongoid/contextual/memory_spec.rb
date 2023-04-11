@@ -1900,7 +1900,6 @@ describe Mongoid::Contextual::Memory do
     let(:label2) {  Label.new(name: "Atlantic") }
     let(:label3) {  Label.new(name: "Columbia") }
 
-
     let(:band1) { Band.new(origin: "tally", name: "Depeche Mode", years: 30, sales: "1E2", label: label1, genres: genres1) }
     let(:band2) { Band.new(origin: "tally", name: "New Order", years: 30, sales: "2E3", label: label2, genres: genres2) }
     let(:band3) { Band.new(origin: "tally", name: "10,000 Maniacs", years: 30, sales: "1E2", label: label3, genres: genres3) }
@@ -1928,97 +1927,131 @@ describe Mongoid::Contextual::Memory do
       described_class.new(criteria2)
     end
 
-    context "when tallying a string" do
-      let(:tally) do
-        context.tally(:name)
-      end
+    let(:unwind) { false }
 
-      it "returns the correct hash" do
-        expect(tally).to eq("Depeche Mode" => 1, "New Order" => 1, "10,000 Maniacs" => 1)
-      end
-    end
+    shared_examples_for "scalar value examples" do
 
-    context "using an aliased field" do
-      let(:tally) do
-        context.tally(:years)
-      end
-
-      it "returns the correct hash" do
-        expect(tally).to eq(30 => 3)
-      end
-    end
-
-    context "when tallying a demongoizable field" do
-      let(:tally) do
-        context.tally(:sales)
-      end
-
-      it "returns the correct hash" do
-        expect(tally).to eq(BigDecimal("1E2") => 2, BigDecimal("2E3") => 1)
-      end
-    end
-
-    context "when tallying a localized field" do
-      with_default_i18n_configs
-
-      let(:d1) { Dictionary.new(description: 'en1') }
-      let(:d2) { Dictionary.new(description: 'en1') }
-      let(:d3) { Dictionary.new(description: 'en1') }
-      let(:d4) { Dictionary.new(description: 'en2') }
-
-      before do
-        I18n.locale = :en
-        d1
-        d2
-        d3
-        d4
-        I18n.locale = :de
-        d1.description = 'de1'
-        d2.description = 'de1'
-        d3.description = 'de2'
-        d4.description = 'de3'
-        I18n.locale = :en
-      end
-
-      let(:criteria) do
-        Dictionary.all.tap do |crit|
-          crit.documents = [ d1, d2, d3, d4 ]
-        end
-      end
-
-      context "when getting the demongoized field" do
-        let(:tallied) do
-          context.tally(:description)
-        end
-
-        it "returns the translation for the current locale" do
-          expect(tallied).to eq("en1" => 3, "en2" => 1)
-        end
-      end
-
-      context "when getting a specific locale" do
-        let(:tallied) do
-          context.tally("description.de")
-        end
-
-        it "returns the translation for the the specific locale" do
-          expect(tallied).to eq("de1" => 2, "de2" => 1, "de3" => 1)
-        end
-      end
-
-      context "when getting the full hash" do
-        let(:tallied) do
-          context.tally("description_translations")
+      context "when tallying a string" do
+        let(:tally) do
+          context.tally(:name, unwind: unwind)
         end
 
         it "returns the correct hash" do
-          expect(tallied).to eq(
-            {"de" => "de1", "en" => "en1" } => 2,
-            {"de" => "de2", "en" => "en1" } => 1,
-            {"de" => "de3", "en" => "en2" } => 1
-          )
+          expect(tally).to eq("Depeche Mode" => 1, "New Order" => 1, "10,000 Maniacs" => 1)
         end
       end
+
+      context "using an aliased field" do
+        let(:tally) do
+          context.tally(:years, unwind: unwind)
+        end
+
+        it "returns the correct hash" do
+          expect(tally).to eq(30 => 3)
+        end
+      end
+
+      context "when tallying a demongoizable field" do
+        let(:tally) do
+          context.tally(:sales, unwind: unwind)
+        end
+
+        it "returns the correct hash" do
+          expect(tally).to eq(BigDecimal("1E2") => 2, BigDecimal("2E3") => 1)
+        end
+      end
+
+      context "when tallying a localized field" do
+        with_default_i18n_configs
+
+        let(:d1) { Dictionary.new(description: 'en1') }
+        let(:d2) { Dictionary.new(description: 'en1') }
+        let(:d3) { Dictionary.new(description: 'en1') }
+        let(:d4) { Dictionary.new(description: 'en2') }
+
+        before do
+          I18n.locale = :en
+          d1
+          d2
+          d3
+          d4
+          I18n.locale = :de
+          d1.description = 'de1'
+          d2.description = 'de1'
+          d3.description = 'de2'
+          d4.description = 'de3'
+          I18n.locale = :en
+        end
+
+        let(:criteria) do
+          Dictionary.all.tap do |crit|
+            crit.documents = [ d1, d2, d3, d4 ]
+          end
+        end
+
+        context "when getting the demongoized field" do
+          let(:tallied) do
+            context.tally(:description, unwind: unwind)
+          end
+
+          it "returns the translation for the current locale" do
+            expect(tallied).to eq("en1" => 3, "en2" => 1)
+          end
+        end
+
+        context "when getting a specific locale" do
+          let(:tallied) do
+            context.tally("description.de", unwind: unwind)
+          end
+
+          it "returns the translation for the the specific locale" do
+            expect(tallied).to eq("de1" => 2, "de2" => 1, "de3" => 1)
+          end
+        end
+
+        context "when getting the full hash" do
+          let(:tallied) do
+            context.tally("description_translations", unwind: unwind)
+          end
+
+          it "returns the correct hash" do
+            expect(tallied).to eq(
+              {"de" => "de1", "en" => "en1" } => 2,
+              {"de" => "de2", "en" => "en1" } => 1,
+              {"de" => "de3", "en" => "en2" } => 1
+            )
+          end
+        end
+      end
+
+      context "when some keys are missing" do
+
+        let(:criteria) do
+          Band.where(origin: "tally").all.tap do |crit|
+            crit.documents = [ band1, band2, band3 ]
+            3.times{ crit.documents << Band.new(origin: "tally") }
+          end
+        end
+
+        let(:tally) do
+          context.tally(:name, unwind: unwind)
+        end
+
+        it "returns the correct hash" do
+          expect(tally).to eq("Depeche Mode" => 1,
+                              "New Order" => 1,
+                              "10,000 Maniacs" => 1,
+                              nil => 3)
+        end
+      end
+    end
+
+    it_behaves_like 'scalar value examples'
+
+    context 'when :unwind is true' do
+      let(:unwind) { true }
+
+      it_behaves_like 'scalar value examples'
     end
 
     context "when tallying an embedded localized field" do
@@ -2056,7 +2089,7 @@ describe Mongoid::Contextual::Memory do
 
       context "when getting the demongoized field" do
         let(:tallied) do
-          context.tally("addresses.name")
+          context.tally("addresses.name", unwind: unwind)
         end
 
         it "returns the translation for the current locale" do
@@ -2065,11 +2098,21 @@ describe Mongoid::Contextual::Memory do
             [ "en1", "en3" ] => 1,
           )
         end
+
+        context "when :unwind true" do
+          let(:unwind) { true }
+
+          it "returns the correct hash" do
+            expect(tallied).to eq({ "en1" => 2,
+                                    "en2" => 1,
+                                    "en3" => 1 })
+          end
+        end
       end
 
       context "when getting a specific locale" do
         let(:tallied) do
-          context.tally("addresses.name.de")
+          context.tally("addresses.name.de", unwind: unwind)
         end
 
         it "returns the translation for the the specific locale" do
@@ -2078,11 +2121,21 @@ describe Mongoid::Contextual::Memory do
             [ "de1", "de3" ] => 1,
           )
         end
+
+        context "when :unwind true" do
+          let(:unwind) { true }
+
+          it "returns the correct hash" do
+            expect(tallied).to eq({ "de1" => 2,
+                                    "de2" => 1,
+                                    "de3" => 1 })
+          end
+        end
       end
 
       context "when getting the full hash" do
         let(:tallied) do
-          context.tally("addresses.name_translations")
+          context.tally("addresses.name_translations", unwind: unwind)
         end
 
         it "returns the correct hash" do
@@ -2091,12 +2144,22 @@ describe Mongoid::Contextual::Memory do
             [{ "de" => "de1", "en" => "en1" }, { "de" => "de3", "en" => "en3" }] => 1,
           )
         end
+
+        context "when :unwind true" do
+          let(:unwind) { true }
+
+          it "returns the correct hash" do
+            expect(tallied).to eq({ { "de" => "de1", "en" => "en1" } => 2,
+                                    { "de" => "de2", "en" => "en2" } => 1,
+                                    { "de" => "de3", "en" => "en3" } => 1 })
+          end
+        end
       end
     end
 
     context "when tallying an embedded field" do
       let(:tally) do
-        context.tally("label.name")
+        context.tally("label.name", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2107,7 +2170,7 @@ describe Mongoid::Contextual::Memory do
     context "when tallying an element in an embeds_many field" do
 
       let(:tally) do
-        context2.tally("fanatics.age")
+        context2.tally("fanatics.age", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2116,12 +2179,22 @@ describe Mongoid::Contextual::Memory do
           [1, 3] => 1
         )
       end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash" do
+          expect(tally).to eq(1 => 3,
+                              2 => 2,
+                              3 => 1)
+        end
+      end
     end
 
     context "when tallying an embeds_many field" do
 
       let(:tally) do
-        context2.tally("fanatics")
+        context2.tally("fanatics", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2131,12 +2204,21 @@ describe Mongoid::Contextual::Memory do
           fans3 => 1,
         )
       end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash" do
+          exp = [fans1, fans2, fans3].flatten.index_with(1)
+          expect(tally).to eq(exp)
+        end
+      end
     end
 
     context "when tallying a field of type array" do
 
       let(:tally) do
-        context2.tally("genres")
+        context2.tally("genres", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2145,12 +2227,22 @@ describe Mongoid::Contextual::Memory do
           [1, 3] => 1
         )
       end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash" do
+          expect(tally).to eq(1 => 3,
+                              2 => 2,
+                              3 => 1)
+        end
+      end
     end
 
     context "when tallying an element from an array of hashes" do
 
       let(:tally) do
-        context.tally("genres.x")
+        context.tally("genres.x", unwind: unwind)
       end
 
       it "returns the correct hash without the nil keys" do
@@ -2158,6 +2250,16 @@ describe Mongoid::Contextual::Memory do
           [1, 2] => 2,
           [1, 3] => 1
         )
+      end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash" do
+          expect(tally).to eq(1 => 3,
+                              2 => 2,
+                              3 => 1)
+        end
       end
     end
 
@@ -2172,7 +2274,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       let(:tally) do
-        context.tally("genres.x")
+        context.tally("genres.x", unwind: unwind)
       end
 
       it "returns the correct hash without the nil keys" do
@@ -2181,6 +2283,16 @@ describe Mongoid::Contextual::Memory do
           [1, 3] => 1,
           [1, 1] => 1,
         )
+      end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash without the nil keys" do
+          expect(tally).to eq(1 => 5,
+                              2 => 2,
+                              3 => 1)
+        end
       end
     end
 
@@ -2196,7 +2308,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       let(:tally) do
-        context.tally("array")
+        context.tally("array", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2205,12 +2317,22 @@ describe Mongoid::Contextual::Memory do
           [1, 3] => 1
         )
       end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash without the nil keys" do
+          expect(tally).to eq(1 => 2,
+                              2 => 1,
+                              3 => 1)
+        end
+      end
     end
 
     context "when going multiple levels deep in arrays" do
 
       let(:tally) do
-        context.tally("genres.y.z")
+        context.tally("genres.y.z", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2218,13 +2340,23 @@ describe Mongoid::Contextual::Memory do
           [1, 2] => 2,
           [1, 3] => 1
         )
+      end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash without the nil keys" do
+          expect(tally).to eq(1 => 3,
+                              2 => 2,
+                              3 => 1)
+        end
       end
     end
 
     context "when going multiple levels deep in an array" do
 
       let(:tally) do
-        context.tally("genres.y.z")
+        context.tally("genres.y.z", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2232,6 +2364,16 @@ describe Mongoid::Contextual::Memory do
           [1, 2] => 2,
           [1, 3] => 1
         )
+      end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash without the nil keys" do
+          expect(tally).to eq(1 => 3,
+                              2 => 2,
+                              3 => 1)
+        end
       end
     end
 
@@ -2248,7 +2390,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       let(:tally) do
-        context.tally("addresses.code.deepest.array.y.z")
+        context.tally("addresses.code.deepest.array.y.z", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2256,6 +2398,15 @@ describe Mongoid::Contextual::Memory do
           [ [ 1, 2 ] ] => 2,
           [ [ 1, 3 ] ] => 1
         )
+      end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash without the nil keys" do
+          expect(tally).to eq([ 1, 2 ] => 2,
+                              [ 1, 3 ] => 1)
+        end
       end
     end
 
@@ -2283,7 +2434,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       let(:tally) do
-        context.tally("addresses.code.deepest.array.y.z")
+        context.tally("addresses.code.deepest.array.y.z", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2292,28 +2443,14 @@ describe Mongoid::Contextual::Memory do
           [ [ 1, 3 ], [ 1, 3 ] ] => 1
         )
       end
-    end
 
-    context "when some keys are missing" do
+      context "when :unwind true" do
+        let(:unwind) { true }
 
-      let(:criteria) do
-        Band.where(origin: "tally").all.tap do |crit|
-          crit.documents = [ band1, band2, band3 ]
-          3.times{ crit.documents << Band.new(origin: "tally") }
+        it "returns the correct hash without the nil keys" do
+          expect(tally).to eq([ 1, 2 ] => 4,
+                              [ 1, 3 ] => 2)
         end
-      end
-
-      let(:tally) do
-        context.tally(:name)
-      end
-
-      it "returns the correct hash" do
-        expect(tally).to eq(
-          "Depeche Mode" => 1,
-          "New Order" => 1,
-          "10,000 Maniacs" => 1,
-          nil => 3
-        )
       end
     end
 
@@ -2329,7 +2466,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       let(:tally) do
-        context.tally("name.translations.language")
+        context.tally("name.translations.language", unwind: unwind)
       end
 
       it "returns the correct hash" do
@@ -2337,6 +2474,16 @@ describe Mongoid::Contextual::Memory do
           [1, 2] => 2,
           [1, 3] => 1
         )
+      end
+
+      context "when :unwind true" do
+        let(:unwind) { true }
+
+        it "returns the correct hash without the nil keys" do
+          expect(tally).to eq(1 => 3,
+                              2 => 2,
+                              3 => 1)
+        end
       end
     end
   end

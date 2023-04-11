@@ -75,16 +75,20 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 
 #### Additions
 
+- ✅ [MONGOID-5556](https://jira.mongodb.org/browse/MONGOID-5556) - `Criteria#tally` `:unwind` arg to splat array results.
+- More to come soon!
+
+#### Best Practices
+
 - ✅ [MONGOID-5572](https://jira.mongodb.org/browse/MONGOID-5572) - RSpec: Use expectation syntax, enforced with RSpec config setting.
 - ✅ [MONGOID-5570](https://jira.mongodb.org/browse/MONGOID-5570) - Code Docs: Ensure 100% documentation coverage, enforced with Rubocop.
 - ✅ [MONGOID-5564](https://jira.mongodb.org/browse/MONGOID-5564) - Code Docs: Use full namespaces in docs.
-- More to come soon!
 
 #### Removals
 
-- ✅ Remove Evergreen CI and replace with Github Actions (publicly visible).
-- ✅ Remove MRSS submodules and other MongoDB Inc. corporate baloney.
-- ✅ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than MongoDB 4.4, Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
+- 🙅🏾‍♀️ Remove Evergreen CI and replace with Github Actions which is publicly visible and auto-runs on all contributor patches.
+- 🙅🏼 Remove MRSS submodules and other MongoDB Inc. corporate baloney.
+- 🙅🏻‍♂️️ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than MongoDB 4.4, Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
 
 ## Documentation
 

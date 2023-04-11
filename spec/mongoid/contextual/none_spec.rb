@@ -78,6 +78,10 @@ describe Mongoid::Contextual::None do
     it "returns an empty hash" do
       expect(context.tally(:id)).to eq({})
     end
+
+    it "ignores :unwind arg" do
+      expect(context.tally(:id, unwind: true)).to eq({})
+    end
   end
 
   describe "#first" do
