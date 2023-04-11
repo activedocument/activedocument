@@ -1,6 +1,6 @@
-***********
-Mongoid 9.0
-***********
+*****************
+Mongoid Ultra 9.0
+*****************
 
 .. default-domain:: mongodb
 
@@ -27,7 +27,7 @@ Mongoid 9 drops support for:
 - Rails 5.2
 
 Mongoid 9 requires minimum versions as follows:
-- MongoDB Server 4.2 or newer
+- MongoDB Server 4.4 or newer
 - Ruby 2.7 or newer
 - JRuby 9.5 or newer
 - Rails 6.0 or newer
@@ -35,7 +35,7 @@ Mongoid 9 requires minimum versions as follows:
 In addition, Mongoid 9 deprecates support for the following versions.
 Users are encouraged to upgrade to newer versions after upgrading
 to Mongoid 9.
-- MongoDB Server 4.2 and 4.4
+- MongoDB Server 4.4
 - Ruby 2.7
 - Rails 6.0
 

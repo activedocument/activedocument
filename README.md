@@ -26,7 +26,7 @@ gem 'mongoid-ultra'
 - Rails 6.0+
 - Ruby (MRI) 2.7+
 - JRuby 9.4+
-- MongoDB server 4.2+
+- MongoDB server 4.4+
 
 Version support may differ from MongoDB Mongoid. As a general policy, Mongoid Ultra will drop support
 for end-of-life (EOL) versions fairly soon after EOL. We will target to have support for new Ruby and Rails
@@ -84,7 +84,7 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 
 - ✅ Remove Evergreen CI and replace with Github Actions (publicly visible).
 - ✅ Remove MRSS submodules and other MongoDB Inc. corporate baloney.
-- ✅ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
+- ✅ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than MongoDB 4.4, Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
 
 ## Documentation
 

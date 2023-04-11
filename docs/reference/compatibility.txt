@@ -263,7 +263,7 @@ and will be removed in a next version.
      - |checkmark|
      - |checkmark|
      - D
-     - D
+     -
      -
      -
      -
