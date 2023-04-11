@@ -75,7 +75,8 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 
 #### Additions
 
-- ✅ [MONGOID-5556](https://jira.mongodb.org/browse/MONGOID-5556) - `Criteria#tally` `:unwind` arg to splat array results.
+- ✅ [MONGOID-5391](https://jira.mongodb.org/browse/MONGOID-5391) - Add `Criteria#pluck_each` high-performance iterator method.
+- ✅ [MONGOID-5556](https://jira.mongodb.org/browse/MONGOID-5556) - Add `Criteria#tally` `:unwind` arg to splat array results.
 - More to come soon!
 
 #### Best Practices
