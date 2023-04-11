@@ -79,6 +79,10 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 - ✅ [MONGOID-5556](https://jira.mongodb.org/browse/MONGOID-5556) - Add `Criteria#tally` `:unwind` arg to splat array results.
 - More to come soon!
 
+#### Bug Fixes
+
+- 🐞 [MONGOID-5559](https://jira.mongodb.org/browse/MONGOID-5559) - `BigDecimal` should correctly type-cast to `Time`.
+
 #### Best Practices
 
 - ✅ [MONGOID-5572](https://jira.mongodb.org/browse/MONGOID-5572) - RSpec: Use expectation syntax, enforced with RSpec config setting.
