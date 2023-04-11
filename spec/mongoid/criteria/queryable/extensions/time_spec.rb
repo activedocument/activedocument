@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "lite_spec_helper"
+require "spec_helper"
 
 describe Time do
 

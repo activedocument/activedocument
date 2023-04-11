@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'mongo'
 require 'singleton'
 
 class SpecConfig

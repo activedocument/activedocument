@@ -1,6 +1,46 @@
 # frozen_string_literal: true
 
-require 'lite_spec_helper'
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'shared', 'lib'))
+
+autoload :Timecop, 'timecop'
+require 'support/spec_config'
+require 'mrss/lite_constraints'
+require 'mrss/session_registry'
+Mrss.patch_mongo_for_session_registry
+
+require 'mongoid'
+
+if SpecConfig.instance.mri? && !SpecConfig.instance.windows?
+  require 'timeout_interrupt'
+else
+  require 'timeout'
+  TimeoutInterrupt = Timeout
+end
+
+RSpec.configure do |config|
+  config.expect_with(:rspec) do |c|
+    c.syntax = [:should, :expect]
+  end
+
+  if SpecConfig.instance.ci?
+    config.add_formatter(RSpec::Core::Formatters::JsonFormatter, File.join(File.dirname(__FILE__), '../tmp/rspec.json'))
+  end
+
+  if SpecConfig.instance.ci? && !%w(1 true yes).include?(ENV['INTERACTIVE']&.downcase)
+    config.around(:each) do |example|
+      TimeoutInterrupt.timeout(30) do
+        example.run
+      end
+    end
+  end
+
+  config.extend(Mrss::LiteConstraints)
+end
+
+# require all shared examples
+Dir['./spec/support/shared/*.rb'].sort.each { |file| require file }
 
 MODELS = File.join(File.dirname(__FILE__), "support/models")
 $LOAD_PATH.unshift(MODELS)
@@ -21,11 +61,11 @@ end
 # database names for each process running since we do not have transactions
 # and want a clean slate before each spec run.
 def database_id
-  "mongoid_test"
+  'mongoid_test'
 end
 
 def database_id_alt
-  "mongoid_test_alt"
+  'mongoid_test_alt'
 end
 
 begin
