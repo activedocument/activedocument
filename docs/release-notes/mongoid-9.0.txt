@@ -74,6 +74,9 @@ Deprecated functionality removed
 
 The following previously deprecated functionality is now removed:
 
+- ``Mongoid::QueryCache`` has been removed. Please replace it 1-for-1 with ``Mongo::QueryCache``.
+  The method ``Mongoid::QueryCache#clear_cache`` should be replaced with ``Mongo::QueryCache#clear``.
+  All other methods and submodules are identically named.
 - ``Document#as_json :compact`` option is removed. Please call ```#compact``
   on the returned ``Hash`` object instead.
 - ``Criteria#geo_near`` is removed as MongoDB server versions 4.2
