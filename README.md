@@ -2,8 +2,8 @@
 
 # Mongoid: Ultra Edition
 
-[![Build Status][build-img]][build-url]
-[![Gem Version][rubygems-img]][rubygems-url]
+[![Build Status][build-img]][build-url]👨‍🔧
+[![Gem Version][rubygems-img]][rubygems-url]🔜
 [![License][license-img]][license-url]
 
 The no-baloney fork of Mongoid. Made by the community, for the community.
