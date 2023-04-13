@@ -7,7 +7,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
   NewCops: enable
   Exclude:
     - 'perf/**/*'
@@ -15,12 +15,12 @@ AllCops:
     - 'test-apps/**/*'
     - 'vendor/**/*'
 
+Gemspec:
+  Enabled: true
+
 # -----------------------------------
 # TODO: Enable and fix the cops below
 # -----------------------------------
-
-Gemspec:
-  Enabled: false
 
 Layout:
   Enabled: false

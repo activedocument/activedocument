@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
 
   s.metadata = {
+    'rubygems_mfa_required' => 'true',
     'bug_tracker_uri' => 'https://github.com/tablecheck/mongoid/issues',
     'changelog_uri' => 'https://github.com/tablecheck/mongoid/releases',
     'documentation_uri' => 'https://www.mongodb.com/docs/mongoid/',
@@ -40,6 +41,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency("bson", ['>= 4.14.0', '< 5.0.0'])
 
   s.files        = Dir.glob("lib/**/*") + %w[LICENSE README.md Rakefile]
-  s.test_files   = Dir.glob("spec/**/*")
   s.require_path = 'lib'
 end
