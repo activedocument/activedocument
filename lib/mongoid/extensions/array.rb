@@ -24,7 +24,7 @@ module Mongoid
       #
       # @return [ Array ] The array of args.
       def __find_args__
-        flat_map{ |a| a.__find_args__ }.uniq{ |a| a.to_s }
+        flat_map { |a| a.__find_args__ }.uniq { |a| a.to_s }
       end
 
       # Mongoize the array into an array of object ids.

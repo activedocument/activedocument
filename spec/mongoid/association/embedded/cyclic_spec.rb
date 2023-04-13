@@ -63,10 +63,6 @@ describe Mongoid::Association::Embedded::Cyclic do
           recursively_embeds_many
 
           field :name, type: String
-
-          def is_root?
-            parent_node.nil?
-          end
         end
       end
 

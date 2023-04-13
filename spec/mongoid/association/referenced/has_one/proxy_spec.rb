@@ -1135,7 +1135,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       it "clearing the child raises no error" do
-        expect{ clear_child }.not_to raise_error
+        expect { clear_child }.not_to raise_error
       end
     end
   end

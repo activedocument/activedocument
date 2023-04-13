@@ -313,7 +313,7 @@ module Mongoid
       # @param [ Mongoid::Criteria | Proc ] value The default scope value.
       def process_default_scope(value)
         if existing = default_scoping
-          ->{ existing.call.merge(value.to_proc.call) }
+          -> { existing.call.merge(value.to_proc.call) }
         else
           value.to_proc
         end

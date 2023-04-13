@@ -163,7 +163,7 @@ module Mongoid
               return nil if object.nil?
               case object
               when ::Array
-                object.map{ |obj| evolve(obj) }
+                object.map { |obj| evolve(obj) }
               when ::Range
                 object.__evolve_range__
               else

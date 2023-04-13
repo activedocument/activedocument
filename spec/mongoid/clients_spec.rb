@@ -92,7 +92,7 @@ describe Mongoid::Clients do
       context "when overriding with a proc" do
 
         before do
-          Band.store_in(collection: ->{ "artists" })
+          Band.store_in(collection: -> { "artists" })
         end
 
         let(:instance_collection) do
@@ -320,7 +320,7 @@ describe Mongoid::Clients do
       context "when overriding with a proc" do
 
         before do
-          Band.store_in(collection: ->{ "artists" })
+          Band.store_in(collection: -> { "artists" })
         end
 
         it_behaves_like "an overridden collection name at the class level"

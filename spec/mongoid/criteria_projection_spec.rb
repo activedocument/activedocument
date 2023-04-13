@@ -212,7 +212,7 @@ describe Mongoid::Criteria do
         end
 
         it 'raises an Mongoid::Errors::AttributeNotLoaded when attempting to access the field' do
-          expect{dictionary.description}.to raise_error Mongoid::Errors::AttributeNotLoaded
+          expect {dictionary.description}.to raise_error Mongoid::Errors::AttributeNotLoaded
         end
       end
 

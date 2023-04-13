@@ -223,7 +223,7 @@ module Mongoid
           inverse_class.set_callback(
               :persist_parent,
               :after,
-              if: ->(doc){ doc._syncable?(assoc) }
+              if: ->(doc) { doc._syncable?(assoc) }
           ) do |doc|
             doc.update_inverse_keys(assoc)
           end

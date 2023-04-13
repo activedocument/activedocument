@@ -2,6 +2,7 @@
 
 require 'i18n'
 
+# rubocop:disable RSpec/BeforeAfterAll
 module Constraints
   RAILS_VERSION = ActiveSupport.version.to_s.split('.')[0..1].join('.').freeze
 
@@ -284,3 +285,4 @@ module Constraints
     end
   end
 end
+# rubocop:enable RSpec/BeforeAfterAll

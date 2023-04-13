@@ -6,7 +6,7 @@ class Shield
 
   field :after_find_player
   field :after_initialize_player
-  field :after_default_player, default: ->{ players.first&._id }
+  field :after_default_player, default: -> { players.first&._id }
 
   after_find do |doc|
     doc.after_find_player = players.first&._id

@@ -227,7 +227,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
         end
 
         before do
-          Exhibitor.default_scope ->{ criteria }
+          Exhibitor.default_scope -> { criteria }
           exhibition = Exhibition.create!
           exhibition.exhibitors << exhibitorPresent
           exhibition.exhibitors << exhibitorRemoved

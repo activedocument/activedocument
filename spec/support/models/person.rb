@@ -20,8 +20,8 @@ class Person
   field :map, type: Hash
   field :map_with_default, type: Hash, default: {}
   field :score, type: Integer
-  field :blood_alcohol_content, type: Float, default: ->{ 0.0 }
-  field :last_drink_taken_at, type: Date, default: ->{ 1.day.ago.in_time_zone("Alaska") }
+  field :blood_alcohol_content, type: Float, default: -> { 0.0 }
+  field :last_drink_taken_at, type: Date, default: -> { 1.day.ago.in_time_zone("Alaska") }
   field :ssn
   field :owner_id, type: Integer
   field :security_code
@@ -133,9 +133,9 @@ class Person
   accepts_nested_attributes_for :quiz
   accepts_nested_attributes_for :services, allow_destroy: true
 
-  scope :minor, ->{ where(:age.lt => 18) }
-  scope :without_ssn, ->{ without(:ssn) }
-  scope :search, ->(query){ any_of({ title: query }) }
+  scope :minor, -> { where(:age.lt => 18) }
+  scope :without_ssn, -> { without(:ssn) }
+  scope :search, ->(query) { any_of({ title: query }) }
 
   def self.older_than(age:)
     where(:age.gt => age)

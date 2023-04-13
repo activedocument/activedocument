@@ -3,7 +3,7 @@
 class CountryCode
   include Mongoid::Document
 
-  field :_id, type: Integer, overwrite: true, default: ->{ code }
+  field :_id, type: Integer, overwrite: true, default: -> { code }
 
   field :code, type: Integer
   field :iso, as: :iso_alpha2_code

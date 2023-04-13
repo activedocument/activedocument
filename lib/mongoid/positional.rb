@@ -34,7 +34,7 @@ module Mongoid
       if selector.size == 1 || selector.values.any? { |val| val.nil? }
         return operations
       end
-      keys = selector.keys.map{ |m| m.sub('._id','') } - ['_id']
+      keys = selector.keys.map { |m| m.sub('._id','') } - ['_id']
       keys = keys.sort_by { |s| s.length*-1 }
       process_operations(keys, operations, processed)
     end

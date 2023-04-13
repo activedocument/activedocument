@@ -51,7 +51,7 @@ module Mongoid
               # we will include documents from the documents passed to this method.
               ds = docs
               if assoc.parent_inclusions.length > 0
-                ds = assoc.parent_inclusions.map{ |p| docs_map[p].to_a }.flatten
+                ds = assoc.parent_inclusions.map { |p| docs_map[p].to_a }.flatten
               end
 
               res = assoc.relation.eager_loader([assoc], ds).run

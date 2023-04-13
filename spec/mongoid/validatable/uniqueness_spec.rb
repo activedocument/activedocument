@@ -530,7 +530,7 @@ describe Mongoid::Validatable::UniquenessValidator do
 
           before do
             Dictionary.validates_uniqueness_of :name
-            Dictionary.default_scope(->{ Dictionary.where(year: 1990) })
+            Dictionary.default_scope(-> { Dictionary.where(year: 1990) })
           end
 
           after do
@@ -1599,7 +1599,7 @@ describe Mongoid::Validatable::UniquenessValidator do
       context "when conditions is set" do
 
         before do
-          Band.validates_uniqueness_of :name, conditions: ->{ Band.where(active: true) }
+          Band.validates_uniqueness_of :name, conditions: -> { Band.where(active: true) }
         end
 
         after do

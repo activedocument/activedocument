@@ -60,7 +60,7 @@ describe Mongoid::Config::Environment do
 
   describe "#load_yaml" do
     let(:path) { 'mongoid.yml' }
-    let(:environment) {}
+    let(:environment){}
 
     before do
       require "support/rails_mock"

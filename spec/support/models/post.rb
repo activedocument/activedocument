@@ -7,7 +7,7 @@ class Post
   field :title, type: String
   field :content, type: String
   field :rating, type: Integer
-  field :person_title, type: String, default: ->{ person.title if ivar(:person) }
+  field :person_title, type: String, default: -> { person.title if ivar(:person) }
 
   attr_accessor :before_add_called, :after_add_called, :before_remove_called, :after_remove_called
 
@@ -22,9 +22,9 @@ class Post
   belongs_to :posteable, polymorphic: true
   accepts_nested_attributes_for :posteable, autosave: true
 
-  scope :recent, ->{ where(created_at: { "$lt" => Time.now, "$gt" => 30.days.ago }) }
-  scope :posting, ->{ where(:content.in => [ "Posting" ]) }
-  scope :open, ->{ where(title: "open") }
+  scope :recent, -> { where(created_at: { "$lt" => Time.now, "$gt" => 30.days.ago }) }
+  scope :posting, -> { where(:content.in => [ "Posting" ]) }
+  scope :open, -> { where(title: "open") }
 
   validates_format_of :title, without: /\$\$\$/
 

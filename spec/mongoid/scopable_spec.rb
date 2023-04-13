@@ -13,7 +13,7 @@ describe Mongoid::Scopable do
       end
 
       before do
-        Band.default_scope ->{ criteria }
+        Band.default_scope -> { criteria }
       end
 
       after do
@@ -95,19 +95,19 @@ describe Mongoid::Scopable do
     context "when there is more then one default_scope" do
 
       let(:criteria) do
-        ->{ Band.where(name: "Depeche Mode") }
+        -> { Band.where(name: "Depeche Mode") }
       end
 
       let(:additional_criteria) do
-        ->{ Band.where(origin: "England") }
+        -> { Band.where(origin: "England") }
       end
 
       let(:proc_criteria) do
-        ->{ Band.where(active: true) }
+        -> { Band.where(active: true) }
       end
 
       let(:rand_criteria) do
-        ->{ Band.gt(likes: Mongo::Monitoring.next_operation_id) }
+        -> { Band.gt(likes: Mongo::Monitoring.next_operation_id) }
       end
 
       before do
@@ -160,7 +160,7 @@ describe Mongoid::Scopable do
       end
 
       before do
-        Band.default_scope ->{ criteria }
+        Band.default_scope -> { criteria }
       end
 
       after do
@@ -195,7 +195,7 @@ describe Mongoid::Scopable do
       end
 
       before do
-        Band.default_scope ->{ criteria }
+        Band.default_scope -> { criteria }
       end
 
       after do
@@ -233,7 +233,7 @@ describe Mongoid::Scopable do
       end
 
       before do
-        Band.default_scope ->{ criteria }
+        Band.default_scope -> { criteria }
       end
 
       after do
@@ -344,7 +344,7 @@ describe Mongoid::Scopable do
       context 'when a collation is defined on the criteria' do
 
         before do
-          Band.scope(:tests, ->{ Band.where(name: 'TESTING').collation(locale: 'en_US', strength: 2) })
+          Band.scope(:tests, -> { Band.where(name: 'TESTING').collation(locale: 'en_US', strength: 2) })
           Band.create!(name: 'testing')
         end
 
@@ -356,7 +356,7 @@ describe Mongoid::Scopable do
       context "when a block is provided" do
 
         before do
-          Band.scope(:active, ->{ Band.where(active: true) }) do
+          Band.scope(:active, -> { Band.where(active: true) }) do
             def add_origin
               tap { |c| c.selector[:origin] = "Deutschland" }
             end
@@ -384,7 +384,7 @@ describe Mongoid::Scopable do
         before do
           Record.scope(
             :tool,
-            ->{ Record.where(:name.in => [ "undertow", "aenima", "lateralus" ]) }
+            -> { Record.where(:name.in => [ "undertow", "aenima", "lateralus" ]) }
           )
         end
 
@@ -418,7 +418,7 @@ describe Mongoid::Scopable do
       context "when no block is provided" do
 
         before do
-          Band.scope(:active, ->{ Band.where(active: true).skip(10) })
+          Band.scope(:active, -> { Band.where(active: true).skip(10) })
         end
 
         after do
@@ -456,7 +456,7 @@ describe Mongoid::Scopable do
           context "when chained to another scope" do
 
             before do
-              Band.scope(:english, ->{ Band.where(origin: "England") })
+              Band.scope(:english, -> { Band.where(origin: "England") })
             end
 
             after do
@@ -534,8 +534,8 @@ describe Mongoid::Scopable do
 
           it "raises an exception" do
             expect {
-              Band.scope(:active, ->{ Band.where(active: true) })
-              Band.scope(:active, ->{ Band.where(active: true) })
+              Band.scope(:active, -> { Band.where(active: true) })
+              Band.scope(:active, -> { Band.where(active: true) })
             }.to raise_error(Mongoid::Errors::ScopeOverwrite)
           end
         end
@@ -551,8 +551,8 @@ describe Mongoid::Scopable do
           end
 
           it "raises no exception" do
-            Band.scope(:active, ->{ Band.where(active: true) })
-            Band.scope(:active, ->{ Band.where(active: true) })
+            Band.scope(:active, -> { Band.where(active: true) })
+            Band.scope(:active, -> { Band.where(active: true) })
           end
         end
       end
@@ -580,7 +580,7 @@ describe Mongoid::Scopable do
 
         context "when without arguments" do
           before do
-            Band.scope(:active, ->{ Band.where(active: true) }) do
+            Band.scope(:active, -> { Band.where(active: true) }) do
               def add_origin
                 tap { |c| c.selector[:origin] = "Deutschland" }
               end
@@ -613,7 +613,7 @@ describe Mongoid::Scopable do
         context 'when there is no default scope' do
 
           before do
-            Simple.scope(:nothing, ->{ none })
+            Simple.scope(:nothing, -> { none })
           end
 
           it 'returns no results' do
@@ -628,8 +628,8 @@ describe Mongoid::Scopable do
           end
 
           before do
-            Simple.default_scope ->{ criteria }
-            Simple.scope(:nothing, ->{ none })
+            Simple.default_scope -> { criteria }
+            Simple.scope(:nothing, -> { none })
           end
 
           after do
@@ -646,7 +646,7 @@ describe Mongoid::Scopable do
       context "when no block is provided" do
 
         before do
-          Band.scope(:active, ->{ Band.where(active: true).skip(10) })
+          Band.scope(:active, -> { Band.where(active: true).skip(10) })
           Band.scope(:named_by, ->(name) { Band.where(name: name) if name })
         end
 
@@ -693,7 +693,7 @@ describe Mongoid::Scopable do
           context "when chained to another scope" do
 
             before do
-              Band.scope(:english, ->{ Band.where(origin: "England") })
+              Band.scope(:english, -> { Band.where(origin: "England") })
             end
 
             after do
@@ -823,8 +823,8 @@ describe Mongoid::Scopable do
 
           it "raises an exception" do
             expect {
-              Band.scope(:active, ->{ Band.where(active: true) })
-              Band.scope(:active, ->{ Band.where(active: true) })
+              Band.scope(:active, -> { Band.where(active: true) })
+              Band.scope(:active, -> { Band.where(active: true) })
             }.to raise_error(Mongoid::Errors::ScopeOverwrite)
           end
         end
@@ -840,8 +840,8 @@ describe Mongoid::Scopable do
           end
 
           it "raises no exception" do
-            Band.scope(:active, ->{ Band.where(active: true) })
-            Band.scope(:active, ->{ Band.where(active: true) })
+            Band.scope(:active, -> { Band.where(active: true) })
+            Band.scope(:active, -> { Band.where(active: true) })
           end
         end
       end
@@ -861,8 +861,8 @@ describe Mongoid::Scopable do
       context "when both scopes are or queries" do
 
         before do
-          Band.scope(:xxx, ->{ Band.any_of({ :aaa.gt => 0 }, { :bbb.gt => 0 }) })
-          Band.scope(:yyy, ->{ Band.any_of({ :ccc => nil }, { :ccc.gt => 1 }) })
+          Band.scope(:xxx, -> { Band.any_of({ :aaa.gt => 0 }, { :bbb.gt => 0 }) })
+          Band.scope(:yyy, -> { Band.any_of({ :ccc => nil }, { :ccc.gt => 1 }) })
         end
 
         after do
@@ -1014,7 +1014,7 @@ describe Mongoid::Scopable do
       end
 
       before do
-        Band.default_scope ->{ criteria }
+        Band.default_scope -> { criteria }
       end
 
       after do
@@ -1049,7 +1049,7 @@ describe Mongoid::Scopable do
     end
 
     before do
-      Band.default_scope ->{ criteria }
+      Band.default_scope -> { criteria }
     end
 
     after do
@@ -1094,7 +1094,7 @@ describe Mongoid::Scopable do
         context "when the scope is created dynamically" do
 
           before do
-            Band.scope(:active, ->{ Band.where(active: true) })
+            Band.scope(:active, -> { Band.where(active: true) })
           end
 
           after do
@@ -1138,7 +1138,7 @@ describe Mongoid::Scopable do
       context "when a named scope is called in the block" do
 
         before do
-          Band.scope(:skipped, ->{ Band.skip(10) })
+          Band.scope(:skipped, -> { Band.skip(10) })
         end
 
         after do
@@ -1164,7 +1164,7 @@ describe Mongoid::Scopable do
     end
 
     before do
-      Band.default_scope ->{ criteria }
+      Band.default_scope -> { criteria }
     end
 
     after do

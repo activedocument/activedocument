@@ -13,7 +13,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       before do
-        Band.default_scope ->{ scope }
+        Band.default_scope -> { scope }
       end
 
       after do
@@ -42,7 +42,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       before do
-        Band.default_scope ->{ scope }
+        Band.default_scope -> { scope }
       end
 
       after do
@@ -71,7 +71,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       before do
-        Band.default_scope ->{ scope }
+        Band.default_scope -> { scope }
       end
 
       after do
@@ -212,7 +212,7 @@ describe Mongoid::Criteria::Scopable do
     context 'when model has default_scope' do
 
       before do
-        Band.default_scope ->{ Band.where(active: true).includes(:records) }
+        Band.default_scope -> { Band.where(active: true).includes(:records) }
       end
 
       after do
@@ -370,7 +370,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       before do
-        Band.default_scope ->{ criteria }
+        Band.default_scope -> { criteria }
       end
 
       after do
@@ -447,7 +447,7 @@ describe Mongoid::Criteria::Scopable do
     end
 
     before do
-      Band.default_scope ->{ criteria }
+      Band.default_scope -> { criteria }
     end
 
     after do
@@ -499,7 +499,7 @@ describe Mongoid::Criteria::Scopable do
       context "when a named scope is called in the block" do
 
         before do
-          Band.scope(:skipped, ->{ Band.skip(10) })
+          Band.scope(:skipped, -> { Band.skip(10) })
         end
 
         after do

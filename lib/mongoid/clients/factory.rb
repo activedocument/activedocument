@@ -110,7 +110,7 @@ module Mongoid
           end
           options[:wrapping_libraries] = wrap_lib
         end
-        options.reject{ |k, _v| k == :hosts }.to_hash.symbolize_keys!
+        options.reject { |k, _v| k == :hosts }.to_hash.symbolize_keys!
       end
     end
   end

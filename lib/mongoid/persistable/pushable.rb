@@ -55,7 +55,7 @@ module Mongoid
               attributes[field]
             end
             values = [ value ].flatten(1)
-            values.each{ |val| existing.push(val) }
+            values.each { |val| existing.push(val) }
             ops[atomic_attribute_name(field)] = { "$each" => values }
           end
           { "$push" => ops }

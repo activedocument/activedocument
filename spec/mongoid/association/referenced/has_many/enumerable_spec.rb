@@ -872,11 +872,11 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     context "when setting a value on the matching document" do
 
       before do
-        enumerable.detect{ |post| post.title = "test" }.rating = 10
+        enumerable.detect { |post| post.title = "test" }.rating = 10
       end
 
       it "sets the value on the instance" do
-        expect(enumerable.detect{ |post| post.title = "test" }.rating).to eq(10)
+        expect(enumerable.detect { |post| post.title = "test" }.rating).to eq(10)
       end
     end
   end

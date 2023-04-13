@@ -231,7 +231,7 @@ describe Mongoid::Contextual::Mongo do
 
       before do
         5.times { Band.create! }
-        Band.default_scope ->{ criteria }
+        Band.default_scope -> { criteria }
       end
 
       after do

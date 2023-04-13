@@ -42,7 +42,7 @@ describe Mongoid::Association::Nested::One do
     context "when attributes are rejectable using a proc" do
 
       let(:options) do
-        { reject_if: ->(attrs){ attrs[:first_name].blank? } }
+        { reject_if: ->(attrs) { attrs[:first_name].blank? } }
       end
 
       let(:builder) do
@@ -188,7 +188,7 @@ describe Mongoid::Association::Nested::One do
     context "when the proc is provided" do
 
       let(:options) do
-        { reject_if: ->(attrs){ attrs[:first_name].blank? } }
+        { reject_if: ->(attrs) { attrs[:first_name].blank? } }
       end
 
       context "when the proc matches" do

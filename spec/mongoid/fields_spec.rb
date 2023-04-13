@@ -964,7 +964,7 @@ describe Mongoid::Fields do
             Person.field(
               :generated_testing,
               type: Float,
-              default: ->{ Time.now.to_f },
+              default: -> { Time.now.to_f },
               overwrite: true
             )
           end
@@ -987,7 +987,7 @@ describe Mongoid::Fields do
             Person.field(
               :rank,
               type: Integer,
-              default: ->{ title? ? 1 : 2 },
+              default: -> { title? ? 1 : 2 },
               overwrite: true
             )
           end
@@ -1240,7 +1240,7 @@ describe Mongoid::Fields do
     context "custom options" do
 
       let(:handler) do
-        proc {}
+        proc{}
       end
 
       before do

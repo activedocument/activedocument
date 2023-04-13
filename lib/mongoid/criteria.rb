@@ -185,7 +185,7 @@ module Mongoid
     # @return [ Array<String> ] The fields.
     def field_list
       if options[:fields]
-        options[:fields].keys.reject{ |key| key == klass.discriminator_key }
+        options[:fields].keys.reject { |key| key == klass.discriminator_key }
       else
         []
       end
@@ -360,7 +360,7 @@ module Mongoid
     #
     # @return [ Proc ] The wrapped criteria.
     def to_proc
-      ->{ self }
+      -> { self }
     end
 
     # Adds a criterion to the +Criteria+ that specifies a type or an Array of

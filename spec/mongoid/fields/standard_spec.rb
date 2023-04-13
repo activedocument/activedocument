@@ -36,7 +36,7 @@ describe Mongoid::Fields::Standard do
           let(:field) do
             described_class.new(
               :test,
-              default: ->{ "testing" },
+              default: -> { "testing" },
               pre_processed: true,
               klass: FieldTest,
               type: String
@@ -53,7 +53,7 @@ describe Mongoid::Fields::Standard do
           let(:field) do
             described_class.new(
               :test,
-              default: ->{ "testing" },
+              default: -> { "testing" },
               klass: FieldTest,
               type: String
             )

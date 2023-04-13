@@ -9,7 +9,7 @@ module Mongoid
   #   Mongoid::RawValue("Beagle")
   #
   # @return [ Mongoid::RawValue ] The object.
-  def RawValue(*args)
+  def RawValue(*args) # rubocop:disable Naming/MethodName
     RawValue.new(*args)
   end
 

@@ -4,7 +4,7 @@ class Name
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic
 
-  field :_id, type: String, overwrite: true, default: ->{
+  field :_id, type: String, overwrite: true, default: -> {
     "#{first_name}-#{last_name}"
   }
 

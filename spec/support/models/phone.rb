@@ -3,7 +3,7 @@
 class Phone
   include Mongoid::Document
 
-  field :_id, type: String, overwrite: true, default: ->{ number }
+  field :_id, type: String, overwrite: true, default: -> { number }
   field :number
   field :ext, as: :extension
   field :landline, type: Boolean

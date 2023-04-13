@@ -295,7 +295,7 @@ describe Mongoid::Attributes::Nested do
           before do
             Person.send(:undef_method, :name_attributes=)
             Person.accepts_nested_attributes_for \
-              :name, reject_if: ->(attrs){ attrs[:first_name].blank? }
+              :name, reject_if: ->(attrs) { attrs[:first_name].blank? }
           end
 
           after do
@@ -1886,7 +1886,7 @@ describe Mongoid::Attributes::Nested do
             before do
               Person.send(:undef_method, :addresses_attributes=)
               Person.accepts_nested_attributes_for \
-                :addresses, reject_if: ->(attrs){ attrs["street"].blank? }
+                :addresses, reject_if: ->(attrs) { attrs["street"].blank? }
             end
 
             after do
@@ -2236,7 +2236,7 @@ describe Mongoid::Attributes::Nested do
           before do
             Person.send(:undef_method, :game_attributes=)
             Person.accepts_nested_attributes_for \
-              :game, reject_if: ->(attrs){ attrs[:name].blank? }
+              :game, reject_if: ->(attrs) { attrs[:name].blank? }
           end
 
           after do
@@ -3347,7 +3347,7 @@ describe Mongoid::Attributes::Nested do
             before do
               Person.send(:undef_method, :posts_attributes=)
               Person.accepts_nested_attributes_for \
-                :posts, reject_if: ->(attrs){ attrs["title"].blank? }
+                :posts, reject_if: ->(attrs) { attrs["title"].blank? }
             end
 
             after do
@@ -4013,7 +4013,7 @@ describe Mongoid::Attributes::Nested do
             before do
               Person.send(:undef_method, :preferences_attributes=)
               Person.accepts_nested_attributes_for \
-                :preferences, reject_if: ->(attrs){ attrs["name"].blank? }
+                :preferences, reject_if: ->(attrs) { attrs["name"].blank? }
             end
 
             after do
@@ -4872,7 +4872,7 @@ describe Mongoid::Attributes::Nested do
           end
 
           it "the update raises an error" do
-            expect{ error_raising_update }.to raise_error(Mongoid::Errors::Validations)
+            expect { error_raising_update }.to raise_error(Mongoid::Errors::Validations)
           end
 
           it "the update does not occur" do

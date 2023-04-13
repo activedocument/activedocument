@@ -36,7 +36,7 @@ describe Mongoid::Document do
     let(:new_klass) do
       Class.new do
         class << self; attr_accessor :name; end
-      end.tap{|new_klass| new_klass.name = new_klass_name}
+      end.tap {|new_klass| new_klass.name = new_klass_name}
     end
 
     let(:new_model) do
@@ -47,7 +47,7 @@ describe Mongoid::Document do
 
     let(:twice_a_new_model) do
       new_klass.tap do
-        2.times{ new_klass.send(:include, ::Mongoid::Document) }
+        2.times { new_klass.send(:include, ::Mongoid::Document) }
       end
     end
 
@@ -658,7 +658,7 @@ describe Mongoid::Document do
           end
 
           it "no mutation occurs during assignment" do
-            expect{ assign_hash }.not_to raise_error
+            expect { assign_hash }.not_to raise_error
           end
         end
       end

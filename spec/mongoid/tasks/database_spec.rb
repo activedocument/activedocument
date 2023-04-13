@@ -233,7 +233,7 @@ describe "Mongoid::Tasks::Database" do
       end
 
       let(:names) do
-        indexes[User].map{ |index| index['name'] }
+        indexes[User].map { |index| index['name'] }
       end
 
       it "should have single index returned" do
@@ -298,11 +298,11 @@ describe "Mongoid::Tasks::Database" do
     end
 
     it "removes indexes from klass" do
-      expect(indexes.reject{ |doc| doc["name"] == "_id_" }).to be_empty
+      expect(indexes.reject { |doc| doc["name"] == "_id_" }).to be_empty
     end
 
     it "leaves _id index untouched" do
-      expect(indexes.select{ |doc| doc["name"] == "_id_" }).to_not be_empty
+      expect(indexes.select { |doc| doc["name"] == "_id_" }).to_not be_empty
     end
   end
 end

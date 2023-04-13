@@ -521,7 +521,7 @@ describe Mongoid::Criteria::Includable do
     context "when providing inclusions to the default scope" do
 
       before do
-        Person.default_scope(->{ Person.includes(:posts) })
+        Person.default_scope(-> { Person.includes(:posts) })
       end
 
       after do
@@ -1294,11 +1294,11 @@ describe Mongoid::Criteria::Includable do
       end
 
       let!(:user_comments) do
-        2.times.map{ IncComment.create! }
+        2.times.map { IncComment.create! }
       end
 
       let!(:post_comments) do
-        2.times.map{ IncComment.create! }
+        2.times.map { IncComment.create! }
       end
 
       context "when including the same class twice" do

@@ -2149,7 +2149,7 @@ describe Mongoid::Contextual::Memory do
         let(:criteria) do
           Band.where(origin: "tally").all.tap do |crit|
             crit.documents = [ band1, band2, band3 ]
-            3.times{ crit.documents << Band.new(origin: "tally") }
+            3.times { crit.documents << Band.new(origin: "tally") }
           end
         end
 

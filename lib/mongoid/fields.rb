@@ -135,7 +135,7 @@ module Mongoid
 
       field(
         :_id,
-        default: ->{ BSON::ObjectId.new },
+        default: -> { BSON::ObjectId.new },
         pre_processed: true,
         type: BSON::ObjectId
       )

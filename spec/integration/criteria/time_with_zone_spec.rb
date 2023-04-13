@@ -107,13 +107,13 @@ describe 'TimeWithZone in queries' do
 
     context 'when zone of queried time is JST' do
       let(:time_zone) { 'Asia/Tokyo' }
-      it { expect(now_in_zone.utc_offset).to be > 0 }
+      it { expect(now_in_zone.utc_offset).to be_positive }
       it_behaves_like 'time zone queries'
     end
 
     context 'when zone of queried time is PST' do
       let(:time_zone) { 'Pacific Time (US & Canada)' }
-      it { expect(now_in_zone.utc_offset).to be < 0 }
+      it { expect(now_in_zone.utc_offset).to be_negative }
       it_behaves_like 'time zone queries'
     end
   end
@@ -129,13 +129,13 @@ describe 'TimeWithZone in queries' do
 
     context 'when zone of queried time is JST' do
       let(:time_zone) { 'Asia/Tokyo' }
-      it { expect(now_in_zone.utc_offset).to be > 0 }
+      it { expect(now_in_zone.utc_offset).to be_positive }
       it_behaves_like 'time zone queries'
     end
 
     context 'when zone of queried time is PST' do
       let(:time_zone) { 'Pacific Time (US & Canada)' }
-      it { expect(now_in_zone.utc_offset).to be < 0 }
+      it { expect(now_in_zone.utc_offset).to be_negative }
       it_behaves_like 'time zone queries'
     end
   end

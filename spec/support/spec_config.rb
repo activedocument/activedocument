@@ -33,7 +33,7 @@ class SpecConfig
   end
 
   def jruby?
-    RUBY_PLATFORM =~ /\bjava\b/
+    RUBY_PLATFORM.match?(/\bjava\b/)
   end
 
   def windows?

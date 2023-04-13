@@ -376,7 +376,7 @@ describe Mongoid::Criteria do
       end
 
       before do
-        criteria.each {}
+        criteria.each{}
       end
 
       it "does not hit the database after first iteration" do
@@ -396,7 +396,7 @@ describe Mongoid::Criteria do
       end
 
       before do
-        criteria.each {}
+        criteria.each{}
       end
 
       it "does not hit the database after first iteration" do

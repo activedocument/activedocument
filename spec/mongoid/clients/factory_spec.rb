@@ -223,7 +223,7 @@ describe Mongoid::Clients::Factory do
             end
 
             let(:seeds) do
-              cluster.addresses.map{ |address| address.to_s }
+              cluster.addresses.map { |address| address.to_s }
             end
 
             it "returns a client" do
@@ -336,7 +336,7 @@ describe Mongoid::Clients::Factory do
       end
 
       it "raises NoClientsConfig error" do
-        expect{ Mongoid::Clients::Factory.create(config) }.to raise_error(Mongoid::Errors::NoClientsConfig)
+        expect { Mongoid::Clients::Factory.create(config) }.to raise_error(Mongoid::Errors::NoClientsConfig)
       end
     end
   end

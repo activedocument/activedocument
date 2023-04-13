@@ -434,7 +434,7 @@ describe Mongoid::Criteria::Findable do
       end
 
       after(:all) do
-        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: ->{ BSON::ObjectId.new }
+        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
       end
 
       let!(:band) do
@@ -600,7 +600,7 @@ describe Mongoid::Criteria::Findable do
       end
 
       after(:all) do
-        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: ->{ BSON::ObjectId.new }
+        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
       end
 
       let!(:band) do
@@ -766,7 +766,7 @@ describe Mongoid::Criteria::Findable do
       end
 
       after(:all) do
-        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: ->{ BSON::ObjectId.new }
+        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
       end
 
       let!(:band) do

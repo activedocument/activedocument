@@ -3,13 +3,13 @@
 class Account
   include Mongoid::Document
 
-  field :_id, type: String, overwrite: true, default: ->{ name.try(:parameterize) }
+  field :_id, type: String, overwrite: true, default: -> { name.try(:parameterize) }
 
   field :number, type: String
   field :balance, type: Integer
   field :nickname, type: String
   field :name, type: String
-  field :balanced, type: Mongoid::Boolean, default: ->{ balance? ? true : false }
+  field :balanced, type: Mongoid::Boolean, default: -> { balance? ? true : false }
 
   field :overridden, type: String
 

@@ -66,7 +66,7 @@ describe Mongoid::Association::Nested::Many do
         described_class.new(
           association,
           attributes,
-          reject_if: ->(attrs){ attrs[:city].blank? }
+          reject_if: ->(attrs) { attrs[:city].blank? }
         )
       end
 
@@ -167,7 +167,7 @@ describe Mongoid::Association::Nested::Many do
     context "when the proc is provided" do
 
       let(:options) do
-        { reject_if: ->(attrs){ attrs[:first_name].blank? } }
+        { reject_if: ->(attrs) { attrs[:first_name].blank? } }
       end
 
       context "when the proc matches" do

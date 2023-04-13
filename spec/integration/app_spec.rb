@@ -147,8 +147,10 @@ describe 'Mongoid application tests' do
             # deprecated options should not be included
             expect(config_text).not_to include "# #{opt.name}:"
           else
+            # rubocop:disable Layout/LineContinuationLeadingSpace
             block = "    #{opt.indented_comment(indent: 4)}\n" \
                     "    # #{opt.name}: #{opt.default}\n"
+            # rubocop:enable Layout/LineContinuationLeadingSpace
             expect(config_text).to include block
           end
         end

@@ -43,7 +43,7 @@ describe Mongoid::Indexable do
       end
 
       it "removes the indexes" do
-        expect(collection.indexes.reject{ |doc| doc["name"] == "_id_" }).to be_empty
+        expect(collection.indexes.reject { |doc| doc["name"] == "_id_" }).to be_empty
       end
     end
 
@@ -70,7 +70,7 @@ describe Mongoid::Indexable do
       end
 
       it "creates the indexes" do
-        expect(indexes.reject{ |doc| doc["name"] == "_id_" }).to be_empty
+        expect(indexes.reject { |doc| doc["name"] == "_id_" }).to be_empty
       end
     end
   end

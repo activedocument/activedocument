@@ -561,7 +561,7 @@ describe Mongoid::Fields::ForeignKey do
               :_id,
               type: String,
               pre_processed: true,
-              default: ->{ BSON::ObjectId.new.to_s },
+              default: -> { BSON::ObjectId.new.to_s },
               overwrite: true
             )
           end
@@ -571,7 +571,7 @@ describe Mongoid::Fields::ForeignKey do
               :_id,
               type: BSON::ObjectId,
               pre_processed: true,
-              default: ->{ BSON::ObjectId.new },
+              default: -> { BSON::ObjectId.new },
               overwrite: true
             )
           end
@@ -628,7 +628,7 @@ describe Mongoid::Fields::ForeignKey do
                   :_id,
                   type: String,
                   pre_processed: true,
-                  default: ->{ BSON::ObjectId.new.to_s },
+                  default: -> { BSON::ObjectId.new.to_s },
                   overwrite: true
                 )
               end
@@ -638,7 +638,7 @@ describe Mongoid::Fields::ForeignKey do
                   :_id,
                   type: BSON::ObjectId,
                   pre_processed: true,
-                  default: ->{ BSON::ObjectId.new },
+                  default: -> { BSON::ObjectId.new },
                   overwrite: true
                 )
               end
@@ -662,7 +662,7 @@ describe Mongoid::Fields::ForeignKey do
                   :_id,
                   type: BSON::ObjectId,
                   pre_processed: true,
-                  default: ->{ BSON::ObjectId.new },
+                  default: -> { BSON::ObjectId.new },
                   overwrite: true
                 )
               end

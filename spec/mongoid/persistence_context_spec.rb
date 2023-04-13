@@ -330,7 +330,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in collection: ->{ :schmands }
+            object.store_in collection: -> { :schmands }
           end
 
           it 'uses the storage options' do
@@ -363,7 +363,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in collection: ->{ :schmands }
+            object.store_in collection: -> { :schmands }
           end
 
           it 'uses the persistence context options' do
@@ -436,7 +436,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in database: ->{ :musique }
+            object.store_in database: -> { :musique }
           end
           it 'uses the storage options' do
             expect(persistence_context.database_name).to eq(:musique)
@@ -476,7 +476,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in database: ->{ :sounds }
+            object.store_in database: -> { :sounds }
           end
 
           after do
@@ -584,7 +584,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in client: ->{ :other }
+            object.store_in client: -> { :other }
           end
 
           it 'uses the persistence context options' do
@@ -628,7 +628,7 @@ describe Mongoid::PersistenceContext do
         context 'when the storage options is a block' do
 
           before do
-            object.store_in client: ->{ :alternative }
+            object.store_in client: -> { :alternative }
           end
 
           it 'uses the client storage option' do
