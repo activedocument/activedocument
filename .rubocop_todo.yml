@@ -276,14 +276,6 @@ Layout/EmptyLineBetweenDefs:
 
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: around, only_before
-Layout/EmptyLinesAroundAccessModifier:
-  Exclude:
-    - 'spec/support/models/label.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
 Layout/EmptyLinesAroundArguments:
   Exclude:
     - 'lib/mongoid/findable.rb'
