@@ -39,7 +39,7 @@ jobs:
         # TODO: Use ubuntu-latest when supported.
         # See: https://github.com/mongodb-labs/drivers-evergreen-tools/issues/283
         os: ['ubuntu-20.04']
-        topology: [server, replica_set] # TODO: sharded_cluster is broken
+        topology: [server, replica_set, sharded_cluster]
         include:
           # TODO: OS versions
           # - os: macos-latest
