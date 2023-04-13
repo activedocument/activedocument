@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "mongoid/version"
+require "mongoid/bundle_checker"
+
 require "forwardable"
 require "time"
 require "set"
@@ -17,7 +20,6 @@ require 'concurrent-ruby'
 require "mongo"
 require "mongo/active_support"
 
-require "mongoid/version"
 require "mongoid/deprecable"
 require "mongoid/config"
 require "mongoid/persistence_context"

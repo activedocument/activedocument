@@ -19,7 +19,9 @@ Replace `gem 'mongoid'` in your application's Gemfile with:
 gem 'mongoid-ultra'
 ```
 
-(Do **not** install `mongoid` and `mongoid-ultra` at the same time.)
+Do **not** install `mongoid` and `mongoid-ultra` at the same time.
+When loading, Mongoid Ultra will raise a `GemConflict` error if
+`mongoid` is present in your bundle.
 
 ## Compatibility
 
@@ -59,11 +61,13 @@ For the time being, version numbers will shadow those of `mongodb/mongoid` with 
 
 Where `X.Y.Z` is the latest upstream release version, and `P` is the patch version of this repo.
 `P` will be reset to zero anytime the major version `X` changes, but will not be reset when the minor or tiny `Y`/`Z` version changes.
-We will also use `-alpha`, `-beta`, `-rc`, etc. suffixes to denote pre-releases.
+We will also use `.alpha1`, `.beta1`, `.rc1`, etc. suffixes to denote pre-releases.
 
 **Semver**: For the time being will follow the major version component of semver, i.e. not breaking or
-removing functionality *except* in major (`X`) releases. We may introduce new features in new patch (`P`) releases,
+removing functionality *except* in major `X` releases. We may introduce new features in new patch `P` releases,
 and will use feature flags prefixed with `ultra_` to allow users to opt-in.
+
+You may distinguish Mongoid Ultra from MongoDB Mongoid by the constant `Mongoid::ULTRA == true`.
 
 All new versions will undergo battle-testing in production at TableCheck prior to being released.
 

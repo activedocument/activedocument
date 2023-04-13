@@ -6,7 +6,7 @@ $:.unshift lib unless $:.include?(lib)
 require "mongoid/version"
 
 Gem::Specification.new do |s|
-  s.name        = "mongoid-ultra"
+  s.name        = Mongoid::GEM_NAME
   s.version     = Mongoid::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['TableCheck Inc.', 'Durran Jordan', 'The MongoDB Ruby Team']

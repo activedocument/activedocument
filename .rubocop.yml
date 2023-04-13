@@ -26,16 +26,6 @@ Style/DocumentationMethod:
     - 'gemfiles/**/*'
     - 'spec/**/*'
 
-Bundler/OrderedGems:
-  Enabled: false
-
-Gemspec/OrderedDependencies:
-  Enabled: false
-
-# Mongoid behavior differs from ActiveRecord
-Rails/RedundantPresenceValidationOnBelongsTo:
-  Enabled: false
-
 # --------------------------------------------------
 # These cops are having CI issues. Enable later.
 
@@ -45,5 +35,21 @@ Performance/StringInclude:
 # --------------------------------------------------
 # Cops below this line are intentionally disabled
 
+Bundler/OrderedGems:
+  Enabled: false
+
+Gemspec/OrderedDependencies:
+  Enabled: false
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
 Style/NumericPredicate:
+  Enabled: false
+
+# Mongoid behavior differs from ActiveRecord
+Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false

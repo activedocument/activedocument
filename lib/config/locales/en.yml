@@ -119,6 +119,12 @@ en:
           summary: "Your mongoid.yml configuration file appears to be empty."
           resolution: "Ensure your configuration file contains the correct contents.
             Refer to: https://www.mongodb.com/docs/mongoid/current/reference/configuration/"
+        gem_conflict:
+          message: "Gem '%{this_gem}' conflicts with gem '%{other_gem}'."
+          summary: "Gems '%{this_gem}' and '%{other_gem}' cannot be used in the same project."
+          resolution: "Ensure that '%{other_gem}' gem is not loaded into your project.
+            Check your Gemfile.lock for any dependency gems which may have inadvertently
+            loaded '%{other_gem}'."
         immutable_attribute:
           message: "Attempted to change the immutable attribute '%{name}' with
             the value: %{value}."
