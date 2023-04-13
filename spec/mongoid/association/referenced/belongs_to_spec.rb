@@ -35,8 +35,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
     let(:expected_complements) do
       [
-          Mongoid::Association::Referenced::HasMany,
-          Mongoid::Association::Referenced::HasOne
+        Mongoid::Association::Referenced::HasMany,
+        Mongoid::Association::Referenced::HasOne
       ]
     end
 
@@ -78,7 +78,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              autosave: true
+            autosave: true
           }
         end
 
@@ -98,7 +98,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              autosave: false
+            autosave: false
           }
         end
 
@@ -129,7 +129,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              counter_cache: true
+            counter_cache: true
           }
         end
 
@@ -149,7 +149,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              counter_cache: 'counts_field'
+            counter_cache: 'counts_field'
           }
         end
 
@@ -169,7 +169,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              counter_cache: false
+            counter_cache: false
           }
         end
 
@@ -277,7 +277,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                dependent: :destroy
+              dependent: :destroy
             }
           end
 
@@ -297,7 +297,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                dependent: :nullify
+              dependent: :nullify
             }
           end
 
@@ -317,7 +317,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                dependent: :restrict_with_exception
+              dependent: :restrict_with_exception
             }
           end
 
@@ -337,7 +337,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                dependent: :restrict_with_error
+              dependent: :restrict_with_error
             }
           end
 
@@ -386,8 +386,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                polymorphic: true,
-                index: true
+              polymorphic: true,
+              index: true
             }
           end
 
@@ -401,7 +401,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                index: true
+              index: true
             }
           end
 
@@ -417,7 +417,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                polymorphic: true
+              polymorphic: true
             }
           end
 
@@ -441,7 +441,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              touch: true
+            touch: true
           }
         end
 
@@ -461,7 +461,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              touch: false
+            touch: false
           }
         end
 
@@ -492,7 +492,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              validate: true
+            validate: true
           }
         end
 
@@ -512,7 +512,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              validate: false
+            validate: false
           }
         end
 
@@ -552,7 +552,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                required: true
+              required: true
             }
           end
 
@@ -565,8 +565,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  required: true,
-                  optional: true
+                required: true,
+                optional: true
               }
             end
 
@@ -580,8 +580,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  required: true,
-                  optional: false
+                required: true,
+                optional: false
               }
             end
 
@@ -596,7 +596,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                required: false
+              required: false
             }
           end
 
@@ -609,8 +609,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  required: false,
-                  optional: true
+                required: false,
+                optional: true
               }
             end
 
@@ -624,8 +624,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  required: false,
-                  optional: false
+                required: false,
+                optional: false
               }
             end
 
@@ -647,7 +647,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  optional: true
+                optional: true
               }
             end
 
@@ -661,7 +661,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  optional: false
+                optional: false
               }
             end
 
@@ -680,7 +680,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                required: true
+              required: true
             }
           end
 
@@ -693,8 +693,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  required: true,
-                  optional: true
+                required: true,
+                optional: true
               }
             end
 
@@ -708,8 +708,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  required: true,
-                  optional: false
+                required: true,
+                optional: false
               }
             end
 
@@ -724,7 +724,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-                required: false
+              required: false
             }
           end
 
@@ -737,8 +737,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  required: false,
-                  optional: true
+                required: false,
+                optional: true
               }
             end
 
@@ -752,8 +752,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  required: false,
-                  optional: false
+                required: false,
+                optional: false
               }
             end
 
@@ -775,7 +775,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  optional: true
+                optional: true
               }
             end
 
@@ -789,7 +789,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                  optional: false
+                optional: false
               }
             end
 
@@ -902,7 +902,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              primary_key: :other_primary_key
+            primary_key: :other_primary_key
           }
         end
 
@@ -928,7 +928,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              index: true
+            index: true
           }
         end
 
@@ -941,7 +941,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              index: false
+            index: false
           }
         end
 
@@ -1101,7 +1101,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :delete_all
+            dependent: :delete_all
           }
         end
 
@@ -1114,7 +1114,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :destroy
+            dependent: :destroy
           }
         end
 
@@ -1127,7 +1127,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :nullify
+            dependent: :nullify
           }
         end
 
@@ -1140,7 +1140,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :restrict_with_exception
+            dependent: :restrict_with_exception
           }
         end
 
@@ -1153,7 +1153,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :restrict_with_error
+            dependent: :restrict_with_error
           }
         end
 
@@ -1184,7 +1184,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-            polymorphic: true
+          polymorphic: true
         }
       end
 
@@ -1349,7 +1349,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-            polymorphic: true
+          polymorphic: true
         }
       end
 
@@ -1507,7 +1507,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              autosave: true
+            autosave: true
           }
         end
 
@@ -1520,7 +1520,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              autosave: false
+            autosave: false
           }
         end
 
@@ -1544,7 +1544,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-            counter_cache: true
+          counter_cache: true
         }
       end
 
@@ -1557,7 +1557,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-            counter_cache: 'counts_field'
+          counter_cache: 'counts_field'
         }
       end
 
@@ -1570,7 +1570,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-            counter_cache: false
+          counter_cache: false
         }
       end
 
@@ -1593,7 +1593,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-            counter_cache: true
+          counter_cache: true
         }
       end
 
@@ -1606,7 +1606,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-            counter_cache: 'counts_field'
+          counter_cache: 'counts_field'
         }
       end
 
@@ -1890,7 +1890,8 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{belonging_class.name}::#{belonging_class.name}#{name.to_s.camelize}RelationExtension".constantize)
+          "#{belonging_class.name}::#{belonging_class.name}#{name.to_s.camelize}RelationExtension".constantize
+        )
       end
     end
 
@@ -1917,7 +1918,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :delete_all
+            dependent: :delete_all
           }
         end
 
@@ -1930,7 +1931,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :destroy
+            dependent: :destroy
           }
         end
 
@@ -1943,7 +1944,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :nullify
+            dependent: :nullify
           }
         end
 
@@ -1956,7 +1957,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :restrict_with_exception
+            dependent: :restrict_with_exception
           }
         end
 
@@ -1969,7 +1970,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-              dependent: :restrict_with_error
+            dependent: :restrict_with_error
           }
         end
 

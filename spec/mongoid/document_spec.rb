@@ -650,7 +650,7 @@ describe Mongoid::Document do
         context "when the frozen value is a hash" do
 
           let(:hash) do
-            {"foo" => {"bar" => {"baz" => [1,2,3]}}}
+            {"foo" => {"bar" => {"baz" => [1, 2, 3]}}}
           end
 
           let(:assign_hash) do

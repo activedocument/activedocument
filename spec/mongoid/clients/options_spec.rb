@@ -120,7 +120,7 @@ describe Mongoid::Clients::Options, retry: 3 do
           end
 
           it 'creates a new cluster' do
-            expect(connections_before).to be <(connections_during)
+            expect(connections_before).to be < (connections_during)
             expect(cluster_before).not_to be(cluster_during)
           end
 
@@ -157,8 +157,8 @@ describe Mongoid::Clients::Options, retry: 3 do
 
           let(:config) do
             {
-                default: { hosts: SpecConfig.instance.addresses, database: database_id },
-                analytics: { uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db?connectTimeoutMS=3000" }
+              default: { hosts: SpecConfig.instance.addresses, database: database_id },
+              analytics: { uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db?connectTimeoutMS=3000" }
             }
           end
 
@@ -350,13 +350,13 @@ describe Mongoid::Clients::Options, retry: 3 do
 
         let(:config) do
           {
-              default: { hosts: SpecConfig.instance.addresses, database: database_id },
-              analytics: {
-                uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db",
-                options: {
-                  server_selection_timeout: 0.5,
-                },
-              }
+            default: { hosts: SpecConfig.instance.addresses, database: database_id },
+            analytics: {
+              uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db",
+              options: {
+                server_selection_timeout: 0.5,
+              },
+            }
           }
         end
 

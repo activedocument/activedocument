@@ -61,8 +61,9 @@ module Mongoid
         if _parent.persisted?
           selector = _parent.atomic_selector
           _root.collection.find(selector).update_one(
-              positionally(selector, atomic_deletes),
-              session: _session)
+            positionally(selector, atomic_deletes),
+            session: _session
+          )
         end
         true
       end

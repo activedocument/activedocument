@@ -283,7 +283,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
         let!(:reviewable_review) do
           Publication::Review.create!(summary: "awful",
-            reviewable: reviewable)
+                                      reviewable: reviewable)
         end
 
         let(:reviewer) do
@@ -292,7 +292,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
         let!(:reviewer_review) do
           Publication::Review.create!(summary: "okay",
-            reviewer: reviewer)
+                                      reviewer: reviewer)
         end
 
         let(:template) do
@@ -301,7 +301,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
         let!(:template_review) do
           Publication::Review.create!(summary: "Looks good to me",
-            template: template)
+                                      template: template)
         end
 
         let(:eager) do
@@ -331,7 +331,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
         let!(:reviewer_review) do
           Publication::Review.create!(summary: "okay",
-            reviewer_type: 'Dog')
+                                      reviewer_type: 'Dog')
         end
 
         let(:eager) do

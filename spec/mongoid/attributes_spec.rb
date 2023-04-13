@@ -377,8 +377,8 @@ describe Mongoid::Attributes do
 
         before do
           person.collection
-            .find({ _id: person.id })
-            .update_one({ "$unset" => { age: 1 }})
+                .find({ _id: person.id })
+                .update_one({ "$unset" => { age: 1 }})
         end
 
         context "when found" do
@@ -1033,8 +1033,8 @@ describe Mongoid::Attributes do
 
         before do
           person.collection
-            .find({ _id: person.id })
-            .update_one({ "$unset" => { age: 1 }})
+                .find({ _id: person.id })
+                .update_one({ "$unset" => { age: 1 }})
           person.reload
         end
 
@@ -1163,8 +1163,8 @@ describe Mongoid::Attributes do
 
         before do
           person.collection
-            .find({ _id: person.id })
-            .update_one({ "$unset" => { age: 1 }})
+                .find({ _id: person.id })
+                .update_one({ "$unset" => { age: 1 }})
           person.reload
         end
 
@@ -1184,7 +1184,7 @@ describe Mongoid::Attributes do
 
         context "when the value is true" do
 
-          it "return true"  do
+          it "return true" do
             person.terms = false
             expect(person.attribute_present?(:terms)).to be true
           end
@@ -1192,7 +1192,7 @@ describe Mongoid::Attributes do
 
         context "when the value is false" do
 
-          it "return true"  do
+          it "return true" do
             person.terms = false
             expect(person.attribute_present?(:terms)).to be true
           end
@@ -1311,37 +1311,37 @@ describe Mongoid::Attributes do
 
     context "when the attribute exists in embedded document" do
 
-     let(:pet) do
-       Animal.new(name: "Cat")
-     end
+      let(:pet) do
+        Animal.new(name: "Cat")
+      end
 
-     let(:person) do
-       Person.new(pet: pet)
-     end
+      let(:person) do
+        Person.new(pet: pet)
+      end
 
-     before do
-       person.save!
-       person.pet.remove_attribute(:name)
-     end
+      before do
+        person.save!
+        person.pet.remove_attribute(:name)
+      end
 
-     it "removes the attribute" do
-       expect(person.pet.name).to be_nil
-     end
+      it "removes the attribute" do
+        expect(person.pet.name).to be_nil
+      end
 
-     it "removes the key from the attributes hash" do
-       expect(person.pet.has_attribute?(:name)).to be false
-     end
+      it "removes the key from the attributes hash" do
+        expect(person.pet.has_attribute?(:name)).to be false
+      end
 
-     context "when saving after the removal" do
+      context "when saving after the removal" do
 
-       before do
-         person.save!
-       end
+        before do
+          person.save!
+        end
 
-       it "persists the removal" do
-         expect(person.reload.pet.has_attribute?(:name)).to be false
-       end
-     end
+        it "persists the removal" do
+          expect(person.reload.pet.has_attribute?(:name)).to be false
+        end
+      end
 
     end
 
@@ -1591,7 +1591,7 @@ describe Mongoid::Attributes do
       end
 
       it "can set a Hash value with stringified keys" do
-        expect(person.map).to eq( { "somekey" => "somevalue" } )
+        expect(person.map).to eq({ "somekey" => "somevalue" })
       end
     end
 
@@ -1750,7 +1750,7 @@ describe Mongoid::Attributes do
     end
   end
 
-  describe "#typed_attributes"  do
+  describe "#typed_attributes" do
 
     let(:date_time) do
       DateTime.current

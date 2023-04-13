@@ -48,10 +48,10 @@ module Mongoid
         # Special handling for _id.
         if name == '_id'
           result = unless id_projection_value.nil?
-            value_inclusionary?(id_projection_value)
-          else
-            true
-          end
+                     value_inclusionary?(id_projection_value)
+                   else
+                     true
+                   end
           return result
         end
 

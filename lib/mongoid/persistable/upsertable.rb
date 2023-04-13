@@ -40,13 +40,15 @@ module Mongoid
             end
 
             collection.find(atomic_selector).replace_one(
-              as_attributes, upsert: true, session: _session)
+              as_attributes, upsert: true, session: _session
+            )
           else
             attrs = { "$set" => as_attributes }
             attrs["$setOnInsert"] = options[:set_on_insert] if options[:set_on_insert]
 
             collection.find(atomic_selector).update_one(
-              attrs, upsert: true, session: _session)
+              attrs, upsert: true, session: _session
+            )
           end
         end
       end

@@ -1270,8 +1270,8 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
     context "when the relation references the same document" do
 
       before do
-        Person.collection.find({ _id: person_one.id }).
-            update_one({ "$set" => { title: "Madam" }})
+        Person.collection.find({ _id: person_one.id })
+              .update_one({ "$set" => { title: "Madam" }})
       end
 
       let(:reloaded) do
@@ -1356,13 +1356,13 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
   end
 
   describe "#method_missing" do
-      let!(:person) do
-        Person.create!
-      end
+    let!(:person) do
+      Person.create!
+    end
 
-      let!(:game) do
-        Game.create!(person: person)
-      end
+    let!(:game) do
+      Game.create!(person: person)
+    end
 
     it 'handles keyword args' do
       expect do

@@ -17,7 +17,7 @@ class SpecConfig
       STDERR.puts "Please consider providing the correct uri via MONGODB_URI environment variable."
       @uri_str = DEFAULT_MONGODB_URI
     end
-    
+
     @uri = Mongo::URI.new(@uri_str)
   end
 

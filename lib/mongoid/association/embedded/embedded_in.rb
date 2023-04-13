@@ -18,10 +18,10 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-            :autobuild,
-            :cyclic,
-            :polymorphic,
-            :touch,
+          :autobuild,
+          :cyclic,
+          :polymorphic,
+          :touch,
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -117,8 +117,8 @@ module Mongoid
           if other
             matches = other.relations.values.select do |rel|
               relation_complements.include?(rel.class) &&
-                  rel.as == name &&
-                  rel.relation_class_name == inverse_class_name
+                rel.as == name &&
+                rel.relation_class_name == inverse_class_name
             end
 
             matches.map { |m| m.name }
@@ -128,7 +128,7 @@ module Mongoid
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-                rel.relation_class_name == inverse_class_name
+              rel.relation_class_name == inverse_class_name
           end
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)

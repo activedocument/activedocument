@@ -43,10 +43,10 @@ module Mongoid
       def create_relation(object, association, selected_fields = nil)
         type = @attributes[association.inverse_type]
         target = if t = association.build(self, object, type, selected_fields)
-          association.create_relation(self, t)
-        else
-          nil
-        end
+                   association.create_relation(self, t)
+                 else
+                   nil
+                 end
 
         # Only need to do this on embedded associations. The pending callbacks
         # are only added when materializing the documents, which only happens
@@ -156,7 +156,7 @@ module Mongoid
         # and the provided list does not include the association, any of its
         # fields should be allowed.
         if __selected_fields.values.all? { |v| v == 0 } &&
-          __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
+           __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
         then
           return nil
         end
@@ -217,7 +217,7 @@ module Mongoid
 
       def needs_no_database_query?(object, association)
         object.is_a?(Document) && !object.embedded? &&
-            object._id == attributes[association.key]
+          object._id == attributes[association.key]
       end
 
       # Is the current code executing without autobuild functionality?
@@ -342,7 +342,7 @@ module Mongoid
             without_autobuild do
               if value = get_relation(name, association, object)
                 if !value.respond_to?(:substitute)
-                  value = __build__(name, value, association) 
+                  value = __build__(name, value, association)
                 end
 
                 set_relation(name, value.substitute(object.substitutable))

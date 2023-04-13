@@ -35,7 +35,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
     let(:expected_complements) do
       [
-          Mongoid::Association::Referenced::BelongsTo,
+        Mongoid::Association::Referenced::BelongsTo,
       ]
     end
 
@@ -77,7 +77,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              autosave: true
+            autosave: true
           }
         end
 
@@ -97,7 +97,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              autosave: false
+            autosave: false
           }
         end
 
@@ -126,7 +126,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            validate: true
+          validate: true
         }
       end
 
@@ -146,7 +146,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            validate: false
+          validate: false
         }
       end
 
@@ -177,7 +177,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              as: :containable
+            as: :containable
           }
         end
 
@@ -206,7 +206,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :delete_all
+              dependent: :delete_all
             }
           end
 
@@ -226,7 +226,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :destroy
+              dependent: :destroy
             }
           end
 
@@ -246,7 +246,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :nullify
+              dependent: :nullify
             }
           end
 
@@ -266,7 +266,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :restrict_with_exception
+              dependent: :restrict_with_exception
             }
           end
 
@@ -286,7 +286,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
           let(:options) do
             {
-                dependent: :restrict_with_error
+              dependent: :restrict_with_error
             }
           end
 
@@ -410,7 +410,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            primary_key: 'guid'
+          primary_key: 'guid'
         }
       end
 
@@ -513,7 +513,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -536,7 +536,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -583,7 +583,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :delete_all
+            dependent: :delete_all
           }
         end
 
@@ -596,7 +596,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :destroy
+            dependent: :destroy
           }
         end
 
@@ -609,7 +609,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :nullify
+            dependent: :nullify
           }
         end
 
@@ -622,7 +622,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :restrict_with_exception
+            dependent: :restrict_with_exception
           }
         end
 
@@ -635,7 +635,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :restrict_with_error
+            dependent: :restrict_with_error
           }
         end
 
@@ -677,7 +677,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -778,7 +778,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -894,7 +894,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              autosave: false
+            autosave: false
           }
         end
 
@@ -936,7 +936,7 @@ describe Mongoid::Association::Referenced::HasOne do
         define_classes
 
         expect(
-            HasOneAssociationClassName::OwnedClass.relations['owner_class'].relation_class_name
+          HasOneAssociationClassName::OwnedClass.relations['owner_class'].relation_class_name
         ).to eq('OwnerClass')
       end
     end
@@ -1210,7 +1210,8 @@ describe Mongoid::Association::Referenced::HasOne do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{has_one_class.name}::#{has_one_class.name}#{name.to_s.camelize}RelationExtension".constantize)
+          "#{has_one_class.name}::#{has_one_class.name}#{name.to_s.camelize}RelationExtension".constantize
+        )
       end
     end
 
@@ -1237,7 +1238,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :delete_all
+            dependent: :delete_all
           }
         end
 
@@ -1250,7 +1251,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :destroy
+            dependent: :destroy
           }
         end
 
@@ -1263,7 +1264,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :nullify
+            dependent: :nullify
           }
         end
 
@@ -1276,7 +1277,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :restrict_with_exception
+            dependent: :restrict_with_exception
           }
         end
 
@@ -1289,7 +1290,7 @@ describe Mongoid::Association::Referenced::HasOne do
 
         let(:options) do
           {
-              dependent: :restrict_with_error
+            dependent: :restrict_with_error
           }
         end
 
@@ -1349,7 +1350,7 @@ describe Mongoid::Association::Referenced::HasOne do
   describe '#path' do
 
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
-      expect(association.path(double( :_parent => true))).to be_a(Mongoid::Atomic::Paths::Root)
+      expect(association.path(double(:_parent => true))).to be_a(Mongoid::Atomic::Paths::Root)
     end
   end
 

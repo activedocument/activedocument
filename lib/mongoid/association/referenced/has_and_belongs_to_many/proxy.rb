@@ -290,7 +290,7 @@ module Mongoid
           # @return [ true | false ] If the document can be persisted.
           def child_persistable?(doc)
             (persistable? || _creating?) &&
-                !(doc.persisted? && _association.forced_nil_inverse?)
+              !(doc.persisted? && _association.forced_nil_inverse?)
           end
 
           # Returns the criteria object for the target class with its documents set

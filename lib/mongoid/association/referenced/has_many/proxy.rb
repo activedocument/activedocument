@@ -355,9 +355,9 @@ module Mongoid
           #   association is persisted.
           def already_related?(document)
             document.persisted? &&
-                document._association &&
-                document.respond_to?(document._association.foreign_key) &&
-                document.__send__(document._association.foreign_key) == _base._id
+              document._association &&
+              document.respond_to?(document._association.foreign_key) &&
+              document.__send__(document._association.foreign_key) == _base._id
           end
 
           # Instantiate the binding associated with this association.

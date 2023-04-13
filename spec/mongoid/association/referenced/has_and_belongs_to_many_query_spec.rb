@@ -13,7 +13,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
     let(:contract) do
       HabtmmContract.where(item: 'foo').only(:signature_ids,
-        'signatures._id', 'signatures.name').first
+                                             'signatures._id',
+                                             'signatures.name').first
     end
 
     let(:signature) { contract.signatures.first }

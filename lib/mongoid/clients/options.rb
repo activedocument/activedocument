@@ -84,8 +84,8 @@ module Mongoid
           _root.persistence_context
         else
           PersistenceContext.get(self) ||
-              PersistenceContext.get(self.class) ||
-              PersistenceContext.new(self.class)
+            PersistenceContext.get(self.class) ||
+            PersistenceContext.new(self.class)
         end
       end
 

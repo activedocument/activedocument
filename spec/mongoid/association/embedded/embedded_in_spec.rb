@@ -824,7 +824,8 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{embedded_class.name}::#{embedded_class.name}#{name.capitalize}RelationExtension".constantize)
+          "#{embedded_class.name}::#{embedded_class.name}#{name.capitalize}RelationExtension".constantize
+        )
       end
     end
 

@@ -38,11 +38,11 @@ module Mongoid
       #
       # @api private
       def mongoize(object)
-         if object.nil?
-           object
-         else
-           object.to_s
-         end
+        if object.nil?
+          object
+        else
+          object.to_s
+        end
       end
 
       # Turn the object from the Ruby type into the type

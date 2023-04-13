@@ -1222,8 +1222,7 @@ describe Mongoid::Contextual::Memory do
     :fourth,
     :fifth,
     :second_to_last,
-    :third_to_last
-  ].each do |meth|
+    :third_to_last].each do |meth|
     describe "##{meth}" do
       let(:method) { meth }
 
@@ -1658,11 +1657,11 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({"de"=>"deutsch-text", "en"=>"english-text"})
+          expect(plucked_translations.first).to eq({"de" => "deutsch-text", "en" => "english-text"})
         end
 
         it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{"de"=>"deutsch-text", "en"=>"english-text"}, "deutsch-text"])
+          expect(plucked_translations_both.first).to eq([{"de" => "deutsch-text", "en" => "english-text"}, "deutsch-text"])
         end
       end
 
@@ -2008,9 +2007,9 @@ describe Mongoid::Contextual::Memory do
   end
 
   describe "#tally" do
-    let(:fans1) { [ Fanatic.new(age:1), Fanatic.new(age:2) ] }
-    let(:fans2) { [ Fanatic.new(age:1), Fanatic.new(age:2) ] }
-    let(:fans3) { [ Fanatic.new(age:1), Fanatic.new(age:3) ] }
+    let(:fans1) { [ Fanatic.new(age: 1), Fanatic.new(age: 2) ] }
+    let(:fans2) { [ Fanatic.new(age: 1), Fanatic.new(age: 2) ] }
+    let(:fans3) { [ Fanatic.new(age: 1), Fanatic.new(age: 3) ] }
 
     let(:genres1) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 3 } ]}
     let(:genres2) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 4 } ]}
@@ -2385,7 +2384,7 @@ describe Mongoid::Contextual::Memory do
 
     context "when tallying an element from an array of hashes; with duplicate" do
 
-      let(:band4) { Band.new(origin: "tally", genres: [ { x: 1 }, {x: 1} ] ) }
+      let(:band4) { Band.new(origin: "tally", genres: [ { x: 1 }, {x: 1} ]) }
 
       let(:criteria) do
         Band.where(origin: "tally").all.tap do |crit|
@@ -2534,17 +2533,17 @@ describe Mongoid::Contextual::Memory do
 
       let(:person1) do
         Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
+                                Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
       end
 
       let(:person2) do
         Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
+                                Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
       end
 
       let(:person3) do
         Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ])
+                                Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ])
       end
 
       let(:criteria) do

@@ -7,7 +7,7 @@ module Mongoid
     # The default list of paths where model classes should be looked for. If
     # Rails is present, the "app/models" paths will be used instead.
     # (See #model_paths.)
-    DEFAULT_MODEL_PATHS = %w( ./app/models ./lib/models ).freeze
+    DEFAULT_MODEL_PATHS = %w(./app/models ./lib/models).freeze
 
     # Search a list of model paths to get every model and require it, so
     # that indexing and inheritance work in both development and production
@@ -31,7 +31,7 @@ module Mongoid
         end
 
         files.sort.each do |file|
-          load_model(file.gsub(/^#{path}\// , "").gsub(/\.rb$/, ""))
+          load_model(file.gsub(/^#{path}\//, "").gsub(/\.rb$/, ""))
         end
       end
     end

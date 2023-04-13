@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mongoid do # rubocop:disable RSpec/FilePath
+describe Mongoid do
 
   describe '::VERSION' do
     it { expect(Mongoid::VERSION).to match(/\A\d+\.\d+\.\d+\.\d+(?:\.\w+\d+)?\z/) }

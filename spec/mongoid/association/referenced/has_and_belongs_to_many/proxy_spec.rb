@@ -2373,8 +2373,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           let!(:deleted) do
             person.preferences.send(
-                method,
-                { name: "Testing" }
+              method,
+              { name: "Testing" }
             )
           end
 
@@ -2561,7 +2561,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           let(:preferences) do
             person.preferences.find(
-                [ unrelated_pref.id, unrelated_pref_two.id ]
+              [ unrelated_pref.id, unrelated_pref_two.id ]
             )
           end
 
@@ -2748,7 +2748,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     let(:max) do
-      person.preferences.max do |a,b|
+      person.preferences.max do |a, b|
         a.ranking <=> b.ranking
       end
     end
@@ -3065,8 +3065,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       let(:person) do
         Person.create!(preferences: [
-          Preference.new(id: 123),
-        ])
+                         Preference.new(id: 123),
+                       ])
       end
 
       it "returns with a selector including association element ids" do
@@ -3181,7 +3181,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
     before do
       person.update_attributes!(
-          houses: [ wife_house, exwife_house, girlfriend_house ]
+        houses: [ wife_house, exwife_house, girlfriend_house ]
       )
       person.update_attributes!(house_ids: [ girlfriend_house.id ])
     end
@@ -3366,14 +3366,14 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
     it "orders the documents" do
       expect(person.ordered_preferences(true)).to eq(
-                                                      [preference_two, preference_three, preference_one]
-                                                  )
+        [preference_two, preference_three, preference_one]
+      )
     end
 
     it "chains default criteria with additional" do
       expect(person.ordered_preferences.order_by(:name.desc).to_a).to eq(
-                                                                          [preference_three, preference_two, preference_one]
-                                                                      )
+        [preference_three, preference_two, preference_one]
+      )
     end
   end
 
@@ -3430,8 +3430,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     context "when the relation references the same documents" do
 
       before do
-        Preference.collection.find({ _id: preference_one.id }).
-            update_one({ "$set" => { name: "reloaded" }})
+        Preference.collection.find({ _id: preference_one.id })
+                  .update_one({ "$set" => { name: "reloaded" }})
       end
 
       let(:reloaded) do
@@ -3525,8 +3525,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       it "persists the change in id order" do
         expect(reloaded.preference_ids).to eq(
-                                               [ preference_two.id, preference_one.id ]
-                                           )
+          [ preference_two.id, preference_one.id ]
+        )
       end
     end
 
@@ -3538,7 +3538,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       before do
         person.preference_ids =
-            [ preference_two.id, preference_one.id, preference_three.id ]
+          [ preference_two.id, preference_one.id, preference_three.id ]
         person.save!
       end
 
@@ -3548,8 +3548,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       it "also persists the change in id order" do
         expect(reloaded.preference_ids).to eq(
-                                               [ preference_two.id, preference_one.id, preference_three.id ]
-                                           )
+          [ preference_two.id, preference_one.id, preference_three.id ]
+        )
       end
     end
 
@@ -3561,10 +3561,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       before do
         person.preference_ids =
-            [ preference_one.id, preference_two.id, preference_three.id ]
+          [ preference_one.id, preference_two.id, preference_three.id ]
         person.save!
         person.preference_ids =
-            [ preference_three.id, preference_two.id ]
+          [ preference_three.id, preference_two.id ]
         person.save!
       end
 
@@ -3574,8 +3574,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       it "also persists the change in id order" do
         expect(reloaded.preference_ids).to eq(
-                                               [ preference_three.id, preference_two.id ]
-                                           )
+          [ preference_three.id, preference_two.id ]
+        )
       end
     end
   end

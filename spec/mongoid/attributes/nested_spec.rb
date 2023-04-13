@@ -107,7 +107,7 @@ describe Mongoid::Attributes::Nested do
         end
 
         let(:addresses) do
-          ('0'..'10').inject({}) do |addresses,i|
+          ('0'..'10').inject({}) do |addresses, i|
             addresses.merge(i => {number: i})
           end
         end
@@ -1023,7 +1023,7 @@ describe Mongoid::Attributes::Nested do
           end
 
           before do
-            tool.palette_attributes ={ _type: "BigPalette" }
+            tool.palette_attributes = { _type: "BigPalette" }
           end
 
           it "instantiates an object of the given type" do
@@ -1743,7 +1743,8 @@ describe Mongoid::Attributes::Nested do
                       person.addresses_attributes =
                         {
                           "bar" => {
-                            "id" => address_one.id, "street" => "Maybachufer", "_destroy" => truth },
+                            "id" => address_one.id, "street" => "Maybachufer", "_destroy" => truth
+                          },
                           "foo" => { "id" => address_two.id, "street" => "Alexander Platz" }
                         }
                     end
@@ -1800,7 +1801,8 @@ describe Mongoid::Attributes::Nested do
                       person.addresses_attributes =
                         {
                           "bar" => {
-                            "id" => address_one.id, "street" => "Maybachufer", "_destroy" => truth },
+                            "id" => address_one.id, "street" => "Maybachufer", "_destroy" => truth
+                          },
                           "foo" => { "id" => address_two.id, "street" => "Alexander Platz" }
                         }
                     end
@@ -3141,7 +3143,8 @@ describe Mongoid::Attributes::Nested do
                       person.posts_attributes =
                         {
                           "0" => {
-                            "id" => post_one.id, "title" => "Another Title", "_destroy" => truth },
+                            "id" => post_one.id, "title" => "Another Title", "_destroy" => truth
+                          },
                           "1" => { "id" => post_two.id, "title" => "New Title" }
                         }
                     end
@@ -3858,7 +3861,8 @@ describe Mongoid::Attributes::Nested do
                       person.preferences_attributes =
                         {
                           "0" => {
-                            "id" => preference_one.id, "name" => "Another Title", "_destroy" => truth },
+                            "id" => preference_one.id, "name" => "Another Title", "_destroy" => truth
+                          },
                           "1" => { "id" => preference_two.id, "name" => "New Title" }
                         }
                     end
@@ -3921,7 +3925,8 @@ describe Mongoid::Attributes::Nested do
                       person.preferences_attributes =
                         {
                           "0" => {
-                            "id" => preference_one.id, "name" => "Another Title", "_destroy" => truth },
+                            "id" => preference_one.id, "name" => "Another Title", "_destroy" => truth
+                          },
                           "1" => { "id" => preference_two.id, "name" => "New Title" }
                         }
                     end
@@ -4940,8 +4945,8 @@ describe Mongoid::Attributes::Nested do
         'students_attributes': [{
           '_id': student.id,
           '_destroy': 1
-          }]
-        }
+        }]
+      }
     end
 
     it "is able to access the parent in the after_destroy callback" do
@@ -4965,8 +4970,8 @@ describe Mongoid::Attributes::Nested do
         'students_attributes': [{
           '_id': student.id,
           '_destroy': 1
-          }]
-        }
+        }]
+      }
     end
 
     it "is able to access the parent in the after_destroy callback" do

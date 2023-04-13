@@ -43,7 +43,6 @@ class EmmManufactory
   embeds_many :products, order: :id.desc, class_name: 'EmmProduct'
 end
 
-
 class EmmProduct
   include Mongoid::Document
 
@@ -186,7 +185,6 @@ class EmmPost
   embeds_many :user_tags, class_name: "EmmUserTag"
 end
 
-
 class EmmCompanyTag
   include Mongoid::Document
 
@@ -194,7 +192,6 @@ class EmmCompanyTag
 
   embedded_in :post, class_name: "EmmPost"
 end
-
 
 class EmmUserTag
   include Mongoid::Document

@@ -106,7 +106,7 @@ describe Mongoid::Shardable do
 
   describe '#shard_key_selector' do
     subject { instance.shard_key_selector }
-    
+
     context 'when key is an immediate attribute' do
       let(:klass) { Band }
       let(:value) { 'a-brand-name' }
@@ -279,11 +279,11 @@ describe Mongoid::Shardable do
 
         context "when record is not found" do
           let!(:instance) { klass.create!(author: { name: value }) }
-  
+
           before do
             instance.destroy
           end
-  
+
           it "raises a DocumentNotFound error with the shard key in the description on reload" do
             expect do
               instance.reload

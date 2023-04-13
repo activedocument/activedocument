@@ -53,7 +53,7 @@ describe Mongoid::Association::Referenced::HasOne::Buildable do
 
       let(:options) do
         {
-            scope: -> { gt(balance: 100) }
+          scope: -> { gt(balance: 100) }
         }
       end
 

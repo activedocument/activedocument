@@ -122,19 +122,19 @@ module Mongoid
             #    value so the full hash is returned.
             # 4. Otherwise, fetch and demongoize the value for the key meth.
             curr = if curr.is_a? Array
-              res = fetch_and_demongoize(curr, meth, field)
-              res.empty? ? nil : res
-            elsif !is_translation && field&.localized?
-              if i < num_meths
-                curr.try(:fetch, meth, nil)
-              else
-                fetch_and_demongoize(curr, meth, field)
-              end
-            elsif is_translation
-              curr.try(:fetch, meth, nil)
-            else
-              fetch_and_demongoize(curr, meth, field)
-            end
+                     res = fetch_and_demongoize(curr, meth, field)
+                     res.empty? ? nil : res
+                   elsif !is_translation && field&.localized?
+                     if i < num_meths
+                       curr.try(:fetch, meth, nil)
+                     else
+                       fetch_and_demongoize(curr, meth, field)
+                     end
+                   elsif is_translation
+                     curr.try(:fetch, meth, nil)
+                   else
+                     fetch_and_demongoize(curr, meth, field)
+                   end
 
             i += 1
           end

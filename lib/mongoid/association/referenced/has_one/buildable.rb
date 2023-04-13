@@ -34,10 +34,10 @@ module Mongoid
           def clear_associated(object)
             unless inverse
               raise Errors::InverseNotFound.new(
-                  @owner_class,
-                  name,
-                  object.class,
-                  foreign_key,
+                @owner_class,
+                name,
+                object.class,
+                foreign_key,
               )
             end
             if object && (associated = object.send(inverse))

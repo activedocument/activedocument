@@ -45,10 +45,10 @@ module Mongoid
         name = key.to_s
 
         aliased = if aliased_associations.key?(name)
-          aliased_associations[name]
-        else
-          name
-        end
+                    aliased_associations[name]
+                  else
+                    name
+                  end
 
         if relations.has_key?(aliased)
           pending_relations[name] = value

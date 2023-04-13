@@ -7,7 +7,7 @@ module Mongoid
     BUILD = 'build'.freeze
     LOAD = 'load'.freeze
     CREATE = 'create'.freeze
-    
+
     # This module contains convenience methods for document lifecycle that
     # resides on thread locals.
     module Lifecycle

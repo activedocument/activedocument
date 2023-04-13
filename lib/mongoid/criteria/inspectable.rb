@@ -15,12 +15,13 @@ module Mongoid
       #
       # @return [ String ] The inspection string.
       def inspect
-%Q{#<Mongoid::Criteria
-  selector: #{selector.inspect}
-  options:  #{options.inspect}
-  class:    #{klass}
-  embedded: #{embedded?}>
-}
+        <<~INSPECT
+          #<Mongoid::Criteria
+            selector: #{selector.inspect}
+            options:  #{options.inspect}
+            class:    #{klass}
+            embedded: #{embedded?}>
+        INSPECT
       end
     end
   end

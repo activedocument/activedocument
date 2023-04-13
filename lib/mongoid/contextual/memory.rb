@@ -745,27 +745,27 @@ module Mongoid
         segment, remaining = field_path.to_s.split('.', 2)
 
         curr = if document.is_a?(Document)
-          # Retrieves field for segment to check localization. Only does one
-          # iteration since there's no dots
-          res = if remaining
-            field = document.class.traverse_association_tree(segment)
-            # If this is a localized field, and there are remaining, get the
-            # _translations hash so that we can get the specified translation in
-            # the remaining
-            if field&.localized?
-              document.send("#{segment}_translations")
-            end
-          end
-          meth = klass.aliased_associations[segment] || segment
-          res.nil? ? document.try(meth) : res
-        elsif document.is_a?(Hash)
-          # TODO: Remove the indifferent access when implementing MONGOID-5410.
-          document.key?(segment.to_s) ?
-            document[segment.to_s] :
-            document[segment.to_sym]
-        else
-          nil
-        end
+                 # Retrieves field for segment to check localization. Only does one
+                 # iteration since there's no dots
+                 res = if remaining
+                         field = document.class.traverse_association_tree(segment)
+                         # If this is a localized field, and there are remaining, get the
+                         # _translations hash so that we can get the specified translation in
+                         # the remaining
+                         if field&.localized?
+                           document.send("#{segment}_translations")
+                         end
+                       end
+                 meth = klass.aliased_associations[segment] || segment
+                 res.nil? ? document.try(meth) : res
+               elsif document.is_a?(Hash)
+                 # TODO: Remove the indifferent access when implementing MONGOID-5410.
+                 document.key?(segment.to_s) ?
+                   document[segment.to_s] :
+                   document[segment.to_sym]
+               else
+                 nil
+               end
 
         return curr unless remaining
 

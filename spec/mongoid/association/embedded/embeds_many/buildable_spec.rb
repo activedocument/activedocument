@@ -83,8 +83,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
 
       let(:object) do
         [
-            { "_type" => "Circle", "radius" => 100 },
-            { "_type" => "Square", "width" => 50 }
+          { "_type" => "Circle", "radius" => 100 },
+          { "_type" => "Square", "width" => 50 }
         ]
       end
 
@@ -207,7 +207,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
       before do
         person1.appointments = apts
         person1.appointments = person1.appointments.reverse
-        expect(apts).to eq([ appointment1, appointment2  ])
+        expect(apts).to eq([ appointment1, appointment2 ])
       end
 
       it 'clears the object of its previous association' do

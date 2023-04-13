@@ -119,7 +119,7 @@ module Mongoid
           sort, skip, limit = criteria.options.values_at(:sort, :skip, :limit)
 
           pipeline = []
-          pipeline << { "$match" =>  criteria.exists(field => true).selector }
+          pipeline << { "$match" => criteria.exists(field => true).selector }
           pipeline << { "$sort" => sort } if sort && (skip || limit)
           pipeline << { "$skip" => skip } if skip
           pipeline << { "$limit" => limit } if limit

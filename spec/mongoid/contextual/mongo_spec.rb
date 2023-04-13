@@ -689,9 +689,9 @@ describe Mongoid::Contextual::Mongo do
   end
 
   describe "#tally" do
-    let(:fans1) { [ Fanatic.new(age:1), Fanatic.new(age:2) ] }
-    let(:fans2) { [ Fanatic.new(age:1), Fanatic.new(age:2) ] }
-    let(:fans3) { [ Fanatic.new(age:1), Fanatic.new(age:3) ] }
+    let(:fans1) { [ Fanatic.new(age: 1), Fanatic.new(age: 2) ] }
+    let(:fans2) { [ Fanatic.new(age: 1), Fanatic.new(age: 2) ] }
+    let(:fans3) { [ Fanatic.new(age: 1), Fanatic.new(age: 3) ] }
 
     let(:genres1) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 3 } ]}
     let(:genres2) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 4 } ]}
@@ -842,7 +842,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "tallies the correct type" do
-            expect(tally.keys.map(&:class).sort do |a,b|
+            expect(tally.keys.map(&:class).sort do |a, b|
               a.to_s <=> b.to_s
             end).to eq([BSON::Decimal128, BSON::Regexp::Raw])
           end
@@ -857,7 +857,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "tallies the correct type" do
-            expect(tally.keys.map(&:class).sort do |a,b|
+            expect(tally.keys.map(&:class).sort do |a, b|
               a.to_s <=> b.to_s
             end).to eq([BigDecimal, BSON::Regexp::Raw])
           end
@@ -1062,7 +1062,7 @@ describe Mongoid::Contextual::Mongo do
     context "when tallying an element from an array of hashes; with duplicate" do
 
       before do
-        Band.create!(origin: "tally", genres: [ { x: 1 }, {x: 1} ] )
+        Band.create!(origin: "tally", genres: [ { x: 1 }, {x: 1} ])
       end
 
       let(:criteria) { Band.where(origin: "tally") }
@@ -1265,7 +1265,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns self" do
-        expect(context.each{}).to be(context)
+        expect(context.each {}).to be(context)
       end
     end
 
@@ -1284,7 +1284,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns self" do
-        expect(context.each{}).to be(context)
+        expect(context.each {}).to be(context)
       end
     end
 
@@ -3434,8 +3434,8 @@ describe Mongoid::Contextual::Mongo do
       end
 
       before do
-        Person.where(id: person.id).
-          update("$addToSet" => { preference_ids: preference.id })
+        Person.where(id: person.id)
+              .update("$addToSet" => { preference_ids: preference.id })
       end
 
       it "adds a single element to the array" do
@@ -3755,7 +3755,7 @@ describe Mongoid::Contextual::Mongo do
 
       let!(:update) do
         context.update_all({ '$set' => { 'labels.$[i].name' => 'Sony' } },
-                       array_filters: [{ 'i.name' => 'Cbs' }])
+                           array_filters: [{ 'i.name' => 'Cbs' }])
       end
 
       it 'applies the array filters' do

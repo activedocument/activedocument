@@ -18,14 +18,14 @@ module Mongoid
       # @api private
       def initialize(collection_name, collection_options, error)
         super(
-            compose_message(
-                "create_collection_failure",
-                {
-                  collection_name: collection_name,
-                  collection_options: collection_options,
-                  error: "#{error.class}: #{error.message}"
-                }
-            )
+          compose_message(
+            "create_collection_failure",
+            {
+              collection_name: collection_name,
+              collection_options: collection_options,
+              error: "#{error.class}: #{error.message}"
+            }
+          )
         )
       end
     end

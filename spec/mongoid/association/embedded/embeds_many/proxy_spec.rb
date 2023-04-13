@@ -451,8 +451,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
       let(:addresses) do
         [
-            Address.new(street: "1st St"),
-            Address.new(street: "2nd St")
+          Address.new(street: "1st St"),
+          Address.new(street: "2nd St")
         ]
       end
 
@@ -1110,9 +1110,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         let(:address) do
           person.addresses.send(
-              method,
-              street: "Bond",
-              locations_attributes: { "1" => { "name" => "Home" } }
+            method,
+            street: "Bond",
+            locations_attributes: { "1" => { "name" => "Home" } }
           )
         end
 
@@ -1852,7 +1852,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          begin; book.update_attributes!({"pages"=>nil}); rescue; end
+          begin; book.update_attributes!({"pages" => nil}); rescue; end
         end
 
         it 'does not delete the embedded relation' do
@@ -2039,8 +2039,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
           let!(:deleted) do
             person.addresses.send(
-                method,
-                { street: "Bond" }
+              method,
+              { street: "Bond" }
             )
           end
 
@@ -2087,8 +2087,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
           let!(:deleted) do
             person.addresses.send(
-                method,
-                { street: "Bond" }
+              method,
+              { street: "Bond" }
             )
           end
 
@@ -2173,8 +2173,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
           let!(:deleted) do
             person.addresses.send(
-                method,
-                conditions: { street: "Bond" }
+              method,
+              conditions: { street: "Bond" }
             )
           end
 
@@ -2656,7 +2656,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     let(:max) do
-      person.addresses.max do |a,b|
+      person.addresses.max do |a, b|
         a.number <=> b.number
       end
     end
@@ -2701,17 +2701,17 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     let!(:address_one) do
       person.addresses.create!(
-          street: "Market",
-          state: "CA",
-          services: [ "1", "2" ]
+        street: "Market",
+        state: "CA",
+        services: [ "1", "2" ]
       )
     end
 
     let!(:address_two) do
       person.addresses.create!(
-          street: "Madison",
-          state: "NY",
-          services: [ "1", "2" ]
+        street: "Madison",
+        state: "NY",
+        services: [ "1", "2" ]
       )
     end
 
@@ -2791,7 +2791,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe "#distinct" do
 
         it "returns the distinct values for the fields" do
-          expect(person.addresses.distinct(:street)).to eq([ "Market",  "Madison"])
+          expect(person.addresses.distinct(:street)).to eq([ "Market", "Madison"])
         end
       end
     end
@@ -2816,7 +2816,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     let(:min) do
-      person.addresses.min do |a,b|
+      person.addresses.min do |a, b|
         a.number <=> b.number
       end
     end
@@ -3223,9 +3223,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       context "when updating with a where clause" do
 
         before do
-          person.addresses.
-              where(street: "Hobrecht").
-              update_all(number: 26, post_code: "12437")
+          person.addresses
+                .where(street: "Hobrecht")
+                .update_all(number: 26, post_code: "12437")
         end
 
         it "resets the matching dirty flags" do
@@ -4103,7 +4103,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       let!(:person2) do
-        Person.create!( aliases: [ { name: "C", priority: 1 }, { name: "D", priority: 2 }])
+        Person.create!(aliases: [ { name: "C", priority: 1 }, { name: "D", priority: 2 }])
       end
 
       it "allows ordering on a key of an embedded document" do
@@ -4139,9 +4139,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     let!(:person) do
       Person.create!(
-          addresses: [
-              { locations: [{ name: "home" }]}
-          ]
+        addresses: [
+          { locations: [{ name: "home" }]}
+        ]
       )
     end
 
@@ -4153,9 +4153,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
       before do
         from_db.update_attributes!(
-            addresses: [
-                { locations: [{ name: "work" }]}
-            ]
+          addresses: [
+            { locations: [{ name: "work" }]}
+          ]
         )
       end
 
@@ -4216,8 +4216,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       person.update_attributes!(
-          appointments: [ appointment_one.as_document, appointment_two.as_document ],
-          symptoms: [ symptom_one.as_document, symptom_two.as_document ]
+        appointments: [ appointment_one.as_document, appointment_two.as_document ],
+        symptoms: [ symptom_one.as_document, symptom_two.as_document ]
       )
     end
 
@@ -4564,9 +4564,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     before do
-      band.collection.
-          find(_id: band.id).
-          update_one("$set" => { records: [{ _id: BSON::ObjectId.new, name: "Moderat" }]})
+      band.collection
+          .find(_id: band.id)
+          .update_one("$set" => { records: [{ _id: BSON::ObjectId.new, name: "Moderat" }]})
     end
 
     context "when loading the documents" do
@@ -4629,7 +4629,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
       class DNS::RRSet
         include Mongoid::Document
-        embedded_in :zone, class_name: 'DNS::Zone',   inverse_of: :rrsets
+        embedded_in :zone, class_name: 'DNS::Zone', inverse_of: :rrsets
         embeds_many :records, class_name: 'DNS::Record', as: :container
       end
 
@@ -4780,11 +4780,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     before do
       post.assign_attributes(company_tags: [{id: BSON::ObjectId.new, title: 'a'}],
-        user_tags: [{id: BSON::ObjectId.new, title: 'b'}])
+                             user_tags: [{id: BSON::ObjectId.new, title: 'b'}])
       post.save!
       post.reload
       post.assign_attributes(company_tags: [{id: BSON::ObjectId.new, title: 'c'}],
-        user_tags: [])
+                             user_tags: [])
       post.save!
       post.reload
     end

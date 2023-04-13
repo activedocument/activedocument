@@ -33,7 +33,22 @@ Performance/StringInclude:
   Enabled: false
 
 # --------------------------------------------------
-# Cops below this line are intentionally disabled
+# Specific files skipped. These can be inlined later.
+
+Layout/LineContinuationLeadingSpace:
+  Exclude:
+    - 'spec/integration/app_spec.rb'
+
+Lint/RedundantCopDisableDirective:
+  Exclude:
+    - 'spec/mongoid/version_spec.rb'
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - 'spec/support/constraints.rb'
+
+# --------------------------------------------------
+# Cops below this line are intentionally disabled.
 
 Bundler/OrderedGems:
   Enabled: false
@@ -42,6 +57,9 @@ Gemspec/OrderedDependencies:
   Enabled: false
 
 Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
 Layout/EmptyLinesAroundModuleBody:

@@ -11,8 +11,9 @@ class Animal
   field :tags, type: Array
 
   embedded_in :person
-  embedded_in :circus, class_name: 'Circus' # class_name is necessary because ActiveRecord think the singular of Circus
-                                            # is Circu
+
+  # class_name is necessary because ActiveRecord thinks the singular of "Circus" is "Circu"
+  embedded_in :circus, class_name: 'Circus' 
 
   validates_format_of :name, without: /\$\$\$/
 

@@ -110,8 +110,7 @@ module Mongoid
                               :storage_options,
                               :cascades,
                               :cyclic,
-                              :cache_timestamp_format
-                            ]
+                              :cache_timestamp_format]
 
     class << self
 

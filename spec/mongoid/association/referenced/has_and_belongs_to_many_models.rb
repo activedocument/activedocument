@@ -89,4 +89,3 @@ class HabtmmStudent
     schools.first.update_attributes!(after_destroy_triggered: true) unless schools.empty?
   end
 end
-

@@ -119,7 +119,7 @@ module Mongoid
       # @param [ Class ] The class the discriminator_value was set on
       #
       # @api private
-      def self.add_discriminator_mapping(value, klass=self)
+      def self.add_discriminator_mapping(value, klass = self)
         self.discriminator_mapping ||= {}
         self.discriminator_mapping[value] = klass
         superclass.add_discriminator_mapping(value, klass) if hereditary?
@@ -340,7 +340,7 @@ module Mongoid
         subclass.fields = fields.dup
         subclass.pre_processed_defaults = pre_processed_defaults.dup
         subclass.post_processed_defaults = post_processed_defaults.dup
-        subclass._declared_scopes = Hash.new { |hash,key| self._declared_scopes[key] }
+        subclass._declared_scopes = Hash.new { |hash, key| self._declared_scopes[key] }
         subclass.discriminator_value = subclass.name
 
         # We need to do this here because the discriminator_value method is

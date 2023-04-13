@@ -99,7 +99,7 @@ module Mongoid
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
         enforce_immutability_of_id_field!
         return false if performing_validations?(options) &&
-          invalid?(options[:context] || :update)
+                        invalid?(options[:context] || :update)
         process_flagged_destroys
         update_children = cascadable_children(:update)
         process_touch_option(options, update_children) do
@@ -134,10 +134,6 @@ module Mongoid
             # path conflicts in MongoDB, for example when changing attributes
             # of foo.0.bars while adding another foo. Each conflicting update
             # is applied using its own write.
-            #
-            # TODO: MONGOID-5026: reduce the number of writes performed by
-            # more intelligently combining the writes such that there are
-            # fewer conflicts.
             conflicts.each_pair do |modifier, changes|
 
               # Group the changes according to their root key which is

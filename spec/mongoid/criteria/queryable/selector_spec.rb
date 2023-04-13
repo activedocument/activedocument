@@ -28,7 +28,7 @@ describe Mongoid::Criteria::Queryable::Selector do
         end
 
         it "deep merges" do
-          expect(selector['field']).to eq({"$lt"=>50, "$gt" => 20})
+          expect(selector['field']).to eq({"$lt" => 50, "$gt" => 20})
         end
       end
 
@@ -66,8 +66,8 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "combines the two $nin queries into one" do
           expect(selector).to eq({
-            "field" => { "$nin" => ["foo", "bar"] }
-          })
+                                   "field" => { "$nin" => ["foo", "bar"] }
+                                 })
         end
       end
     end
@@ -94,7 +94,7 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "intersects the $in values" do
           expect(selector).to eq({
-                                     "field" => { "$in" => [1] }
+                                   "field" => { "$in" => [1] }
                                  })
         end
       end
@@ -111,7 +111,7 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "intersects the $in values" do
           expect(selector).to eq({
-                                     "field" => { "$in" => [] }
+                                   "field" => { "$in" => [] }
                                  })
         end
       end
@@ -149,7 +149,7 @@ describe Mongoid::Criteria::Queryable::Selector do
       end
 
       let(:other) do
-        { 'start' => selection, 'name' => 'test',  }
+        { 'start' => selection, 'name' => 'test' }
       end
 
       it "merges" do

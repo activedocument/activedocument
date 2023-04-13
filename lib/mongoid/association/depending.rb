@@ -29,19 +29,18 @@ module Mongoid
         def _all_dependents
           superclass_dependents = superclass.respond_to?(:_all_dependents) ? superclass._all_dependents : []
           dependents + superclass_dependents.reject do |new_dep|
-            dependents.any? do |old_dep| old_dep.name == new_dep.name
-            end
+            dependents.any? { |old_dep| old_dep.name == new_dep.name }
           end
         end
       end
 
       # The valid dependent strategies.
       STRATEGIES = [
-          :delete_all,
-          :destroy,
-          :nullify,
-          :restrict_with_exception,
-          :restrict_with_error
+        :delete_all,
+        :destroy,
+        :nullify,
+        :restrict_with_exception,
+        :restrict_with_error
       ]
 
       # Attempt to add the cascading information for the document to know how

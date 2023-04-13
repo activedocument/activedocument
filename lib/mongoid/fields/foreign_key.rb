@@ -108,7 +108,7 @@ module Mongoid
       # @return [ true | false ] If the field is a BSON::ObjectId.
       def object_id_field?
         @object_id_field ||=
-            association.polymorphic? ? true : association.klass.using_object_ids?
+          association.polymorphic? ? true : association.klass.using_object_ids?
       end
 
       # Returns true if an array, false if not.

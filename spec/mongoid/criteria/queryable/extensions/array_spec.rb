@@ -444,7 +444,7 @@ describe Array do
       context "when the arrays have integer values" do
 
         let(:selection) do
-          [[ :field_one, 1 ],[ :field_two, -1 ]]
+          [[ :field_one, 1 ], [ :field_two, -1 ]]
         end
 
         it "adds the sorting criteria" do
@@ -457,7 +457,7 @@ describe Array do
       context "when the arrays have symbol values" do
 
         let(:selection) do
-          [[ :field_one, :asc ],[ :field_two, :desc ]]
+          [[ :field_one, :asc ], [ :field_two, :desc ]]
         end
 
         it "adds the sorting criteria" do
@@ -470,7 +470,7 @@ describe Array do
       context "when the arrays have string values" do
 
         let(:selection) do
-          [[ :field_one, "asc" ],[ :field_two, "desc" ]]
+          [[ :field_one, "asc" ], [ :field_two, "desc" ]]
         end
 
         it "adds the sorting criteria" do

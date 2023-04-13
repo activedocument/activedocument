@@ -425,8 +425,8 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
 
     it "has the locations in the association array" do
       expect(Person.last.addresses.last.locations).to eq(
-                                                          [first_location, second_location]
-                                                      )
+        [first_location, second_location]
+      )
     end
   end
 

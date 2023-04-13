@@ -5,7 +5,7 @@ require "ostruct"
 
 module Rails
   extend self
-  
+
   attr_accessor :env
   attr_accessor :root
   attr_accessor :logger

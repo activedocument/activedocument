@@ -200,7 +200,7 @@ describe Mongoid::Association::Nested::Many do
       end
 
       it "returns false" do
-        expect(builder.reject?(builder,{ first_name: "Lang" })).to be false
+        expect(builder.reject?(builder, { first_name: "Lang" })).to be false
       end
     end
   end

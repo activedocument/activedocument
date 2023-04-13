@@ -333,11 +333,11 @@ module Mongoid
     #
     # @return [Mongo::Client] Client according to global overrides.
     def global_client
-      client =  if Threaded.client_override
-                  Clients.with_name(Threaded.client_override)
-                else
-                  Clients.default
-                end
+      client = if Threaded.client_override
+                 Clients.with_name(Threaded.client_override)
+               else
+                 Clients.default
+               end
       if Threaded.database_override
         client.use(Threaded.database_override)
       else

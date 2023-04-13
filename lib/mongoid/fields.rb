@@ -110,7 +110,7 @@ module Mongoid
             res.push(key)
 
             if klass.fields.key?(fn)
-              res.push(ar.drop(i+1).join('.')) unless i == ar.length - 1
+              res.push(ar.drop(i + 1).join('.')) unless i == ar.length - 1
               break
             elsif klass.relations.key?(fn)
               klass = klass.relations[key].klass

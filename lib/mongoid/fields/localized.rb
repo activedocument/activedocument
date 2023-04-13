@@ -87,10 +87,10 @@ module Mongoid
         locale = ::I18n.locale
 
         value = if object.key?(locale.to_s)
-          object[locale.to_s]
-        elsif object.key?(locale)
-          object[locale]
-        end
+                  object[locale.to_s]
+                elsif object.key?(locale)
+                  object[locale]
+                end
         return value unless value.nil?
         if fallbacks? && ::I18n.respond_to?(:fallbacks)
           fallback_key = ::I18n.fallbacks[locale].find do |loc|

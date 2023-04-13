@@ -33,8 +33,7 @@ module Mongoid
                   :comment,
                   :read,
                   :cursor_type,
-                  :collation
-                ].freeze
+                  :collation].freeze
 
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
@@ -452,10 +451,10 @@ module Mongoid
         collection.aggregate(pipeline).each_with_object({}) do |doc, tallies|
           val = doc["_id"]
           key = if val.is_a?(Array)
-            val.map { |v| demongoize_with_field(fld, v, is_translation) }
-          else
-            demongoize_with_field(fld, val, is_translation)
-          end
+                  val.map { |v| demongoize_with_field(fld, v, is_translation) }
+                else
+                  demongoize_with_field(fld, val, is_translation)
+                end
 
           # The only time where a key will already exist in the tallies hash
           # is when the values are stored differently in the database, but
@@ -841,7 +840,7 @@ module Mongoid
       # @api private
       def inverse_sorting
         sort = view.sort || { _id: 1 }
-        Hash[sort.map {|k, v| [k, -1*v]}]
+        Hash[sort.map {|k, v| [k, -1 * v]}]
       end
 
       # Get the documents the context should iterate.

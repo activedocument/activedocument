@@ -3,7 +3,7 @@
 module Mongoid
   module Errors
 
-    # Creates the exception raised when trying to set or get the 
+    # Creates the exception raised when trying to set or get the
     # discriminator key on a child class.
     #
     # @param [ String ] class_name The class name.

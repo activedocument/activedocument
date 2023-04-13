@@ -85,7 +85,8 @@ describe Mongoid::Clients::Factory do
 
           it 'sets Mongoid as a wrapping library' do
             expect(client.options[:wrapping_libraries]).to eq([BSON::Document.new(
-              Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY)])
+              Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY
+            )])
           end
 
           context 'when configuration specifies a wrapping library' do
@@ -104,10 +105,11 @@ describe Mongoid::Clients::Factory do
             end
 
             it 'adds Mongoid as another wrapping library' do
-              expect(client.options[:wrapping_libraries]).to eq([
+              expected = [
                 BSON::Document.new(Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY),
                 {'name' => 'Foo'},
-              ])
+              ]
+              expect(client.options[:wrapping_libraries]).to eq(expected)
             end
           end
         end

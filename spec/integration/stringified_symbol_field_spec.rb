@@ -187,11 +187,11 @@ describe "StringifiedSymbol fields" do
       expect(event.command["updates"].first["u"]["$set"]["saved_status"]).to eq("[3, 4, 5]")
     end
   end
-  
-  context "when StringifiedSymbol is embedded" do 
-    
+
+  context "when StringifiedSymbol is embedded" do
+
     describe "When the embedded field is not unique" do
-      
+
       it "should be invalid" do
         order = Order.new
         order.purchased_items.build(item_id: :foo)

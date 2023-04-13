@@ -62,7 +62,7 @@ module Mongoid
             if inverses = _association.inverses(doc)
               if inverses.length > 1
                 raise Errors::InvalidSetPolymorphicRelation.new(
-                    _association.name, _base.class.name, _target.class.name
+                  _association.name, _base.class.name, _target.class.name
                 )
               end
             end

@@ -204,14 +204,15 @@ module Mongoid
       #
       # @return [ String ] The inspection string.
       def inspect
-%Q{#<Mongoid::Contextual::MapReduce
-  selector: #{criteria.selector.inspect}
-  class:    #{criteria.klass}
-  map:      #{command[:map]}
-  reduce:   #{command[:reduce]}
-  finalize: #{command[:finalize]}
-  out:      #{command[:out].inspect}>
-}
+        <<~INSPECT
+          #<Mongoid::Contextual::MapReduce
+            selector: #{criteria.selector.inspect}
+            class:    #{criteria.klass}
+            map:      #{command[:map]}
+            reduce:   #{command[:reduce]}
+            finalize: #{command[:finalize]}
+            out:      #{command[:out].inspect}>
+        INSPECT
       end
 
       # Returns the selector of the command spec.

@@ -19,13 +19,13 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-            :as,
-            :autobuild,
-            :autosave,
-            :dependent,
-            :foreign_key,
-            :primary_key,
-            :scope,
+          :as,
+          :autobuild,
+          :autosave,
+          :dependent,
+          :foreign_key,
+          :primary_key,
+          :scope,
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -169,7 +169,7 @@ module Mongoid
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-                rel.relation_class_name == inverse_class_name
+              rel.relation_class_name == inverse_class_name
 
           end
           if matches.size > 1

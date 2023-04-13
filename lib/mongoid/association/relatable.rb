@@ -15,11 +15,11 @@ module Mongoid
       #
       # @return [ Array<Symbol> ] The shared options.
       SHARED_OPTIONS = [
-                         :class_name,
-                         :inverse_of,
-                         :validate,
-                         :extend
-                       ].freeze
+        :class_name,
+        :inverse_of,
+        :validate,
+        :extend
+      ].freeze
 
       # The primary key default.
       #
@@ -61,8 +61,8 @@ module Mongoid
       def ==(other)
         relation_class_name == other.relation_class_name &&
           inverse_class_name == other.inverse_class_name &&
-            name == other.name &&
-              options == other.options
+          name == other.name &&
+          options == other.options
       end
 
       # Get the callbacks for a given type.

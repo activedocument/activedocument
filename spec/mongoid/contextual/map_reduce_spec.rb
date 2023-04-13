@@ -46,10 +46,10 @@ describe Mongoid::Contextual::MapReduce do
 
     let(:base_command) do
       {
-          mapreduce: "bands",
-          map: map,
-          reduce: reduce,
-          query: {}
+        mapreduce: "bands",
+        map: map,
+        reduce: reduce,
+        query: {}
       }
     end
 
@@ -107,10 +107,11 @@ describe Mongoid::Contextual::MapReduce do
 
       it "iterates over the results" do
         ordered_results = results.entries.sort_by { |doc| doc['_id'] }
-        expect(ordered_results.entries).to eq([
+        expected = [
           { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
           { "_id" => "Tool", "value" => { "likes" => 100 }}
-        ])
+        ]
+        expect(ordered_results.entries).to eq(expected)
       end
     end
 

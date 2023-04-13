@@ -6,7 +6,7 @@ class HomCollege
   has_one :accreditation, class_name: 'HomAccreditation'
 
   # The address is added with different dependency mechanisms in tests:
-  #has_one :address, class_name: 'HomAddress', dependent: :destroy
+  # has_one :address, class_name: 'HomAddress', dependent: :destroy
 
   field :state, type: String
 end

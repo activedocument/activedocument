@@ -16,7 +16,7 @@ end
 
 def insert_rails_gem_version(cmd)
   gem_version = gem_version_argument(SpecConfig.instance.installed_rails_version)
-  cmd.tap { cmd[1,0] = gem_version if gem_version }
+  cmd.tap { cmd[1, 0] = gem_version if gem_version }
 end
 
 describe 'Mongoid application tests' do
@@ -147,10 +147,8 @@ describe 'Mongoid application tests' do
             # deprecated options should not be included
             expect(config_text).not_to include "# #{opt.name}:"
           else
-            # rubocop:disable Layout/LineContinuationLeadingSpace
             block = "    #{opt.indented_comment(indent: 4)}\n" \
                     "    # #{opt.name}: #{opt.default}\n"
-            # rubocop:enable Layout/LineContinuationLeadingSpace
             expect(config_text).to include block
           end
         end
@@ -220,7 +218,8 @@ describe 'Mongoid application tests' do
                 expect(index).to be nil
 
                 check_call(%w(bundle exec rake db:mongoid:create_indexes -t),
-                  cwd: APP_PATH, env: env)
+                           cwd: APP_PATH,
+                           env: env)
 
                 index = client['posts'].indexes.detect do |index|
                   index['key'] == {'subject' => 1}

@@ -60,7 +60,7 @@ describe Mongoid::Config::Environment do
 
   describe "#load_yaml" do
     let(:path) { 'mongoid.yml' }
-    let(:environment){}
+    let(:environment) {}
 
     before do
       require "support/rails_mock"
@@ -115,7 +115,7 @@ describe Mongoid::Config::Environment do
 
       context 'when environment not specified' do
         it 'uses the rails environment' do
-          is_expected.to eq("clients"=>["test"])
+          is_expected.to eq("clients" => ["test"])
         end
       end
 
@@ -123,7 +123,7 @@ describe Mongoid::Config::Environment do
         let(:environment) { 'development' }
 
         it 'uses the specified environment' do
-          is_expected.to eq("clients"=>["dev"])
+          is_expected.to eq("clients" => ["dev"])
         end
       end
 
@@ -154,7 +154,7 @@ describe Mongoid::Config::Environment do
                 hosts: [localhost]
                 options:
                   auto_encryption_options:
-                    schema_map: #{schema_map.to_yaml.sub(/\A---/, '').gsub(/\n/, "\n" + ' '*100)}
+                    schema_map: #{schema_map.to_yaml.sub(/\A---/, '').gsub(/\n/, "\n" + ' ' * 100)}
         FILE
       end
 

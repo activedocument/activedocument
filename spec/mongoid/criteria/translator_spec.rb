@@ -60,43 +60,43 @@ describe Mongoid::Criteria::Translator do
           expect(described_class.to_direction(:ascending)).to eq(1)
         end
       end
-  
+
       context "when asc" do
         it "returns 1" do
           expect(described_class.to_direction(:asc)).to eq(1)
         end
       end
-  
+
       context "when ASCENDING" do
         it "returns 1" do
           expect(described_class.to_direction(:ASCENDING)).to eq(1)
         end
       end
-  
+
       context "when ASC" do
         it "returns 1" do
           expect(described_class.to_direction(:ASC)).to eq(1)
         end
       end
-  
+
       context "when descending" do
         it "returns -1" do
           expect(described_class.to_direction(:descending)).to eq(-1)
         end
       end
-  
+
       context "when desc" do
         it "returns -1" do
           expect(described_class.to_direction(:desc)).to eq(-1)
         end
       end
-  
+
       context "when DESCENDING" do
         it "returns -1" do
           expect(described_class.to_direction(:DESCENDING)).to eq(-1)
         end
       end
-  
+
       context "when DESC" do
         it "returns -1" do
           expect(described_class.to_direction(:DESC)).to eq(-1)

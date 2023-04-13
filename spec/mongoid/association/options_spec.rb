@@ -48,7 +48,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  as: :nameable
+                as: :nameable
               }
             end
 
@@ -75,7 +75,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  as: :nameable
+                as: :nameable
               }
             end
 
@@ -98,7 +98,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    autobuild: true
+                  autobuild: true
                 }
               end
 
@@ -111,7 +111,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    autobuild: false
+                  autobuild: false
                 }
               end
 
@@ -124,7 +124,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    autobuild: nil
+                  autobuild: nil
                 }
               end
 
@@ -152,7 +152,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  autobuild: false
+                autobuild: false
               }
             end
 
@@ -175,7 +175,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    autosave: true
+                  autosave: true
                 }
               end
 
@@ -188,7 +188,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    autosave: false
+                  autosave: false
                 }
               end
 
@@ -201,7 +201,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    autosave: nil
+                  autosave: nil
                 }
               end
 
@@ -229,7 +229,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  autosave: false
+                autosave: false
               }
             end
 
@@ -250,7 +250,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  dependent: :delete_all
+                dependent: :delete_all
               }
             end
 
@@ -277,7 +277,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  dependent: :delete_all
+                dependent: :delete_all
               }
             end
 
@@ -298,7 +298,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  foreign_key: :some_field
+                foreign_key: :some_field
               }
             end
 
@@ -344,7 +344,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  foreign_key: :some_field
+                foreign_key: :some_field
               }
             end
 
@@ -365,7 +365,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  primary_key: :other_id
+                primary_key: :other_id
               }
             end
 
@@ -392,7 +392,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  primary_key: :other_id
+                primary_key: :other_id
               }
             end
 
@@ -413,7 +413,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  after_add: :method_name
+                after_add: :method_name
               }
             end
 
@@ -441,7 +441,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  after_add: :method_name
+                after_add: :method_name
               }
             end
 
@@ -462,7 +462,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  after_remove: :method_name
+                after_remove: :method_name
               }
             end
 
@@ -490,7 +490,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  after_remove: :method_name
+                after_remove: :method_name
               }
             end
 
@@ -511,7 +511,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  before_add: :method_name
+                before_add: :method_name
               }
             end
 
@@ -539,7 +539,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  before_add: :method_name
+                before_add: :method_name
               }
             end
 
@@ -560,7 +560,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  before_remove: :method_name
+                before_remove: :method_name
               }
             end
 
@@ -588,7 +588,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  before_remove: :method_name
+                before_remove: :method_name
               }
             end
 
@@ -612,7 +612,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    index: true
+                  index: true
                 }
               end
 
@@ -625,7 +625,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    index: false
+                  index: false
                 }
               end
 
@@ -638,7 +638,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    index: nil
+                  index: nil
                 }
               end
 
@@ -666,7 +666,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  index: true
+                index: true
               }
             end
 
@@ -687,7 +687,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  order: :rating.desc
+                order: :rating.desc
               }
             end
 
@@ -714,7 +714,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  order: :rating.desc
+                order: :rating.desc
               }
             end
 
@@ -737,7 +737,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    polymorphic: true
+                  polymorphic: true
                 }
               end
 
@@ -750,7 +750,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    polymorphic: false
+                  polymorphic: false
                 }
               end
 
@@ -763,7 +763,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    polymorphic: nil
+                  polymorphic: nil
                 }
               end
 
@@ -791,7 +791,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  polymorphic: true
+                polymorphic: true
               }
             end
 
@@ -814,7 +814,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    cascade_callbacks: true
+                  cascade_callbacks: true
                 }
               end
 
@@ -827,7 +827,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    cascade_callbacks: false
+                  cascade_callbacks: false
                 }
               end
 
@@ -840,7 +840,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    cascade_callbacks: nil
+                  cascade_callbacks: nil
                 }
               end
 
@@ -868,7 +868,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  cascade_callbacks: true
+                cascade_callbacks: true
               }
             end
 
@@ -891,7 +891,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    cyclic: true
+                  cyclic: true
                 }
               end
 
@@ -904,7 +904,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    cyclic: false
+                  cyclic: false
                 }
               end
 
@@ -917,7 +917,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    cyclic: nil
+                  cyclic: nil
                 }
               end
 
@@ -945,7 +945,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  cyclic: true
+                cyclic: true
               }
             end
 
@@ -966,7 +966,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  store_as: :another_name
+                store_as: :another_name
               }
             end
 
@@ -993,7 +993,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  store_as: :another_name
+                store_as: :another_name
               }
             end
 
@@ -1014,7 +1014,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  class_name: :a_class
+                class_name: :a_class
               }
             end
 
@@ -1041,7 +1041,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  class_name: :a_class
+                class_name: :a_class
               }
             end
 
@@ -1062,7 +1062,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    counter_cache: true
+                  counter_cache: true
                 }
               end
 
@@ -1075,7 +1075,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    counter_cache: false
+                  counter_cache: false
                 }
               end
 
@@ -1088,7 +1088,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    counter_cache: nil
+                  counter_cache: nil
                 }
               end
 
@@ -1116,7 +1116,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  counter_cache: :column_name
+                counter_cache: :column_name
               }
             end
 
@@ -1161,7 +1161,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  extend: ClassLeft::Handle
+                extend: ClassLeft::Handle
               }
             end
 
@@ -1204,7 +1204,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  inverse_of: :inverse_name
+                inverse_of: :inverse_name
               }
             end
 
@@ -1232,7 +1232,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  inverse_of: :inverse_name
+                inverse_of: :inverse_name
               }
             end
 
@@ -1253,7 +1253,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    validate: true
+                  validate: true
                 }
               end
 
@@ -1266,7 +1266,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    validate: false
+                  validate: false
                 }
               end
 
@@ -1279,7 +1279,7 @@ describe Mongoid::Association::Options do
 
               let(:options) do
                 {
-                    validate: nil
+                  validate: nil
                 }
               end
 
@@ -1308,7 +1308,7 @@ describe Mongoid::Association::Options do
 
             let(:options) do
               {
-                  validate: true
+                validate: true
               }
             end
 

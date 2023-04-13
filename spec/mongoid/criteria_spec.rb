@@ -376,7 +376,7 @@ describe Mongoid::Criteria do
       end
 
       before do
-        criteria.each{}
+        criteria.each {}
       end
 
       it "does not hit the database after first iteration" do
@@ -396,7 +396,7 @@ describe Mongoid::Criteria do
       end
 
       before do
-        criteria.each{}
+        criteria.each {}
       end
 
       it "does not hit the database after first iteration" do
@@ -819,7 +819,7 @@ describe Mongoid::Criteria do
       it "raises an error" do
         expect do
           criteria.find(-> {"default"})
-        # Proc is not serializable to a BSON type
+          # Proc is not serializable to a BSON type
         end.to raise_error(BSON::Error::UnserializableClass)
       end
     end
@@ -1891,11 +1891,11 @@ describe Mongoid::Criteria do
         end
 
         it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({"de"=>"deutsch-text", "en"=>"english-text"})
+          expect(plucked_translations.first).to eq({"de" => "deutsch-text", "en" => "english-text"})
         end
 
         it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{"de"=>"deutsch-text", "en"=>"english-text"}, "deutsch-text"])
+          expect(plucked_translations_both.first).to eq([{"de" => "deutsch-text", "en" => "english-text"}, "deutsch-text"])
         end
       end
 
@@ -2302,18 +2302,18 @@ describe Mongoid::Criteria do
 
         let!(:pluck_each_translations_both) do
           Dictionary.all.pluck_each(:description_translations, :description) { |v| plucked_translations_both << v }
-      end
+        end
 
         it 'returns the demongoized translations' do
           expect(plucked.first).to eq('deutsch-text')
         end
 
         it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({"de"=>"deutsch-text", "en"=>"english-text"})
+          expect(plucked_translations.first).to eq({"de" => "deutsch-text", "en" => "english-text"})
         end
 
         it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{"de"=>"deutsch-text", "en"=>"english-text"}, "deutsch-text"])
+          expect(plucked_translations_both.first).to eq([{"de" => "deutsch-text", "en" => "english-text"}, "deutsch-text"])
         end
       end
 
@@ -3047,7 +3047,8 @@ describe Mongoid::Criteria do
 
       it 'combines criteria' do
         expect(criteria.selector).to eq(
-          'foo' => 1, '$and' => [{'foo' => 2}], 'bar' => 3)
+          'foo' => 1, '$and' => [{'foo' => 2}], 'bar' => 3
+        )
       end
     end
 
@@ -3056,7 +3057,8 @@ describe Mongoid::Criteria do
 
       it 'combines criteria' do
         expect(criteria.selector).to eq(
-          'foo' => 1, '$and' => [{'foo' => 2}], 'bar' => 3)
+          'foo' => 1, '$and' => [{'foo' => 2}], 'bar' => 3
+        )
       end
     end
 
@@ -3073,7 +3075,8 @@ describe Mongoid::Criteria do
 
       it 'does not duplicate criteria' do
         expect(criteria.selector).to eq(
-          'active' => true, '$and' => [{'active' => false}])
+          'active' => true, '$and' => [{'active' => false}]
+        )
       end
     end
 

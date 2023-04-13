@@ -18,7 +18,7 @@ module Mongoid
       def initialize(klass, field, type)
         super(
           compose_message('invalid_field_type',
-            klass: klass, field: field, type_inspection: type.inspect)
+                          klass: klass, field: field, type_inspection: type.inspect)
         )
       end
     end

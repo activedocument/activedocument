@@ -291,8 +291,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do
-          |order| [order.sku, order.amount]
+        expect(user.orders.map do |order|
+          [order.sku, order.amount]
         end).to eq([[1, 10], [2, 2]])
       end
     end
@@ -304,8 +304,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do
-          |order| [order.sku, order.amount]
+        expect(user.orders.map do |order|
+          [order.sku, order.amount]
         end).to eq([[1, 1], [2, 20]])
       end
     end
@@ -329,8 +329,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do
-          |order| [order.sku, order.surcharges.first.amount]
+        expect(user.orders.map do |order|
+          [order.sku, order.surcharges.first.amount]
         end).to eq([[1, 10], [2, 2]])
       end
     end
@@ -342,8 +342,8 @@ describe 'embedded associations' do
         user.save!
         user.reload
 
-        expect(user.orders.map do
-          |order| [order.sku, order.surcharges.first.amount]
+        expect(user.orders.map do |order|
+          [order.sku, order.surcharges.first.amount]
         end).to eq([[1, 1], [2, 20]])
       end
     end

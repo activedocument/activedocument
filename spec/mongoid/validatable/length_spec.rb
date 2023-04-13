@@ -169,8 +169,8 @@ describe Mongoid::Validatable::LengthValidator do
 
           before do
             validator.validate_each(
-                product,
-                :tagline, { "en" => "12345", "fr" => "123456" }
+              product,
+              :tagline, { "en" => "12345", "fr" => "123456" }
             )
           end
 

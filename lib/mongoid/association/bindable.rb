@@ -52,10 +52,10 @@ module Mongoid
       def check_inverse!(doc)
         unless _association.bindable?(doc)
           raise Errors::InverseNotFound.new(
-              _base.class,
-              _association.name,
-              doc.class,
-              _association.foreign_key
+            _base.class,
+            _association.name,
+            doc.class,
+            _association.foreign_key
           )
         end
       end

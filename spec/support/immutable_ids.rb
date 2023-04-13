@@ -7,7 +7,7 @@ module Mongoid
             expect { invoke_operation! }
               .to raise_error(Mongoid::Errors::ImmutableAttribute)
           end
-    
+
           context 'when immutable_ids is false' do
             before { Mongoid::Config.immutable_ids = false }
             after { Mongoid::Config.immutable_ids = true }
@@ -32,47 +32,47 @@ module Mongoid
         context 'when the field is _id' do
           let(:new_id_value) { 1234 }
 
-          context 'when the document is top-level' do    
+          context 'when the document is top-level' do
             let(:legacy_behavior_expects_id_to_change) { false }
 
             context 'when the document is new' do
               let(:object) { Person.new }
-    
+
               it 'should allow _id to be updated' do
                 invoke_operation!
                 expect(object.new_record?).to be false
                 expect(object.reload._id).to be == new_id_value
               end
             end
-    
+
             context 'when the document has been persisted' do
               let(:object) { Person.create }
               let!(:original_id) { object._id }
               let(:id_is_unchanged) { Person.exists?(original_id) }
-    
+
               it_behaves_like 'a persisted document'
             end
           end
-    
+
           context 'when the document is embedded' do
             let(:parent) { Person.create }
             let(:legacy_behavior_expects_id_to_change) { true }
 
             context 'when the document is new' do
               let(:object) { parent.favorites.new }
-    
+
               it 'should allow _id to be updated' do
                 invoke_operation!
                 expect(object.new_record?).to be false
                 expect(parent.reload.favorites.first._id).to be == new_id_value
               end
             end
-    
+
             context 'when the document has been persisted' do
               let(:object) { parent.favorites.create }
               let!(:original_id) { object._id }
               let(:id_is_unchanged) { parent.favorites.where(_id: original_id).exists? }
-      
+
               it_behaves_like 'a persisted document'
 
               context 'updating embeds_one via parent' do

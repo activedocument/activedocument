@@ -178,8 +178,7 @@ describe Mongoid::Contextual::None do
     :fourth,
     :fifth,
     :second_to_last,
-    :third_to_last
-  ].each do |meth|
+    :third_to_last].each do |meth|
     describe "##{meth}" do
       it "returns nil" do
         expect(context.send(meth)).to be_nil

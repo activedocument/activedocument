@@ -2112,7 +2112,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
             "published" => { "$exists" => true }
           }, {
             "published" => nil
-          } ] } )
+          } ] })
       end
     end
   end
@@ -2426,7 +2426,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
       context 'when a criterion has an aliased field' do
         let(:selection) { query.none_of({ id: 1 }) }
-        
+
         it 'adds the $nor selector and aliases the field' do
           expect(selection.selector).to eq('$nor' => [{ '_id' => 1 }])
         end

@@ -15,9 +15,7 @@ describe "Mongoid::Tasks::Database" do
         embeds_many :comments
 
         store_in collection: "measurement",
-          collection_options: {
-            capped: true, size: 10000
-          }
+                 collection_options: { capped: true, size: 10000 }
       end
 
       class Comment
@@ -27,9 +25,7 @@ describe "Mongoid::Tasks::Database" do
 
         embedded_in :measurement
 
-        store_in collection_options: {
-            capped: true, size: 10000
-          }
+        store_in collection_options: { capped: true, size: 10000 }
       end
 
       class Note

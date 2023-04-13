@@ -19,18 +19,18 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-            :autobuild,
-            :autosave,
-            :counter_cache,
-            :dependent,
-            :foreign_key,
-            :index,
-            :polymorphic,
-            :primary_key,
-            :touch,
-            :optional,
-            :required,
-            :scope,
+          :autobuild,
+          :autosave,
+          :counter_cache,
+          :dependent,
+          :foreign_key,
+          :index,
+          :polymorphic,
+          :primary_key,
+          :touch,
+          :optional,
+          :required,
+          :scope,
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -184,8 +184,8 @@ module Mongoid
           if other
             matches = other.relations.values.select do |rel|
               relation_complements.include?(rel.class) &&
-                  rel.as == name &&
-                  rel.relation_class_name == inverse_class_name
+                rel.as == name &&
+                rel.relation_class_name == inverse_class_name
             end
             matches.collect { |m| m.name }
           end
@@ -194,7 +194,7 @@ module Mongoid
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-                rel.relation_class_name == inverse_class_name
+              rel.relation_class_name == inverse_class_name
 
           end
           if matches.size > 1
@@ -212,12 +212,12 @@ module Mongoid
 
         def create_foreign_key_field!
           @owner_class.field(
-              foreign_key,
-              type: FOREIGN_KEY_FIELD_TYPE,
-              identity: true,
-              overwrite: true,
-              association: self,
-              default: nil
+            foreign_key,
+            type: FOREIGN_KEY_FIELD_TYPE,
+            identity: true,
+            overwrite: true,
+            association: self,
+            default: nil
           )
         end
       end

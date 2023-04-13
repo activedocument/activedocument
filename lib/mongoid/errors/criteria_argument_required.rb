@@ -11,7 +11,7 @@ module Mongoid
       # @api private
       def initialize(query_method)
         super(compose_message("criteria_argument_required",
-          query_method: query_method))
+                              query_method: query_method))
       end
     end
   end

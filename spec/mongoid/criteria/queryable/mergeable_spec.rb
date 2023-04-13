@@ -63,8 +63,8 @@ describe Mongoid::Criteria::Queryable::Mergeable do
     end
 
     it 'expands multiple Key instances on the same field' do
-      expect(query.send(:_mongoid_expand_keys, {gt => 42, lt => 50})).to eq({
-        'age' => {'$gt' => 42, '$lt' => 50}})
+      expected = { 'age' => {'$gt' => 42, '$lt' => 50} }
+      expect(query.send(:_mongoid_expand_keys, {gt => 42, lt => 50})).to eq(expected)
     end
 
     context 'given implicit equality and Key instance on the same field' do
@@ -72,15 +72,15 @@ describe Mongoid::Criteria::Queryable::Mergeable do
         context "for non-regular expression value #{value}" do
           context 'implicit equality then Key instance' do
             it 'expands implicit equality with $eq and combines with Key operator' do
-              expect(query.send(:_mongoid_expand_keys, {'age' => value, lt => 50})).to eq({
-                'age' => {'$eq' => value, '$lt' => 50}})
+              expected = { 'age' => {'$eq' => value, '$lt' => 50} }
+              expect(query.send(:_mongoid_expand_keys, {'age' => value, lt => 50})).to eq(expected)
             end
           end
 
           context 'symbol operator then implicit equality' do
             it 'expands implicit equality with $eq and combines with Key operator' do
-              expect(query.send(:_mongoid_expand_keys, {gt => 42, 'age' => value})).to eq({
-                'age' => {'$gt' => 42, '$eq' => value}})
+              expected = { 'age' => {'$gt' => 42, '$eq' => value} }
+              expect(query.send(:_mongoid_expand_keys, {gt => 42, 'age' => value})).to eq(expected)
             end
           end
         end
@@ -92,15 +92,15 @@ describe Mongoid::Criteria::Queryable::Mergeable do
         context "for regular expression value #{value}" do
           context 'implicit equality then Key instance' do
             it 'expands implicit equality with $eq and combines with Key operator' do
-              expect(query.send(:_mongoid_expand_keys, {'age' => value, lt => 50})).to eq({
-                'age' => {'$regex' => value, '$lt' => 50}})
+              expected = { 'age' => {'$regex' => value, '$lt' => 50} }
+              expect(query.send(:_mongoid_expand_keys, {'age' => value, lt => 50})).to eq(expected)
             end
           end
 
           context 'Key instance then implicit equality' do
             it 'expands implicit equality with $eq and combines with Key operator' do
-              expect(query.send(:_mongoid_expand_keys, {gt => 50, 'age' => value})).to eq({
-                'age' => {'$gt' => 50, '$regex' => value}})
+              expected = { 'age' => {'$gt' => 50, '$regex' => value} }
+              expect(query.send(:_mongoid_expand_keys, {gt => 50, 'age' => value})).to eq(expected)
             end
           end
         end

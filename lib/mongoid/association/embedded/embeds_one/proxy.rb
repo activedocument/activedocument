@@ -17,11 +17,11 @@ module Mongoid
           #
           # @return [ Array<Symbol> ] The allowed options when defining this association.
           VALID_OPTIONS = [
-              :autobuild,
-              :as,
-              :cascade_callbacks,
-              :cyclic,
-              :store_as
+            :autobuild,
+            :as,
+            :cascade_callbacks,
+            :cyclic,
+            :store_as
           ].freeze
 
           # Instantiate a new embeds_one association.

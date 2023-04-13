@@ -136,7 +136,7 @@ describe Mongoid::Criteria::Scopable do
         end
 
         it 'merges the criteria' do
-          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt"=>3 })
+          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt" => 3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -148,7 +148,7 @@ describe Mongoid::Criteria::Scopable do
         end
 
         it 'unscoped has no effect' do
-          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt"=>3 })
+          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt" => 3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -163,7 +163,7 @@ describe Mongoid::Criteria::Scopable do
         end
 
         it 'adds the scope' do
-          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt"=>3 })
+          expect(result.selector).to eq("name" => "Black Sabbath", "member_count" => { "$gt" => 3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -175,7 +175,7 @@ describe Mongoid::Criteria::Scopable do
         end
 
         it 'removes existing scopes then adds the new scope' do
-          expect(result.selector).to eq("member_count" => { "$gt"=>3 })
+          expect(result.selector).to eq("member_count" => { "$gt" => 3 })
           expect(result.options).to eq(limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end

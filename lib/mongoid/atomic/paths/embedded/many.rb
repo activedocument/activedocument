@@ -18,7 +18,7 @@ module Mongoid
           # @param [ Mongoid::Document ] document The document to generate the paths for.
           def initialize(document)
             @document, @parent = document, document._parent
-            @insert_modifier, @delete_modifier ="$push", "$pull"
+            @insert_modifier, @delete_modifier = "$push", "$pull"
           end
 
           # Get the position of the document in the hierarchy. This will

@@ -511,12 +511,12 @@ describe Mongoid::Serializable do
 
             it "includes the first relation" do
               expect(relation_hash[0]).to include
-                { "_id" => "kudamm", "street" => "Kudamm" }
+              { "_id" => "kudamm", "street" => "Kudamm" }
             end
 
             it "includes the second relation" do
               expect(relation_hash[1]).to include
-                { "_id" => "tauentzienstr", "street" => "Tauentzienstr" }
+              { "_id" => "tauentzienstr", "street" => "Tauentzienstr" }
             end
           end
 
@@ -528,12 +528,12 @@ describe Mongoid::Serializable do
 
             it "includes the first relation" do
               expect(relation_hash[0]).to include
-                { "_id" => "kudamm", "street" => "Kudamm" }
+              { "_id" => "kudamm", "street" => "Kudamm" }
             end
 
             it "includes the second relation" do
               expect(relation_hash[1]).to include
-                { "_id" => "tauentzienstr", "street" => "Tauentzienstr" }
+              { "_id" => "tauentzienstr", "street" => "Tauentzienstr" }
             end
           end
 
@@ -564,8 +564,8 @@ describe Mongoid::Serializable do
                 person.serializable_hash(
                   include: { addresses: {
                     except: :_id, include: { locations: { except: :_id } }
-                  }
-                })
+                  }}
+                )
               end
 
               it "includes the first relation" do
@@ -588,8 +588,8 @@ describe Mongoid::Serializable do
                   db_person.serializable_hash(
                     include: { addresses: {
                       except: :_id, include: { locations: { except: :_id } }
-                    }
-                  })
+                    }}
+                  )
                 end
 
                 before do
@@ -653,7 +653,7 @@ describe Mongoid::Serializable do
 
             it "includes the specified relation" do
               expect(relation_hash).to include
-                { "_id" => "leo-marvin", "first_name" => "Leo", "last_name" => "Marvin" }
+              { "_id" => "leo-marvin", "first_name" => "Leo", "last_name" => "Marvin" }
             end
           end
 
@@ -665,7 +665,7 @@ describe Mongoid::Serializable do
 
             it "includes the specified relation" do
               expect(relation_hash).to include
-                { "_id" => "leo-marvin", "first_name" => "Leo", "last_name" => "Marvin" }
+              { "_id" => "leo-marvin", "first_name" => "Leo", "last_name" => "Marvin" }
             end
           end
 
@@ -677,7 +677,7 @@ describe Mongoid::Serializable do
 
             it "includes the specified relation sans exceptions" do
               expect(relation_hash).to include
-                { "first_name" => "Leo", "last_name" => "Marvin" }
+              { "first_name" => "Leo", "last_name" => "Marvin" }
             end
           end
         end

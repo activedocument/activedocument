@@ -165,7 +165,7 @@ describe Mongoid::Contextual::Mongo::DocumentsLoader do
       it 'returns an executor' do
         executor = described_class.global_thread_pool_async_query_executor
         expect(executor).not_to be_nil
-        expect(executor.max_length).to eq( 50 )
+        expect(executor.max_length).to eq(50)
       end
     end
 
@@ -173,7 +173,7 @@ describe Mongoid::Contextual::Mongo::DocumentsLoader do
       it 'returns an executor' do
         executor = described_class.global_thread_pool_async_query_executor
         expect(executor).not_to be_nil
-        expect(executor.max_length).to eq( 4 )
+        expect(executor.max_length).to eq(4)
       end
     end
 
@@ -186,7 +186,7 @@ describe Mongoid::Contextual::Mongo::DocumentsLoader do
         second_executor = described_class.global_thread_pool_async_query_executor
 
         expect(first_executor).not_to eq(second_executor)
-        expect(second_executor.max_length).to eq( 100 )
+        expect(second_executor.max_length).to eq(100)
       end
     end
   end

@@ -14,12 +14,12 @@ module Mongoid
       # @api private
       def initialize(collection_name, collection_options, error)
         super(
-            compose_message(
-                "drop_collection_failure",
-                {
-                  collection_name: collection_name
-                }
-            )
+          compose_message(
+            "drop_collection_failure",
+            {
+              collection_name: collection_name
+            }
+          )
         )
       end
     end

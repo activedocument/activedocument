@@ -559,7 +559,8 @@ describe Mongoid::Config do
                     'keyId' => [BSON::Binary.new("G\xF0 5\xCC@HX\xA2%b\x97\xA9a\xA8\xE7", :uuid)],
                   }},
                 },
-              }}},
+              }}
+            },
             database: 'mongoid_test',
             platform: "mongoid-#{Mongoid::VERSION}",
             wrapping_libraries: [
@@ -658,8 +659,11 @@ describe Mongoid::Config do
       context "when a uri and standard options are provided" do
 
         let(:clients) do
-          { "default" =>
-            { hosts: [ "127.0.0.1:27017" ], uri: "mongodb://127.0.0.1:27017" }
+          {
+            "default" => {
+              hosts: [ "127.0.0.1:27017" ],
+              uri: "mongodb://127.0.0.1:27017"
+            }
           }
         end
 

@@ -656,7 +656,7 @@ describe Mongoid::Criteria::Findable do
 
         let!(:band_two) do
           Band.create! do |band|
-            band.id = {"Radiohead" => false, "Nirvana"=> true}
+            band.id = {"Radiohead" => false, "Nirvana" => true}
           end
         end
 
@@ -681,7 +681,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find(band.id, {"Radiohead" => true, "Nirvana"=> false})
+              Band.find(band.id, {"Radiohead" => true, "Nirvana" => false})
             end
 
             it "raises an error" do
@@ -695,7 +695,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find(band.id, {"Radiohead" => true, "Nirvana"=> false})
+              Band.find(band.id, {"Radiohead" => true, "Nirvana" => false})
             end
 
             it "returns only the matching documents" do
@@ -709,7 +709,7 @@ describe Mongoid::Criteria::Findable do
 
         let!(:band_two) do
           Band.create! do |band|
-            band.id = {"Radiohead" => false, "Nirvana"=> true}
+            band.id = {"Radiohead" => false, "Nirvana" => true}
           end
         end
 
@@ -734,7 +734,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find([ band.id, {"Radiohead" => true, "Nirvana"=> false} ])
+              Band.find([ band.id, {"Radiohead" => true, "Nirvana" => false} ])
             end
 
             it "raises an error" do
@@ -748,7 +748,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find([ band.id, {"Radiohead" => true, "Nirvana"=> false} ])
+              Band.find([ band.id, {"Radiohead" => true, "Nirvana" => false} ])
             end
 
             it "returns only the matching documents" do

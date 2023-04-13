@@ -233,7 +233,7 @@ module Mongoid
       #
       # @param [ Array | Hash ] ops The operations to collect.
       # @param [ Hash ] aggregator The hash to use to aggregate the operations.
-      # 
+      #
       # @return [ Hash ] The aggregated operations, by field.
       def collect_operations(ops, aggregator = {})
         ops.each_with_object(aggregator) do |(field, value), operations|

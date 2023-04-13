@@ -89,11 +89,11 @@ module Mongoid
                 # we can add to existing conditions.
                 # Otherwise use $and.
                 if v.is_a?(Hash) &&
-                  v.length == 1 &&
-                  (new_k = v.keys.first).start_with?('$') &&
-                  (existing_kv = c.selector[k]).is_a?(Hash) &&
-                  !existing_kv.key?(new_k) &&
-                  existing_kv.keys.all? { |sub_k| sub_k.start_with?('$') }
+                   v.length == 1 &&
+                   (new_k = v.keys.first).start_with?('$') &&
+                   (existing_kv = c.selector[k]).is_a?(Hash) &&
+                   !existing_kv.key?(new_k) &&
+                   existing_kv.keys.all? { |sub_k| sub_k.start_with?('$') }
                 then
                   merged_v = c.selector[k].merge(v)
                   c.selector.store(k, merged_v)
@@ -603,8 +603,9 @@ module Mongoid
 
           exprs = criteria.map do |criterion|
             _mongoid_expand_keys(
-                criterion.is_a?(Selectable) ?
-                  criterion.selector : criterion)
+              criterion.is_a?(Selectable) ?
+                criterion.selector : criterion
+            )
           end
 
           self.and('$nor' => exprs)
@@ -904,7 +905,7 @@ module Mongoid
           clone.tap do |query|
             if negating?
               query.add_operator_expression('$and',
-                [{'$nor' => [{'$where' => criterion}]}])
+                                            [{'$nor' => [{'$where' => criterion}]}])
             else
               query.add_operator_expression('$where', criterion)
             end

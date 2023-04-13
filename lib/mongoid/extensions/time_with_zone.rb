@@ -35,7 +35,7 @@ module Mongoid
         # Workaround for JRuby's #to_i rounding negative timestamps up
         # rather than down (https://github.com/jruby/jruby/issues/6104)
         if BSON::Environment.jruby?
-          (self - usec.to_r/1000000).to_i
+          (self - usec.to_r / 1000000).to_i
         else
           to_i
         end

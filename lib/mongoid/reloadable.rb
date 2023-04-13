@@ -70,9 +70,8 @@ module Mongoid
     #
     # @return [ Hash ] The reloaded attributes.
     def reload_embedded_document
-      extract_embedded_attributes({}.merge(
-        collection(_root).find(_root.atomic_selector, session: _session).read(mode: :primary).first
-      ))
+      selector = collection(_root).find(_root.atomic_selector, session: _session).read(mode: :primary).first
+      extract_embedded_attributes({}.merge(selector))
     end
 
     # Extract only the desired embedded document from the attributes.

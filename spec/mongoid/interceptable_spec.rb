@@ -217,7 +217,7 @@ describe Mongoid::Interceptable do
       end
 
       before do
-        book.pages.each do | page |
+        book.pages.each do |page|
           page.notes.destroy_all
           page.notes.new(message: new_message)
           page.save!

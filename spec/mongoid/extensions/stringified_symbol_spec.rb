@@ -52,7 +52,7 @@ describe Mongoid::StringifiedSymbol do
       end
 
       it "returns the string" do
-        expect(Mongoid::StringifiedSymbol.mongoize([0,1,2])).to eq("[0, 1, 2]")
+        expect(Mongoid::StringifiedSymbol.mongoize([0, 1, 2])).to eq("[0, 1, 2]")
       end
 
       it "returns the string" do

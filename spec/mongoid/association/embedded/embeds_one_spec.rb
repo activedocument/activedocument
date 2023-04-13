@@ -75,7 +75,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
       let(:options) do
         {
-            validate: true
+          validate: true
         }
       end
 
@@ -95,7 +95,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
       let(:options) do
         {
-            validate: false
+          validate: false
         }
       end
 
@@ -518,7 +518,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
       let(:options) do
         {
-            as: :containable
+          as: :containable
         }
       end
 
@@ -856,7 +856,8 @@ describe Mongoid::Association::Embedded::EmbedsOne do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{embeds_one_class.name}::#{embeds_one_class.name}#{name.to_s.camelize}RelationExtension".constantize)
+          "#{embeds_one_class.name}::#{embeds_one_class.name}#{name.to_s.camelize}RelationExtension".constantize
+        )
       end
     end
 
@@ -929,7 +930,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
   describe '#path' do
 
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
-      expect(association.path(double( :_parent => true))).to be_a(Mongoid::Atomic::Paths::Embedded::One)
+      expect(association.path(double(:_parent => true))).to be_a(Mongoid::Atomic::Paths::Embedded::One)
     end
   end
 

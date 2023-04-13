@@ -16,15 +16,16 @@ describe Mongoid::Persistable::Minable do
           Band.create!(
             name: initial_name,
             member_count: initial_members,
-            founded: initial_founded)
+            founded: initial_founded
+          )
         end
 
         shared_examples_for "a min-able root document" do
           before do
             band.send(min_method,
-              name: given_name,
-              member_count: given_members,
-              founded: given_founded)
+                      name: given_name,
+                      member_count: given_members,
+                      founded: given_founded)
           end
 
           it 'sets the fields to smaller of current vs. given' do
@@ -73,15 +74,16 @@ describe Mongoid::Persistable::Minable do
           person.addresses.create!(
             city: initial_city,
             number: initial_number,
-            end_date: initial_end_date)
+            end_date: initial_end_date
+          )
         end
 
         shared_examples_for "a min-able embedded document" do
           before do
             address.send(min_method,
-              city: given_city,
-              number: given_number,
-              end_date: given_end_date)
+                         city: given_city,
+                         number: given_number,
+                         end_date: given_end_date)
           end
 
           it 'sets the fields to smaller of current vs. given' do

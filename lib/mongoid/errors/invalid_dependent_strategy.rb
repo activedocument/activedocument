@@ -17,13 +17,12 @@ module Mongoid
       # @param [ Array<Symbol> ] valid_strategies The valid strategies.
       def initialize(association, invalid_strategy, valid_strategies)
         super(
-            compose_message(
-                "invalid_dependent_strategy",
-                { association: association,
-                  invalid_strategy: invalid_strategy,
-                  valid_strategies: valid_strategies
-                }
-            )
+          compose_message(
+            "invalid_dependent_strategy",
+            { association: association,
+              invalid_strategy: invalid_strategy,
+              valid_strategies: valid_strategies }
+          )
         )
       end
     end

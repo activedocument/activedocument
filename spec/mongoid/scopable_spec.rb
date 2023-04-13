@@ -758,8 +758,8 @@ describe Mongoid::Scopable do
           context "when chaining scopes through more than one model" do
 
             before do
-              Author.scope(:author, -> { where(author: true) } )
-              Article.scope(:is_public, -> { where(public: true) } )
+              Author.scope(:author, -> { where(author: true) })
+              Article.scope(:is_public, -> { where(public: true) })
               Article.scope(:authored, -> {
                 author_ids = Author.author.pluck(:id)
                 where(:author_id.in => author_ids)
@@ -895,7 +895,7 @@ describe Mongoid::Scopable do
     context "when working with a subclass" do
 
       before do
-        Shape.scope(:located_at, ->(x,y) {Shape.where(x: x, y: y)})
+        Shape.scope(:located_at, ->(x, y) {Shape.where(x: x, y: y)})
         Circle.scope(:with_radius, ->(r) {Circle.where(radius: r)})
       end
 
@@ -916,7 +916,7 @@ describe Mongoid::Scopable do
       end
 
       let(:circle_located_at) do
-        Circle.located_at(0,0)
+        Circle.located_at(0, 0)
       end
 
       let(:circle_scope_keys) do
@@ -1218,7 +1218,7 @@ describe Mongoid::Scopable do
     context "when using #current_scope" do
 
       it "pops the criteria off the stack" do
-        Band.with_scope(criteria) do;end
+        Band.with_scope(criteria) { }
         expect(Mongoid::Threaded.current_scope).to be_nil
       end
     end
@@ -1226,7 +1226,7 @@ describe Mongoid::Scopable do
     context "when using #current_scope(klass)" do
 
       it "pops the criteria off the stack" do
-        Band.with_scope(criteria) do;end
+        Band.with_scope(criteria) { }
         expect(Mongoid::Threaded.current_scope(Band)).to be_nil
       end
     end
@@ -1238,7 +1238,7 @@ describe Mongoid::Scopable do
       it 'restores previous scope' do
         Band.with_scope(c1) do |crit|
           Band.with_scope(c2) do |crit2|
-          
+
             expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
               'active' => true,
               '$and' => ['active' => false],

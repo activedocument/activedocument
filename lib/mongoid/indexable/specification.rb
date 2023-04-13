@@ -56,7 +56,7 @@ module Mongoid
       #
       # @return [ String ] name The index name.
       def name
-        @name ||= key.reduce([]) do |n, (k,v)|
+        @name ||= key.reduce([]) do |n, (k, v)|
           n << "#{k}_#{v}"
         end.join('_')
       end
@@ -93,7 +93,6 @@ module Mongoid
       #
       # @return [ Hash ] The normalized options.
       def normalize_options!(options)
-
         options.transform_keys! do |option|
           option = option.to_sym
           MAPPINGS[option] || option

@@ -2047,12 +2047,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       it "includes the type in the criteria" do
-        expect(criteria.selector).to eq(
-                                         {
-                                             "ratable_id"    => base.id,
-                                             "ratable_type"  => "Movie"
-                                         }
-                                     )
+        expect(criteria.selector).to eq({
+          "ratable_id" => base.id,
+          "ratable_type" => "Movie"
+        })
       end
     end
 
@@ -3158,7 +3156,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     let(:max) do
-      person.posts.max do |a,b|
+      person.posts.max do |a, b|
         a.rating <=> b.rating
       end
     end
@@ -3613,14 +3611,14 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
     it "order documents" do
       expect(person.ordered_posts(true)).to eq(
-                                                [post_two, post_three, post_one]
-                                            )
+        [post_two, post_three, post_one]
+      )
     end
 
     it "chaining order criteria" do
       expect(person.ordered_posts.order_by(:title.desc).to_a).to eq(
-                                                                     [post_three, post_two, post_one]
-                                                                 )
+        [post_three, post_two, post_one]
+      )
     end
   end
 
@@ -3645,8 +3643,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     context "when the association references the same documents" do
 
       before do
-        Post.collection.find({ _id: post_one.id }).
-            update_one({ "$set" => { title: "reloaded" }})
+        Post.collection.find({ _id: post_one.id })
+            .update_one({ "$set" => { title: "reloaded" }})
       end
 
       let(:reloaded) do

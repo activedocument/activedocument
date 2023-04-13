@@ -165,7 +165,7 @@ module Mongoid
             # Code 8 is collection does not exist, as of 4.0.
             # On 3.6 and earlier match the text of exception message.
             if exc.code == 26 || exc.code == 8 ||
-              exc.code.nil? && exc.message =~ /not found/
+               exc.code.nil? && exc.message =~ /not found/
             then
               model.collection.create
 

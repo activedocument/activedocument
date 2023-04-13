@@ -572,7 +572,7 @@ describe Mongoid::Extensions::Array do
       context "when the element is array of resizable Hash instances" do
 
         let(:array) do
-          [[{'key1' => 'value2'},{'key1' => 'value2'}]]
+          [[{'key1' => 'value2'}, {'key1' => 'value2'}]]
         end
 
         it "returns true" do

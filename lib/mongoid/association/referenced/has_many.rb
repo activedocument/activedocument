@@ -20,17 +20,17 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-            :after_add,
-            :after_remove,
-            :as,
-            :autosave,
-            :before_add,
-            :before_remove,
-            :dependent,
-            :foreign_key,
-            :order,
-            :primary_key,
-            :scope,
+          :after_add,
+          :after_remove,
+          :as,
+          :autosave,
+          :before_add,
+          :before_remove,
+          :dependent,
+          :foreign_key,
+          :order,
+          :primary_key,
+          :scope,
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -74,7 +74,6 @@ module Mongoid
           @owner_class.validates_associated(name) if validate?
           self
         end
-
 
         # Get the foreign key field on the inverse for saving the association reference.
         #
@@ -197,7 +196,7 @@ module Mongoid
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-                rel.relation_class_name == inverse_class_name
+              rel.relation_class_name == inverse_class_name
 
           end
           if matches.size > 1

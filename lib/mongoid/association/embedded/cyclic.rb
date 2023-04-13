@@ -37,8 +37,8 @@ module Mongoid
           # or its children.
           def recursively_embeds_many(options = {})
             embeds_many(
-                cyclic_child_name,
-                options.merge(class_name: self.name, cyclic: true)
+              cyclic_child_name,
+              options.merge(class_name: self.name, cyclic: true)
             )
             embedded_in cyclic_parent_name, class_name: self.name, cyclic: true
           end
@@ -65,8 +65,8 @@ module Mongoid
           # or its children.
           def recursively_embeds_one(options = {})
             embeds_one(
-                cyclic_child_name(false),
-                options.merge(class_name: self.name, cyclic: true)
+              cyclic_child_name(false),
+              options.merge(class_name: self.name, cyclic: true)
             )
             embedded_in cyclic_parent_name, class_name: self.name, cyclic: true
           end

@@ -17,9 +17,9 @@ describe Mongoid::Errors::MongoidError do
       end
 
       ["message", "summary", "resolution"].each do |name|
-        expect(::I18n).to receive(:translate).
-          with("mongoid.errors.messages.#{key}.#{name}", **{}).
-          and_return(name)
+        expect(::I18n).to receive(:translate)
+          .with("mongoid.errors.messages.#{key}.#{name}", **{})
+          .and_return(name)
       end
     else
       {"message_title" => "message", "summary_title" => "summary", "resolution_title" => "resolution"}.each do |key, name|
@@ -27,9 +27,9 @@ describe Mongoid::Errors::MongoidError do
       end
 
       ["message", "summary", "resolution"].each do |name|
-        expect(::I18n).to receive(:translate).
-          with("mongoid.errors.messages.#{key}.#{name}", {}).
-          and_return(name)
+        expect(::I18n).to receive(:translate)
+          .with("mongoid.errors.messages.#{key}.#{name}", {})
+          .and_return(name)
       end
     end
 
@@ -67,17 +67,17 @@ describe Mongoid::Errors::MongoidError do
 
     it "has problem" do
       # @todo: uncomment if https://github.com/rails/rails/pull/24628 is merged
-      #expect(error.to_json).to include('"problem":"message"')
+      # expect(error.to_json).to include('"problem":"message"')
     end
 
     it "has summary" do
       # @todo: uncomment if https://github.com/rails/rails/pull/24628 is merged
-      #expect(error.to_json).to include('"summary":"summary"')
+      # expect(error.to_json).to include('"summary":"summary"')
     end
 
     it "has resolution" do
       # @todo: uncomment if https://github.com/rails/rails/pull/24628 is merged
-      #expect(error.to_json).to include('"resolution":"resolution"')
+      # expect(error.to_json).to include('"resolution":"resolution"')
     end
   end
 end

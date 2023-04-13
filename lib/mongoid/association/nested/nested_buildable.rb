@@ -32,12 +32,12 @@ module Mongoid
         # @return [ true | false ] True and call proc or method if rejectable, false if not.
         def reject?(document, attrs)
           case callback = options[:reject_if]
-            when Symbol
-              document.method(callback).arity == 0 ? document.send(callback) : document.send(callback, attrs)
-            when Proc
-              callback.call(attrs)
-            else
-              false
+          when Symbol
+            document.method(callback).arity == 0 ? document.send(callback) : document.send(callback, attrs)
+          when Proc
+            callback.call(attrs)
+          else
+            false
           end
         end
 

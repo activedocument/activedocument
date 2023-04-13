@@ -156,8 +156,8 @@ module Mongoid
           inserts = pre_process_batch_insert(docs)
           if insertable?
             collection.find(selector).update_one(
-                positionally(selector, '$set' => { path => inserts }),
-                session: _session
+              positionally(selector, '$set' => { path => inserts }),
+              session: _session
             )
             post_process_batch_insert(docs)
           end
@@ -179,8 +179,8 @@ module Mongoid
           pushes = pre_process_batch_insert(docs)
           if insertable?
             collection.find(selector).update_one(
-                positionally(selector, '$push' => { path => { '$each' => pushes } }),
-                session: _session
+              positionally(selector, '$push' => { path => { '$each' => pushes } }),
+              session: _session
             )
             post_process_batch_insert(docs)
           end
@@ -258,10 +258,10 @@ module Mongoid
         # @return [ String ] The atomic path.
         def path
           @path ||= if _unscoped.empty?
-            Mongoid::Atomic::Paths::Embedded::Many.position_without_document(_base, _association)
-          else
-            _unscoped.first.atomic_path
-          end
+                      Mongoid::Atomic::Paths::Embedded::Many.position_without_document(_base, _association)
+                    else
+                      _unscoped.first.atomic_path
+                    end
         end
 
         # Clear the cache for path and atomic_paths. This method is used when

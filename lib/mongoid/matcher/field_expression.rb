@@ -30,13 +30,13 @@ module Mongoid
                 if k == '$regex'
                   if options = condition['$options']
                     cond_v = case cond_v
-                    when Regexp
-                      BSON::Regexp::Raw.new(cond_v.source, options)
-                    when BSON::Regexp::Raw
-                      BSON::Regexp::Raw.new(cond_v.pattern, options)
-                    else
-                      BSON::Regexp::Raw.new(cond_v, options)
-                    end
+                             when Regexp
+                               BSON::Regexp::Raw.new(cond_v.source, options)
+                             when BSON::Regexp::Raw
+                               BSON::Regexp::Raw.new(cond_v.pattern, options)
+                             else
+                               BSON::Regexp::Raw.new(cond_v, options)
+                             end
                   elsif String === cond_v
                     cond_v = BSON::Regexp::Raw.new(cond_v)
                   end

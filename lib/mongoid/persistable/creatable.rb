@@ -55,8 +55,9 @@ module Mongoid
         else
           selector = _parent.atomic_selector
           _root.collection.find(selector).update_one(
-              positionally(selector, atomic_inserts),
-              session: _session)
+            positionally(selector, atomic_inserts),
+            session: _session
+          )
         end
       end
 
@@ -102,7 +103,7 @@ module Mongoid
       def prepare_insert(options = {})
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
         return self if performing_validations?(options) &&
-          invalid?(options[:context] || :create)
+                       invalid?(options[:context] || :create)
         run_callbacks(:commit, with_children: true, skip_if: -> { in_transaction? }) do
           run_callbacks(:save, with_children: false) do
             run_callbacks(:create, with_children: false) do

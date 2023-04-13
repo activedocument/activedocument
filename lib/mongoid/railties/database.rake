@@ -82,7 +82,7 @@ namespace :db do
 
   namespace :encryption do
     desc "Create encryption key"
-    task :create_data_key =>  "mongoid:encryption:create_data_key"
+    task :create_data_key => "mongoid:encryption:create_data_key"
   end
 
   namespace :mongoid do

@@ -304,4 +304,3 @@ class InterceptableUser
     company.shop_ids
   end
 end
-

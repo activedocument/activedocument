@@ -1117,6 +1117,7 @@ describe Mongoid::Fields do
         before do
           Person.class_eval do
             attr_reader :testing_override_called
+
             def testing=(value)
               @testing_override_called = true
               super
@@ -1240,7 +1241,7 @@ describe Mongoid::Fields do
     context "custom options" do
 
       let(:handler) do
-        proc{}
+        proc {}
       end
 
       before do

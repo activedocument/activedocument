@@ -244,9 +244,9 @@ module Mongoid
           # @return [ Mongoid::Document ] The first document found.
           def first(limit = nil)
             _loaded.try(:values).try(:first) ||
-                _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
-                ul ||
-                _added.values.try(:first)
+              _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
+              ul ||
+              _added.values.try(:first)
           end
 
           # Initialize the new enumerable either with a criteria or an array.
@@ -329,9 +329,9 @@ module Mongoid
           # @return [ Mongoid::Document ] The last document found.
           def last(limit = nil)
             _added.values.try(:last) ||
-                _loaded.try(:values).try(:last) ||
-                _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
-                ul
+              _loaded.try(:values).try(:last) ||
+              _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
+              ul
           end
 
           # Loads all the documents in the enumerable from the database.

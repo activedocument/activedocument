@@ -53,18 +53,18 @@ module Mongoid
         def demongoize(object)
           return if object.blank?
           time = if object.acts_like?(:time)
-            Mongoid::Config.use_utc? ? object : object.getlocal
-          elsif object.acts_like?(:date)
-            ::Date.demongoize(object).to_time
-          elsif object.is_a?(String)
-            begin
-              object.__mongoize_time__
-            rescue ArgumentError
-              nil
-            end
-          elsif object.is_a?(BSON::Timestamp)
-            ::Time.at(object.seconds)
-          end
+                   Mongoid::Config.use_utc? ? object : object.getlocal
+                 elsif object.acts_like?(:date)
+                   ::Date.demongoize(object).to_time
+                 elsif object.is_a?(String)
+                   begin
+                     object.__mongoize_time__
+                   rescue ArgumentError
+                     nil
+                   end
+                 elsif object.is_a?(BSON::Timestamp)
+                   ::Time.at(object.seconds)
+                 end
 
           return if time.nil?
 

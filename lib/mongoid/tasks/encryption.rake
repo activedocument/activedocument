@@ -11,8 +11,8 @@ namespace :db do
           kms_provider_name: args[:provider]
         )
         puts "Created data key with id: '#{result[:key_id]}' " +
-          "for kms provider: '#{result[:kms_provider]}' " +
-          "in key vault: '#{result[:key_vault_namespace]}'."
+             "for kms provider: '#{result[:kms_provider]}' " +
+             "in key vault: '#{result[:key_vault_namespace]}'."
       end
     end
   end

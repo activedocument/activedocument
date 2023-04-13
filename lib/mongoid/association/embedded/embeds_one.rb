@@ -18,11 +18,11 @@ module Mongoid
         #
         # @return [ Array<Symbol> ] The extra valid options.
         ASSOCIATION_OPTIONS = [
-            :autobuild,
-            :as,
-            :cascade_callbacks,
-            :cyclic,
-            :store_as
+          :autobuild,
+          :as,
+          :cascade_callbacks,
+          :cyclic,
+          :store_as
         ]
 
         # The complete list of valid options for this association, including

@@ -120,7 +120,7 @@ describe Mongoid::Clients::Sessions do
                 Post.create!
               end
             rescue => ex
-                e = ex
+              e = ex
             end
             e
           end

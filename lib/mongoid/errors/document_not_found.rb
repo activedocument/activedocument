@@ -117,7 +117,7 @@ module Mongoid
           h = unmatched.dup
           h.delete("_id")
           h.delete(:_id)
-          h.map {|k,v| "#{k}: #{v}" }.join(", ")
+          h.map {|k, v| "#{k}: #{v}" }.join(", ")
         end
       end
     end

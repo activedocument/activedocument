@@ -323,7 +323,7 @@ describe Mongoid::Atomic do
                     }] }
                   },
                   conflicts: {
-                    "$set" => { "addresses.0.street"=>"Bond St" }
+                    "$set" => { "addresses.0.street" => "Bond St" }
                   }
                 }
               )

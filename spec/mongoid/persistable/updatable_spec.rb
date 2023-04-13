@@ -710,7 +710,7 @@ describe Mongoid::Persistable::Updatable do
         def invoke_operation!
           object.update_attributes _id: new_id_value
         end
-  
+
         it_behaves_like "persisted _ids are immutable"
       end
     end

@@ -14,7 +14,7 @@ describe 'Matcher operators' do
   end
 
   shared_examples 'is false' do
-    it 'is false 'do
+    it 'is false' do
       expect(result).to be false
     end
   end

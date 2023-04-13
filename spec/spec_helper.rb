@@ -95,10 +95,10 @@ CONFIG = {
   options: {
     belongs_to_required_by_default: false,
     log_level: if SpecConfig.instance.client_debug?
-      :debug
-    else
-      :info
-    end,
+                 :debug
+               else
+                 :info
+               end,
   }
 }
 
@@ -108,7 +108,7 @@ Mongoid.configure do |config|
 end
 
 # Autoload every model for the test suite that sits in spec/support/models.
-Dir[ File.join(MODELS, "*.rb") ].sort.each do |file|
+Dir[File.join(MODELS, "*.rb")].sort.each do |file|
   name = File.basename(file, ".rb")
   autoload name.camelize.to_sym, name
 end

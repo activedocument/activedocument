@@ -227,8 +227,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 context "when multiple localizations" do
 
                   before do
-                    Dictionary.
-                        create(description_translations: { "en" => "english", "de" => "german" })
+                    Dictionary.create(description_translations: { "en" => "english", "de" => "german" })
                   end
 
                   let(:dictionary) do
@@ -268,8 +267,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                   context "when multiple localizations" do
 
                     before do
-                      Dictionary.
-                          create(description_translations: { "en" => "english", "de" => "german" })
+                      Dictionary.create(description_translations: { "en" => "english", "de" => "german" })
                     end
 
                     let(:dictionary) do
@@ -359,8 +357,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                   context "when multiple localizations" do
 
                     before do
-                      Dictionary.
-                          create(description_translations: { "en" => "english", "de" => "german" })
+                      Dictionary.create(description_translations: { "en" => "english", "de" => "german" })
                     end
 
                     let(:dictionary) do
@@ -407,8 +404,7 @@ describe Mongoid::Validatable::UniquenessValidator do
               context "when the document is not the match" do
 
                 before do
-                  Dictionary.
-                    create(description: "english", name: "test")
+                  Dictionary.create(description: "english", name: "test")
                 end
 
                 let(:dictionary) do
@@ -823,8 +819,10 @@ describe Mongoid::Validatable::UniquenessValidator do
         context "when a range condition is provided" do
 
           before do
-            Dictionary.validates_uniqueness_of(:name,
-              conditions: -> { Dictionary.where(:year.gte => 1900, :year.lt => 2000) })
+            Dictionary.validates_uniqueness_of(
+              :name,
+              conditions: -> { Dictionary.where(:year.gte => 1900, :year.lt => 2000) }
+            )
           end
 
           after do

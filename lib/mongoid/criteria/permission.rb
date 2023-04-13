@@ -40,8 +40,7 @@ module Mongoid
        :within_box,
        :within_circle,
        :within_polygon,
-       :within_spherical_circle
-      ].each do |method|
+       :within_spherical_circle].each do |method|
         define_method(method) do |*criteria|
           raise Errors::CriteriaNotPermitted.new(klass, method, criteria) unless should_permit?(criteria)
           super(*criteria)

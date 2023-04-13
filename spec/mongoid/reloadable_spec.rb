@@ -160,7 +160,7 @@ describe Mongoid::Reloadable do
 
           before do
             Person.mongo_client[:other].find(
-                { "_id" => person.id }
+              { "_id" => person.id }
             ).update_one({ "$set" => { "addresses.0.number" => 3 }})
           end
 
@@ -212,8 +212,8 @@ describe Mongoid::Reloadable do
           end
 
           before do
-            Person.collection.find({ "_id" => person.id }).
-              update_one({ "$set" => { "name.last_name" => "Vicious" }})
+            Person.collection.find({ "_id" => person.id })
+                  .update_one({ "$set" => { "name.last_name" => "Vicious" }})
           end
 
           let!(:reloaded) do
@@ -245,8 +245,8 @@ describe Mongoid::Reloadable do
         end
 
         before do
-          Person.collection.find({ "_id" => person.id }).
-            update_one({ "$set" => { "addresses.0.locations.0.name" => "work" }})
+          Person.collection.find({ "_id" => person.id })
+                .update_one({ "$set" => { "addresses.0.locations.0.name" => "work" }})
         end
 
         let!(:reloaded) do
@@ -278,8 +278,8 @@ describe Mongoid::Reloadable do
       end
 
       before do
-        Person.collection.find({ "_id" => person.id }).
-          update_one({ "$set" => { "addresses" => [] }})
+        Person.collection.find({ "_id" => person.id })
+              .update_one({ "$set" => { "addresses" => [] }})
         person.reload
       end
 
@@ -372,8 +372,8 @@ describe Mongoid::Reloadable do
         end
 
         before do
-          Game.collection.find({ "_id" => game.id }).
-            update_one({ "$set" => { "score" => 75 }})
+          Game.collection.find({ "_id" => game.id })
+              .update_one({ "$set" => { "score" => 75 }})
           person.reload
         end
 
@@ -391,8 +391,8 @@ describe Mongoid::Reloadable do
           end
 
           before do
-            Person.collection.find({ "_id" => person.id }).
-              update_one({ "$set" => { "title" => "Mam" }})
+            Person.collection.find({ "_id" => person.id })
+                  .update_one({ "$set" => { "title" => "Mam" }})
             game.reload
           end
 
@@ -502,7 +502,7 @@ describe Mongoid::Reloadable do
         end
 
         it 'uses the shard key to reload the document' do
-          expect(find_events.length). to eq(1)
+          expect(find_events.length).to eq(1)
 
           event = find_events.first
           expect(event.command['filter'].keys).to include('name')
@@ -525,7 +525,7 @@ describe Mongoid::Reloadable do
         end
 
         it 'uses the shard key to reload the embedded document' do
-          expect(find_events.length). to eq(1)
+          expect(find_events.length).to eq(1)
 
           event = find_events.first
           expect(event.command['filter'].keys).to include('name')

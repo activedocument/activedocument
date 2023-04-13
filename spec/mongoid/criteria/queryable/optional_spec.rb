@@ -604,7 +604,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         query.without(:id).only(:first)
       end
 
-      it "adds both fields to option"  do
+      it "adds both fields to option" do
         expect(selection.options).to eq(
           { fields: { "id" => 0, "first" => 1 } }
         )
@@ -715,7 +715,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the arrays have integer values" do
 
               let(:selection) do
-                query.send("#{method}", [[ :field_one, 1 ],[ :field_two, -1 ]])
+                query.send("#{method}", [[ :field_one, 1 ], [ :field_two, -1 ]])
               end
 
               it "adds the sorting criteria" do
@@ -730,7 +730,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the arrays have symbol values" do
 
               let(:selection) do
-                query.send("#{method}", [[ :field_one, :asc ],[ :field_two, :desc ]])
+                query.send("#{method}", [[ :field_one, :asc ], [ :field_two, :desc ]])
               end
 
               it "adds the sorting criteria" do
@@ -745,7 +745,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the arrays have string values" do
 
               let(:selection) do
-                query.send("#{method}", [[ :field_one, "asc" ],[ :field_two, "desc" ]])
+                query.send("#{method}", [[ :field_one, "asc" ], [ :field_two, "desc" ]])
               end
 
               it "adds the sorting criteria" do
@@ -781,7 +781,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the values have integer directions" do
 
               let(:selection) do
-                query.send("#{method}", [ :field_one, 1 ],[ :field_two, -1 ])
+                query.send("#{method}", [ :field_one, 1 ], [ :field_two, -1 ])
               end
 
               it "adds the sorting criteria" do
@@ -796,7 +796,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the values have symbol directions" do
 
               let(:selection) do
-                query.send("#{method}", [ :field_one, :asc ],[ :field_two, :desc ])
+                query.send("#{method}", [ :field_one, :asc ], [ :field_two, :desc ])
               end
 
               it "adds the sorting criteria" do
@@ -811,7 +811,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the values have string directions" do
 
               let(:selection) do
-                query.send("#{method}", [ :field_one, "asc" ],[ :field_two, "desc" ])
+                query.send("#{method}", [ :field_one, "asc" ], [ :field_two, "desc" ])
               end
 
               it "adds the sorting criteria" do

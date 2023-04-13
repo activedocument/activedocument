@@ -1079,8 +1079,8 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     context "when the relation references the same document" do
 
       before do
-        Game.collection.find({ _id: game_one.id }).
-            update_one({ "$set" => { name: "Diablo 2" }})
+        Game.collection.find({ _id: game_one.id })
+            .update_one({ "$set" => { name: "Diablo 2" }})
       end
 
       let(:reloaded) do

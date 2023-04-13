@@ -35,17 +35,17 @@ describe 'Queries with Mongoid::RawValue criteria' do
       it 'does not match objects' do
         expect(Band.where(likes: Mongoid::RawValue('1')).to_a).to eq [band6]
       end
-  
+
       it 'matches objects without raw value' do
         expect(Band.where(likes: '1').to_a).to eq [band2, band3]
       end
     end
-  
+
     context 'Float field' do
       it 'does not match objects' do
         expect(Band.where(rating: Mongoid::RawValue('3.1')).to_a).to eq [band6]
       end
-  
+
       it 'matches objects with value stored as Float' do
         expect(Band.where(rating: '3.1').to_a).to eq [band4, band5]
       end
@@ -60,22 +60,22 @@ describe 'Queries with Mongoid::RawValue criteria' do
         expect(Band.where(sales: '310').to_a).to eq [band4, band5]
       end
     end
-  
+
     context 'String field' do
       it 'matches objects' do
         expect(Band.where(name: Mongoid::RawValue('3')).to_a).to eq [band3, band4]
       end
-  
+
       it 'matches objects without raw value' do
         expect(Band.where(name: '3').to_a).to eq [band3, band4]
       end
     end
-  
+
     context 'Range field' do
       it 'does not match objects with raw value' do
         expect(Band.where(decibels: Mongoid::RawValue('90')).to_a).to eq [band6]
       end
-  
+
       it 'matches objects without raw value because String cannot be evolved to Range' do
         expect(Band.where(decibels: '90').to_a).to eq [band6]
       end

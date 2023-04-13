@@ -100,10 +100,10 @@ module Mongoid
         if association.is_a?(Association::Embedded::EmbedsMany)
           attrs[association.key].each do |attr|
             embedded_klass = if type = attr[self.class.discriminator_key]
-              association.relation_class.get_discriminator_mapping(type) || association.relation_class
-            else
-              association.relation_class
-            end
+                               association.relation_class.get_discriminator_mapping(type) || association.relation_class
+                             else
+                               association.relation_class
+                             end
             process_localized_attributes(embedded_klass, attr)
           end
         else

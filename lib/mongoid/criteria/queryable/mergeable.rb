@@ -286,11 +286,11 @@ module Mongoid
                     # https://www.mongodb.com/docs/manual/reference/operator/query/eq/#std-label-eq-usage-examples
                     # for the description of relevant server behavior.
                     op = case v
-                    when Regexp, BSON::Regexp::Raw
-                      '$regex'
-                    else
-                      '$eq'
-                    end
+                         when Regexp, BSON::Regexp::Raw
+                           '$regex'
+                         else
+                           '$eq'
+                         end
                     # If there isn't an $eq/$regex operator already in the
                     # query, transform the new value into an operator
                     # expression and add it to the existing hash. Otherwise
@@ -307,11 +307,11 @@ module Mongoid
                   # Existing value is a simple value.
                   # See the notes above about transformations to $eq/$regex.
                   op = case existing
-                  when Regexp, BSON::Regexp::Raw
-                    '$regex'
-                  else
-                    '$eq'
-                  end
+                       when Regexp, BSON::Regexp::Raw
+                         '$regex'
+                       else
+                         '$eq'
+                       end
                   if v.is_a?(Hash) && !v.key?(op)
                     result[k] = {op => existing}.update(v)
                   else

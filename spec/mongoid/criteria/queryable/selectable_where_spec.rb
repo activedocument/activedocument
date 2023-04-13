@@ -158,6 +158,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
             def id
               13
             end
+
             def self.evolve(object)
               object.id
             end

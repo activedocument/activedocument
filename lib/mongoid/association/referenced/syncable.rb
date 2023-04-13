@@ -122,9 +122,9 @@ module Mongoid
           # @return [ Class ] The class getting set up.
           def synced_save(association)
             set_callback(
-                :save,
-                :after,
-                if: ->(doc) { doc._syncable?(association) }
+              :save,
+              :after,
+              if: ->(doc) { doc._syncable?(association) }
             ) do |doc|
               doc.update_inverse_keys(association)
             end
@@ -141,8 +141,8 @@ module Mongoid
           # @return [ Class ] The class getting set up.
           def synced_destroy(association)
             set_callback(
-                :destroy,
-                :after
+              :destroy,
+              :after
             ) do |doc|
               doc.remove_inverse_keys(association)
             end

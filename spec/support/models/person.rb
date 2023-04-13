@@ -58,6 +58,7 @@ class Person
     def extension
       "Testing"
     end
+
     def find_by_street(street)
       where(street: street).first
     end
@@ -75,6 +76,7 @@ class Person
     def extension
       "Testing"
     end
+
     def dawkins?
       first_name == "Richard" && last_name == "Dawkins"
     end
@@ -176,9 +178,11 @@ class Person
     def accepted
       scoped.where(terms: true)
     end
+
     def knight
       scoped.where(title: "Sir")
     end
+
     def old
       scoped.where(age: { "$gt" => 50 })
     end

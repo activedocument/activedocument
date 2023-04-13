@@ -9,7 +9,8 @@ describe "Rails::Mongoid" do
       File.join(
         File.dirname(__FILE__),
         "../support/models/sandbox"
-      ))
+      )
+    )
   end
 
   around :each do |example|

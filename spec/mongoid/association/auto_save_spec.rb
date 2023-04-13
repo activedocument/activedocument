@@ -233,7 +233,7 @@ describe Mongoid::Association::Referenced::AutoSave do
           it "sends one insert" do
             account.name = "account"
             expect_query(1) do
-              person.with(write: {w:0}) do |_person|
+              person.with(write: {w: 0}) do |_person|
                 _person.save!
               end
             end

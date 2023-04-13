@@ -852,9 +852,9 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
 
     let!(:name) do
       person.create_name(
-          first_name: "Syd",
-          last_name: "Vicious",
-          aliases: nil
+        first_name: "Syd",
+        last_name: "Vicious",
+        aliases: nil
       )
     end
 
@@ -937,7 +937,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
 
       before do
         person.collection.find(_id: person.id).update_one(
-            "$pull" => { "addresses" => { _id: address_one.id }}
+          "$pull" => { "addresses" => { _id: address_one.id }}
         )
       end
 
@@ -969,9 +969,9 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     before do
-      band.collection.
-          find(_id: band.id).
-          update_one("$set" => { label: { _id: BSON::ObjectId.new, name: "Mute" }})
+      band.collection
+          .find(_id: band.id)
+          .update_one("$set" => { label: { _id: BSON::ObjectId.new, name: "Mute" }})
     end
 
     context "when loading the documents" do

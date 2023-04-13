@@ -45,10 +45,10 @@ module Mongoid
             # We already have a restriction by the field we are trying
             # to restrict, combine the restrictions.
             if value.is_a?(Hash) && selector[field].is_a?(Hash) &&
-              value.keys.all? { |key|
-                key_s = key.to_s
-                key_s.start_with?('$') && !selector[field].key?(key_s)
-              }
+               value.keys.all? { |key|
+                 key_s = key.to_s
+                 key_s.start_with?('$') && !selector[field].key?(key_s)
+               }
             then
               # Multiple operators can be combined on the same field by
               # adding them to the existing hash.

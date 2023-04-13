@@ -104,10 +104,10 @@ module Mongoid
         options[:app_name] = Mongoid::Config.app_name if Mongoid::Config.app_name
         if (driver_version <=> [2, 13]) >= 0
           wrap_lib = if options[:wrapping_libraries]
-            [MONGOID_WRAPPING_LIBRARY] + options[:wrapping_libraries]
-          else
-            [MONGOID_WRAPPING_LIBRARY]
-          end
+                       [MONGOID_WRAPPING_LIBRARY] + options[:wrapping_libraries]
+                     else
+                       [MONGOID_WRAPPING_LIBRARY]
+                     end
           options[:wrapping_libraries] = wrap_lib
         end
         options.reject { |k, _v| k == :hosts }.to_hash.symbolize_keys!

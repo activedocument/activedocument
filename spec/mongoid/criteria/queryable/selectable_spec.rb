@@ -2270,7 +2270,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         it "combines conditions" do
-          expect(selection.selector).to eq("field" => 5, '$and' => [{'field' => 10}] )
+          expect(selection.selector).to eq("field" => 5, '$and' => [{'field' => 10}])
         end
       end
     end

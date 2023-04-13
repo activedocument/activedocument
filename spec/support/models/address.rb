@@ -36,6 +36,7 @@ class Address
     def extension
       "Testing"
     end
+
     def doctor?
       title == "Dr"
     end

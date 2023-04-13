@@ -197,8 +197,8 @@ describe Mongoid::Validatable::PresenceValidator do
 
           before do
             validator.validate_each(
-                product,
-                :tagline, { "en" => "12345", "fr" => nil }
+              product,
+              :tagline, { "en" => "12345", "fr" => nil }
             )
           end
 

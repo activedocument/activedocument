@@ -31,7 +31,7 @@ describe Mongoid::PersistenceContext do
       end
 
       it 'only sets persistence context for the object on the current thread' do
-         Thread.new do
+        Thread.new do
           expect(described_class.get(object)).not_to be(persistence_context)
           expect(described_class.get(object)).to be(nil)
         end.value
@@ -681,7 +681,7 @@ describe Mongoid::PersistenceContext do
 
       expect do
         user.with(database: database_id_alt) do |u|
-          u.update(name:'2')
+          u.update(name: '2')
         end
       end.to_not raise_error
     end

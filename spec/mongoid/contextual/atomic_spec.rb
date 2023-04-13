@@ -877,7 +877,7 @@ describe Mongoid::Contextual::Atomic do
 
       let!(:new_order) do
         Band.create!(name: "New Order", genres: %w[electro dub], years: 10,
-          likes: 200, rating: 4.3, origin: 'Space')
+                     likes: 200, rating: 4.3, origin: 'Space')
       end
 
       let(:criteria) do
@@ -994,7 +994,8 @@ describe Mongoid::Contextual::Atomic do
       Band.create!(
         member_count: member_count,
         founded: founded,
-        views: views)
+        views: views
+      )
     end
 
     let(:criteria) { Band.all }
@@ -1008,7 +1009,7 @@ describe Mongoid::Contextual::Atomic do
           expect(band.views).to eq [ views, given_views ].min
         end
       end
-  
+
       context 'when given value < existing value' do
         let(:given_views) { views - 1 }
         let(:given_members) { member_count - 1 }
@@ -1066,7 +1067,8 @@ describe Mongoid::Contextual::Atomic do
       Band.create!(
         member_count: member_count,
         founded: founded,
-        views: views)
+        views: views
+      )
     end
 
     let(:criteria) { Band.all }

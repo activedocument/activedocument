@@ -44,7 +44,7 @@ describe Mongoid::Document do
 
     let(:person) { Person.where(username: 'Dev').without(:title).first }
 
-      it 'allows access to attribute of embedded document' do
+    it 'allows access to attribute of embedded document' do
       expect(person.pet.name).to eq 'Duck'
     end
 
