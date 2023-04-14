@@ -52,7 +52,7 @@ module Mongoid
         #
         # @api private
         def timeless_table
-          Thread.current['[mongoid]:timeless'] ||= Hash.new
+          Thread.current['[mongoid]:timeless'] ||= {}
         end
 
         def_delegators :timeless_table, :[]=, :[]

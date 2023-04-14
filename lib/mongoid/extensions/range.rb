@@ -87,7 +87,7 @@ module Mongoid
           hash.slice!('min', 'max', 'exclude_end')
           hash.compact!
           hash.transform_values!(&:mongoize)
-          hash.blank? ? nil : hash
+          hash.presence
         end
 
         def __mongoize_range__(object)

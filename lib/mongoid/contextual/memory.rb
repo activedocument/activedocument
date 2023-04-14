@@ -676,10 +676,12 @@ module Mongoid
       #
       # @return [ Integer ] The comparison value.
       def compare(a, b)
-        case
-        when a.nil? then b.nil? ? 0 : 1
-        when b.nil? then -1
-        else a <=> b
+        if a.nil?
+          b.nil? ? 0 : 1
+        elsif b.nil?
+          -1
+        else
+          a <=> b
         end
       end
 

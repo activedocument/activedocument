@@ -49,7 +49,7 @@ module Mongoid
       # @return [ Hash ] The scopes defined for this class
       def scopes
         defined_scopes = {}
-        ancestors.reverse.each do |klass|
+        ancestors.reverse_each do |klass|
           if klass.respond_to?(:_declared_scopes)
             defined_scopes.merge!(klass._declared_scopes)
           end

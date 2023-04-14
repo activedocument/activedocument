@@ -87,7 +87,7 @@ module Mongoid
     #
     # @return [ true | false ] True if valid, false if not.
     def valid?(context = nil)
-      super context ? context : (new_record? ? :create : :update)
+      super(context || (new_record? ? :create : :update))
     end
 
     # Used to prevent infinite loops in associated validations.

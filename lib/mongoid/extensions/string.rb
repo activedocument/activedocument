@@ -59,7 +59,7 @@ module Mongoid
       #
       # @return [ String ] The string in collection friendly form.
       def collectionize
-        tableize.gsub("/", "_")
+        tableize.tr("/", "_")
       end
 
       # Is the string a valid value for a Mongoid id?

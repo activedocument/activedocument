@@ -28,11 +28,12 @@ module Mongoid
         field = document.fields[document.database_field_name(attribute)]
         if field.try(:localized?) && !value.blank?
           value.each_pair do |_locale, _value|
+            next unless not_present?(_value)
             document.errors.add(
               attribute,
               :blank_in_locale,
               **options.merge(location: _locale)
-            ) if not_present?(_value)
+            )
           end
         elsif document.relations.has_key?(attribute.to_s)
           if relation_or_fk_missing?(document, attribute, value)

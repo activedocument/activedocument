@@ -21,17 +21,16 @@ module Mongoid
       # @raise [ Errors::CreateCollectionFailure ] If collection creation failed.
       # @raise [ Errors::DropCollectionFailure ] If an attempt to drop collection failed.
       def create_collection(force: false)
-        if collection_name.empty?
-          # This is most probably an anonymous class, we ignore them.
-          return
-        end
-        if collection_name.match(/^system\./)
-          # We do not do anything with system collections.
-          return
-        end
+        # This is probably an anonymous class, we ignore them.
+        return if collection_name.empty?
+        
+        # We do not do anything with system collections.
+        return if collection_name.start_with?('system.')
+
         if force
           collection.drop
         end
+
         if coll_options = collection.database.list_collections(filter: { name: collection_name.to_s }).first
           if force
             raise Errors::DropCollectionFailure.new(collection_name)

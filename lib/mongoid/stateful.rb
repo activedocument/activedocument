@@ -125,7 +125,7 @@ module Mongoid
     # @return [ true | false ] If the document is readonly.
     def readonly?
       if Mongoid.legacy_readonly
-        __selected_fields != nil
+        !__selected_fields.nil?
       else
         @readonly ||= false
       end

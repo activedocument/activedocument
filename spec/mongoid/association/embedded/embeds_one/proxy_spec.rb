@@ -218,7 +218,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           end
 
           before do
-            expect(Mongo::Logger.logger).to receive(:debug?).exactly(2).times
+            expect(Mongo::Logger.logger).to receive(:debug?).twice
           end
 
           it 'does not execute an unnecessary unset for the relation' do

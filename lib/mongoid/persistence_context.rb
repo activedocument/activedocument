@@ -69,8 +69,7 @@ module Mongoid
     # @return [ String ] The collection name for this persistence
     #   context.
     def collection_name
-      @collection_name ||= (__evaluate__(options[:collection] ||
-                             storage_options[:collection]))
+      @collection_name ||= __evaluate__(options[:collection] || storage_options[:collection])
     end
 
     # Get the database name for this persistence context.

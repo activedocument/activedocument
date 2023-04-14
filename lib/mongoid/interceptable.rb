@@ -251,7 +251,7 @@ module Mongoid
     #
     # @return [ true | false ] If the child should fire the callback.
     def cascadable_child?(kind, child, association)
-      return false if kind == :initialize || kind == :find || kind == :touch
+      return false if [:initialize, :find, :touch].include?(kind)
       return false if kind == :validate && association.validate?
       child.callback_executable?(kind) ? child.in_callback_state?(kind) : false
     end

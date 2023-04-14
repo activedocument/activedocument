@@ -85,10 +85,10 @@ module Mongoid
         #
         # @return [ true | false ] If name, default, and comment are all the
         #   same, return true. Otherwise, false.
-        def ==(option)
-          name == option.name &&
-            default == option.default &&
-            comment == option.comment
+        def ==(other)
+          name == other.name &&
+            default == other.default &&
+            comment == other.comment
         end
 
         private

@@ -201,7 +201,7 @@ describe Mongoid::Contextual::Mongo do
       end
     end
 
-    context "when the criteria contains a selector", :focus do
+    context "when the criteria contains a selector" do
       let(:criteria) do
         Band.where(name: "New Order")
       end
