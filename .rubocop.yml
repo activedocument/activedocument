@@ -31,8 +31,12 @@ Style/DocumentationMethod:
 Performance/StringInclude:
   Enabled: false
 
+Performance/RegexpMatch:
+  Exclude:
+    - 'Gemfile'
+
 # --------------------------------------------------
-# Specific files skipped. These can be inlined later.
+# Cops with specific files skipped. These can be inlined later.
 
 Layout/LineContinuationLeadingSpace:
   Exclude:
@@ -67,7 +71,14 @@ Security/MarshalLoad:
     - 'spec/mongoid/criteria/marshalable_spec.rb'
 
 # --------------------------------------------------
-# Cops below this line are intentionally disabled.
+# These cops are intentionally disabled due to incompatibility.
+
+# Mongoid behavior differs from ActiveRecord
+Rails/RedundantPresenceValidationOnBelongsTo:
+  Enabled: false
+
+# --------------------------------------------------
+# These cops are intentionally disabled due to style preference.
 
 Bundler/OrderedGems:
   Enabled: false
@@ -93,8 +104,4 @@ Style/NumericPredicate:
 # See: https://github.com/rubocop/rubocop/issues/11798
 # Enforce multiline style if it becomes available in the future.
 Style/WhileUntilModifier:
-  Enabled: false
-
-# Mongoid behavior differs from ActiveRecord
-Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false

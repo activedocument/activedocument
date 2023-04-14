@@ -924,7 +924,7 @@ describe Mongoid::Scopable do
       end
 
       it "doesn't include subclass scopes in superclass scope list" do
-        expect(shape_scope_keys).to match_array([:located_at])
+        expect(shape_scope_keys).to eq([:located_at])
       end
 
       it "includes superclass scope methods on subclass" do
@@ -932,7 +932,7 @@ describe Mongoid::Scopable do
       end
 
       it "includes superclass scopes in subclass scope list" do
-        expect(circle_scope_keys).to match_array([:located_at, :with_radius])
+        expect(circle_scope_keys).to contain_exactly(:located_at, :with_radius)
       end
     end
 

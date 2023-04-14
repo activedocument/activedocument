@@ -120,7 +120,7 @@ module Constraints
   end
 
   def min_rails_version(version)
-    unless version =~ /\A\d+\.\d+\z/
+    unless /\A\d+\.\d+\z/.match?(version)
       raise ArgumentError, "Version can only be major.minor: #{version}"
     end
 
@@ -132,7 +132,7 @@ module Constraints
   end
 
   def max_rails_version(version)
-    unless version =~ /\A\d+\.\d+\z/
+    unless /\A\d+\.\d+\z/.match?(version)
       raise ArgumentError, "Version can only be major.minor: #{version}"
     end
 

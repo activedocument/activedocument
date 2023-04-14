@@ -418,7 +418,7 @@ module Mongoid
         #
         # @return [ Object ] The serialized value.
         def prepare(field, operator, value)
-          unless operator =~ /exists|type|size/
+          unless /exists|type|size/.match?(operator)
             value = value.__expand_complex__
             field = field.to_s
             name = aliases[field] || field

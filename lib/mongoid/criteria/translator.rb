@@ -32,7 +32,7 @@ module Mongoid
         when Numeric then
           value
         when String then
-          value =~ /desc/i ? -1 : 1
+          /desc/i.match?(value) ? -1 : 1
         when Symbol then
           to_direction(value.to_s)
         else

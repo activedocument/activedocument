@@ -186,7 +186,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
         end
 
         it 'sets up the index with the key' do
-          expect(has_many_left_class.index_specifications.first.fields).to match_array([association.key.to_sym])
+          expect(has_many_left_class.index_specifications.first.fields).to eq([association.key.to_sym])
         end
       end
 

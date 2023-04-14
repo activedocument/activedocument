@@ -19,7 +19,7 @@ module Mongoid
         end
 
         if expr.length > 103
-          expr = if expr =~ /\A<#((?:.|\n)*)>\z/
+          expr = if /\A<#((?:.|\n)*)>\z/.match?(expr)
                    "<##{expr.slice(0, 97)}...>"
                  else
                    expr.slice(0, 100) + '...'

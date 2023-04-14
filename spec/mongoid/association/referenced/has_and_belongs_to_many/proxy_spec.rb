@@ -3749,11 +3749,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       d2 = Distributor.create! name: 'Soul'
 
       p1.distributors << d1
-      expect(p1.d_ids).to match_array([d1.id])
-      expect(d1.p_ids).to match_array([p1.id])
+      expect(p1.d_ids).to eq([d1.id])
+      expect(d1.p_ids).to eq([p1.id])
       d2.projects << p2
-      expect(d2.p_ids).to match_array([p2.id])
-      expect(p2.d_ids).to match_array([d2.id])
+      expect(d2.p_ids).to eq([p2.id])
+      expect(p2.d_ids).to eq([d2.id])
     end
   end
 

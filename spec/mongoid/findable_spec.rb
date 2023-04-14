@@ -923,7 +923,7 @@ describe Mongoid::Findable do
     end
 
     it 'loads other fields accurately' do
-      expect(User.distinct(:name)).to match_array(['Tom'])
+      expect(User.distinct(:name)).to eq(['Tom'])
     end
   end
 end

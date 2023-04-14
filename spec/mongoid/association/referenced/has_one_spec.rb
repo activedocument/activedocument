@@ -690,7 +690,7 @@ describe Mongoid::Association::Referenced::HasOne do
         context 'when the relation class has only one relation whose class matches the owning class' do
 
           it 'returns the :as attribute of this association' do
-            expect(association.inverses(instance_of_other_class)).to match_array([ :containable ])
+            expect(association.inverses(instance_of_other_class)).to eq([ :containable ])
           end
         end
 
@@ -708,7 +708,7 @@ describe Mongoid::Association::Referenced::HasOne do
         context 'when inverse_of is not specified' do
 
           it 'returns the :as attribute of this association' do
-            expect(association.inverses(instance_of_other_class)).to match_array([ :containable ])
+            expect(association.inverses(instance_of_other_class)).to eq([ :containable ])
           end
         end
       end

@@ -392,8 +392,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           it 'sets up the index with the key and inverse type' do
-            expect(belonging_class.index_specifications.first.fields).to match_array([ association.key.to_sym,
-                                                                                       association.inverse_type.to_sym])
+            expect(belonging_class.index_specifications.first.fields).to contain_exactly(association.key.to_sym, association.inverse_type.to_sym)
           end
         end
 
@@ -406,7 +405,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           it 'sets up the index with the key' do
-            expect(belonging_class.index_specifications.first.fields).to match_array([ association.key.to_sym ])
+            expect(belonging_class.index_specifications.first.fields).to eq([association.key.to_sym])
           end
         end
       end
@@ -1218,7 +1217,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           context 'when inverse_of is not specified' do
 
             it 'returns the list of relations whose :as attribute matches the name of this association' do
-              expect(association.inverses(instance_of_other_class)).to match_array([ :belonging_object ])
+              expect(association.inverses(instance_of_other_class)).to eq([:belonging_object])
             end
           end
         end
@@ -1244,8 +1243,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           context 'when inverse_of is not specified' do
 
             it 'returns the list of relations whose :as attribute matches the name of this association' do
-              expect(association.inverses(instance_of_other_class)).to match_array([ :other_belonging_object,
-                                                                                     :belonging_object ])
+              expect(association.inverses(instance_of_other_class)).to contain_exactly(:other_belonging_object, :belonging_object)
             end
 
             context 'when the relation class has two associations with the same name' do
@@ -1256,7 +1254,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
               end
 
               it 'returns only the relations whose :as attribute and class match' do
-                expect(association.inverses(instance_of_other_class)).to match_array([ :belonging_object ])
+                expect(association.inverses(instance_of_other_class)).to eq([:belonging_object])
               end
             end
           end

@@ -4,6 +4,8 @@ module Mongoid
 
   # Adds type-casting behavior to Mongoid::Boolean class.
   class Boolean
+    TRUTHY_VALUES = /\A(true|t|yes|y|on|1|1.0)\z/i.freeze
+    FALSY_VALUES = /\A(false|f|no|n|off|0|0.0)\z/i.freeze
 
     class << self
 
@@ -16,9 +18,9 @@ module Mongoid
       # @return [ true | false | nil ] The object mongoized or nil.
       def mongoize(object)
         return if object.nil?
-        if object.to_s =~ (/\A(true|t|yes|y|on|1|1.0)\z/i)
+        if object.to_s&.match?(TRUTHY_VALUES)
           true
-        elsif object.to_s =~ (/\A(false|f|no|n|off|0|0.0)\z/i)
+        elsif object.to_s&.match?(FALSY_VALUES)
           false
         end
       end

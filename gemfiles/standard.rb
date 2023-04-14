@@ -10,7 +10,7 @@ def standard_dependencies
     gem 'rubocop-performance', '~> 1.16.0'
     gem 'rubocop-rails', '~> 2.17.4'
     gem 'rubocop-rake', '~> 0.6.0'
-    gem 'rubocop-rspec', '~> 2.18.1'
+    gem 'rubocop-rspec', '~> 2.19.0'
   end
 
   group :test do

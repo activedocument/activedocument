@@ -194,7 +194,7 @@ module Mongoid
         # @return [ Object ] The serialized hash.
         def evolve_hash(serializer, value)
           value.each_pair do |operator, _value|
-            if operator =~ /exists|type|size/
+            if /exists|type|size/.match?(operator)
               value[operator] = _value
             else
               value[operator] = evolve(serializer, _value)
