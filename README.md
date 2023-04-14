@@ -149,7 +149,7 @@ Since the transition, the hallmarks of user-disconnect and corporate fumbling ha
 - Introduction of [critical semver-breaking issues](https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/), with [no](https://jira.mongodb.org/browse/MONGOID-5272) [sign](https://github.com/mongodb/mongoid/pull/5601#issuecomment-1506630267) of [improvement](https://jira.mongodb.org/browse/MONGOID-5016).
 - Lack of a publicly visible roadmap and direction (when requested, it was said to be a "corporate secret".)
 - [Unwillingness](https://github.com/mongodb/mongoid/pull/5546#issuecomment-1448910968) to [adopt](https://github.com/mongodb/mongoid/pull/5553#issuecomment-1500361845) [basic](https://github.com/mongodb/bson-ruby/pull/284) industry-standard best practices, e.g. Rubocop linter and a publicly-visible CI workflow.
-- Refusal to merge patches which would be of obvious benefit to the community.
+- Refusal to [merge](https://github.com/mongodb/mongoid/pull/5541#discussion_r1101934994) [patches](https://github.com/mongodb/mongoid/pull/5497) which would be of obvious benefit to the community.
 - Lack of bandwidth and resources to review simple PR contributions.
 
 **None of this is intended to disparage the hard-working and talented individuals at MongoDB Inc.**, but rather,
