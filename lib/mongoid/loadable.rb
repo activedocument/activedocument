@@ -31,7 +31,7 @@ module Mongoid
         end
 
         files.sort.each do |file|
-          load_model(file.gsub(/^#{path}\//, "").gsub(/\.rb$/, ""))
+          load_model(file.gsub(%r{^#{path}/}, "").gsub(/\.rb$/, ""))
         end
       end
     end

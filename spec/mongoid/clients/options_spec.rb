@@ -243,7 +243,7 @@ describe Mongoid::Clients::Options, retry: 3 do
           threads = []
           100.times do |i|
             threads << Thread.new do
-              if i % 2 == 0
+              if i.even?
                 NameOnly.with(collection: 'British') do |klass|
                   klass.create!(name: 'realised')
                 end
@@ -468,7 +468,7 @@ describe Mongoid::Clients::Options, retry: 3 do
           100.times do |i|
             test_model = NameOnly.create!
             threads << Thread.new do
-              if i % 2 == 0
+              if i.even?
                 test_model.with(collection: 'British') do |b|
                   b.name = 'realised'
                   b.upsert

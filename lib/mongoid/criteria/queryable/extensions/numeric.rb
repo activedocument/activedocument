@@ -56,7 +56,9 @@ module Mongoid
             # @return [ Integer ] The evolved object.
             def evolve(object)
               __evolve__(object) do |obj|
-                __numeric__(obj) rescue obj
+                __numeric__(obj)
+              rescue StandardError
+                obj
               end
             end
           end

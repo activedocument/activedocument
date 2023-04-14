@@ -102,7 +102,8 @@ module Mongoid
         crit = clone
         unless unscoped?
           crit.scoping_options = false, true
-          crit.selector.clear; crit.options.clear
+          crit.selector.clear
+          crit.options.clear
         end
         crit
       end

@@ -168,7 +168,7 @@ describe Mongoid::Extensions::BigDecimal do
         end
 
         it "is a negative infinity BigDecimal" do
-          expect(demongoized.infinite?).to eq -1
+          expect(demongoized.infinite?).to eq(-1)
         end
       end
 
@@ -616,7 +616,7 @@ describe Mongoid::Extensions::BigDecimal do
         end
 
         it "is a negative infinity BigDecimal" do
-          expect(demongoized.infinite?).to eq -1
+          expect(demongoized.infinite?).to eq(-1)
         end
       end
 

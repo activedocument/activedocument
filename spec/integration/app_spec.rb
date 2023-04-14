@@ -85,7 +85,11 @@ describe 'Mongoid application tests' do
     ensure
       # The process may have already died (due to an error exit) -
       # in this case killing it will raise an exception.
-      Process.kill('TERM', process.pid) rescue nil
+      begin
+        Process.kill('TERM', process.pid)
+      rescue StandardError
+        nil
+      end
       status = process.wait
     end
 
@@ -139,8 +143,8 @@ describe 'Mongoid application tests' do
         expect(File.exist?(mongoid_config_file)).to be true
 
         config_text = File.read(mongoid_config_file)
-        expect(config_text).to match /mongoid_test_config_development/
-        expect(config_text).to match /mongoid_test_config_test/
+        expect(config_text).to match(/mongoid_test_config_development/)
+        expect(config_text).to match(/mongoid_test_config_test/)
 
         Mongoid::Config::Introspection.options(include_deprecated: true).each do |opt|
           if opt.deprecated?

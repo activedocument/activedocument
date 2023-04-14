@@ -246,8 +246,8 @@ module Mongoid
           # @yield [ Object ] Yields each enumerable element to the block.
           #
           # @return [ Mongoid::Document | Array<Mongoid::Document> | nil ] A document or matching documents.
-          def find(*args, &block)
-            criteria.find(*args, &block)
+          def find(...)
+            criteria.find(...)
           end
 
           # Instantiate a new embeds_many association.

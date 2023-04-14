@@ -458,7 +458,7 @@ describe Mongoid::Fields::ForeignKey do
       end
 
       let(:value) do
-        BSON::ObjectId.new().to_s
+        BSON::ObjectId.new.to_s
       end
 
       let(:evolved) do

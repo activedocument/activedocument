@@ -25,7 +25,7 @@ module Mongoid
       #
       # @return [ true | false ] If the other is a boolean.
       def is_a?(other)
-        if other == Mongoid::Boolean || other.class == Mongoid::Boolean
+        if other == Mongoid::Boolean || other.instance_of?(Mongoid::Boolean)
           return true
         end
         super(other)

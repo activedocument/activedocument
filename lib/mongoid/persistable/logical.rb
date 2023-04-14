@@ -21,8 +21,8 @@ module Mongoid
           process_atomic_operations(operations) do |field, values|
             value = attributes[field]
             values.each do |op, val|
-              value = value & val if op.to_s == "and"
-              value = value | val if op.to_s == "or"
+              value &= val if op.to_s == "and"
+              value |= val if op.to_s == "or"
             end
             process_attribute field, value if executing_atomically?
             attributes[field] = value

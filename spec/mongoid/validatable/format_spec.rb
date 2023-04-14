@@ -42,7 +42,7 @@ describe Mongoid::Validatable::FormatValidator do
     context "when the field is localized" do
 
       let(:validator) do
-        described_class.new(attributes: [:website], with: URI.regexp)
+        described_class.new(attributes: [:website], with: URI::DEFAULT_PARSER.make_regexp)
       end
 
       context "when the localized value is valid" do

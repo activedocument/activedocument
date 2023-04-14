@@ -56,7 +56,7 @@ describe Mongoid::Attributes do
               let!(:agent) do
                 agent = Agent.new(:title => title)
                 agent.build_address(:city => city)
-                agent.save!()
+                agent.save!
                 agent
               end
               let(:from_db) do

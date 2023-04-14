@@ -116,14 +116,14 @@ module Mongoid
       #   1: the (potentially multiline) comment
       #   2: the option's name
       #   3: the option's default value
-      OPTION_PATTERN = %r{
+      OPTION_PATTERN = /
         (
           ((?:^\s*\#.*\n)+)  # match one or more lines of comments
           ^\s+option\s+      # followed immediately by a line declaring an option
           :(\w+),\s+         # match the option's name, followed by a comma
           default:\s+(.*)    # match the default value for the option
         \n)                  # end with a newline
-      }x
+      /x
 
       # The full path to the source file of the Mongoid::Config module.
       CONFIG_RB_PATH = File.absolute_path(File.join(

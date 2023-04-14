@@ -57,11 +57,7 @@ class SpecConfig
   end
 
   def rails_version
-    v = ENV['RAILS']
-    if v == ''
-      v = nil
-    end
-    v || '6.1'
+    ENV['RAILS'].presence || '6.1'
   end
 
   # Scrapes the output of `gem list` to find which versions of Rails are

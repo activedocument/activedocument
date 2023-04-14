@@ -223,7 +223,13 @@ module Mongoid
     #
     # @return [ Hash ] The $set operations.
     def atomic_sets
-      updateable? ? setters : settable? ? { atomic_path => as_attributes } : {}
+      if updateable?
+        setters
+      elsif settable?
+        { atomic_path => as_attributes }
+      else
+        {}
+      end
     end
 
     # Get all the attributes that need to be unset.

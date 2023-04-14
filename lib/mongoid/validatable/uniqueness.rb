@@ -258,10 +258,10 @@ module Mongoid
       # @param [ Object ] value The value.
       def validate_root(document, attribute, value)
         klass = document.class
-
         while klass.superclass.respond_to?(:validators) && klass.superclass.validators.include?(self)
           klass = klass.superclass
         end
+
         criteria = create_criteria(klass, document, attribute, value)
         criteria = criteria.merge(options[:conditions].call) if options[:conditions]
 

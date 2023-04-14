@@ -68,6 +68,9 @@ Layout/EmptyLinesAroundClassBody:
 Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 
+Style/FetchEnvVar:
+  Enabled: false
+
 Style/NumericPredicate:
   Enabled: false
 

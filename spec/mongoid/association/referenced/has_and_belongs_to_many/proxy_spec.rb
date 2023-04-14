@@ -521,7 +521,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             before do
               expect(post).to receive(:before_add_tag).and_raise
-              begin; post.tags.send(method, tag); rescue; end;
+              begin; post.tags.send(method, tag); rescue; end
             end
 
             it "does not add the document to the relation" do
