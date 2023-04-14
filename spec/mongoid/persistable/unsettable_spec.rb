@@ -73,7 +73,7 @@ describe Mongoid::Persistable::Unsettable do
       context "when provided an array of strings" do
 
         let!(:unset) do
-          person.unset([ "title", "age" ])
+          person.unset(%w[title age])
         end
 
         it_behaves_like "an unsettable root document"
@@ -147,7 +147,7 @@ describe Mongoid::Persistable::Unsettable do
       context "when provided an array of strings" do
 
         let!(:unset) do
-          address.unset([ "number", "city" ])
+          address.unset(%w[number city])
         end
 
         it_behaves_like "an unsettable embedded document"

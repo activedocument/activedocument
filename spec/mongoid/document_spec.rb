@@ -992,7 +992,7 @@ describe Mongoid::Document do
         end
 
         it "adds the _type change" do
-          expect(person.changes["_type"]).to eq([ "Manager", "Person" ])
+          expect(person.changes["_type"]).to eq(%w[Manager Person])
         end
       end
 
@@ -1143,7 +1143,7 @@ describe Mongoid::Document do
         end
 
         it "adds the _type change" do
-          expect(manager.changes["_type"]).to eq([ "Person", "Manager" ])
+          expect(manager.changes["_type"]).to eq(%w[Person Manager])
         end
       end
 

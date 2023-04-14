@@ -66,7 +66,7 @@ describe Mongoid::Criteria::Queryable::Selector do
 
         it "combines the two $nin queries into one" do
           expect(selector).to eq({
-                                   "field" => { "$nin" => ["foo", "bar"] }
+                                   "field" => { "$nin" => %w[foo bar] }
                                  })
         end
       end
@@ -500,7 +500,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                 context "when the key is a string" do
 
                   before do
-                    selector.send(method, "key", [ "1", "2" ])
+                    selector.send(method, "key", %w[1 2])
                   end
 
                   it "serializes the value" do
@@ -511,7 +511,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                 context "when the key is a symbol" do
 
                   before do
-                    selector.send(method, :key, [ "1", "2" ])
+                    selector.send(method, :key, %w[1 2])
                   end
 
                   it "serializes the value" do
@@ -552,7 +552,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                   context "when the key is a string" do
 
                     before do
-                      selector.send(method, "key", { "$in" => [ "1", "2" ] })
+                      selector.send(method, "key", { "$in" => %w[1 2] })
                     end
 
                     it "serializes the value" do
@@ -563,7 +563,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                   context "when the key is a symbol" do
 
                     before do
-                      selector.send(method, :key, { "$in" => [ "1", "2" ] })
+                      selector.send(method, :key, { "$in" => %w[1 2] })
                     end
 
                     it "serializes the value" do
@@ -763,7 +763,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                 context "when the key is a string" do
 
                   before do
-                    selector.send(method, "key", [ "1", "2" ])
+                    selector.send(method, "key", %w[1 2])
                   end
 
                   it "serializes the value" do
@@ -774,7 +774,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                 context "when the key is a symbol" do
 
                   before do
-                    selector.send(method, :key, [ "1", "2" ])
+                    selector.send(method, :key, %w[1 2])
                   end
 
                   it "serializes the value" do
@@ -823,7 +823,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                   context "when the key is a string" do
 
                     before do
-                      selector.send(method, "key", { "$in" => [ "1", "2" ] })
+                      selector.send(method, "key", { "$in" => %w[1 2] })
                     end
 
                     it "serializes the value" do
@@ -834,7 +834,7 @@ describe Mongoid::Criteria::Queryable::Selector do
                   context "when the key is a symbol" do
 
                     before do
-                      selector.send(method, :key, { "$in" => [ "1", "2" ] })
+                      selector.send(method, :key, { "$in" => %w[1 2] })
                     end
 
                     it "serializes the value" do

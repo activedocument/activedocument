@@ -96,7 +96,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         context "when provided an array of strings" do
 
           let(:selection) do
-            query.send(method, [ "field_one", "field_two" ])
+            query.send(method, %w[field_one field_two])
           end
 
           it "adds the sorting criteria" do
@@ -268,7 +268,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         context "when provided an array of strings" do
 
           let(:selection) do
-            query.send(method, [ "field_one", "field_two" ])
+            query.send(method, %w[field_one field_two])
           end
 
           it "adds the sorting criteria" do

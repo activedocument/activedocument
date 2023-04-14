@@ -51,12 +51,12 @@ module Mongoid
               end
             elsif Hash === value
               sub_values = Matcher.extract_attribute(value, k)
-              if sub_values.length > 0
+              if sub_values.empty?
+                Eq.matches?(false, nil, cond_v)
+              else
                 sub_values.any? do |sub_v|
                   Eq.matches?(true, sub_v, cond_v)
                 end
-              else
-                Eq.matches?(false, nil, cond_v)
               end
             else
               false

@@ -334,7 +334,7 @@ describe Mongoid::Serializable do
         end
 
         it "returns those two attributes only" do
-          expect(hash.keys).to eq(["_id", "username"])
+          expect(hash.keys).to eq(%w[_id username])
         end
       end
     end

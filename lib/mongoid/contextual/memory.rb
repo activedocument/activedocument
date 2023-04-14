@@ -613,9 +613,7 @@ module Mongoid
       # @param [ Integer ] value The limit.
       #
       # @return [ Integer ] The limit.
-      def limiting=(value)
-        @limiting = value
-      end
+      attr_writer :limiting
 
       # Get the skipping value.
       #
@@ -637,9 +635,7 @@ module Mongoid
       # @param [ Integer ] value The skip.
       #
       # @return [ Integer ] The skip.
-      def skipping=(value)
-        @skipping = value
-      end
+      attr_writer :skipping
 
       # Apply criteria options.
       #

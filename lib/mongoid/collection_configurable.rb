@@ -23,7 +23,7 @@ module Mongoid
       def create_collection(force: false)
         # This is probably an anonymous class, we ignore them.
         return if collection_name.empty?
-        
+
         # We do not do anything with system collections.
         return if collection_name.start_with?('system.')
 

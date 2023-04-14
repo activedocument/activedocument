@@ -2703,7 +2703,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       person.addresses.create!(
         street: "Market",
         state: "CA",
-        services: [ "1", "2" ]
+        services: %w[1 2]
       )
     end
 
@@ -2711,7 +2711,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       person.addresses.create!(
         street: "Madison",
         state: "NY",
-        services: [ "1", "2" ]
+        services: %w[1 2]
       )
     end
 
@@ -2742,7 +2742,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       context "when using array comparison" do
 
         let(:addresses) do
-          person.addresses.where(services: [ "1", "2" ])
+          person.addresses.where(services: %w[1 2])
         end
 
         it "applies the criteria to the documents" do
@@ -2791,7 +2791,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       describe "#distinct" do
 
         it "returns the distinct values for the fields" do
-          expect(person.addresses.distinct(:street)).to eq([ "Market", "Madison"])
+          expect(person.addresses.distinct(:street)).to eq(%w[Market Madison])
         end
       end
     end
@@ -3922,16 +3922,16 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     context "when saving the array on a persisted document" do
 
       before do
-        video.genres = [ "horror", "scifi" ]
+        video.genres = %w[horror scifi]
         video.save!
       end
 
       it "sets the value" do
-        expect(video.genres).to eq([ "horror", "scifi" ])
+        expect(video.genres).to eq(%w[horror scifi])
       end
 
       it "persists the value" do
-        expect(video.reload.genres).to eq([ "horror", "scifi" ])
+        expect(video.reload.genres).to eq(%w[horror scifi])
       end
 
       context "when reloading the parent" do

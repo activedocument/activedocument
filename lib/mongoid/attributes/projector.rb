@@ -47,10 +47,10 @@ module Mongoid
       def attribute_or_path_allowed?(name)
         # Special handling for _id.
         if name == '_id'
-          result = unless id_projection_value.nil?
-                     value_inclusionary?(id_projection_value)
-                   else
+          result = if id_projection_value.nil?
                      true
+                   else
+                     value_inclusionary?(id_projection_value)
                    end
           return result
         end

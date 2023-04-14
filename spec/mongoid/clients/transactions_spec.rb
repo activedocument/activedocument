@@ -60,7 +60,7 @@ describe Mongoid::Clients::Sessions do
   end
 
   let(:other_events) do
-    subscriber.started_events.reject { |event| ['insert', 'update'].include?(event.command_name) }
+    subscriber.started_events.reject { |event| %w[insert update].include?(event.command_name) }
   end
 
   context 'when a transaction is used on a model class' do

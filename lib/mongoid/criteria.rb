@@ -137,9 +137,7 @@ module Mongoid
     # @param [ Array<Mongoid::Document> ] docs The embedded documents.
     #
     # @return [ Array<Mongoid::Document> ] The embedded documents.
-    def documents=(docs)
-      @documents = docs
-    end
+    attr_writer :documents
 
     # Is the criteria for embedded documents?
     #

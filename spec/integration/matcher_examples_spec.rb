@@ -596,7 +596,7 @@ describe 'Matcher' do
 
       let!(:band) do
         Band.create!(records: [
-          Record.new(producers: ['Ferguson', 'Fallon']),
+          Record.new(producers: %w[Ferguson Fallon]),
         ])
       end
 
@@ -625,7 +625,7 @@ describe 'Matcher' do
 
       let!(:band) do
         Band.create!(records: [
-          Record.new(producers: ['Ferguson', 'Fallon']),
+          Record.new(producers: %w[Ferguson Fallon]),
         ])
       end
 

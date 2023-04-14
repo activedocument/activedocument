@@ -50,7 +50,7 @@ module Mongoid
               # for the association above it. If there is no parent association,
               # we will include documents from the documents passed to this method.
               ds = docs
-              if assoc.parent_inclusions.length > 0
+              unless assoc.parent_inclusions.empty?
                 ds = assoc.parent_inclusions.map { |p| docs_map[p].to_a }.flatten
               end
 

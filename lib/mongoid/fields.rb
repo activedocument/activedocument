@@ -840,7 +840,7 @@ module Mongoid
       #
       # @api private
       def unmapped_type(type)
-        if "Boolean" == type.to_s
+        if type.to_s == "Boolean"
           Mongoid::Boolean
         else
           type || Object

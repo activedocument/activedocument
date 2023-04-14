@@ -176,7 +176,7 @@ describe Mongoid::Persistable::Settable do
       it "marks a dirty change for the set fields" do
         person.atomically do
           person.set title: "miss", age: 21
-          expect(person.changes).to eq({"title" => ["sir", "miss"], "age" => [30, 21]})
+          expect(person.changes).to eq({"title" => %w[sir miss], "age" => [30, 21]})
         end
       end
     end
@@ -435,7 +435,7 @@ describe Mongoid::Persistable::Settable do
     context 'when nested field is an array' do
       let(:church) do
         Church.create!(
-          location: {'address' => ['one', 'two']}
+          location: {'address' => %w[one two]}
         )
       end
 

@@ -22,7 +22,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
       expect do
         parent.child.b
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'b' on EomChild which was not loaded/)
-      expect(parent.child.attributes.keys).to eq(['_id', 'a'])
+      expect(parent.child.attributes.keys).to eq(%w[_id a])
     end
   end
 end

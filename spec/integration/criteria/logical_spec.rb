@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Criteria logical operations' do
-  let!(:ap) { Band.create!(name: 'Astral Projection', origin: 'SFX', genres: ['Goa', 'Psy']) }
+  let!(:ap) { Band.create!(name: 'Astral Projection', origin: 'SFX', genres: %w[Goa Psy]) }
   let!(:im) { Band.create!(name: 'Infected Mushroom', origin: 'Computers', genres: ['Psy']) }
   let!(:sp) { Band.create!(name: 'Sun Project', genres: ['Goa']) }
 

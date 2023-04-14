@@ -44,7 +44,7 @@ describe Mongoid::Atomic::Modifiers do
     context "when the adds are not empty" do
 
       let(:adds) do
-        { "preference_ids" => [ "one", "two" ] }
+        { "preference_ids" => %w[one two] }
       end
 
       context "when adding a single field" do
@@ -55,7 +55,7 @@ describe Mongoid::Atomic::Modifiers do
 
         it "adds the add to set with each modifiers" do
           expect(modifiers).to eq({
-            "$addToSet" => { "preference_ids" => { "$each" => [ "one", "two" ] }}
+            "$addToSet" => { "preference_ids" => { "$each" => %w[one two] }}
           })
         end
       end
@@ -75,7 +75,7 @@ describe Mongoid::Atomic::Modifiers do
           expect(modifiers).to eq({
             "$addToSet" =>
               { "preference_ids" =>
-                { "$each" => [ "one", "two", "three" ] }
+                { "$each" => %w[one two three] }
               }
           })
         end

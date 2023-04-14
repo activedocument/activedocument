@@ -163,7 +163,7 @@ describe Mongoid::Extensions::Object do
       context "when the object responds to the method" do
 
         let(:result) do
-          [ "Yoda", "Luke" ].do_or_do_not(:join, ",")
+          %w[Yoda Luke].do_or_do_not(:join, ",")
         end
 
         it "returns the result of the method" do

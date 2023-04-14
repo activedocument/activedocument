@@ -254,9 +254,7 @@ module Mongoid
           #
           # @return [ Many ] The association emptied.
           def purge
-            unless _association.destructive?
-              nullify
-            else
+            if _association.destructive?
               after_remove_error = nil
               criteria.delete_all
               many = _target.clear do |doc|
@@ -271,6 +269,8 @@ module Mongoid
               end
               raise after_remove_error if after_remove_error
               many
+            else
+              nullify
             end
           end
 

@@ -865,16 +865,16 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       end
 
       before do
-        from_db.aliases = [ "Syd", "Sydney" ]
+        from_db.aliases = %w[Syd Sydney]
         from_db.save!
       end
 
       it "sets the values of the array" do
-        expect(from_db.aliases).to eq([ "Syd", "Sydney" ])
+        expect(from_db.aliases).to eq(%w[Syd Sydney])
       end
 
       it "persists the array" do
-        expect(Person.find(person.id).name.aliases).to eq([ "Syd", "Sydney" ])
+        expect(Person.find(person.id).name.aliases).to eq(%w[Syd Sydney])
       end
     end
   end

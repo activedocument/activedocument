@@ -24,7 +24,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       expect do
         legislator.b
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'b' on EmmLegislator which was not loaded/)
-      expect(legislator.attributes.keys).to eq(['_id', 'a'])
+      expect(legislator.attributes.keys).to eq(%w[_id a])
     end
 
     context 'when using only with $' do

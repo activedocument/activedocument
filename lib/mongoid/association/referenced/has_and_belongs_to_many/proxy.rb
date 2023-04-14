@@ -204,11 +204,11 @@ module Mongoid
           # @return [ Many ] The association.
           def substitute(replacement)
             purge(replacement)
-            unless replacement.blank?
-              push(replacement.compact.uniq)
-            else
+            if replacement.blank?
               reset_unloaded
               clear_foreign_key_changes
+            else
+              push(replacement.compact.uniq)
             end
             self
           end

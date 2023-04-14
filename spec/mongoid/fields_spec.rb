@@ -759,7 +759,7 @@ describe Mongoid::Fields do
     context "when the field is an array" do
 
       before do
-        product.stores = [ "kadewe", "karstadt" ]
+        product.stores = %w[kadewe karstadt]
         product.save!
       end
 
@@ -794,16 +794,16 @@ describe Mongoid::Fields do
       context "when reversing the array values" do
 
         before do
-          product.stores = [ "karstadt", "kadewe" ]
+          product.stores = %w[karstadt kadewe]
           product.save!
         end
 
         it "reverses the values" do
-          expect(product.stores).to eq([ "karstadt", "kadewe" ])
+          expect(product.stores).to eq(%w[karstadt kadewe])
         end
 
         it "persists the changes" do
-          expect(product.reload.stores).to eq([ "karstadt", "kadewe" ])
+          expect(product.reload.stores).to eq(%w[karstadt kadewe])
         end
       end
     end
@@ -1011,7 +1011,7 @@ describe Mongoid::Fields do
       end
 
       it "does not return subclass defaults" do
-        expect(shape.pre_processed_defaults).to eq([ "_id", "x", "y" ])
+        expect(shape.pre_processed_defaults).to eq(%w[_id x y])
         expect(shape.post_processed_defaults).to eq([ "_type" ])
       end
     end
@@ -1023,7 +1023,7 @@ describe Mongoid::Fields do
       end
 
       it "has the parent and child defaults" do
-        expect(circle.pre_processed_defaults).to eq([ "_id", "x", "y", "radius" ])
+        expect(circle.pre_processed_defaults).to eq(%w[_id x y radius])
         expect(circle.post_processed_defaults).to eq([ "_type" ])
       end
     end

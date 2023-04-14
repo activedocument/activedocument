@@ -711,7 +711,7 @@ describe Mongoid::Criteria::Modifiable do
         context 'when the criteria has a selector with query operators' do
 
           let(:document) do
-            Band.in(genres: ['Hiphop', 'Soul']).first_or_create(name: 'Smooth')
+            Band.in(genres: %w[Hiphop Soul]).first_or_create(name: 'Smooth')
           end
 
           it 'does not create a document with the query operators' do
@@ -1359,7 +1359,7 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           it "updates the first document" do
-            expect(from_db.posts.map(&:title)).to eq(["London", "Second"])
+            expect(from_db.posts.map(&:title)).to eq(%w[London Second])
           end
 
           it "does not update the last document" do

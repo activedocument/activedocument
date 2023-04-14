@@ -159,7 +159,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is not set" do
 
         let(:selection) do
-          query.send(query_method, field: [ '1', '2' ]).send(query_method, field: [ '3', '4' ])
+          query.send(query_method, field: %w[1 2]).send(query_method, field: %w[3 4])
         end
 
         it "combines the conditions with $and" do
@@ -175,7 +175,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       context "when the strategy is set" do
 
         let(:selection) do
-          query.send(query_method, field: [ '1', '2' ]).intersect.send(query_method, field: [ '2', '3' ])
+          query.send(query_method, field: %w[1 2]).intersect.send(query_method, field: %w[2 3])
         end
 
         it "intersects the conditions" do
@@ -338,7 +338,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         context "when providing an array" do
 
           let(:selection) do
-            query.all(field: [ "1", "2" ])
+            query.all(field: %w[1 2])
           end
 
           it "adds the $all selector" do

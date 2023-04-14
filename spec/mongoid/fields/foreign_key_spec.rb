@@ -711,7 +711,7 @@ describe Mongoid::Fields::ForeignKey do
       end
 
       it "casts the ids on the initial set" do
-        expect(agent.account_ids).to eq([ "true", "false", "1", "2" ])
+        expect(agent.account_ids).to eq(%w[true false 1 2])
       end
     end
   end

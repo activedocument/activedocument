@@ -832,7 +832,7 @@ describe Mongoid::Changeable do
       end
 
       it "returns the value in the changes" do
-        expect(changes).to eq({ "aliases" => [[ "007" ], [ "007", "008" ]] })
+        expect(changes).to eq({ "aliases" => [[ "007" ], %w[007 008]] })
       end
     end
 
@@ -1311,7 +1311,7 @@ describe Mongoid::Changeable do
           end
 
           it "contains array changes in the setters" do
-            expect(setters).to eq({ "aliases" => [ "007", "008" ] })
+            expect(setters).to eq({ "aliases" => %w[007 008] })
           end
         end
 
@@ -1964,14 +1964,14 @@ describe Mongoid::Changeable do
 
     it "marks field changes" do
       expect(person.changes).to eq({
-        "title" => [ "MC", "DJ" ],
+        "title" => %w[MC DJ],
         "ssn" => [ nil, "222-22-2222" ],
-        "some_dynamic_field" => [ "blah", "bloop" ]
+        "some_dynamic_field" => %w[blah bloop]
       })
     end
 
     it "marks changed fields" do
-      expect(person.changed).to eq([ "title", "ssn", "some_dynamic_field" ])
+      expect(person.changed).to eq(%w[title ssn some_dynamic_field])
     end
 
     it "marks the field as changed" do
@@ -1983,13 +1983,13 @@ describe Mongoid::Changeable do
     end
 
     it "marks field changes" do
-      expect(person.title_change).to eq([ "MC", "DJ" ])
+      expect(person.title_change).to eq(%w[MC DJ])
     end
 
     it "allows reset of field changes" do
       person.reset_title!
       expect(person.title).to eq("MC")
-      expect(person.changed).to eq([ "ssn", "some_dynamic_field" ])
+      expect(person.changed).to eq(%w[ssn some_dynamic_field])
     end
 
     context "after a save" do
@@ -2003,7 +2003,7 @@ describe Mongoid::Changeable do
       end
 
       it "stores previous changes" do
-        expect(person.previous_changes["title"]).to eq([ "MC", "DJ" ])
+        expect(person.previous_changes["title"]).to eq(%w[MC DJ])
         expect(person.previous_changes["ssn"]).to eq([ nil, "222-22-2222" ])
       end
     end

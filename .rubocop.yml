@@ -71,6 +71,11 @@ Layout/EmptyLinesAroundModuleBody:
 Style/NumericPredicate:
   Enabled: false
 
+# See: https://github.com/rubocop/rubocop/issues/11798
+# Enforce multiline style if it becomes available in the future.
+Style/WhileUntilModifier:
+  Enabled: false
+
 # Mongoid behavior differs from ActiveRecord
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false

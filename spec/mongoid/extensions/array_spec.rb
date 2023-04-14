@@ -425,7 +425,7 @@ describe Mongoid::Extensions::Array do
     context "when the object exists once" do
 
       let(:array) do
-        [ "1", "2" ]
+        %w[1 2]
       end
 
       let!(:deleted) do
@@ -444,7 +444,7 @@ describe Mongoid::Extensions::Array do
     context "when the object exists more than once" do
 
       let(:array) do
-        [ "1", "2", "1" ]
+        %w[1 2 1]
       end
 
       let!(:deleted) do
@@ -452,7 +452,7 @@ describe Mongoid::Extensions::Array do
       end
 
       it "deletes the first object" do
-        expect(array).to eq([ "2", "1" ])
+        expect(array).to eq(%w[2 1])
       end
 
       it "returns the object" do

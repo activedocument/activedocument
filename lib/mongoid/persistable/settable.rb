@@ -50,7 +50,7 @@ module Mongoid
 
             field_seq = field.to_s.split('.')
             field = field_seq.shift
-            if field_seq.length > 0
+            unless field_seq.empty?
               # nested hash path
               old_value = attributes[field]
 

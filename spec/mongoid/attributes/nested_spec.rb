@@ -3303,7 +3303,7 @@ describe Mongoid::Attributes::Nested do
 
               it "adds the documents in the sorted hash key order" do
                 expect(person.posts.map(&:title)).to eq(
-                  [ "First", "Second", "Third" ]
+                  %w[First Second Third]
                 )
               end
             end
@@ -4008,7 +4008,7 @@ describe Mongoid::Attributes::Nested do
 
             it "adds the documents in the sorted hash key order" do
               expect(person.preferences.map(&:name)).to eq(
-                [ "First", "Second", "Third" ]
+                %w[First Second Third]
               )
             end
           end

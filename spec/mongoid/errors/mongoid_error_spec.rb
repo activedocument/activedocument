@@ -16,7 +16,7 @@ describe Mongoid::Errors::MongoidError do
         expect(::I18n).to receive(:t).with("mongoid.errors.messages.#{key}", **{}).and_return(name)
       end
 
-      ["message", "summary", "resolution"].each do |name|
+      %w[message summary resolution].each do |name|
         expect(::I18n).to receive(:t)
           .with("mongoid.errors.messages.#{key}.#{name}", **{})
           .and_return(name)
@@ -26,7 +26,7 @@ describe Mongoid::Errors::MongoidError do
         expect(::I18n).to receive(:t).with("mongoid.errors.messages.#{key}", {}).and_return(name)
       end
 
-      ["message", "summary", "resolution"].each do |name|
+      %w[message summary resolution].each do |name|
         expect(::I18n).to receive(:t)
           .with("mongoid.errors.messages.#{key}.#{name}", {})
           .and_return(name)

@@ -19,7 +19,7 @@ describe Mongoid::Document do
       expect do
         person.age
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'age' on Person which was not loaded/)
-      expect(person.attributes.keys).to eq(['_id', 'username'])
+      expect(person.attributes.keys).to eq(%w[_id username])
     end
 
     it 'allows writing omitted fields' do

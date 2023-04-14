@@ -45,7 +45,7 @@ module Mongoid
         # which is a regression from pre-3.0 and also does not agree with
         # the core Time API.
         parsed = ::Time.parse(self)
-        if ::Time == ::Time.configured
+        if ::Time.configured == ::Time
           parsed
         else
           ::Time.configured.parse(self)

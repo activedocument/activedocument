@@ -899,8 +899,8 @@ describe Mongoid::Contextual::Mongo do
 
         it "returns the translation for the current locale" do
           expect(tallied).to eq(
-            [ "en1", "en2" ] => 1,
-            [ "en1", "en3" ] => 1,
+            %w[en1 en2] => 1,
+            %w[en1 en3] => 1,
           )
         end
 
@@ -922,8 +922,8 @@ describe Mongoid::Contextual::Mongo do
 
         it "returns the translation for the the specific locale" do
           expect(tallied).to eq(
-            [ "de1", "de2" ] => 1,
-            [ "de1", "de3" ] => 1,
+            %w[de1 de2] => 1,
+            %w[de1 de3] => 1,
           )
         end
 
@@ -3587,11 +3587,11 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it 'applies the array filters' do
-        expect(Band.where(name: 'Depeche Mode').first.labels.collect(&:name)).to match_array(['Warner', 'Sony', 'Sony'])
+        expect(Band.where(name: 'Depeche Mode').first.labels.collect(&:name)).to match_array(%w[Warner Sony Sony])
       end
 
       it 'does not affect other documents' do
-        expect(Band.where(name: 'FKA Twigs').first.labels.collect(&:name)).to match_array(['Warner', 'Cbs'])
+        expect(Band.where(name: 'FKA Twigs').first.labels.collect(&:name)).to match_array(%w[Warner Cbs])
       end
     end
   end
@@ -3759,11 +3759,11 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it 'applies the array filters' do
-        expect(Band.where(name: 'Depeche Mode').first.labels.collect(&:name)).to match_array(['Warner', 'Sony', 'Sony'])
+        expect(Band.where(name: 'Depeche Mode').first.labels.collect(&:name)).to match_array(%w[Warner Sony Sony])
       end
 
       it 'updates all documents' do
-        expect(Band.where(name: 'FKA Twigs').first.labels.collect(&:name)).to match_array(['Warner', 'Sony'])
+        expect(Band.where(name: 'FKA Twigs').first.labels.collect(&:name)).to match_array(%w[Warner Sony])
       end
     end
   end

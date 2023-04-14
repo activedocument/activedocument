@@ -298,7 +298,9 @@ module Mongoid
     # @return [ Mongoid::Document ] The root document in the hierarchy.
     def _root
       object = self
-      while (object._parent) do object = object._parent; end
+      while object._parent
+        object = object._parent
+      end
       object
     end
 
@@ -321,7 +323,7 @@ module Mongoid
       #
       # @return [ true | false ] True if hereditary, false if not.
       def hereditary?
-        !!(Mongoid::Document > superclass)
+        !!(superclass < Mongoid::Document)
       end
 
       # When inheriting, we want to copy the fields from the parent class and

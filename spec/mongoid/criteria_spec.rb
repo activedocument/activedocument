@@ -238,7 +238,7 @@ describe Mongoid::Criteria do
     describe "\##{method}" do
 
       let!(:match) do
-        Band.create!(genres: [ "electro", "dub" ])
+        Band.create!(genres: %w[electro dub])
       end
 
       let!(:non_match) do
@@ -246,7 +246,7 @@ describe Mongoid::Criteria do
       end
 
       let(:criteria) do
-        Band.send(method, genres: [ "electro", "dub" ])
+        Band.send(method, genres: %w[electro dub])
       end
 
       it "returns the matching documents" do
@@ -787,7 +787,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns the fields with type without dkey" do
-        expect(criteria.field_list).to eq([ "_id", "_type" ])
+        expect(criteria.field_list).to eq(%w[_id _type])
       end
     end
   end
@@ -1093,7 +1093,7 @@ describe Mongoid::Criteria do
       context "when querying on a normal field" do
 
         let!(:match) do
-          Band.create!(genres: [ "electro", "dub" ])
+          Band.create!(genres: %w[electro dub])
         end
 
         let!(:non_match) do
@@ -2705,7 +2705,7 @@ describe Mongoid::Criteria do
         end
 
         let(:criteria) do
-          Canvas.all.type([ "Browser", "Firefox" ])
+          Canvas.all.type(%w[Browser Firefox])
         end
 
         it "returns documents with the provided types" do
@@ -2745,7 +2745,7 @@ describe Mongoid::Criteria do
         end
 
         let(:criteria) do
-          Canvas.all.type([ "Browser", "Firefox" ])
+          Canvas.all.type(%w[Browser Firefox])
         end
 
         it "returns documents with the provided types" do
@@ -3481,7 +3481,7 @@ describe Mongoid::Criteria do
   describe "#with_size" do
 
     let!(:match) do
-      Band.create!(genres: [ "electro", "dub" ])
+      Band.create!(genres: %w[electro dub])
     end
 
     let!(:non_match) do
@@ -3540,7 +3540,7 @@ describe Mongoid::Criteria do
         end
 
         it "does not use an $in query" do
-          expect(selection).to eq({ _type: { "$in" => [ "Firefox", "Browser" ]}})
+          expect(selection).to eq({ _type: { "$in" => %w[Firefox Browser]}})
         end
       end
     end
@@ -3580,7 +3580,7 @@ describe Mongoid::Criteria do
         end
 
         it "does not use an $in query" do
-          expect(selection).to eq({ dkey: { "$in" => [ "Firefox", "Browser" ]}})
+          expect(selection).to eq({ dkey: { "$in" => %w[Firefox Browser]}})
         end
       end
     end

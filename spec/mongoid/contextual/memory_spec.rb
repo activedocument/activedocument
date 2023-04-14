@@ -217,7 +217,7 @@ describe Mongoid::Contextual::Memory do
       context "when embedded a single level" do
 
         let(:criteria) do
-          Address.any_in(street: [ "hobrecht", "friedel" ]).tap do |crit|
+          Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
             crit.documents = [ hobrecht, friedel, pfluger ]
           end
         end
@@ -311,7 +311,7 @@ describe Mongoid::Contextual::Memory do
       context 'when there is a collation on the criteria' do
 
         let(:criteria) do
-          Address.any_in(street: [ "hobrecht", "friedel" ]).tap do |crit|
+          Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
             crit.documents = [ hobrecht, friedel, pfluger ]
           end.collation(locale: 'en_US', strength: 2)
         end
@@ -344,7 +344,7 @@ describe Mongoid::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.any_in(street: [ "hobrecht", "friedel" ]).tap do |crit|
+      Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
         crit.documents = [ hobrecht, friedel, pfluger ]
       end
     end
@@ -393,7 +393,7 @@ describe Mongoid::Contextual::Memory do
       context 'when there is a collation on the criteria' do
 
         let(:criteria) do
-          Address.any_in(street: [ "hobrecht", "friedel" ]).tap do |crit|
+          Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
             crit.documents = [ hobrecht, friedel, pfluger ]
           end.collation(locale: 'en_US', strength: 2)
         end
@@ -871,7 +871,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       let(:criteria) do
-        Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+        Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
           crit.documents = [ hobrecht, friedel ]
         end
       end
@@ -897,7 +897,7 @@ describe Mongoid::Contextual::Memory do
       context 'when there is a collation on the criteria' do
 
         let(:criteria) do
-          Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+          Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
             crit.documents = [ hobrecht, friedel ]
           end.collation(locale: 'en_US', strength: 2)
         end
@@ -924,7 +924,7 @@ describe Mongoid::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
         crit.documents = [ hobrecht, friedel ]
       end
     end
@@ -953,7 +953,7 @@ describe Mongoid::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
         crit.documents = [ hobrecht, friedel ]
       end
     end
@@ -979,7 +979,7 @@ describe Mongoid::Contextual::Memory do
     context 'when there is a collation on the criteria' do
 
       let(:criteria) do
-        Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+        Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
           crit.documents = [ hobrecht, friedel ]
         end.collation(locale: 'en_US', strength: 2)
       end
@@ -1005,7 +1005,7 @@ describe Mongoid::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
         crit.documents = [ hobrecht, friedel ]
       end
     end
@@ -1023,7 +1023,7 @@ describe Mongoid::Contextual::Memory do
     context 'when there is a collation on the criteria' do
 
       let(:criteria) do
-        Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+        Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
           crit.documents = [ hobrecht, friedel ]
         end.collation(locale: 'en_US', strength: 2)
       end
@@ -1150,7 +1150,7 @@ describe Mongoid::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
         crit.documents = [ hobrecht, friedel ]
       end
     end
@@ -1176,7 +1176,7 @@ describe Mongoid::Contextual::Memory do
     context 'when there is a collation on the criteria' do
 
       let(:criteria) do
-        Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+        Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
           crit.documents = [ hobrecht, friedel ]
         end.collation(locale: 'en_US', strength: 2)
       end
@@ -1201,7 +1201,7 @@ describe Mongoid::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => [ "hobrecht", "friedel" ]).tap do |crit|
+      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
         crit.documents = [ hobrecht, friedel ]
       end
     end
@@ -1859,7 +1859,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "yields values to the block" do
-        expect(plucked_values).to eq([ "hobrecht", "friedel" ])
+        expect(plucked_values).to eq(%w[hobrecht friedel])
       end
     end
 
@@ -1874,7 +1874,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "can yield the values" do
-        expect(plucked.map { |value| value }).to eq([ "hobrecht", "friedel" ])
+        expect(plucked.map { |value| value }).to eq(%w[hobrecht friedel])
       end
     end
 
@@ -2213,8 +2213,8 @@ describe Mongoid::Contextual::Memory do
 
         it "returns the translation for the current locale" do
           expect(tallied).to eq(
-            [ "en1", "en2" ] => 1,
-            [ "en1", "en3" ] => 1,
+            %w[en1 en2] => 1,
+            %w[en1 en3] => 1,
           )
         end
 
@@ -2236,8 +2236,8 @@ describe Mongoid::Contextual::Memory do
 
         it "returns the translation for the the specific locale" do
           expect(tallied).to eq(
-            [ "de1", "de2" ] => 1,
-            [ "de1", "de3" ] => 1,
+            %w[de1 de2] => 1,
+            %w[de1 de3] => 1,
           )
         end
 
@@ -2887,7 +2887,7 @@ describe Mongoid::Contextual::Memory do
     context "when the documents are embedded one level" do
 
       let(:criteria) do
-        Address.any_in(street: [ "hobrecht", "friedel" ]).tap do |crit|
+        Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
           crit.documents = [ hobrecht, friedel, pfluger ]
         end
       end
@@ -3059,7 +3059,7 @@ describe Mongoid::Contextual::Memory do
     context "when the documents are embedded one level" do
 
       let(:criteria) do
-        Address.any_in(street: [ "hobrecht", "friedel" ]).tap do |crit|
+        Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
           crit.documents = [ hobrecht, friedel, pfluger ]
         end
       end

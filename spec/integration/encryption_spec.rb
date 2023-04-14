@@ -45,7 +45,7 @@ describe 'Encryption' do
   it 'encrypts and decrypts fields' do
     patient = Crypt::Patient.create!(
       code: '12345',
-      medical_records: ['one', 'two', 'three'],
+      medical_records: %w[one two three],
       blood_type: 'A+',
       ssn: 123456789,
       insurance: Crypt::Insurance.new(policy_number: 123456789)
@@ -62,7 +62,7 @@ describe 'Encryption' do
   it 'stores data encrypted in the database' do
     patient = Crypt::Patient.create!(
       code: '12345',
-      medical_records: ['one', 'two', 'three'],
+      medical_records: %w[one two three],
       blood_type: 'A+',
       ssn: 123456789,
       insurance: Crypt::Insurance.new(policy_number: 123456789)

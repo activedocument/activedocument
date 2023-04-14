@@ -24,7 +24,7 @@ describe Mongoid::Association::Referenced::HasMany do
       expect do
         student.grade
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded)
-      expect(student.attributes.keys).to eq(['_id', 'name'])
+      expect(student.attributes.keys).to eq(%w[_id name])
     end
 
     # Delete this test when https://jira.mongodb.org/browse/MONGOID-4704 is

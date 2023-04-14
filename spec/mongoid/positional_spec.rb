@@ -20,7 +20,7 @@ describe Mongoid::Positional do
           "children.0.children.1.children.3.field" => "value"
         },
         "$push" => {
-          "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+          "children.0.children.1.children.3.fields" => { '$each' => %w[value value] }
         }
       }
     end
@@ -116,7 +116,7 @@ describe Mongoid::Positional do
               "children.0.children.1.children.3.field" => "value"
             },
             "$push" => {
-              "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+              "children.0.children.1.children.3.fields" => { '$each' => %w[value value] }
             }
           }
         end
@@ -144,7 +144,7 @@ describe Mongoid::Positional do
               "children.0.children.1.children.3.field" => "value"
             },
             "$push" => {
-              "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+              "children.0.children.1.children.3.fields" => { '$each' => %w[value value] }
             }
           }
         end
@@ -173,7 +173,7 @@ describe Mongoid::Positional do
             "children.0.children.1.children.3.field" => "value"
           },
           "$push" => {
-            "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+            "children.0.children.1.children.3.fields" => { '$each' => %w[value value] }
           }
         }
       end
@@ -206,7 +206,7 @@ describe Mongoid::Positional do
             "children.0.children.1.children.3.field" => "value"
           },
           "$push" => {
-            "children.0.children.1.children.3.fields" => { '$each' => [ "value", "value" ] }
+            "children.0.children.1.children.3.fields" => { '$each' => %w[value value] }
           }
         }
       end

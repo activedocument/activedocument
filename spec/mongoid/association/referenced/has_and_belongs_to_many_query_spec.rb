@@ -27,7 +27,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       expect do
         signature.year
       end.to raise_error(Mongoid::Errors::AttributeNotLoaded)
-      expect(signature.attributes.keys).to eq(['_id', 'name'])
+      expect(signature.attributes.keys).to eq(%w[_id name])
     end
 
     # Delete this test when https://jira.mongodb.org/browse/MONGOID-4704 is
