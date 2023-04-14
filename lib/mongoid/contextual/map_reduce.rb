@@ -19,7 +19,7 @@ module Mongoid
       #
       # @return [ Hash ] The counts.
       def counts
-        results["counts"]
+        results['counts']
       end
 
       # Iterates over each of the documents in the map/reduce, excluding the
@@ -49,7 +49,7 @@ module Mongoid
       #
       # @return [ Integer ] The number of emitted documents.
       def emitted
-        counts["emit"]
+        counts['emit']
       end
 
       # Provide a finalize js function for the map/reduce.
@@ -86,7 +86,7 @@ module Mongoid
       #
       # @return [ Integer ] The number of input documents.
       def input
-        counts["input"]
+        counts['input']
       end
 
       # Sets the map/reduce to use jsMode.
@@ -137,7 +137,7 @@ module Mongoid
       #
       # @return [ Integer ] The number of output documents.
       def output
-        counts["output"]
+        counts['output']
       end
 
       # Get the raw output from the map/reduce operation.
@@ -170,7 +170,7 @@ module Mongoid
       #
       # @return [ Integer ] The number of reduced documents.
       def reduced
-        counts["reduce"]
+        counts['reduce']
       end
 
       # Adds a javascript object to the global scope of the map/reduce.
@@ -193,7 +193,7 @@ module Mongoid
       #
       # @return [ Float ] The time in milliseconds.
       def time
-        results["timeMillis"]
+        results['timeMillis']
       end
 
       # Get a pretty string representation of the map/reduce, including the

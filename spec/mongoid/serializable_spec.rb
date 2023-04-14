@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Serializable do
 
-  describe "#field_names" do
+  describe '#field_names' do
 
     let(:guitar) do
       Guitar.new
     end
 
-    it "does not duplicate fields" do
-      expect(guitar.send(:field_names, {})).to eq(guitar.fields.except("_type").keys.sort)
+    it 'does not duplicate fields' do
+      expect(guitar.send(:field_names, {})).to eq(guitar.fields.except('_type').keys.sort)
     end
 
-    context "when using a custom discriminator_key" do
+    context 'when using a custom discriminator_key' do
       before do
-        Instrument.discriminator_key = "dkey"
+        Instrument.discriminator_key = 'dkey'
       end
 
       after do
@@ -27,8 +27,8 @@ describe Mongoid::Serializable do
         Guitar.new
       end
 
-      it "includes _type but does not include the new discriminator key" do
-        expect(guitar.send(:field_names, {})).to eq(guitar.fields.except("dkey").keys.sort)
+      it 'includes _type but does not include the new discriminator key' do
+        expect(guitar.send(:field_names, {})).to eq(guitar.fields.except('dkey').keys.sort)
       end
     end
   end
@@ -44,10 +44,10 @@ describe Mongoid::Serializable do
         reload_model(:Minim)
       end
 
-      context "when global config is set to true" do
+      context 'when global config is set to true' do
         config_override :include_root_in_json, true
 
-        it "returns true" do
+        it 'returns true' do
           expect(Minim.public_send(meth)).to be true
         end
 
@@ -62,10 +62,10 @@ describe Mongoid::Serializable do
         end
       end
 
-      context "when global config set to false" do
+      context 'when global config set to false' do
         config_override :include_root_in_json, false
 
-        it "returns false" do
+        it 'returns false' do
           expect(Minim.public_send(meth)).to be false
         end
 
@@ -81,7 +81,7 @@ describe Mongoid::Serializable do
       end
     end
 
-    describe "#include_root_in_json" do
+    describe '#include_root_in_json' do
       config_override :include_root_in_json, false
 
       before do
@@ -96,14 +96,14 @@ describe Mongoid::Serializable do
         Minim.new
       end
 
-      context "when global config is set to true" do
+      context 'when global config is set to true' do
 
         before do
           expect(Minim.include_root_in_json).to be false
           Mongoid.include_root_in_json = true
         end
 
-        it "returns true" do
+        it 'returns true' do
           expect(minim.public_send(meth)).to be true
         end
 
@@ -118,9 +118,9 @@ describe Mongoid::Serializable do
         end
       end
 
-      context "when global config set to false" do
+      context 'when global config set to false' do
 
-        it "returns false" do
+        it 'returns false' do
           expect(minim.public_send(meth)).to be false
         end
 
@@ -137,28 +137,28 @@ describe Mongoid::Serializable do
     end
   end
 
-  describe "#serializable_hash" do
+  describe '#serializable_hash' do
 
     let(:person) do
       Person.new
     end
 
-    context "when a dynamic attribute has the same name as a ruby method" do
+    context 'when a dynamic attribute has the same name as a ruby method' do
 
       before do
-        person[:loop] = "testing"
+        person[:loop] = 'testing'
       end
 
       let(:attributes) do
         person.serializable_hash
       end
 
-      it "grabs the attribute direct from the hash" do
-        expect(attributes["loop"]).to eq("testing")
+      it 'grabs the attribute direct from the hash' do
+        expect(attributes['loop']).to eq('testing')
       end
     end
 
-    context "when the method for a declared field is overridden" do
+    context 'when the method for a declared field is overridden' do
 
       before do
         person.override_me = 1
@@ -168,64 +168,64 @@ describe Mongoid::Serializable do
         person.serializable_hash
       end
 
-      it "uses the overridden method" do
-        expect(attributes["override_me"]).to eq("1")
+      it 'uses the overridden method' do
+        expect(attributes['override_me']).to eq('1')
       end
     end
 
-    context "when the model has embedded documents" do
+    context 'when the model has embedded documents' do
 
       let!(:address) do
-        person.addresses.build(street: "test")
+        person.addresses.build(street: 'test')
       end
 
-      context "when providing no custom options" do
+      context 'when providing no custom options' do
 
         let(:attributes) do
           person.serializable_hash
         end
 
-        it "includes the embedded documents" do
-          expect(attributes["addresses"].first).to eq(address.serializable_hash)
+        it 'includes the embedded documents' do
+          expect(attributes['addresses'].first).to eq(address.serializable_hash)
         end
       end
 
-      context "when providing options" do
+      context 'when providing options' do
 
         let(:attributes) do
           person.serializable_hash(methods: :id, except: :_id)
         end
 
         let(:address_attributes) do
-          attributes["addresses"].first
+          attributes['addresses'].first
         end
 
-        it "uses the options" do
-          expect(attributes["id"]).to eq(person.id)
+        it 'uses the options' do
+          expect(attributes['id']).to eq(person.id)
         end
 
-        it "uses the options on embedded documents" do
-          expect(address_attributes["id"]).to eq(address.id)
+        it 'uses the options on embedded documents' do
+          expect(address_attributes['id']).to eq(address.id)
         end
       end
 
-      context "when nested multiple levels" do
+      context 'when nested multiple levels' do
 
         let!(:location) do
-          address.locations.build(name: "home")
+          address.locations.build(name: 'home')
         end
 
         let(:attributes) do
           person.serializable_hash
         end
 
-        it "includes the deeply nested document" do
-          expect(attributes["addresses"][0]["locations"]).to_not be_empty
+        it 'includes the deeply nested document' do
+          expect(attributes['addresses'][0]['locations']).to_not be_empty
         end
       end
     end
 
-    context "when the model has attributes that need conversion" do
+    context 'when the model has attributes that need conversion' do
 
       let(:date) do
         Date.new(1970, 1, 1)
@@ -239,15 +239,15 @@ describe Mongoid::Serializable do
         person.serializable_hash
       end
 
-      it "converts the objects to the defined type" do
-        expect(attributes["dob"]).to eq(date)
+      it 'converts the objects to the defined type' do
+        expect(attributes['dob']).to eq(date)
       end
     end
 
-    context "when a model has defined fields" do
+    context 'when a model has defined fields' do
 
       let(:attributes) do
-        { "title" => "President", "security_code" => "1234" }
+        { 'title' => 'President', 'security_code' => '1234' }
       end
 
       before do
@@ -255,22 +255,22 @@ describe Mongoid::Serializable do
       end
 
       let(:field_names) do
-        person.fields.keys.map(&:to_s) - ["_type"]
+        person.fields.keys.map(&:to_s) - ['_type']
       end
 
-      it "serializes assigned attributes" do
+      it 'serializes assigned attributes' do
         expect(person.serializable_hash).to include attributes
       end
 
-      it "includes all defined fields except _type" do
+      it 'includes all defined fields except _type' do
         expect(person.serializable_hash.keys).to include(*field_names)
       end
 
-      it "does not include _type" do
-        expect(person.serializable_hash.keys).to_not include "_type"
+      it 'does not include _type' do
+        expect(person.serializable_hash.keys).to_not include '_type'
       end
 
-      context "when providing options" do
+      context 'when providing options' do
 
         let(:options) do
           { only: :name }
@@ -280,95 +280,95 @@ describe Mongoid::Serializable do
           person.serializable_hash(options)
         end
 
-        it "does not modify the options in the argument" do
+        it 'does not modify the options in the argument' do
           expect(options[:except]).to be_nil
         end
       end
 
-      context "when include_type_for_serialization is true" do
+      context 'when include_type_for_serialization is true' do
         config_override :include_type_for_serialization, true
 
-        it "includes _type field" do
+        it 'includes _type field' do
           expect(person.serializable_hash.keys).to include '_type'
         end
       end
 
-      context "when specifying which fields to only include" do
+      context 'when specifying which fields to only include' do
 
-        it "only includes the specified fields" do
+        it 'only includes the specified fields' do
           expect(person.serializable_hash(only: [:title])).to eq(
-            { "title" => attributes["title"] }
+            { 'title' => attributes['title'] }
           )
         end
       end
 
-      context "when specifying extra inclusions" do
+      context 'when specifying extra inclusions' do
 
-        it "includes the extra fields" do
+        it 'includes the extra fields' do
           expect(person.serializable_hash(
             methods: [:_type]
-          ).has_key?("_type")).to be true
+          ).has_key?('_type')).to be true
         end
       end
 
-      context "when specifying which fields to exclude" do
+      context 'when specifying which fields to exclude' do
 
-        it "excludes the specified fields" do
+        it 'excludes the specified fields' do
           expect(person.serializable_hash(except: [:title])).to_not include(
-            "title" => attributes["title"]
+            'title' => attributes['title']
           )
         end
       end
 
-      context "when only two attributes are loaded" do
+      context 'when only two attributes are loaded' do
         before do
           person.save!
         end
 
         let(:from_db) do
-          Person.only("_id", "username").first
+          Person.only('_id', 'username').first
         end
 
         let(:hash) do
           from_db.serializable_hash
         end
 
-        it "returns those two attributes only" do
+        it 'returns those two attributes only' do
           expect(hash.keys).to eq(%w[_id username])
         end
       end
     end
 
-    context "when a model has dynamic fields" do
+    context 'when a model has dynamic fields' do
 
       let(:dynamic_field_name) do
-        "dynamic_field_name"
+        'dynamic_field_name'
       end
 
       let(:dynamic_value) do
-        "dynamic_value"
+        'dynamic_value'
       end
 
       before do
         person.write_attribute(dynamic_field_name, dynamic_value)
       end
 
-      it "includes dynamic fields" do
+      it 'includes dynamic fields' do
         expect(person.serializable_hash[dynamic_field_name]).to eq(dynamic_value)
       end
 
-      context "when specifying which dynamic fields to only include" do
+      context 'when specifying which dynamic fields to only include' do
 
-        it "only includes the specified dynamic fields" do
+        it 'only includes the specified dynamic fields' do
           expect(person.serializable_hash(only: [dynamic_field_name])).to eq(
             { dynamic_field_name => dynamic_value }
           )
         end
       end
 
-      context "when specified which dynamic fields to exclude" do
+      context 'when specified which dynamic fields to exclude' do
 
-        it "excludes the specified fields" do
+        it 'excludes the specified fields' do
           expect(person.serializable_hash(except: [dynamic_field_name])).to_not include(
             dynamic_field_name => dynamic_value
           )
@@ -376,188 +376,188 @@ describe Mongoid::Serializable do
       end
     end
 
-    context "when a model has relations" do
+    context 'when a model has relations' do
 
       let(:attributes) do
-        { "title" => "President", "security_code" => "1234" }
+        { 'title' => 'President', 'security_code' => '1234' }
       end
 
       before do
         person.write_attributes(attributes)
       end
 
-      context "when the model is saved before the relation is added" do
+      context 'when the model is saved before the relation is added' do
 
         before do
           person.save!
         end
 
-        context "when a model has an embeds many" do
+        context 'when a model has an embeds many' do
 
           let!(:address_one) do
-            person.addresses.build(street: "Kudamm")
+            person.addresses.build(street: 'Kudamm')
           end
 
           before do
             person.save!
           end
 
-          it "includes the relation" do
+          it 'includes the relation' do
             expect(person.serializable_hash.keys).to include('addresses')
           end
         end
 
-        context "when a model has an embeds one" do
+        context 'when a model has an embeds one' do
           let!(:name) do
-            person.build_name(first_name: "Leo", last_name: "Marvin")
+            person.build_name(first_name: 'Leo', last_name: 'Marvin')
           end
 
           before do
             person.save!
           end
 
-          it "includes the relation" do
+          it 'includes the relation' do
             expect(person.serializable_hash.keys).to include('name')
           end
         end
       end
 
-      context "when the model is saved after the relation is added" do
+      context 'when the model is saved after the relation is added' do
 
-        context "when a model has an embeds many" do
+        context 'when a model has an embeds many' do
 
           let!(:address_one) do
-            person.addresses.build(street: "Kudamm")
+            person.addresses.build(street: 'Kudamm')
           end
 
           before do
             person.save!
           end
 
-          it "includes the relation" do
+          it 'includes the relation' do
             expect(person.serializable_hash.keys).to include('addresses')
           end
         end
 
-        context "when a model has an embeds one" do
+        context 'when a model has an embeds one' do
           let!(:name) do
-            person.build_name(first_name: "Leo", last_name: "Marvin")
+            person.build_name(first_name: 'Leo', last_name: 'Marvin')
           end
 
           before do
             person.save!
           end
 
-          it "includes the relation" do
+          it 'includes the relation' do
             expect(person.serializable_hash.keys).to include('name')
           end
         end
       end
     end
 
-    context "when including methods" do
+    context 'when including methods' do
 
-      it "includes the method result" do
+      it 'includes the method result' do
         expect(person.serializable_hash(methods: [:foo])).to include(
-          "foo" => person.foo
+          'foo' => person.foo
         )
       end
     end
 
-    context "when including relations" do
+    context 'when including relations' do
 
-      context "when including a single relation" do
+      context 'when including a single relation' do
 
-        context "when including an embeds many" do
+        context 'when including an embeds many' do
 
           let!(:address_one) do
-            person.addresses.build(street: "Kudamm")
+            person.addresses.build(street: 'Kudamm')
           end
 
           let!(:address_two) do
-            person.addresses.build(street: "Tauentzienstr")
+            person.addresses.build(street: 'Tauentzienstr')
           end
 
           let(:relation_hash) do
-            hash["addresses"]
+            hash['addresses']
           end
 
-          context "when the ids were not loaded" do
+          context 'when the ids were not loaded' do
 
             before do
               person.save!
             end
 
             let(:from_db) do
-              Person.only("addresses.street").first
+              Person.only('addresses.street').first
             end
 
             let(:hash) do
               from_db.serializable_hash
             end
 
-            it "does not generate new ids" do
+            it 'does not generate new ids' do
               pending
               fail
-              expect(hash["addresses"].first["_id"]).to be_nil
+              expect(hash['addresses'].first['_id']).to be_nil
             end
           end
 
-          context "when providing the include as a symbol" do
+          context 'when providing the include as a symbol' do
 
             let(:hash) do
               person.serializable_hash(include: :addresses)
             end
 
-            it "includes the first relation" do
+            it 'includes the first relation' do
               expect(relation_hash[0]).to include
-              { "_id" => "kudamm", "street" => "Kudamm" }
+              { '_id' => 'kudamm', 'street' => 'Kudamm' }
             end
 
-            it "includes the second relation" do
+            it 'includes the second relation' do
               expect(relation_hash[1]).to include
-              { "_id" => "tauentzienstr", "street" => "Tauentzienstr" }
+              { '_id' => 'tauentzienstr', 'street' => 'Tauentzienstr' }
             end
           end
 
-          context "when providing the include as an array" do
+          context 'when providing the include as an array' do
 
             let(:hash) do
               person.serializable_hash(include: [:addresses])
             end
 
-            it "includes the first relation" do
+            it 'includes the first relation' do
               expect(relation_hash[0]).to include
-              { "_id" => "kudamm", "street" => "Kudamm" }
+              { '_id' => 'kudamm', 'street' => 'Kudamm' }
             end
 
-            it "includes the second relation" do
+            it 'includes the second relation' do
               expect(relation_hash[1]).to include
-              { "_id" => "tauentzienstr", "street" => "Tauentzienstr" }
+              { '_id' => 'tauentzienstr', 'street' => 'Tauentzienstr' }
             end
           end
 
-          context "when providing the include as a hash" do
+          context 'when providing the include as a hash' do
 
-            context "when including one level deep" do
+            context 'when including one level deep' do
 
               let(:hash) do
                 person.serializable_hash(include: { addresses: { except: :_id } })
               end
 
-              it "includes the first relation sans exceptions" do
-                expect(relation_hash[0]).to include({ "street" => "Kudamm" })
+              it 'includes the first relation sans exceptions' do
+                expect(relation_hash[0]).to include({ 'street' => 'Kudamm' })
               end
 
-              it "includes the second relation sans exceptions" do
-                expect(relation_hash[1]).to include({ "street" => "Tauentzienstr" })
+              it 'includes the second relation sans exceptions' do
+                expect(relation_hash[1]).to include({ 'street' => 'Tauentzienstr' })
               end
             end
 
-            context "when including multiple levels deep" do
+            context 'when including multiple levels deep' do
 
               let!(:location) do
-                address_one.locations.build(name: "Home")
+                address_one.locations.build(name: 'Home')
               end
 
               let(:hash) do
@@ -568,20 +568,20 @@ describe Mongoid::Serializable do
                 )
               end
 
-              it "includes the first relation" do
-                expect(relation_hash[0]["locations"].any? do |location|
-                  location["name"] == "Home"
+              it 'includes the first relation' do
+                expect(relation_hash[0]['locations'].any? do |location|
+                  location['name'] == 'Home'
                 end).to be true
               end
 
-              context "after retrieved from database" do
+              context 'after retrieved from database' do
 
                 let(:db_person) do
                   Person.all.last
                 end
 
                 let!(:second_location) do
-                  address_two.locations.build(name: "Hotel")
+                  address_two.locations.build(name: 'Hotel')
                 end
 
                 let(:hash) do
@@ -596,21 +596,21 @@ describe Mongoid::Serializable do
                   person.save!
                 end
 
-                it "includes the specific relations" do
-                  expect(relation_hash[0]["locations"].map do |location|
-                    location["name"]
-                  end).to include "Home"
-                  expect(relation_hash[1]["locations"].map do |location|
-                    location["name"]
-                  end).to include "Hotel"
+                it 'includes the specific relations' do
+                  expect(relation_hash[0]['locations'].map do |location|
+                    location['name']
+                  end).to include 'Home'
+                  expect(relation_hash[1]['locations'].map do |location|
+                    location['name']
+                  end).to include 'Hotel'
                 end
               end
             end
 
-            context "when defining a default exclusion" do
+            context 'when defining a default exclusion' do
 
               let!(:name) do
-                person.build_name(first_name: "Sebastien")
+                person.build_name(first_name: 'Sebastien')
               end
 
               let(:hash) do
@@ -620,201 +620,201 @@ describe Mongoid::Serializable do
                 )
               end
 
-              it "does not contain the root exclusion" do
-                expect(hash["_id"]).to be_nil
+              it 'does not contain the root exclusion' do
+                expect(hash['_id']).to be_nil
               end
 
-              it "does not include the embedded many exclusion" do
-                expect(relation_hash[0]["_id"]).to be_nil
+              it 'does not include the embedded many exclusion' do
+                expect(relation_hash[0]['_id']).to be_nil
               end
 
-              it "does not include the embedded one exclusion" do
-                expect(hash["name"]["_id"]).to be_nil
+              it 'does not include the embedded one exclusion' do
+                expect(hash['name']['_id']).to be_nil
               end
             end
           end
         end
 
-        context "when including an embeds one" do
+        context 'when including an embeds one' do
 
           let!(:name) do
-            person.build_name(first_name: "Leo", last_name: "Marvin")
+            person.build_name(first_name: 'Leo', last_name: 'Marvin')
           end
 
           let(:relation_hash) do
-            hash["name"]
+            hash['name']
           end
 
-          context "when providing the include as a symbol" do
+          context 'when providing the include as a symbol' do
 
             let(:hash) do
               person.serializable_hash(include: :name)
             end
 
-            it "includes the specified relation" do
+            it 'includes the specified relation' do
               expect(relation_hash).to include
-              { "_id" => "leo-marvin", "first_name" => "Leo", "last_name" => "Marvin" }
+              { '_id' => 'leo-marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
             end
           end
 
-          context "when providing the include as an array" do
+          context 'when providing the include as an array' do
 
             let(:hash) do
               person.serializable_hash(include: [:name])
             end
 
-            it "includes the specified relation" do
+            it 'includes the specified relation' do
               expect(relation_hash).to include
-              { "_id" => "leo-marvin", "first_name" => "Leo", "last_name" => "Marvin" }
+              { '_id' => 'leo-marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
             end
           end
 
-          context "when providing the include as a hash" do
+          context 'when providing the include as a hash' do
 
             let(:hash) do
               person.serializable_hash(include: { name: { except: :_id } })
             end
 
-            it "includes the specified relation sans exceptions" do
+            it 'includes the specified relation sans exceptions' do
               expect(relation_hash).to include
-              { "first_name" => "Leo", "last_name" => "Marvin" }
+              { 'first_name' => 'Leo', 'last_name' => 'Marvin' }
             end
           end
         end
 
-        context "when including a references many" do
+        context 'when including a references many' do
 
           let!(:post_one) do
-            person.posts.build(title: "First")
+            person.posts.build(title: 'First')
           end
 
           let!(:post_two) do
-            person.posts.build(title: "Second")
+            person.posts.build(title: 'Second')
           end
 
           let(:relation_hash) do
-            hash["posts"]
+            hash['posts']
           end
 
-          context "when providing the include as a symbol" do
+          context 'when providing the include as a symbol' do
 
             let(:hash) do
               person.serializable_hash(include: :posts)
             end
 
-            it "includes the specified relation" do
+            it 'includes the specified relation' do
               expect(relation_hash).to_not be_nil
             end
 
-            it "includes the first document related fields" do
-              expect(relation_hash[0]["title"]).to eq("First")
+            it 'includes the first document related fields' do
+              expect(relation_hash[0]['title']).to eq('First')
             end
 
-            it "includes the second document related fields" do
-              expect(relation_hash[1]["title"]).to eq("Second")
+            it 'includes the second document related fields' do
+              expect(relation_hash[1]['title']).to eq('Second')
             end
           end
 
-          context "when providing the include as an array" do
+          context 'when providing the include as an array' do
 
             let(:hash) do
               person.serializable_hash(include: [:posts])
             end
 
-            it "includes the specified relation" do
+            it 'includes the specified relation' do
               expect(relation_hash).to_not be_nil
             end
 
-            it "includes the first document related fields" do
-              expect(relation_hash[0]["title"]).to eq("First")
+            it 'includes the first document related fields' do
+              expect(relation_hash[0]['title']).to eq('First')
             end
 
-            it "includes the second document related fields" do
-              expect(relation_hash[1]["title"]).to eq("Second")
+            it 'includes the second document related fields' do
+              expect(relation_hash[1]['title']).to eq('Second')
             end
           end
 
-          context "when providing the include as a hash" do
+          context 'when providing the include as a hash' do
 
             let(:hash) do
               person.serializable_hash(include: { posts: { except: :_id } })
             end
 
-            it "includes the specified relation" do
+            it 'includes the specified relation' do
               expect(relation_hash).to_not be_nil
             end
 
-            it "includes the first document related fields" do
-              expect(relation_hash[0]["title"]).to eq("First")
+            it 'includes the first document related fields' do
+              expect(relation_hash[0]['title']).to eq('First')
             end
 
-            it "includes the second document related fields" do
-              expect(relation_hash[1]["title"]).to eq("Second")
+            it 'includes the second document related fields' do
+              expect(relation_hash[1]['title']).to eq('Second')
             end
 
-            it "does not include the first document exceptions" do
-              expect(relation_hash[0]["_id"]).to be_nil
+            it 'does not include the first document exceptions' do
+              expect(relation_hash[0]['_id']).to be_nil
             end
 
-            it "does not include the second document exceptions" do
-              expect(relation_hash[1]["_id"]).to be_nil
+            it 'does not include the second document exceptions' do
+              expect(relation_hash[1]['_id']).to be_nil
             end
           end
         end
 
-        context "when including a references many to many" do
+        context 'when including a references many to many' do
 
           let!(:preference_one) do
-            person.preferences.build(name: "First")
+            person.preferences.build(name: 'First')
           end
 
           let!(:preference_two) do
-            person.preferences.build(name: "Second")
+            person.preferences.build(name: 'Second')
           end
 
           let(:relation_hash) do
-            hash["preferences"]
+            hash['preferences']
           end
 
-          context "when providing the include as a symbol" do
+          context 'when providing the include as a symbol' do
 
             let(:hash) do
               person.serializable_hash(include: :preferences)
             end
 
-            it "includes the specified relation" do
+            it 'includes the specified relation' do
               expect(relation_hash).to_not be_nil
             end
 
-            it "includes the first document related fields" do
-              expect(relation_hash[0]["name"]).to eq("First")
+            it 'includes the first document related fields' do
+              expect(relation_hash[0]['name']).to eq('First')
             end
 
-            it "includes the second document related fields" do
-              expect(relation_hash[1]["name"]).to eq("Second")
+            it 'includes the second document related fields' do
+              expect(relation_hash[1]['name']).to eq('Second')
             end
           end
 
-          context "when providing the include as an array" do
+          context 'when providing the include as an array' do
 
             let(:hash) do
               person.serializable_hash(include: [:preferences])
             end
 
-            it "includes the specified relation" do
+            it 'includes the specified relation' do
               expect(relation_hash).to_not be_nil
             end
 
-            it "includes the first document related fields" do
-              expect(relation_hash[0]["name"]).to eq("First")
+            it 'includes the first document related fields' do
+              expect(relation_hash[0]['name']).to eq('First')
             end
 
-            it "includes the second document related fields" do
-              expect(relation_hash[1]["name"]).to eq("Second")
+            it 'includes the second document related fields' do
+              expect(relation_hash[1]['name']).to eq('Second')
             end
           end
 
-          context "when providing the include as a hash" do
+          context 'when providing the include as a hash' do
 
             let(:hash) do
               person.serializable_hash(
@@ -827,28 +827,28 @@ describe Mongoid::Serializable do
               )
             end
 
-            it "includes the specified relation" do
+            it 'includes the specified relation' do
               expect(relation_hash).to_not be_nil
             end
 
-            it "includes the first document related fields" do
-              expect(relation_hash[0]["name"]).to eq("First")
+            it 'includes the first document related fields' do
+              expect(relation_hash[0]['name']).to eq('First')
             end
 
-            it "includes the second document related fields" do
-              expect(relation_hash[1]["name"]).to eq("Second")
+            it 'includes the second document related fields' do
+              expect(relation_hash[1]['name']).to eq('Second')
             end
 
-            it "does not include the first document exceptions" do
-              expect(relation_hash[0]["_id"]).to be_nil
+            it 'does not include the first document exceptions' do
+              expect(relation_hash[0]['_id']).to be_nil
             end
 
-            it "does not include the second document exceptions" do
-              expect(relation_hash[1]["_id"]).to be_nil
+            it 'does not include the second document exceptions' do
+              expect(relation_hash[1]['_id']).to be_nil
             end
 
-            it "does not include the root exceptions" do
-              expect(hash["preference_ids"]).to be_nil
+            it 'does not include the root exceptions' do
+              expect(hash['preference_ids']).to be_nil
             end
           end
         end
@@ -856,13 +856,13 @@ describe Mongoid::Serializable do
     end
   end
 
-  describe "#to_json" do
+  describe '#to_json' do
 
     let(:account) do
       Account.new
     end
 
-    context "when including root in json via Mongoid" do
+    context 'when including root in json via Mongoid' do
       config_override :include_root_in_json, false
 
       before do
@@ -870,12 +870,12 @@ describe Mongoid::Serializable do
         Mongoid.include_root_in_json = true
       end
 
-      it "uses the mongoid configuration" do
-        expect(JSON.parse(account.to_json)).to have_key("account")
+      it 'uses the mongoid configuration' do
+        expect(JSON.parse(account.to_json)).to have_key('account')
       end
     end
 
-    context "when including root in json via class" do
+    context 'when including root in json via class' do
 
       before do
         expect(account.include_root_in_json).to be false
@@ -886,19 +886,19 @@ describe Mongoid::Serializable do
         Account.include_root_in_json = false
       end
 
-      it "uses the class configuration" do
-        expect(JSON.parse(account.to_json)).to have_key("account")
+      it 'uses the class configuration' do
+        expect(JSON.parse(account.to_json)).to have_key('account')
       end
     end
 
-    context "when not including root in json" do
+    context 'when not including root in json' do
 
       before do
         expect(account.include_root_in_json).to be false
       end
 
-      it "uses the mongoid configuration" do
-        expect(JSON.parse(account.to_json)).not_to have_key("account")
+      it 'uses the mongoid configuration' do
+        expect(JSON.parse(account.to_json)).not_to have_key('account')
       end
     end
 
@@ -906,34 +906,34 @@ describe Mongoid::Serializable do
       Person.new
     end
 
-    context "when serializing a relation directly" do
+    context 'when serializing a relation directly' do
 
-      context "when serializing an embeds many" do
+      context 'when serializing an embeds many' do
 
         let!(:address) do
-          person.addresses.build(street: "Kudamm")
+          person.addresses.build(street: 'Kudamm')
         end
 
         let(:json) do
           person.addresses.to_json
         end
 
-        it "serializes only the relation" do
+        it 'serializes only the relation' do
           expect(json).to include(address.street)
         end
       end
 
-      context "when serializing a references many" do
+      context 'when serializing a references many' do
 
         let!(:post) do
-          person.posts.build(title: "testing")
+          person.posts.build(title: 'testing')
         end
 
         let(:json) do
           person.posts.to_json
         end
 
-        it "serializes only the relation" do
+        it 'serializes only the relation' do
           expect(json).to include(post.title)
         end
       end

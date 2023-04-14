@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "mongoid/atomic/modifiers"
-require "mongoid/atomic/paths"
+require 'mongoid/atomic/modifiers'
+require 'mongoid/atomic/paths'
 
 module Mongoid
 
@@ -201,7 +201,7 @@ module Mongoid
           path ||= doc.flag_as_destroyed
           doc._id
         end
-        pulls[path] = { "_id" => { "$in" => ids } } and path = nil
+        pulls[path] = { '_id' => { '$in' => ids } } and path = nil
       end
       pulls
     end

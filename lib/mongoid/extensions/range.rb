@@ -54,9 +54,9 @@ module Mongoid
             hash = object.slice('min', 'max', 'exclude_end', :min, :max, :exclude_end)
             unless hash.blank?
               begin
-                ::Range.new(hash["min"] || hash[:min],
-                            hash["max"] || hash[:max],
-                            hash["exclude_end"] || hash[:exclude_end])
+                ::Range.new(hash['min'] || hash[:min],
+                            hash['max'] || hash[:max],
+                            hash['exclude_end'] || hash[:exclude_end])
               rescue ArgumentError
                 nil
               end

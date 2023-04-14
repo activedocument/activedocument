@@ -35,12 +35,12 @@ module Mongoid
       def initialize(klass, inverse, name, candidates)
         super(
           compose_message(
-            "ambiguous_relationship",
+            'ambiguous_relationship',
             {
               klass: klass,
               inverse: inverse,
               name: name.inspect,
-              candidates: candidates.map(&:inspect).join(", ")
+              candidates: candidates.map(&:inspect).join(', ')
             }
           )
         )

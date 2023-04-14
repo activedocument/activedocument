@@ -19,7 +19,7 @@ module Mongoid
       def initialize(collection_name, collection_options, error)
         super(
           compose_message(
-            "create_collection_failure",
+            'create_collection_failure',
             {
               collection_name: collection_name,
               collection_options: collection_options,

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "mongoid/validatable/macros"
-require "mongoid/validatable/localizable"
-require "mongoid/validatable/associated"
-require "mongoid/validatable/format"
-require "mongoid/validatable/length"
-require "mongoid/validatable/queryable"
-require "mongoid/validatable/presence"
-require "mongoid/validatable/uniqueness"
+require 'mongoid/validatable/macros'
+require 'mongoid/validatable/localizable'
+require 'mongoid/validatable/associated'
+require 'mongoid/validatable/format'
+require 'mongoid/validatable/length'
+require 'mongoid/validatable/queryable'
+require 'mongoid/validatable/presence'
+require 'mongoid/validatable/uniqueness'
 
 module Mongoid
 

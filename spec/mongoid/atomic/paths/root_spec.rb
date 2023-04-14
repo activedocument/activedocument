@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Atomic::Paths::Root do
 
@@ -12,28 +12,28 @@ describe Mongoid::Atomic::Paths::Root do
     described_class.new(person)
   end
 
-  describe "#document" do
+  describe '#document' do
 
-    it "returns the document" do
+    it 'returns the document' do
       expect(root.document).to eq(person)
     end
   end
 
-  describe "#path" do
+  describe '#path' do
 
-    it "returns an empty string" do
+    it 'returns an empty string' do
       expect(root.path).to be_empty
     end
   end
 
-  describe "#position" do
+  describe '#position' do
 
-    it "returns an empty string" do
+    it 'returns an empty string' do
       expect(root.position).to be_empty
     end
   end
 
-  describe "#insert_modifier" do
+  describe '#insert_modifier' do
 
     let(:address) do
       person.addresses.build
@@ -43,7 +43,7 @@ describe Mongoid::Atomic::Paths::Root do
       described_class.new(address)
     end
 
-    it "raises a mixed relations error" do
+    it 'raises a mixed relations error' do
       expect { root.insert_modifier }.to raise_error(Mongoid::Errors::InvalidPath)
     end
   end

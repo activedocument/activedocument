@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::EagerLoadable do
 
-  describe ".preload" do
+  describe '.preload' do
 
     let(:criteria) do
       Account.where(name: 'savings')
@@ -22,7 +22,7 @@ describe Mongoid::Association::EagerLoadable do
 
     let(:doc) { criteria.first }
 
-    context "when belongs_to" do
+    context 'when belongs_to' do
 
       let!(:account) do
         Account.create!(person: person, name: 'savings')
@@ -34,19 +34,19 @@ describe Mongoid::Association::EagerLoadable do
 
       let(:includes) { [:person] }
 
-      it "groups by foreign_key" do
+      it 'groups by foreign_key' do
         expect(doc).to receive(:person_id).once
         context.preload(inclusions, [doc])
       end
 
-      it "preloads the parent" do
+      it 'preloads the parent' do
         expect(doc.ivar(:person)).to be false
         context.preload(inclusions, [doc])
         expect(doc.ivar(:person)).to eq(doc.person)
       end
     end
 
-    context "when has_one" do
+    context 'when has_one' do
 
       let(:account) do
         Account.create!(name: 'savings')
@@ -58,14 +58,14 @@ describe Mongoid::Association::EagerLoadable do
 
       let(:includes) { [:comment] }
 
-      it "preloads the child" do
+      it 'preloads the child' do
         expect(doc.ivar(:comment)).to be false
         context.preload(inclusions, [doc])
         expect(doc.ivar(:comment)).to eq(doc.comment)
       end
     end
 
-    context "when has_many" do
+    context 'when has_many' do
 
       let(:account) do
         Account.create!(name: 'savings')
@@ -77,14 +77,14 @@ describe Mongoid::Association::EagerLoadable do
 
       let(:includes) { [:alerts] }
 
-      it "preloads the child" do
+      it 'preloads the child' do
         expect(doc.ivar(:alerts)).to be false
         context.preload(inclusions, [doc])
         expect(doc.ivar(:alerts)).to eq(doc.alerts)
       end
     end
 
-    context "when has_and_belongs_to_many" do
+    context 'when has_and_belongs_to_many' do
 
       let(:account) do
         Account.create!(name: 'savings')
@@ -96,7 +96,7 @@ describe Mongoid::Association::EagerLoadable do
 
       let(:includes) { [:agents] }
 
-      it "preloads the child" do
+      it 'preloads the child' do
         expect(doc.ivar(:agents)).to be false
         context.preload(inclusions, [doc])
         expect(doc.ivar(:agents)).to eq(doc.agents)
@@ -104,7 +104,7 @@ describe Mongoid::Association::EagerLoadable do
     end
   end
 
-  describe ".eager_load" do
+  describe '.eager_load' do
 
     before do
       Person.create!
@@ -114,7 +114,7 @@ describe Mongoid::Association::EagerLoadable do
       Mongoid::Contextual::Mongo.new(criteria)
     end
 
-    context "when including one has_many relation" do
+    context 'when including one has_many relation' do
 
       let(:criteria) do
         Person.includes(:posts)
@@ -128,7 +128,7 @@ describe Mongoid::Association::EagerLoadable do
         Person.reflect_on_association(:posts)
       end
 
-      it "runs the has_many preload" do
+      it 'runs the has_many preload' do
         expect(Mongoid::Association::Referenced::HasMany::Eager).to receive(:new).with([posts_association], docs).once.and_call_original
 
         context.eager_load(docs)
@@ -146,7 +146,7 @@ describe Mongoid::Association::EagerLoadable do
       end
     end
 
-    context "when including multiple relations" do
+    context 'when including multiple relations' do
 
       let(:criteria) do
         Person.includes(:posts, :houses, :cat)
@@ -168,18 +168,18 @@ describe Mongoid::Association::EagerLoadable do
         Person.reflect_on_association(:cat)
       end
 
-      it "runs the has_many preload" do
+      it 'runs the has_many preload' do
         expect(Mongoid::Association::Referenced::HasMany::Eager).to receive(:new).with([posts_association], docs).once.and_call_original
 
         context.eager_load(docs)
       end
 
-      it "runs the has_one preload" do
+      it 'runs the has_one preload' do
         expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([cat_association], docs).once.and_call_original
         context.eager_load(docs)
       end
 
-      it "runs the has_and_belongs_to_many preload" do
+      it 'runs the has_and_belongs_to_many preload' do
         expect(Mongoid::Association::Referenced::HasAndBelongsToMany::Eager).to receive(:new).with([houses_association], docs).once.and_call_original
         context.eager_load(docs)
       end
@@ -225,7 +225,7 @@ describe Mongoid::Association::EagerLoadable do
       end
     end
 
-    context "when including two of the same relation type" do
+    context 'when including two of the same relation type' do
 
       let(:criteria) do
         Person.includes(:book, :cat)
@@ -243,87 +243,87 @@ describe Mongoid::Association::EagerLoadable do
         Person.reflect_on_association(:cat)
       end
 
-      it "runs the has_one preload" do
+      it 'runs the has_one preload' do
         expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([book_association], docs).once.and_call_original
         expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([cat_association], docs).once.and_call_original
         context.eager_load(docs)
       end
     end
 
-    context "when including an embedded_in relation" do
-      let!(:account) { Account.create(name: "home", memberships: memberships) }
-      let(:memberships) { [Membership.new(name: "his"), Membership.new(name: "hers")] }
+    context 'when including an embedded_in relation' do
+      let!(:account) { Account.create(name: 'home', memberships: memberships) }
+      let(:memberships) { [Membership.new(name: 'his'), Membership.new(name: 'hers')] }
       let(:criteria) { Account.includes(memberships: :account) }
 
-      it "loads the parent document" do
-        result = criteria.find_by(name: "home")
+      it 'loads the parent document' do
+        result = criteria.find_by(name: 'home')
         expect(result).to eq(account)
         expect(result.memberships.first.account).to eq(account)
       end
     end
 
-    context "when including an embeds_many relation" do
-      let!(:account) { Account.create(name: "home", memberships: memberships) }
-      let(:memberships) { [Membership.new(name: "his"), Membership.new(name: "hers")] }
+    context 'when including an embeds_many relation' do
+      let!(:account) { Account.create(name: 'home', memberships: memberships) }
+      let(:memberships) { [Membership.new(name: 'his'), Membership.new(name: 'hers')] }
       let(:criteria) { Account.includes(:memberships) }
 
-      it "loads the subdocuments" do
-        result = criteria.find_by(name: "home")
+      it 'loads the subdocuments' do
+        result = criteria.find_by(name: 'home')
         expect(result).to eq(account)
         expect(result.memberships.count).to eq(2)
       end
     end
 
-    context "when including an embeds_one relation" do
-      let!(:person) { Person.create(username: "test", pet: pet) }
-      let(:pet) { Animal.new(name: "fido") }
+    context 'when including an embeds_one relation' do
+      let!(:person) { Person.create(username: 'test', pet: pet) }
+      let(:pet) { Animal.new(name: 'fido') }
       let(:criteria) { Person.includes(:pet) }
 
-      it "loads the subdocument" do
-        result = criteria.find_by(username: "test")
+      it 'loads the subdocument' do
+        result = criteria.find_by(username: 'test')
         expect(result).to eq(person)
         expect(result.pet).to eq(pet)
       end
     end
 
-    context "when chaining a referenced association from an embedded relation" do
-      let!(:person) { Person.create(username: "test", messages: [message]) }
-      let!(:post) { Post.create(title: "notice", posteable: message) }
-      let(:message) { Message.new(body: "hello") }
+    context 'when chaining a referenced association from an embedded relation' do
+      let!(:person) { Person.create(username: 'test', messages: [message]) }
+      let!(:post) { Post.create(title: 'notice', posteable: message) }
+      let(:message) { Message.new(body: 'hello') }
       let(:criteria) { Person.includes(messages: :post) }
 
-      it "loads the referenced association" do
-        result = criteria.find_by(username: "test")
+      it 'loads the referenced association' do
+        result = criteria.find_by(username: 'test')
         expect(result).to eq(person)
         expect(result.messages.first.post).to eq(post)
       end
     end
   end
 
-  describe ".eager_loadable?" do
+  describe '.eager_loadable?' do
 
     let(:context) do
       Mongoid::Contextual::Mongo.new(criteria)
     end
 
-    context "when criteria has multiple includes" do
+    context 'when criteria has multiple includes' do
 
       let(:criteria) do
         Post.includes(:person, :roles)
       end
 
-      it "is eager_loadable" do
+      it 'is eager_loadable' do
         expect(context.eager_loadable?).to be true
       end
     end
 
-    context "when criteria has no includes" do
+    context 'when criteria has no includes' do
 
       let(:criteria) do
         Post.all
       end
 
-      it "is not eager_loadable" do
+      it 'is not eager_loadable' do
         expect(context.eager_loadable?).to be false
       end
     end

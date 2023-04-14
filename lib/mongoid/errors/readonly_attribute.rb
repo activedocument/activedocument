@@ -16,7 +16,7 @@ module Mongoid
       # @param [ Object ] value The attempted set value.
       def initialize(name, value)
         super(
-          compose_message("readonly_attribute", { name: name, value: value })
+          compose_message('readonly_attribute', { name: name, value: value })
         )
       end
     end

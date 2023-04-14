@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe ActiveModel::Validations::NumericalityValidator do
 
-  describe "#validate_each" do
+  describe '#validate_each' do
 
     before(:all) do
       class TestModel
@@ -18,13 +18,13 @@ describe ActiveModel::Validations::NumericalityValidator do
       Object.send(:remove_const, :TestModel)
     end
 
-    context "when the value is non numeric" do
+    context 'when the value is non numeric' do
 
       let(:model) do
-        TestModel.new(amount: "asdf")
+        TestModel.new(amount: 'asdf')
       end
 
-      it "returns false" do
+      it 'returns false' do
         expect(model).to_not be_valid
       end
     end

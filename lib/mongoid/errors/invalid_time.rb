@@ -14,7 +14,7 @@ module Mongoid
       #
       # @param [ Object ] value The value that was attempted.
       def initialize(value)
-        super(compose_message("invalid_time", { value: value }))
+        super(compose_message('invalid_time', { value: value }))
       end
     end
   end

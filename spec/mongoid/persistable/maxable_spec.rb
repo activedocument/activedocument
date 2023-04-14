@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Persistable::Maxable do
 
-  describe "#set_max" do
+  describe '#set_max' do
 
     shared_examples_for 'a max-able interface' do
-      context "when the document is a root document" do
-        let(:initial_name) { "Manhattan Transfer" }
+      context 'when the document is a root document' do
+        let(:initial_name) { 'Manhattan Transfer' }
         let(:initial_members) { 4 }
         let(:initial_founded) { Date.new(1972, 10, 1) }
 
@@ -20,7 +20,7 @@ describe Mongoid::Persistable::Maxable do
           )
         end
 
-        shared_examples_for "a max-able root document" do
+        shared_examples_for 'a max-able root document' do
           before do
             band.send(max_method,
                       name: given_name,
@@ -34,17 +34,17 @@ describe Mongoid::Persistable::Maxable do
             expect(band.founded).to eq [initial_founded, given_founded].max
           end
 
-          it "resets dirty changes" do
+          it 'resets dirty changes' do
             expect(band).to_not be_changed
           end
         end
 
         context 'when given < initial' do
-          let(:given_name) { "A" }
+          let(:given_name) { 'A' }
           let(:given_members) { 3 }
           let(:given_founded) { Date.new(1970, 1, 1) }
 
-          it_behaves_like "a max-able root document"
+          it_behaves_like 'a max-able root document'
         end
 
         context 'when given == initial' do
@@ -52,20 +52,20 @@ describe Mongoid::Persistable::Maxable do
           let(:given_members) { initial_members }
           let(:given_founded) { initial_founded }
 
-          it_behaves_like "a max-able root document"
+          it_behaves_like 'a max-able root document'
         end
 
         context 'when given > initial' do
-          let(:given_name) { "Z" }
+          let(:given_name) { 'Z' }
           let(:given_members) { 10 }
           let(:given_founded) { Date.today }
 
-          it_behaves_like "a max-able root document"
+          it_behaves_like 'a max-able root document'
         end
       end
 
-      context "when the document is an embedded document" do
-        let(:initial_city) { "Manhattan" }
+      context 'when the document is an embedded document' do
+        let(:initial_city) { 'Manhattan' }
         let(:initial_number) { 100 }
         let(:initial_end_date) { Date.today }
 
@@ -78,7 +78,7 @@ describe Mongoid::Persistable::Maxable do
           )
         end
 
-        shared_examples_for "a max-able embedded document" do
+        shared_examples_for 'a max-able embedded document' do
           before do
             address.send(max_method,
                          city: given_city,
@@ -92,17 +92,17 @@ describe Mongoid::Persistable::Maxable do
             expect(address.end_date).to eq [initial_end_date, given_end_date].max
           end
 
-          it "resets dirty changes" do
+          it 'resets dirty changes' do
             expect(address).to_not be_changed
           end
         end
 
         context 'when given < initial' do
-          let(:given_city) { "A" }
+          let(:given_city) { 'A' }
           let(:given_number) { 10 }
           let(:given_end_date) { 5.days.ago.to_date }
 
-          it_behaves_like "a max-able embedded document"
+          it_behaves_like 'a max-able embedded document'
         end
 
         context 'when given == initial' do
@@ -110,26 +110,26 @@ describe Mongoid::Persistable::Maxable do
           let(:given_number) { initial_number }
           let(:given_end_date) { initial_end_date }
 
-          it_behaves_like "a max-able embedded document"
+          it_behaves_like 'a max-able embedded document'
         end
 
         context 'when given > initial' do
-          let(:given_city) { "Z" }
+          let(:given_city) { 'Z' }
           let(:given_number) { 1000 }
           let(:given_end_date) { 5.days.from_now.to_date }
 
-          it_behaves_like "a max-able embedded document"
+          it_behaves_like 'a max-able embedded document'
         end
       end
 
-      context "when executing atomically" do
-        let(:band) { Band.create!(member_count: 10, name: "Manhattan Transfer") }
+      context 'when executing atomically' do
+        let(:band) { Band.create!(member_count: 10, name: 'Manhattan Transfer') }
 
-        it "marks a dirty change for the modified fields" do
+        it 'marks a dirty change for the modified fields' do
           band.atomically do
-            band.send(max_method, member_count: 15, name: "Manhattan Transfer")
+            band.send(max_method, member_count: 15, name: 'Manhattan Transfer')
             expect(band.changes)
-              .to eq({ "member_count" => [10, 15] })
+              .to eq({ 'member_count' => [10, 15] })
           end
         end
       end

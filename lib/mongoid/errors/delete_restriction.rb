@@ -16,7 +16,7 @@ module Mongoid
       def initialize(document, association_name)
         super(
           compose_message(
-            "delete_restriction",
+            'delete_restriction',
             { document: document.class, relation: association_name }
           )
         )

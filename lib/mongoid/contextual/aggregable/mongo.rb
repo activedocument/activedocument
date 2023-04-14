@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "mongoid/contextual/aggregable"
+require 'mongoid/contextual/aggregable'
 
 module Mongoid
   module Contextual
@@ -43,7 +43,7 @@ module Mongoid
         #
         # @return [ Float ] The average.
         def avg(field)
-          aggregates(field)["avg"]
+          aggregates(field)['avg']
         end
 
         # Get the max value of the provided field. If provided a block, will
@@ -63,7 +63,7 @@ module Mongoid
         # @return [ Numeric | Mongoid::Document ] The max value or document with the max
         #   value.
         def max(field = nil)
-          block_given? ? super() : aggregates(field)["max"]
+          block_given? ? super() : aggregates(field)['max']
         end
 
         # Get the min value of the provided field. If provided a block, will
@@ -83,7 +83,7 @@ module Mongoid
         # @return [ Numeric | Mongoid::Document ] The min value or document with the min
         #   value.
         def min(field = nil)
-          block_given? ? super() : aggregates(field)["min"]
+          block_given? ? super() : aggregates(field)['min']
         end
 
         # Get the sum value of the provided field. If provided a block, will
@@ -99,7 +99,7 @@ module Mongoid
         #
         # @return [ Float ] The sum value.
         def sum(field = nil)
-          block_given? ? super() : aggregates(field)["sum"] || 0
+          block_given? ? super() : aggregates(field)['sum'] || 0
         end
 
         private
@@ -119,18 +119,18 @@ module Mongoid
           sort, skip, limit = criteria.options.values_at(:sort, :skip, :limit)
 
           pipeline = []
-          pipeline << { "$match" => criteria.exists(field => true).selector }
-          pipeline << { "$sort" => sort } if sort && (skip || limit)
-          pipeline << { "$skip" => skip } if skip
-          pipeline << { "$limit" => limit } if limit
+          pipeline << { '$match' => criteria.exists(field => true).selector }
+          pipeline << { '$sort' => sort } if sort && (skip || limit)
+          pipeline << { '$skip' => skip } if skip
+          pipeline << { '$limit' => limit } if limit
           pipeline << {
-            "$group" => {
-              "_id" => field.to_s,
-              "count" => { "$sum" => 1 },
-              "max" => { "$max" => db_field },
-              "min" => { "$min" => db_field },
-              "sum" => { "$sum" => db_field },
-              "avg" => { "$avg" => db_field }
+            '$group' => {
+              '_id' => field.to_s,
+              'count' => { '$sum' => 1 },
+              'max' => { '$max' => db_field },
+              'min' => { '$min' => db_field },
+              'sum' => { '$sum' => db_field },
+              'avg' => { '$avg' => db_field }
             }
           }
         end

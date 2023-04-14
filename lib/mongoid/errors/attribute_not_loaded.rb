@@ -25,7 +25,7 @@ module Mongoid
       # @param [ String | Symbol ] name The name of the attribute.
       def initialize(klass, name)
         super(
-          compose_message("attribute_not_loaded", { klass: klass.name, name: name })
+          compose_message('attribute_not_loaded', { klass: klass.name, name: name })
         )
       end
     end

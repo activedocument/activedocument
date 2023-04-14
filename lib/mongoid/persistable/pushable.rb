@@ -30,9 +30,9 @@ module Mongoid
             values.each do |val|
               existing.push(val) unless existing.include?(val)
             end
-            ops[atomic_attribute_name(field)] = { "$each" => values }
+            ops[atomic_attribute_name(field)] = { '$each' => values }
           end
-          { "$addToSet" => ops }
+          { '$addToSet' => ops }
         end
       end
 
@@ -56,9 +56,9 @@ module Mongoid
             end
             values = [value].flatten(1)
             values.each { |val| existing.push(val) }
-            ops[atomic_attribute_name(field)] = { "$each" => values }
+            ops[atomic_attribute_name(field)] = { '$each' => values }
           end
-          { "$push" => ops }
+          { '$push' => ops }
         end
       end
     end

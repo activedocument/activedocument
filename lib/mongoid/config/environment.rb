@@ -31,7 +31,7 @@ module Mongoid
           return ::Sinatra::Base.environment.to_s
         end
 
-        ENV["RACK_ENV"] || ENV["MONGOID_ENV"] or raise Errors::NoEnvironment
+        ENV['RACK_ENV'] || ENV['MONGOID_ENV'] or raise Errors::NoEnvironment
       end
 
       # Load the yaml from the provided path and return the settings for the

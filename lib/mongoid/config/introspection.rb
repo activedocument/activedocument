@@ -68,7 +68,7 @@ module Mongoid
         #
         # @return [ String ] the reformatted comment
         def indented_comment(indent: 2, indent_first_line: false)
-          comment.gsub(/^/, " " * indent).tap do |result|
+          comment.gsub(/^/, ' ' * indent).tap do |result|
             result.strip! unless indent_first_line
           end
         end
@@ -78,7 +78,7 @@ module Mongoid
         #
         # @return [ true | false ] whether the option is deprecated or not.
         def deprecated?
-          comment.include?("(Deprecated)")
+          comment.include?('(Deprecated)')
         end
 
         # Compare self with the given option.
@@ -100,7 +100,7 @@ module Mongoid
         #
         # @return [ String ] the unindented text.
         def unindent(text)
-          text.strip.gsub(/^\s+/, "")
+          text.strip.gsub(/^\s+/, '')
         end
       end
 
@@ -127,7 +127,7 @@ module Mongoid
 
       # The full path to the source file of the Mongoid::Config module.
       CONFIG_RB_PATH = File.absolute_path(File.join(
-                                            File.dirname(__FILE__), "../config.rb"
+                                            File.dirname(__FILE__), '../config.rb'
                                           ))
 
       # Extracts the available configuration options from the Mongoid::Config
@@ -146,6 +146,5 @@ module Mongoid
            .sort_by { |opt| opt.name }
       end
     end
-
   end
 end

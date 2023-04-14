@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './has_many_models'
 
 describe Mongoid::Association::Referenced::HasMany do
@@ -572,7 +572,7 @@ describe Mongoid::Association::Referenced::HasMany do
       end
 
       it 'returns the type followed by = as a String' do
-        expect(association.type_setter).to eq("containable_type=")
+        expect(association.type_setter).to eq('containable_type=')
       end
     end
 
@@ -1248,7 +1248,7 @@ describe Mongoid::Association::Referenced::HasMany do
     end
   end
 
-  context "when adding an object to the association" do
+  context 'when adding an object to the association' do
     let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
 
     let(:update_time) do
@@ -1267,7 +1267,7 @@ describe Mongoid::Association::Referenced::HasMany do
       student.update(school: school)
     end
 
-    it "updates the updated_at" do
+    it 'updates the updated_at' do
       expect(student.updated_at).to eq(update_time)
     end
   end

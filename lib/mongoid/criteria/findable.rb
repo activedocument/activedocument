@@ -58,7 +58,7 @@ module Mongoid
       def for_ids(ids)
         ids = mongoize_ids(ids)
         if ids.size > 1
-          send(id_finder, { _id: { "$in" => ids } })
+          send(id_finder, { _id: { '$in' => ids } })
         else
           send(id_finder, { _id: ids.first })
         end
@@ -129,7 +129,7 @@ module Mongoid
       def mongoize_ids(ids)
         ids.map do |id|
           id = id[:_id] if id.respond_to?(:keys) && id[:_id]
-          klass.fields["_id"].mongoize(id)
+          klass.fields['_id'].mongoize(id)
         end
       end
 

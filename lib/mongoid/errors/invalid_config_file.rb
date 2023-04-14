@@ -15,7 +15,7 @@ module Mongoid
       def initialize(path)
         super(
           compose_message(
-            "invalid_config_file",
+            'invalid_config_file',
             { path: path }
           )
         )

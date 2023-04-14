@@ -14,7 +14,7 @@ module Mongoid
       # @param [ Array<Symbol> ] keys The defined clients.
       def initialize(keys)
         super(
-          compose_message("no_default_client", { keys: keys.join(", ") })
+          compose_message('no_default_client', { keys: keys.join(', ') })
         )
       end
     end

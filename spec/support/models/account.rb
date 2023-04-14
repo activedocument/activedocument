@@ -14,7 +14,7 @@ class Account
   field :overridden, type: String
 
   embeds_many :memberships
-  belongs_to :creator, class_name: "User"
+  belongs_to :creator, class_name: 'User'
   belongs_to :person
   has_many :alerts, autosave: false
   has_and_belongs_to_many :agents
@@ -25,7 +25,7 @@ class Account
   validates_length_of :name, maximum: 10, on: :create
 
   def overridden
-    self[:overridden] = "not recommended"
+    self[:overridden] = 'not recommended'
   end
 
   # MONGOID-3365

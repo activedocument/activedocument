@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Extensions::NilClass do
 
-  describe "#collectionize" do
+  describe '#collectionize' do
 
     it "returns ''" do
       expect(nil.collectionize).to be_empty

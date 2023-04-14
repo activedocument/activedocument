@@ -10,7 +10,7 @@ module Mongoid
       def initialize(base, document)
         super(
           compose_message(
-            "unsaved_document",
+            'unsaved_document',
             { base: base.class.name, document: document.class.name }
           )
         )

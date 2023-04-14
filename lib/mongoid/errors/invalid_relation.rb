@@ -17,7 +17,7 @@ module Mongoid
       def initialize(klass, name)
         super(
           compose_message(
-            "invalid_relation",
+            'invalid_relation',
             {
               name: name,
               origin: origin(klass, name),
@@ -54,7 +54,7 @@ module Mongoid
       # @return [ Array<String, Integer> ] The location of the method.
       def location(klass, name)
         @location ||=
-          (klass.instance_method(name).source_location || ["Unknown", 0])
+          (klass.instance_method(name).source_location || ['Unknown', 0])
       end
     end
   end

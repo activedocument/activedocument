@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "mongoid/threaded/lifecycle"
+require 'mongoid/threaded/lifecycle'
 
 module Mongoid
 
@@ -8,29 +8,29 @@ module Mongoid
   # on the current thread.
   module Threaded
 
-    DATABASE_OVERRIDE_KEY = "[mongoid]:db-override"
+    DATABASE_OVERRIDE_KEY = '[mongoid]:db-override'
 
     # Constant for the key to store clients.
-    CLIENTS_KEY = "[mongoid]:clients"
+    CLIENTS_KEY = '[mongoid]:clients'
 
     # The key to override the client.
-    CLIENT_OVERRIDE_KEY = "[mongoid]:client-override"
+    CLIENT_OVERRIDE_KEY = '[mongoid]:client-override'
 
     # The key for the current thread's scope stack.
-    CURRENT_SCOPE_KEY = "[mongoid]:current-scope"
+    CURRENT_SCOPE_KEY = '[mongoid]:current-scope'
 
-    AUTOSAVES_KEY = "[mongoid]:autosaves"
-    VALIDATIONS_KEY = "[mongoid]:validations"
+    AUTOSAVES_KEY = '[mongoid]:autosaves'
+    VALIDATIONS_KEY = '[mongoid]:validations'
 
     STACK_KEYS = Hash.new do |hash, key|
       hash[key] = "[mongoid]:#{key}-stack"
     end
 
     # The key for the current thread's sessions.
-    SESSIONS_KEY = "[mongoid]:sessions"
+    SESSIONS_KEY = '[mongoid]:sessions'
 
     # The key for storing documents modified inside transactions.
-    MODIFIED_DOCUMENTS_KEY = "[mongoid]:modified-documents"
+    MODIFIED_DOCUMENTS_KEY = '[mongoid]:modified-documents'
 
     extend self
 

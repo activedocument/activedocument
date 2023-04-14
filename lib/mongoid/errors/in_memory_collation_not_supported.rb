@@ -12,7 +12,7 @@ module Mongoid
       # @example Create the new unsupported collation error.
       #   InMemoryCollationNotSupported.new
       def initialize
-        super(compose_message("in_memory_collation_not_supported"))
+        super(compose_message('in_memory_collation_not_supported'))
       end
     end
   end

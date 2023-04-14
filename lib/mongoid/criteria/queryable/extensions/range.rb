@@ -71,7 +71,7 @@ module Mongoid
           def __evolve_range_naive__
             hash = {}
             hash['$gte'] = self.begin if self.begin
-            hash[exclude_end? ? "$lt" : "$lte"] = self.end if self.end
+            hash[exclude_end? ? '$lt' : '$lte'] = self.end if self.end
             hash
           end
 

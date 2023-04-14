@@ -57,7 +57,7 @@ module Mongoid
     #   context.
     def collection(parent = nil)
       parent ?
-        parent.collection.with(client_options.except(:database, "database")) :
+        parent.collection.with(client_options.except(:database, 'database')) :
         client[collection_name.to_sym]
     end
 

@@ -36,15 +36,15 @@ module Mongoid
         prepare_upsert(options) do
           if options[:replace]
             if options[:set_on_insert]
-              raise ArgumentError, "cannot specify :set_on_insert with `replace: true`"
+              raise ArgumentError, 'cannot specify :set_on_insert with `replace: true`'
             end
 
             collection.find(atomic_selector).replace_one(
               as_attributes, upsert: true, session: _session
             )
           else
-            attrs = { "$set" => as_attributes }
-            attrs["$setOnInsert"] = options[:set_on_insert] if options[:set_on_insert]
+            attrs = { '$set' => as_attributes }
+            attrs['$setOnInsert'] = options[:set_on_insert] if options[:set_on_insert]
 
             collection.find(atomic_selector).update_one(
               attrs, upsert: true, session: _session

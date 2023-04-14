@@ -16,7 +16,7 @@ module Mongoid
       def initialize(klass, options)
         super(
           compose_message(
-            "invalid_storage_options",
+            'invalid_storage_options',
             { klass: klass, options: options }
           )
         )

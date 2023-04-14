@@ -110,7 +110,7 @@ describe 'embedded associations' do
     context 'when association is loaded' do
       before do
         # This query must be before the product is created
-        manufactory.products.where(name: "Car").first
+        manufactory.products.where(name: 'Car').first
 
         product
       end
@@ -260,7 +260,7 @@ describe 'embedded associations' do
     end
   end
 
-  context "when summing properties on an embedded child" do
+  context 'when summing properties on an embedded child' do
     let(:user) { EmmUser.new }
     before do
       user.orders.build(amount: 200)
@@ -270,7 +270,7 @@ describe 'embedded associations' do
       user.orders.build(amount: 500)
     end
 
-    it "the cache is cleared after deletion" do
+    it 'the cache is cleared after deletion' do
       expect(user.orders.sum(:amount)).to eq(500)
     end
   end

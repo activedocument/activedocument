@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "spec_helper"
-require_relative "./has_and_belongs_to_many_models"
+require 'spec_helper'
+require_relative './has_and_belongs_to_many_models'
 
 describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
@@ -1063,10 +1063,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       end
     end
 
-    context "when using a model that uses the class_name option" do
+    context 'when using a model that uses the class_name option' do
       let(:inverse_foreign_key) { HabtmmSchool.relations[:students].inverse_foreign_key }
-      it "gets the correct inverse foreign key" do
-        expect(inverse_foreign_key).to eq("school_ids")
+      it 'gets the correct inverse foreign key' do
+        expect(inverse_foreign_key).to eq('school_ids')
       end
     end
   end
@@ -1078,7 +1078,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
     end
   end
 
-  context "when adding an object to the association" do
+  context 'when adding an object to the association' do
     let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
 
     let(:update_time) do
@@ -1097,8 +1097,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       school.update(students: [student])
     end
 
-    it "updates the updated at" do
-      pending "MONGOID-4953"
+    it 'updates the updated at' do
+      pending 'MONGOID-4953'
       expect(school.updated_at).to eq(update_time)
     end
   end

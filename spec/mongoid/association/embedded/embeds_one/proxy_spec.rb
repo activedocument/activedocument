@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
 
-  describe "#===" do
+  describe '#===' do
 
     let(:base) do
       Person.new
@@ -15,26 +15,26 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
 
     let(:association) do
-      Person.relations["name"]
+      Person.relations['name']
     end
 
     let(:relation) do
       described_class.new(base, target, association)
     end
 
-    context "when the proxied document is same class" do
+    context 'when the proxied document is same class' do
 
-      it "returns true" do
+      it 'returns true' do
         expect((relation === Name.new)).to be true
       end
     end
   end
 
-  describe "#=" do
+  describe '#=' do
 
-    context "when the relation is not cyclic" do
+    context 'when the relation is not cyclic' do
 
-      context "when the parent is a new record" do
+      context 'when the parent is a new record' do
 
         let(:person) do
           Person.new
@@ -48,23 +48,23 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           person.name = name
         end
 
-        it "sets the target of the relation" do
+        it 'sets the target of the relation' do
           expect(person.name).to eq(name)
         end
 
-        it "sets the base on the inverse relation" do
+        it 'sets the base on the inverse relation' do
           expect(name.namable).to eq(person)
         end
 
-        it "sets the same instance on the inverse relation" do
+        it 'sets the same instance on the inverse relation' do
           expect(name.namable).to eql(person)
         end
 
-        it "does not save the target" do
+        it 'does not save the target' do
           expect(name).to_not be_persisted
         end
 
-        context "with overwritten getter" do
+        context 'with overwritten getter' do
 
           before do
             person.name = nil
@@ -77,14 +77,14 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
             end
           end
 
-          it "sets the target without an invinite recursion" do
+          it 'sets the target without an invinite recursion' do
             person.name = name
             expect(person.name).to be_present
           end
         end
       end
 
-      context "when the parent is not a new record" do
+      context 'when the parent is not a new record' do
 
         let(:person) do
           Person.create!
@@ -94,7 +94,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           Name.new
         end
 
-        context "when setting with a hash" do
+        context 'when setting with a hash' do
 
           before do
             person.name = {}
@@ -104,73 +104,73 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
             person.name
           end
 
-          it "sets the target of the relation" do
+          it 'sets the target of the relation' do
             expect(person.name).to eq(child_name)
           end
 
-          it "sets the base on the inverse relation" do
+          it 'sets the base on the inverse relation' do
             expect(child_name.namable).to eq(person)
           end
 
-          it "sets the same instance on the inverse relation" do
+          it 'sets the same instance on the inverse relation' do
             expect(child_name.namable).to eql(person)
           end
 
-          it "saves the target" do
+          it 'saves the target' do
             expect(child_name).to be_persisted
           end
 
-          context "when replacing a relation with a hash" do
+          context 'when replacing a relation with a hash' do
 
             before do
               person.name = {}
             end
 
-            it "sets the relation with the proper object" do
+            it 'sets the relation with the proper object' do
               expect(person.name).to be_a(Name)
             end
           end
         end
 
-        context "when setting to the same document" do
+        context 'when setting to the same document' do
 
           before do
             person.name = name
             person.name = person.name
           end
 
-          it "does not change the relation" do
+          it 'does not change the relation' do
             expect(person.name).to eq(name)
           end
 
-          it "does not persist any change" do
+          it 'does not persist any change' do
             expect(person.reload.name).to eq(name)
           end
         end
 
-        context "when setting directly" do
+        context 'when setting directly' do
 
           before do
             person.name = name
           end
 
-          it "sets the target of the relation" do
+          it 'sets the target of the relation' do
             expect(person.name).to eq(name)
           end
 
-          it "sets the base on the inverse relation" do
+          it 'sets the base on the inverse relation' do
             expect(name.namable).to eq(person)
           end
 
-          it "sets the same instance on the inverse relation" do
+          it 'sets the same instance on the inverse relation' do
             expect(name.namable).to eql(person)
           end
 
-          it "saves the target" do
+          it 'saves the target' do
             expect(name).to be_persisted
           end
 
-          context "when replacing an existing document" do
+          context 'when replacing an existing document' do
 
             let(:pet_owner) do
               PetOwner.create!
@@ -189,16 +189,16 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
               pet_owner.pet = pet_two
             end
 
-            it "runs the destroy callbacks on the old document" do
+            it 'runs the destroy callbacks on the old document' do
               expect(pet_one.destroy_flag).to be true
             end
 
-            it "keeps the name of the destroyed" do
-              expect(pet_one.name).to eq("kika")
+            it 'keeps the name of the destroyed' do
+              expect(pet_one.name).to eq('kika')
             end
 
-            it "saves the new name" do
-              expect(pet_owner.pet.name).to eq("tiksy")
+            it 'saves the new name' do
+              expect(pet_owner.pet.name).to eq('tiksy')
             end
           end
         end
@@ -226,26 +226,26 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           end
         end
 
-        context "when setting via the parent attributes" do
+        context 'when setting via the parent attributes' do
 
           before do
             person.attributes = { name: name }
           end
 
-          it "sets the target of the relation" do
+          it 'sets the target of the relation' do
             expect(person.name).to eq(name)
           end
 
-          it "does not save the target" do
+          it 'does not save the target' do
             expect(name).to_not be_persisted
           end
         end
       end
     end
 
-    context "when the relation is cyclic" do
+    context 'when the relation is cyclic' do
 
-      context "when the parent is a new record" do
+      context 'when the parent is a new record' do
 
         let(:parent_shelf) do
           Shelf.new
@@ -259,24 +259,24 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           parent_shelf.child_shelf = child_shelf
         end
 
-        it "sets the target of the relation" do
+        it 'sets the target of the relation' do
           expect(parent_shelf.child_shelf).to eq(child_shelf)
         end
 
-        it "sets the base on the inverse relation" do
+        it 'sets the base on the inverse relation' do
           expect(child_shelf.parent_shelf).to eq(parent_shelf)
         end
 
-        it "sets the same instance on the inverse relation" do
+        it 'sets the same instance on the inverse relation' do
           expect(child_shelf.parent_shelf).to eql(parent_shelf)
         end
 
-        it "does not save the target" do
+        it 'does not save the target' do
           expect(child_shelf).to_not be_persisted
         end
       end
 
-      context "when the parent is not a new record" do
+      context 'when the parent is not a new record' do
 
         let(:parent_shelf) do
           Shelf.create!
@@ -290,25 +290,25 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           parent_shelf.child_shelf = child_shelf
         end
 
-        it "sets the target of the relation" do
+        it 'sets the target of the relation' do
           expect(parent_shelf.child_shelf).to eq(child_shelf)
         end
 
-        it "sets the base on the inverse relation" do
+        it 'sets the base on the inverse relation' do
           expect(child_shelf.parent_shelf).to eq(parent_shelf)
         end
 
-        it "sets the same instance on the inverse relation" do
+        it 'sets the same instance on the inverse relation' do
           expect(child_shelf.parent_shelf).to eql(parent_shelf)
         end
 
-        it "saves the target" do
+        it 'saves the target' do
           expect(child_shelf).to be_persisted
         end
       end
     end
 
-    context "when setting a new document multiple times in a row" do
+    context 'when setting a new document multiple times in a row' do
 
       let(:parent) do
         Parent.create!
@@ -320,17 +320,17 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         parent.first_child = Child.new
       end
 
-      it "saves the child document" do
+      it 'saves the child document' do
         expect(parent.first_child).to be_a(Child)
       end
     end
   end
 
-  describe "#= nil" do
+  describe '#= nil' do
 
-    context "when the relation is not cyclic" do
+    context 'when the relation is not cyclic' do
 
-      context "when the parent is a new record" do
+      context 'when the parent is a new record' do
 
         let(:person) do
           Person.new
@@ -345,16 +345,16 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           person.name = nil
         end
 
-        it "sets the relation to nil" do
+        it 'sets the relation to nil' do
           expect(person.name).to be_nil
         end
 
-        it "removes the inverse relation" do
+        it 'removes the inverse relation' do
           expect(name.namable).to be_nil
         end
       end
 
-      context "when the inverse is already nil" do
+      context 'when the inverse is already nil' do
 
         let(:person) do
           Person.new
@@ -364,12 +364,12 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           person.name = nil
         end
 
-        it "sets the relation to nil" do
+        it 'sets the relation to nil' do
           expect(person.name).to be_nil
         end
       end
 
-      context "when the parent is persisted" do
+      context 'when the parent is persisted' do
 
         let(:person) do
           Person.create!
@@ -379,47 +379,47 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           Name.new
         end
 
-        context "when setting directly" do
+        context 'when setting directly' do
 
           before do
             person.name = name
             person.name = nil
           end
 
-          it "sets the relation to nil" do
+          it 'sets the relation to nil' do
             expect(person.name).to be_nil
           end
 
-          it "removed the inverse relation" do
+          it 'removed the inverse relation' do
             expect(name.namable).to be_nil
           end
 
-          it "deletes the child document" do
+          it 'deletes the child document' do
             expect(name).to be_destroyed
           end
         end
 
-        context "when setting via parent attributes" do
+        context 'when setting via parent attributes' do
 
           before do
             person.name = name
             person.attributes = { name: nil }
           end
 
-          it "sets the relation to nil" do
+          it 'sets the relation to nil' do
             expect(person.name).to be_nil
           end
 
-          it "does not delete the child document" do
+          it 'does not delete the child document' do
             expect(name).to_not be_destroyed
           end
         end
       end
     end
 
-    context "when the relation is cyclic" do
+    context 'when the relation is cyclic' do
 
-      context "when the parent is a new record" do
+      context 'when the parent is a new record' do
 
         let(:parent_shelf) do
           Shelf.new
@@ -434,16 +434,16 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           parent_shelf.child_shelf = nil
         end
 
-        it "sets the relation to nil" do
+        it 'sets the relation to nil' do
           expect(parent_shelf.child_shelf).to be_nil
         end
 
-        it "removes the inverse relation" do
+        it 'removes the inverse relation' do
           expect(child_shelf.parent_shelf).to be_nil
         end
       end
 
-      context "when the inverse is already nil" do
+      context 'when the inverse is already nil' do
 
         let(:parent_shelf) do
           Shelf.new
@@ -453,12 +453,12 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           parent_shelf.child_shelf = nil
         end
 
-        it "sets the relation to nil" do
+        it 'sets the relation to nil' do
           expect(parent_shelf.child_shelf).to be_nil
         end
       end
 
-      context "when the documents are not new records" do
+      context 'when the documents are not new records' do
 
         let(:parent_shelf) do
           Shelf.create!
@@ -473,15 +473,15 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           parent_shelf.child_shelf = nil
         end
 
-        it "sets the relation to nil" do
+        it 'sets the relation to nil' do
           expect(parent_shelf.child_shelf).to be_nil
         end
 
-        it "removed the inverse relation" do
+        it 'removed the inverse relation' do
           expect(child_shelf.parent_shelf).to be_nil
         end
 
-        it "deletes the child document" do
+        it 'deletes the child document' do
           expect(child_shelf).to be_destroyed
         end
       end
@@ -490,13 +490,13 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
 
   describe "#build_#\{name}" do
 
-    context "when the relation is not cyclic" do
+    context 'when the relation is not cyclic' do
 
-      context "when the parent is a new record" do
+      context 'when the parent is a new record' do
 
-        context "when not providing any attributes" do
+        context 'when not providing any attributes' do
 
-          context "when building once" do
+          context 'when building once' do
 
             let(:person) do
               Person.new
@@ -506,24 +506,24 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
               person.build_name
             end
 
-            it "sets the target of the relation" do
+            it 'sets the target of the relation' do
               expect(person.name).to eq(name)
             end
 
-            it "sets the base on the inverse relation" do
+            it 'sets the base on the inverse relation' do
               expect(name.namable).to eq(person)
             end
 
-            it "sets no attributes" do
+            it 'sets no attributes' do
               expect(name.first_name).to be_nil
             end
 
-            it "does not save the target" do
+            it 'does not save the target' do
               expect(name).to_not be_persisted
             end
           end
 
-          context "when building twice" do
+          context 'when building twice' do
 
             let(:person) do
               Person.new
@@ -534,25 +534,25 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
               person.build_name
             end
 
-            it "sets the target of the relation" do
+            it 'sets the target of the relation' do
               expect(person.name).to eq(name)
             end
 
-            it "sets the base on the inverse relation" do
+            it 'sets the base on the inverse relation' do
               expect(name.namable).to eq(person)
             end
 
-            it "sets no attributes" do
+            it 'sets no attributes' do
               expect(name.first_name).to be_nil
             end
 
-            it "does not save the target" do
+            it 'does not save the target' do
               expect(name).to_not be_persisted
             end
           end
         end
 
-        context "when passing nil as the attributes" do
+        context 'when passing nil as the attributes' do
 
           let(:person) do
             Person.new
@@ -562,70 +562,70 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
             person.build_name(nil)
           end
 
-          it "sets the target of the relation" do
+          it 'sets the target of the relation' do
             expect(person.name).to eq(name)
           end
 
-          it "sets the base on the inverse relation" do
+          it 'sets the base on the inverse relation' do
             expect(name.namable).to eq(person)
           end
 
-          it "sets no attributes" do
+          it 'sets no attributes' do
             expect(name.first_name).to be_nil
           end
 
-          it "does not save the target" do
+          it 'does not save the target' do
             expect(name).to_not be_persisted
           end
         end
 
-        context "when providing attributes" do
+        context 'when providing attributes' do
 
           let(:person) do
             Person.new
           end
 
           let!(:name) do
-            person.build_name(first_name: "James")
+            person.build_name(first_name: 'James')
           end
 
-          it "sets the target of the relation" do
+          it 'sets the target of the relation' do
             expect(person.name).to eq(name)
           end
 
-          it "sets the base on the inverse relation" do
+          it 'sets the base on the inverse relation' do
             expect(name.namable).to eq(person)
           end
 
-          it "sets the attributes" do
-            expect(name.first_name).to eq("James")
+          it 'sets the attributes' do
+            expect(name.first_name).to eq('James')
           end
 
-          it "does not save the target" do
+          it 'does not save the target' do
             expect(name).to_not be_persisted
           end
         end
       end
 
-      context "when the parent is not a new record" do
+      context 'when the parent is not a new record' do
 
         let(:person) do
           Person.create!
         end
 
         let!(:name) do
-          person.build_name(first_name: "James")
+          person.build_name(first_name: 'James')
         end
 
-        it "does not save the target" do
+        it 'does not save the target' do
           expect(name).to_not be_persisted
         end
       end
     end
 
-    context "when the relation is cyclic" do
+    context 'when the relation is cyclic' do
 
-      context "when the parent is a new record" do
+      context 'when the parent is a new record' do
 
         let(:parent_shelf) do
           Shelf.new
@@ -635,24 +635,24 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           parent_shelf.build_child_shelf(level: 1)
         end
 
-        it "sets the target of the relation" do
+        it 'sets the target of the relation' do
           expect(parent_shelf.child_shelf).to eq(child_shelf)
         end
 
-        it "sets the base on the inverse relation" do
+        it 'sets the base on the inverse relation' do
           expect(child_shelf.parent_shelf).to eq(parent_shelf)
         end
 
-        it "sets the attributes" do
+        it 'sets the attributes' do
           expect(child_shelf.level).to eq(1)
         end
 
-        it "does not save the target" do
+        it 'does not save the target' do
           expect(child_shelf).to_not be_persisted
         end
       end
 
-      context "when the parent is not a new record" do
+      context 'when the parent is not a new record' do
 
         let(:parent_shelf) do
           Shelf.create!
@@ -662,7 +662,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           parent_shelf.build_child_shelf(level: 2)
         end
 
-        it "does not save the target" do
+        it 'does not save the target' do
           expect(child_shelf).to_not be_persisted
         end
       end
@@ -671,9 +671,9 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
 
   describe "#create_#\{name}" do
 
-    context "when the parent is a new record" do
+    context 'when the parent is a new record' do
 
-      context "when not providing any attributes" do
+      context 'when not providing any attributes' do
 
         let(:person) do
           Person.new
@@ -683,24 +683,24 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           person.create_name
         end
 
-        it "sets the target of the relation" do
+        it 'sets the target of the relation' do
           expect(person.name).to eq(name)
         end
 
-        it "sets the base on the inverse relation" do
+        it 'sets the base on the inverse relation' do
           expect(name.namable).to eq(person)
         end
 
-        it "sets no attributes" do
+        it 'sets no attributes' do
           expect(name.first_name).to be_nil
         end
 
-        it "saves the target" do
+        it 'saves the target' do
           expect(name).to be_persisted
         end
       end
 
-      context "when passing nil as the attributes" do
+      context 'when passing nil as the attributes' do
 
         let(:person) do
           Person.new
@@ -710,72 +710,72 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           person.create_name(nil)
         end
 
-        it "sets the target of the relation" do
+        it 'sets the target of the relation' do
           expect(person.name).to eq(name)
         end
 
-        it "sets the base on the inverse relation" do
+        it 'sets the base on the inverse relation' do
           expect(name.namable).to eq(person)
         end
 
-        it "sets no attributes" do
+        it 'sets no attributes' do
           expect(name.first_name).to be_nil
         end
 
-        it "saves the target" do
+        it 'saves the target' do
           expect(name).to be_persisted
         end
       end
 
-      context "when providing attributes" do
+      context 'when providing attributes' do
 
         let(:person) do
           Person.new
         end
 
         let!(:name) do
-          person.create_name(first_name: "James")
+          person.create_name(first_name: 'James')
         end
 
-        it "sets the target of the relation" do
+        it 'sets the target of the relation' do
           expect(person.name).to eq(name)
         end
 
-        it "sets the base on the inverse relation" do
+        it 'sets the base on the inverse relation' do
           expect(name.namable).to eq(person)
         end
 
-        it "sets the attributes" do
-          expect(name.first_name).to eq("James")
+        it 'sets the attributes' do
+          expect(name.first_name).to eq('James')
         end
 
-        it "saves the target" do
+        it 'saves the target' do
           expect(name).to be_persisted
         end
       end
 
-      context "when the parent is not a new record" do
+      context 'when the parent is not a new record' do
 
         let(:person) do
           Person.create!
         end
 
         let!(:name) do
-          person.create_name(first_name: "James")
+          person.create_name(first_name: 'James')
         end
 
-        it "does not save the target" do
+        it 'does not save the target' do
           expect(name).to be_persisted
         end
       end
     end
   end
 
-  describe "when the relationship is polymorphic" do
+  describe 'when the relationship is polymorphic' do
 
-    context "when updating an aliased embedded document" do
+    context 'when updating an aliased embedded document' do
 
-      context "when the embedded document inherits its relationship" do
+      context 'when the embedded document inherits its relationship' do
 
         let(:courier_job) do
           CourierJob.create!
@@ -792,7 +792,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         after do
           # Note that this is necessary, otherwise all further Address objects will be
           # saved with a "_type" attributes. See Traversable#inherited for why.
-          Address.send(:remove_defaults, "_type")
+          Address.send(:remove_defaults, '_type')
         end
 
         before do
@@ -801,28 +801,28 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           courier_job.reload
         end
 
-        it "the child is embedded correctly" do
+        it 'the child is embedded correctly' do
           expect(courier_job.drop_address).to eq(new_child)
         end
       end
     end
   end
 
-  describe ".embedded?" do
+  describe '.embedded?' do
 
-    it "returns true" do
+    it 'returns true' do
       expect(described_class).to be_embedded
     end
   end
 
-  describe "#respond_to?" do
+  describe '#respond_to?' do
 
     let(:person) do
       Person.new
     end
 
     let!(:name) do
-      person.build_name(first_name: "Tony")
+      person.build_name(first_name: 'Tony')
     end
 
     let(:document) do
@@ -833,18 +833,18 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
 
       context "when checking #{method}" do
 
-        it "returns true" do
+        it 'returns true' do
           expect(document.respond_to?(method)).to be true
         end
       end
     end
 
-    it "responds to persisted?" do
+    it 'responds to persisted?' do
       expect(document).to respond_to(:persisted?)
     end
   end
 
-  context "when the embedded document has an array field" do
+  context 'when the embedded document has an array field' do
 
     let!(:person) do
       Person.create!
@@ -852,13 +852,13 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
 
     let!(:name) do
       person.create_name(
-        first_name: "Syd",
-        last_name: "Vicious",
+        first_name: 'Syd',
+        last_name: 'Vicious',
         aliases: nil
       )
     end
 
-    context "when saving the array on a persisted document" do
+    context 'when saving the array on a persisted document' do
 
       let(:from_db) do
         Person.find(person.id).name
@@ -869,17 +869,17 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         from_db.save!
       end
 
-      it "sets the values of the array" do
+      it 'sets the values of the array' do
         expect(from_db.aliases).to eq(%w[Syd Sydney])
       end
 
-      it "persists the array" do
+      it 'persists the array' do
         expect(Person.find(person.id).name.aliases).to eq(%w[Syd Sydney])
       end
     end
   end
 
-  context "when embedding a many under a one" do
+  context 'when embedding a many under a one' do
 
     let!(:person) do
       Person.create!
@@ -889,13 +889,13 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       person.create_name
     end
 
-    context "when the documents are reloaded from the database" do
+    context 'when the documents are reloaded from the database' do
 
       let(:from_db) do
         Person.first
       end
 
-      context "when adding a new many" do
+      context 'when adding a new many' do
 
         let(:name) do
           from_db.name
@@ -905,13 +905,13 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           name.translations.new
         end
 
-        context "when saving the root" do
+        context 'when saving the root' do
 
           before do
             from_db.save!
           end
 
-          it "persists the new document on the first save" do
+          it 'persists the new document on the first save' do
             expect(from_db.reload.name.translations).to_not be_empty
           end
         end
@@ -919,33 +919,33 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
     end
   end
 
-  context "when embedding a one under a many" do
+  context 'when embedding a one under a many' do
 
     let!(:person) do
       Person.create!
     end
 
     let!(:address_one) do
-      person.addresses.create!(street: "hobrecht")
+      person.addresses.create!(street: 'hobrecht')
     end
 
     let!(:address_two) do
-      person.addresses.create!(street: "kreuzberg")
+      person.addresses.create!(street: 'kreuzberg')
     end
 
-    context "when a parent was removed outside of mongoid" do
+    context 'when a parent was removed outside of mongoid' do
 
       before do
         person.collection.find(_id: person.id).update_one(
-          "$pull" => { "addresses" => { _id: address_one.id } }
+          '$pull' => { 'addresses' => { _id: address_one.id } }
         )
       end
 
-      it "reloads the correct number" do
+      it 'reloads the correct number' do
         expect(person.reload.addresses.count).to eq(1)
       end
 
-      context "when adding a child" do
+      context 'when adding a child' do
 
         let(:code) do
           Code.new
@@ -955,26 +955,26 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
           address_two.code = code
         end
 
-        it "reloads the correct number" do
+        it 'reloads the correct number' do
           expect(person.reload.addresses.count).to eq(1)
         end
       end
     end
   end
 
-  context "when embedded documents are stored without ids" do
+  context 'when embedded documents are stored without ids' do
 
     let!(:band) do
-      Band.create!(name: "Moderat")
+      Band.create!(name: 'Moderat')
     end
 
     before do
       band.collection
           .find(_id: band.id)
-          .update_one("$set" => { label: { _id: BSON::ObjectId.new, name: "Mute" } })
+          .update_one('$set' => { label: { _id: BSON::ObjectId.new, name: 'Mute' } })
     end
 
-    context "when loading the documents" do
+    context 'when loading the documents' do
 
       before do
         band.reload
@@ -984,32 +984,32 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
         band.label
       end
 
-      it "creates proper documents from the db" do
-        expect(label.name).to eq("Mute")
+      it 'creates proper documents from the db' do
+        expect(label.name).to eq('Mute')
       end
 
-      it "assigns ids to the documents" do
+      it 'assigns ids to the documents' do
         expect(label.id).to_not be_nil
       end
 
-      context "when subsequently updating the documents" do
+      context 'when subsequently updating the documents' do
 
         before do
-          label.update_attribute(:name, "Interscope")
+          label.update_attribute(:name, 'Interscope')
         end
 
-        it "updates the document" do
-          expect(label.name).to eq("Interscope")
+        it 'updates the document' do
+          expect(label.name).to eq('Interscope')
         end
 
-        it "persists the change" do
-          expect(label.reload.name).to eq("Interscope")
+        it 'persists the change' do
+          expect(label.reload.name).to eq('Interscope')
         end
       end
     end
   end
 
-  context "when parent validation of child is set to false" do
+  context 'when parent validation of child is set to false' do
 
     let(:building) do
       building = Building.create!
@@ -1018,21 +1018,21 @@ describe Mongoid::Association::Embedded::EmbedsOne::Proxy do
       building.reload
     end
 
-    it "parent successfully embeds an invalid child" do
+    it 'parent successfully embeds an invalid child' do
       expect(building.building_address).to be_a(BuildingAddress)
     end
   end
 
-  context "when assigning a hash" do
+  context 'when assigning a hash' do
     let(:building) { Building.create! }
 
     before do
-      building.building_address = { city: "NYC" }
+      building.building_address = { city: 'NYC' }
     end
 
-    it "creates the objects correctly" do
+    it 'creates the objects correctly' do
       expect(building.building_address).to be_a(BuildingAddress)
-      expect(building.building_address.city).to eq("NYC")
+      expect(building.building_address.city).to eq('NYC')
     end
   end
 end

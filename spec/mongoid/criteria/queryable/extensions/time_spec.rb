@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Time do
 
-  describe ".evolve" do
+  describe '.evolve' do
 
-    context "when provided a time" do
+    context 'when provided a time' do
 
-      context "when the time is not in utc" do
+      context 'when the time is not in utc' do
 
         let(:time) do
           Time.new(2010, 1, 1, 14, 0, 0, '+02:00')
@@ -22,7 +22,7 @@ describe Time do
           Time.new(2010, 1, 1, 12, 0, 0, '+00:00')
         end
 
-        it "returns the same time" do
+        it 'returns the same time' do
           expect(evolved).to eq(expected)
         end
 
@@ -31,12 +31,12 @@ describe Time do
           expect(time.utc_offset).to eq(7200)
         end
 
-        it "returns the time in utc" do
+        it 'returns the time in utc' do
           expect(evolved.utc_offset).to eq(0)
         end
       end
 
-      context "when the time is already utc" do
+      context 'when the time is already utc' do
 
         let(:time) do
           Time.new(2010, 1, 1, 12, 0, 0).utc
@@ -50,19 +50,19 @@ describe Time do
           Time.new(2010, 1, 1, 12, 0, 0).utc
         end
 
-        it "returns the same time" do
+        it 'returns the same time' do
           expect(evolved).to eq(expected)
         end
 
-        it "returns the time in utc" do
+        it 'returns the time in utc' do
           expect(evolved.utc_offset).to eq(0)
         end
       end
     end
 
-    context "when provided an array" do
+    context 'when provided an array' do
 
-      context "when the array is composed of times" do
+      context 'when the array is composed of times' do
 
         let(:time) do
           Time.new(2010, 1, 1, 12, 0, 0)
@@ -76,35 +76,35 @@ describe Time do
           Time.new(2010, 1, 1, 12, 0, 0).utc
         end
 
-        it "returns the array with evolved times" do
+        it 'returns the array with evolved times' do
           expect(evolved).to eq([expected])
         end
 
-        it "returns utc times" do
+        it 'returns utc times' do
           expect(evolved.first.utc_offset).to eq(0)
         end
       end
 
-      context "when the array is composed of strings" do
+      context 'when the array is composed of strings' do
 
         let(:time) do
-          Time.parse("1st Jan 2010 12:00:00+01:00")
+          Time.parse('1st Jan 2010 12:00:00+01:00')
         end
 
         let(:evolved) do
           described_class.evolve([time.to_s])
         end
 
-        it "returns the strings as a times" do
+        it 'returns the strings as a times' do
           expect(evolved).to eq([time.to_time])
         end
 
-        it "returns the times in utc" do
+        it 'returns the times in utc' do
           expect(evolved.first.utc_offset).to eq(0)
         end
       end
 
-      context "when the array is composed of integers" do
+      context 'when the array is composed of integers' do
 
         let(:integer) do
           1331890719
@@ -118,16 +118,16 @@ describe Time do
           Time.at(integer).utc
         end
 
-        it "returns the integers as times" do
+        it 'returns the integers as times' do
           expect(evolved).to eq([expected])
         end
 
-        it "returns the times in utc" do
+        it 'returns the times in utc' do
           expect(evolved.first.utc_offset).to eq(0)
         end
       end
 
-      context "when the array is composed of floats" do
+      context 'when the array is composed of floats' do
 
         let(:float) do
           1331890719.413
@@ -141,19 +141,19 @@ describe Time do
           Time.at(float).utc
         end
 
-        it "returns the floats as times" do
+        it 'returns the floats as times' do
           expect(evolved).to eq([expected])
         end
 
-        it "returns the times in utc" do
+        it 'returns the times in utc' do
           expect(evolved.first.utc_offset).to eq(0)
         end
       end
     end
 
-    context "when provided a range" do
+    context 'when provided a range' do
 
-      context "when the range are times" do
+      context 'when the range are times' do
 
         let(:min) do
           Time.new(2010, 1, 1, 12, 0, 0)
@@ -175,18 +175,18 @@ describe Time do
           Time.new(2010, 1, 3, 12, 0, 0).utc
         end
 
-        it "returns a selection of times" do
+        it 'returns a selection of times' do
           expect(evolved).to eq(
-            { "$gte" => expected_min, "$lte" => expected_max }
+            { '$gte' => expected_min, '$lte' => expected_max }
           )
         end
 
-        it "returns the times in utc" do
-          expect(evolved["$gte"].utc_offset).to eq(0)
+        it 'returns the times in utc' do
+          expect(evolved['$gte'].utc_offset).to eq(0)
         end
       end
 
-      context "when the range are strings" do
+      context 'when the range are strings' do
 
         let(:min) do
           Time.new(2010, 1, 1, 12, 0, 0)
@@ -200,18 +200,18 @@ describe Time do
           described_class.evolve(min.to_s..max.to_s)
         end
 
-        it "returns a selection of times" do
+        it 'returns a selection of times' do
           expect(evolved).to eq(
-            { "$gte" => min.to_time, "$lte" => max.to_time }
+            { '$gte' => min.to_time, '$lte' => max.to_time }
           )
         end
 
-        it "returns the times in utc" do
-          expect(evolved["$gte"].utc_offset).to eq(0)
+        it 'returns the times in utc' do
+          expect(evolved['$gte'].utc_offset).to eq(0)
         end
       end
 
-      context "when the range is floats" do
+      context 'when the range is floats' do
 
         let(:min) do
           1331890719.1234
@@ -233,18 +233,18 @@ describe Time do
           Time.at(max).utc
         end
 
-        it "returns a selection of times" do
+        it 'returns a selection of times' do
           expect(evolved).to eq(
-            { "$gte" => expected_min, "$lte" => expected_max }
+            { '$gte' => expected_min, '$lte' => expected_max }
           )
         end
 
-        it "returns the times in utc" do
-          expect(evolved["$gte"].utc_offset).to eq(0)
+        it 'returns the times in utc' do
+          expect(evolved['$gte'].utc_offset).to eq(0)
         end
       end
 
-      context "when the range is integers" do
+      context 'when the range is integers' do
 
         let(:min) do
           1331890719
@@ -266,38 +266,38 @@ describe Time do
           Time.at(max).utc
         end
 
-        it "returns a selection of times" do
+        it 'returns a selection of times' do
           expect(evolved).to eq(
-            { "$gte" => expected_min, "$lte" => expected_max }
+            { '$gte' => expected_min, '$lte' => expected_max }
           )
         end
 
-        it "returns the times in utc" do
-          expect(evolved["$gte"].utc_offset).to eq(0)
+        it 'returns the times in utc' do
+          expect(evolved['$gte'].utc_offset).to eq(0)
         end
       end
     end
 
-    context "when provided a string" do
+    context 'when provided a string' do
 
       let(:time) do
-        Time.parse("1st Jan 2010 12:00:00+01:00")
+        Time.parse('1st Jan 2010 12:00:00+01:00')
       end
 
       let(:evolved) do
         described_class.evolve(time.to_s)
       end
 
-      it "returns the string as a time" do
+      it 'returns the string as a time' do
         expect(evolved).to eq(time.to_time)
       end
 
-      it "returns the time in utc" do
+      it 'returns the time in utc' do
         expect(evolved.utc_offset).to eq(0)
       end
     end
 
-    context "when provided a float" do
+    context 'when provided a float' do
 
       let(:float) do
         1331890719.8170738
@@ -311,16 +311,16 @@ describe Time do
         Time.at(float)
       end
 
-      it "returns the float as a time" do
+      it 'returns the float as a time' do
         expect(evolved).to eq(expected)
       end
 
-      it "returns the time in utc" do
+      it 'returns the time in utc' do
         expect(evolved.utc_offset).to eq(0)
       end
     end
 
-    context "when provided an integer" do
+    context 'when provided an integer' do
 
       let(:integer) do
         1331890719
@@ -334,35 +334,35 @@ describe Time do
         Time.at(integer)
       end
 
-      it "returns the integer as a time" do
+      it 'returns the integer as a time' do
         expect(evolved).to eq(expected)
       end
 
-      it "returns the time in utc" do
+      it 'returns the time in utc' do
         expect(evolved.utc_offset).to eq(0)
       end
     end
 
-    context "when provided an invalid string" do
+    context 'when provided an invalid string' do
 
       let(:evolved) do
-        described_class.evolve("bogus")
+        described_class.evolve('bogus')
       end
 
-      it "returns that string" do
-        expect(evolved).to eq("bogus")
+      it 'returns that string' do
+        expect(evolved).to eq('bogus')
       end
     end
 
-    context "when provided nil" do
+    context 'when provided nil' do
 
-      it "returns nil" do
+      it 'returns nil' do
         expect(described_class.evolve(nil)).to be_nil
       end
     end
   end
 
-  describe "#__evolve_date__" do
+  describe '#__evolve_date__' do
 
     let(:evolved) do
       time.__evolve_date__
@@ -373,7 +373,7 @@ describe Time do
         Time.new(2010, 1, 1, 0, 0, 1).freeze
       end
 
-      it "returns midnight utc" do
+      it 'returns midnight utc' do
         expect(evolved).to eq(Time.utc(2010, 1, 1, 0, 0, 0))
       end
     end
@@ -383,13 +383,13 @@ describe Time do
         Time.new(2010, 1, 1, 23, 59, 59).freeze
       end
 
-      it "returns midnight utc" do
+      it 'returns midnight utc' do
         expect(evolved).to eq(Time.utc(2010, 1, 1, 0, 0, 0))
       end
     end
   end
 
-  describe "#__evolve_time__" do
+  describe '#__evolve_time__' do
 
     let(:time) do
       Time.new(2010, 1, 1, 12, 0, 0).freeze
@@ -399,7 +399,7 @@ describe Time do
       time.__evolve_time__
     end
 
-    it "returns self as utc" do
+    it 'returns self as utc' do
       expect(evolved).to eq(Time.new(2010, 1, 1, 12, 0, 0).utc)
     end
   end

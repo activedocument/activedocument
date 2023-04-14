@@ -59,7 +59,7 @@ module Mongoid
       #
       # @return [ String ] The string in collection friendly form.
       def collectionize
-        tableize.tr("/", "_")
+        tableize.tr('/', '_')
       end
 
       # Is the string a valid value for a Mongoid id?
@@ -92,7 +92,7 @@ module Mongoid
       #
       # @return [ String ] The string stripped of "=".
       def reader
-        delete("=").delete_suffix('_before_type_cast')
+        delete('=').delete_suffix('_before_type_cast')
       end
 
       # Is this string a writer?
@@ -102,7 +102,7 @@ module Mongoid
       #
       # @return [ true | false ] If the string contains "=".
       def writer?
-        include?("=")
+        include?('=')
       end
 
       # Is this string a valid_method_name?
@@ -122,7 +122,7 @@ module Mongoid
       #
       # @return [ true | false ] If the string ends with "_before_type_cast"
       def before_type_cast?
-        ends_with?("_before_type_cast")
+        ends_with?('_before_type_cast')
       end
 
       # Is the object not to be converted to bson on criteria creation?

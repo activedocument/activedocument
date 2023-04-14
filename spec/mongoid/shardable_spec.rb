@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './shardable_models'
 
 describe Mongoid::Shardable do
 
-  describe ".included" do
+  describe '.included' do
 
     let(:klass) do
       Class.new do
@@ -13,16 +13,16 @@ describe Mongoid::Shardable do
       end
     end
 
-    it "adds an shard_key_fields accessor" do
+    it 'adds an shard_key_fields accessor' do
       expect(klass).to respond_to(:shard_key_fields)
     end
 
-    it "defaults shard_key_fields to an empty array" do
+    it 'defaults shard_key_fields to an empty array' do
       expect(klass.shard_key_fields).to be_empty
     end
   end
 
-  describe ".shard_key" do
+  describe '.shard_key' do
 
     context 'when full syntax is used' do
       context 'with symbol value' do
@@ -226,14 +226,14 @@ describe Mongoid::Shardable do
         end
       end
 
-      context "when record is not found" do
+      context 'when record is not found' do
         let!(:instance) { klass.create!(name: value) }
 
         before do
           instance.destroy
         end
 
-        it "raises a DocumentNotFound error with the shard key in the description on reload" do
+        it 'raises a DocumentNotFound error with the shard key in the description on reload' do
           expect do
             instance.reload
           end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class Band with id #{instance.id.to_s} and shard key name: a-brand-name./)
@@ -277,14 +277,14 @@ describe Mongoid::Shardable do
           it { is_expected.to eq({ key => value }) }
         end
 
-        context "when record is not found" do
+        context 'when record is not found' do
           let!(:instance) { klass.create!(author: { name: value }) }
 
           before do
             instance.destroy
           end
 
-          it "raises a DocumentNotFound error with the shard key in the description on reload" do
+          it 'raises a DocumentNotFound error with the shard key in the description on reload' do
             expect do
               instance.reload
             end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class SmReview with id #{instance.id.to_s} and shard key author.name: Arthur Conan Doyle./)

@@ -79,7 +79,7 @@ module Mongoid
           option(value) do |options, query|
             val = value.to_i
             options.store(:limit, val)
-            query.pipeline.push("$limit" => val) if aggregating?
+            query.pipeline.push('$limit' => val) if aggregating?
           end
         end
 
@@ -159,7 +159,7 @@ module Mongoid
               criterion.__sort_option__.each_pair do |field, direction|
                 add_sort_option(options, field, direction)
               end
-              query.pipeline.push("$sort" => options[:sort]) if aggregating?
+              query.pipeline.push('$sort' => options[:sort]) if aggregating?
             end
           end
         end
@@ -192,7 +192,7 @@ module Mongoid
           option(value) do |options, query|
             val = value.to_i
             options.store(:skip, val)
-            query.pipeline.push("$skip" => val) if aggregating?
+            query.pipeline.push('$skip' => val) if aggregating?
           end
         end
         alias :offset :skip
@@ -209,7 +209,7 @@ module Mongoid
           option(criterion) do |options|
             options.__union__(
               fields: criterion.inject({}) do |option, (field, val)|
-                option.tap { |opt| opt.store(field, { "$slice" => val }) }
+                option.tap { |opt| opt.store(field, { '$slice' => val }) }
               end
             )
           end
@@ -345,7 +345,7 @@ module Mongoid
             fields.flatten.compact.each do |field|
               add_sort_option(options, field, direction)
             end
-            query.pipeline.push("$sort" => options[:sort]) if aggregating?
+            query.pipeline.push('$sort' => options[:sort]) if aggregating?
           end
         end
 

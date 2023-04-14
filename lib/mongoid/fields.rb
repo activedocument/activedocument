@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "mongoid/fields/standard"
-require "mongoid/fields/encrypted"
-require "mongoid/fields/foreign_key"
-require "mongoid/fields/localized"
-require "mongoid/fields/validators"
+require 'mongoid/fields/standard'
+require 'mongoid/fields/encrypted'
+require 'mongoid/fields/foreign_key'
+require 'mongoid/fields/localized'
+require 'mongoid/fields/validators'
 
 module Mongoid
 
@@ -127,7 +127,7 @@ module Mongoid
       class_attribute :pre_processed_defaults
       class_attribute :post_processed_defaults
 
-      self.aliased_fields = { "id" => "_id" }
+      self.aliased_fields = { 'id' => '_id' }
       self.fields = {}
       self.localized_fields = {}
       self.pre_processed_defaults = []
@@ -506,7 +506,7 @@ module Mongoid
       #
       # @return [ true | false ] If the class uses BSON::ObjectIds for the id.
       def using_object_ids?
-        fields["_id"].object_id_field?
+        fields['_id'].object_id_field?
       end
 
       # Traverse down the association tree and search for the field for the
@@ -823,9 +823,9 @@ module Mongoid
           if INVALID_BSON_CLASSES.include?(result)
             warn_message = "Using #{result} as the field type is not supported. "
             if result == BSON::Decimal128
-              warn_message += "In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+."
+              warn_message += 'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+.'
             else
-              warn_message += "Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type."
+              warn_message += 'Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type.'
             end
             Mongoid.logger.warn(warn_message)
           end
@@ -843,7 +843,7 @@ module Mongoid
       #
       # @api private
       def unmapped_type(type)
-        if type.to_s == "Boolean"
+        if type.to_s == 'Boolean'
           Mongoid::Boolean
         else
           type || Object

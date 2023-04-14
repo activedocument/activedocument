@@ -6,11 +6,11 @@ module Mongoid
 
       # @api private
       EMPTY_RESULT = {
-        "count" => 0,
-        "sum" => 0,
-        "avg" => nil,
-        "min" => nil,
-        "max" => nil
+        'count' => 0,
+        'sum' => 0,
+        'avg' => nil,
+        'min' => nil,
+        'max' => nil
       }.freeze
     end
   end

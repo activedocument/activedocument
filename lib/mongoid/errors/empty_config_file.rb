@@ -15,7 +15,7 @@ module Mongoid
       def initialize(path)
         super(
           compose_message(
-            "empty_config_file",
+            'empty_config_file',
             { path: path }
           )
         )

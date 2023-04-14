@@ -10,7 +10,7 @@ module Mongoid
 
       attr_reader :problem, :summary, :resolution
 
-      BASE_KEY = "mongoid.errors.messages"
+      BASE_KEY = 'mongoid.errors.messages'
 
       # Compose the message.
       #
@@ -22,9 +22,9 @@ module Mongoid
         @problem = translate_problem(key, attributes)
         @summary = translate_summary(key, attributes)
         @resolution = translate_resolution(key, attributes)
-        @problem_title = translate("message_title", {})
-        @summary_title = translate("summary_title", {})
-        @resolution_title = translate("resolution_title", {})
+        @problem_title = translate('message_title', {})
+        @summary_title = translate('summary_title', {})
+        @resolution_title = translate('resolution_title', {})
 
 
         "\n#{@problem_title}:\n  #{@problem}" +

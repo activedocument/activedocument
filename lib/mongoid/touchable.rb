@@ -76,7 +76,7 @@ module Mongoid
 
         field = database_field_name(field)
 
-        write_attribute(:updated_at, now) if respond_to?("updated_at=")
+        write_attribute(:updated_at, now) if respond_to?('updated_at=')
         write_attribute(field, now) if field
 
         touches = _extract_touches_from_atomic_sets(field) || {}
@@ -187,7 +187,7 @@ module Mongoid
     private
 
     # The key to use to store the active touch callback suppression statuses
-    SUPPRESS_TOUCH_CALLBACKS_KEY = "[mongoid]:suppress-touch-callbacks"
+    SUPPRESS_TOUCH_CALLBACKS_KEY = '[mongoid]:suppress-touch-callbacks'
 
     # Returns a hash to be used to store and query the various touch callback
     # suppression statuses for different classes.

@@ -17,15 +17,15 @@ module Mongoid
       # @api private
       module_function def matches?(document, expr)
         if expr.nil?
-          raise Errors::InvalidQuery, "Nil condition in expression context"
+          raise Errors::InvalidQuery, 'Nil condition in expression context'
         end
         unless Hash === expr
-          raise Errors::InvalidQuery, "MQL query must be provided as a Hash"
+          raise Errors::InvalidQuery, 'MQL query must be provided as a Hash'
         end
 
         expr.all? do |k, expr_v|
           k = k.to_s
-          if k == "$comment"
+          if k == '$comment'
             # Nothing
             return true
           end

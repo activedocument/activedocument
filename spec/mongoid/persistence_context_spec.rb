@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::PersistenceContext do
 
@@ -258,7 +258,7 @@ describe Mongoid::PersistenceContext do
       context 'when the parent object has a client set' do
 
         let(:file) do
-          File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
+          File.join(File.dirname(__FILE__), '..', 'config', 'mongoid.yml')
         end
 
         before do
@@ -669,7 +669,7 @@ describe Mongoid::PersistenceContext do
     end
   end
 
-  context "when using an alternate database to update a document" do
+  context 'when using an alternate database to update a document' do
     let(:user) do
       User.new(name: '1')
     end
@@ -686,9 +686,9 @@ describe Mongoid::PersistenceContext do
       end.to_not raise_error
     end
 
-    it "persists the update" do
-      User.with("database" => database_id_alt) do |klass|
-        expect(klass.find(user._id).name).to eq("2")
+    it 'persists the update' do
+      User.with('database' => database_id_alt) do |klass|
+        expect(klass.find(user._id).name).to eq('2')
       end
     end
   end

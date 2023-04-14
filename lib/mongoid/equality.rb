@@ -17,7 +17,7 @@ module Mongoid
     #
     # @return [ Integer ] -1, 0, 1.
     def <=>(other)
-      attributes["_id"].to_s <=> other.attributes["_id"].to_s
+      attributes['_id'].to_s <=> other.attributes['_id'].to_s
     end
 
     # Performs equality checking on the document ids. For more robust
@@ -31,7 +31,7 @@ module Mongoid
     # @return [ true | false ] True if the ids are equal, false if not.
     def ==(other)
       self.class == other.class &&
-        attributes["_id"] == other.attributes["_id"]
+        attributes['_id'] == other.attributes['_id']
     end
 
     # Delegates to ==. Used when needing checks in hashes.

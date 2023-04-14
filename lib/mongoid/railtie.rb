@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "rails"
-require "rails/mongoid"
+require 'rails'
+require 'rails/mongoid'
 
 module Rails
   module Mongoid
@@ -11,7 +11,7 @@ module Rails
 
       console do |app|
         if app.sandbox?
-          require "mongoid/railties/console_sandbox"
+          require 'mongoid/railties/console_sandbox'
           start_sandbox
         end
       end
@@ -24,8 +24,8 @@ module Rails
       # @ return [Hash] rescued responses
       def self.rescue_responses
         {
-          "Mongoid::Errors::DocumentNotFound" => :not_found,
-          "Mongoid::Errors::Validations" => 422
+          'Mongoid::Errors::DocumentNotFound' => :not_found,
+          'Mongoid::Errors::Validations' => 422
         }
       end
 
@@ -36,7 +36,7 @@ module Rails
       end
 
       rake_tasks do
-        load "mongoid/railties/database.rake"
+        load 'mongoid/railties/database.rake'
       end
 
       # Exposes Mongoid's configuration to the Rails application configuration.
@@ -55,8 +55,8 @@ module Rails
       # It runs after all config/initializers have loaded, so that the YAML
       # options can override options specified in
       # (e.g.) config/initializers/mongoid.rb.
-      initializer "mongoid.load-config", after: :load_config_initializers do
-        config_file = Rails.root.join("config", "mongoid.yml")
+      initializer 'mongoid.load-config', after: :load_config_initializers do
+        config_file = Rails.root.join('config', 'mongoid.yml')
         if config_file.file?
           begin
             ::Mongoid.load!(config_file)
@@ -86,7 +86,7 @@ module Rails
       #
       # This will happen for every request in development, once in other
       # environments.
-      initializer "mongoid.preload-models" do |app|
+      initializer 'mongoid.preload-models' do |app|
         config.to_prepare do
           ::Rails::Mongoid.preload_models(app)
         end
@@ -97,7 +97,7 @@ module Rails
       # generating a mongoid.yml. So instead of failing, we catch all the
       # errors and print them out.
       def handle_configuration_error(e)
-        Rails.logger.error "There is a configuration error with the current mongoid.yml."
+        Rails.logger.error 'There is a configuration error with the current mongoid.yml.'
         Rails.logger.error e.message
       end
 
@@ -106,8 +106,8 @@ module Rails
       # instrumentation event `process_action.action_controller`.
       #
       # The measurement is made via internal Mongo monitoring subscription
-      initializer "mongoid.runtime-metric" do
-        require "mongoid/railties/controller_runtime"
+      initializer 'mongoid.runtime-metric' do
+        require 'mongoid/railties/controller_runtime'
 
         ActiveSupport.on_load :action_controller do
           include ::Mongoid::Railties::ControllerRuntime::ControllerExtension

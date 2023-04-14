@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "mongoid/clients/factory"
-require "mongoid/clients/validators"
-require "mongoid/clients/storage_options"
-require "mongoid/clients/options"
-require "mongoid/clients/sessions"
+require 'mongoid/clients/factory'
+require 'mongoid/clients/validators'
+require 'mongoid/clients/storage_options'
+require 'mongoid/clients/options'
+require 'mongoid/clients/sessions'
 
 module Mongoid
 

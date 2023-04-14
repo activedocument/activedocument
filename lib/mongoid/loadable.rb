@@ -31,7 +31,7 @@ module Mongoid
         end
 
         files.sort.each do |file|
-          load_model(file.gsub(%r{^#{path}/}, "").gsub(/\.rb$/, ""))
+          load_model(file.gsub(%r{^#{path}/}, '').gsub(/\.rb$/, ''))
         end
       end
     end
@@ -66,7 +66,7 @@ module Mongoid
     # @return [ Array<String> ] the array of model paths
     def model_paths
       @model_paths ||= defined?(Rails) ?
-        Rails.application.config.paths["app/models"].expanded :
+        Rails.application.config.paths['app/models'].expanded :
         DEFAULT_MODEL_PATHS
     end
 

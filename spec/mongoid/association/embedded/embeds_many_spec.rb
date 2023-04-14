@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative 'embeds_many_models'
 
 describe Mongoid::Association::Embedded::EmbedsMany do
@@ -366,7 +366,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
 
       it 'returns the type followed by = as a String' do
-        expect(association.type_setter).to eq("containable_type=")
+        expect(association.type_setter).to eq('containable_type=')
       end
     end
 
@@ -871,44 +871,44 @@ describe Mongoid::Association::Embedded::EmbedsMany do
 
     let(:inverse_assoc) { gun._association.inverse_association }
 
-    it "has the correct inverses" do
+    it 'has the correct inverses' do
       pending 'MONGOID-5080'
 
       expect(inverse_assoc).to be_a(Mongoid::Association::Embedded::EmbeddedIn)
       expect(inverse_assoc.name).to eq(:tank)
     end
 
-    context "when embedded association is not namespaced but has class_name" do
+    context 'when embedded association is not namespaced but has class_name' do
 
       let(:turret) { tank.emm_turrets.create! }
 
       let(:inverse_assoc) { turret._association.inverse_association }
 
-      it "has the correct inverses" do
+      it 'has the correct inverses' do
         expect(inverse_assoc).to be_a(Mongoid::Association::Embedded::EmbeddedIn)
         expect(inverse_assoc.name).to eq(:tank)
       end
     end
 
-    context "when embedded association is not namespaced and lacks class_name" do
+    context 'when embedded association is not namespaced and lacks class_name' do
 
       let(:hatch) { tank.emm_hatches.create! }
 
       let(:inverse_assoc) { hatch._association.inverse_association }
 
-      it "does not find the inverse" do
+      it 'does not find the inverse' do
         expect(inverse_assoc).to be nil
       end
     end
 
-    context "when the class names exist on top level and namespaced" do
+    context 'when the class names exist on top level and namespaced' do
 
       let(:car) { EmmSpec::Car.create! }
       let(:door) { car.doors.create! }
 
       let(:inverse_assoc) { door._association.inverse_association }
 
-      it "has the correct inverses" do
+      it 'has the correct inverses' do
         pending 'MONGOID-5080'
 
         expect(inverse_assoc).to be_a(Mongoid::Association::Embedded::EmbeddedIn)
@@ -916,13 +916,13 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
     end
 
-    context "when the association has an unqualified class_name in same module" do
+    context 'when the association has an unqualified class_name in same module' do
 
       let(:launcher) { tank.launchers.create! }
 
       let(:inverse_assoc) { launcher._association.inverse_association }
 
-      it "has the correct inverses" do
+      it 'has the correct inverses' do
         pending 'unqualified class_name arguments do not work per MONGOID-5080'
 
         expect(inverse_assoc).to be_a(Mongoid::Association::Embedded::EmbeddedIn)

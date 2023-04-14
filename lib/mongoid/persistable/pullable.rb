@@ -23,7 +23,7 @@ module Mongoid
             (send(field) || []).delete(value)
             ops[atomic_attribute_name(field)] = value
           end
-          { "$pull" => ops }
+          { '$pull' => ops }
         end
       end
 
@@ -42,7 +42,7 @@ module Mongoid
             value.each { |val| existing.delete(val) }
             ops[atomic_attribute_name(field)] = value
           end
-          { "$pullAll" => ops }
+          { '$pullAll' => ops }
         end
       end
     end

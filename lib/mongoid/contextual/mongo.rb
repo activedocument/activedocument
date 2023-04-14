@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "mongoid/contextual/mongo/documents_loader"
-require "mongoid/contextual/atomic"
-require "mongoid/contextual/aggregable/mongo"
-require "mongoid/contextual/command"
-require "mongoid/contextual/map_reduce"
-require "mongoid/contextual/mongo/pluck_enumerator"
-require "mongoid/association/eager_loadable"
+require 'mongoid/contextual/mongo/documents_loader'
+require 'mongoid/contextual/atomic'
+require 'mongoid/contextual/aggregable/mongo'
+require 'mongoid/contextual/command'
+require 'mongoid/contextual/map_reduce'
+require 'mongoid/contextual/mongo/pluck_enumerator'
+require 'mongoid/association/eager_loadable'
 
 module Mongoid
   module Contextual
@@ -445,13 +445,13 @@ module Mongoid
 
         fld = klass.traverse_association_tree(name)
         pipeline = []
-        pipeline << { "$match" => view.filter } if view.filter.present?
-        pipeline << { "$project" => { "#{projected}" => "$#{name}" } } if projected
-        pipeline << { "$unwind" => "$#{projected || name}" } if unwind
-        pipeline << { "$group" => { _id: "$#{projected || name}", counts: { "$sum": 1 } } }
+        pipeline << { '$match' => view.filter } if view.filter.present?
+        pipeline << { '$project' => { "#{projected}" => "$#{name}" } } if projected
+        pipeline << { '$unwind' => "$#{projected || name}" } if unwind
+        pipeline << { '$group' => { _id: "$#{projected || name}", counts: { "$sum": 1 } } }
 
         collection.aggregate(pipeline).each_with_object({}) do |doc, tallies|
-          val = doc["_id"]
+          val = doc['_id']
           key = if val.is_a?(Array)
                   val.map { |v| demongoize_with_field(fld, v, is_translation) }
                 else
@@ -466,7 +466,7 @@ module Mongoid
           # demongoized value is just the translation in the current locale,
           # which can be the same across multiple of those unequal hashes.
           tallies[key] ||= 0
-          tallies[key] += doc["counts"]
+          tallies[key] += doc['counts']
         end
       end
 

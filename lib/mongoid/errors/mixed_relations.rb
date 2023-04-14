@@ -21,7 +21,7 @@ module Mongoid
       def initialize(root_klass, embedded_klass)
         super(
           compose_message(
-            "mixed_relations",
+            'mixed_relations',
             { root: root_klass, embedded: embedded_klass }
           )
         )

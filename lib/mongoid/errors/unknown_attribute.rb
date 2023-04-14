@@ -16,7 +16,7 @@ module Mongoid
       # @param [ String | Symbol ] name The name of the attribute.
       def initialize(klass, name)
         super(
-          compose_message("unknown_attribute", { klass: klass.name, name: name })
+          compose_message('unknown_attribute', { klass: klass.name, name: name })
         )
       end
     end

@@ -18,7 +18,7 @@ module Mongoid
       def initialize(klass, name, option, valid_options)
         super(
           compose_message(
-            "invalid_relation_option",
+            'invalid_relation_option',
             { klass: klass, name: name, option: option, valid_options: valid_options }
           )
         )

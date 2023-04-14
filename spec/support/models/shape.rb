@@ -10,5 +10,5 @@ class Shape
   def render; end
 end
 
-require "support/models/circle"
-require "support/models/square"
+require 'support/models/circle'
+require 'support/models/square'

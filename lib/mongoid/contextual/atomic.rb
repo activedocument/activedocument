@@ -19,7 +19,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def add_to_set(adds)
-        view.update_many("$addToSet" => collect_operations(adds))
+        view.update_many('$addToSet' => collect_operations(adds))
       end
 
       # Perform an atomic $addToSet/$each on the matching documents.
@@ -31,7 +31,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def add_each_to_set(adds)
-        view.update_many("$addToSet" => collect_each_operations(adds))
+        view.update_many('$addToSet' => collect_each_operations(adds))
       end
 
       # Perform an atomic $bit operation on the matching documents.
@@ -43,7 +43,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def bit(bits)
-        view.update_many("$bit" => collect_operations(bits))
+        view.update_many('$bit' => collect_operations(bits))
       end
 
       # Perform an atomic $inc operation on the matching documents.
@@ -55,7 +55,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def inc(incs)
-        view.update_many("$inc" => collect_operations(incs))
+        view.update_many('$inc' => collect_operations(incs))
       end
 
       # Perform an atomic $mul operation on the matching documents.
@@ -67,7 +67,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def mul(factors)
-        view.update_many("$mul" => collect_operations(factors))
+        view.update_many('$mul' => collect_operations(factors))
       end
 
       # Perform an atomic $pop operation on the matching documents.
@@ -82,7 +82,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def pop(pops)
-        view.update_many("$pop" => collect_operations(pops))
+        view.update_many('$pop' => collect_operations(pops))
       end
 
       # Perform an atomic $pull operation on the matching documents.
@@ -96,7 +96,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def pull(pulls)
-        view.update_many("$pull" => collect_operations(pulls))
+        view.update_many('$pull' => collect_operations(pulls))
       end
 
       # Perform an atomic $pullAll operation on the matching documents.
@@ -108,7 +108,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def pull_all(pulls)
-        view.update_many("$pullAll" => collect_operations(pulls))
+        view.update_many('$pullAll' => collect_operations(pulls))
       end
 
       # Perform an atomic $push operation on the matching documents.
@@ -120,7 +120,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def push(pushes)
-        view.update_many("$push" => collect_operations(pushes))
+        view.update_many('$push' => collect_operations(pushes))
       end
 
       # Perform an atomic $push/$each operation on the matching documents.
@@ -132,7 +132,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def push_all(pushes)
-        view.update_many("$push" => collect_each_operations(pushes))
+        view.update_many('$push' => collect_each_operations(pushes))
       end
 
       # Perform an atomic $rename of fields on the matching documents.
@@ -148,7 +148,7 @@ module Mongoid
           ops[old_name] = new_name.to_s
           ops
         end
-        view.update_many("$rename" => collect_operations(operations))
+        view.update_many('$rename' => collect_operations(operations))
       end
 
       # Perform an atomic $set of fields on the matching documents.
@@ -160,7 +160,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def set(sets)
-        view.update_many("$set" => collect_operations(sets))
+        view.update_many('$set' => collect_operations(sets))
       end
 
       # Perform an atomic $unset of a field on the matching documents.
@@ -178,7 +178,7 @@ module Mongoid
         fields = args.map { |a| a.is_a?(Hash) ? a.keys : a }
                      .__find_args__
                      .map { |f| [database_field_name(f), true] }
-        view.update_many("$unset" => Hash[fields])
+        view.update_many('$unset' => Hash[fields])
       end
 
       # Performs an atomic $min update operation on the given field or fields.
@@ -200,7 +200,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def set_min(fields)
-        view.update_many("$min" => collect_operations(fields))
+        view.update_many('$min' => collect_operations(fields))
       end
       alias :clamp_upper_bound :set_min
 
@@ -223,7 +223,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def set_max(fields)
-        view.update_many("$max" => collect_operations(fields))
+        view.update_many('$max' => collect_operations(fields))
       end
       alias :clamp_lower_bound :set_max
 
@@ -243,7 +243,7 @@ module Mongoid
 
       def collect_each_operations(ops)
         ops.each_with_object({}) do |(field, value), operations|
-          operations[database_field_name(field)] = { "$each" => Array.wrap(value).mongoize }
+          operations[database_field_name(field)] = { '$each' => Array.wrap(value).mongoize }
         end
       end
     end

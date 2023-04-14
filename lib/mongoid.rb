@@ -1,44 +1,44 @@
 # frozen_string_literal: true
 
-require "mongoid/version"
-require "mongoid/bundle_checker"
+require 'mongoid/version'
+require 'mongoid/bundle_checker'
 
-require "forwardable"
-require "time"
-require "set"
+require 'forwardable'
+require 'time'
+require 'set'
 
-require "active_support"
-require "active_support/core_ext"
-require "active_support/json"
-require "active_support/inflector"
-require "active_support/time_with_zone"
-require "active_model"
+require 'active_support'
+require 'active_support/core_ext'
+require 'active_support/json'
+require 'active_support/inflector'
+require 'active_support/time_with_zone'
+require 'active_model'
 
 require 'concurrent-ruby'
 
-require "mongo"
-require "mongo/active_support"
+require 'mongo'
+require 'mongo/active_support'
 
-require "mongoid/deprecable"
-require "mongoid/config"
-require "mongoid/persistence_context"
-require "mongoid/loadable"
-require "mongoid/loggable"
-require "mongoid/clients"
-require "mongoid/document"
-require "mongoid/tasks/database"
-require "mongoid/tasks/encryption"
-require "mongoid/warnings"
-require "mongoid/utils"
+require 'mongoid/deprecable'
+require 'mongoid/config'
+require 'mongoid/persistence_context'
+require 'mongoid/loadable'
+require 'mongoid/loggable'
+require 'mongoid/clients'
+require 'mongoid/document'
+require 'mongoid/tasks/database'
+require 'mongoid/tasks/encryption'
+require 'mongoid/warnings'
+require 'mongoid/utils'
 
 # If we are using Rails then we will include the Mongoid railtie.
 # This configures initializers required to integrate Mongoid with Rails.
 if defined?(Rails)
-  require "mongoid/railtie"
+  require 'mongoid/railtie'
 end
 
 # Add English locale config to load path by default.
-I18n.load_path << File.join(File.dirname(__FILE__), "config", "locales", "en.yml")
+I18n.load_path << File.join(File.dirname(__FILE__), 'config', 'locales', 'en.yml')
 
 # Top-level module for project.
 module Mongoid
@@ -52,7 +52,7 @@ module Mongoid
   PLATFORM_DETAILS = "mongoid-#{VERSION}".freeze
 
   # The minimum MongoDB version supported.
-  MONGODB_VERSION = "2.6.0"
+  MONGODB_VERSION = '2.6.0'
 
   # Sets the Mongoid configuration options. Best used by passing a block.
   #

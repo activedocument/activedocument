@@ -28,7 +28,7 @@ module Mongoid
             end
             ops[atomic_attribute_name(normalized)] = true
           end
-          { "$unset" => ops }
+          { '$unset' => ops }
         end
       end
     end

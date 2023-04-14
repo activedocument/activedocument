@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Clients::Options, retry: 3 do
 
@@ -269,7 +269,7 @@ describe Mongoid::Clients::Options, retry: 3 do
           end
         end
 
-        it "does not share the persistence options" do
+        it 'does not share the persistence options' do
           expect(british_count).to eq(50)
           expect(american_count).to eq(50)
         end

@@ -17,10 +17,10 @@ module Mongoid
 
         super(
           compose_message(
-            "validations",
+            'validations',
             {
               document: document.class,
-              errors: document.errors.full_messages.join(", ")
+              errors: document.errors.full_messages.join(', ')
             }
           )
         )

@@ -145,7 +145,7 @@ module Mongoid
       #
       # @return [ Fields::Standard ] The field.
       def related_id_field
-        @related_id_field ||= association.klass.fields["_id"]
+        @related_id_field ||= association.klass.fields['_id']
       end
 
       def primary_key_field

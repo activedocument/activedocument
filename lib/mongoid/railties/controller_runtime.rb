@@ -43,7 +43,7 @@ module Mongoid
           def log_process_action(payload)
             messages = super
             mongoid_runtime = payload[:mongoid_runtime]
-            messages << ("MongoDB: %.1fms" % mongoid_runtime.to_f) if mongoid_runtime
+            messages << ('MongoDB: %.1fms' % mongoid_runtime.to_f) if mongoid_runtime
             messages
           end
         end
@@ -55,7 +55,7 @@ module Mongoid
       # MongoDB operations from background threads.
       class Collector
 
-        VARIABLE_NAME = "Mongoid.controller_runtime".freeze
+        VARIABLE_NAME = 'Mongoid.controller_runtime'.freeze
 
         # Call when event started. Does nothing.
         #

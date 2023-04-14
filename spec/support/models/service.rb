@@ -7,7 +7,7 @@ class Service
   field :after_destroy_called, type: Mongoid::Boolean, default: false
   field :after_initialize_called, type: Mongoid::Boolean, default: false
   embedded_in :person
-  belongs_to :target, class_name: "User"
+  belongs_to :target, class_name: 'User'
   validates_numericality_of :sid
 
   before_destroy do |doc|

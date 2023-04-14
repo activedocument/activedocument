@@ -1,4 +1,4 @@
-require "mongoid/association/eager_loadable"
+require 'mongoid/association/eager_loadable'
 
 module Mongoid
   module Contextual

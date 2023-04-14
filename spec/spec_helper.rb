@@ -10,10 +10,10 @@ require 'mongoid'
 # require all shared examples
 Dir['./spec/support/shared/*.rb'].sort.each { |file| require file }
 
-MODELS = File.join(File.dirname(__FILE__), "support/models")
+MODELS = File.join(File.dirname(__FILE__), 'support/models')
 $LOAD_PATH.unshift(MODELS)
 
-require "action_controller"
+require 'action_controller'
 require 'rspec/retry'
 
 if SpecConfig.instance.client_debug?
@@ -93,8 +93,8 @@ Mongoid.configure do |config|
 end
 
 # Autoload every model for the test suite that sits in spec/support/models.
-Dir[File.join(MODELS, "*.rb")].sort.each do |file|
-  name = File.basename(file, ".rb")
+Dir[File.join(MODELS, '*.rb')].sort.each do |file|
+  name = File.basename(file, '.rb')
   autoload name.camelize.to_sym, name
 end
 
@@ -105,15 +105,15 @@ module Mongoid
 end
 
 ActiveSupport::Inflector.inflections do |inflect|
-  inflect.irregular("canvas", "canvases")
-  inflect.singular("address_components", "address_component")
+  inflect.irregular('canvas', 'canvases')
+  inflect.singular('address_components', 'address_component')
 end
 
 I18n.config.enforce_available_locales = false
 
 
 if %w(yes true 1).include?((ENV['TEST_I18N_FALLBACKS'] || '').downcase)
-  require "i18n/backend/fallbacks"
+  require 'i18n/backend/fallbacks'
 end
 
 # The user must be created before any of the tests are loaded, until

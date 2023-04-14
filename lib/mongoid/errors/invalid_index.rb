@@ -17,7 +17,7 @@ module Mongoid
       def initialize(klass, spec, options)
         super(
           compose_message(
-            "invalid_index",
+            'invalid_index',
             { klass: klass.name, spec: spec, options: options }
           )
         )

@@ -239,10 +239,10 @@ module Mongoid
       #
       # @return [ Object ] The result of the yield.
       def without_autobuild
-        Threaded.begin_execution("without_autobuild")
+        Threaded.begin_execution('without_autobuild')
         yield
       ensure
-        Threaded.exit_execution("without_autobuild")
+        Threaded.exit_execution('without_autobuild')
       end
 
       # Parse out the attributes and the options from the args passed to a

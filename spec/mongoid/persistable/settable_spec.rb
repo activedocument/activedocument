@@ -1,44 +1,44 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Persistable::Settable do
 
-  describe "#set" do
+  describe '#set' do
 
-    context "when the document is a root document" do
+    context 'when the document is a root document' do
 
-      shared_examples_for "a settable root document" do
+      shared_examples_for 'a settable root document' do
 
-        it "sets the normal field to the new value" do
-          expect(person.title).to eq("kaiser")
+        it 'sets the normal field to the new value' do
+          expect(person.title).to eq('kaiser')
         end
 
-        it "properly sets aliased fields" do
-          expect(person.test).to eq("alias-test")
+        it 'properly sets aliased fields' do
+          expect(person.test).to eq('alias-test')
         end
 
-        it "casts fields that need typecasting" do
+        it 'casts fields that need typecasting' do
           expect(person.dob).to eq(date)
         end
 
-        it "returns self object" do
+        it 'returns self object' do
           expect(set).to eq(person)
         end
 
-        it "persists the normal field set" do
-          expect(person.reload.title).to eq("kaiser")
+        it 'persists the normal field set' do
+          expect(person.reload.title).to eq('kaiser')
         end
 
-        it "persists sets on aliased fields" do
-          expect(person.reload.test).to eq("alias-test")
+        it 'persists sets on aliased fields' do
+          expect(person.reload.test).to eq('alias-test')
         end
 
-        it "persists fields that need typecasting" do
+        it 'persists fields that need typecasting' do
           expect(person.reload.dob).to eq(date)
         end
 
-        it "resets the dirty attributes for the sets" do
+        it 'resets the dirty attributes for the sets' do
           expect(person).to_not be_changed
         end
       end
@@ -51,58 +51,58 @@ describe Mongoid::Persistable::Settable do
         Date.new(1976, 11, 19)
       end
 
-      context "when provided string fields" do
+      context 'when provided string fields' do
 
         let!(:set) do
-          person.set("title" => "kaiser", "test" => "alias-test", "dob" => date)
+          person.set('title' => 'kaiser', 'test' => 'alias-test', 'dob' => date)
         end
 
-        it_behaves_like "a settable root document"
+        it_behaves_like 'a settable root document'
       end
 
-      context "when provided symbol fields" do
+      context 'when provided symbol fields' do
 
         let!(:set) do
-          person.set(title: "kaiser", test: "alias-test", dob: date)
+          person.set(title: 'kaiser', test: 'alias-test', dob: date)
         end
 
-        it_behaves_like "a settable root document"
+        it_behaves_like 'a settable root document'
       end
     end
 
-    context "when the document is embedded" do
+    context 'when the document is embedded' do
 
-      shared_examples_for "a settable embedded document" do
+      shared_examples_for 'a settable embedded document' do
 
-        it "sets the normal field to the new value" do
+        it 'sets the normal field to the new value' do
           expect(address.number).to eq(44)
         end
 
-        it "properly sets aliased fields" do
-          expect(address.suite).to eq("400")
+        it 'properly sets aliased fields' do
+          expect(address.suite).to eq('400')
         end
 
-        it "casts fields that need typecasting" do
+        it 'casts fields that need typecasting' do
           expect(address.end_date).to eq(date)
         end
 
-        it "returns self object" do
+        it 'returns self object' do
           expect(set).to eq(address)
         end
 
-        it "persists the normal field set" do
+        it 'persists the normal field set' do
           expect(address.reload.number).to eq(44)
         end
 
-        it "persists the aliased field set" do
-          expect(address.reload.suite).to eq("400")
+        it 'persists the aliased field set' do
+          expect(address.reload.suite).to eq('400')
         end
 
-        it "persists the fields that need typecasting" do
+        it 'persists the fields that need typecasting' do
           expect(address.reload.end_date).to eq(date)
         end
 
-        it "resets the dirty attributes for the sets" do
+        it 'resets the dirty attributes for the sets' do
           expect(address).to_not be_changed
         end
       end
@@ -112,29 +112,29 @@ describe Mongoid::Persistable::Settable do
       end
 
       let(:address) do
-        person.addresses.create!(street: "t")
+        person.addresses.create!(street: 't')
       end
 
       let(:date) do
         Date.new(1976, 11, 19)
       end
 
-      context "when provided string fields" do
+      context 'when provided string fields' do
 
         let!(:set) do
-          address.set("number" => 44, "suite" => "400", "end_date" => date)
+          address.set('number' => 44, 'suite' => '400', 'end_date' => date)
         end
 
-        it_behaves_like "a settable embedded document"
+        it_behaves_like 'a settable embedded document'
       end
 
-      context "when provided symbol fields" do
+      context 'when provided symbol fields' do
 
         let!(:set) do
-          address.set(number: 44, suite: "400", end_date: date)
+          address.set(number: 44, suite: '400', end_date: date)
         end
 
-        it_behaves_like "a settable embedded document"
+        it_behaves_like 'a settable embedded document'
       end
 
       context 'when the field is a relation' do
@@ -144,114 +144,114 @@ describe Mongoid::Persistable::Settable do
         end
 
         let(:pet) do
-          Animal.new(name: "somepet")
+          Animal.new(name: 'somepet')
         end
 
         let(:home_phone) do
-          Phone.new(number: "555-555-5555")
+          Phone.new(number: '555-555-5555')
         end
 
         let(:office_phone) do
-          Phone.new(number: "666-666-6666")
+          Phone.new(number: '666-666-6666')
         end
 
-        it "should persist changes of embeds_one field" do
+        it 'should persist changes of embeds_one field' do
           person.set(pet: pet)
           expect(person.reload.pet).to eq(pet)
         end
 
-        it "should persist changes of embeds_many fields" do
+        it 'should persist changes of embeds_many fields' do
           person.set({ phone_numbers: [home_phone, office_phone].map { |p| p.as_document } })
           expect(person.reload.phone_numbers).to eq([home_phone, office_phone])
         end
       end
     end
 
-    context "when executing atomically" do
+    context 'when executing atomically' do
 
       let(:person) do
-        Person.create!(title: "sir", age: 30)
+        Person.create!(title: 'sir', age: 30)
       end
 
-      it "marks a dirty change for the set fields" do
+      it 'marks a dirty change for the set fields' do
         person.atomically do
-          person.set title: "miss", age: 21
-          expect(person.changes).to eq({ "title" => %w[sir miss], "age" => [30, 21] })
+          person.set title: 'miss', age: 21
+          expect(person.changes).to eq({ 'title' => %w[sir miss], 'age' => [30, 21] })
         end
       end
     end
 
-    context "when executing on a readonly document" do
+    context 'when executing on a readonly document' do
 
       let(:person) do
-        Person.create!(title: "sir", age: 30)
+        Person.create!(title: 'sir', age: 30)
       end
 
-      context "when legacy_readonly is true" do
+      context 'when legacy_readonly is true' do
         config_override :legacy_readonly, true
 
         before do
-          person.__selected_fields = { "title" => 1, "age" => 1 }
+          person.__selected_fields = { 'title' => 1, 'age' => 1 }
         end
 
-        it "persists the changes" do
+        it 'persists the changes' do
           expect(person).to be_readonly
-          person.set(title: "miss", age: 21)
-          expect(person.title).to eq("miss")
+          person.set(title: 'miss', age: 21)
+          expect(person.title).to eq('miss')
           expect(person.age).to eq(21)
         end
       end
 
-      context "when legacy_readonly is false" do
+      context 'when legacy_readonly is false' do
         config_override :legacy_readonly, false
 
         before do
           person.readonly!
         end
 
-        it "raises a ReadonlyDocument error" do
+        it 'raises a ReadonlyDocument error' do
           expect(person).to be_readonly
           expect do
-            person.set(title: "miss", age: 21)
+            person.set(title: 'miss', age: 21)
           end.to raise_error(Mongoid::Errors::ReadonlyDocument)
         end
       end
     end
   end
 
-  context "when dynamic attributes are not enabled" do
+  context 'when dynamic attributes are not enabled' do
     let(:account) do
       Account.create!(name: 'Foobar')
     end
 
-    it "raises exception for an unknown attribute " do
+    it 'raises exception for an unknown attribute ' do
       expect {
-        account.set(somethingnew: "somethingnew")
+        account.set(somethingnew: 'somethingnew')
       }.to raise_error(Mongoid::Errors::UnknownAttribute)
     end
   end
 
-  context "when dynamic attributes enabled" do
+  context 'when dynamic attributes enabled' do
     let(:person) do
       Person.create!
     end
 
-    it "updates non existing attribute" do
-      person.set(somethingnew: "somethingnew")
-      expect(person.reload.somethingnew).to eq "somethingnew"
+    it 'updates non existing attribute' do
+      person.set(somethingnew: 'somethingnew')
+      expect(person.reload.somethingnew).to eq 'somethingnew'
     end
   end
 
-  context "with an attribute with private setter" do
+  context 'with an attribute with private setter' do
     let(:agent) do
       Agent.create!
     end
 
     let(:title) do
-      "Double-Oh Seven"
+      'Double-Oh Seven'
     end
 
-    it "updates the attribute" do
+    it 'updates the attribute' do
       agent.singleton_class.send :private, :title=
       agent.set(title: title)
       expect(agent.reload.title).to eq title
@@ -549,9 +549,9 @@ describe Mongoid::Persistable::Settable do
     end
   end
 
-  context "when the field being set was projected out" do
+  context 'when the field being set was projected out' do
     let(:full_agent) do
-      Agent.create!(title: "Double-Oh Eight")
+      Agent.create!(title: 'Double-Oh Eight')
     end
 
     let(:agent) do
@@ -559,7 +559,7 @@ describe Mongoid::Persistable::Settable do
     end
 
     context 'field exists in database' do
-      it "raises AttributeNotLoaded" do
+      it 'raises AttributeNotLoaded' do
         expect do
           agent.set(title: '008')
         end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Agent which was not loaded/)
@@ -569,7 +569,7 @@ describe Mongoid::Persistable::Settable do
     end
 
     context 'field does not exist in database' do
-      it "raises AttributeNotLoaded" do
+      it 'raises AttributeNotLoaded' do
         expect do
           agent.set(number: '008')
         end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'number' on Agent which was not loaded/)

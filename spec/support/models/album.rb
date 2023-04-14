@@ -11,7 +11,7 @@ class Album
   private
 
   def set_parent_name
-    artist.name = "destroyed" if artist
+    artist.name = 'destroyed' if artist
   end
 
   def set_parent_name_fail

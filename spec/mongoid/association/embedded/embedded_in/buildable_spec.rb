@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
 
-  describe "#build" do
+  describe '#build' do
 
     let(:base) do
       double
@@ -18,7 +18,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
       Mongoid::Association::Embedded::EmbeddedIn.new(Person, :addresses, options)
     end
 
-    context "when a document is provided" do
+    context 'when a document is provided' do
 
       let(:object) do
         double
@@ -28,7 +28,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
         association.build(base, object)
       end
 
-      it "returns the document" do
+      it 'returns the document' do
         expect(document).to eq(object)
       end
     end
@@ -36,7 +36,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
 
   context 'when the object is already associated with another object' do
 
-    context "when inverse is embeds_many" do
+    context 'when inverse is embeds_many' do
 
       let(:appointment1) do
         Appointment.new
@@ -62,7 +62,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
       end
     end
 
-    context "when inverse is embeds_one" do
+    context 'when inverse is embeds_one' do
 
       let(:scribe1) do
         Scribe.new

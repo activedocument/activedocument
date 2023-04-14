@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "mongoid/timestamps/created/short"
+require 'mongoid/timestamps/created/short'
 
 module Mongoid
   module Timestamps

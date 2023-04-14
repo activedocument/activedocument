@@ -13,5 +13,5 @@ class Word
 
   accepts_nested_attributes_for :definitions, allow_destroy: true
 
-  index({ name: "text" }, default_language: "english")
+  index({ name: 'text' }, default_language: 'english')
 end

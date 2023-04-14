@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::CollectionConfigurable do
 
@@ -109,7 +109,7 @@ describe Mongoid::CollectionConfigurable do
 
     context 'when force is false' do
       let(:logger) do
-        double("logger").tap do |log|
+        double('logger').tap do |log|
           expect(log).to receive(:debug).once.with(/Collection '#{subject.collection_name}' already exist/)
         end
       end
@@ -126,7 +126,7 @@ describe Mongoid::CollectionConfigurable do
 
     context 'when force is true' do
       let(:logger) do
-        double("logger")
+        double('logger')
       end
 
       let(:coll_options) do

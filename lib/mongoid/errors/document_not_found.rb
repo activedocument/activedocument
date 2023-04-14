@@ -55,9 +55,9 @@ module Mongoid
       # @return [ String ] The missing string.
       def missing(unmatched)
         if unmatched.is_a?(::Array)
-          unmatched.join(", ")
+          unmatched.join(', ')
         elsif unmatched.is_a?(::Hash)
-          unmatched[:_id] || unmatched["_id"]
+          unmatched[:_id] || unmatched['_id']
         else
           unmatched
         end
@@ -73,7 +73,7 @@ module Mongoid
       # @return [ String ] The searched string.
       def searched(params)
         if params.is_a?(::Array)
-          params.take(3).join(", ") + " ..."
+          params.take(3).join(', ') + ' ...'
         else
           params
         end
@@ -99,13 +99,13 @@ module Mongoid
       # @return [ String ] The problem.
       def message_key(params, unmatched)
         if !params && !unmatched
-          "no_documents_found"
+          'no_documents_found'
         elsif Hash === params
-          "document_with_attributes_not_found"
+          'document_with_attributes_not_found'
         elsif Hash === unmatched && unmatched.size >= 2
-          "document_with_shard_key_not_found"
+          'document_with_shard_key_not_found'
         else
-          "document_not_found"
+          'document_not_found'
         end
       end
 
@@ -115,9 +115,9 @@ module Mongoid
       def shard_key(unmatched)
         if Hash === unmatched
           h = unmatched.dup
-          h.delete("_id")
+          h.delete('_id')
           h.delete(:_id)
-          h.map { |k, v| "#{k}: #{v}" }.join(", ")
+          h.map { |k, v| "#{k}: #{v}" }.join(', ')
         end
       end
     end

@@ -17,11 +17,11 @@ module Mongoid
       def initialize(klass, args)
         super(
           compose_message(
-            "invalid_includes",
+            'invalid_includes',
             {
               klass: klass.name,
-              args: args.map(&:inspect).join(", "),
-              relations: klass.relations.keys.map(&:inspect).join(", ")
+              args: args.map(&:inspect).join(', '),
+              relations: klass.relations.keys.map(&:inspect).join(', ')
             }
           )
         )

@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-require "mongoid/persistable/creatable"
-require "mongoid/persistable/deletable"
-require "mongoid/persistable/destroyable"
-require "mongoid/persistable/incrementable"
-require "mongoid/persistable/logical"
-require "mongoid/persistable/maxable"
-require "mongoid/persistable/minable"
-require "mongoid/persistable/multipliable"
-require "mongoid/persistable/poppable"
-require "mongoid/persistable/pullable"
-require "mongoid/persistable/pushable"
-require "mongoid/persistable/renamable"
-require "mongoid/persistable/savable"
-require "mongoid/persistable/settable"
-require "mongoid/persistable/updatable"
-require "mongoid/persistable/upsertable"
-require "mongoid/persistable/unsettable"
+require 'mongoid/persistable/creatable'
+require 'mongoid/persistable/deletable'
+require 'mongoid/persistable/destroyable'
+require 'mongoid/persistable/incrementable'
+require 'mongoid/persistable/logical'
+require 'mongoid/persistable/maxable'
+require 'mongoid/persistable/minable'
+require 'mongoid/persistable/multipliable'
+require 'mongoid/persistable/poppable'
+require 'mongoid/persistable/pullable'
+require 'mongoid/persistable/pushable'
+require 'mongoid/persistable/renamable'
+require 'mongoid/persistable/savable'
+require 'mongoid/persistable/settable'
+require 'mongoid/persistable/updatable'
+require 'mongoid/persistable/upsertable'
+require 'mongoid/persistable/unsettable'
 
 module Mongoid
 
@@ -43,7 +43,7 @@ module Mongoid
     include Unsettable
 
     # The atomic operations that deal with arrays or sets in the db.
-    LIST_OPERATIONS = ["$addToSet", "$push", "$pull", "$pullAll"].freeze
+    LIST_OPERATIONS = ['$addToSet', '$push', '$pull', '$pullAll'].freeze
 
     # Execute operations atomically (in a single database call) for everything
     # that would happen inside the block. This method supports nesting further

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "rails/generators/named_base"
-require "rails/generators/active_model"
+require 'rails/generators/named_base'
+require 'rails/generators/active_model'
 
 module Mongoid
   module Generators
@@ -31,9 +31,9 @@ module Rails
       #
       # @return [ String ] The type value.
       def type_class
-        return "Time" if type == :datetime
-        return "String" if type == :text
-        return "Mongoid::Boolean" if type == :boolean
+        return 'Time' if type == :datetime
+        return 'String' if type == :text
+        return 'Mongoid::Boolean' if type == :boolean
 
         type.to_s.camelcase
       end

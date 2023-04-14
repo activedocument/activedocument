@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Contextual::Aggregable::Memory do
 
@@ -15,7 +15,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
   end
 
   file = File.read(File.join(File.dirname(__FILE__), 'memory_table.yml'))
-  table = if RUBY_VERSION.start_with?("2.5")
+  table = if RUBY_VERSION.start_with?('2.5')
             YAML.safe_load(file, [BigDecimal])
           else
             YAML.safe_load(file, permitted_classes: [BigDecimal])

@@ -7,7 +7,7 @@ module Mongoid
 
     # Generator class for Mongoid configuration files.
     class ConfigGenerator < Rails::Generators::Base
-      desc "Creates Mongoid configuration files"
+      desc 'Creates Mongoid configuration files'
 
       argument :database_name, type: :string, optional: true
 

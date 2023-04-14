@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Attributes::Projector do
   Dir[File.join(File.dirname(__FILE__), 'projector_data', '*.yml')].sort.each do |path|

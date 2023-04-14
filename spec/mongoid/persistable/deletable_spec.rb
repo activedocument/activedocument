@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Persistable::Deletable do
 
-  describe "#delete" do
+  describe '#delete' do
 
     let!(:person) do
       Person.create!
     end
 
-    context "when deleting a readonly document" do
+    context 'when deleting a readonly document' do
       let(:from_db) do
         Person.first.tap(&:readonly!)
       end
 
-      it "raises an error" do
+      it 'raises an error' do
         expect(from_db.readonly?).to be true
         expect {
           from_db.delete
@@ -37,23 +37,23 @@ describe Mongoid::Persistable::Deletable do
       end
     end
 
-    context "when deleting a root document" do
+    context 'when deleting a root document' do
 
       let!(:deleted) do
         person.delete
       end
 
-      it "deletes the document from the collection" do
+      it 'deletes the document from the collection' do
         expect {
           Person.find(person.id)
         }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
 
-      it "returns true" do
+      it 'returns true' do
         expect(deleted).to be true
       end
 
-      it "resets the flagged for destroy flag" do
+      it 'resets the flagged for destroy flag' do
         expect(person).to_not be_flagged_for_destroy
       end
 
@@ -63,46 +63,46 @@ describe Mongoid::Persistable::Deletable do
           person.delete(persist: false)
         end
 
-        it "does not delete the document from the collection" do
+        it 'does not delete the document from the collection' do
           expect(Person.find(person.id)).to eq person
         end
 
-        it "returns true" do
+        it 'returns true' do
           expect(deleted).to be true
         end
 
-        it "does not set the flagged for destroy flag" do
+        it 'does not set the flagged for destroy flag' do
           expect(person).to_not be_flagged_for_destroy
         end
       end
     end
 
-    context "when deleting an embedded document" do
+    context 'when deleting an embedded document' do
 
       let(:address) do
-        person.addresses.build(street: "Bond Street")
+        person.addresses.build(street: 'Bond Street')
       end
 
-      context "when the document is not yet saved" do
+      context 'when the document is not yet saved' do
 
         before do
           address.delete
         end
 
-        it "removes the document from the parent" do
+        it 'removes the document from the parent' do
           expect(person.addresses).to be_empty
         end
 
-        it "removes the attributes from the parent" do
-          expect(person.raw_attributes["addresses"]).to be_nil
+        it 'removes the attributes from the parent' do
+          expect(person.raw_attributes['addresses']).to be_nil
         end
 
-        it "resets the flagged for destroy flag" do
+        it 'resets the flagged for destroy flag' do
           expect(address).to_not be_flagged_for_destroy
         end
       end
 
-      context "when the document has been saved" do
+      context 'when the document has been saved' do
 
         before do
           address.save!
@@ -113,11 +113,11 @@ describe Mongoid::Persistable::Deletable do
           Person.find(person.id)
         end
 
-        it "removes the object from the parent" do
+        it 'removes the object from the parent' do
           expect(person.addresses).to be_empty
         end
 
-        it "removes the object from the database" do
+        it 'removes the object from the database' do
           expect(from_db.addresses).to be_empty
         end
       end
@@ -133,12 +133,12 @@ describe Mongoid::Persistable::Deletable do
           Person.find(person.id)
         end
 
-        it "does not remove the object from the parent" do
+        it 'does not remove the object from the parent' do
           expect(person.addresses).to eq [address]
           expect(person.addresses.first).to_not be_flagged_for_destroy
         end
 
-        it "does not remove the object from the database" do
+        it 'does not remove the object from the database' do
           expect(from_db.addresses).to eq [address]
           expect(from_db.addresses.first).to_not be_flagged_for_destroy
         end
@@ -155,27 +155,27 @@ describe Mongoid::Persistable::Deletable do
           Person.find(person.id)
         end
 
-        it "does not remove the object from the parent" do
+        it 'does not remove the object from the parent' do
           expect(person.addresses).to eq [address]
           expect(person.addresses.first).to_not be_flagged_for_destroy
         end
 
-        it "removes the object from the database" do
+        it 'removes the object from the database' do
           expect(from_db.addresses).to be_empty
         end
       end
     end
 
-    context "when deleting deeply embedded documents" do
+    context 'when deleting deeply embedded documents' do
 
-      context "when the document has been saved" do
+      context 'when the document has been saved' do
 
         let(:address) do
-          person.addresses.create!(street: "Bond Street")
+          person.addresses.create!(street: 'Bond Street')
         end
 
         let(:location) do
-          address.locations.create!(name: "Home")
+          address.locations.create!(name: 'Home')
         end
 
         let(:from_db) do
@@ -186,76 +186,76 @@ describe Mongoid::Persistable::Deletable do
           location.delete
         end
 
-        it "removes the object from the parent and database" do
+        it 'removes the object from the parent and database' do
           expect(from_db.addresses.first.locations).to be_empty
         end
 
-        it "resets the flagged for destroy flag" do
+        it 'resets the flagged for destroy flag' do
           expect(location).to_not be_flagged_for_destroy
         end
       end
     end
 
-    context "when deleting subclasses" do
+    context 'when deleting subclasses' do
 
       let!(:firefox) do
-        Firefox.create!(name: "firefox")
+        Firefox.create!(name: 'firefox')
       end
 
       let!(:firefox2) do
-        Firefox.create!(name: "firefox 2")
+        Firefox.create!(name: 'firefox 2')
       end
 
       let!(:browser) do
-        Browser.create!(name: "browser")
+        Browser.create!(name: 'browser')
       end
 
       let!(:canvas) do
-        Canvas.create!(name: "canvas")
+        Canvas.create!(name: 'canvas')
       end
 
-      context "when deleting a single document" do
+      context 'when deleting a single document' do
 
         before do
           firefox.delete
         end
 
-        it "deletes from the parent class collection" do
+        it 'deletes from the parent class collection' do
           expect(Canvas.count).to eq(3)
         end
 
-        it "returns correct counts for child classes" do
+        it 'returns correct counts for child classes' do
           expect(Firefox.count).to eq(1)
         end
 
-        it "returns correct counts for root subclasses" do
+        it 'returns correct counts for root subclasses' do
           expect(Browser.count).to eq(2)
         end
       end
 
-      context "when deleting all documents" do
+      context 'when deleting all documents' do
 
         before do
           Firefox.delete_all
         end
 
-        it "deletes from the parent class collection" do
+        it 'deletes from the parent class collection' do
           expect(Canvas.count).to eq(2)
         end
 
-        it "returns correct counts for child classes" do
+        it 'returns correct counts for child classes' do
           expect(Firefox.count).to eq(0)
         end
 
-        it "returns correct counts for root subclasses" do
+        it 'returns correct counts for root subclasses' do
           expect(Browser.count).to eq(1)
         end
       end
     end
 
-    context "when deleting all documents with a custom discriminator key" do
+    context 'when deleting all documents with a custom discriminator key' do
       before do
-        Canvas.discriminator_key = "dkey"
+        Canvas.discriminator_key = 'dkey'
       end
 
       after do
@@ -263,42 +263,42 @@ describe Mongoid::Persistable::Deletable do
       end
 
       let!(:firefox) do
-        Firefox.create!(name: "firefox")
+        Firefox.create!(name: 'firefox')
       end
 
       let!(:firefox2) do
-        Firefox.create!(name: "firefox 2")
+        Firefox.create!(name: 'firefox 2')
       end
 
       let!(:browser) do
-        Browser.create!(name: "browser")
+        Browser.create!(name: 'browser')
       end
 
       let!(:canvas) do
-        Canvas.create!(name: "canvas")
+        Canvas.create!(name: 'canvas')
       end
 
       before do
         Firefox.delete_all
       end
 
-      it "deletes from the parent class collection" do
+      it 'deletes from the parent class collection' do
         expect(Canvas.count).to eq(2)
       end
 
-      it "returns correct counts for child classes" do
+      it 'returns correct counts for child classes' do
         expect(Firefox.count).to eq(0)
       end
 
-      it "returns correct counts for root subclasses" do
+      it 'returns correct counts for root subclasses' do
         expect(Browser.count).to eq(1)
       end
     end
 
-    context "when deleting all documents with a custom discriminator value" do
+    context 'when deleting all documents with a custom discriminator value' do
       before do
-        Canvas.discriminator_key = "dkey"
-        Firefox.discriminator_value = "dvalue"
+        Canvas.discriminator_key = 'dkey'
+        Firefox.discriminator_value = 'dvalue'
       end
 
       after do
@@ -307,34 +307,34 @@ describe Mongoid::Persistable::Deletable do
       end
 
       let!(:firefox) do
-        Firefox.create!(name: "firefox")
+        Firefox.create!(name: 'firefox')
       end
 
       let!(:firefox2) do
-        Firefox.create!(name: "firefox 2")
+        Firefox.create!(name: 'firefox 2')
       end
 
       let!(:browser) do
-        Browser.create!(name: "browser")
+        Browser.create!(name: 'browser')
       end
 
       let!(:canvas) do
-        Canvas.create!(name: "canvas")
+        Canvas.create!(name: 'canvas')
       end
 
       before do
         Firefox.delete_all
       end
 
-      it "deletes from the parent class collection" do
+      it 'deletes from the parent class collection' do
         expect(Canvas.count).to eq(2)
       end
 
-      it "returns correct counts for child classes" do
+      it 'returns correct counts for child classes' do
         expect(Firefox.count).to eq(0)
       end
 
-      it "returns correct counts for root subclasses" do
+      it 'returns correct counts for root subclasses' do
         expect(Browser.count).to eq(1)
       end
     end
@@ -420,59 +420,59 @@ describe Mongoid::Persistable::Deletable do
     end
   end
 
-  describe "#delete_all" do
+  describe '#delete_all' do
 
     let!(:person) do
-      Person.create!(title: "sir")
+      Person.create!(title: 'sir')
     end
 
-    context "when no conditions are provided" do
+    context 'when no conditions are provided' do
 
       let!(:removed) do
         Person.delete_all
       end
 
-      it "removes all the documents" do
+      it 'removes all the documents' do
         expect(Person.count).to eq(0)
       end
 
-      it "returns the number of documents removed" do
+      it 'returns the number of documents removed' do
         expect(removed).to eq(1)
       end
     end
 
-    context "when conditions are provided" do
+    context 'when conditions are provided' do
 
       let!(:person_two) do
         Person.create!
       end
 
-      context "when no conditions attribute provided" do
+      context 'when no conditions attribute provided' do
 
         let!(:removed) do
-          Person.delete_all(title: "sir")
+          Person.delete_all(title: 'sir')
         end
 
-        it "removes the matching documents" do
+        it 'removes the matching documents' do
           expect(Person.count).to eq(1)
         end
 
-        it "returns the number of documents removed" do
+        it 'returns the number of documents removed' do
           expect(removed).to eq(1)
         end
       end
 
-      context "when the conditions need to be mongoized" do
+      context 'when the conditions need to be mongoized' do
 
         let!(:removed) do
           Person.delete_all(id: person.id)
         end
 
-        it "removes the matching documents" do
+        it 'removes the matching documents' do
           expect(Person.count).to eq(1)
         end
 
-        it "returns the number of documents removed" do
+        it 'returns the number of documents removed' do
           expect(removed).to eq(1)
         end
       end
@@ -484,14 +484,14 @@ describe Mongoid::Persistable::Deletable do
         end
 
         let!(:deleted) do
-          Person.with(write: { w: 0 }) { |klass| klass.delete_all(title: "sir") }
+          Person.with(write: { w: 0 }) { |klass| klass.delete_all(title: 'sir') }
         end
 
-        it "removes the matching documents" do
+        it 'removes the matching documents' do
           expect(Person.where(title: 'miss').count).to eq(1)
         end
 
-        it "returns 0" do
+        it 'returns 0' do
           expect(deleted).to eq(0)
         end
       end

@@ -230,12 +230,12 @@ describe 'Queries with Range criteria' do
   context 'Range<Integer> criteria vs embedded Integer field' do
 
     it 'returns objects within the range' do
-      expect(Band.where("labels.age" => 10..18).to_a).to eq [band5]
-      expect(Band.where("labels.age" => 13...16).to_a).to eq []
+      expect(Band.where('labels.age' => 10..18).to_a).to eq [band5]
+      expect(Band.where('labels.age' => 13...16).to_a).to eq []
     end
 
-    it "does not return objects out of range" do
-      expect(Band.where("labels.age" => 13..14).to_a).to eq []
+    it 'does not return objects out of range' do
+      expect(Band.where('labels.age' => 13..14).to_a).to eq []
     end
 
     context 'endless range' do
@@ -262,11 +262,11 @@ describe 'Queries with Range criteria' do
     let!(:band6) { Band.create!(genres: [12, 16]) }
 
     it 'returns objects within the range' do
-      expect(Band.where("genres" => 10..18).to_a).to eq [band6]
+      expect(Band.where('genres' => 10..18).to_a).to eq [band6]
     end
 
-    it "does not return objects out of range" do
-      expect(Band.where("genres" => 13..14).to_a).to eq []
+    it 'does not return objects out of range' do
+      expect(Band.where('genres' => 13..14).to_a).to eq []
     end
   end
 
@@ -274,11 +274,11 @@ describe 'Queries with Range criteria' do
     let!(:person) { Person.create!(array: [12, 16]) }
 
     it 'returns objects within the range' do
-      expect(Person.where("array" => 10..18).to_a).to eq [person]
+      expect(Person.where('array' => 10..18).to_a).to eq [person]
     end
 
-    it "does not return objects out of range" do
-      expect(Person.where("array" => 13..14).to_a).to eq []
+    it 'does not return objects out of range' do
+      expect(Person.where('array' => 13..14).to_a).to eq []
     end
   end
 
@@ -286,11 +286,11 @@ describe 'Queries with Range criteria' do
     let!(:band6) { Band.create!(genres: [{ x: 12 }, { x: 16 }]) }
 
     it 'returns objects within the range' do
-      expect(Band.where("genres.x" => 10..18).to_a).to eq [band6]
+      expect(Band.where('genres.x' => 10..18).to_a).to eq [band6]
     end
 
-    it "does not return objects out of range" do
-      expect(Band.where("genres.x" => 13..14).to_a).to eq []
+    it 'does not return objects out of range' do
+      expect(Band.where('genres.x' => 13..14).to_a).to eq []
     end
   end
 
@@ -303,11 +303,11 @@ describe 'Queries with Range criteria' do
     end
 
     it 'returns objects within the range' do
-      expect(Person.where("passport.passport_pages.num_stamps" => 10..18).to_a).to eq [person]
+      expect(Person.where('passport.passport_pages.num_stamps' => 10..18).to_a).to eq [person]
     end
 
-    it "does not return objects out of range" do
-      expect(Person.where("passport.passport_pages.num_stamps" => 13..14).to_a).to eq []
+    it 'does not return objects out of range' do
+      expect(Person.where('passport.passport_pages.num_stamps' => 13..14).to_a).to eq []
     end
   end
 end

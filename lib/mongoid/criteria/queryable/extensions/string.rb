@@ -36,7 +36,7 @@ module Mongoid
           #
           # @return [ String ] The string with $ at the front.
           def __mongo_expression__
-            start_with?("$") ? self : "$#{self}"
+            start_with?('$') ? self : "$#{self}"
           end
 
           # Get the string as a sort option.

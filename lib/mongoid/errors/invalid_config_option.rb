@@ -16,8 +16,8 @@ module Mongoid
       def initialize(name)
         super(
           compose_message(
-            "invalid_config_option",
-            { name: name, options: Config.settings.keys.map(&:inspect).join(", ") }
+            'invalid_config_option',
+            { name: name, options: Config.settings.keys.map(&:inspect).join(', ') }
           )
         )
       end

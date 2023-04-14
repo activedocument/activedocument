@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Errors::InvalidCollection do
 
-  describe "#message" do
+  describe '#message' do
 
-    context "default" do
+    context 'default' do
 
       let(:klass) do
         Address
@@ -16,21 +16,21 @@ describe Mongoid::Errors::InvalidCollection do
         described_class.new(klass)
       end
 
-      it "contains the problem in the message" do
+      it 'contains the problem in the message' do
         expect(error.message).to include(
-          "Access to the collection for Address is not allowed."
+          'Access to the collection for Address is not allowed.'
         )
       end
 
-      it "contains the summary in the message" do
+      it 'contains the summary in the message' do
         expect(error.message).to include(
-          "Address.collection was called, and Address is an embedded document"
+          'Address.collection was called, and Address is an embedded document'
         )
       end
 
-      it "contains the resolution in the message" do
+      it 'contains the resolution in the message' do
         expect(error.message).to include(
-          "For access to the collection that the embedded document is in"
+          'For access to the collection that the embedded document is in'
         )
       end
     end

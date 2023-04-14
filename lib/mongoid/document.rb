@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-require "mongoid/positional"
-require "mongoid/evolvable"
-require "mongoid/extensions"
-require "mongoid/errors"
-require "mongoid/threaded"
-require "mongoid/atomic"
-require "mongoid/attributes"
-require "mongoid/contextual"
-require "mongoid/copyable"
-require "mongoid/equality"
-require "mongoid/criteria"
-require "mongoid/factory"
-require "mongoid/fields"
-require "mongoid/timestamps"
-require "mongoid/association"
-require "mongoid/composable"
-require "mongoid/touchable"
+require 'mongoid/positional'
+require 'mongoid/evolvable'
+require 'mongoid/extensions'
+require 'mongoid/errors'
+require 'mongoid/threaded'
+require 'mongoid/atomic'
+require 'mongoid/attributes'
+require 'mongoid/contextual'
+require 'mongoid/copyable'
+require 'mongoid/equality'
+require 'mongoid/criteria'
+require 'mongoid/factory'
+require 'mongoid/fields'
+require 'mongoid/timestamps'
+require 'mongoid/association'
+require 'mongoid/composable'
+require 'mongoid/touchable'
 
 module Mongoid
 
@@ -149,7 +149,7 @@ module Mongoid
     # @return [ Mongoid::Document ] An instance of the specified class.
     def becomes(klass)
       unless klass.include?(Mongoid::Document)
-        raise ArgumentError, "A class which includes Mongoid::Document is expected"
+        raise ArgumentError, 'A class which includes Mongoid::Document is expected'
       end
 
       became = klass.new(clone_document)

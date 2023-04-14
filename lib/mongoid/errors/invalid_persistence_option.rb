@@ -16,7 +16,7 @@ module Mongoid
       def initialize(invalid, valid)
         super(
           compose_message(
-            "invalid_persistence_option",
+            'invalid_persistence_option',
             { invalid: invalid, valid: valid }
           )
         )

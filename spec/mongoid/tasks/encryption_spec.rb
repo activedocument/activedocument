@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
-describe "Mongoid::Tasks::Encryption" do
+describe 'Mongoid::Tasks::Encryption' do
   require_enterprise
   require_libmongocrypt
   include_context 'with encryption'
   restore_config_clients
 
-  describe ".create_data_key" do
+  describe '.create_data_key' do
     let(:config) do
       {
         default: { hosts: SpecConfig.instance.addresses, database: database_id },

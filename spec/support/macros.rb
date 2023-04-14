@@ -5,7 +5,7 @@ module Mongoid
 
     def use_spec_mongoid_config
       around do |example|
-        config_path = File.join(File.dirname(__FILE__), "..", "config", "mongoid.yml")
+        config_path = File.join(File.dirname(__FILE__), '..', 'config', 'mongoid.yml')
 
         Mongoid::Clients.clear
         Mongoid.load!(config_path, :test)

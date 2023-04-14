@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Clients::Factory do
 
@@ -29,13 +29,13 @@ describe Mongoid::Clients::Factory do
     end
   end
 
-  describe ".create" do
+  describe '.create' do
 
-    context "when provided a name" do
+    context 'when provided a name' do
 
-      context "when the configuration exists" do
+      context 'when the configuration exists' do
 
-        context "when the configuration is standard" do
+        context 'when the configuration is standard' do
           restore_config_clients
 
           let(:config) do
@@ -61,7 +61,7 @@ describe Mongoid::Clients::Factory do
             client.cluster
           end
 
-          it "returns a client" do
+          it 'returns a client' do
             expect(client).to be_a(Mongo::Client)
           end
 
@@ -114,13 +114,13 @@ describe Mongoid::Clients::Factory do
           end
         end
 
-        context "when the configuration has no ports" do
+        context 'when the configuration has no ports' do
           restore_config_clients
 
           let(:config) do
             {
-              default: { hosts: ["127.0.0.1"], database: database_id },
-              analytics: { hosts: ["127.0.0.1"], database: database_id }
+              default: { hosts: ['127.0.0.1'], database: database_id },
+              analytics: { hosts: ['127.0.0.1'], database: database_id }
             }
           end
 
@@ -144,7 +144,7 @@ describe Mongoid::Clients::Factory do
             client.cluster
           end
 
-          it "returns a client" do
+          it 'returns a client' do
             expect(client).to be_a(Mongo::Client)
           end
 
@@ -152,20 +152,20 @@ describe Mongoid::Clients::Factory do
             expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
           end
 
-          it "sets ips with no ports to 27017" do
+          it 'sets ips with no ports to 27017' do
             expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
           end
         end
 
-        context "when configured via a uri" do
+        context 'when configured via a uri' do
 
-          context "when the uri has a single host:port" do
+          context 'when the uri has a single host:port' do
             restore_config_clients
 
             let(:config) do
               {
-                default: { hosts: ["127.0.0.1:27017"], database: database_id },
-                analytics: { uri: "mongodb://127.0.0.1:27017/mongoid_test" }
+                default: { hosts: ['127.0.0.1:27017'], database: database_id },
+                analytics: { uri: 'mongodb://127.0.0.1:27017/mongoid_test' }
               }
             end
 
@@ -185,7 +185,7 @@ describe Mongoid::Clients::Factory do
               client.cluster
             end
 
-            it "returns a client" do
+            it 'returns a client' do
               expect(client).to be_a(Mongo::Client)
             end
 
@@ -193,18 +193,18 @@ describe Mongoid::Clients::Factory do
               expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
             end
 
-            it "sets the database" do
-              expect(client.options[:database]).to eq("mongoid_test")
+            it 'sets the database' do
+              expect(client.options[:database]).to eq('mongoid_test')
             end
           end
 
-          context "when the uri has multiple host:port pairs" do
+          context 'when the uri has multiple host:port pairs' do
             restore_config_clients
 
             let(:config) do
               {
-                default: { hosts: ["127.0.0.1:1234"], database: database_id, server_selection_timeout: 1 },
-                analytics: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/mongoid_test?serverSelectionTimeoutMS=1000" }
+                default: { hosts: ['127.0.0.1:1234'], database: database_id, server_selection_timeout: 1 },
+                analytics: { uri: 'mongodb://127.0.0.1:1234,127.0.0.1:5678/mongoid_test?serverSelectionTimeoutMS=1000' }
               }
             end
 
@@ -228,20 +228,20 @@ describe Mongoid::Clients::Factory do
               cluster.addresses.map { |address| address.to_s }
             end
 
-            it "returns a client" do
+            it 'returns a client' do
               expect(client).to be_a(Mongo::Client)
             end
 
             it "sets the cluster's seeds" do
-              expect(seeds).to eq(["127.0.0.1:1234", "127.0.0.1:5678"])
+              expect(seeds).to eq(['127.0.0.1:1234', '127.0.0.1:5678'])
             end
           end
         end
       end
 
-      context "when the configuration does not exist" do
+      context 'when the configuration does not exist' do
 
-        it "raises an error" do
+        it 'raises an error' do
           expect {
             described_class.create(:unknown)
           }.to raise_error(Mongoid::Errors::NoClientConfig)
@@ -284,7 +284,7 @@ describe Mongoid::Clients::Factory do
           described_class.create(:encrypted)
         end
 
-        it "returns a client" do
+        it 'returns a client' do
           expect(client).to be_a(Mongo::Client)
         end
 
@@ -294,7 +294,7 @@ describe Mongoid::Clients::Factory do
       end
     end
 
-    context "when no name is provided" do
+    context 'when no name is provided' do
       restore_config_clients
 
       let(:config) do
@@ -321,14 +321,14 @@ describe Mongoid::Clients::Factory do
         cluster.addresses.map(&:to_s)
       end
 
-      it "returns the default client" do
+      it 'returns the default client' do
         expect(client).to be_a(Mongo::Client)
       end
 
       it_behaves_like 'includes seed address'
     end
 
-    context "when nil is provided and no default config" do
+    context 'when nil is provided and no default config' do
       restore_config_clients
 
       let(:config) { nil }
@@ -337,13 +337,13 @@ describe Mongoid::Clients::Factory do
         Mongoid.clients[:default] = nil
       end
 
-      it "raises NoClientsConfig error" do
+      it 'raises NoClientsConfig error' do
         expect { Mongoid::Clients::Factory.create(config) }.to raise_error(Mongoid::Errors::NoClientsConfig)
       end
     end
   end
 
-  describe ".default" do
+  describe '.default' do
     restore_config_clients
 
     let(:config) do
@@ -370,14 +370,14 @@ describe Mongoid::Clients::Factory do
       cluster.addresses.map(&:to_s)
     end
 
-    it "returns the default client" do
+    it 'returns the default client' do
       expect(client).to be_a(Mongo::Client)
     end
 
     it_behaves_like 'includes seed address'
   end
 
-  context "when options are provided with string keys" do
+  context 'when options are provided with string keys' do
     restore_config_clients
 
     let(:config) do
@@ -386,8 +386,8 @@ describe Mongoid::Clients::Factory do
           hosts: SpecConfig.instance.addresses,
           database: database_id,
           options: {
-            "server_selection_timeout" => 10,
-            "write" => { "w" => 1 }
+            'server_selection_timeout' => 10,
+            'write' => { 'w' => 1 }
           }
         }
       }
@@ -413,17 +413,17 @@ describe Mongoid::Clients::Factory do
       cluster.addresses.map(&:to_s)
     end
 
-    it "returns the default client" do
+    it 'returns the default client' do
       expect(client).to be_a(Mongo::Client)
     end
 
     it_behaves_like 'includes seed address'
 
-    it "sets the server selection timeout" do
+    it 'sets the server selection timeout' do
       expect(cluster.options[:server_selection_timeout]).to eq(10)
     end
 
-    it "sets the write concern" do
+    it 'sets the write concern' do
       expect(client.write_concern).to be_a(Mongo::WriteConcern::Acknowledged)
     end
 
@@ -432,21 +432,21 @@ describe Mongoid::Clients::Factory do
     end
   end
 
-  context "unexpected config options" do
+  context 'unexpected config options' do
     restore_config_clients
 
     let(:unknown_opts) do
       {
         bad_one: 1,
-        another_one: "here"
+        another_one: 'here'
       }
     end
 
     let(:config) do
       {
         default: { hosts: SpecConfig.instance.addresses, database: database_id },
-        good_one: { hosts: ["127.0.0.1:1234"], database: database_id },
-        bad_one: { hosts: ["127.0.0.1:1234"], database: database_id }.merge(unknown_opts),
+        good_one: { hosts: ['127.0.0.1:1234'], database: database_id },
+        bad_one: { hosts: ['127.0.0.1:1234'], database: database_id }.merge(unknown_opts),
         good_two: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/#{database_id}" },
         bad_two: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/#{database_id}" }.merge(unknown_opts)
       }

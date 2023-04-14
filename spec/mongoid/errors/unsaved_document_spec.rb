@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Errors::UnsavedDocument do
 
-  describe "#message" do
+  describe '#message' do
 
     let(:base) do
       Person.new
@@ -18,21 +18,21 @@ describe Mongoid::Errors::UnsavedDocument do
       described_class.new(base, document)
     end
 
-    it "contains the problem in the message" do
+    it 'contains the problem in the message' do
       expect(error.message).to include(
-        "Attempted to save Post before the parent Person."
+        'Attempted to save Post before the parent Person.'
       )
     end
 
-    it "contains the summary in the message" do
+    it 'contains the summary in the message' do
       expect(error.message).to include(
-        "You cannot call create or create! through the association"
+        'You cannot call create or create! through the association'
       )
     end
 
-    it "contains the resolution in the message" do
+    it 'contains the resolution in the message' do
       expect(error.message).to include(
-        "Make sure to only use create or create!"
+        'Make sure to only use create or create!'
       )
     end
   end

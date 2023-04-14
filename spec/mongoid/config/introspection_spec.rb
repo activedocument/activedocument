@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Config::Introspection do
 
-  context "CONFIG_RB_PATH" do
-    it "refers to an actual source file" do
+  context 'CONFIG_RB_PATH' do
+    it 'refers to an actual source file' do
       expect(File.exist?(Mongoid::Config::Introspection::CONFIG_RB_PATH)).to be true
     end
   end
 
-  context "#options" do
+  context '#options' do
     let(:options) { Mongoid::Config::Introspection.options }
     let(:all_options) { Mongoid::Config::Introspection.options(include_deprecated: true) }
     let(:deprecated_options) { all_options.select(&:deprecated?) }
@@ -22,16 +22,16 @@ describe Mongoid::Config::Introspection do
     # deprecated option (if any), or else skip the specs in this context.
     #
     # TODO: Currently no options are deprecated
-    context "with deprecated options" do
-      let(:option_name) { "background_indexing" }
+    context 'with deprecated options' do
+      let(:option_name) { 'background_indexing' }
 
-      it "should exclude deprecated options by default" do
+      it 'should exclude deprecated options by default' do
         skip 'no options are deprecated'
         option = options.detect { |opt| opt.name == option_name }
         expect(option).to be_nil
       end
 
-      it "deprecated options should be included when requested" do
+      it 'deprecated options should be included when requested' do
         skip 'no options are deprecated'
         option = all_options.detect { |opt| opt.name == option_name }
         expect(option).not_to be_nil
@@ -43,13 +43,13 @@ describe Mongoid::Config::Introspection do
         let(:option) { all_options.detect { |opt| opt.name == name.to_s } }
         let(:live_option) { options.detect { |opt| opt.name == name.to_s } }
 
-        it "should be parsed by the introspection scraper" do
+        it 'should be parsed by the introspection scraper' do
           expect(option).not_to be_nil
-          expect(option.default).to eq default_value.inspect
+          expect(option.default).to eq default_value.inspect.gsub(/\A"(.+)"\z/, '\'\1\'')
           expect(option.comment.strip).not_to be_empty
         end
 
-        it "should be excluded by default if it is deprecated" do
+        it 'should be excluded by default if it is deprecated' do
           if option.deprecated?
             expect(live_option).to be_nil
           else
@@ -63,57 +63,56 @@ describe Mongoid::Config::Introspection do
   describe Mongoid::Config::Introspection::Option do
     let(:option) do
       Mongoid::Config::Introspection::Option.new(
-        "name", "default", "   # line 1\n    # line 2\n"
+        'name', 'default', "   # line 1\n    # line 2\n"
       )
     end
 
-    context ".from_captures" do
+    context '.from_captures' do
       it "populates the option's fields" do
-        option = Mongoid::Config::Introspection::Option.from_captures([nil, "# comment", "name", "default"])
-        expect(option.name).to eq "name"
-        expect(option.default).to eq "default"
-        expect(option.comment).to eq "# comment"
+        option = Mongoid::Config::Introspection::Option.from_captures([nil, '# comment', 'name', 'default'])
+        expect(option.name).to eq 'name'
+        expect(option.default).to eq 'default'
+        expect(option.comment).to eq '# comment'
       end
     end
 
-    context "#initialize" do
-      it "unindents the given comment" do
-        expect(option.name).to eq "name"
-        expect(option.default).to eq "default"
+    context '#initialize' do
+      it 'unindents the given comment' do
+        expect(option.name).to eq 'name'
+        expect(option.default).to eq 'default'
         expect(option.comment).to eq "# line 1\n# line 2"
       end
     end
 
-    context "#indented_comment" do
-      it "has defaults" do
+    context '#indented_comment' do
+      it 'has defaults' do
         expect(option.indented_comment).to eq "# line 1\n  # line 2"
       end
 
-      it "allows indentation to be specified" do
+      it 'allows indentation to be specified' do
         expect(option.indented_comment(indent: 3)).to eq "# line 1\n   # line 2"
       end
 
-      it "allows the first line to be indented" do
+      it 'allows the first line to be indented' do
         expect(option.indented_comment(indent: 3, indent_first_line: true))
           .to eq "   # line 1\n   # line 2"
       end
     end
 
-    context "#deprecated?" do
+    context '#deprecated?' do
       let(:deprecated_option) do
         Mongoid::Config::Introspection::Option.new(
-          "name", "default", "# this\n# is (Deprecated), yo\n"
+          'name', 'default', "# this\n# is (Deprecated), yo\n"
         )
       end
 
-      it "is not deprecated by default" do
+      it 'is not deprecated by default' do
         expect(option.deprecated?).not_to be true
       end
 
-      it "is deprecated when the comment includes \"(Deprecated)\"" do
+      it 'is deprecated when the comment includes "(Deprecated)"' do
         expect(deprecated_option.deprecated?).to be true
       end
     end
   end
-
 end

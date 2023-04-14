@@ -48,7 +48,7 @@ class ClusterConfig
   # or RS topologies, and otherwise returns the major.minor server version.
   def fcv_ish
     if server_version.nil?
-      raise "Deployment server version not known - check that connection to deployment succeeded"
+      raise 'Deployment server version not known - check that connection to deployment succeeded'
     end
 
     if server_version >= '3.4' && !sharded_ish?
@@ -96,7 +96,7 @@ class ClusterConfig
   def auth_enabled?
     if @auth_enabled.nil?
       @auth_enabled = begin
-        basic_client.use(:admin).command(getCmdLineOpts: 1).first["argv"].include?("--auth")
+        basic_client.use(:admin).command(getCmdLineOpts: 1).first['argv'].include?('--auth')
       rescue StandardError => e
         e.message =~ /(not authorized)|(unauthorized)|(no users authenticated)|(requires authentication)/
       end

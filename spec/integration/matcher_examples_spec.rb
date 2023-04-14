@@ -691,7 +691,7 @@ describe 'Matcher' do
           expect(found_record).to eq(record)
         end
 
-        it "correctly does not find" do
+        it 'correctly does not find' do
           expect(no_record).to eq(nil)
         end
       end

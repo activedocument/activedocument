@@ -16,7 +16,7 @@ module Mongoid
       def initialize(name, config)
         super(
           compose_message(
-            "no_client_database",
+            'no_client_database',
             { name: name, config: config }
           )
         )

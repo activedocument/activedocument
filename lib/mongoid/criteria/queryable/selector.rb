@@ -67,7 +67,7 @@ module Mongoid
         # @return [ Array<Hash> ] The pipeline entry for the selector.
         def to_pipeline
           pipeline = []
-          pipeline.push({ "$match" => self }) unless empty?
+          pipeline.push({ '$match' => self }) unless empty?
           pipeline
         end
 
@@ -245,7 +245,7 @@ module Mongoid
 
           # Iterate backwards until you get a field with type
           # Array or an embeds_many association.
-          inner_key = ""
+          inner_key = ''
           loop do
             # If there are no arrays or embeds_many associations, just return
             # the key and value without $elemMatch.
@@ -262,10 +262,10 @@ module Mongoid
           # the inner key (2) is ignored, and the outer key (1) is the original
           # key.
           if inner_key.blank?
-            [key, { "$elemMatch" => v }]
+            [key, { '$elemMatch' => v }]
           else
             store_key = assocs.map(&:first).join('.')
-            store_value = { "$elemMatch" => { inner_key.chop => v } }
+            store_value = { '$elemMatch' => { inner_key.chop => v } }
             [store_key, store_value]
           end
         end

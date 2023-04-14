@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::Referenced::HasOne::Binding do
 
@@ -13,16 +13,16 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
   end
 
   let(:association) do
-    Person.relations["game"]
+    Person.relations['game']
   end
 
-  describe "#bind_one" do
+  describe '#bind_one' do
 
     let(:binding) do
       described_class.new(person, game, association)
     end
 
-    context "when the document is bindable" do
+    context 'when the document is bindable' do
 
       before do
         expect(person).to receive(:save).never
@@ -30,35 +30,35 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
         binding.bind_one
       end
 
-      it "sets the inverse relation" do
+      it 'sets the inverse relation' do
         expect(game.person).to eq(person)
       end
 
-      it "sets the foreign key" do
+      it 'sets the foreign key' do
         expect(game.person_id).to eq(person.id)
       end
     end
 
-    context "when the document is not bindable" do
+    context 'when the document is not bindable' do
 
       before do
         game.person = person
       end
 
-      it "does nothing" do
+      it 'does nothing' do
         expect(person).to receive(:game=).never
         binding.bind_one
       end
     end
   end
 
-  describe "#unbind_one" do
+  describe '#unbind_one' do
 
     let(:binding) do
       described_class.new(person, game, association)
     end
 
-    context "when the document is unbindable" do
+    context 'when the document is unbindable' do
 
       before do
         binding.bind_one
@@ -67,31 +67,31 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
         binding.unbind_one
       end
 
-      it "removes the inverse relation" do
+      it 'removes the inverse relation' do
         expect(game.person).to be_nil
       end
 
-      it "removed the foreign key" do
+      it 'removed the foreign key' do
         expect(game.person_id).to be_nil
       end
     end
 
-    context "when the document is not unbindable" do
+    context 'when the document is not unbindable' do
 
-      it "does nothing" do
+      it 'does nothing' do
         expect(person).to receive(:game=).never
         binding.unbind_one
       end
     end
   end
 
-  context "when binding frozen documents" do
+  context 'when binding frozen documents' do
 
     let(:person) do
       Person.new
     end
 
-    context "when the child is frozen" do
+    context 'when the child is frozen' do
 
       let(:game) do
         Game.new.freeze
@@ -101,19 +101,19 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
         person.game = game
       end
 
-      it "does not set the foreign key" do
+      it 'does not set the foreign key' do
         expect(game.person_id).to be_nil
       end
     end
   end
 
-  context "when unbinding frozen documents" do
+  context 'when unbinding frozen documents' do
 
     let(:person) do
       Person.new
     end
 
-    context "when the child is frozen" do
+    context 'when the child is frozen' do
 
       let(:game) do
         Game.new
@@ -125,7 +125,7 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
         person.game = nil
       end
 
-      it "does not unset the foreign key" do
+      it 'does not unset the foreign key' do
         expect(game.person_id).to eq(person.id)
       end
     end

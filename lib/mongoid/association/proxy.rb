@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "mongoid/association/marshalable"
+require 'mongoid/association/marshalable'
 
 module Mongoid
   module Association

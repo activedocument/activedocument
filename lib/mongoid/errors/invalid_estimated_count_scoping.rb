@@ -16,7 +16,7 @@ module Mongoid
       def initialize(class_name)
         super(
           compose_message(
-            "invalid_estimated_count_scoping",
+            'invalid_estimated_count_scoping',
             { class_name: class_name }
           )
         )

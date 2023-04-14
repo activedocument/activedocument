@@ -14,7 +14,7 @@ module Mongoid
       def initialize(class_name, superclass)
         super(
           compose_message(
-            "invalid_discriminator_key_target",
+            'invalid_discriminator_key_target',
             { class_name: class_name, superclass: superclass }
           )
         )

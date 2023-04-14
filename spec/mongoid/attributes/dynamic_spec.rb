@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Attributes::Dynamic do
   shared_examples_for 'dynamic field' do

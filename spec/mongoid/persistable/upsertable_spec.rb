@@ -1,43 +1,43 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Persistable::Upsertable do
 
-  describe "#upsert" do
+  describe '#upsert' do
 
-    context "when the document validates on upsert" do
+    context 'when the document validates on upsert' do
 
       let(:account) do
-        Account.new(name: "testing")
+        Account.new(name: 'testing')
       end
 
-      context "when the document is not valid in the upsert context" do
+      context 'when the document is not valid in the upsert context' do
 
         before do
           account.upsert
         end
 
-        it "adds the validation errors" do
+        it 'adds the validation errors' do
           expect(account.errors[:nickname]).to_not be_empty
         end
 
-        it "does not upsert the document" do
+        it 'does not upsert the document' do
           expect(account).to be_a_new_record
         end
       end
     end
 
-    context "when the document is new" do
+    context 'when the document is new' do
 
       let!(:existing) do
-        Band.create!(name: "Photek")
+        Band.create!(name: 'Photek')
       end
 
-      context "when a matching document exists in the db" do
+      context 'when a matching document exists in the db' do
 
         let(:updated) do
-          Band.new(name: "Tool") do |band|
+          Band.new(name: 'Tool') do |band|
             band.id = existing.id
           end
         end
@@ -48,15 +48,15 @@ describe Mongoid::Persistable::Upsertable do
           updated.upsert(options)
         end
 
-        it "updates the existing document" do
-          expect(existing.reload.name).to eq("Tool")
+        it 'updates the existing document' do
+          expect(existing.reload.name).to eq('Tool')
         end
 
-        it "flags the document as persisted" do
+        it 'flags the document as persisted' do
           expect(existing).to be_persisted
         end
 
-        shared_examples "replaces the existing fields" do
+        shared_examples 'replaces the existing fields' do
           it 'replaces the existing fields' do
             expect(Band.count).to eq(1)
 
@@ -66,7 +66,7 @@ describe Mongoid::Persistable::Upsertable do
           end
         end
 
-        shared_examples "retains the existing fields" do
+        shared_examples 'retains the existing fields' do
           it 'retains the existing fields' do
             expect(Band.count).to eq(1)
 
@@ -78,83 +78,83 @@ describe Mongoid::Persistable::Upsertable do
 
         context 'when existing document contains other fields' do
           let!(:existing) do
-            Band.create!(name: "Photek", views: 42)
+            Band.create!(name: 'Photek', views: 42)
           end
 
-          context "when not passing any options" do
+          context 'when not passing any options' do
             let(:options) { {} }
-            it_behaves_like "retains the existing fields"
+            it_behaves_like 'retains the existing fields'
           end
 
-          context "when passing replace: false" do
+          context 'when passing replace: false' do
             let(:options) { { replace: false } }
-            it_behaves_like "retains the existing fields"
+            it_behaves_like 'retains the existing fields'
           end
 
-          context "when passing replace: true" do
+          context 'when passing replace: true' do
             let(:options) { { replace: true } }
-            it_behaves_like "replaces the existing fields"
+            it_behaves_like 'replaces the existing fields'
           end
         end
       end
 
-      context "when no matching document exists in the db" do
+      context 'when no matching document exists in the db' do
 
         let(:insert) do
-          Band.new(name: "Tool")
+          Band.new(name: 'Tool')
         end
 
         before do
           insert.upsert
         end
 
-        it "inserts a new document" do
+        it 'inserts a new document' do
           expect(insert.reload).to eq(insert)
         end
 
-        it "does not modify any fields" do
-          expect(insert.reload.name).to eq("Tool")
+        it 'does not modify any fields' do
+          expect(insert.reload.name).to eq('Tool')
         end
 
-        it "flags the document as persisted" do
+        it 'flags the document as persisted' do
           expect(insert).to be_persisted
         end
       end
     end
 
-    context "when the document is not new" do
+    context 'when the document is not new' do
 
       let!(:existing) do
-        Band.create!(name: "Photek")
+        Band.create!(name: 'Photek')
       end
 
-      context "when updating fields outside of the id" do
+      context 'when updating fields outside of the id' do
 
         before do
-          existing.name = "Depeche Mode"
+          existing.name = 'Depeche Mode'
         end
 
         let!(:upsert) do
           existing.upsert
         end
 
-        it "updates the existing document" do
-          expect(existing.reload.name).to eq("Depeche Mode")
+        it 'updates the existing document' do
+          expect(existing.reload.name).to eq('Depeche Mode')
         end
 
-        it "returns true" do
+        it 'returns true' do
           expect(upsert).to be true
         end
       end
     end
 
     context 'when `set_on_insert` is given' do
-      let!(:existing_document) { Band.create!(name: "They Might Be Giants") }
-      let!(:new_document) { Band.new(name: "Panic! at the Disco") }
+      let!(:existing_document) { Band.create!(name: 'They Might Be Giants') }
+      let!(:new_document) { Band.new(name: 'Panic! at the Disco') }
 
       context 'with `replace: true`' do
         it 'should raise an ArgumentError' do
-          existing_document.name = "John and John"
+          existing_document.name = 'John and John'
           expect {
             existing_document.upsert(replace: true, set_on_insert: { member_count: 1 })
           }.to raise_error(ArgumentError)
@@ -164,7 +164,7 @@ describe Mongoid::Persistable::Upsertable do
       context 'without `replace: true`' do
         context 'when document exists' do
           it 'ignores set_on_insert' do
-            existing_document.name = "John and John"
+            existing_document.name = 'John and John'
             existing_document.upsert(set_on_insert: { member_count: 1 })
             expect(existing_document.reload.member_count).to be_nil
           end
@@ -172,7 +172,7 @@ describe Mongoid::Persistable::Upsertable do
 
         context 'when document does not exist' do
           it 'applies set_on_insert' do
-            new_document.name = "Brendon Urie"
+            new_document.name = 'Brendon Urie'
             new_document.upsert(set_on_insert: { member_count: 1 })
             expect(new_document.reload.member_count).to eq 1
           end
@@ -180,41 +180,41 @@ describe Mongoid::Persistable::Upsertable do
       end
     end
 
-    context "when the document is readonly" do
+    context 'when the document is readonly' do
 
-      context "when legacy_readonly is true" do
+      context 'when legacy_readonly is true' do
         config_override :legacy_readonly, true
 
         let!(:existing) do
-          Band.create!(name: "Photek")
+          Band.create!(name: 'Photek')
         end
 
         before do
-          existing.name = "Depeche Mode"
+          existing.name = 'Depeche Mode'
         end
 
         let!(:upsert) do
           existing.upsert
         end
 
-        it "updates the existing document" do
-          expect(existing.reload.name).to eq("Depeche Mode")
+        it 'updates the existing document' do
+          expect(existing.reload.name).to eq('Depeche Mode')
         end
 
-        it "returns true" do
+        it 'returns true' do
           expect(upsert).to be true
         end
       end
 
-      context "when legacy_readonly is false" do
+      context 'when legacy_readonly is false' do
         config_override :legacy_readonly, false
 
         let!(:existing) do
-          Band.create!(name: "Photek").tap(&:readonly!)
+          Band.create!(name: 'Photek').tap(&:readonly!)
         end
 
         before do
-          existing.name = "Depeche Mode"
+          existing.name = 'Depeche Mode'
         end
 
         it 'raises a ReadonlyDocument error' do

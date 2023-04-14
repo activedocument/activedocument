@@ -8,5 +8,5 @@ class Bar
   field :lat_lng, type: LatLng
 
   has_one :rating, as: :ratable
-  index location: "2d"
+  index location: '2d'
 end

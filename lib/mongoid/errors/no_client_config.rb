@@ -14,7 +14,7 @@ module Mongoid
       #
       # @param [ String | Symbol ] name The name of the client.
       def initialize(name)
-        super(compose_message("no_client_config", { name: name }))
+        super(compose_message('no_client_config', { name: name }))
       end
     end
   end

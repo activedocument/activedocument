@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "mongoid/atomic/paths/embedded/one"
-require "mongoid/atomic/paths/embedded/many"
+require 'mongoid/atomic/paths/embedded/one'
+require 'mongoid/atomic/paths/embedded/many'
 
 module Mongoid
   module Atomic
@@ -19,7 +19,7 @@ module Mongoid
         #
         # @return [ String ] The path to the document.
         def path
-          @path ||= position.sub(/\.\d+\z/, "")
+          @path ||= position.sub(/\.\d+\z/, '')
         end
       end
     end

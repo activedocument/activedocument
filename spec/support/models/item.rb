@@ -7,4 +7,4 @@ class Item
   field :user_login, type: String
 end
 
-require "support/models/sub_item"
+require 'support/models/sub_item'

@@ -35,7 +35,7 @@ module Mongoid
           pre_process_batch_remove(docs, :delete)
           unless docs.empty?
             collection.find(selector).update_one(
-              positionally(selector, "$unset" => { path => true }),
+              positionally(selector, '$unset' => { path => true }),
               session: _session
             )
             # This solves the case in which a user sets, clears and resets an
@@ -60,7 +60,7 @@ module Mongoid
           # the id. Therefore we have to use pullAll with the documents'
           # attributes.
           removals = pre_process_batch_remove(docs, method)
-          pulls, pull_alls = removals.partition { |o| !o["_id"].nil? }
+          pulls, pull_alls = removals.partition { |o| !o['_id'].nil? }
 
           if !_base.persisted?
             post_process_batch_remove(docs, method) unless docs.empty?
@@ -70,20 +70,20 @@ module Mongoid
           if !docs.empty?
             if !pulls.empty?
               collection.find(selector).update_one(
-                positionally(selector, "$pull" => { path => { "_id" => { "$in" => pulls.pluck("_id") } } }),
+                positionally(selector, '$pull' => { path => { '_id' => { '$in' => pulls.pluck('_id') } } }),
                 session: _session
               )
             end
             if !pull_alls.empty?
               collection.find(selector).update_one(
-                positionally(selector, "$pullAll" => { path => pull_alls }),
+                positionally(selector, '$pullAll' => { path => pull_alls }),
                 session: _session
               )
             end
             post_process_batch_remove(docs, method)
           else
             collection.find(selector).update_one(
-              positionally(selector, "$set" => { path => [] }),
+              positionally(selector, '$set' => { path => [] }),
               session: _session
             )
           end
@@ -272,7 +272,7 @@ module Mongoid
         # @api private
         def clear_atomic_path_cache
           self.path = nil
-          _base.instance_variable_set("@atomic_paths", nil)
+          _base.instance_variable_set('@atomic_paths', nil)
         end
 
         # Set the atomic path.

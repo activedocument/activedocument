@@ -43,7 +43,7 @@ module Mongoid
     #
     # @return [ Hash ] The root document selector.
     def root_atomic_selector_in_db
-      { "_id" => _id }.merge!(shard_key_selector_in_db)
+      { '_id' => _id }.merge!(shard_key_selector_in_db)
     end
   end
 end

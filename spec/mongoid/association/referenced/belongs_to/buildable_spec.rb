@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::Referenced::BelongsTo::Buildable do
 
@@ -8,7 +8,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
     double
   end
 
-  describe "#build" do
+  describe '#build' do
 
     let(:document) do
       association.build(base, object)
@@ -22,9 +22,9 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
       Mongoid::Association::Referenced::BelongsTo.new(Post, :person, options)
     end
 
-    context "when provided an id" do
+    context 'when provided an id' do
 
-      context "when the object is an object id" do
+      context 'when the object is an object id' do
 
         let!(:person) do
           Person.create!(_id: object, username: 'Bob')
@@ -38,12 +38,12 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
           expect_any_instance_of(Mongoid::Criteria).to receive(:where).with(association.primary_key => object).and_call_original
         end
 
-        it "sets the document" do
+        it 'sets the document' do
           expect(document).to eq(person)
         end
       end
 
-      context "when scope is specified" do
+      context 'when scope is specified' do
 
         let!(:person) do
           Person.create(_id: object, username: 'Bob')
@@ -59,20 +59,20 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
           }
         end
 
-        context "when document satisfies scope" do
+        context 'when document satisfies scope' do
 
-          it "sets the document" do
+          it 'sets the document' do
             expect(document).to eq(person)
           end
         end
 
-        context "when document does not satisfy scope" do
+        context 'when document does not satisfy scope' do
 
           let!(:person) do
             Person.create(_id: object, username: 'Bruce')
           end
 
-          it "returns nil" do
+          it 'returns nil' do
             expect(document).to eq(nil)
           end
         end
@@ -93,7 +93,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
         end
       end
 
-      context "when the id does not correspond to a document in the database" do
+      context 'when the id does not correspond to a document in the database' do
 
         let!(:person) do
           Person.create!
@@ -112,7 +112,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
         end
       end
 
-      context "when the object is an integer" do
+      context 'when the object is an integer' do
 
         let!(:person) do
           Person.create!(_id: object)
@@ -126,13 +126,13 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
           expect_any_instance_of(Mongoid::Criteria).to receive(:where).with(association.primary_key => object).and_call_original
         end
 
-        it "sets the document" do
+        it 'sets the document' do
           expect(document).to eq(person)
         end
       end
     end
 
-    context "when provided a object" do
+    context 'when provided a object' do
 
       let!(:person) do
         Person.create!
@@ -146,12 +146,12 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
         expect_any_instance_of(Mongoid::Criteria).not_to receive(:where)
       end
 
-      it "returns the object" do
+      it 'returns the object' do
         expect(document).to eq(object)
       end
     end
 
-    context "when the document is persisted" do
+    context 'when the document is persisted' do
 
       let!(:person) do
         Person.create!
@@ -161,7 +161,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
         Game.new(person_id: person.id)
       end
 
-      it "returns the document" do
+      it 'returns the document' do
         expect(game.person).to eq(person)
       end
     end
@@ -238,7 +238,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
 
   context 'when the object is already associated with another object' do
 
-    context "when inverse is has_many" do
+    context 'when inverse is has_many' do
 
       let(:drug1) do
         Drug.create!
@@ -264,14 +264,14 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
       end
     end
 
-    context "when inverse is has_one" do
+    context 'when inverse is has_one' do
 
       let(:account1) do
-        Account.create!(name: "1")
+        Account.create!(name: '1')
       end
 
       let(:account2) do
-        Account.create!(name: "2")
+        Account.create!(name: '2')
       end
 
       let(:person) do

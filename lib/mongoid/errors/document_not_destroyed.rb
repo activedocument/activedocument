@@ -15,7 +15,7 @@ module Mongoid
       # @param [ Object ] id The document id.
       # @param [ Class ] klass The document class.
       def initialize(id, klass)
-        super(compose_message("document_not_destroyed", { id: id.inspect, klass: klass }))
+        super(compose_message('document_not_destroyed', { id: id.inspect, klass: klass }))
       end
     end
   end

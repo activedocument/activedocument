@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "mongoid/criteria/findable"
-require "mongoid/criteria/includable"
-require "mongoid/criteria/inspectable"
-require "mongoid/criteria/marshalable"
-require "mongoid/criteria/modifiable"
-require "mongoid/criteria/queryable"
-require "mongoid/criteria/scopable"
-require "mongoid/criteria/options"
-require "mongoid/criteria/translator"
+require 'mongoid/criteria/findable'
+require 'mongoid/criteria/includable'
+require 'mongoid/criteria/inspectable'
+require 'mongoid/criteria/marshalable'
+require 'mongoid/criteria/modifiable'
+require 'mongoid/criteria/queryable'
+require 'mongoid/criteria/scopable'
+require 'mongoid/criteria/options'
+require 'mongoid/criteria/translator'
 
 module Mongoid
 
@@ -550,7 +550,7 @@ module Mongoid
     def type_selection
       klasses = klass._types
       if klasses.size > 1
-        { klass.discriminator_key.to_sym => { "$in" => klass._types } }
+        { klass.discriminator_key.to_sym => { '$in' => klass._types } }
       else
         { klass.discriminator_key.to_sym => klass._types[0] }
       end

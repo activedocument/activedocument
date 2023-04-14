@@ -12,9 +12,9 @@ class Actor
 
   def do_something
     run_callbacks(:custom) do
-      self.name = "custom"
+      self.name = 'custom'
     end
   end
 end
 
-require "support/models/actress"
+require 'support/models/actress'

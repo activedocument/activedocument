@@ -266,7 +266,7 @@ module Mongoid
           crit = relation_class.criteria
           crit = if id_list
                    crit = crit.apply_scope(scope)
-                   crit.all_of(primary_key => { "$in" => id_list })
+                   crit.all_of(primary_key => { '$in' => id_list })
                  else
                    crit.none
                  end

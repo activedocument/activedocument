@@ -13,7 +13,7 @@ module Mongoid
       def initialize
         super(
           compose_message(
-            "invalid_global_executor_concurrency"
+            'invalid_global_executor_concurrency'
           )
         )
       end

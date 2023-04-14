@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Persistable::Destroyable do
 
-  describe "#destroy" do
+  describe '#destroy' do
 
     let!(:person) do
       Person.create!
     end
 
-    context "when destroying a readonly document" do
+    context 'when destroying a readonly document' do
       let(:from_db) do
         Person.first.tap(&:readonly!)
       end
 
-      it "raises an error" do
+      it 'raises an error' do
         expect(from_db.readonly?).to be true
         expect {
           from_db.destroy
@@ -37,23 +37,23 @@ describe Mongoid::Persistable::Destroyable do
       end
     end
 
-    context "when destroying a root document" do
+    context 'when destroying a root document' do
 
       let!(:destroyed) do
         person.destroy
       end
 
-      it "destroys the document from the collection" do
+      it 'destroys the document from the collection' do
         expect {
           Person.find(person.id)
         }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
 
-      it "returns true" do
+      it 'returns true' do
         expect(destroyed).to be true
       end
 
-      it "resets the flagged for destroy flag" do
+      it 'resets the flagged for destroy flag' do
         expect(person).to_not be_flagged_for_destroy
       end
 
@@ -63,46 +63,46 @@ describe Mongoid::Persistable::Destroyable do
           person.destroy(persist: false)
         end
 
-        it "does not destroy the document from the collection" do
+        it 'does not destroy the document from the collection' do
           expect(Person.find(person.id)).to eq person
         end
 
-        it "returns true" do
+        it 'returns true' do
           expect(destroyed).to be true
         end
 
-        it "does not set the flagged for destroy flag" do
+        it 'does not set the flagged for destroy flag' do
           expect(person).to_not be_flagged_for_destroy
         end
       end
     end
 
-    context "when destroying an embedded document" do
+    context 'when destroying an embedded document' do
 
       let(:address) do
-        person.addresses.build(street: "Bond Street")
+        person.addresses.build(street: 'Bond Street')
       end
 
-      context "when the document is not yet saved" do
+      context 'when the document is not yet saved' do
 
         before do
           address.destroy
         end
 
-        it "removes the document from the parent" do
+        it 'removes the document from the parent' do
           expect(person.addresses).to be_empty
         end
 
-        it "removes the attributes from the parent" do
-          expect(person.raw_attributes["addresses"]).to be_nil
+        it 'removes the attributes from the parent' do
+          expect(person.raw_attributes['addresses']).to be_nil
         end
 
-        it "resets the flagged for destroy flag" do
+        it 'resets the flagged for destroy flag' do
           expect(address).to_not be_flagged_for_destroy
         end
       end
 
-      context "when the document has been saved" do
+      context 'when the document has been saved' do
 
         before do
           address.save!
@@ -113,11 +113,11 @@ describe Mongoid::Persistable::Destroyable do
           Person.find(person.id)
         end
 
-        it "removes the object from the parent" do
+        it 'removes the object from the parent' do
           expect(person.addresses).to be_empty
         end
 
-        it "removes the object from the database" do
+        it 'removes the object from the database' do
           expect(from_db.addresses).to be_empty
         end
       end
@@ -133,12 +133,12 @@ describe Mongoid::Persistable::Destroyable do
           Person.find(person.id)
         end
 
-        it "does not remove the object from the parent" do
+        it 'does not remove the object from the parent' do
           expect(person.addresses).to eq [address]
           expect(person.addresses.first).to_not be_flagged_for_destroy
         end
 
-        it "does not remove the object from the database" do
+        it 'does not remove the object from the database' do
           expect(from_db.addresses).to eq [address]
           expect(from_db.addresses.first).to_not be_flagged_for_destroy
         end
@@ -155,12 +155,12 @@ describe Mongoid::Persistable::Destroyable do
           Person.find(person.id)
         end
 
-        it "does not remove the object from the parent" do
+        it 'does not remove the object from the parent' do
           expect(person.addresses).to eq [address]
           expect(person.addresses.first).to_not be_flagged_for_destroy
         end
 
-        it "removes the object from the database" do
+        it 'removes the object from the database' do
           expect(from_db.addresses).to be_empty
         end
       end
@@ -195,16 +195,16 @@ describe Mongoid::Persistable::Destroyable do
       end
     end
 
-    context "when destroying deeply embedded documents" do
+    context 'when destroying deeply embedded documents' do
 
-      context "when the document has been saved" do
+      context 'when the document has been saved' do
 
         let(:address) do
-          person.addresses.create!(street: "Bond Street")
+          person.addresses.create!(street: 'Bond Street')
         end
 
         let(:location) do
-          address.locations.create!(name: "Home")
+          address.locations.create!(name: 'Home')
         end
 
         let(:from_db) do
@@ -215,11 +215,11 @@ describe Mongoid::Persistable::Destroyable do
           location.destroy
         end
 
-        it "removes the object from the parent and database" do
+        it 'removes the object from the parent and database' do
           expect(from_db.addresses.first.locations).to be_empty
         end
 
-        it "resets the flagged for destroy flag" do
+        it 'resets the flagged for destroy flag' do
           expect(location).to_not be_flagged_for_destroy
         end
       end
@@ -306,20 +306,20 @@ describe Mongoid::Persistable::Destroyable do
     end
   end
 
-  describe "#destroy!" do
+  describe '#destroy!' do
 
     let(:person) do
       Person.create!
     end
 
-    context "when no validation callback returns false" do
+    context 'when no validation callback returns false' do
 
-      it "returns true" do
+      it 'returns true' do
         expect(person.destroy!).to eq(true)
       end
     end
 
-    context "when a validation callback returns false" do
+    context 'when a validation callback returns false' do
 
       let(:album) do
         Album.create!
@@ -333,7 +333,7 @@ describe Mongoid::Persistable::Destroyable do
         Album.reset_callbacks(:destroy)
       end
 
-      it "raises an exception" do
+      it 'raises an exception' do
         expect {
           album.destroy!
         }.to raise_error(Mongoid::Errors::DocumentNotDestroyed)
@@ -352,23 +352,23 @@ describe Mongoid::Persistable::Destroyable do
       end
     end
 
-    context "when destroying a root document" do
+    context 'when destroying a root document' do
 
       let!(:destroyed) do
         person.destroy!
       end
 
-      it "destroys the document from the collection" do
+      it 'destroys the document from the collection' do
         expect {
           Person.find(person.id)
         }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
 
-      it "returns true" do
+      it 'returns true' do
         expect(destroyed).to be true
       end
 
-      it "resets the flagged for destroy flag" do
+      it 'resets the flagged for destroy flag' do
         expect(person).to_not be_flagged_for_destroy
       end
 
@@ -378,46 +378,46 @@ describe Mongoid::Persistable::Destroyable do
           person.destroy!(persist: false)
         end
 
-        it "does not destroy the document from the collection" do
+        it 'does not destroy the document from the collection' do
           expect(Person.find(person.id)).to eq person
         end
 
-        it "returns true" do
+        it 'returns true' do
           expect(destroyed).to be true
         end
 
-        it "does not set the flagged for destroy flag" do
+        it 'does not set the flagged for destroy flag' do
           expect(person).to_not be_flagged_for_destroy
         end
       end
     end
 
-    context "when destroying an embedded document" do
+    context 'when destroying an embedded document' do
 
       let(:address) do
-        person.addresses.build(street: "Bond Street")
+        person.addresses.build(street: 'Bond Street')
       end
 
-      context "when the document is not yet saved" do
+      context 'when the document is not yet saved' do
 
         before do
           address.destroy!
         end
 
-        it "removes the document from the parent" do
+        it 'removes the document from the parent' do
           expect(person.addresses).to be_empty
         end
 
-        it "removes the attributes from the parent" do
-          expect(person.raw_attributes["addresses"]).to be_nil
+        it 'removes the attributes from the parent' do
+          expect(person.raw_attributes['addresses']).to be_nil
         end
 
-        it "resets the flagged for destroy flag" do
+        it 'resets the flagged for destroy flag' do
           expect(address).to_not be_flagged_for_destroy
         end
       end
 
-      context "when the document has been saved" do
+      context 'when the document has been saved' do
 
         before do
           address.save!
@@ -428,11 +428,11 @@ describe Mongoid::Persistable::Destroyable do
           Person.find(person.id)
         end
 
-        it "removes the object from the parent" do
+        it 'removes the object from the parent' do
           expect(person.addresses).to be_empty
         end
 
-        it "removes the object from the database" do
+        it 'removes the object from the database' do
           expect(from_db.addresses).to be_empty
         end
       end
@@ -448,12 +448,12 @@ describe Mongoid::Persistable::Destroyable do
           Person.find(person.id)
         end
 
-        it "does not remove the object from the parent" do
+        it 'does not remove the object from the parent' do
           expect(person.addresses).to eq [address]
           expect(person.addresses.first).to_not be_flagged_for_destroy
         end
 
-        it "does not remove the object from the database" do
+        it 'does not remove the object from the database' do
           expect(from_db.addresses).to eq [address]
           expect(from_db.addresses.first).to_not be_flagged_for_destroy
         end
@@ -470,56 +470,56 @@ describe Mongoid::Persistable::Destroyable do
           Person.find(person.id)
         end
 
-        it "does not remove the object from the parent" do
+        it 'does not remove the object from the parent' do
           expect(person.addresses).to eq [address]
           expect(person.addresses.first).to_not be_flagged_for_destroy
         end
 
-        it "removes the object from the database" do
+        it 'removes the object from the database' do
           expect(from_db.addresses).to be_empty
         end
       end
     end
   end
 
-  describe "#destroy_all" do
+  describe '#destroy_all' do
 
     let!(:person) do
-      Person.create!(title: "sir")
+      Person.create!(title: 'sir')
     end
 
-    context "when no conditions are provided" do
+    context 'when no conditions are provided' do
 
       let!(:removed) do
         Person.destroy_all
       end
 
-      it "removes all the documents" do
+      it 'removes all the documents' do
         expect(Person.count).to eq(0)
       end
 
-      it "returns the number of documents removed" do
+      it 'returns the number of documents removed' do
         expect(removed).to eq(1)
       end
     end
 
-    context "when conditions are provided" do
+    context 'when conditions are provided' do
 
       let!(:person_two) do
         Person.create!
       end
 
-      context "when no conditions attribute provided" do
+      context 'when no conditions attribute provided' do
 
         let!(:removed) do
-          Person.destroy_all(title: "sir")
+          Person.destroy_all(title: 'sir')
         end
 
-        it "removes the matching documents" do
+        it 'removes the matching documents' do
           expect(Person.count).to eq(1)
         end
 
-        it "returns the number of documents removed" do
+        it 'returns the number of documents removed' do
           expect(removed).to eq(1)
         end
       end
@@ -532,14 +532,14 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       let!(:removed) do
-        Person.with(write: { w: 0 }) { |klass| klass.destroy_all(title: "sir") }
+        Person.with(write: { w: 0 }) { |klass| klass.destroy_all(title: 'sir') }
       end
 
-      it "removes the matching documents" do
+      it 'removes the matching documents' do
         expect(Person.where(title: 'miss').count).to eq(1)
       end
 
-      it "returns 0" do
+      it 'returns 0' do
         expect(removed).to eq(0)
       end
     end

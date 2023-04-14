@@ -14,7 +14,7 @@ module Mongoid
       #
       # @param [ Class ] klass The document class.
       def initialize(klass)
-        super(compose_message("readonly_document", { klass: klass }))
+        super(compose_message('readonly_document', { klass: klass }))
       end
     end
   end

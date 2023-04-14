@@ -93,8 +93,8 @@ module Mongoid
     #
     # @api private
     def shard_key_field_value(field, prefer_persisted:)
-      if field.include?(".")
-        relation, remaining = field.split(".", 2)
+      if field.include?('.')
+        relation, remaining = field.split('.', 2)
         send(relation)&.shard_key_field_value(remaining, prefer_persisted: prefer_persisted)
       elsif prefer_persisted && !new_record?
         attribute_was(field)

@@ -13,7 +13,7 @@ module Mongoid
       #
       # @param [ Class ] klass The document class.
       def initialize(klass)
-        super(compose_message("invalid_path", { klass: klass }))
+        super(compose_message('invalid_path', { klass: klass }))
       end
     end
   end

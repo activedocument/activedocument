@@ -20,10 +20,10 @@ class Animal
   accepts_nested_attributes_for :person
 
   def tag_list
-    tags.join(", ")
+    tags.join(', ')
   end
 
   def tag_list=(_tag_list)
-    self.tags = _tag_list.split(",").map(&:strip)
+    self.tags = _tag_list.split(',').map(&:strip)
   end
 end

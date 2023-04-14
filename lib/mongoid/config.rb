@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "mongoid/config/defaults"
-require "mongoid/config/environment"
-require "mongoid/config/options"
-require "mongoid/config/validators"
-require "mongoid/config/introspection"
-require "mongoid/config/encryption"
+require 'mongoid/config/defaults'
+require 'mongoid/config/environment'
+require 'mongoid/config/options'
+require 'mongoid/config/validators'
+require 'mongoid/config/introspection'
+require 'mongoid/config/encryption'
 
 module Mongoid
 
@@ -34,7 +34,7 @@ module Mongoid
     option :belongs_to_required_by_default, default: true
 
     # Set the global discriminator key.
-    option :discriminator_key, default: "_type"
+    option :discriminator_key, default: '_type'
 
     # Raise an exception when a field is redefined.
     option :duplicate_fields_exception, default: false
@@ -135,7 +135,7 @@ module Mongoid
       self.clients = {
         default: {
           database: name,
-          hosts: ["localhost:27017"],
+          hosts: ['localhost:27017'],
           options: options
         }
       }
@@ -301,7 +301,7 @@ module Mongoid
     #
     # @return [ String ] The time zone.
     def time_zone
-      use_utc? ? "UTC" : ::Time.zone
+      use_utc? ? 'UTC' : ::Time.zone
     end
 
     # Is the application running under passenger?

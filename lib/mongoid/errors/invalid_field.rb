@@ -20,7 +20,7 @@ module Mongoid
       def initialize(klass, field, name)
         super(
           compose_message(
-            "invalid_field",
+            'invalid_field',
             {
               name: name,
               field: field,
@@ -58,7 +58,7 @@ module Mongoid
       # @return [ Array<String, Integer> ] The location of the method.
       def location(klass, name)
         @location ||=
-          (klass.instance_method(name).source_location || ["Unknown", 0])
+          (klass.instance_method(name).source_location || ['Unknown', 0])
       end
     end
   end

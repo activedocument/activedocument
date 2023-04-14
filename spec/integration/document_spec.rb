@@ -34,17 +34,17 @@ describe Mongoid::Document do
 
       let(:profile) do
         # Profile shard_key :name
-        Profile.create!(name: "Alice")
+        Profile.create!(name: 'Alice')
       end
 
-      it "successfully reloads the document after saving an update to the sharded field" do
-        expect(profile.name).to eq("Alice")
-        profile.name = "Bob"
+      it 'successfully reloads the document after saving an update to the sharded field' do
+        expect(profile.name).to eq('Alice')
+        profile.name = 'Bob'
         profile.save!
 
         profile.reload
 
-        expect(profile.name).to eq("Bob")
+        expect(profile.name).to eq('Bob')
       end
     end
   end

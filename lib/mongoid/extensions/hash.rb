@@ -41,13 +41,13 @@ module Mongoid
         each_pair do |key, value|
           if /\$/.match?(key)
             value.each_pair do |_key, _value|
-              value[_key] = (key == "$rename") ? _value.to_s : mongoize_for(key, klass, _key, _value)
+              value[_key] = (key == '$rename') ? _value.to_s : mongoize_for(key, klass, _key, _value)
             end
             consolidated[key] ||= {}
             consolidated[key].update(value)
           else
-            consolidated["$set"] ||= {}
-            consolidated["$set"].update(key => mongoize_for(key, klass, key, value))
+            consolidated['$set'] ||= {}
+            consolidated['$set'].update(key => mongoize_for(key, klass, key, value))
           end
         end
         consolidated
@@ -79,7 +79,7 @@ module Mongoid
       #   conditions.
       # @api private
       def _mongoid_unsatisfiable_criteria?
-        unsatisfiable_criteria = { "_id" => { "$in" => [] } }
+        unsatisfiable_criteria = { '_id' => { '$in' => [] } }
         return true if self == unsatisfiable_criteria
         return false unless length == 1 && keys == %w($and)
 
@@ -109,7 +109,7 @@ module Mongoid
       #
       # @return [ Object ] The deleted value, or nil.
       def delete_id
-        delete("_id") || delete(:_id) || delete("id") || delete(:id)
+        delete('_id') || delete(:_id) || delete('id') || delete(:id)
       end
 
       # Get the id attribute from this hash, whether it's prefixed with an
@@ -120,7 +120,7 @@ module Mongoid
       #
       # @return [ Object ] The value of the id.
       def extract_id
-        self["_id"] || self[:_id] || self["id"] || self[:id]
+        self['_id'] || self[:_id] || self['id'] || self[:id]
       end
 
       # Fetch a nested value via dot syntax.
@@ -132,7 +132,7 @@ module Mongoid
       #
       # @return [ Object ] The matching value.
       def __nested__(string)
-        keys = string.split(".")
+        keys = string.split('.')
         value = self
         keys.each do |key|
           return nil if value.nil?
@@ -176,7 +176,7 @@ module Mongoid
       #
       # @return [ Mongoid::Criteria ] The criteria.
       def to_criteria
-        criteria = Criteria.new(delete(:klass) || delete("klass"))
+        criteria = Criteria.new(delete(:klass) || delete('klass'))
         each_pair do |method, args|
           criteria = criteria.__send__(method, args)
         end

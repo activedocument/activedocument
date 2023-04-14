@@ -19,12 +19,12 @@ module Mongoid
       def initialize(klass, name, option, valid)
         super(
           compose_message(
-            "invalid_field_option",
+            'invalid_field_option',
             {
               name: name,
               klass: klass,
               option: option,
-              valid: valid.join(", ")
+              valid: valid.join(', ')
             }
           )
         )

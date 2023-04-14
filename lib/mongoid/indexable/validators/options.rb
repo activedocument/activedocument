@@ -34,11 +34,11 @@ module Mongoid
         VALID_TYPES = [
           1,
           -1,
-          "2d",
-          "2dsphere",
-          "geoHaystack",
-          "text",
-          "hashed"
+          '2d',
+          '2dsphere',
+          'geoHaystack',
+          'text',
+          'hashed'
         ]
 
         # Validate the index specification.
@@ -99,7 +99,7 @@ module Mongoid
               raise Errors::InvalidIndex.new(klass, spec, options)
             end
 
-            if value == "geoHaystack"
+            if value == 'geoHaystack'
               Mongoid::Warnings.warn_geo_haystack_deprecated
             end
           end

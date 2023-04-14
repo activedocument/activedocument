@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
-require "mongoid/changeable"
-require "mongoid/collection_configurable"
-require "mongoid/encryptable"
-require "mongoid/findable"
-require "mongoid/indexable"
-require "mongoid/inspectable"
-require "mongoid/interceptable"
-require "mongoid/matcher"
-require "mongoid/matchable"
-require "mongoid/persistable"
-require "mongoid/reloadable"
-require "mongoid/selectable"
-require "mongoid/scopable"
-require "mongoid/serializable"
-require "mongoid/shardable"
-require "mongoid/stateful"
-require "mongoid/cacheable"
-require "mongoid/traversable"
-require "mongoid/validatable"
+require 'mongoid/changeable'
+require 'mongoid/collection_configurable'
+require 'mongoid/encryptable'
+require 'mongoid/findable'
+require 'mongoid/indexable'
+require 'mongoid/inspectable'
+require 'mongoid/interceptable'
+require 'mongoid/matcher'
+require 'mongoid/matchable'
+require 'mongoid/persistable'
+require 'mongoid/reloadable'
+require 'mongoid/selectable'
+require 'mongoid/scopable'
+require 'mongoid/serializable'
+require 'mongoid/shardable'
+require 'mongoid/stateful'
+require 'mongoid/cacheable'
+require 'mongoid/traversable'
+require 'mongoid/validatable'
 
 module Mongoid
 

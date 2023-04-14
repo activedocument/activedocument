@@ -11,13 +11,13 @@ module Mongoid
         extend Macroable
 
         # Constant for a LineString $geometry.
-        LINE_STRING = "LineString"
+        LINE_STRING = 'LineString'
 
         # Constant for a Point $geometry.
-        POINT = "Point"
+        POINT = 'Point'
 
         # Constant for a Polygon $geometry.
-        POLYGON = "Polygon"
+        POLYGON = 'Polygon'
 
         # @attribute [rw] negating If the next expression is negated.
         # @attribute [rw] selector The query selector.
@@ -49,7 +49,7 @@ module Mongoid
             condition = expand_condition_to_array_values(condition)
 
             if strategy
-              send(strategy, condition, "$all")
+              send(strategy, condition, '$all')
             else
               condition.inject(query) do |_query, (field, value)|
                 v = { '$all' => value }
@@ -62,7 +62,7 @@ module Mongoid
           end.reset_strategies!
         end
         alias :all_in :all
-        key :all, :union, "$all"
+        key :all, :union, '$all'
 
         # Add the $and criterion.
         #
@@ -128,7 +128,7 @@ module Mongoid
           selection(criterion) do |selector, field, value|
             selector.store(
               field,
-              { "$gte" => value.min, "$lte" => value.max }
+              { '$gte' => value.min, '$lte' => value.max }
             )
           end
         end
@@ -155,9 +155,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :elem_match
           end
 
-          and_with_operator(criterion, "$elemMatch")
+          and_with_operator(criterion, '$elemMatch')
         end
-        key :elem_match, :override, "$elemMatch"
+        key :elem_match, :override, '$elemMatch'
 
         # Add the $exists selection.
         #
@@ -178,11 +178,11 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :exists
           end
 
-          typed_override(criterion, "$exists") do |value|
+          typed_override(criterion, '$exists') do |value|
             Mongoid::Boolean.evolve(value)
           end
         end
-        key :exists, :override, "$exists" do |value|
+        key :exists, :override, '$exists' do |value|
           Mongoid::Boolean.evolve(value)
         end
 
@@ -228,19 +228,19 @@ module Mongoid
           __merge__(criterion)
         end
 
-        key :intersects_line, :override, "$geoIntersects", "$geometry" do |value|
-          { "type" => LINE_STRING, "coordinates" => value }
+        key :intersects_line, :override, '$geoIntersects', '$geometry' do |value|
+          { 'type' => LINE_STRING, 'coordinates' => value }
         end
-        key :intersects_point, :override, "$geoIntersects", "$geometry" do |value|
-          { "type" => POINT, "coordinates" => value }
+        key :intersects_point, :override, '$geoIntersects', '$geometry' do |value|
+          { 'type' => POINT, 'coordinates' => value }
         end
-        key :intersects_polygon, :override, "$geoIntersects", "$geometry" do |value|
-          { "type" => POLYGON, "coordinates" => value }
+        key :intersects_polygon, :override, '$geoIntersects', '$geometry' do |value|
+          { 'type' => POLYGON, 'coordinates' => value }
         end
-        key :within_polygon, :override, "$geoWithin", "$geometry" do |value|
-          { "type" => POLYGON, "coordinates" => value }
+        key :within_polygon, :override, '$geoWithin', '$geometry' do |value|
+          { 'type' => POLYGON, 'coordinates' => value }
         end
-        key :within_box, :override, "$geoWithin", "$box"
+        key :within_box, :override, '$geoWithin', '$box'
 
         # Add the $eq criterion to the selector.
         #
@@ -258,9 +258,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :eq
           end
 
-          and_with_operator(criterion, "$eq")
+          and_with_operator(criterion, '$eq')
         end
-        key :eq, :override, "$eq"
+        key :eq, :override, '$eq'
 
         # Add the $gt criterion to the selector.
         #
@@ -278,9 +278,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :gt
           end
 
-          and_with_operator(criterion, "$gt")
+          and_with_operator(criterion, '$gt')
         end
-        key :gt, :override, "$gt"
+        key :gt, :override, '$gt'
 
         # Add the $gte criterion to the selector.
         #
@@ -298,9 +298,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :gte
           end
 
-          and_with_operator(criterion, "$gte")
+          and_with_operator(criterion, '$gte')
         end
-        key :gte, :override, "$gte"
+        key :gte, :override, '$gte'
 
         # Adds the $in selection to the selectable.
         #
@@ -324,7 +324,7 @@ module Mongoid
           condition = expand_condition_to_array_values(condition)
 
           if strategy
-            send(strategy, condition, "$in")
+            send(strategy, condition, '$in')
           else
             condition.inject(clone) do |query, (field, value)|
               v = { '$in' => value }
@@ -336,7 +336,7 @@ module Mongoid
           end
         end
         alias :any_in :in
-        key :in, :intersect, "$in"
+        key :in, :intersect, '$in'
 
         # Add the $lt criterion to the selector.
         #
@@ -354,9 +354,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :lt
           end
 
-          and_with_operator(criterion, "$lt")
+          and_with_operator(criterion, '$lt')
         end
-        key :lt, :override, "$lt"
+        key :lt, :override, '$lt'
 
         # Add the $lte criterion to the selector.
         #
@@ -374,9 +374,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :lte
           end
 
-          and_with_operator(criterion, "$lte")
+          and_with_operator(criterion, '$lte')
         end
-        key :lte, :override, "$lte"
+        key :lte, :override, '$lte'
 
         # Add a $maxDistance selection to the selectable.
         #
@@ -392,7 +392,7 @@ module Mongoid
           end
 
           # $maxDistance must be given together with $near
-          __add__(criterion, "$maxDistance")
+          __add__(criterion, '$maxDistance')
         end
 
         # Adds $mod selection to the selectable.
@@ -411,9 +411,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :mod
           end
 
-          and_with_operator(criterion, "$mod")
+          and_with_operator(criterion, '$mod')
         end
-        key :mod, :override, "$mod"
+        key :mod, :override, '$mod'
 
         # Adds $ne selection to the selectable.
         #
@@ -431,10 +431,10 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :ne
           end
 
-          and_with_operator(criterion, "$ne")
+          and_with_operator(criterion, '$ne')
         end
         alias :excludes :ne
-        key :ne, :override, "$ne"
+        key :ne, :override, '$ne'
 
         # Adds a $near criterion to a geo selection.
         #
@@ -452,9 +452,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :near
           end
 
-          and_with_operator(criterion, "$near")
+          and_with_operator(criterion, '$near')
         end
-        key :near, :override, "$near"
+        key :near, :override, '$near'
 
         # Adds a $nearSphere criterion to a geo selection.
         #
@@ -472,9 +472,9 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :near_sphere
           end
 
-          and_with_operator(criterion, "$nearSphere")
+          and_with_operator(criterion, '$nearSphere')
         end
-        key :near_sphere, :override, "$nearSphere"
+        key :near_sphere, :override, '$nearSphere'
 
         # Adds the $nin selection to the selectable.
         #
@@ -498,7 +498,7 @@ module Mongoid
           condition = expand_condition_to_array_values(condition)
 
           if strategy
-            send(strategy, condition, "$nin")
+            send(strategy, condition, '$nin')
           else
             condition.inject(clone) do |query, (field, value)|
               v = { '$nin' => value }
@@ -510,7 +510,7 @@ module Mongoid
           end
         end
         alias :not_in :nin
-        key :nin, :intersect, "$nin"
+        key :nin, :intersect, '$nin'
 
         # Adds $nor selection to the selectable.
         #
@@ -579,7 +579,7 @@ module Mongoid
             end
           end
         end
-        key :not, :override, "$not"
+        key :not, :override, '$not'
 
         # Negate the arguments, constraining the query to only those documents
         # that do NOT match the arguments.
@@ -720,11 +720,11 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :with_size
           end
 
-          typed_override(criterion, "$size") do |value|
+          typed_override(criterion, '$size') do |value|
             ::Integer.evolve(value)
           end
         end
-        key :with_size, :override, "$size" do |value|
+        key :with_size, :override, '$size' do |value|
           ::Integer.evolve(value)
         end
 
@@ -746,11 +746,11 @@ module Mongoid
             raise Errors::CriteriaArgumentRequired, :with_type
           end
 
-          typed_override(criterion, "$type") do |value|
+          typed_override(criterion, '$type') do |value|
             ::Integer.evolve(value)
           end
         end
-        key :with_type, :override, "$type" do |value|
+        key :with_type, :override, '$type' do |value|
           ::Integer.evolve(value)
         end
 

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "active_model/attribute_methods"
-require "mongoid/attributes/dynamic"
-require "mongoid/attributes/nested"
-require "mongoid/attributes/processing"
-require "mongoid/attributes/projector"
-require "mongoid/attributes/readonly"
+require 'active_model/attribute_methods'
+require 'mongoid/attributes/dynamic'
+require 'mongoid/attributes/nested'
+require 'mongoid/attributes/processing'
+require 'mongoid/attributes/projector'
+require 'mongoid/attributes/readonly'
 
 module Mongoid
 
@@ -269,7 +269,7 @@ module Mongoid
     #
     # @return [ true | false ] If the string contains a "."
     def hash_dot_syntax?(string)
-      string.include?(".")
+      string.include?('.')
     end
 
     # Return the typecasted value for a field.

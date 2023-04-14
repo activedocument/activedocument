@@ -17,7 +17,7 @@ module Mongoid
       def initialize(name, invalid, valid)
         super(
           compose_message(
-            "invalid_options",
+            'invalid_options',
             { name: name, invalid: invalid, valid: valid.join(', ') }
           )
         )

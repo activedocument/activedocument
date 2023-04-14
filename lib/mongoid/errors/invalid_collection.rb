@@ -11,7 +11,7 @@ module Mongoid
     class InvalidCollection < MongoidError
       def initialize(klass)
         super(
-          compose_message("invalid_collection", { klass: klass.name })
+          compose_message('invalid_collection', { klass: klass.name })
         )
       end
     end

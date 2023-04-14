@@ -28,7 +28,7 @@ module Mongoid
             value > 0 ? values.pop : values.shift
             ops[atomic_attribute_name(field)] = value
           end
-          { "$pop" => ops }
+          { '$pop' => ops }
         end
       end
     end

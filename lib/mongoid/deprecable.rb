@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "mongoid/deprecation"
+require 'mongoid/deprecation'
 
 module Mongoid
 

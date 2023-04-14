@@ -12,6 +12,6 @@ class WikiPage
   embeds_many :edits, validate: false
   # Must have dependent: :destroy
   has_many :comments, dependent: :destroy, validate: false
-  has_many :child_pages, class_name: "WikiPage", dependent: :delete_all, inverse_of: :parent_pages
-  belongs_to :parent_pages, class_name: "WikiPage", inverse_of: :child_pages
+  has_many :child_pages, class_name: 'WikiPage', dependent: :delete_all, inverse_of: :parent_pages
+  belongs_to :parent_pages, class_name: 'WikiPage', inverse_of: :child_pages
 end

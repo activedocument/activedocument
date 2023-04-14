@@ -2,7 +2,7 @@
 
 shared_context 'setting ActiveSupport time zone' do
   before do
-    Time.zone = "Tokyo"
+    Time.zone = 'Tokyo'
   end
 
   after do

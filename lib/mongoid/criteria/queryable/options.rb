@@ -71,9 +71,9 @@ module Mongoid
         # @return [ Array<Hash> ] The options in pipeline form.
         def to_pipeline
           pipeline = []
-          pipeline.push({ "$skip" => skip }) if skip
-          pipeline.push({ "$limit" => limit }) if limit
-          pipeline.push({ "$sort" => sort }) if sort
+          pipeline.push({ '$skip' => skip }) if skip
+          pipeline.push({ '$limit' => limit }) if limit
+          pipeline.push({ '$sort' => sort }) if sort
           pipeline
         end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "mongoid/contextual/aggregable/memory"
-require "mongoid/association/eager_loadable"
+require 'mongoid/contextual/aggregable/memory'
+require 'mongoid/association/eager_loadable'
 
 module Mongoid
   module Contextual
@@ -51,7 +51,7 @@ module Mongoid
         end
         unless removed.empty?
           collection.find(selector).update_one(
-            positionally(selector, "$pullAll" => { path => removed }),
+            positionally(selector, '$pullAll' => { path => removed }),
             session: _session
           )
         end
@@ -585,14 +585,14 @@ module Mongoid
       def update_documents(attributes, docs)
         return false if !attributes || docs.empty?
 
-        updates = { "$set" => {} }
+        updates = { '$set' => {} }
         docs.each do |doc|
           @selector ||= root.atomic_selector
           doc.write_attributes(attributes)
-          updates["$set"].merge!(doc.atomic_updates["$set"] || {})
+          updates['$set'].merge!(doc.atomic_updates['$set'] || {})
           doc.move_changes
         end
-        collection.find(selector).update_one(updates, session: _session) unless updates["$set"].empty?
+        collection.find(selector).update_one(updates, session: _session) unless updates['$set'].empty?
       end
 
       # Get the limiting value.

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "mongoid/indexable/specification"
-require "mongoid/indexable/validators/options"
-require "ostruct"
+require 'mongoid/indexable/specification'
+require 'mongoid/indexable/validators/options'
+require 'ostruct'
 
 module Mongoid
 
@@ -50,8 +50,8 @@ module Mongoid
           with(database: database) do |klass|
             begin
               klass.collection.indexes(session: _session).each do |spec|
-                unless spec["name"] == "_id_"
-                  klass.collection.indexes(session: _session).drop_one(spec["key"])
+                unless spec['name'] == '_id_'
+                  klass.collection.indexes(session: _session).drop_one(spec['key'])
                   logger.info(
                     "MONGOID: Removed index '#{spec["name"]}' on collection " +
                     "'#{klass.collection.name}' in database '#{database}'."

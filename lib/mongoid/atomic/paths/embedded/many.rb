@@ -18,7 +18,7 @@ module Mongoid
           # @param [ Mongoid::Document ] document The document to generate the paths for.
           def initialize(document)
             @document, @parent = document, document._parent
-            @insert_modifier, @delete_modifier = "$push", "$pull"
+            @insert_modifier, @delete_modifier = '$push', '$pull'
           end
 
           # Get the position of the document in the hierarchy. This will
@@ -31,7 +31,7 @@ module Mongoid
           # @return [ String ] The position of the document.
           def position
             pos = parent.atomic_position
-            locator = document.new_record? ? "" : ".#{document._index}"
+            locator = document.new_record? ? '' : ".#{document._index}"
             "#{pos}#{"." unless pos.blank?}#{document._association.store_as}#{locator}"
           end
 

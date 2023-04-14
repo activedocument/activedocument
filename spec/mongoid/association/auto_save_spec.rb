@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './referenced/has_many_models'
 require_relative './referenced/has_one_models'
 
 describe Mongoid::Association::Referenced::AutoSave do
 
-  describe ".auto_save" do
+  describe '.auto_save' do
 
     before(:all) do
       Person.has_many :drugs, validate: false, autosave: true
@@ -21,7 +21,7 @@ describe Mongoid::Association::Referenced::AutoSave do
       Person.new
     end
 
-    context "when the option is not provided" do
+    context 'when the option is not provided' do
 
       context 'has_many' do
 
@@ -30,14 +30,14 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         let(:child) do
-          HmmStudent.new(name: "Panda")
+          HmmStudent.new(name: 'Panda')
         end
 
         before do
           parent.students = [child]
         end
 
-        context "when saving the parent document" do
+        context 'when saving the parent document' do
 
           before do
             expect(parent.associations[:students].options[:autosave]).to be_falsy
@@ -45,7 +45,7 @@ describe Mongoid::Association::Referenced::AutoSave do
             parent.save!
           end
 
-          it "does not save the child" do
+          it 'does not save the child' do
             expect(child).to_not be_persisted
           end
         end
@@ -65,7 +65,7 @@ describe Mongoid::Association::Referenced::AutoSave do
           parent.accreditation = child
         end
 
-        context "when saving the parent document" do
+        context 'when saving the parent document' do
 
           before do
             expect(parent.associations[:accreditation].options[:autosave]).to be_falsy
@@ -73,39 +73,39 @@ describe Mongoid::Association::Referenced::AutoSave do
             parent.save!
           end
 
-          it "does not save the child" do
+          it 'does not save the child' do
             expect(child).to_not be_persisted
           end
         end
       end
     end
 
-    context "when the option is true" do
+    context 'when the option is true' do
 
-      context "when the relation has already had the autosave callback added" do
+      context 'when the relation has already had the autosave callback added' do
 
         before do
           Person.has_many :drugs, validate: false, autosave: true
         end
 
         let(:drug) do
-          Drug.new(name: "Percocet")
+          Drug.new(name: 'Percocet')
         end
 
-        it "does not add the autosave callback twice" do
+        it 'does not add the autosave callback twice' do
           expect(drug).to receive(:save).once
           person.drugs.push(drug)
           person.save!
         end
       end
 
-      context "when the relation is a references many" do
+      context 'when the relation is a references many' do
 
         let(:drug) do
-          Drug.new(name: "Percocet")
+          Drug.new(name: 'Percocet')
         end
 
-        context "when saving a new parent document" do
+        context 'when saving a new parent document' do
 
           context 'when persistence options are not set on the parent' do
 
@@ -118,7 +118,7 @@ describe Mongoid::Association::Referenced::AutoSave do
               person.save!
             end
 
-            it "saves the relation" do
+            it 'saves the relation' do
               expect(drug).to be_persisted
             end
           end
@@ -153,7 +153,7 @@ describe Mongoid::Association::Referenced::AutoSave do
           end
         end
 
-        context "when saving an existing parent document" do
+        context 'when saving an existing parent document' do
 
           before do
             person.save!
@@ -161,12 +161,12 @@ describe Mongoid::Association::Referenced::AutoSave do
             person.save!
           end
 
-          it "saves the relation" do
+          it 'saves the relation' do
             expect(drug).to be_persisted
           end
         end
 
-        context "when not updating the document" do
+        context 'when not updating the document' do
 
           let(:from_db) do
             Person.find person.id
@@ -184,29 +184,29 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
       end
 
-      context "when the relation is a references one" do
+      context 'when the relation is a references one' do
 
         let(:account) do
-          Account.new(name: "Testing")
+          Account.new(name: 'Testing')
         end
 
-        context "when saving a new parent document" do
+        context 'when saving a new parent document' do
 
           before do
             person.account = account
             person.save!
           end
 
-          it "saves the relation" do
+          it 'saves the relation' do
             expect(account).to be_persisted
           end
 
-          it "persists on the database" do
+          it 'persists on the database' do
             expect(account.reload).to_not be_nil
           end
         end
 
-        context "when saving an existing parent document" do
+        context 'when saving an existing parent document' do
 
           before do
             person.save!
@@ -214,24 +214,24 @@ describe Mongoid::Association::Referenced::AutoSave do
             person.save!
           end
 
-          it "saves the relation" do
+          it 'saves the relation' do
             expect(account).to be_persisted
           end
 
-          it "persists on the database" do
+          it 'persists on the database' do
             expect(account.reload).to_not be_nil
           end
         end
 
-        context "when updating the child" do
+        context 'when updating the child' do
 
           before do
             person.account = account
             person.save!
           end
 
-          it "sends one insert" do
-            account.name = "account"
+          it 'sends one insert' do
+            account.name = 'account'
             expect_query(1) do
               person.with(write: { w: 0 }) do |_person|
                 _person.save!
@@ -240,7 +240,7 @@ describe Mongoid::Association::Referenced::AutoSave do
           end
         end
 
-        context "when not updating the document" do
+        context 'when not updating the document' do
 
           let(:from_db) do
             Person.find person.id
@@ -258,29 +258,29 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
       end
 
-      context "when the relation is a referenced in" do
+      context 'when the relation is a referenced in' do
 
         let(:ghost) do
-          Ghost.new(name: "Slimer")
+          Ghost.new(name: 'Slimer')
         end
 
         let(:movie) do
-          Movie.new(title: "Ghostbusters")
+          Movie.new(title: 'Ghostbusters')
         end
 
-        context "when saving a new parent document" do
+        context 'when saving a new parent document' do
 
           before do
             ghost.movie = movie
             ghost.save!
           end
 
-          it "saves the relation" do
+          it 'saves the relation' do
             expect(movie).to be_persisted
           end
         end
 
-        context "when saving an existing parent document" do
+        context 'when saving an existing parent document' do
 
           before do
             ghost.save!
@@ -288,13 +288,13 @@ describe Mongoid::Association::Referenced::AutoSave do
             ghost.save!
           end
 
-          it "saves the relation" do
+          it 'saves the relation' do
             expect(movie).to be_persisted
           end
         end
       end
 
-      context "when it has two relations with autosaves" do
+      context 'when it has two relations with autosaves' do
 
         let!(:person) do
           Person.create!(drugs: [percocet], account: account)
@@ -305,17 +305,17 @@ describe Mongoid::Association::Referenced::AutoSave do
         end
 
         let(:percocet) do
-          Drug.new(name: "Percocet")
+          Drug.new(name: 'Percocet')
         end
 
         let(:account) do
-          Account.new(name: "Testing")
+          Account.new(name: 'Testing')
         end
 
-        context "when updating one document" do
+        context 'when updating one document' do
 
           let(:placebo) do
-            Drug.new(name: "Placebo")
+            Drug.new(name: 'Placebo')
           end
 
           before do
@@ -332,7 +332,7 @@ describe Mongoid::Association::Referenced::AutoSave do
           end
         end
 
-        context "when updating none document" do
+        context 'when updating none document' do
 
           before do
             from_db.save!

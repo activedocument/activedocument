@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::Referenced::CounterCache do
 
-  describe "#reset_counters" do
+  describe '#reset_counters' do
 
-    context "when counter is reset" do
+    context 'when counter is reset' do
 
       let(:person) do
         Person.create! do |person|
@@ -18,36 +18,36 @@ describe Mongoid::Association::Referenced::CounterCache do
         person.reset_counters(:drugs)
       end
 
-      it "sets the counter to zero" do
+      it 'sets the counter to zero' do
         expect(person.drugs_count).to eq(0)
       end
 
-      it "persists the changes" do
+      it 'persists the changes' do
         expect(person.reload.drugs_count).to eq(0)
       end
     end
 
-    context "when reset with invalid name" do
+    context 'when reset with invalid name' do
 
       let(:person) do
         Person.create!
       end
 
-      it "expect to raise an error" do
+      it 'expect to raise an error' do
         expect {
           person.reset_counters(:not_exist)
         }.to raise_error(NoMethodError)
       end
     end
 
-    context "when counter gets messy" do
+    context 'when counter gets messy' do
 
       let(:person) do
         Person.create!
       end
 
       let!(:post) do
-        person.posts.create!(title: "my first post")
+        person.posts.create!(title: 'my first post')
       end
 
       before do
@@ -56,16 +56,16 @@ describe Mongoid::Association::Referenced::CounterCache do
         person.reset_counters(:posts)
       end
 
-      it "resets to the right value" do
+      it 'resets to the right value' do
         expect(person.posts_count).to eq(1)
       end
 
-      it "persists the change" do
+      it 'persists the change' do
         expect(person.reload.posts_count).to eq(1)
       end
     end
 
-    context "when the counter is on a subclass" do
+    context 'when the counter is on a subclass' do
 
       let(:subscription) do
         Subscription.create!
@@ -79,11 +79,11 @@ describe Mongoid::Association::Referenced::CounterCache do
         subscription.reset_counters(:packs)
       end
 
-      it "resets the appropriate counter" do
+      it 'resets the appropriate counter' do
         expect(subscription[:packs_count]).to eq(1)
       end
 
-      it "persists the change" do
+      it 'persists the change' do
         expect(subscription.reload[:packs_count]).to eq(1)
       end
     end
@@ -109,9 +109,9 @@ describe Mongoid::Association::Referenced::CounterCache do
     end
   end
 
-  describe ".reset_counters" do
+  describe '.reset_counters' do
 
-    context "when counter is reset" do
+    context 'when counter is reset' do
 
       let(:person) do
         Person.create! do |person|
@@ -123,41 +123,41 @@ describe Mongoid::Association::Referenced::CounterCache do
         Person.reset_counters person.id, :drugs
       end
 
-      it "returns zero" do
+      it 'returns zero' do
         expect(person.reload.drugs_count).to eq(0)
       end
     end
 
-    context "when counter is reset with wrong id" do
+    context 'when counter is reset with wrong id' do
 
-      it "expect to raise an error" do
+      it 'expect to raise an error' do
         expect {
-          Person.reset_counters "1", :drugs
+          Person.reset_counters '1', :drugs
         }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
     end
 
-    context "when reset with invalid name" do
+    context 'when reset with invalid name' do
 
       let(:person) do
         Person.create!
       end
 
-      it "expect to raise an error" do
+      it 'expect to raise an error' do
         expect {
           Person.reset_counters person.id, :not_exist
         }.to raise_error(NoMethodError)
       end
     end
 
-    context "when counter gets messy" do
+    context 'when counter gets messy' do
 
       let(:person) do
         Person.create!
       end
 
       let!(:post) do
-        person.posts.create!(title: "my first post")
+        person.posts.create!(title: 'my first post')
       end
 
       before do
@@ -165,12 +165,12 @@ describe Mongoid::Association::Referenced::CounterCache do
         Person.reset_counters(person.id, :posts)
       end
 
-      it "resets to the right value" do
+      it 'resets to the right value' do
         expect(person.reload.posts_count).to eq(1)
       end
     end
 
-    context "when the counter is on a subclass" do
+    context 'when the counter is on a subclass' do
 
       let(:subscription) do
         Subscription.create!
@@ -184,15 +184,15 @@ describe Mongoid::Association::Referenced::CounterCache do
         Subscription.reset_counters(subscription.id, :packs)
       end
 
-      it "resets the appropriate counter" do
+      it 'resets the appropriate counter' do
         expect(subscription.reload[:packs_count]).to eq(1)
       end
     end
   end
 
-  describe "#update_counters" do
+  describe '#update_counters' do
 
-    context "when was 3 " do
+    context 'when was 3 ' do
 
       let(:person) do
         Person.create! do |person|
@@ -200,43 +200,43 @@ describe Mongoid::Association::Referenced::CounterCache do
         end
       end
 
-      context "and update counter with 5" do
+      context 'and update counter with 5' do
 
         before do
           Person.update_counters person.id, :drugs_count => 5
         end
 
-        it "return 8" do
+        it 'return 8' do
           expect(person.reload.drugs_count).to eq(8)
         end
       end
 
-      context "and update counter with -5" do
+      context 'and update counter with -5' do
 
         before do
           Person.update_counters person.id, :drugs_count => -5
         end
 
-        it "return -2" do
+        it 'return -2' do
           expect(person.reload.drugs_count).to eq(-2)
         end
       end
     end
 
-    context "when update with 2 and use a string argument" do
+    context 'when update with 2 and use a string argument' do
 
       let(:person) { Person.create! }
 
       before do
-        Person.update_counters person.id, "drugs_count" => 2
+        Person.update_counters person.id, 'drugs_count' => 2
       end
 
-      it "returns 2" do
+      it 'returns 2' do
         expect(person.reload.drugs_count).to eq(2)
       end
     end
 
-    context "when update more multiple counters" do
+    context 'when update more multiple counters' do
 
       let(:person) { Person.create! }
 
@@ -244,38 +244,38 @@ describe Mongoid::Association::Referenced::CounterCache do
         Person.update_counters(person.id, :drugs_count => 2, :second_counter => 5)
       end
 
-      it "updates drugs_counter" do
+      it 'updates drugs_counter' do
         expect(person.reload.drugs_count).to eq(2)
       end
 
-      it "updates second_counter" do
+      it 'updates second_counter' do
         expect(person.reload.second_counter).to eq(5)
       end
     end
   end
 
-  describe "#increment_counter" do
+  describe '#increment_counter' do
 
     let(:person) { Person.create! }
 
-    context "when increment 3 times" do
+    context 'when increment 3 times' do
 
       before do
         3.times { Person.increment_counter(:drugs_count, person.id) }
       end
 
-      it "returns 3" do
+      it 'returns 3' do
         expect(person.reload.drugs_count).to eq(3)
       end
     end
 
-    context "when increment 3 times using string as argument" do
+    context 'when increment 3 times using string as argument' do
 
       before do
-        3.times { Person.increment_counter("drugs_count", person.id) }
+        3.times { Person.increment_counter('drugs_count', person.id) }
       end
 
-      it "returns 3" do
+      it 'returns 3' do
         expect(person.reload.drugs_count).to eq(3)
       end
     end
@@ -301,7 +301,7 @@ describe Mongoid::Association::Referenced::CounterCache do
     end
   end
 
-  describe "#decrement_counter" do
+  describe '#decrement_counter' do
 
     let(:person) do
       Person.create! do |p|
@@ -309,24 +309,24 @@ describe Mongoid::Association::Referenced::CounterCache do
       end
     end
 
-    context "when decrement 3 times" do
+    context 'when decrement 3 times' do
 
       before do
         3.times { Person.decrement_counter(:drugs_count, person.id) }
       end
 
-      it "returns 0" do
+      it 'returns 0' do
         expect(person.reload.drugs_count).to eq(0)
       end
     end
 
-    context "when increment 3 times using string as argument" do
+    context 'when increment 3 times using string as argument' do
 
       before do
-        3.times { Person.decrement_counter("drugs_count", person.id) }
+        3.times { Person.decrement_counter('drugs_count', person.id) }
       end
 
-      it "returns 0" do
+      it 'returns 0' do
         expect(person.reload.drugs_count).to eq(0)
       end
     end
@@ -353,9 +353,9 @@ describe Mongoid::Association::Referenced::CounterCache do
     end
   end
 
-  describe "#add_counter_cache_callbacks" do
+  describe '#add_counter_cache_callbacks' do
 
-    context "when parent is not frozen" do
+    context 'when parent is not frozen' do
 
       context 'when #destroy is called on the object' do
 
@@ -371,7 +371,7 @@ describe Mongoid::Association::Referenced::CounterCache do
           drug.destroy
         end
 
-        it "updates the counter cache" do
+        it 'updates the counter cache' do
           expect(person.drugs_count).to eq(0)
         end
       end
@@ -382,7 +382,7 @@ describe Mongoid::Association::Referenced::CounterCache do
           Person.create! { |p| p.drugs += [Drug.create!, Drug.create!] }
         end
 
-        it "updates the counter cache" do
+        it 'updates the counter cache' do
           expect(person.drugs_count).to eq(2)
         end
       end
@@ -405,11 +405,11 @@ describe Mongoid::Association::Referenced::CounterCache do
           drug.update_attribute(:person, person2)
         end
 
-        it "updates the current counter cache" do
+        it 'updates the current counter cache' do
           expect(drug.person.drugs_count).to eq(1)
         end
 
-        it "updates the current counter cache" do
+        it 'updates the current counter cache' do
           expect(person2.drugs_count).to eq(1)
         end
 
@@ -431,7 +431,7 @@ describe Mongoid::Association::Referenced::CounterCache do
       end
     end
 
-    context "when parent is frozen" do
+    context 'when parent is frozen' do
 
       let(:person) do
         Person.create!

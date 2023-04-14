@@ -17,7 +17,7 @@ module Mongoid
       def initialize(klass)
         super(
           compose_message(
-            "invalid_storage_parent",
+            'invalid_storage_parent',
             { klass: klass }
           )
         )

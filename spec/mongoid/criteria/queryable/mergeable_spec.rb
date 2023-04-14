@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Criteria::Queryable::Mergeable do
 
@@ -8,35 +8,35 @@ describe Mongoid::Criteria::Queryable::Mergeable do
     Mongoid::Query.new
   end
 
-  describe "#intersect" do
+  describe '#intersect' do
 
     before do
       query.intersect
     end
 
-    it "sets the strategy to intersect" do
+    it 'sets the strategy to intersect' do
       expect(query.strategy).to eq(:__intersect__)
     end
   end
 
-  describe "#override" do
+  describe '#override' do
 
     before do
       query.override
     end
 
-    it "sets the strategy to override" do
+    it 'sets the strategy to override' do
       expect(query.strategy).to eq(:__override__)
     end
   end
 
-  describe "#union" do
+  describe '#union' do
 
     before do
       query.union
     end
 
-    it "sets the strategy to union" do
+    it 'sets the strategy to union' do
       expect(query.strategy).to eq(:__union__)
     end
   end
@@ -47,15 +47,15 @@ describe Mongoid::Criteria::Queryable::Mergeable do
     end
 
     let(:gt) do
-      Mongoid::Criteria::Queryable::Key.new("age", :__override__, "$gt")
+      Mongoid::Criteria::Queryable::Key.new('age', :__override__, '$gt')
     end
 
     let(:gtp) do
-      Mongoid::Criteria::Queryable::Key.new("age", :__override__, "$gt")
+      Mongoid::Criteria::Queryable::Key.new('age', :__override__, '$gt')
     end
 
     let(:lt) do
-      Mongoid::Criteria::Queryable::Key.new("age", :__override__, "$lt")
+      Mongoid::Criteria::Queryable::Key.new('age', :__override__, '$lt')
     end
 
     it 'expands Key instances' do

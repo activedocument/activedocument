@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::Referenced::HasMany::Buildable do
 
@@ -8,7 +8,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     double
   end
 
-  describe "#build" do
+  describe '#build' do
 
     let(:documents) do
       association.build(base, object)
@@ -22,7 +22,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
       Mongoid::Association::Referenced::HasMany.new(Person, :posts, options)
     end
 
-    context "when provided an id" do
+    context 'when provided an id' do
 
       let(:object) do
         BSON::ObjectId.new
@@ -32,12 +32,12 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         Post.where(association.foreign_key => object)
       end
 
-      it "returns the criteria" do
+      it 'returns the criteria' do
         expect(documents).to eq(criteria)
       end
     end
 
-    context "when order is specified" do
+    context 'when order is specified' do
 
       let(:options) do
         {
@@ -53,12 +53,12 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         Post.where(association.foreign_key => object).order_by(options[:order])
       end
 
-      it "adds the ordering to the criteria" do
+      it 'adds the ordering to the criteria' do
         expect(documents).to eq(criteria)
       end
     end
 
-    context "when scope is specified" do
+    context 'when scope is specified' do
 
       let(:options) do
         {
@@ -74,12 +74,12 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         Post.where(association.foreign_key => object, rating: 3)
       end
 
-      it "adds the ordering to the criteria" do
+      it 'adds the ordering to the criteria' do
         expect(documents).to eq(criteria)
       end
     end
 
-    context "when the relation is polymorphic" do
+    context 'when the relation is polymorphic' do
 
       let(:options) do
         {
@@ -99,37 +99,37 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         Post.where(association.foreign_key => object, 'ratable_type' => 'Rating')
       end
 
-      it "adds the type to the criteria" do
+      it 'adds the type to the criteria' do
         expect(documents).to eq(criteria)
       end
     end
 
-    context "when provided a object" do
+    context 'when provided a object' do
 
       let(:object) do
         [Person.new]
       end
 
-      it "returns the object" do
+      it 'returns the object' do
         expect(documents).to eq(object)
       end
     end
 
-    context "when no documents found in the database" do
+    context 'when no documents found in the database' do
 
-      context "when the ids are empty" do
+      context 'when the ids are empty' do
 
         let(:object) do
           [nil]
         end
 
-        it "returns an empty array" do
+        it 'returns an empty array' do
           expect(documents).to be_empty
         end
 
-        context "during initialization" do
+        context 'during initialization' do
 
-          it "returns an empty array" do
+          it 'returns an empty array' do
             Person.new do |p|
               expect(p.posts).to be_empty
               expect(p.posts._association).to_not be_nil
@@ -141,7 +141,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
 
     context 'when the object is already associated with another object' do
 
-      context "when using <<" do
+      context 'when using <<' do
 
         let(:person1) do
           Person.new
@@ -168,7 +168,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         end
       end
 
-      context "when using concat" do
+      context 'when using concat' do
 
         let(:person1) do
           Person.new
@@ -195,7 +195,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         end
       end
 
-      context "when using =" do
+      context 'when using =' do
 
         let(:person1) do
           Person.new
@@ -222,7 +222,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         end
       end
 
-      context "when using = on the same document twice" do
+      context 'when using = on the same document twice' do
 
         let(:person1) do
           Person.new

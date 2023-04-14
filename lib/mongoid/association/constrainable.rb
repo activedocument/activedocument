@@ -19,7 +19,7 @@ module Mongoid
       def convert_to_foreign_key(object)
         return convert_polymorphic(object) if polymorphic?
 
-        field = relation_class.fields["_id"]
+        field = relation_class.fields['_id']
         if relation_class.using_object_ids?
           BSON::ObjectId.mongoize(object)
         elsif object.is_a?(::Array)

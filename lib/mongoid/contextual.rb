@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "mongoid/contextual/queryable"
-require "mongoid/contextual/mongo"
-require "mongoid/contextual/memory"
-require "mongoid/contextual/none"
+require 'mongoid/contextual/queryable'
+require 'mongoid/contextual/mongo'
+require 'mongoid/contextual/memory'
+require 'mongoid/contextual/none'
 
 module Mongoid
 

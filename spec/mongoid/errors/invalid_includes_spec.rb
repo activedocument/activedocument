@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Errors::InvalidIncludes do
 
-  describe "#message" do
+  describe '#message' do
 
-    context "default" do
+    context 'default' do
 
       let(:klass) do
         Band
@@ -20,21 +20,21 @@ describe Mongoid::Errors::InvalidIncludes do
         described_class.new(klass, args)
       end
 
-      it "contains the problem in the message" do
+      it 'contains the problem in the message' do
         expect(error.message).to include(
-          "Invalid includes directive: Band.includes(:members)"
+          'Invalid includes directive: Band.includes(:members)'
         )
       end
 
-      it "contains the summary in the message" do
+      it 'contains the summary in the message' do
         expect(error.message).to include(
-          "Eager loading in Mongoid only supports providing arguments to Band.includes"
+          'Eager loading in Mongoid only supports providing arguments to Band.includes'
         )
       end
 
-      it "contains the resolution in the message" do
+      it 'contains the resolution in the message' do
         expect(error.message).to include(
-          "Ensure that each parameter passed to Band.includes is a valid name"
+          'Ensure that each parameter passed to Band.includes is a valid name'
         )
       end
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "mongoid/contextual/aggregable"
+require 'mongoid/contextual/aggregable'
 
 module Mongoid
   module Contextual

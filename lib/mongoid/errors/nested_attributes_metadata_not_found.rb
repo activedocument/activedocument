@@ -17,7 +17,7 @@ module Mongoid
       def initialize(klass, name)
         super(
           compose_message(
-            "nested_attributes_metadata_not_found",
+            'nested_attributes_metadata_not_found',
             { klass: klass, name: name }
           )
         )

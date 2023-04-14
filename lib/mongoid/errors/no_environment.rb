@@ -11,7 +11,7 @@ module Mongoid
       # @example Create the new no environment error.
       #   NoEnvironment.new
       def initialize
-        super(compose_message("no_environment", {}))
+        super(compose_message('no_environment', {}))
       end
     end
   end

@@ -15,7 +15,7 @@ module Mongoid
       # @api private
       def initialize(klass, attr)
         super(
-          compose_message("invalid_dot_dollar_assignment", { klass: klass, attr: attr })
+          compose_message('invalid_dot_dollar_assignment', { klass: klass, attr: attr })
         )
       end
     end

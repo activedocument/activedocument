@@ -15,7 +15,7 @@ module Mongoid
       def initialize(collection_name, collection_options, error)
         super(
           compose_message(
-            "drop_collection_failure",
+            'drop_collection_failure',
             {
               collection_name: collection_name
             }

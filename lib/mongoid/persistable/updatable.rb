@@ -142,7 +142,7 @@ module Mongoid
               # the top-level association name.
               # This handles at least the cases described in MONGOID-4982.
               conflicting_change_groups = changes.group_by do |key, _|
-                key.split(".", 2).first
+                key.split('.', 2).first
               end.values
 
               # Apply changes in batches. Pop one change from each

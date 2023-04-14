@@ -14,14 +14,14 @@ module Mongoid
         if kms_provider
           super(
             compose_message(
-              "invalid_auto_encryption_configuration_for_kms_provider",
+              'invalid_auto_encryption_configuration_for_kms_provider',
               { client: name, kms_provider: kms_provider }
             )
           )
         else
           super(
             compose_message(
-              "invalid_auto_encryption_configuration",
+              'invalid_auto_encryption_configuration',
               { client: name }
             )
           )

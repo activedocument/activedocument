@@ -16,7 +16,7 @@ module Mongoid
       def initialize(name, config)
         super(
           compose_message(
-            "no_client_hosts",
+            'no_client_hosts',
             { name: name, config: config }
           )
         )

@@ -10,7 +10,7 @@ class Player
 
   scope :active, -> { where(active: true) } do
     def extension
-      "extension"
+      'extension'
     end
   end
 
@@ -33,7 +33,7 @@ class Player
 
   class << self
     def alive
-      where(status: "Alive")
+      where(status: 'Alive')
     end
   end
 end

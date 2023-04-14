@@ -16,7 +16,7 @@ module Mongoid
       # @param [ Symbol ] method The name of the method.
       def initialize(klass, method)
         super(
-          compose_message("callbacks", { klass: klass, method: method })
+          compose_message('callbacks', { klass: klass, method: method })
         )
       end
     end

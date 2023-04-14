@@ -6,5 +6,5 @@ class Tool
   accepts_nested_attributes_for :palette
 end
 
-require "support/models/eraser"
-require "support/models/pencil"
+require 'support/models/eraser'
+require 'support/models/pencil'

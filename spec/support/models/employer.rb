@@ -2,6 +2,6 @@
 
 class Employer
   def id
-    "1"
+    '1'
   end
 end

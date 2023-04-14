@@ -17,7 +17,7 @@ module Mongoid
         #
         # @param [ Mongoid::Document ] document The document to generate the paths for.
         def initialize(document)
-          @document, @path, @position = document, "", ""
+          @document, @path, @position = document, '', ''
         end
 
         # Asking for the insert modifier on a document with a root path

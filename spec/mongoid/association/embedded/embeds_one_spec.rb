@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './embeds_one_models'
 
 describe Mongoid::Association::Embedded::EmbedsOne do
@@ -350,7 +350,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
       end
 
       it 'returns the type followed by = as a String' do
-        expect(association.type_setter).to eq("containable_type=")
+        expect(association.type_setter).to eq('containable_type=')
       end
     end
 
@@ -955,30 +955,30 @@ describe Mongoid::Association::Embedded::EmbedsOne do
     end
   end
 
-  context "when multiple embeds_one associations reference the same class" do
+  context 'when multiple embeds_one associations reference the same class' do
     let(:acme) { EomCompany.create(address: { city: 'Gotham' }, delivery_address: { city: 'Parcelville' }) }
 
-    context "when the first assignment is modified" do
+    context 'when the first assignment is modified' do
       before do
         acme.update(address: EomAddress.new(city: 'Bigville'))
         acme.reload
       end
 
-      it "updates the correct association" do
-        expect(acme.address.city).to eq("Bigville")
-        expect(acme.delivery_address.city).to eq("Parcelville")
+      it 'updates the correct association' do
+        expect(acme.address.city).to eq('Bigville')
+        expect(acme.delivery_address.city).to eq('Parcelville')
       end
     end
 
-    context "when the second assignment is modified" do
+    context 'when the second assignment is modified' do
       before do
         acme.update(delivery_address: EomAddress.new(city: 'Bigville'))
         acme.reload
       end
 
-      it "updates the correct association" do
-        expect(acme.address.city).to eq("Gotham")
-        expect(acme.delivery_address.city).to eq("Bigville")
+      it 'updates the correct association' do
+        expect(acme.address.city).to eq('Gotham')
+        expect(acme.delivery_address.city).to eq('Bigville')
       end
     end
   end

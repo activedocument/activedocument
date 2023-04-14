@@ -10,10 +10,10 @@ class Acolyte
   belongs_to :church
 
   default_scope -> { asc(:name) }
-  scope :active, -> { where(status: "active") }
+  scope :active, -> { where(status: 'active') }
   scope :named, -> { where(:name.exists => true) }
 
   def callback_test?
-    name == "callback-test"
+    name == 'callback-test'
   end
 end

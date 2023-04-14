@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::RawValue do
 
-  describe "::()" do
+  describe '::()' do
     subject { Mongoid::RawValue(raw_value).raw_value }
 
     context 'when raw_value is a String' do
@@ -24,7 +24,7 @@ describe Mongoid::RawValue do
     end
   end
 
-  describe "#raw_value" do
+  describe '#raw_value' do
     subject { described_class.new(raw_value).raw_value }
 
     context 'when raw_value is a String' do
@@ -44,7 +44,7 @@ describe Mongoid::RawValue do
     end
   end
 
-  describe "#inspect" do
+  describe '#inspect' do
     subject { described_class.new(raw_value).inspect }
 
     context 'when raw_value is a String' do

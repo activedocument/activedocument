@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::Options do
 
@@ -978,7 +978,7 @@ describe Mongoid::Association::Options do
           context 'when :store_as is not in the options' do
 
             it 'returns the name as a string' do
-              expect(association.store_as).to eq("name")
+              expect(association.store_as).to eq('name')
             end
           end
         end

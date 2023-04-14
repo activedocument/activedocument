@@ -6,15 +6,15 @@ require 'singleton'
 class SpecConfig
   include Singleton
 
-  DEFAULT_MONGODB_URI = "mongodb://127.0.0.1:27017"
+  DEFAULT_MONGODB_URI = 'mongodb://127.0.0.1:27017'
 
   def initialize
     if ENV['MONGODB_URI']
       @uri_str = ENV['MONGODB_URI']
     else
       warn "Environment variable 'MONGODB_URI' is not set, so the default url will be used."
-      warn "This may lead to unexpected test failures because service discovery will raise unexpected warnings."
-      warn "Please consider providing the correct uri via MONGODB_URI environment variable."
+      warn 'This may lead to unexpected test failures because service discovery will raise unexpected warnings.'
+      warn 'Please consider providing the correct uri via MONGODB_URI environment variable.'
       @uri_str = DEFAULT_MONGODB_URI
     end
 

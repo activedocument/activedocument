@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './embeds_many_models'
 
 describe Mongoid::Association::Embedded::EmbedsMany do
@@ -48,7 +48,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
     end
 
-    context "when excluding the relation" do
+    context 'when excluding the relation' do
       let(:congress) do
         EmmCongress.where(name: 'foo').only(:_id).first
       end

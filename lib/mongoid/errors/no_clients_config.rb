@@ -12,7 +12,7 @@ module Mongoid
       # @example Create the error.
       #   NoClientsConfig.new
       def initialize
-        super(compose_message("no_clients_config", {}))
+        super(compose_message('no_clients_config', {}))
       end
     end
   end

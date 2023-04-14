@@ -7,6 +7,6 @@ class Division
   before_destroy :update_parent
 
   def update_parent
-    league.name = "Destroyed"
+    league.name = 'Destroyed'
   end
 end

@@ -78,10 +78,10 @@ the configuration file path as its argument, as follows:
 .. code-block:: ruby
 
   # Use automatically detected environment name
-  Mongoid.load!("path/to/your/mongoid.yml")
+  Mongoid.load!('path/to/your/mongoid.yml')
 
   # Specify environment name manually
-  Mongoid.load!("path/to/your/mongoid.yml", :production)
+  Mongoid.load!('path/to/your/mongoid.yml', :production)
 
 When Mongoid is asked to automatically detect the environment name,
 it does so by examining the following sources, in order:
@@ -287,8 +287,8 @@ for details on driver options.
       # error. (default: true)
       belongs_to_required_by_default: true
 
-      # Set the global discriminator key. (default: "_type")
-      discriminator_key: "_type"
+      # Set the global discriminator key. (default: '_type')
+      discriminator_key: '_type'
 
       # Raise an exception when a field is redefined. (default: false)
       duplicate_fields_exception: false
@@ -688,13 +688,13 @@ To illustrate:
 
 .. code-block:: ruby
 
-  Time.use_zone("Asia/Kolkata") do
+  Time.use_zone('Asia/Kolkata') do
 
     # String does not include time zone, so "Asia/Kolkata" will be used
-    ghandi.born_at = "1869-10-02 7:10 PM"
+    ghandi.born_at = '1869-10-02 7:10 PM'
 
     # Time zone in string (-0600) will be used
-    amelia.born_at = "1897-07-24 11:30 -0600"
+    amelia.born_at = '1897-07-24 11:30 -0600'
   end
 
 
@@ -716,7 +716,7 @@ that only enables the "AES256-SHA" cipher.
 
   Mongo.tls_context_hooks.push(
     Proc.new { |context|
-      context.ciphers = ["AES256-SHA"]
+      context.ciphers = ['AES256-SHA']
     }
   )
 
@@ -756,7 +756,7 @@ as the following example shows:
             key_vault_namespace: 'keyvault.datakeys'
             kms_providers:
               local:
-                key: "z7iYiYKLuYymEWtk4kfny1ESBwwFdA58qMqff96A8ghiOcIK75lJGPUIocku8LOFjQuEgeIP4xlln3s7r93FV9J5sAE7zg8U"
+                key: 'z7iYiYKLuYymEWtk4kfny1ESBwwFdA58qMqff96A8ghiOcIK75lJGPUIocku8LOFjQuEgeIP4xlln3s7r93FV9J5sAE7zg8U'
             schema_map:
               blog_development.comments:
                 properties:
@@ -767,9 +767,9 @@ as the following example shows:
                           data: !binary |-
                             R/AgNcxASFiiJWKXqWGo5w==
                           type: :uuid
-                      bsonType: "string"
-                      algorithm: "AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic"
-                bsonType: "object"
+                      bsonType: 'string'
+                      algorithm: 'AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic'
+                bsonType: 'object'
 
 
 Usage with Forking Servers

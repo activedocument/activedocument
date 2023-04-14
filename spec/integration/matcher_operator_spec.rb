@@ -85,7 +85,7 @@ describe 'Matcher operators' do
                   rescue Mongo::Error::InvalidDocument
                   rescue BSON::Error::UnserializableClass
                   else
-                    fail "Expected an exception to be raised"
+                    fail 'Expected an exception to be raised'
                   end
                 end
               else
@@ -105,7 +105,7 @@ describe 'Matcher operators' do
                   rescue Mongoid::Errors::InvalidQuery
                   rescue Mongoid::Errors::CriteriaArgumentRequired
                   else
-                    fail "Expected the query to raise an error"
+                    fail 'Expected the query to raise an error'
                   end
                 end
               else

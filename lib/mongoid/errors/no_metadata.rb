@@ -13,7 +13,7 @@ module Mongoid
       #
       # @param [ Class ] klass The document class.
       def initialize(klass)
-        super(compose_message("no_metadata", { klass: klass }))
+        super(compose_message('no_metadata', { klass: klass }))
       end
     end
   end

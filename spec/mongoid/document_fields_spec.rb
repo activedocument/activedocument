@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Document do
 
   describe 'BSON::Binary field' do
     context 'when assigned a BSON::Binary instance' do
       let(:data) do
-        BSON::Binary.new("hello world")
+        BSON::Binary.new('hello world')
       end
 
       let(:registry) do
@@ -162,7 +162,7 @@ describe Mongoid::Document do
 
     context 'when assigned an invalid string' do
       let(:obj_id) do
-        "hello"
+        'hello'
       end
 
       let(:registry) do
@@ -170,14 +170,14 @@ describe Mongoid::Document do
       end
 
       it 'assigns nil' do
-        expect(registry.obj_id).to eq("hello")
+        expect(registry.obj_id).to eq('hello')
       end
 
       it 'persists' do
         registry.save!
 
         _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq("hello")
+        expect(_registry.obj_id).to eq('hello')
       end
     end
 
@@ -239,8 +239,8 @@ describe Mongoid::Document do
       expect(Mop.find(mop.id).regexp_field).to be_a Regexp
       expect(
         Mop.collection.find(
-          "_id" => mop.id,
-          "regexp_field" => { "$type" => 'regex' }
+          '_id' => mop.id,
+          'regexp_field' => { '$type' => 'regex' }
         ).count
       ).to eq 1
     end
@@ -253,8 +253,8 @@ describe Mongoid::Document do
       expect(Mop.find(mop.id).bson_regexp_field).to be_a BSON::Regexp::Raw
       expect(
         Mop.collection.find(
-          "_id" => mop.id,
-          "bson_regexp_field" => { "$type" => 'regex' }
+          '_id' => mop.id,
+          'bson_regexp_field' => { '$type' => 'regex' }
         ).count
       ).to eq 1
     end

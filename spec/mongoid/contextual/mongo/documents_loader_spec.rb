@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require 'concurrent-ruby'
 
 describe Mongoid::Contextual::Mongo::DocumentsLoader do
@@ -86,7 +86,7 @@ describe Mongoid::Contextual::Mongo::DocumentsLoader do
     end
 
     let(:criteria) do
-      Band.where(name: "Depeche Mode")
+      Band.where(name: 'Depeche Mode')
     end
 
     let(:klass) do
@@ -150,7 +150,7 @@ describe Mongoid::Contextual::Mongo::DocumentsLoader do
     end
   end
 
-  describe ".global_thread_pool_async_query_executor" do
+  describe '.global_thread_pool_async_query_executor' do
     before(:each) do
       described_class.class_variable_set(:@@global_thread_pool_async_query_executor, nil)
     end

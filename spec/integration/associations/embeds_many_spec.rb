@@ -26,7 +26,7 @@ describe 'embeds_many associations' do
 
     let(:unsaved_parent) { Canvas.new(id: parent.id, shapes: [Shape.new]) }
 
-    context "using #clear" do
+    context 'using #clear' do
       it 'deletes the target from the database' do
         unsaved_parent.shapes.clear
 
@@ -48,7 +48,7 @@ describe 'embeds_many associations' do
       end
     end
 
-    context "using #delete_all" do
+    context 'using #delete_all' do
       before do
         unsaved_parent.shapes.delete_all
       end
@@ -56,7 +56,7 @@ describe 'embeds_many associations' do
       include_examples 'does not delete the target from the database'
     end
 
-    context "using #destroy_all" do
+    context 'using #destroy_all' do
       before do
         unsaved_parent.shapes.destroy_all
       end

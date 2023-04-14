@@ -17,7 +17,7 @@ module Mongoid
       def initialize(name, config)
         super(
           compose_message(
-            "mixed_client_configuration",
+            'mixed_client_configuration',
             { name: name, config: config }
           )
         )

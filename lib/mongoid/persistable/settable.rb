@@ -85,7 +85,7 @@ module Mongoid
               ops[atomic_attribute_name(field)] = attributes[field]
             end
           end
-          { "$set" => ops } unless ops.empty?
+          { '$set' => ops } unless ops.empty?
         end
       end
     end

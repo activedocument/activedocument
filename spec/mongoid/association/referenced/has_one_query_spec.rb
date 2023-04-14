@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './has_one_models'
 
 describe Mongoid::Association::Referenced::HasOne do

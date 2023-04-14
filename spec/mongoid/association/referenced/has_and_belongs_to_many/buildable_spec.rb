@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
 
@@ -12,7 +12,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
     {}
   end
 
-  describe "#build" do
+  describe '#build' do
 
     let(:documents) do
       association.build(base, object)
@@ -22,7 +22,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
       Mongoid::Association::Referenced::HasAndBelongsToMany.new(Person, :preferences, options)
     end
 
-    context "when provided ids" do
+    context 'when provided ids' do
 
       let(:object_id) do
         BSON::ObjectId.new
@@ -33,15 +33,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
       end
 
       let(:criteria) do
-        Preference.all_of("_id" => { "$in" => object })
+        Preference.all_of('_id' => { '$in' => object })
       end
 
-      it "returns the criteria" do
+      it 'returns the criteria' do
         expect(documents).to eq(criteria)
       end
     end
 
-    context "when order specified" do
+    context 'when order specified' do
 
       let(:object_id) do
         BSON::ObjectId.new
@@ -58,15 +58,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
       end
 
       let(:criteria) do
-        Preference.all_of("_id" => { "$in" => object }).order_by(options[:order])
+        Preference.all_of('_id' => { '$in' => object }).order_by(options[:order])
       end
 
-      it "returns the criteria" do
+      it 'returns the criteria' do
         expect(documents).to eq(criteria)
       end
     end
 
-    context "when scope is specified" do
+    context 'when scope is specified' do
 
       let(:object_id) do
         BSON::ObjectId.new
@@ -83,28 +83,28 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
       end
 
       let(:criteria) do
-        Preference.all_of("_id" => { "$in" => object }).where(rating: 3)
+        Preference.all_of('_id' => { '$in' => object }).where(rating: 3)
       end
 
-      it "returns the criteria" do
+      it 'returns the criteria' do
         expect(documents).to eq(criteria)
       end
     end
 
-    context "when provided a object" do
+    context 'when provided a object' do
 
-      context "when the object is not nil" do
+      context 'when the object is not nil' do
 
         let(:object) do
           [Post.new]
         end
 
-        it "returns the objects" do
+        it 'returns the objects' do
           expect(documents).to eq(object)
         end
       end
 
-      context "when the object is nil" do
+      context 'when the object is nil' do
 
         let(:object) do
           nil
@@ -114,22 +114,22 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
           Preference.none
         end
 
-        it "a criteria object" do
+        it 'a criteria object' do
           expect(documents).to eq(criteria)
         end
       end
     end
 
-    context "when no documents found in the database" do
+    context 'when no documents found in the database' do
 
-      context "when the ids are empty" do
+      context 'when the ids are empty' do
 
-        it "returns an empty array" do
+        it 'returns an empty array' do
           expect(Person.new.preferences).to be_empty
         end
       end
 
-      context "when the ids are incorrect" do
+      context 'when the ids are incorrect' do
 
         let(:person) do
           Person.create!
@@ -139,7 +139,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
           person.preference_ids = [BSON::ObjectId.new]
         end
 
-        it "returns an empty array" do
+        it 'returns an empty array' do
           expect(person.preferences).to be_empty
         end
       end

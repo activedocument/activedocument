@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './has_one_models'
 
 describe Mongoid::Association::Referenced::HasOne do
@@ -563,7 +563,7 @@ describe Mongoid::Association::Referenced::HasOne do
       end
 
       it 'returns the type followed by = as a String' do
-        expect(association.type_setter).to eq("containable_type=")
+        expect(association.type_setter).to eq('containable_type=')
       end
     end
 
@@ -969,7 +969,7 @@ describe Mongoid::Association::Referenced::HasOne do
       end
     end
 
-    context "when the class is not defined" do
+    context 'when the class is not defined' do
       let(:name) do
         :undefined_class
       end

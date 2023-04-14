@@ -27,13 +27,13 @@ describe 'Association foreign key configuration' do
       expect(email.company.id).to eq(company.id)
     end
 
-    it "has the correct criteria" do
-      company = ForeignKeySpec::Company.create!(c: "3")
+    it 'has the correct criteria' do
+      company = ForeignKeySpec::Company.create!(c: '3')
       email = ForeignKeySpec::Email.create!(company: company)
 
       criteria = ForeignKeySpec::Email.where(company: company)
 
-      expect(criteria.selector).to eq({ "c_ref" => "3" })
+      expect(criteria.selector).to eq({ 'c_ref' => '3' })
     end
 
     context 'with default scope' do

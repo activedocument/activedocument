@@ -16,7 +16,7 @@ module Mongoid
       def initialize(klass, javascript)
         super(
           compose_message(
-            "unsupported_javascript",
+            'unsupported_javascript',
             { klass: klass, javascript: javascript }
           )
         )

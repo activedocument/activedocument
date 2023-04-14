@@ -6,4 +6,4 @@ class Palette
   embeds_many :tools
 end
 
-require "support/models/big_palette"
+require 'support/models/big_palette'

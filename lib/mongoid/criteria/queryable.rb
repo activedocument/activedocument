@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-require "mongoid/criteria/queryable/expandable"
-require "mongoid/criteria/queryable/extensions"
-require "mongoid/criteria/queryable/key"
-require "mongoid/criteria/queryable/macroable"
-require "mongoid/criteria/queryable/mergeable"
-require "mongoid/criteria/queryable/smash"
-require "mongoid/criteria/queryable/aggregable"
-require "mongoid/criteria/queryable/pipeline"
-require "mongoid/criteria/queryable/optional"
-require "mongoid/criteria/queryable/options"
-require "mongoid/criteria/queryable/selectable"
-require "mongoid/criteria/queryable/selector"
-require "mongoid/criteria/queryable/storable"
+require 'mongoid/criteria/queryable/expandable'
+require 'mongoid/criteria/queryable/extensions'
+require 'mongoid/criteria/queryable/key'
+require 'mongoid/criteria/queryable/macroable'
+require 'mongoid/criteria/queryable/mergeable'
+require 'mongoid/criteria/queryable/smash'
+require 'mongoid/criteria/queryable/aggregable'
+require 'mongoid/criteria/queryable/pipeline'
+require 'mongoid/criteria/queryable/optional'
+require 'mongoid/criteria/queryable/options'
+require 'mongoid/criteria/queryable/selectable'
+require 'mongoid/criteria/queryable/selector'
+require 'mongoid/criteria/queryable/storable'
 
 module Mongoid
   class Criteria

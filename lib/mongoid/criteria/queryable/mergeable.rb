@@ -427,7 +427,7 @@ module Mongoid
             value = serializer ? serializer.evolve(value) : value
           end
           selection = { operator => value }
-          negating? ? { "$not" => selection } : selection
+          negating? ? { '$not' => selection } : selection
         end
       end
     end

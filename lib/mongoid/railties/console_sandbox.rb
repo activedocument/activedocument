@@ -1,5 +1,5 @@
-require "mongoid/threaded"
-require "mongoid/errors/transactions_not_supported"
+require 'mongoid/threaded'
+require 'mongoid/errors/transactions_not_supported'
 
 # This method raises an error if the cluster the client is connected to
 # does not support transactions in any case. At the moment this is the case

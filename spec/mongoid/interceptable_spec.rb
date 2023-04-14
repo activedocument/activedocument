@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 require_relative './interceptable_spec_models'
 
 describe Mongoid::Interceptable do
@@ -27,99 +27,99 @@ describe Mongoid::Interceptable do
     end
   end
 
-  describe ".included" do
+  describe '.included' do
 
     let(:klass) do
       TestClass
     end
 
-    it "includes the before_create callback" do
+    it 'includes the before_create callback' do
       expect(klass).to respond_to(:before_create)
     end
 
-    it "includes the after_create callback" do
+    it 'includes the after_create callback' do
       expect(klass).to respond_to(:after_create)
     end
 
-    it "includes the before_destroy callback" do
+    it 'includes the before_destroy callback' do
       expect(klass).to respond_to(:before_destroy)
     end
 
-    it "includes the after_destroy callback" do
+    it 'includes the after_destroy callback' do
       expect(klass).to respond_to(:after_destroy)
     end
 
-    it "includes the before_save callback" do
+    it 'includes the before_save callback' do
       expect(klass).to respond_to(:before_save)
     end
 
-    it "includes the after_save callback" do
+    it 'includes the after_save callback' do
       expect(klass).to respond_to(:after_save)
     end
 
-    it "includes the before_update callback" do
+    it 'includes the before_update callback' do
       expect(klass).to respond_to(:before_update)
     end
 
-    it "includes the after_update callback" do
+    it 'includes the after_update callback' do
       expect(klass).to respond_to(:after_update)
     end
 
-    it "includes the before_validation callback" do
+    it 'includes the before_validation callback' do
       expect(klass).to respond_to(:before_validation)
     end
 
-    it "includes the after_validation callback" do
+    it 'includes the after_validation callback' do
       expect(klass).to respond_to(:after_validation)
     end
 
-    it "includes the after_initialize callback" do
+    it 'includes the after_initialize callback' do
       expect(klass).to respond_to(:after_initialize)
     end
 
-    it "includes the after_build callback" do
+    it 'includes the after_build callback' do
       expect(klass).to respond_to(:after_build)
     end
   end
 
-  describe ".after_find" do
+  describe '.after_find' do
 
     let!(:player) do
       Player.create!
     end
 
-    context "when the callback is on a root document" do
+    context 'when the callback is on a root document' do
 
-      context "when when the document is instantiated" do
+      context 'when when the document is instantiated' do
 
-        it "does not execute the callback" do
+        it 'does not execute the callback' do
           expect(player.impressions).to eq(0)
         end
       end
 
-      context "when the document is found via #find" do
+      context 'when the document is found via #find' do
 
         let(:from_db) do
           Player.find(player.id)
         end
 
-        it "executes the callback" do
+        it 'executes the callback' do
           expect(from_db.impressions).to eq(1)
         end
       end
 
-      context "when the document is found in a criteria" do
+      context 'when the document is found in a criteria' do
 
         let(:from_db) do
           Player.where(id: player.id).first
         end
 
-        it "executes the callback" do
+        it 'executes the callback' do
           expect(from_db.impressions).to eq(1)
         end
       end
 
-      context "when the document is reloaded" do
+      context 'when the document is reloaded' do
 
         let(:from_db) do
           Player.find(player.id)
@@ -129,57 +129,57 @@ describe Mongoid::Interceptable do
           from_db.reload
         end
 
-        it "executes the callback" do
+        it 'executes the callback' do
           expect(from_db.impressions).to eq(1)
         end
       end
     end
 
-    context "when the callback is on an embedded document" do
+    context 'when the callback is on an embedded document' do
 
       let!(:implant) do
         player.implants.create!
       end
 
-      context "when when the document is instantiated" do
+      context 'when when the document is instantiated' do
 
-        it "does not execute the callback" do
+        it 'does not execute the callback' do
           expect(implant.impressions).to eq(0)
         end
       end
 
-      context "when the document is found via #find" do
+      context 'when the document is found via #find' do
 
         let(:from_db) do
           Player.find(player.id).implants.first
         end
 
-        it "executes the callback" do
+        it 'executes the callback' do
           expect(from_db.impressions).to eq(1)
         end
       end
 
-      context "when the document is found in a criteria" do
+      context 'when the document is found in a criteria' do
 
         let(:from_db) do
           Player.find(player.id).implants.find(implant.id)
         end
 
-        it "executes the callback" do
+        it 'executes the callback' do
           expect(from_db.impressions).to eq(1)
         end
       end
     end
   end
 
-  describe ".after_initialize" do
+  describe '.after_initialize' do
 
     let(:game) do
       Game.new
     end
 
-    it "runs after document instantiation" do
-      expect(game.name).to eq("Testing")
+    it 'runs after document instantiation' do
+      expect(game.name).to eq('Testing')
     end
 
     context 'when the document is embedded' do
@@ -192,17 +192,17 @@ describe Mongoid::Interceptable do
         book = Book.new({
           :pages => [
             {
-              content: "Page 1",
+              content: 'Page 1',
               notes: [
-                { message: "Page 1 / Note A" },
-                { message: "Page 1 / Note B" }
+                { message: 'Page 1 / Note A' },
+                { message: 'Page 1 / Note B' }
               ]
             },
             {
-              content: "Page 2",
+              content: 'Page 2',
               notes: [
-                { message: "Page 2 / Note A" },
-                { message: "Page 2 / Note B" }
+                { message: 'Page 2 / Note A' },
+                { message: 'Page 2 / Note B' }
               ]
             }
           ]
@@ -238,21 +238,21 @@ describe Mongoid::Interceptable do
     end
   end
 
-  describe ".after_build" do
+  describe '.after_build' do
 
     let(:weapon) do
       Player.new(frags: 5).weapons.build
     end
 
-    it "runs after document build (references_many)" do
-      expect(weapon.name).to eq("Holy Hand Grenade (5)")
+    it 'runs after document build (references_many)' do
+      expect(weapon.name).to eq('Holy Hand Grenade (5)')
     end
 
     let(:implant) do
       Player.new(frags: 5).implants.build
     end
 
-    it "runs after document build (embeds_many)" do
+    it 'runs after document build (embeds_many)' do
       expect(implant.name).to eq('Cochlear Implant (5)')
     end
 
@@ -260,38 +260,38 @@ describe Mongoid::Interceptable do
       Player.new(frags: 5).build_powerup
     end
 
-    it "runs after document build (references_one)" do
-      expect(powerup.name).to eq("Quad Damage (5)")
+    it 'runs after document build (references_one)' do
+      expect(powerup.name).to eq('Quad Damage (5)')
     end
 
     let(:augmentation) do
       Player.new(frags: 5).build_augmentation
     end
 
-    it "runs after document build (embeds_one)" do
-      expect(augmentation.name).to eq("Infolink (5)")
+    it 'runs after document build (embeds_one)' do
+      expect(augmentation.name).to eq('Infolink (5)')
     end
   end
 
-  describe ".before_create" do
+  describe '.before_create' do
 
     let(:artist) do
-      Artist.new(name: "Depeche Mode")
+      Artist.new(name: 'Depeche Mode')
     end
 
-    context "callback returns true" do
+    context 'callback returns true' do
 
       before do
         expect(artist).to receive(:before_create_stub).once.and_return(true)
         artist.save!
       end
 
-      it "gets saved" do
+      it 'gets saved' do
         expect(artist.persisted?).to be true
       end
     end
 
-    context "callback aborts the callback chain" do
+    context 'callback aborts the callback chain' do
 
       before do
         Artist.before_create(:before_create_fail_stub)
@@ -303,36 +303,36 @@ describe Mongoid::Interceptable do
         Artist.reset_callbacks(:create)
       end
 
-      it "does not get saved" do
+      it 'does not get saved' do
         expect(artist.persisted?).to be false
       end
     end
   end
 
-  describe ".before_save" do
+  describe '.before_save' do
 
-    context "when creating" do
+    context 'when creating' do
 
       let(:artist) do
-        Artist.new(name: "Depeche Mode")
+        Artist.new(name: 'Depeche Mode')
       end
 
       after do
         artist.delete
       end
 
-      context "when the callback returns true" do
+      context 'when the callback returns true' do
 
         before do
           expect(artist).to receive(:before_save_stub).once.and_return(true)
         end
 
-        it "the save returns true" do
+        it 'the save returns true' do
           expect(artist.save!).to be true
         end
       end
 
-      context "when callback halts the callback chain" do
+      context 'when callback halts the callback chain' do
 
         before do
           Artist.before_save(:before_save_fail_stub)
@@ -342,18 +342,18 @@ describe Mongoid::Interceptable do
           Artist.reset_callbacks(:save)
         end
 
-        it "the save returns false" do
+        it 'the save returns false' do
           expect(artist).to receive(:before_save_fail_stub).once.and_call_original
           expect(artist.save).to be false
         end
       end
     end
 
-    context "when updating" do
+    context 'when updating' do
 
       let(:artist) do
-        Artist.create!(name: "Depeche Mode").tap do |artist|
-          artist.name = "The Mountain Goats"
+        Artist.create!(name: 'Depeche Mode').tap do |artist|
+          artist.name = 'The Mountain Goats'
         end
       end
 
@@ -361,18 +361,18 @@ describe Mongoid::Interceptable do
         artist.delete
       end
 
-      context "when the callback returns true" do
+      context 'when the callback returns true' do
 
         before do
           expect(artist).to receive(:before_update_stub).once.and_return(true)
         end
 
-        it "the save returns true" do
+        it 'the save returns true' do
           expect(artist.save!).to be true
         end
       end
 
-      context "when the callback halts the callback chain" do
+      context 'when the callback halts the callback chain' do
 
         before do
           Artist.before_update(:before_update_fail_stub)
@@ -382,7 +382,7 @@ describe Mongoid::Interceptable do
           Artist.reset_callbacks(:update)
         end
 
-        it "the save returns false" do
+        it 'the save returns false' do
           expect(artist).to receive(:before_update_fail_stub).once.and_call_original
           expect(artist.save).to be false
         end
@@ -390,32 +390,32 @@ describe Mongoid::Interceptable do
     end
   end
 
-  describe ".before_destroy" do
+  describe '.before_destroy' do
 
     let(:artist) do
-      Artist.create!(name: "Depeche Mode")
+      Artist.create!(name: 'Depeche Mode')
     end
 
     before do
-      artist.name = "The Mountain Goats"
+      artist.name = 'The Mountain Goats'
     end
 
     after do
       artist.delete
     end
 
-    context "when the callback returns true" do
+    context 'when the callback returns true' do
 
       before do
         expect(artist).to receive(:before_destroy_stub).once.and_return(true)
       end
 
-      it "the destroy returns true" do
+      it 'the destroy returns true' do
         expect(artist.destroy).to be true
       end
     end
 
-    context "when the callback halts the callback chain" do
+    context 'when the callback halts the callback chain' do
 
       before do
         Artist.before_destroy(:before_destroy_fail_stub)
@@ -425,33 +425,33 @@ describe Mongoid::Interceptable do
         Artist.reset_callbacks(:destroy)
       end
 
-      it "the destroy returns false" do
+      it 'the destroy returns false' do
         expect(artist).to receive(:before_destroy_fail_stub).once.and_call_original
         expect(artist.destroy).to be false
       end
     end
 
-    context "when cascading callbacks" do
+    context 'when cascading callbacks' do
 
       let!(:moderat) do
-        Band.create!(name: "Moderat")
+        Band.create!(name: 'Moderat')
       end
 
       let!(:record) do
-        moderat.records.create!(name: "Moderat")
+        moderat.records.create!(name: 'Moderat')
       end
 
       before do
         moderat.destroy
       end
 
-      it "executes the child destroy callbacks" do
+      it 'executes the child destroy callbacks' do
         expect(record.before_destroy_called).to be true
       end
     end
   end
 
-  describe "#run_after_callbacks" do
+  describe '#run_after_callbacks' do
 
     let(:object) do
       TestClass.new
@@ -461,16 +461,16 @@ describe Mongoid::Interceptable do
       object.run_after_callbacks(:save)
     end
 
-    it "runs the after callbacks" do
+    it 'runs the after callbacks' do
       expect(object.after_save_called).to be true
     end
 
-    it "does not run the before callbacks" do
+    it 'does not run the before callbacks' do
       expect(object.before_save_called).to be nil
     end
   end
 
-  describe "#run_before_callbacks" do
+  describe '#run_before_callbacks' do
 
     let(:object) do
       TestClass.new
@@ -480,20 +480,20 @@ describe Mongoid::Interceptable do
       object.run_before_callbacks(:save)
     end
 
-    it "runs the before callbacks" do
+    it 'runs the before callbacks' do
       expect(object.before_save_called).to be true
     end
 
-    it "does not run the after callbacks" do
+    it 'does not run the after callbacks' do
       expect(object.after_save_called).to be nil
     end
   end
 
-  context "when cascading callbacks" do
+  context 'when cascading callbacks' do
 
-    context "when the parent has a custom callback" do
+    context 'when the parent has a custom callback' do
 
-      context "when the child does not have the same callback defined" do
+      context 'when the child does not have the same callback defined' do
 
         let(:exhibition) do
           Exhibition.new
@@ -503,7 +503,7 @@ describe Mongoid::Interceptable do
           exhibition.exhibitors.build
         end
 
-        context "when running the callbacks directly" do
+        context 'when running the callbacks directly' do
 
           before(:all) do
             Exhibition.define_model_callbacks(:rearrange)
@@ -514,12 +514,12 @@ describe Mongoid::Interceptable do
             Exhibition.reset_callbacks(:rearrange)
           end
 
-          it "does not cascade to the child" do
+          it 'does not cascade to the child' do
             expect(exhibition.run_callbacks(:rearrange)).to be true
           end
         end
 
-        context "when the callbacks get triggered by a destroy" do
+        context 'when the callbacks get triggered by a destroy' do
 
           let(:band) do
             Band.new
@@ -545,12 +545,12 @@ describe Mongoid::Interceptable do
           let(:attributes) do
             {
               records_attributes: {
-                "0" => { "_id" => record.id, "_destroy" => true }
+                '0' => { '_id' => record.id, '_destroy' => true }
               }
             }
           end
 
-          it "does not cascade to the child" do
+          it 'does not cascade to the child' do
             Band.accepts_nested_attributes_for :records, allow_destroy: true
             expect(band.update_attributes!(attributes)).to be true
           end
@@ -558,7 +558,7 @@ describe Mongoid::Interceptable do
       end
     end
 
-    context "when a document can exist in more than 1 level" do
+    context 'when a document can exist in more than 1 level' do
 
       let(:band) do
         Band.new
@@ -572,16 +572,16 @@ describe Mongoid::Interceptable do
         Note.new
       end
 
-      context "when adding the document at multiple levels" do
+      context 'when adding the document at multiple levels' do
 
         before do
           band.notes.push(note)
           record.notes.push(note)
         end
 
-        context "when saving the root" do
+        context 'when saving the root' do
 
-          it "only executes the callbacks once for each embed" do
+          it 'only executes the callbacks once for each embed' do
             expect(note).to receive(:update_saved).twice
             band.save!
           end
@@ -589,7 +589,7 @@ describe Mongoid::Interceptable do
       end
     end
 
-    context "when cascading after initialize" do
+    context 'when cascading after initialize' do
 
       let!(:person) do
         Person.create!
@@ -605,68 +605,68 @@ describe Mongoid::Interceptable do
       end
     end
 
-    context "when attempting to cascade on a referenced relation" do
+    context 'when attempting to cascade on a referenced relation' do
 
-      it "raises an error" do
+      it 'raises an error' do
         expect {
           Band.has_and_belongs_to_many :tags, cascade_callbacks: true
         }.to raise_error(Mongoid::Errors::InvalidRelationOption)
       end
     end
 
-    context "when the documents are embedded one level" do
+    context 'when the documents are embedded one level' do
 
-      describe "#after_create" do
+      describe '#after_create' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(label.after_create_called).to be true
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(label.after_create_called).to be true
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:label) do
-            band.create_label(name: "Mute")
+            band.create_label(name: 'Mute')
           end
 
           before do
@@ -674,271 +674,271 @@ describe Mongoid::Interceptable do
             band.save!
           end
 
-          it "does not execute the callback" do
+          it 'does not execute the callback' do
             expect(label.after_create_called).to be false
           end
         end
       end
 
-      describe "#after_save" do
+      describe '#after_save' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(label.after_save_called).to be true
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(label.after_save_called).to be true
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:label) do
-            band.create_label(name: "Mute")
+            band.create_label(name: 'Mute')
           end
 
           before do
             band.save!
           end
 
-          it "executes the callback" do
+          it 'executes the callback' do
             expect(label.after_save_called).to be true
           end
         end
       end
 
-      describe "#after_update" do
+      describe '#after_update' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(label.after_update_called).to be false
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(label.after_update_called).to be false
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
-          context "when the child is dirty" do
+          context 'when the child is dirty' do
 
             let!(:label) do
-              band.create_label(name: "Mute")
+              band.create_label(name: 'Mute')
             end
 
             before do
-              label.name = "Nothing"
+              label.name = 'Nothing'
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(label.after_update_called).to be true
             end
           end
 
-          context "when the child is not dirty" do
+          context 'when the child is not dirty' do
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(label.after_update_called).to be false
             end
           end
         end
       end
 
-      describe "#after_validation" do
+      describe '#after_validation' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(label.after_validation_called).to be true
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:label) do
-              band.build_label(name: "Mute")
+              band.build_label(name: 'Mute')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(label.after_validation_called).to be true
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:label) do
-            band.create_label(name: "Mute")
+            band.create_label(name: 'Mute')
           end
 
           before do
             band.save!
           end
 
-          it "executes the callback" do
+          it 'executes the callback' do
             expect(label.after_validation_called).to be true
           end
         end
       end
 
-      describe "#before_create" do
+      describe '#before_create' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(record.before_create_called).to be true
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(record.before_create_called).to be true
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:record) do
-            band.records.create!(name: "Moderat")
+            band.records.create!(name: 'Moderat')
           end
 
           before do
@@ -946,87 +946,87 @@ describe Mongoid::Interceptable do
             band.save!
           end
 
-          it "does not execute the callback" do
+          it 'does not execute the callback' do
             expect(record.before_create_called).to be false
           end
         end
       end
 
-      describe "#before_save" do
+      describe '#before_save' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(record.before_save_called).to be true
             end
 
-            it "persists the change" do
+            it 'persists the change' do
               expect(band.reload.records.first.before_save_called).to be true
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(record.before_save_called).to be true
             end
 
-            it "persists the change" do
+            it 'persists the change' do
               expect(band.reload.records.first.before_save_called).to be true
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:record) do
-            band.records.create!(name: "Moderat")
+            band.records.create!(name: 'Moderat')
           end
 
           before do
             band.save!
           end
 
-          it "executes the callback" do
+          it 'executes the callback' do
             expect(record.before_save_called).to be true
           end
 
-          it "persists the change" do
+          it 'persists the change' do
             expect(band.reload.records.first.before_save_called).to be true
           end
         end
 
-        context "when the child is created" do
+        context 'when the child is created' do
 
           let!(:band) do
             Band.create!
@@ -1036,140 +1036,140 @@ describe Mongoid::Interceptable do
             band.create_label(name: 'Label')
           end
 
-          it "only executes callback once" do
+          it 'only executes callback once' do
             expect(label.before_save_count).to be 1
           end
         end
       end
 
-      describe "#before_update" do
+      describe '#before_update' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(record.before_update_called).to be false
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(record.before_update_called).to be false
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:record) do
-            band.records.create!(name: "Moderat")
+            band.records.create!(name: 'Moderat')
           end
 
-          context "when the child is dirty" do
+          context 'when the child is dirty' do
 
             before do
-              record.name = "Nothing"
+              record.name = 'Nothing'
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(record.before_update_called).to be true
             end
 
-            it "persists the change" do
+            it 'persists the change' do
               expect(band.reload.records.first.before_update_called).to be true
             end
           end
 
-          context "when the child is not dirty" do
+          context 'when the child is not dirty' do
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(record.before_update_called).to be false
             end
           end
         end
       end
 
-      describe "#before_validation" do
+      describe '#before_validation' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(record.before_validation_called).to be true
             end
 
-            it "persists the change" do
+            it 'persists the change' do
               expect(band.reload.records.first.before_validation_called).to be true
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(record.before_validation_called).to be true
             end
 
-            it "persists the change" do
+            it 'persists the change' do
               expect(band.reload.records.first.before_validation_called).to be true
             end
           end
@@ -1177,7 +1177,7 @@ describe Mongoid::Interceptable do
           context 'when the parent is updated' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             before do
@@ -1197,7 +1197,7 @@ describe Mongoid::Interceptable do
         context 'when the parent is updated' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           before do
@@ -1213,96 +1213,96 @@ describe Mongoid::Interceptable do
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:record) do
-            band.records.create!(name: "Moderat")
+            band.records.create!(name: 'Moderat')
           end
 
           before do
             band.save!
           end
 
-          it "executes the callback" do
+          it 'executes the callback' do
             expect(record.before_validation_called).to be true
           end
 
-          it "persists the change" do
+          it 'persists the change' do
             expect(band.reload.records.first.before_validation_called).to be true
           end
         end
       end
     end
 
-    context "when the document is embedded multiple levels" do
+    context 'when the document is embedded multiple levels' do
 
-      describe "#before_create" do
+      describe '#before_create' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the root is new" do
+          context 'when the root is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             let!(:track) do
-              record.tracks.build(name: "Berlin")
+              record.tracks.build(name: 'Berlin')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(track.before_create_called).to be true
             end
           end
 
-          context "when the root is persisted" do
+          context 'when the root is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             let!(:track) do
-              record.tracks.build(name: "Berlin")
+              record.tracks.build(name: 'Berlin')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(track.before_create_called).to be true
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:record) do
-            band.records.create!(name: "Moderat")
+            band.records.create!(name: 'Moderat')
           end
 
           let!(:track) do
-            record.tracks.create!(name: "Berlin")
+            record.tracks.create!(name: 'Berlin')
           end
 
           before do
@@ -1310,28 +1310,28 @@ describe Mongoid::Interceptable do
             band.save!
           end
 
-          it "does not execute the callback" do
+          it 'does not execute the callback' do
             expect(track.before_create_called).to be false
           end
         end
       end
 
-      describe "#before_save" do
+      describe '#before_save' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the root is new" do
+          context 'when the root is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             let!(:track) do
-              record.tracks.build(name: "Berlin")
+              record.tracks.build(name: 'Berlin')
             end
 
             before do
@@ -1342,27 +1342,27 @@ describe Mongoid::Interceptable do
               band.reload.records.first
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(track.before_save_called).to be true
             end
 
-            it "persists the change" do
+            it 'persists the change' do
               expect(reloaded.tracks.first.before_save_called).to be true
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             let!(:track) do
-              record.tracks.build(name: "Berlin")
+              record.tracks.build(name: 'Berlin')
             end
 
             before do
@@ -1373,28 +1373,28 @@ describe Mongoid::Interceptable do
               band.reload.records.first
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(track.before_save_called).to be true
             end
 
-            it "persists the change" do
+            it 'persists the change' do
               expect(reloaded.tracks.first.before_save_called).to be true
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:record) do
-            band.records.create!(name: "Moderat")
+            band.records.create!(name: 'Moderat')
           end
 
           let!(:track) do
-            record.tracks.create!(name: "Berlin")
+            record.tracks.create!(name: 'Berlin')
           end
 
           before do
@@ -1405,85 +1405,85 @@ describe Mongoid::Interceptable do
             band.reload.records.first
           end
 
-          it "executes the callback" do
+          it 'executes the callback' do
             expect(track.before_save_called).to be true
           end
 
-          it "persists the change" do
+          it 'persists the change' do
             expect(reloaded.tracks.first.before_save_called).to be true
           end
         end
       end
 
-      describe "#before_update" do
+      describe '#before_update' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             let!(:track) do
-              record.tracks.build(name: "Berlin")
+              record.tracks.build(name: 'Berlin')
             end
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(track.before_update_called).to be false
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             let!(:track) do
-              record.tracks.build(name: "Berlin")
+              record.tracks.build(name: 'Berlin')
             end
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(track.before_update_called).to be false
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:record) do
-            band.records.create!(name: "Moderat")
+            band.records.create!(name: 'Moderat')
           end
 
           let!(:track) do
-            record.tracks.create!(name: "Berlin")
+            record.tracks.create!(name: 'Berlin')
           end
 
-          context "when the child is dirty" do
+          context 'when the child is dirty' do
 
             before do
-              track.name = "Rusty Nails"
+              track.name = 'Rusty Nails'
               band.save!
             end
 
@@ -1491,22 +1491,22 @@ describe Mongoid::Interceptable do
               band.reload.records.first
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(track.before_update_called).to be true
             end
 
-            it "persists the change" do
+            it 'persists the change' do
               expect(reloaded.tracks.first.before_update_called).to be true
             end
           end
 
-          context "when the child is not dirty" do
+          context 'when the child is not dirty' do
 
             before do
               band.save!
             end
 
-            it "does not execute the callback" do
+            it 'does not execute the callback' do
               expect(track.before_update_called).to be false
             end
           end
@@ -1532,76 +1532,76 @@ describe Mongoid::Interceptable do
         end
       end
 
-      describe "#before_validation" do
+      describe '#before_validation' do
 
-        context "when the child is new" do
+        context 'when the child is new' do
 
-          context "when the parent is new" do
+          context 'when the parent is new' do
 
             let(:band) do
-              Band.new(name: "Moderat")
+              Band.new(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             let!(:track) do
-              record.tracks.build(name: "Berlin")
+              record.tracks.build(name: 'Berlin')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(track.before_validation_called).to be true
             end
           end
 
-          context "when the parent is persisted" do
+          context 'when the parent is persisted' do
 
             let(:band) do
-              Band.create!(name: "Moderat")
+              Band.create!(name: 'Moderat')
             end
 
             let!(:record) do
-              band.records.build(name: "Moderat")
+              band.records.build(name: 'Moderat')
             end
 
             let!(:track) do
-              record.tracks.build(name: "Berlin")
+              record.tracks.build(name: 'Berlin')
             end
 
             before do
               band.save!
             end
 
-            it "executes the callback" do
+            it 'executes the callback' do
               expect(track.before_validation_called).to be true
             end
           end
         end
 
-        context "when the child is persisted" do
+        context 'when the child is persisted' do
 
           let(:band) do
-            Band.create!(name: "Moderat")
+            Band.create!(name: 'Moderat')
           end
 
           let!(:record) do
-            band.records.create!(name: "Moderat")
+            band.records.create!(name: 'Moderat')
           end
 
           let!(:track) do
-            record.tracks.create!(name: "Berlin")
+            record.tracks.create!(name: 'Berlin')
           end
 
           before do
             band.save!
           end
 
-          it "executes the callback" do
+          it 'executes the callback' do
             expect(track.before_validation_called).to be true
           end
         end
@@ -1609,16 +1609,16 @@ describe Mongoid::Interceptable do
     end
   end
 
-  context "callback on valid?" do
+  context 'callback on valid?' do
 
-    it "goes in all validation callback in good order" do
+    it 'goes in all validation callback in good order' do
       shin = ValidationCallback.new
       shin.valid?
       expect(shin.history).to eq([:before_validation, :validate, :after_validation])
     end
   end
 
-  context "when creating child documents in callbacks" do
+  context 'when creating child documents in callbacks' do
 
     let(:parent) do
       ParentDoc.new
@@ -1628,16 +1628,16 @@ describe Mongoid::Interceptable do
       parent.save!
     end
 
-    it "does not duplicate the child documents" do
+    it 'does not duplicate the child documents' do
       parent.children.create!(position: 1)
       expect(ParentDoc.find(parent.id).children.size).to eq(1)
     end
   end
 
-  context "when callbacks cancel persistence" do
+  context 'when callbacks cancel persistence' do
 
     let(:address) do
-      Address.new(street: "123 Sesame")
+      Address.new(street: '123 Sesame')
     end
 
     before(:all) do
@@ -1650,81 +1650,81 @@ describe Mongoid::Interceptable do
       Person.reset_callbacks(:save)
     end
 
-    context "when creating a document" do
+    context 'when creating a document' do
 
       let(:person) do
-        Person.new(mode: :prevent_save, title: "Associate", addresses: [address])
+        Person.new(mode: :prevent_save, title: 'Associate', addresses: [address])
       end
 
-      it "fails to save" do
+      it 'fails to save' do
         expect(person).to be_valid
         expect(person.save).to be false
       end
 
-      it "is a new record" do
+      it 'is a new record' do
         expect(person).to be_a_new_record
         expect { person.save }.not_to change { person.new_record? }
       end
 
-      it "is left dirty" do
+      it 'is left dirty' do
         expect(person).to be_changed
         expect { person.save }.not_to change { person.changed? }
       end
 
-      it "child documents are left dirty" do
+      it 'child documents are left dirty' do
         expect(address).to be_changed
         expect { person.save }.not_to change { address.changed? }
       end
     end
 
-    context "when updating a document" do
+    context 'when updating a document' do
 
       let(:person) do
         Person.create!.tap do |person|
           person.attributes = {
             mode: :prevent_save,
-            title: "Associate",
+            title: 'Associate',
             addresses: [address]
           }
         end
       end
 
-      it "#save returns false" do
+      it '#save returns false' do
         expect(person).to be_valid
         expect(person.save).to be false
       end
 
-      it "is a not a new record" do
+      it 'is a not a new record' do
         expect(person).to_not be_a_new_record
         expect { person.save }.not_to change { person.new_record? }
       end
 
-      it "is left dirty" do
+      it 'is left dirty' do
         expect(person).to be_changed
         expect { person.save }.not_to change { person.changed? }
       end
 
-      it "child documents are left dirty" do
+      it 'child documents are left dirty' do
         expect(address).to be_changed
         expect { person.save }.not_to change { address.changed? }
       end
     end
   end
 
-  context "when loading a model multiple times" do
+  context 'when loading a model multiple times' do
 
     before do
-      load File.join(MODELS, "callback_test.rb")
-      load File.join(MODELS, "callback_test.rb")
+      load File.join(MODELS, 'callback_test.rb')
+      load File.join(MODELS, 'callback_test.rb')
     end
 
     let(:callback) do
       CallbackTest.new
     end
 
-    context "when saving the document" do
+    context 'when saving the document' do
 
-      it "only executes the callbacks once" do
+      it 'only executes the callbacks once' do
         expect(callback).to receive(:execute).once
         callback.save
       end
@@ -1808,8 +1808,8 @@ describe Mongoid::Interceptable do
     end
   end
 
-  context "with associations" do
-    context "has_one" do
+  context 'with associations' do
+    context 'has_one' do
       let(:registry) { InterceptableSpec::CallbackRegistry.new }
 
       let(:parent) do
@@ -1857,7 +1857,7 @@ describe Mongoid::Interceptable do
       end
     end
 
-    context "embeds_one" do
+    context 'embeds_one' do
       let(:registry) { InterceptableSpec::CallbackRegistry.new }
 
       let(:parent) do
@@ -1866,7 +1866,7 @@ describe Mongoid::Interceptable do
         end
       end
 
-      context "create" do
+      context 'create' do
         let(:expected) do
           [
             [InterceptableSpec::CbEmbedsOneChild, :before_validation],
@@ -1906,7 +1906,7 @@ describe Mongoid::Interceptable do
         end
       end
 
-      context "update" do
+      context 'update' do
         let(:expected) do
           [
             [InterceptableSpec::CbEmbedsOneChild, :before_validation],
@@ -1945,7 +1945,7 @@ describe Mongoid::Interceptable do
 
           parent.callback_registry = registry
           parent.child.callback_registry = registry
-          parent.name = "name"
+          parent.name = 'name'
           parent.child.age = 10
 
           parent.save!
@@ -1954,7 +1954,7 @@ describe Mongoid::Interceptable do
       end
     end
 
-    context "has_many" do
+    context 'has_many' do
       let(:registry) { InterceptableSpec::CallbackRegistry.new }
 
       let(:parent) do
@@ -2017,7 +2017,7 @@ describe Mongoid::Interceptable do
       end
     end
 
-    context "embeds_many" do
+    context 'embeds_many' do
       let(:registry) { InterceptableSpec::CallbackRegistry.new }
 
       let(:parent) do
@@ -2086,28 +2086,28 @@ describe Mongoid::Interceptable do
     end
   end
 
-  context "when accessing parent document from callbacks" do
+  context 'when accessing parent document from callbacks' do
     shared_examples 'accesses the correct parent' do
-      it "accesses the correct parent in after_find" do
+      it 'accesses the correct parent in after_find' do
         expect(from_db.after_find_player).to eq(player._id)
       end
 
-      it "accesses the correct parent in after_initialize" do
+      it 'accesses the correct parent in after_initialize' do
         expect(from_db.after_initialize_player).to eq(player._id)
       end
 
-      it "accesses the correct parent in default" do
+      it 'accesses the correct parent in default' do
         expect(from_db.after_default_player).to eq(player._id)
       end
 
-      it "accesses the correct parent in unpersisted after_initialize" do
+      it 'accesses the correct parent in unpersisted after_initialize' do
         expect(unpersisted.after_initialize_player).to eq(player._id)
       end
     end
 
-    context "when using create methods" do
+    context 'when using create methods' do
 
-      context "when the child is an embeds_many association" do
+      context 'when the child is an embeds_many association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.implants.create!
@@ -2133,7 +2133,7 @@ describe Mongoid::Interceptable do
         include_examples 'accesses the correct parent'
       end
 
-      context "when the child is an embeds_one association" do
+      context 'when the child is an embeds_one association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.create_augmentation
@@ -2153,7 +2153,7 @@ describe Mongoid::Interceptable do
         include_examples 'accesses the correct parent'
       end
 
-      context "when the child is a has_many association" do
+      context 'when the child is a has_many association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.weapons.create!
@@ -2173,7 +2173,7 @@ describe Mongoid::Interceptable do
         include_examples 'accesses the correct parent'
       end
 
-      context "when the child is a has_one association" do
+      context 'when the child is a has_one association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.create_powerup
@@ -2194,7 +2194,7 @@ describe Mongoid::Interceptable do
         include_examples 'accesses the correct parent'
       end
 
-      context "when the child is a has_and_belongs_to_many association" do
+      context 'when the child is a has_and_belongs_to_many association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.shields.create!
@@ -2215,9 +2215,9 @@ describe Mongoid::Interceptable do
       end
     end
 
-    context "when using build methods" do
+    context 'when using build methods' do
 
-      context "when the child is an embeds_many association" do
+      context 'when the child is an embeds_many association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.implants.build
@@ -2238,7 +2238,7 @@ describe Mongoid::Interceptable do
         include_examples 'accesses the correct parent'
       end
 
-      context "when the child is an embeds_one association" do
+      context 'when the child is an embeds_one association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.build_augmentation
@@ -2259,7 +2259,7 @@ describe Mongoid::Interceptable do
         include_examples 'accesses the correct parent'
       end
 
-      context "when the child is a has_many association" do
+      context 'when the child is a has_many association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.weapons.build
@@ -2280,7 +2280,7 @@ describe Mongoid::Interceptable do
         include_examples 'accesses the correct parent'
       end
 
-      context "when the child is a has_one association" do
+      context 'when the child is a has_one association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.build_powerup
@@ -2301,7 +2301,7 @@ describe Mongoid::Interceptable do
         include_examples 'accesses the correct parent'
       end
 
-      context "when the child is a has_and_belongs_to_many association" do
+      context 'when the child is a has_and_belongs_to_many association' do
         let!(:player) do
           Player.create!.tap do |player|
             player.shields.build
@@ -2324,17 +2324,17 @@ describe Mongoid::Interceptable do
     end
   end
 
-  context "when accessing associations in defaults" do
-    context "when not using autobuilding" do
-      let(:band) { InterceptableBand.create(name: "Molejo") }
-      let(:song) { band.songs.create(name: "Cilada") }
+  context 'when accessing associations in defaults' do
+    context 'when not using autobuilding' do
+      let(:band) { InterceptableBand.create(name: 'Molejo') }
+      let(:song) { band.songs.create(name: 'Cilada') }
 
-      it "assigns the default correctly" do
-        expect(song.band_name).to eq("Molejo")
+      it 'assigns the default correctly' do
+        expect(song.band_name).to eq('Molejo')
       end
     end
 
-    context "when using autobuilding" do
+    context 'when using autobuilding' do
       before do
         InterceptablePlane.create!.tap do |plane|
           plane.wings.create!
@@ -2345,8 +2345,8 @@ describe Mongoid::Interceptable do
       let(:wing) { InterceptableWing.first }
       let(:engine) { wing.engine }
 
-      it "sets the defaults correctly" do
-        expect(wing._id).to eq("hello-wing")
+      it 'sets the defaults correctly' do
+        expect(wing._id).to eq('hello-wing')
         expect(wing.p_id).to eq(plane._id.to_s)
         expect(wing.e_id).to eq(engine._id.to_s)
         expect(engine._id).to eq("hello-engine-#{wing.id}")
@@ -2359,7 +2359,7 @@ describe Mongoid::Interceptable do
   # MissingAttributeError to be raised when accessing another association. This
   # was fixed by using `.pluck` over `.only`. Look at MONGOID-5306 for a more
   # detailed explanation.
-  context "when accessing _ids in validate and access an association in after_initialize" do
+  context 'when accessing _ids in validate and access an association in after_initialize' do
     it "doesn't raise AttributeNotLoaded" do
       company = InterceptableCompany.create!
       shop = InterceptableShop.create!(company: company)
