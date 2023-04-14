@@ -6,7 +6,6 @@ require "mongoid/bundle_checker"
 require "forwardable"
 require "time"
 require "set"
-require "ruby2_keywords"
 
 require "active_support"
 require "active_support/core_ext"

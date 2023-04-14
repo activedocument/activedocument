@@ -197,11 +197,6 @@ Lint/AmbiguousRegexpLiteral:
 Lint/AssignmentInCondition:
   Enabled: false
 
-# Offense count: 1
-Lint/BinaryOperatorWithIdenticalOperands:
-  Exclude:
-    - 'spec/mongoid/equality_spec.rb'
-
 # Offense count: 214
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: enums
@@ -216,11 +211,6 @@ Lint/DuplicateBranch:
     - 'lib/mongoid/criteria/translator.rb'
     - 'lib/mongoid/matcher/size.rb'
     - 'lib/mongoid/railtie.rb'
-
-# Offense count: 1
-Lint/DuplicateMethods:
-  Exclude:
-    - 'lib/mongoid/association/relatable.rb'
 
 # Offense count: 47
 # Configuration parameters: AllowComments, AllowEmptyLambdas.
@@ -245,13 +235,6 @@ Lint/EmptyClass:
     - 'spec/support/models/other_owner_object.rb'
 
 # Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowComments.
-Lint/EmptyConditionalBody:
-  Exclude:
-    - 'spec/integration/app_spec.rb'
-
-# Offense count: 1
 Lint/FloatComparison:
   Exclude:
     - 'lib/mongoid/matcher/bits.rb'
@@ -270,12 +253,6 @@ Lint/IneffectiveAccessModifier:
     - 'lib/mongoid/copyable.rb'
     - 'spec/support/models/override.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/InterpolationCheck:
-  Exclude:
-    - 'spec/mongoid/attributes/dynamic_spec.rb'
-
 # Offense count: 8
 Lint/MissingSuper:
   Exclude:
@@ -288,23 +265,6 @@ Lint/MissingSuper:
     - 'lib/mongoid/criteria/queryable/pipeline.rb'
     - 'lib/mongoid/criteria/queryable/smash.rb'
 
-# Offense count: 1
-Lint/NonLocalExitFromIterator:
-  Exclude:
-    - 'spec/integration/app_spec.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Lint/ParenthesesAsGroupedExpression:
-  Exclude:
-    - 'spec/mongoid/scopable_spec.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Lint/RedundantRequireStatement:
-  Exclude:
-    - 'lib/mongoid.rb'
-
 # Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
 Lint/RedundantStringCoercion:
@@ -313,11 +273,6 @@ Lint/RedundantStringCoercion:
     - 'spec/mongoid/association/depending_spec.rb'
     - 'spec/mongoid/errors/document_not_found_spec.rb'
     - 'spec/mongoid/shardable_spec.rb'
-
-# Offense count: 1
-Lint/RescueException:
-  Exclude:
-    - 'lib/mongoid/persistable.rb'
 
 # Offense count: 56
 # This cop supports safe autocorrection (--autocorrect).
@@ -429,12 +384,6 @@ Lint/UselessAssignment:
     - 'spec/mongoid/reloadable_spec.rb'
     - 'spec/spec_helper.rb'
     - 'spec/support/immutable_ids.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/UselessMethodDefinition:
-  Exclude:
-    - 'lib/mongoid/errors/invalid_query.rb'
 
 # Offense count: 6
 # Configuration parameters: CheckForMethodsWithNoSideEffects.

@@ -299,10 +299,10 @@ module Mongoid
                       end
       end
 
-      # The associations above this one in the inclusion tree.
+      # Sets the associations above this one in the inclusion tree.
       #
-      # @return [ Array<String> ] The associations.
-      attr_accessor :parent_inclusions
+      # @param [ Array<String> ] value The associations.
+      attr_writer :parent_inclusions
 
       # The associations above this one in the inclusion tree.
       #

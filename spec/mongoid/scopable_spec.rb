@@ -144,7 +144,7 @@ describe Mongoid::Scopable do
 
     context "when parent class has default scope" do
 
-      let (:selector) do
+      let(:selector) do
         AudibleSound.all.selector
       end
 

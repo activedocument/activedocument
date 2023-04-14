@@ -7,13 +7,6 @@ module Mongoid
     # invalid query fragment is passed to the query builder (Criteria object).
     class InvalidQuery < MongoidError
 
-      # Create the new invalid query error.
-      #
-      # @api private
-      def initialize(msg)
-        super
-      end
-
       # Stringifies the argument using #inspect and truncates the result to
       # about 100 characters.
       #

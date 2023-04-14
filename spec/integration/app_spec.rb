@@ -168,11 +168,11 @@ describe 'Mongoid application tests' do
 
   def install_rails
     check_call(%w(gem uni rails -a))
-    if (rails_version = SpecConfig.instance.rails_version) == 'master'
-    else
-      check_call(%w(gem list))
-      check_call(%w(gem install rails --no-document -v) + ["~> #{rails_version}.0"])
-    end
+    rails_version = SpecConfig.instance.rails_version
+    return if rails_version == 'master'
+
+    check_call(%w(gem list))
+    check_call(%w(gem install rails --no-document -v) + ["~> #{rails_version}.0"])
   end
 
   context 'local test applications' do
@@ -363,7 +363,7 @@ describe 'Mongoid application tests' do
     loop do
       begin
         Socket.tcp('localhost', port, nil, nil, connect_timeout: 0.5) do |socket|
-          return
+          break
         end
       rescue IOError, SystemCallError
         unless process.alive?
