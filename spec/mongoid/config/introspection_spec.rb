@@ -22,15 +22,17 @@ describe Mongoid::Config::Introspection do
     # deprecated option (if any), or else skip the specs in this context.
     #
     # TODO: Currently no options are deprecated
-    xcontext "with deprecated options" do
+    context "with deprecated options" do
       let(:option_name) { "background_indexing" }
 
       it "should exclude deprecated options by default" do
+        skip 'no options are deprecated'
         option = options.detect { |opt| opt.name == option_name }
         expect(option).to be_nil
       end
 
       it "deprecated options should be included when requested" do
+        skip 'no options are deprecated'
         option = all_options.detect { |opt| opt.name == option_name }
         expect(option).not_to be_nil
       end

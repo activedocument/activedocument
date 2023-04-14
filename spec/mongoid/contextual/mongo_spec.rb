@@ -245,9 +245,8 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "does not raise an error on unscoped" do
-        expect do
-          expect(Band.unscoped.estimated_count).to eq(5)
-        end
+        pending 'looks like an actual bug to fix'
+        expect(Band.unscoped.estimated_count).to eq(5)
       end
     end
   end

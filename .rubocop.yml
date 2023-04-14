@@ -50,6 +50,22 @@ Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
     - 'spec/mongoid/equality_spec.rb'
 
+RSpec/AroundBlock:
+  Exclude:
+    - 'spec/support/constraints.rb'
+
+RSpec/IdenticalEqualityAssertion:
+  Exclude:
+    - 'spec/mongoid/equality_spec.rb'
+
+RSpec/InstanceVariable:
+  Exclude:
+    - 'spec/integration/callbacks_spec.rb'
+
+Security/MarshalLoad:
+  Exclude:
+    - 'spec/mongoid/criteria/marshalable_spec.rb'
+
 # --------------------------------------------------
 # Cops below this line are intentionally disabled.
 

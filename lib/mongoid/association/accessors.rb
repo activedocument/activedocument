@@ -274,12 +274,14 @@ module Mongoid
       def self.define_existence_check!(association)
         name = association.name
         association.inverse_class.tap do |klass|
-          klass.module_eval <<-END, __FILE__, __LINE__ + 1
-              def #{name}?
-                without_autobuild { !__send__(:#{name}).blank? }
-              end
-              alias :has_#{name}? :#{name}?
-          END
+          klass.module_eval(
+            <<-METHOD, __FILE__, __LINE__ + 1
+              def #{name}?                                        # def game?
+                without_autobuild { !__send__(:#{name}).blank? }  #   without_autobuild { !__send__(:game).blank? }
+              end                                                 # end
+              alias :has_#{name}? :#{name}?                       # alias :has_game? :game?
+            METHOD
+          )
         end
       end
 

@@ -456,7 +456,7 @@ describe Mongoid::Clients::Factory do
       Mongoid::Config.send(:clients=, config)
     end
 
-    [:bad_one, :bad_two].each do |env|
+    [:good_one, :good_two].each do |env|
       it 'does not log a warning if none' do
         expect(described_class.send(:default_logger)).not_to receive(:warn)
         described_class.create(env).close
