@@ -320,6 +320,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
             def evolve(object)
               Integer.evolve(object)
             end
+
             def localized?
               false
             end
@@ -2312,7 +2313,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         let(:criteria) do
-          Band.send(meth, {views: 1}).send(meth, {views:2})
+          Band.send(meth, {views: 1}).send(meth, {views: 2})
         end
 
         it "is and-ed with the previous operators" do

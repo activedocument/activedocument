@@ -31,13 +31,6 @@ Layout/EmptyLines:
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EmptyLineBetweenMethodDefs, EmptyLineBetweenClassDefs, EmptyLineBetweenModuleDefs, AllowAdjacentOneLineDefs, NumberOfEmptyLines.
-Layout/EmptyLineBetweenDefs:
-  Exclude:
-    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
-
 # Offense count: 190
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -110,12 +103,6 @@ Layout/MultilineMethodCallBraceLayout:
     - 'spec/mongoid/criteria/queryable/selectable_logical_spec.rb'
     - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Layout/SpaceAfterColon:
-  Exclude:
-    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
-
 # Offense count: 7
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowForAlignment, EnforcedStyleForExponentOperator.
@@ -148,13 +135,6 @@ Layout/SpaceInsideBlockBraces:
 # SupportedStylesForEmptyBraces: space, no_space
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowInHeredoc.
-Layout/TrailingWhitespace:
-  Exclude:
-    - 'spec/support/models/animal.rb'
 
 # Offense count: 8
 # Configuration parameters: AllowedMethods, AllowedPatterns.
