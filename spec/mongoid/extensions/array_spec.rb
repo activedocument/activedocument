@@ -355,7 +355,7 @@ describe Mongoid::Extensions::Array do
   describe "#__mongoize_time__" do
 
     let(:array) do
-      [ 2010, 11, 19, 00, 24, 49.123457 ]
+      [ 2010, 11, 19, 0, 24, 49.123457 ]
     end
 
     let(:mongoized) do

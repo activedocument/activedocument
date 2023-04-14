@@ -693,6 +693,7 @@ describe Mongoid::Document do
       expect(movie.global_set).to be_a(::Set)
     end
   end
+
   context "when a model name conflicts with a mongoid internal" do
 
     let(:scheduler) do

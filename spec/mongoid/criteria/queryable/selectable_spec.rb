@@ -1930,10 +1930,11 @@ describe Mongoid::Criteria::Queryable::Selectable do
       # a user supplies more than one text condition.
       it 'merges conditions' do
         expect(Mongoid.logger).to receive(:warn)
-        expect(selection.selector).to eq('$and' => [
+        expect(selection.selector).to eq(
+          '$and' => [
             {'$text' => {'$search' => 'one'}}
           ],
-          '$text' => {'$search' => 'two'},
+          '$text' => {'$search' => 'two'}
         )
       end
     end

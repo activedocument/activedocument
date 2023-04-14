@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative '../belongs_to_models.rb'
+require_relative '../belongs_to_models'
 
 describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 

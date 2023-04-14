@@ -15,7 +15,7 @@ module Mongoid
       #
       # @return [ String ] The path.
       def self.source_root
-        @_mongoid_source_root ||= File.expand_path("../templates", __FILE__)
+        @_mongoid_source_root ||= File.expand_path('templates', __dir__)
       end
 
       # Returns the underscored name of the Rails application.

@@ -679,10 +679,11 @@ describe Mongoid::Criteria::Queryable::Selectable do
       let(:result) { query.and(other1, other2, other3) }
 
       it 'combines' do
-        expect(result.selector).to eq('hello' => 'world',
+        expect(result.selector).to eq(
+          'hello' => 'world',
           'foo' => 'bar',
           'bar' => 42,
-          'a' => 2,
+          'a' => 2
         )
       end
     end
@@ -2013,8 +2014,11 @@ describe Mongoid::Criteria::Queryable::Selectable do
       let(:result) { query.not(other) }
 
       it 'combines fields into top level criteria' do
-        expect(result.selector).to eq('hello' => 'world',
-          'a' => {'$ne' => 1}, 'b' => {'$ne' => 2})
+        expect(result.selector).to eq(
+          'hello' => 'world',
+          'a' => {'$ne' => 1},
+          'b' => {'$ne' => 2}
+        )
       end
     end
 
@@ -2055,10 +2059,11 @@ describe Mongoid::Criteria::Queryable::Selectable do
       let(:result) { query.not(other1, other2, other3) }
 
       it 'combines' do
-        expect(result.selector).to eq('hello' => 'world',
+        expect(result.selector).to eq(
+          'hello' => 'world',
           'foo' => {'$ne' => 'bar'},
           'bar' => {'$ne' => 42},
-          'a' => {'$ne' => 2},
+          'a' => {'$ne' => 2}
         )
       end
     end

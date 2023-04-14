@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "./includable_spec_models.rb"
+require_relative "./includable_spec_models"
 
 describe Mongoid::Criteria::Includable do
 

@@ -222,6 +222,7 @@ describe Mongoid::Association::Referenced::CounterCache do
         end
       end
     end
+
     context "when update with 2 and use a string argument" do
 
       let(:person) { Person.create! }
@@ -318,6 +319,7 @@ describe Mongoid::Association::Referenced::CounterCache do
         expect(person.reload.drugs_count).to eq(0)
       end
     end
+
     context "when increment 3 times using string as argument" do
 
       before do
