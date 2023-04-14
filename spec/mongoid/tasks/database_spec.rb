@@ -64,7 +64,7 @@ describe "Mongoid::Tasks::Database" do
   end
 
   let(:models) do
-    [ User, Account, Address, Draft ]
+    [User, Account, Address, Draft]
   end
 
   describe '.create_collections' do

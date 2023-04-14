@@ -33,6 +33,7 @@ module Mongoid
       # @return [ true | false ] If the objects are equal.
       def ==(other)
         return false unless other.respond_to?(:entries)
+
         entries == other.entries
       end
 
@@ -383,7 +384,7 @@ module Mongoid
       #
       # @return [ nil | false ] False if no attributes were provided.
       def update(attributes = nil)
-        update_documents(attributes, [ first ])
+        update_documents(attributes, [first])
       end
 
       # Update all the matching documents atomically.
@@ -583,7 +584,8 @@ module Mongoid
       # @param [ Array<Mongoid::Document> ] docs The docs to update.
       def update_documents(attributes, docs)
         return false if !attributes || docs.empty?
-        updates = { "$set" => {}}
+
+        updates = { "$set" => {} }
         docs.each do |doc|
           @selector ||= root.atomic_selector
           doc.write_attributes(attributes)
@@ -647,6 +649,7 @@ module Mongoid
       # @return [ Memory ] self.
       def apply_options
         raise Errors::InMemoryCollationNotSupported.new if criteria.options[:collation]
+
         skip(criteria.options[:skip]).limit(criteria.options[:limit])
       end
 
@@ -740,6 +743,7 @@ module Mongoid
       #   doesn't exist.
       def retrieve_value_at_path(document, field_path)
         return if field_path.blank? || !document
+
         segment, remaining = field_path.to_s.split('.', 2)
 
         curr = if document.is_a?(Document)

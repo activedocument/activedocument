@@ -74,7 +74,7 @@ describe Mongoid::Indexable::Specification do
     end
 
     it "returns the key fields in order" do
-      expect(spec.fields).to eq([ :name, :title ])
+      expect(spec.fields).to eq([:name, :title])
     end
   end
 
@@ -199,7 +199,7 @@ describe Mongoid::Indexable::Specification do
           Band,
           { name: 1, title: 1, years: -1 },
           partial_filter_expression: {
-            '$foo' => { years: { years: { '$lte' => 50 } } },
+            '$foo' => { years: { years: { '$lte' => 50 } } }
           }
         )
       end
@@ -214,7 +214,7 @@ describe Mongoid::Indexable::Specification do
 
       it "normalizes the options" do
         expect(spec.options).to eq(partial_filter_expression: {
-          '$foo': { y: { years: { '$lte' => 50 } } },
+          '$foo': { y: { years: { '$lte' => 50 } } }
         })
       end
     end

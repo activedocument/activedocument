@@ -1271,7 +1271,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
       before do
         Person.collection.find({ _id: person_one.id })
-              .update_one({ "$set" => { title: "Madam" }})
+              .update_one({ "$set" => { title: "Madam" } })
       end
 
       let(:reloaded) do

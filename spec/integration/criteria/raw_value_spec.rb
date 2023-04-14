@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 describe 'Queries with Mongoid::RawValue criteria' do
-  before { Time.zone = 'UTC'}
+  before { Time.zone = 'UTC' }
   let(:now_utc) { Time.utc(2020, 1, 1, 16, 0, 0, 0) }
   let(:today) { Date.new(2020, 1, 1) }
 
   let(:labels) do
-    [ Label.new(age: 12), Label.new(age: 16) ]
+    [Label.new(age: 12), Label.new(age: 16)]
   end
 
   let!(:band1) { Band.create!(name: '1', likes: 0, rating: 0.9, sales: BigDecimal('90'), decibels: 20..80, founded: today, updated: now_utc) }

@@ -104,7 +104,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
       context "when the document is not bindable" do
 
         before do
-          person.addresses = [ address ]
+          person.addresses = [address]
         end
 
         it "does nothing" do

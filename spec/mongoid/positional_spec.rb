@@ -37,7 +37,7 @@ describe Mongoid::Positional do
           {
             "$set" => {
               "field" => "value",
-              "child.children.1.children.3.field" => "value",
+              "child.children.1.children.3.field" => "value"
             }
           }
         end
@@ -61,7 +61,7 @@ describe Mongoid::Positional do
           {
             "$set" => {
               "field" => "value",
-              "child.children.1.children.3.field" => "value",
+              "child.children.1.children.3.field" => "value"
             }
           }
         end
@@ -70,7 +70,7 @@ describe Mongoid::Positional do
           {
             "$set" => {
               "field" => "value",
-              "child.children.1.children.3.field" => "value",
+              "child.children.1.children.3.field" => "value"
             }
           }
         end

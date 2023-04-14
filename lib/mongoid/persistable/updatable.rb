@@ -77,7 +77,7 @@ module Mongoid
       def init_atomic_updates
         updates = atomic_updates
         conflicts = updates.delete(:conflicts) || {}
-        [ updates, conflicts ]
+        [updates, conflicts]
       end
 
       # Prepare the update for execution. Validates and runs callbacks, etc.
@@ -97,9 +97,11 @@ module Mongoid
       # @return [ true | false ] The result of the update.
       def prepare_update(options = {})
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
+
         enforce_immutability_of_id_field!
         return false if performing_validations?(options) &&
                         invalid?(options[:context] || :update)
+
         process_flagged_destroys
         update_children = cascadable_children(:update)
         process_touch_option(options, update_children) do
@@ -149,7 +151,7 @@ module Mongoid
               while batched_changes = conflicting_change_groups.map(&:pop).compact.to_h.presence
                 coll.find(selector).update_one(
                   positionally(selector, modifier => batched_changes),
-                  session: _session,
+                  session: _session
                 )
               end
             end

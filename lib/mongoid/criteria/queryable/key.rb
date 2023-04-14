@@ -85,6 +85,7 @@ module Mongoid
         # @return [ true | false ] If the objects are equal.
         def ==(other)
           return false unless other.is_a?(Key)
+
           name == other.name && operator == other.operator && expanded == other.expanded
         end
         alias :eql? :==
@@ -148,13 +149,13 @@ module Mongoid
           end
 
           if expanded
-            expr = {expanded => expr}
+            expr = { expanded => expr }
           end
 
-          expr = {operator => expr}
+          expr = { operator => expr }
 
           if negating && operator != '$not'
-            expr = {'$not' => expr}
+            expr = { '$not' => expr }
           end
 
           expr

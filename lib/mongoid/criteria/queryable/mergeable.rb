@@ -104,7 +104,7 @@ module Mongoid
         # @return [ Mergeable ] The new mergeable.
         def __expanded__(criterion, outer, inner)
           selection(criterion) do |selector, field, value|
-            selector.store(field, { outer => { inner => value }})
+            selector.store(field, { outer => { inner => value } })
           end
         end
 
@@ -161,6 +161,7 @@ module Mongoid
             sel = query.selector
             criteria.flatten.each do |expr|
               next unless expr
+
               result_criteria = sel[operator] || []
               if expr.is_a?(Selectable)
                 expr = expr.selector
@@ -277,7 +278,7 @@ module Mongoid
                     else
                       raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
                       result['$and'] ||= []
-                      result['$and'] << {k => v}
+                      result['$and'] << { k => v }
                     end
                   else
                     # The new value is a simple value.
@@ -298,7 +299,7 @@ module Mongoid
                     if existing.key?(op)
                       raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
                       result['$and'] ||= []
-                      result['$and'] << {k => v}
+                      result['$and'] << { k => v }
                     else
                       existing.update(op => v)
                     end
@@ -313,11 +314,11 @@ module Mongoid
                          '$eq'
                        end
                   if v.is_a?(Hash) && !v.key?(op)
-                    result[k] = {op => existing}.update(v)
+                    result[k] = { op => existing }.update(v)
                   else
                     raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
                     result['$and'] ||= []
-                    result['$and'] << {k => v}
+                    result['$and'] << { k => v }
                   end
                 end
               else

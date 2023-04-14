@@ -7,7 +7,7 @@ describe Mongoid::Criteria::Queryable::Pipeline do
   describe "#__deep_copy" do
 
     let(:project) do
-      { "$project" => { "name" => 1 }}
+      { "$project" => { "name" => 1 } }
     end
 
     let(:pipeline) do
@@ -47,7 +47,7 @@ describe Mongoid::Criteria::Queryable::Pipeline do
 
         it "adds the group operation to the pipeline" do
           expect(pipeline).to eq([
-            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" }}}
+            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" } } }
           ])
         end
       end
@@ -60,7 +60,7 @@ describe Mongoid::Criteria::Queryable::Pipeline do
 
         it "adds the group operation to the pipeline" do
           expect(pipeline).to eq([
-            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" }}}
+            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" } } }
           ])
         end
       end
@@ -110,7 +110,7 @@ describe Mongoid::Criteria::Queryable::Pipeline do
 
       it "sets the aliased projection" do
         expect(pipeline).to eq([
-          { "$project" => { "name" => 1 }}
+          { "$project" => { "name" => 1 } }
         ])
       end
     end
@@ -123,7 +123,7 @@ describe Mongoid::Criteria::Queryable::Pipeline do
 
       it "sets the aliased projection" do
         expect(pipeline).to eq([
-          { "$project" => { "_id" => 1 }}
+          { "$project" => { "_id" => 1 } }
         ])
       end
     end

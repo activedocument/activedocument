@@ -25,6 +25,7 @@ module Mongoid
           # @return [ Mongoid::Document ] A single document.
           def build(base, object, type = nil, selected_fields = nil)
             return object unless object.is_a?(Hash)
+
             if _loading?
               Factory.from_db(klass, object, nil, selected_fields)
             else

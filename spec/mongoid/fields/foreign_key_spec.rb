@@ -37,7 +37,7 @@ describe Mongoid::Fields::ForeignKey do
     end
 
     before do
-      person.preferences.concat([ preference_one, preference_three ])
+      person.preferences.concat([preference_one, preference_three])
     end
 
     context "when adding and removing" do
@@ -48,14 +48,14 @@ describe Mongoid::Fields::ForeignKey do
           "preference_ids",
           "preference_ids",
           mods,
-          [ preference_three.id ],
-          [ preference_two.id ]
+          [preference_three.id],
+          [preference_two.id]
         )
       end
 
       it "adds the current to the modifications" do
         expect(mods["preference_ids"]).to eq(
-          [ preference_one.id, preference_three.id ]
+          [preference_one.id, preference_three.id]
         )
       end
     end
@@ -64,7 +64,7 @@ describe Mongoid::Fields::ForeignKey do
   describe "#eval_default" do
 
     let(:default) do
-      [ BSON::ObjectId.new ]
+      [BSON::ObjectId.new]
     end
 
     let(:field) do
@@ -189,11 +189,11 @@ describe Mongoid::Fields::ForeignKey do
             end
 
             let(:evolved) do
-              field.evolve([ id_one.to_s, id_two.to_s ])
+              field.evolve([id_one.to_s, id_two.to_s])
             end
 
             it "converts the value to an object id" do
-              expect(evolved).to eq([ id_one, id_two ])
+              expect(evolved).to eq([id_one, id_two])
             end
           end
 
@@ -216,11 +216,11 @@ describe Mongoid::Fields::ForeignKey do
             end
 
             let(:evolved) do
-              field.evolve([ id_one, id_two ])
+              field.evolve([id_one, id_two])
             end
 
             it "does not convert the values to object ids" do
-              expect(evolved).to eq([ id_one, id_two ])
+              expect(evolved).to eq([id_one, id_two])
             end
           end
         end
@@ -228,33 +228,33 @@ describe Mongoid::Fields::ForeignKey do
         context "when the values are normal strings" do
 
           let(:evolved) do
-            field.evolve([ "testing" ])
+            field.evolve(["testing"])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ "testing" ])
+            expect(evolved).to eq(["testing"])
           end
         end
 
         context "when the values are empty strings" do
 
           let(:evolved) do
-            field.evolve([ "" ])
+            field.evolve([""])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ "" ])
+            expect(evolved).to eq([""])
           end
         end
 
         context "when the values are nils" do
 
           let(:evolved) do
-            field.evolve([ nil ])
+            field.evolve([nil])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ nil ])
+            expect(evolved).to eq([nil])
           end
         end
       end
@@ -376,11 +376,11 @@ describe Mongoid::Fields::ForeignKey do
             end
 
             let(:evolved) do
-              field.evolve([ id_one.to_s, id_two.to_s ])
+              field.evolve([id_one.to_s, id_two.to_s])
             end
 
             it "converts the value to an object id" do
-              expect(evolved).to eq([ id_one, id_two ])
+              expect(evolved).to eq([id_one, id_two])
             end
           end
 
@@ -403,11 +403,11 @@ describe Mongoid::Fields::ForeignKey do
             end
 
             let(:evolved) do
-              field.evolve([ id_one, id_two ])
+              field.evolve([id_one, id_two])
             end
 
             it "does not convert the values to object ids" do
-              expect(evolved).to eq([ id_one, id_two ])
+              expect(evolved).to eq([id_one, id_two])
             end
           end
         end
@@ -415,33 +415,33 @@ describe Mongoid::Fields::ForeignKey do
         context "when the values are normal strings" do
 
           let(:evolved) do
-            field.evolve([ "testing" ])
+            field.evolve(["testing"])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ "testing" ])
+            expect(evolved).to eq(["testing"])
           end
         end
 
         context "when the values are empty strings" do
 
           let(:evolved) do
-            field.evolve([ "" ])
+            field.evolve([""])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ "" ])
+            expect(evolved).to eq([""])
           end
         end
 
         context "when the values are nils" do
 
           let(:evolved) do
-            field.evolve([ nil ])
+            field.evolve([nil])
           end
 
           it "does not convert the value" do
-            expect(evolved).to eq([ nil ])
+            expect(evolved).to eq([nil])
           end
         end
       end
@@ -707,7 +707,7 @@ describe Mongoid::Fields::ForeignKey do
     context "when the related document stores non object ids" do
 
       let(:agent) do
-        Agent.new(account_ids: [ true, false, 1, 2 ])
+        Agent.new(account_ids: [true, false, 1, 2])
       end
 
       it "casts the ids on the initial set" do

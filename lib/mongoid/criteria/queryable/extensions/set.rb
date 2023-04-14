@@ -21,6 +21,7 @@ module Mongoid
             # @return [ Array ] The evolved set.
             def evolve(object)
               return object if !object || !object.respond_to?(:map)
+
               object.map { |obj| obj.class.evolve(obj) }
             end
           end

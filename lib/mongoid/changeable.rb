@@ -174,6 +174,7 @@ module Mongoid
     def saved_change_to_attribute?(attr, **kwargs)
       changes = saved_change_to_attribute(attr)
       return false unless changes.is_a?(Array)
+
       if kwargs.key?(:from) && kwargs.key?(:to)
         changes.first == kwargs[:from] && changes.last == kwargs[:to]
       elsif kwargs.key?(:from)
@@ -247,6 +248,7 @@ module Mongoid
       attr = database_field_name(attr)
       return false unless changed_attributes.key?(attr)
       return false if changed_attributes[attr] == attributes[attr]
+
       if kwargs.key?(:from)
         return false if changed_attributes[attr] != kwargs[:from]
       end
@@ -268,6 +270,7 @@ module Mongoid
     def attribute_changed_from_default?(attr)
       field = fields[attr]
       return false unless field
+
       attributes[attr] != field.eval_default(self)
     end
 

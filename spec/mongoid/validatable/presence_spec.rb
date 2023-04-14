@@ -341,7 +341,7 @@ describe Mongoid::Validatable::PresenceValidator do
         end
 
         let!(:person) do
-          Person.create!(houses: [ house ])
+          Person.create!(houses: [house])
         end
 
         context "when the relation is loaded from the db" do
@@ -556,7 +556,7 @@ describe Mongoid::Validatable::PresenceValidator do
     end
 
     it "adds the validation only to the instance" do
-      expect(validators).to eq([ described_class ])
+      expect(validators).to eq([described_class])
     end
   end
 

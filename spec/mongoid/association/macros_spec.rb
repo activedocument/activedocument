@@ -1105,7 +1105,7 @@ describe Mongoid::Association::Macros do
     context "when the extension is two modules" do
 
       before do
-        Peep.embeds_one(:handle, extend: [ Handle::Extension, Handle::AnotherExtension ])
+        Peep.embeds_one(:handle, extend: [Handle::Extension, Handle::AnotherExtension])
       end
 
       it "extends the relation" do

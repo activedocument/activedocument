@@ -74,6 +74,7 @@ module Mongoid
       def set(modifications)
         modifications.each_pair do |field, value|
           next if field == "_id"
+
           mods = set_conflict?(field) ? conflicting_sets : sets
           add_operation(mods, field, value)
           set_fields[field.split(".", 2)[0]] = field

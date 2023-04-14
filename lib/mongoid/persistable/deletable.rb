@@ -43,7 +43,7 @@ module Mongoid
       #
       # @return [ Hash ] The atomic deletes.
       def atomic_deletes
-        { atomic_delete_modifier => { atomic_path => _index ? { "_id" => _id } : true }}
+        { atomic_delete_modifier => { atomic_path => _index ? { "_id" => _id } : true } }
       end
 
       # Delete the embedded document.
@@ -107,6 +107,7 @@ module Mongoid
       # @return [ true ] If the object was deleted successfully.
       def prepare_delete
         raise Errors::ReadonlyDocument.new(self.class) if readonly?
+
         yield(self)
         freeze
         self.destroyed = true

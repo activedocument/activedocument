@@ -27,18 +27,18 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         it "returns the equality check" do
-          expect(enumerable).to eq([ post ])
+          expect(enumerable).to eq([post])
         end
       end
 
       context "when only an array target exists" do
 
         let!(:enumerable) do
-          described_class.new([ post ])
+          described_class.new([post])
         end
 
         it "returns the equality check" do
-          expect(enumerable._loaded.values).to eq([ post ])
+          expect(enumerable._loaded.values).to eq([post])
         end
       end
 
@@ -63,7 +63,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
           end
 
           it "returns the equality check" do
-            expect(enumerable).to eq([ post, post_two ])
+            expect(enumerable).to eq([post, post_two])
           end
         end
 
@@ -74,7 +74,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
           end
 
           it "returns the equality check" do
-            expect(enumerable).to eq([ post ])
+            expect(enumerable).to eq([post])
           end
         end
 
@@ -92,7 +92,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
             end
 
             it "returns the equality check" do
-              expect(enumerable).to eq([ post ])
+              expect(enumerable).to eq([post])
             end
           end
         end
@@ -168,7 +168,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         context "when the entries are not equal" do
 
           let(:other) do
-            described_class.new([ Band.new ])
+            described_class.new([Band.new])
           end
 
           it "returns false" do
@@ -220,7 +220,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       it "returns the added documents" do
-        expect(added).to eq([ post ])
+        expect(added).to eq([post])
       end
 
       it "sets the base on the new document" do
@@ -640,7 +640,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:deleted) do
@@ -725,7 +725,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:deleted) do
@@ -753,7 +753,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:deleted) do
@@ -838,7 +838,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:deleted) do
@@ -846,7 +846,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       it "returns the remaining docs" do
-        expect(deleted).to eq([ post ])
+        expect(deleted).to eq([post])
       end
     end
   end
@@ -935,7 +935,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     context "when only an array target exists" do
 
       let!(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let!(:iterated) do
@@ -1186,7 +1186,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         let(:enumerable) do
-          described_class.new([ post ])
+          described_class.new([post])
         end
 
         let(:first) do
@@ -1311,7 +1311,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       context "when the enumerable is loaded" do
 
         let!(:enumerable) do
-          described_class.new([ post_one, post_two ])
+          described_class.new([post_one, post_two])
         end
 
         let!(:included) do
@@ -1430,7 +1430,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       let(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       it "does not set a criteria" do
@@ -1456,7 +1456,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       let(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let(:post_two) do
@@ -1472,7 +1472,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       it "returns the loaded and added docs" do
-        expect(in_memory).to eq([ post, post_two ])
+        expect(in_memory).to eq([post, post_two])
       end
     end
 
@@ -1499,7 +1499,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       end
 
       it "returns the added docs" do
-        expect(in_memory).to eq([ post_two ])
+        expect(in_memory).to eq([post_two])
       end
     end
 
@@ -1656,7 +1656,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         end
 
         let(:enumerable) do
-          described_class.new([ post ])
+          described_class.new([post])
         end
 
         let(:last) do
@@ -1833,7 +1833,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     let(:enumerable) do
-      described_class.new([ post ])
+      described_class.new([post])
     end
 
     before do
@@ -1912,7 +1912,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     context "when the enumerable is loaded" do
 
       let(:enumerable) do
-        described_class.new([ post ])
+        described_class.new([post])
       end
 
       let(:post_two) do
@@ -2028,7 +2028,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     let!(:json) do
-      person.posts.to_json({except: 'title'})
+      person.posts.to_json({ except: 'title' })
     end
 
     it "serializes the enumerable" do
@@ -2083,7 +2083,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     let!(:json) do
-      person.posts.as_json({except: "title"})
+      person.posts.as_json({ except: "title" })
     end
 
     it "serializes the enumerable" do
@@ -2123,7 +2123,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
 
     it "returns the unique documents" do
-      expect(uniq).to eq([ post ])
+      expect(uniq).to eq([post])
     end
 
     it "sets loaded to true" do

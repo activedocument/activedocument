@@ -25,7 +25,7 @@ describe "Rails::Mongoid" do
     let(:app) { double(config: config) }
     let(:config) { double(paths: paths) }
     let(:paths) { { "app/models" => path } }
-    let(:path) { double(expanded: [ model_root ]) }
+    let(:path) { double(expanded: [model_root]) }
 
     before { Rails::Mongoid.preload_models(app) }
 

@@ -70,7 +70,7 @@ describe Mongoid::Config::Environment do
     subject { described_class.load_yaml(path, environment) }
 
     context 'when file not found' do
-      let(:path) { 'not/a/valid/path'}
+      let(:path) { 'not/a/valid/path' }
 
       it { expect { subject }.to raise_error(Errno::ENOENT) }
     end

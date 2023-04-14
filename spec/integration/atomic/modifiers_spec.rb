@@ -32,11 +32,13 @@ describe Mongoid::Atomic::Modifiers do
       let(:operation) { :push }
 
       it "adds all modifiers to top level" do
-        expect(modifiers).to eq({ "$push" => {
-                                  "addresses.0.locations" => { '$each' => [{ "street" => "Bond St" }] },
-                                  "dresses" => { '$each' => [{ "color" => "red" }] },
-                                  "ses.0.foo" => { '$each' => [{ "baz" => "qux" }] }
-                                } })
+        expect(modifiers).to eq({
+          "$push" => {
+            "addresses.0.locations" => { '$each' => [{ "street" => "Bond St" }] },
+            "dresses" => { '$each' => [{ "color" => "red" }] },
+            "ses.0.foo" => { '$each' => [{ "baz" => "qux" }] }
+          }
+        })
       end
     end
 
@@ -44,11 +46,13 @@ describe Mongoid::Atomic::Modifiers do
       let(:operation) { :pull }
 
       it "adds all modifiers to top level" do
-        expect(modifiers).to eq({ "$pull" => {
-                                  "addresses.0.locations" => { "street" => "Bond St" },
-                                  "dresses" => { "color" => "red" },
-                                  "ses.0.foo" => { "baz" => "qux" },
-                                } })
+        expect(modifiers).to eq({
+          "$pull" => {
+            "addresses.0.locations" => { "street" => "Bond St" },
+            "dresses" => { "color" => "red" },
+            "ses.0.foo" => { "baz" => "qux" }
+          }
+        })
       end
     end
 
@@ -56,11 +60,13 @@ describe Mongoid::Atomic::Modifiers do
       let(:operation) { :pull_all }
 
       it "adds all modifiers to top level" do
-        expect(modifiers).to eq({ "$pullAll" => {
-                                  "addresses.0.locations" => { "street" => "Bond St" },
-                                  "dresses" => { "color" => "red" },
-                                  "ses.0.foo" => { "baz" => "qux" },
-                                } })
+        expect(modifiers).to eq({
+          "$pullAll" => {
+            "addresses.0.locations" => { "street" => "Bond St" },
+            "dresses" => { "color" => "red" },
+            "ses.0.foo" => { "baz" => "qux" }
+          }
+        })
       end
     end
 
@@ -68,11 +74,13 @@ describe Mongoid::Atomic::Modifiers do
       let(:operation) { :add_to_set }
 
       it "adds all modifiers to top level" do
-        expect(modifiers).to eq({ "$addToSet" => {
-                                  "addresses.0.locations" => { '$each' => { "street" => "Bond St" } },
-                                  "dresses" => { '$each' => { "color" => "red" } },
-                                  "ses.0.foo" => { '$each' => { "baz" => "qux" } }
-                                } })
+        expect(modifiers).to eq({
+          "$addToSet" => {
+            "addresses.0.locations" => { '$each' => { "street" => "Bond St" } },
+            "dresses" => { '$each' => { "color" => "red" } },
+            "ses.0.foo" => { '$each' => { "baz" => "qux" } }
+          }
+        })
       end
     end
 
@@ -80,11 +88,13 @@ describe Mongoid::Atomic::Modifiers do
       let(:operation) { :set }
 
       it "adds all modifiers to top level" do
-        expect(modifiers).to eq({ "$set" => {
-                                  "addresses.0.locations" => { "street" => "Bond St" },
-                                  "dresses" => { "color" => "red" },
-                                  "ses.0.foo" => { "baz" => "qux" },
-                                } })
+        expect(modifiers).to eq({
+          "$set" => {
+            "addresses.0.locations" => { "street" => "Bond St" },
+            "dresses" => { "color" => "red" },
+            "ses.0.foo" => { "baz" => "qux" }
+          }
+        })
       end
     end
 
@@ -104,11 +114,13 @@ describe Mongoid::Atomic::Modifiers do
       end
 
       it "adds all modifiers to top level" do
-        expect(modifiers).to eq("$unset" => {
-                                  foobar: true,
-                                  foo: true,
-                                  bar: true,
-                                })
+        expect(modifiers).to eq({
+          "$unset" => {
+            foobar: true,
+            foo: true,
+            bar: true
+          }
+        })
       end
     end
   end

@@ -43,6 +43,7 @@ module Mongoid
        :within_spherical_circle].each do |method|
         define_method(method) do |*criteria|
           raise Errors::CriteriaNotPermitted.new(klass, method, criteria) unless should_permit?(criteria)
+
           super(*criteria)
         end
       end

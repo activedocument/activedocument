@@ -51,8 +51,8 @@ describe Mongoid::Attributes do
 
             context "when calling only on a sub-document" do
 
-              let(:title) {"Executive"}
-              let(:city) {"NYC"}
+              let(:title) { "Executive" }
+              let(:city) { "NYC" }
               let!(:agent) do
                 agent = Agent.new(:title => title)
                 agent.build_address(:city => city)
@@ -105,7 +105,7 @@ describe Mongoid::Attributes do
 
               let(:expected) do
                 { 'dates' => { 'y' => {
-                  '2016' => 'Berlin',
+                  '2016' => 'Berlin'
                 } } }
               end
 
@@ -120,14 +120,14 @@ describe Mongoid::Attributes do
                 { 'dates' => { 'y' => {
                   '2016' => 'Berlin',
                   '2017' => 'Munich',
-                  '2018' => 'Krakow',
+                  '2018' => 'Krakow'
                 } } }
               end
 
               let(:expected) do
                 { 'dates' => { 'y' => {
                   '2016' => 'Berlin',
-                  '2018' => 'Krakow',
+                  '2018' => 'Krakow'
                 } } }
               end
 
@@ -378,7 +378,7 @@ describe Mongoid::Attributes do
         before do
           person.collection
                 .find({ _id: person.id })
-                .update_one({ "$unset" => { age: 1 }})
+                .update_one({ "$unset" => { age: 1 } })
         end
 
         context "when found" do
@@ -465,7 +465,7 @@ describe Mongoid::Attributes do
       end
 
       it 'writes the value into attributes' do
-        expect(bar.attributes).to eq({'_id' => bar.id, 'missing_field' => 42})
+        expect(bar.attributes).to eq({ '_id' => bar.id, 'missing_field' => 42 })
       end
 
       it 'makes the attribute accessible via []' do
@@ -1034,7 +1034,7 @@ describe Mongoid::Attributes do
         before do
           person.collection
                 .find({ _id: person.id })
-                .update_one({ "$unset" => { age: 1 }})
+                .update_one({ "$unset" => { age: 1 } })
           person.reload
         end
 
@@ -1164,7 +1164,7 @@ describe Mongoid::Attributes do
         before do
           person.collection
                 .find({ _id: person.id })
-                .update_one({ "$unset" => { age: 1 }})
+                .update_one({ "$unset" => { age: 1 } })
           person.reload
         end
 
@@ -1596,10 +1596,10 @@ describe Mongoid::Attributes do
     end
 
     context "when attribute is an Array" do
-      let(:person) { Person.new aliases: [ :alias_1 ] }
+      let(:person) { Person.new aliases: [:alias_1] }
 
       it "can set an Array Value" do
-        expect(person.aliases).to eq([ :alias_1 ])
+        expect(person.aliases).to eq([:alias_1])
       end
 
       it "writes nil when trying to set a value of invalid type - hash" do
@@ -1776,7 +1776,7 @@ describe Mongoid::Attributes do
         end
 
         before do
-          person.send(method, { videos: [{title: "Fight Club"}] })
+          person.send(method, { videos: [{ title: "Fight Club" }] })
         end
 
         it "sets nested documents" do
@@ -1862,7 +1862,7 @@ describe Mongoid::Attributes do
 
           before do
             owner.pet = pet
-            pet.vet_visits = [ vet_visit ]
+            pet.vet_visits = [vet_visit]
             owner.send(method, { pet: { name: "Bingo" } })
           end
 
@@ -2049,7 +2049,7 @@ describe Mongoid::Attributes do
       end
 
       it "aliases *_change" do
-        expect(product.cost_change).to eq([ nil, 500 ])
+        expect(product.cost_change).to eq([nil, 500])
       end
 
       it "aliases *_will_change!" do
@@ -2090,7 +2090,7 @@ describe Mongoid::Attributes do
       end
 
       it "aliases *_change" do
-        expect(product.price_change).to eq([ nil, 500 ])
+        expect(product.price_change).to eq([nil, 500])
       end
 
       it "aliases *_will_change!" do
@@ -2287,7 +2287,7 @@ describe Mongoid::Attributes do
         let(:doc) { NestedBook.create! }
 
         before do
-          doc.update_attributes({ pages_attributes: [ {} ] })
+          doc.update_attributes({ pages_attributes: [{}] })
         end
 
         it "updates the attributes" do
@@ -2693,7 +2693,7 @@ describe Mongoid::Attributes do
   end
 
   context "when modifiying a set referenced with the [] notation" do
-    let(:catalog) { Catalog.create!(set_field: [ 1 ].to_set) }
+    let(:catalog) { Catalog.create!(set_field: [1].to_set) }
 
     before do
       catalog[:set_field] << 2
@@ -2703,7 +2703,7 @@ describe Mongoid::Attributes do
 
     it "persists the updated hash" do
       pending "MONGOID-2951"
-      expect(catalog.set_field).to eq(Set.new([ 1, 2 ]))
+      expect(catalog.set_field).to eq(Set.new([1, 2]))
     end
   end
 end

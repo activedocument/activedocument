@@ -64,7 +64,7 @@ describe Mongoid::Persistable::Unsettable do
       context "when provided an array of symbols" do
 
         let!(:unset) do
-          person.unset([ :title, :age ])
+          person.unset([:title, :age])
         end
 
         it_behaves_like "an unsettable root document"
@@ -138,7 +138,7 @@ describe Mongoid::Persistable::Unsettable do
       context "when provided an array of symbols" do
 
         let!(:unset) do
-          address.unset([ :number, :city ])
+          address.unset([:number, :city])
         end
 
         it_behaves_like "an unsettable embedded document"
@@ -163,7 +163,7 @@ describe Mongoid::Persistable::Unsettable do
       it "marks a dirty change for the unset fields" do
         person.atomically do
           person.unset :title
-          expect(person.changes).to eq({"title" => ["sir", nil]})
+          expect(person.changes).to eq({ "title" => ["sir", nil] })
         end
       end
     end

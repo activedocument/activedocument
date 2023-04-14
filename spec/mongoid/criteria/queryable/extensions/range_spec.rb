@@ -7,7 +7,7 @@ describe Range do
   describe "#__array__" do
 
     it "returns the range as an array" do
-      expect((1..3).__array__).to eq([ 1, 2, 3 ])
+      expect((1..3).__array__).to eq([1, 2, 3])
     end
   end
 

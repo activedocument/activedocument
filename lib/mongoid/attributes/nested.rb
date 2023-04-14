@@ -54,6 +54,7 @@ module Mongoid
             self.nested_attributes["#{name}_attributes"] = meth
             association = relations[name.to_s]
             raise Errors::NestedAttributesMetadataNotFound.new(self, name) unless association
+
             autosave_nested_attributes(association) if options[:autosave]
 
             re_define_method(meth) do |attrs|

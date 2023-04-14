@@ -223,7 +223,7 @@ describe String do
         end
 
         it "returns the string with the value negated" do
-          expect(specified).to eq({ "field" => { "$ne" => "test" }})
+          expect(specified).to eq({ "field" => { "$ne" => "test" } })
         end
       end
     end

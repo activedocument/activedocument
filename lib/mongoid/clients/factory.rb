@@ -23,8 +23,10 @@ module Mongoid
       # @return [ Mongo::Client ] The new client.
       def create(name = nil)
         return default unless name
+
         config = Mongoid.clients[name]
         raise Errors::NoClientConfig.new(name) unless config
+
         create_client(config)
       end
 
@@ -55,6 +57,7 @@ module Mongoid
       # @return [ Mongo::Client ] The client.
       def create_client(configuration)
         raise Errors::NoClientsConfig.new unless configuration
+
         config = configuration.dup
         uri = config.delete(:uri)
         database = config.delete(:database)
@@ -85,7 +88,7 @@ module Mongoid
 
       MONGOID_WRAPPING_LIBRARY = {
         name: 'Mongoid',
-        version: VERSION,
+        version: VERSION
       }.freeze
 
       def driver_version

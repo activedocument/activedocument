@@ -131,11 +131,11 @@ module Mongoid
     #   config.connect_to("mongoid_test")
     #
     # @param [ String ] name The database name.
-    def connect_to(name, options = { read: { mode: :primary }})
+    def connect_to(name, options = { read: { mode: :primary } })
       self.clients = {
         default: {
           database: name,
-          hosts: [ "localhost:27017" ],
+          hosts: ["localhost:27017"],
           options: options
         }
       }
@@ -323,6 +323,7 @@ module Mongoid
 
     def clients=(clients)
       raise Errors::NoClientsConfig.new unless clients
+
       c = clients.with_indifferent_access
       Validators::Client.validate(c)
       @clients = c

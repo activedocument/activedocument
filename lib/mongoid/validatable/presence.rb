@@ -29,6 +29,7 @@ module Mongoid
         if field.try(:localized?) && !value.blank?
           value.each_pair do |_locale, _value|
             next unless not_present?(_value)
+
             document.errors.add(
               attribute,
               :blank_in_locale,
@@ -60,6 +61,7 @@ module Mongoid
       # @return [ true | false ] If the doc is missing.
       def relation_or_fk_missing?(doc, attr, value)
         return true if value.blank? && doc.send(attr).blank?
+
         association = doc.relations[attr.to_s]
         association.stores_foreign_key? && doc.send(association.foreign_key).blank?
       end

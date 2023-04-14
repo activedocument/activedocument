@@ -25,7 +25,7 @@ describe Mongoid::Config do
           {
             default: {
               database: database_id,
-              hosts: [ "127.0.0.1:27017" ]
+              hosts: ["127.0.0.1:27017"]
             }
           }
         end
@@ -177,7 +177,7 @@ describe Mongoid::Config do
     context 'is set in the config' do
       it 'sets the value' do
         Mongoid::Config.reset
-        configuration = CONFIG.merge(options: {discriminator_key: "test"})
+        configuration = CONFIG.merge(options: { discriminator_key: "test" })
 
         Mongoid.configure { |config| config.load_configuration(configuration) }
 
@@ -327,7 +327,7 @@ describe Mongoid::Config do
     context "when existing clients exist in the configuration" do
 
       let(:client) do
-        Mongo::Client.new([ "127.0.0.1:27017" ])
+        Mongo::Client.new(["127.0.0.1:27017"])
       end
 
       before do
@@ -549,22 +549,22 @@ describe Mongoid::Config do
           {
             auto_encryption_options: {
               'key_vault_namespace' => 'admin.datakeys',
-              'kms_providers' => {'local' => {'key' => 'z7iYiYKLuYymEWtk4kfny1ESBwwFdA58qMqff96A8ghiOcIK75lJGPUIocku8LOFjQuEgeIP4xlln3s7r93FV9J5sAE7zg8U'}},
-              'schema_map' => {'blog_development.comments' => {
+              'kms_providers' => { 'local' => { 'key' => 'z7iYiYKLuYymEWtk4kfny1ESBwwFdA58qMqff96A8ghiOcIK75lJGPUIocku8LOFjQuEgeIP4xlln3s7r93FV9J5sAE7zg8U' } },
+              'schema_map' => { 'blog_development.comments' => {
                 'bsonType' => 'object',
                 'properties' => {
-                  'message' => {'encrypt' => {
+                  'message' => { 'encrypt' => {
                     'algorithm' => 'AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic',
                     'bsonType' => 'string',
-                    'keyId' => [BSON::Binary.new("G\xF0 5\xCC@HX\xA2%b\x97\xA9a\xA8\xE7", :uuid)],
-                  }},
-                },
-              }}
+                    'keyId' => [BSON::Binary.new("G\xF0 5\xCC@HX\xA2%b\x97\xA9a\xA8\xE7", :uuid)]
+                  } }
+                }
+              } }
             },
             database: 'mongoid_test',
             platform: "mongoid-#{Mongoid::VERSION}",
             wrapping_libraries: [
-              {'name' => 'Mongoid', 'version' => Mongoid::VERSION},
+              { 'name' => 'Mongoid', 'version' => Mongoid::VERSION }
             ]
           }
         )
@@ -633,7 +633,7 @@ describe Mongoid::Config do
       context "when no hosts are provided" do
 
         let(:clients) do
-          { "default" => { database: database_id }}
+          { "default" => { database: database_id } }
         end
 
         it "raises an error" do
@@ -646,7 +646,7 @@ describe Mongoid::Config do
       context "when no database is provided" do
 
         let(:clients) do
-          { "default" => { hosts: [ "127.0.0.1:27017" ] }}
+          { "default" => { hosts: ["127.0.0.1:27017"] } }
         end
 
         it "raises an error" do
@@ -661,7 +661,7 @@ describe Mongoid::Config do
         let(:clients) do
           {
             "default" => {
-              hosts: [ "127.0.0.1:27017" ],
+              hosts: ["127.0.0.1:27017"],
               uri: "mongodb://127.0.0.1:27017"
             }
           }
@@ -746,9 +746,9 @@ describe Mongoid::Config do
 
     it 'does not drop indexes' do
       User.create_indexes
-      expect(User.collection.indexes.map {|i| i['name'] }).to eq %w[_id_ name_1]
+      expect(User.collection.indexes.map { |i| i['name'] }).to eq %w[_id_ name_1]
       Mongoid.truncate!
-      expect(User.collection.indexes.map {|i| i['name'] }).to eq %w[_id_ name_1]
+      expect(User.collection.indexes.map { |i| i['name'] }).to eq %w[_id_ name_1]
     end
   end
 

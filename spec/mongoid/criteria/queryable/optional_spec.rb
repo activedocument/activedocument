@@ -15,7 +15,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [ :asc, :ascending ].each do |method|
+  [:asc, :ascending].each do |method|
 
     describe "##{method}" do
 
@@ -29,19 +29,19 @@ describe Mongoid::Criteria::Queryable::Optional do
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 }}
+              { sort: { "field_one" => 1, "field_two" => 1 } }
             )
           end
 
           it "adds the sort to the aggregation" do
             expect(selection.pipeline).to include(
-              { "$sort" => { "field_one" => 1, "field_two" => 1 }}
+              { "$sort" => { "field_one" => 1, "field_two" => 1 } }
             )
           end
 
           it "does not add multiple entries to the pipeline" do
             expect(selection.pipeline).to_not include(
-              { "$sort" => { "field_one" => 1 }}
+              { "$sort" => { "field_one" => 1 } }
             )
           end
 
@@ -56,7 +56,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 }}
+              { sort: { "field_one" => 1, "field_two" => 1 } }
             )
           end
 
@@ -66,12 +66,12 @@ describe Mongoid::Criteria::Queryable::Optional do
         context "when provided an array of symbols" do
 
           let(:selection) do
-            query.send(method, [ :field_one, :field_two ])
+            query.send(method, [:field_one, :field_two])
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 }}
+              { sort: { "field_one" => 1, "field_two" => 1 } }
             )
           end
 
@@ -86,7 +86,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 }}
+              { sort: { "field_one" => 1, "field_two" => 1 } }
             )
           end
 
@@ -101,7 +101,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => 1, "field_two" => 1 }}
+              { sort: { "field_one" => 1, "field_two" => 1 } }
             )
           end
 
@@ -187,7 +187,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [ :desc, :descending ].each do |method|
+  [:desc, :descending].each do |method|
 
     describe "##{method}" do
 
@@ -201,19 +201,19 @@ describe Mongoid::Criteria::Queryable::Optional do
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 }}
+              { sort: { "field_one" => -1, "field_two" => -1 } }
             )
           end
 
           it "adds the sort to the aggregation" do
             expect(selection.pipeline).to include(
-              { "$sort" => { "field_one" => -1, "field_two" => -1 }}
+              { "$sort" => { "field_one" => -1, "field_two" => -1 } }
             )
           end
 
           it "does not add multiple entries to the pipeline" do
             expect(selection.pipeline).to_not include(
-              { "$sort" => { "field_one" => -1 }}
+              { "$sort" => { "field_one" => -1 } }
             )
           end
 
@@ -228,7 +228,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 }}
+              { sort: { "field_one" => -1, "field_two" => -1 } }
             )
           end
 
@@ -238,12 +238,12 @@ describe Mongoid::Criteria::Queryable::Optional do
         context "when provided an array of symbols" do
 
           let(:selection) do
-            query.send(method, [ :field_one, :field_two ])
+            query.send(method, [:field_one, :field_two])
           end
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 }}
+              { sort: { "field_one" => -1, "field_two" => -1 } }
             )
           end
 
@@ -258,7 +258,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 }}
+              { sort: { "field_one" => -1, "field_two" => -1 } }
             )
           end
 
@@ -273,7 +273,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
           it "adds the sorting criteria" do
             expect(selection.options).to eq(
-              { sort: { "field_one" => -1, "field_two" => -1 }}
+              { sort: { "field_one" => -1, "field_two" => -1 } }
             )
           end
 
@@ -362,7 +362,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         end
 
         it "adds the field options" do
-          expect(selection.options).to eq({ hint: { "$natural" => 1 }})
+          expect(selection.options).to eq({ hint: { "$natural" => 1 } })
         end
 
         it_behaves_like "a cloning option"
@@ -575,7 +575,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
         it "adds the field options" do
           expect(selection.options).to eq(
-            { fields: { "first" => 1, "second" => 1 }}
+            { fields: { "first" => 1, "second" => 1 } }
           )
         end
 
@@ -590,7 +590,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
         it "adds the field options" do
           expect(selection.options).to eq(
-            { fields: { "first" => 1, "second" => 1 }}
+            { fields: { "first" => 1, "second" => 1 } }
           )
         end
 
@@ -612,7 +612,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [ :order, :order_by ].each do |method|
+  [:order, :order_by].each do |method|
 
     describe "##{method}" do
 
@@ -628,19 +628,19 @@ describe Mongoid::Criteria::Queryable::Optional do
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 }}
+                { sort: { "field_one" => 1, "field_two" => -1 } }
               )
             end
 
             it "adds the sort to the aggregation" do
               expect(selection.pipeline).to include(
-                { "$sort" => { "field_one" => 1, "field_two" => -1 }}
+                { "$sort" => { "field_one" => 1, "field_two" => -1 } }
               )
             end
 
             it "does not add multiple entries to the pipeline" do
               expect(selection.pipeline).to_not include(
-                { "$sort" => { "field_one" => 1 }}
+                { "$sort" => { "field_one" => 1 } }
               )
             end
 
@@ -655,7 +655,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 }}
+                { sort: { "field_one" => 1, "field_two" => -1 } }
               )
             end
 
@@ -670,7 +670,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 }}
+                { sort: { "field_one" => 1, "field_two" => -1 } }
               )
             end
 
@@ -685,7 +685,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 }}
+                { sort: { "field_one" => 1, "field_two" => -1 } }
               )
             end
 
@@ -695,12 +695,12 @@ describe Mongoid::Criteria::Queryable::Optional do
           context "when the hash has hash values" do
 
             let(:selection) do
-              query.send("#{method}", score: { "$meta" => "textScore"})
+              query.send("#{method}", score: { "$meta" => "textScore" })
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "score" => { "$meta" => "textScore" } }}
+                { sort: { "score" => { "$meta" => "textScore" } } }
               )
             end
 
@@ -715,12 +715,12 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the arrays have integer values" do
 
               let(:selection) do
-                query.send("#{method}", [[ :field_one, 1 ], [ :field_two, -1 ]])
+                query.send("#{method}", [[:field_one, 1], [:field_two, -1]])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -730,12 +730,12 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the arrays have symbol values" do
 
               let(:selection) do
-                query.send("#{method}", [[ :field_one, :asc ], [ :field_two, :desc ]])
+                query.send("#{method}", [[:field_one, :asc], [:field_two, :desc]])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -745,12 +745,12 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the arrays have string values" do
 
               let(:selection) do
-                query.send("#{method}", [[ :field_one, "asc" ], [ :field_two, "desc" ]])
+                query.send("#{method}", [[:field_one, "asc"], [:field_two, "desc"]])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -761,12 +761,12 @@ describe Mongoid::Criteria::Queryable::Optional do
           context "when the array is selectable keys" do
 
             let(:selection) do
-              query.send("#{method}", [ :field_one.asc, :field_two.desc ])
+              query.send("#{method}", [:field_one.asc, :field_two.desc])
             end
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 }}
+                { sort: { "field_one" => 1, "field_two" => -1 } }
               )
             end
 
@@ -781,12 +781,12 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the values have integer directions" do
 
               let(:selection) do
-                query.send("#{method}", [ :field_one, 1 ], [ :field_two, -1 ])
+                query.send("#{method}", [:field_one, 1], [:field_two, -1])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -796,12 +796,12 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the values have symbol directions" do
 
               let(:selection) do
-                query.send("#{method}", [ :field_one, :asc ], [ :field_two, :desc ])
+                query.send("#{method}", [:field_one, :asc], [:field_two, :desc])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -811,12 +811,12 @@ describe Mongoid::Criteria::Queryable::Optional do
             context "when the values have string directions" do
 
               let(:selection) do
-                query.send("#{method}", [ :field_one, "asc" ], [ :field_two, "desc" ])
+                query.send("#{method}", [:field_one, "asc"], [:field_two, "desc"])
               end
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -832,7 +832,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
             it "adds the sorting criteria" do
               expect(selection.options).to eq(
-                { sort: { "field_one" => 1, "field_two" => -1 }}
+                { sort: { "field_one" => 1, "field_two" => -1 } }
               )
             end
 
@@ -852,7 +852,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -867,7 +867,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -885,7 +885,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -900,7 +900,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
               it "adds the sorting criteria" do
                 expect(selection.options).to eq(
-                  { sort: { "field_one" => 1, "field_two" => -1 }}
+                  { sort: { "field_one" => 1, "field_two" => -1 } }
                 )
               end
 
@@ -957,7 +957,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [ :skip, :offset ].each do |method|
+  [:skip, :offset].each do |method|
 
     describe "\##{method}" do
 
@@ -1100,7 +1100,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
       it "adds the field options" do
         expect(selection.options).to eq(
-          { fields: { "first" => { "$slice" => 5 }}}
+          { fields: { "first" => { "$slice" => 5 } } }
         )
       end
 
@@ -1110,12 +1110,15 @@ describe Mongoid::Criteria::Queryable::Optional do
     context "when provided a multiple arguments" do
 
       let(:selection) do
-        query.slice(:first => 5, :second => [ 0, 3 ])
+        query.slice(:first => 5, :second => [0, 3])
       end
 
       it "adds the field options" do
-        expect(selection.options).to eq({ fields:
-          { "first" => { "$slice" => 5 }, "second" => { "$slice" => [ 0, 3 ] }}
+        expect(selection.options).to eq({
+          fields: {
+            "first" => { "$slice" => 5 },
+            "second" => { "$slice" => [0, 3] }
+          }
         })
       end
 
@@ -1129,7 +1132,7 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       let(:selection) do
-        limited.slice(:first => 5, :second => [ 0, 3 ])
+        limited.slice(:first => 5, :second => [0, 3])
       end
 
       it "adds the field options" do
@@ -1137,7 +1140,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           fields: {
             "name" => 1,
             "first" => { "$slice" => 5 },
-            "second" => { "$slice" => [ 0, 3 ] }
+            "second" => { "$slice" => [0, 3] }
           }
         })
       end
@@ -1192,7 +1195,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
 
     it "adds the collation option" do
-      expect(selection.options).to eq(collation: {'locale' => 'fr', 'strength' => 2})
+      expect(selection.options).to eq(collation: { 'locale' => 'fr', 'strength' => 2 })
     end
 
     it_behaves_like "a cloning option"
@@ -1244,7 +1247,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
         it "adds the field options" do
           expect(selection.options).to eq(
-            { fields: { "first" => 0, "second" => 0 }}
+            { fields: { "first" => 0, "second" => 0 } }
           )
         end
 
@@ -1259,7 +1262,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
         it "adds the field options" do
           expect(selection.options).to eq(
-            { fields: { "first" => 0, "second" => 0 }}
+            { fields: { "first" => 0, "second" => 0 } }
           )
         end
 

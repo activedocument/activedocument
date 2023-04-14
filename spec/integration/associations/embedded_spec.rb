@@ -280,7 +280,7 @@ describe 'embedded associations' do
       EmmUser.create!(orders: [
         EmmOrder.new(sku: 0, amount: 0),
         EmmOrder.new(sku: 1, amount: 1),
-        EmmOrder.new(sku: 2, amount: 2),
+        EmmOrder.new(sku: 2, amount: 2)
       ])
     end
 
@@ -316,7 +316,7 @@ describe 'embedded associations' do
       EmmUser.create!(orders: [
         EmmOrder.new(sku: 0, surcharges: [EmmSurcharge.new(amount: 0)]),
         EmmOrder.new(sku: 1, surcharges: [EmmSurcharge.new(amount: 1)]),
-        EmmOrder.new(sku: 2, surcharges: [EmmSurcharge.new(amount: 2)]),
+        EmmOrder.new(sku: 2, surcharges: [EmmSurcharge.new(amount: 2)])
       ])
     end
 

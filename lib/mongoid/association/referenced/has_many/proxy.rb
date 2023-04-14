@@ -35,6 +35,7 @@ module Mongoid
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
+
             if doc = docs.first
               append(doc)
               doc.save if persistable? && !_assigning? && !doc.validated?
@@ -57,6 +58,7 @@ module Mongoid
             docs, inserts = [], []
             documents.each do |doc|
               next unless doc
+
               append(doc)
               save_or_delay(doc, docs, inserts) if persistable?
             end
@@ -268,6 +270,7 @@ module Mongoid
                 end
               end
               raise after_remove_error if after_remove_error
+
               many
             else
               nullify

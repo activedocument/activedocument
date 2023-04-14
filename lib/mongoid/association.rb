@@ -44,7 +44,7 @@ module Mongoid
       has_one: Association::Referenced::HasOne,
       has_many: Association::Referenced::HasMany,
       has_and_belongs_to_many: Association::Referenced::HasAndBelongsToMany,
-      belongs_to: Association::Referenced::BelongsTo,
+      belongs_to: Association::Referenced::BelongsTo
     }.freeze
 
     attr_accessor :_association
@@ -96,6 +96,7 @@ module Mongoid
     # @return [ Symbol ] The association name.
     def association_name
       raise Errors::NoMetadata.new(self.class.name) unless _association
+
       _association.name
     end
 

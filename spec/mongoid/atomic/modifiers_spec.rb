@@ -55,7 +55,7 @@ describe Mongoid::Atomic::Modifiers do
 
         it "adds the add to set with each modifiers" do
           expect(modifiers).to eq({
-            "$addToSet" => { "preference_ids" => { "$each" => %w[one two] }}
+            "$addToSet" => { "preference_ids" => { "$each" => %w[one two] } }
           })
         end
       end
@@ -63,7 +63,7 @@ describe Mongoid::Atomic::Modifiers do
       context "when adding to an existing field" do
 
         let(:adds_two) do
-          { "preference_ids" => [ "three" ] }
+          { "preference_ids" => ["three"] }
         end
 
         before do
@@ -73,10 +73,7 @@ describe Mongoid::Atomic::Modifiers do
 
         it "adds the add to set with each modifiers" do
           expect(modifiers).to eq({
-            "$addToSet" =>
-              { "preference_ids" =>
-                { "$each" => %w[one two three] }
-              }
+            "$addToSet" => { "preference_ids" => { "$each" => %w[one two three] } }
           })
         end
       end
@@ -101,7 +98,7 @@ describe Mongoid::Atomic::Modifiers do
       context "when adding a single pull" do
 
         let(:pulls) do
-          { "addresses" => { "_id" => { "$in" => [ "one" ]}} }
+          { "addresses" => { "_id" => { "$in" => ["one"] } } }
         end
 
         before do
@@ -110,7 +107,7 @@ describe Mongoid::Atomic::Modifiers do
 
         it "adds the push all modifiers" do
           expect(modifiers).to eq(
-            { "$pull" => { "addresses" => { "_id" => { "$in" => [ "one" ]}}}}
+            { "$pull" => { "addresses" => { "_id" => { "$in" => ["one"] } } } }
           )
         end
       end
@@ -118,11 +115,11 @@ describe Mongoid::Atomic::Modifiers do
       context "when adding to an existing pull" do
 
         let(:pull_one) do
-          { "addresses" => { "_id" => { "$in" => [ "one" ]}} }
+          { "addresses" => { "_id" => { "$in" => ["one"] } } }
         end
 
         let(:pull_two) do
-          { "addresses" => { "_id" => { "$in" => [ "two" ]}} }
+          { "addresses" => { "_id" => { "$in" => ["two"] } } }
         end
 
         before do
@@ -132,7 +129,7 @@ describe Mongoid::Atomic::Modifiers do
 
         it "overwrites the previous pulls" do
           expect(modifiers).to eq(
-            { "$pull" => { "addresses" => { "_id" => { "$in" => [ "two" ]}}}}
+            { "$pull" => { "addresses" => { "_id" => { "$in" => ["two"] } } } }
           )
         end
       end
@@ -165,14 +162,9 @@ describe Mongoid::Atomic::Modifiers do
         end
 
         it "adds the push all modifiers" do
-          expect(modifiers).to eq(
-            { "$pullAll" =>
-              { "addresses" => [
-                  { "_id" => "one" }
-                ]
-              }
-            }
-          )
+          expect(modifiers).to eq({
+            "$pullAll" => { "addresses" => [{ "_id" => "one" }] }
+          })
         end
       end
 
@@ -192,15 +184,14 @@ describe Mongoid::Atomic::Modifiers do
         end
 
         it "adds the pull all modifiers" do
-          expect(modifiers).to eq(
-            { "$pullAll" =>
-              { "addresses" => [
-                  { "street" => "Hobrechtstr." },
-                  { "street" => "Pflugerstr." }
-                ]
-              }
+          expect(modifiers).to eq({
+            "$pullAll" => {
+              "addresses" => [
+                { "street" => "Hobrechtstr." },
+                { "street" => "Pflugerstr." }
+              ]
             }
-          )
+          })
         end
       end
     end
@@ -232,14 +223,9 @@ describe Mongoid::Atomic::Modifiers do
         end
 
         it "adds the push all modifiers" do
-          expect(modifiers).to eq(
-            { "$push" =>
-              { "addresses" => { '$each' => [
-                  { "street" => "Oxford St" }
-                ] }
-              }
-            }
-          )
+          expect(modifiers).to eq({
+            "$push" => { "addresses" => { '$each' => [{ "street" => "Oxford St" }] } }
+          })
         end
       end
 
@@ -259,15 +245,16 @@ describe Mongoid::Atomic::Modifiers do
         end
 
         it "adds the push all modifiers" do
-          expect(modifiers).to eq(
-            { "$push" =>
-              { "addresses" => { '$each' => [
+          expect(modifiers).to eq({
+            "$push" => {
+              "addresses" => {
+                '$each' => [
                   { "street" => "Hobrechtstr." },
                   { "street" => "Pflugerstr." }
-                ] }
+                ]
               }
             }
-          )
+          })
         end
       end
     end
@@ -290,16 +277,12 @@ describe Mongoid::Atomic::Modifiers do
         end
 
         it "adds the push all modifiers to the conflicts hash" do
-          expect(modifiers).to eq(
-            { "$set" => { "addresses.0.street" => "Bond" },
-              conflicts: { "$push" =>
-                { "addresses" => { '$each' => [
-                    { "street" => "Oxford St" }
-                  ] }
-                }
-              }
+          expect(modifiers).to eq({
+            "$set" => { "addresses.0.street" => "Bond" },
+            conflicts: {
+              "$push" => { "addresses" => { '$each' => [{ "street" => "Oxford St" }] } }
             }
-          )
+          })
         end
       end
 
@@ -319,17 +302,12 @@ describe Mongoid::Atomic::Modifiers do
         end
 
         it "adds the push all modifiers to the conflicts hash" do
-          expect(modifiers).to eq(
-            { "$pullAll" => {
-              "addresses" => { "street" => "Bond St" }},
-              conflicts: { "$push" =>
-                { "addresses" => { '$each' => [
-                    { "street" => "Oxford St" }
-                  ]}
-                }
-              }
+          expect(modifiers).to eq({
+            "$pullAll" => { "addresses" => { "street" => "Bond St" } },
+            conflicts: {
+              "$push" => { "addresses" => { '$each' => [{ "street" => "Oxford St" }] } }
             }
-          )
+          })
         end
       end
 
@@ -349,17 +327,12 @@ describe Mongoid::Atomic::Modifiers do
         end
 
         it "adds the push all modifiers to the conflicts hash" do
-          expect(modifiers).to eq(
-            { "$push" => {
-              "addresses.0.locations" => { '$each' => [{ "street" => "Bond St" }] } },
-              conflicts: { "$push" =>
-                { "addresses" => { '$each' => [
-                    { "street" => "Oxford St" }
-                  ] }
-                }
-              }
+          expect(modifiers).to eq({
+            "$push" => { "addresses.0.locations" => { '$each' => [{ "street" => "Bond St" }] } },
+            conflicts: {
+              "$push" => { "addresses" => { '$each' => [{ "street" => "Oxford St" }] } }
             }
-          )
+          })
         end
       end
     end
@@ -384,9 +357,7 @@ describe Mongoid::Atomic::Modifiers do
 
         expect(modifiers).to eq({
           '$set' => { "addresses.0.name" => 'test' },
-          '$push' => {"addresses.0.locations" => {'$each' => [
-            { "street" => "Oxford St" },
-          ]}},
+          '$push' => { "addresses.0.locations" => { '$each' => [{ "street" => "Oxford St" }] } }
         })
       end
     end
@@ -456,16 +427,12 @@ describe Mongoid::Atomic::Modifiers do
         end
 
         it "adds the set modifiers to the conflicts hash" do
-          expect(modifiers).to eq(
-            { "$pullAll" =>
-              { "addresses" => [
-                  { "_id" => "one" }
-                ]
-              },
-              conflicts:
-                { "$set" => { "addresses.0.title" => "Sir" }}
+          expect(modifiers).to eq({
+            "$pullAll" => { "addresses" => [{ "_id" => "one" }] },
+            conflicts: {
+              "$set" => { "addresses.0.title" => "Sir" }
             }
-          )
+          })
         end
       end
     end
@@ -478,7 +445,7 @@ describe Mongoid::Atomic::Modifiers do
       context "when the unsets have values" do
 
         let(:unsets) do
-          [ "addresses" ]
+          ["addresses"]
         end
 
         before do

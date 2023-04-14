@@ -152,7 +152,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         let(:attributes) do
-          collection.find({ name: "Test"}).first
+          collection.find({ name: "Test" }).first
         end
 
         it "persists the versions" do
@@ -186,7 +186,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         let(:attributes) do
-          collection.find({ name: "Test"}).first
+          collection.find({ name: "Test" }).first
         end
 
         it "persists the new discriminator key" do
@@ -214,7 +214,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         let(:attributes) do
-          collection.find({ name: "Test"}).first
+          collection.find({ name: "Test" }).first
         end
 
         it "persists the new discriminator key" do
@@ -332,7 +332,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it "allows STI from << using model.new" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
@@ -344,7 +344,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it "allows STI from << using model.create" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
@@ -356,7 +356,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it "allows STI from the build call" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
@@ -368,7 +368,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it "respects the _type attribute from the build call" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
@@ -380,7 +380,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it "allows STI from the create call" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
@@ -392,7 +392,7 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it "respects the _type attribute from the create call" do
-          expect(container.vehicles.map(&:class)).to eq([ Car, Truck ])
+          expect(container.vehicles.map(&:class)).to eq([Car, Truck])
         end
       end
 
@@ -403,11 +403,11 @@ describe Mongoid::Persistable::Creatable do
           end
 
           it "initializes the given type document" do
-            expect(container.vehicles.map(&:class)).to eq([ Car ])
+            expect(container.vehicles.map(&:class)).to eq([Car])
           end
 
           it "initializes with the given attributes" do
-            expect(container.vehicles.map(&:driver)).to eq([ driver ])
+            expect(container.vehicles.map(&:driver)).to eq([driver])
           end
 
           it "initializes with a type field that equals the class" do
@@ -424,11 +424,11 @@ describe Mongoid::Persistable::Creatable do
           end
 
           it "initializes the given type document" do
-            expect(container.vehicles.map(&:class)).to eq([ Car ])
+            expect(container.vehicles.map(&:class)).to eq([Car])
           end
 
           it "initializes with the given attributes" do
-            expect(container.vehicles.map(&:driver)).to eq([ driver ])
+            expect(container.vehicles.map(&:driver)).to eq([driver])
           end
 
           it "initializes with a dkey field that equals the class" do
@@ -446,11 +446,11 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it "creates the given type document" do
-          expect(container.vehicles.map(&:class)).to eq([ Car ])
+          expect(container.vehicles.map(&:class)).to eq([Car])
         end
 
         it "creates with the given attributes" do
-          expect(container.vehicles.map(&:driver)).to eq([ driver ])
+          expect(container.vehicles.map(&:driver)).to eq([driver])
         end
 
         it "creates the correct number of documents" do
@@ -506,11 +506,11 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it "creates the given type document" do
-          expect(container.vehicles.map(&:class)).to eq([ Car ])
+          expect(container.vehicles.map(&:class)).to eq([Car])
         end
 
         it "creates with the given attributes" do
-          expect(container.vehicles.map(&:driver)).to eq([ driver ])
+          expect(container.vehicles.map(&:driver)).to eq([driver])
         end
 
         it "creates the correct number of documents" do

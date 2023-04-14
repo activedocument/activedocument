@@ -12,7 +12,7 @@ describe Mongoid::Criteria::Modifiable do
 
     context "when provided valid attributes" do
       let(:band) do
-        criteria.create!(genres: [ "electro" ])
+        criteria.create!(genres: ["electro"])
       end
 
       it "returns the created document" do
@@ -24,7 +24,7 @@ describe Mongoid::Criteria::Modifiable do
       end
 
       it "sets the attributes passed to build" do
-        expect(band.genres).to eq([ "electro" ])
+        expect(band.genres).to eq(["electro"])
       end
     end
 
@@ -34,7 +34,7 @@ describe Mongoid::Criteria::Modifiable do
 
         let(:band) do
           criteria.create! do |c|
-            c.genres = [ "electro" ]
+            c.genres = ["electro"]
           end
         end
 
@@ -47,7 +47,7 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         it "sets the attributes passed to build" do
-          expect(band.genres).to eq([ "electro" ])
+          expect(band.genres).to eq(["electro"])
         end
       end
     end
@@ -115,7 +115,7 @@ describe Mongoid::Criteria::Modifiable do
     end
   end
 
-  [ :delete, :delete_all, :destroy, :destroy_all ].each do |method|
+  [:delete, :delete_all, :destroy, :destroy_all].each do |method|
 
     describe "##{method}" do
 
@@ -137,7 +137,7 @@ describe Mongoid::Criteria::Modifiable do
           Person.create!(
             title: "Sir",
             name: name,
-            addresses: [ address_one, address_two ]
+            addresses: [address_one, address_two]
           )
         end
       end
@@ -756,7 +756,7 @@ describe Mongoid::Criteria::Modifiable do
               criteria.embedded = true
               criteria.association = Band.reflect_on_association(:records)
               criteria.parent_document = band
-              criteria.selector = { "records" => { "producers" => {"$in" => ["nonexistent"] } } }
+              criteria.selector = { "records" => { "producers" => { "$in" => ["nonexistent"] } } }
             end
           end
 
@@ -857,7 +857,7 @@ describe Mongoid::Criteria::Modifiable do
         context "when the document is not found" do
 
           let(:document) do
-            Band.in(name: [ "New Order" ]).first_or_create(active: false)
+            Band.in(name: ["New Order"]).first_or_create(active: false)
           end
 
           it "returns a new document" do
@@ -981,7 +981,7 @@ describe Mongoid::Criteria::Modifiable do
         context "when the document is not found" do
 
           let(:document) do
-            Band.in(name: [ "New Order" ]).first_or_create!(active: false)
+            Band.in(name: ["New Order"]).first_or_create!(active: false)
           end
 
           it "returns a new document" do
@@ -1174,7 +1174,7 @@ describe Mongoid::Criteria::Modifiable do
         context "when the document is not found" do
 
           let(:document) do
-            Band.in(name: [ "New Order" ]).first_or_initialize(active: false)
+            Band.in(name: ["New Order"]).first_or_initialize(active: false)
           end
 
           it "returns a new document" do

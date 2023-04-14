@@ -146,7 +146,7 @@ module Mongoid
         self.shard_key_fields = spec.keys
         self.shard_config = {
           key: spec.freeze,
-          options: (options || {}).dup.freeze,
+          options: (options || {}).dup.freeze
         }.freeze
       end
     end

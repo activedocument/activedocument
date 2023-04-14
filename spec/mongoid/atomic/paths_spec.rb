@@ -231,7 +231,7 @@ describe Mongoid::Atomic::Paths do
       end
 
       before do
-        address.locations << [ other, location ]
+        address.locations << [other, location]
         address.instance_variable_set(:@new_record, false)
         person.addresses << address
       end
@@ -303,7 +303,7 @@ describe Mongoid::Atomic::Paths do
       end
 
       before do
-        address.locations << [ other, location ]
+        address.locations << [other, location]
         address.instance_variable_set(:@new_record, false)
         person.addresses << address
       end

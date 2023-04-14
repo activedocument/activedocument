@@ -121,7 +121,7 @@ describe Mongoid::Query do
     end
 
     it "retains the option values" do
-      expect(cloned.options).to eq({ "sort" => { "field" => sort }})
+      expect(cloned.options).to eq({ "sort" => { "field" => sort } })
     end
 
     it "deep copies the selector" do

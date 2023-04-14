@@ -47,6 +47,7 @@ module Mongoid
         # @return [ Integer | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.blank?
+
           if object.is_a?(String)
             if object.numeric?
               object.to_i

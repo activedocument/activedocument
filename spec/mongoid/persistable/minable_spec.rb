@@ -29,9 +29,9 @@ describe Mongoid::Persistable::Minable do
           end
 
           it 'sets the fields to smaller of current vs. given' do
-            expect(band.reload.name).to eq [ initial_name, given_name ].min
-            expect(band.member_count).to eq [ initial_members, given_members ].min
-            expect(band.founded).to eq [ initial_founded, given_founded ].min
+            expect(band.reload.name).to eq [initial_name, given_name].min
+            expect(band.member_count).to eq [initial_members, given_members].min
+            expect(band.founded).to eq [initial_founded, given_founded].min
           end
 
           it "resets dirty changes" do
@@ -87,9 +87,9 @@ describe Mongoid::Persistable::Minable do
           end
 
           it 'sets the fields to smaller of current vs. given' do
-            expect(address.reload.city).to eq [ initial_city, given_city ].min
-            expect(address.number).to eq [ initial_number, given_number ].min
-            expect(address.end_date).to eq [ initial_end_date, given_end_date ].min
+            expect(address.reload.city).to eq [initial_city, given_city].min
+            expect(address.number).to eq [initial_number, given_number].min
+            expect(address.end_date).to eq [initial_end_date, given_end_date].min
           end
 
           it "resets dirty changes" do

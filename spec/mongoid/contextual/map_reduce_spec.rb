@@ -108,8 +108,8 @@ describe Mongoid::Contextual::MapReduce do
       it "iterates over the results" do
         ordered_results = results.entries.sort_by { |doc| doc['_id'] }
         expected = [
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         ]
         expect(ordered_results.entries).to eq(expected)
       end
@@ -123,8 +123,8 @@ describe Mongoid::Contextual::MapReduce do
 
       let(:expected_results) do
         [
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         ]
       end
 

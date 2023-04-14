@@ -25,7 +25,7 @@ describe Mongoid::Criteria::Options do
     end
 
     it 'uses the persistence context of the class of the criteria' do
-      expect(context.options).to eq({ })
+      expect(context.options).to eq({})
     end
   end
 end

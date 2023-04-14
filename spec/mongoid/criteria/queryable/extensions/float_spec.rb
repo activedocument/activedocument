@@ -36,7 +36,7 @@ describe Float do
     context "when provided an array of strings" do
 
       it "returns the array of floats" do
-        expect(described_class.evolve([ "2.23" ])).to eq([ 2.23 ])
+        expect(described_class.evolve(["2.23"])).to eq([2.23])
       end
     end
 

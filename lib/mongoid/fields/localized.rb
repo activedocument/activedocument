@@ -20,6 +20,7 @@ module Mongoid
       # @return [ Object ] The value for the current locale.
       def demongoize(object)
         return if object.nil?
+
         case object
         when Hash
           type.demongoize(lookup(object))
@@ -70,6 +71,7 @@ module Mongoid
       # @return [ true | false ] If fallbacks should be used.
       def fallbacks?
         return true if options[:fallbacks].nil?
+
         !!options[:fallbacks]
       end
 
@@ -92,6 +94,7 @@ module Mongoid
                   object[locale]
                 end
         return value unless value.nil?
+
         if fallbacks? && ::I18n.respond_to?(:fallbacks)
           fallback_key = ::I18n.fallbacks[locale].find do |loc|
             object.key?(loc.to_s) || object.key?(loc)

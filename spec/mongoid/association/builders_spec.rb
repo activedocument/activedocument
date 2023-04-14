@@ -51,7 +51,7 @@ describe Mongoid::Association::Builders do
           end
 
           it "sets the inverse" do
-            expect(person.posts).to eq([ post ])
+            expect(person.posts).to eq([post])
           end
 
           it "does not save the document" do
@@ -132,7 +132,7 @@ describe Mongoid::Association::Builders do
           end
 
           it "sets the inverse" do
-            expect(person.posts).to eq([ post ])
+            expect(person.posts).to eq([post])
           end
 
           it "saves the document" do

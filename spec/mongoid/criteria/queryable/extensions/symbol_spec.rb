@@ -101,7 +101,7 @@ describe Symbol do
         end
 
         it "returns the symbol with the value negated" do
-          expect(specified).to eq({ field: { "$ne" => "test" }})
+          expect(specified).to eq({ field: { "$ne" => "test" } })
         end
 
       end

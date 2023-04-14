@@ -141,7 +141,7 @@ describe Mongoid::Fields::Localized do
             context "when fallbacks are defined" do
 
               before do
-                ::I18n.fallbacks[:de] = [ :de, :en, :es ]
+                ::I18n.fallbacks[:de] = [:de, :en, :es]
               end
 
               context "when the first fallback translation exists" do
@@ -192,7 +192,7 @@ describe Mongoid::Fields::Localized do
             context "when no fallbacks are defined" do
 
               before do
-                ::I18n.fallbacks[:de] = [ :de ]
+                ::I18n.fallbacks[:de] = [:de]
               end
 
               let(:value) do
@@ -207,7 +207,7 @@ describe Mongoid::Fields::Localized do
             context 'when fallbacks are empty' do
 
               before do
-                ::I18n.fallbacks[:de] = [ ]
+                ::I18n.fallbacks[:de] = []
               end
 
               let(:value) do
@@ -304,7 +304,7 @@ describe Mongoid::Fields::Localized do
               with_default_i18n_configs
 
               before do
-                ::I18n.fallbacks[:de] = [ :de, :en, :es ]
+                ::I18n.fallbacks[:de] = [:de, :en, :es]
               end
 
               context 'when fallbacks are enabled' do
@@ -363,7 +363,7 @@ describe Mongoid::Fields::Localized do
               with_default_i18n_configs
 
               before do
-                ::I18n.fallbacks[:de] = [ :de ]
+                ::I18n.fallbacks[:de] = [:de]
               end
 
               let(:value) do
@@ -478,7 +478,7 @@ describe Mongoid::Fields::Localized do
           end
 
           let(:value) do
-            field.demongoize({"de" => true})
+            field.demongoize({ "de" => true })
           end
 
           it "returns the boolean value from the set locale" do
@@ -503,7 +503,7 @@ describe Mongoid::Fields::Localized do
               end
 
               let(:value) do
-                field.demongoize({"de" => false})
+                field.demongoize({ "de" => false })
               end
 
               it "returns the boolean value from the set locale" do
@@ -523,7 +523,7 @@ describe Mongoid::Fields::Localized do
               end
 
               let(:value) do
-                field.demongoize({"de" => true})
+                field.demongoize({ "de" => true })
               end
 
               it "returns the boolean value from the set locale" do

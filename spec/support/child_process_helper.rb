@@ -70,6 +70,7 @@ module ChildProcessHelper
     unless process.exit_code == 0
       raise SpawnError, "Failed to execute: #{args}"
     end
+
     output
   end
 end

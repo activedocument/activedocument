@@ -8,7 +8,7 @@ describe 'Queries with Range criteria' do
   let(:today) { Date.new(2020, 1, 1) }
 
   let(:labels) do
-    [ Label.new(age: 12), Label.new(age: 16) ]
+    [Label.new(age: 12), Label.new(age: 16)]
   end
 
   let!(:band1) { Band.create!(likes: 0, rating: 0.9, founded: today, updated_at: now_utc) }
@@ -283,7 +283,7 @@ describe 'Queries with Range criteria' do
   end
 
   context 'Range<Integer> criteria vs Array<Hash<Symbol, Integer>>' do
-    let!(:band6) { Band.create!(genres: [{x: 12}, {x: 16}]) }
+    let!(:band6) { Band.create!(genres: [{ x: 12 }, { x: 16 }]) }
 
     it 'returns objects within the range' do
       expect(Band.where("genres.x" => 10..18).to_a).to eq [band6]

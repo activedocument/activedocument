@@ -25,7 +25,7 @@ describe Hash do
               end
 
               it "sets the new array" do
-                expect(hash).to eq({ "$in" => [ 5, 6 ] })
+                expect(hash).to eq({ "$in" => [5, 6] })
               end
             end
 
@@ -51,30 +51,30 @@ describe Hash do
           context "when the values are unique" do
 
             let(:hash) do
-              { "$in" => [ 5, 6 ] }
+              { "$in" => [5, 6] }
             end
 
             before do
-              hash.__add__({ "$in" => [ 7, 8 ] })
+              hash.__add__({ "$in" => [7, 8] })
             end
 
             it "sets the new array" do
-              expect(hash).to eq({ "$in" => [ 5, 6, 7, 8 ] })
+              expect(hash).to eq({ "$in" => [5, 6, 7, 8] })
             end
           end
 
           context "when the values are not unique" do
 
             let(:hash) do
-              { "$in" => [ 5, 6 ] }
+              { "$in" => [5, 6] }
             end
 
             before do
-              hash.__add__({ "$in" => [ 6, 7 ] })
+              hash.__add__({ "$in" => [6, 7] })
             end
 
             it "sets a new unique array" do
-              expect(hash).to eq({ "$in" => [ 5, 6, 7 ] })
+              expect(hash).to eq({ "$in" => [5, 6, 7] })
             end
           end
         end
@@ -83,17 +83,17 @@ describe Hash do
       context "when a key does not match" do
 
         let(:hash) do
-          { "$all" => [ 1, 2, 3 ] }
+          { "$all" => [1, 2, 3] }
         end
 
         before do
-          hash.__add__({ "$in" => [ 1, 2 ] })
+          hash.__add__({ "$in" => [1, 2] })
         end
 
         it "merges in the new hash" do
           expect(hash).to eq({
-            "$all" => [ 1, 2, 3 ],
-            "$in" => [ 1, 2 ]
+            "$all" => [1, 2, 3],
+            "$in" => [1, 2]
           })
         end
       end
@@ -120,11 +120,11 @@ describe Hash do
 
       let(:expected) do
         {
-          "test1"=> {
-            "$elemMatch"=> {
-              "test2"=> {
-                "$elemMatch"=> {
-                  "test3"=> { "$in"=> ["value1"] }
+          "test1" => {
+            "$elemMatch" => {
+              "test2" => {
+                "$elemMatch" => {
+                  "test3" => { "$in" => ["value1"] }
                 }
               }
             }
@@ -159,7 +159,7 @@ describe Hash do
               end
 
               it "sets the intersected array" do
-                expect(hash).to eq({ "$in" => [ 5 ] })
+                expect(hash).to eq({ "$in" => [5] })
               end
             end
 
@@ -185,26 +185,26 @@ describe Hash do
           context "when the values intersect" do
 
             let(:hash) do
-              { "$in" => [ 5, 6 ] }
+              { "$in" => [5, 6] }
             end
 
             before do
-              hash.__intersect__({ "$in" => [ 6, 7 ] })
+              hash.__intersect__({ "$in" => [6, 7] })
             end
 
             it "sets the intersected array" do
-              expect(hash).to eq({ "$in" => [ 6 ] })
+              expect(hash).to eq({ "$in" => [6] })
             end
           end
 
           context "when the values do not intersect" do
 
             let(:hash) do
-              { "$in" => [ 5, 6 ] }
+              { "$in" => [5, 6] }
             end
 
             before do
-              hash.__intersect__({ "$in" => [ 7, 8 ] })
+              hash.__intersect__({ "$in" => [7, 8] })
             end
 
             it "sets the empty array" do
@@ -217,17 +217,17 @@ describe Hash do
       context "when a key does not match" do
 
         let(:hash) do
-          { "$all" => [ 1, 2, 3 ] }
+          { "$all" => [1, 2, 3] }
         end
 
         before do
-          hash.__intersect__({ "$in" => [ 1, 2 ] })
+          hash.__intersect__({ "$in" => [1, 2] })
         end
 
         it "merges in the new hash" do
           expect(hash).to eq({
-            "$all" => [ 1, 2, 3 ],
-            "$in" => [ 1, 2 ]
+            "$all" => [1, 2, 3],
+            "$in" => [1, 2]
           })
         end
       end
@@ -255,7 +255,7 @@ describe Hash do
               end
 
               it "sets the unioned array" do
-                expect(hash).to eq({ "$in" => [ 5 ] })
+                expect(hash).to eq({ "$in" => [5] })
               end
             end
 
@@ -270,7 +270,7 @@ describe Hash do
               end
 
               it "sets the empty array" do
-                expect(hash).to eq({ "$in" => [ 5, 6 ] })
+                expect(hash).to eq({ "$in" => [5, 6] })
               end
             end
           end
@@ -279,15 +279,15 @@ describe Hash do
         context "when the existing value is an array" do
 
           let(:hash) do
-            { "$in" => [ 5, 6 ] }
+            { "$in" => [5, 6] }
           end
 
           before do
-            hash.__union__({ "$in" => [ 6, 7 ] })
+            hash.__union__({ "$in" => [6, 7] })
           end
 
           it "sets the unioned array" do
-            expect(hash).to eq({ "$in" => [ 5, 6, 7 ] })
+            expect(hash).to eq({ "$in" => [5, 6, 7] })
           end
         end
       end
@@ -295,17 +295,17 @@ describe Hash do
       context "when a key does not match" do
 
         let(:hash) do
-          { "$all" => [ 1, 2, 3 ] }
+          { "$all" => [1, 2, 3] }
         end
 
         before do
-          hash.__union__({ "$in" => [ 1, 2 ] })
+          hash.__union__({ "$in" => [1, 2] })
         end
 
         it "merges in the new hash" do
           expect(hash).to eq({
-            "$all" => [ 1, 2, 3 ],
-            "$in" => [ 1, 2 ]
+            "$all" => [1, 2, 3],
+            "$in" => [1, 2]
           })
         end
       end

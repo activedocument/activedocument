@@ -12,6 +12,6 @@ class LatLng
   end
 
   def mongoize
-    [ lng, lat ]
+    [lng, lat]
   end
 end

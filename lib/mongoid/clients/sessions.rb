@@ -38,6 +38,7 @@ module Mongoid
           if Threaded.get_session(client: persistence_context.client)
             raise Mongoid::Errors::InvalidSessionNesting.new
           end
+
           session = persistence_context.client.start_session(options)
           Threaded.set_session(session, client: persistence_context.client)
           yield(session)

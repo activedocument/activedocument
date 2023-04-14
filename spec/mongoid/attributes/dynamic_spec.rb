@@ -5,7 +5,7 @@ require "spec_helper"
 describe Mongoid::Attributes::Dynamic do
   shared_examples_for 'dynamic field' do
     let(:raw_attributes) do
-      {attr_name => 'foo bar'}
+      { attr_name => 'foo bar' }
     end
 
     context 'when reading attributes' do

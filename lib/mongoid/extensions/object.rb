@@ -214,6 +214,7 @@ module Mongoid
         # @return [ Object ] The converted object.
         def __mongoize_fk__(association, object)
           return nil if !object || object == ""
+
           association.convert_to_foreign_key(object)
         end
 

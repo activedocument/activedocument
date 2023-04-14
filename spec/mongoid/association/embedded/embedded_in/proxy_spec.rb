@@ -129,7 +129,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
         end
 
         it "appends the base on the inverse relation" do
-          expect(person.addresses).to eq([ address ])
+          expect(person.addresses).to eq([address])
         end
 
         it "sets the same instance in the inverse relation" do
@@ -164,7 +164,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
         end
 
         it "appends the base on the inverse relation" do
-          expect(person.addresses).to eq([ address ])
+          expect(person.addresses).to eq([address])
         end
       end
     end
@@ -334,7 +334,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
         end
 
         before do
-          person.addresses = [ address_one, address_two ]
+          person.addresses = [address_one, address_two]
           address_one.addressable = nil
         end
 
@@ -343,7 +343,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Proxy do
         end
 
         it "removed the inverse relation" do
-          expect(person.addresses).to eq([ address_two ])
+          expect(person.addresses).to eq([address_two])
         end
 
         it "deletes the child document" do

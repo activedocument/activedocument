@@ -149,6 +149,7 @@ module Mongoid
         # @return [ Array | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when ::Array, ::Set
             object.map(&:mongoize)

@@ -18,7 +18,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     Person.reset_callbacks(:destroy)
   end
 
-  [ :<<, :push ].each do |method|
+  [:<<, :push].each do |method|
 
     describe "##{method}" do
 
@@ -71,7 +71,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "returns an array of loaded documents" do
-          expect(result).to eq([ preference ])
+          expect(result).to eq([preference])
         end
       end
 
@@ -90,7 +90,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "returns an array of loaded documents" do
-          expect(result).to eq([ preference ])
+          expect(result).to eq([preference])
         end
       end
 
@@ -111,11 +111,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "appends the document to the relation" do
-            expect(person.houses).to eq([ house ])
+            expect(person.houses).to eq([house])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.house_ids).to eq([ house.id ])
+            expect(person.house_ids).to eq([house.id])
           end
         end
 
@@ -132,15 +132,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "adds the documents to the relation" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "sets the foreign key on the inverse relation" do
-            expect(preference.person_ids).to eq([ person.id ])
+            expect(preference.person_ids).to eq([person.id])
           end
 
           it "saves the target" do
@@ -152,7 +152,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "persists the link" do
-            expect(person.reload.preferences).to eq([ preference ])
+            expect(person.reload.preferences).to eq([preference])
           end
         end
 
@@ -173,15 +173,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "adds the documents to the relation" do
-              expect(person.preferences).to eq([ preference ])
+              expect(person.preferences).to eq([preference])
             end
 
             it "sets the foreign key on the relation" do
-              expect(person.preference_ids).to eq([ preference.id ])
+              expect(person.preference_ids).to eq([preference.id])
             end
 
             it "sets the foreign key on the inverse relation" do
-              expect(preference.person_ids).to eq([ person.id ])
+              expect(preference.person_ids).to eq([person.id])
             end
 
             it "does not save the target" do
@@ -199,11 +199,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
               end
 
               it "does not allow the document to be added again" do
-                expect(person.preferences).to eq([ preference ])
+                expect(person.preferences).to eq([preference])
               end
 
               it "does not allow duplicate ids" do
-                expect(person.preference_ids).to eq([ preference.id ])
+                expect(person.preference_ids).to eq([preference.id])
               end
             end
           end
@@ -224,15 +224,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "adds the documents to the relation" do
-              expect(person.preferences).to eq([ preference ])
+              expect(person.preferences).to eq([preference])
             end
 
             it "sets the foreign key on the relation" do
-              expect(person.preference_ids).to eq([ preference.id ])
+              expect(person.preference_ids).to eq([preference.id])
             end
 
             it "sets the foreign key on the inverse relation" do
-              expect(preference.person_ids).to eq([ person.id ])
+              expect(preference.person_ids).to eq([person.id])
             end
 
             it "saves the target" do
@@ -244,7 +244,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "persists the link" do
-              expect(person.reload.preferences).to eq([ preference ])
+              expect(person.reload.preferences).to eq([preference])
             end
           end
 
@@ -259,7 +259,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             let(:person) do
-              Person.new(preference_ids: [ preference.id ])
+              Person.new(preference_ids: [preference.id])
             end
 
             before do
@@ -267,15 +267,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "adds the documents to the relation" do
-              expect(person.preferences).to eq([ preference ])
+              expect(person.preferences).to eq([preference])
             end
 
             it "sets the foreign key on the relation" do
-              expect(person.preference_ids).to eq([ preference.id ])
+              expect(person.preference_ids).to eq([preference.id])
             end
 
             it "sets the foreign key on the inverse relation" do
-              expect(preference.reload.person_ids).to eq([ person.id ])
+              expect(preference.reload.person_ids).to eq([person.id])
             end
 
             it "adds the correct number of documents" do
@@ -283,7 +283,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "persists the link" do
-              expect(person.reload.preferences).to eq([ preference ])
+              expect(person.reload.preferences).to eq([preference])
             end
           end
         end
@@ -303,19 +303,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "adds the documents to the relation" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "sets the foreign key on the inverse relation" do
-            expect(preference.person_ids).to eq([ person.id ])
+            expect(preference.person_ids).to eq([person.id])
           end
 
           it "sets the base on the inverse relation" do
-            expect(preference.people).to eq([ person ])
+            expect(preference.people).to eq([person])
           end
 
           it "sets the same instance on the inverse relation" do
@@ -341,19 +341,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "adds the documents to the relation" do
-              expect(person.preferences).to eq([ preference, preference_two ])
+              expect(person.preferences).to eq([preference, preference_two])
             end
 
             it "sets the foreign key on the relation" do
-              expect(person.preference_ids).to eq([ preference.id, preference_two.id ])
+              expect(person.preference_ids).to eq([preference.id, preference_two.id])
             end
 
             it "sets the foreign key on the inverse relation" do
-              expect(preference_two.person_ids).to eq([ person.id ])
+              expect(preference_two.person_ids).to eq([person.id])
             end
 
             it "sets the base on the inverse relation" do
-              expect(preference_two.people).to eq([ person ])
+              expect(preference_two.people).to eq([person])
             end
 
             it "sets the same instance on the inverse relation" do
@@ -385,21 +385,21 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "sets the front side of the relation" do
-            expect(person.administrated_events).to eq([ event ])
+            expect(person.administrated_events).to eq([event])
           end
 
           it "sets the inverse side of the relation" do
-            expect(event.administrators(true)).to eq([ person ])
+            expect(event.administrators(true)).to eq([person])
           end
 
           context "when reloading" do
 
             it "sets the front side of the relation" do
-              expect(person.reload.administrated_events).to eq([ event ])
+              expect(person.reload.administrated_events).to eq([event])
             end
 
             it "sets the inverse side of the relation" do
-              expect(event.reload.administrators).to eq([ person ])
+              expect(event.reload.administrators).to eq([person])
             end
           end
 
@@ -414,11 +414,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "sets the front side of the relation" do
-              expect(loaded_person.administrated_events).to eq([ event ])
+              expect(loaded_person.administrated_events).to eq([event])
             end
 
             it "sets the inverse side of the relation" do
-              expect(loaded_event.administrators).to eq([ person ])
+              expect(loaded_event.administrators).to eq([person])
             end
           end
         end
@@ -461,21 +461,21 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "sets the front side of the relation" do
-            expect(tag_one.related).to eq([ tag_two ])
+            expect(tag_one.related).to eq([tag_two])
           end
 
           it "sets the inverse side of the relation" do
-            expect(tag_two.related(true)).to eq([ tag_one ])
+            expect(tag_two.related(true)).to eq([tag_one])
           end
 
           context "when reloading" do
 
             it "sets the front side of the relation" do
-              expect(tag_one.reload.related).to eq([ tag_two ])
+              expect(tag_one.reload.related).to eq([tag_two])
             end
 
             it "sets the inverse side of the relation" do
-              expect(tag_two.reload.related).to eq([ tag_one ])
+              expect(tag_two.reload.related).to eq([tag_one])
             end
           end
 
@@ -490,11 +490,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "sets the front side of the relation" do
-              expect(loaded_tag_one.related).to eq([ tag_two ])
+              expect(loaded_tag_one.related).to eq([tag_two])
             end
 
             it "sets the inverse side of the relation" do
-              expect(loaded_tag_two.related).to eq([ tag_one ])
+              expect(loaded_tag_two.related).to eq([tag_one])
             end
           end
         end
@@ -545,7 +545,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "adds the document to the relation" do
-              expect(post.tags).to eq([ tag ])
+              expect(post.tags).to eq([tag])
             end
           end
         end
@@ -566,17 +566,17 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       before do
-        person.preferences = [ preference, preference ]
+        person.preferences = [preference, preference]
       end
 
       context "when the document is new" do
 
         it "does not add the duplicates" do
-          expect(person.preferences).to eq([ preference ])
+          expect(person.preferences).to eq([preference])
         end
 
         it "does not create duplicate keys" do
-          expect(person.preference_ids).to eq([ preference.id ])
+          expect(person.preference_ids).to eq([preference.id])
         end
       end
 
@@ -587,19 +587,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "does not add the duplicates" do
-          expect(person.preferences).to eq([ preference ])
+          expect(person.preferences).to eq([preference])
         end
 
         it "does not create duplicate keys" do
-          expect(person.preference_ids).to eq([ preference.id ])
+          expect(person.preference_ids).to eq([preference.id])
         end
 
         it "does not add duplicates on the inverse" do
-          expect(preference.people).to eq([ person ])
+          expect(preference.people).to eq([person])
         end
 
         it "does not add duplicate inverse keys" do
-          expect(preference.person_ids).to eq([ person.id ])
+          expect(preference.person_ids).to eq([person.id])
         end
 
         context "when reloading document from db" do
@@ -607,8 +607,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           let(:from_db) { Preference.last }
 
           it "does not create duplicate keys" do
-            person.preferences = [ from_db ]
-            expect(from_db.person_ids).to eq([ person.id ])
+            person.preferences = [from_db]
+            expect(from_db.person_ids).to eq([person.id])
           end
         end
       end
@@ -627,19 +627,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.preferences = [ preference ]
+          person.preferences = [preference]
         end
 
         it "sets the relation" do
-          expect(person.preferences).to eq([ preference ])
+          expect(person.preferences).to eq([preference])
         end
 
         it "sets the foreign key on the relation" do
-          expect(person.preference_ids).to eq([ preference.id ])
+          expect(person.preference_ids).to eq([preference.id])
         end
 
         it "sets the foreign key on the inverse relation" do
-          expect(preference.person_ids).to eq([ person.id ])
+          expect(preference.person_ids).to eq([person.id])
         end
 
         it "does not save the target" do
@@ -658,19 +658,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.preferences = [ preference ]
+          person.preferences = [preference]
         end
 
         it "sets the relation" do
-          expect(person.preferences).to eq([ preference ])
+          expect(person.preferences).to eq([preference])
         end
 
         it "sets the foreign key on the relation" do
-          expect(person.preference_ids).to eq([ preference.id ])
+          expect(person.preference_ids).to eq([preference.id])
         end
 
         it "sets the foreign key on the inverse relation" do
-          expect(preference.person_ids).to eq([ person.id ])
+          expect(preference.person_ids).to eq([person.id])
         end
 
         context "and the parent is persisted" do
@@ -681,15 +681,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "maintains the relation" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "maintains the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "maintains the foreign key on the inverse relation" do
-            expect(preference.person_ids).to eq([ person.id ])
+            expect(preference.person_ids).to eq([person.id])
           end
 
           it "maintains the base on the inverse relation" do
@@ -709,19 +709,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.preferences = [ preference ]
+          person.preferences = [preference]
         end
 
         it "sets the relation" do
-          expect(person.preferences).to eq([ preference ])
+          expect(person.preferences).to eq([preference])
         end
 
         it "sets the foreign key on the relation" do
-          expect(person.preference_ids).to eq([ preference.id ])
+          expect(person.preference_ids).to eq([preference.id])
         end
 
         it "sets the foreign key on the inverse relation" do
-          expect(preference.person_ids).to eq([ person.id ])
+          expect(preference.person_ids).to eq([person.id])
         end
 
         it "sets the base on the inverse relation" do
@@ -733,7 +733,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "persists the relation" do
-          person.reload.preferences == [ preference ]
+          person.reload.preferences == [preference]
         end
 
         context "when overwriting an existing relation" do
@@ -743,11 +743,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences = [ another_preference ]
+            person.preferences = [another_preference]
           end
 
           it "sets the relation" do
-            expect(person.preferences).to eq([ another_preference ])
+            expect(person.preferences).to eq([another_preference])
           end
 
           it "saves the target" do
@@ -755,7 +755,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "does not leave foreign keys of the previous relation" do
-            expect(person.preference_ids).to eq([ another_preference.id ])
+            expect(person.preference_ids).to eq([another_preference.id])
           end
 
           it "clears its own key on the foreign relation" do
@@ -765,11 +765,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           context "and then overwriting it again with the same value" do
 
             before do
-              person.preferences = [ another_preference ]
+              person.preferences = [another_preference]
             end
 
             it "persists the relation between another_preference and person" do
-              expect(another_preference.reload.people).to eq([ person ])
+              expect(another_preference.reload.people).to eq([person])
             end
 
           end
@@ -782,11 +782,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "persists the relation between person and another_preference" do
-              expect(person.preferences).to eq([ another_preference ])
+              expect(person.preferences).to eq([another_preference])
             end
 
             it "persists the relation between another_preference and person" do
-              expect(another_preference.people).to eq([ person ])
+              expect(another_preference.people).to eq([person])
             end
 
             it "no longer has any relation between preference and person" do
@@ -803,11 +803,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "persists the relation between person and another_preference" do
-              expect(person.preferences).to eq([ another_preference ])
+              expect(person.preferences).to eq([another_preference])
             end
 
             it "persists the relation between another_preference and person" do
-              expect(another_preference.people).to eq([ person ])
+              expect(another_preference.people).to eq([person])
             end
 
             it "no longer has any relation between preference and person" do
@@ -895,7 +895,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [ nil, [] ].each do |value|
+  [nil, []].each do |value|
 
     describe "#= #{value}" do
 
@@ -936,7 +936,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences = [ preference ]
+            person.preferences = [preference]
             person.preferences = value
           end
 
@@ -970,7 +970,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             before do
-              person.preferences = [ preference ]
+              person.preferences = [preference]
               person.preferences = value
             end
 
@@ -1003,7 +1003,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             let(:person) do
               Person.create!.tap do |p|
-                p.preferences = [ preference ]
+                p.preferences = [preference]
               end
             end
 
@@ -1028,7 +1028,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [ :build, :new ].each do |method|
+  [:build, :new].each do |method|
 
     describe "##{method}" do
 
@@ -1045,15 +1045,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "adds the document to the relation" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "sets the inverse foreign key on the relation" do
-            expect(preference.person_ids).to eq([ person.id ])
+            expect(preference.person_ids).to eq([person.id])
           end
 
           it "sets the attributes" do
@@ -1080,19 +1080,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "adds the document to the relation" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "sets the inverse foreign key on the relation" do
-            expect(preference.person_ids).to eq([ person.id ])
+            expect(preference.person_ids).to eq([person.id])
           end
 
           it "sets the base on the inverse relation" do
-            expect(preference.people).to eq([ person ])
+            expect(preference.people).to eq([person])
           end
 
           it "sets the attributes" do
@@ -1114,7 +1114,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
 
             it "persists the parent keys" do
-              expect(person.reload.preference_ids).to eq([ preference.id ])
+              expect(person.reload.preference_ids).to eq([preference.id])
             end
           end
         end
@@ -1246,7 +1246,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "does not remove the document from the relation" do
-            expect(post.tags).to eq([ tag ])
+            expect(post.tags).to eq([tag])
           end
         end
       end
@@ -1296,11 +1296,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let(:result) do
-        person.preferences.concat([ preference ])
+        person.preferences.concat([preference])
       end
 
       it "returns an array of loaded documents" do
-        expect(result).to eq([ preference ])
+        expect(result).to eq([preference])
       end
     end
 
@@ -1315,11 +1315,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let(:result) do
-        person.preferences.concat([ preference ])
+        person.preferences.concat([preference])
       end
 
       it "returns an array of loaded documents" do
-        expect(result).to eq([ preference ])
+        expect(result).to eq([preference])
       end
     end
 
@@ -1336,15 +1336,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.houses.concat([ house ])
+          person.houses.concat([house])
         end
 
         it "appends the document to the relation" do
-          expect(person.houses).to eq([ house ])
+          expect(person.houses).to eq([house])
         end
 
         it "sets the foreign key on the relation" do
-          expect(person.house_ids).to eq([ house.id ])
+          expect(person.house_ids).to eq([house.id])
         end
       end
 
@@ -1356,20 +1356,20 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
         let!(:person) do
           Person.create! do |doc|
-            doc.preferences.concat([ preference ])
+            doc.preferences.concat([preference])
           end
         end
 
         it "adds the documents to the relation" do
-          expect(person.preferences).to eq([ preference ])
+          expect(person.preferences).to eq([preference])
         end
 
         it "sets the foreign key on the relation" do
-          expect(person.preference_ids).to eq([ preference.id ])
+          expect(person.preference_ids).to eq([preference.id])
         end
 
         it "sets the foreign key on the inverse relation" do
-          expect(preference.person_ids).to eq([ person.id ])
+          expect(preference.person_ids).to eq([person.id])
         end
 
         it "saves the target" do
@@ -1381,7 +1381,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "persists the link" do
-          expect(person.reload.preferences).to eq([ preference ])
+          expect(person.reload.preferences).to eq([preference])
         end
       end
 
@@ -1398,19 +1398,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([ preference ])
+            person.preferences.concat([preference])
           end
 
           it "adds the documents to the relation" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "sets the foreign key on the inverse relation" do
-            expect(preference.person_ids).to eq([ person.id ])
+            expect(preference.person_ids).to eq([person.id])
           end
 
           it "does not save the target" do
@@ -1424,15 +1424,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           context "when appending a second time" do
 
             before do
-              person.preferences.concat([ preference ])
+              person.preferences.concat([preference])
             end
 
             it "does not allow the document to be added again" do
-              expect(person.preferences).to eq([ preference ])
+              expect(person.preferences).to eq([preference])
             end
 
             it "does not allow duplicate ids" do
-              expect(person.preference_ids).to eq([ preference.id ])
+              expect(person.preference_ids).to eq([preference.id])
             end
           end
         end
@@ -1448,20 +1448,20 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([ preference ])
+            person.preferences.concat([preference])
             person.save!
           end
 
           it "adds the documents to the relation" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "sets the foreign key on the inverse relation" do
-            expect(preference.person_ids).to eq([ person.id ])
+            expect(preference.person_ids).to eq([person.id])
           end
 
           it "saves the target" do
@@ -1473,7 +1473,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "persists the link" do
-            expect(person.reload.preferences).to eq([ preference ])
+            expect(person.reload.preferences).to eq([preference])
           end
         end
 
@@ -1488,7 +1488,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           let(:person) do
-            Person.new(preference_ids: [ preference.id ])
+            Person.new(preference_ids: [preference.id])
           end
 
           before do
@@ -1496,15 +1496,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "adds the documents to the relation" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "sets the foreign key on the inverse relation" do
-            expect(preference.reload.person_ids).to eq([ person.id ])
+            expect(preference.reload.person_ids).to eq([person.id])
           end
 
           it "adds the correct number of documents" do
@@ -1512,7 +1512,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "persists the link" do
-            expect(person.reload.preferences).to eq([ preference ])
+            expect(person.reload.preferences).to eq([preference])
           end
         end
       end
@@ -1528,23 +1528,23 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.preferences.concat([ preference ])
+          person.preferences.concat([preference])
         end
 
         it "adds the documents to the relation" do
-          expect(person.preferences).to eq([ preference ])
+          expect(person.preferences).to eq([preference])
         end
 
         it "sets the foreign key on the relation" do
-          expect(person.preference_ids).to eq([ preference.id ])
+          expect(person.preference_ids).to eq([preference.id])
         end
 
         it "sets the foreign key on the inverse relation" do
-          expect(preference.person_ids).to eq([ person.id ])
+          expect(preference.person_ids).to eq([person.id])
         end
 
         it "sets the base on the inverse relation" do
-          expect(preference.people).to eq([ person ])
+          expect(preference.people).to eq([person])
         end
 
         it "sets the same instance on the inverse relation" do
@@ -1566,23 +1566,23 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([ preference_two ])
+            person.preferences.concat([preference_two])
           end
 
           it "adds the documents to the relation" do
-            expect(person.preferences).to eq([ preference, preference_two ])
+            expect(person.preferences).to eq([preference, preference_two])
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id, preference_two.id ])
+            expect(person.preference_ids).to eq([preference.id, preference_two.id])
           end
 
           it "sets the foreign key on the inverse relation" do
-            expect(preference_two.person_ids).to eq([ person.id ])
+            expect(preference_two.person_ids).to eq([person.id])
           end
 
           it "sets the base on the inverse relation" do
-            expect(preference_two.people).to eq([ person ])
+            expect(preference_two.people).to eq([person])
           end
 
           it "sets the same instance on the inverse relation" do
@@ -1610,25 +1610,25 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.administrated_events.concat([ event ])
+          person.administrated_events.concat([event])
         end
 
         it "sets the front side of the relation" do
-          expect(person.administrated_events).to eq([ event ])
+          expect(person.administrated_events).to eq([event])
         end
 
         it "sets the inverse side of the relation" do
-          expect(event.administrators(true)).to eq([ person ])
+          expect(event.administrators(true)).to eq([person])
         end
 
         context "when reloading" do
 
           it "sets the front side of the relation" do
-            expect(person.reload.administrated_events).to eq([ event ])
+            expect(person.reload.administrated_events).to eq([event])
           end
 
           it "sets the inverse side of the relation" do
-            expect(event.reload.administrators).to eq([ person ])
+            expect(event.reload.administrators).to eq([person])
           end
         end
 
@@ -1643,11 +1643,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "sets the front side of the relation" do
-            expect(loaded_person.administrated_events).to eq([ event ])
+            expect(loaded_person.administrated_events).to eq([event])
           end
 
           it "sets the inverse side of the relation" do
-            expect(loaded_event.administrators).to eq([ person ])
+            expect(loaded_event.administrators).to eq([person])
           end
         end
       end
@@ -1667,7 +1667,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          artwork.exhibitors.concat([ exhibitor ])
+          artwork.exhibitors.concat([exhibitor])
         end
 
         it "creates a single artwork object" do
@@ -1686,25 +1686,25 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          tag_one.related.concat([ tag_two ])
+          tag_one.related.concat([tag_two])
         end
 
         it "sets the front side of the relation" do
-          expect(tag_one.related).to eq([ tag_two ])
+          expect(tag_one.related).to eq([tag_two])
         end
 
         it "sets the inverse side of the relation" do
-          expect(tag_two.related(true)).to eq([ tag_one ])
+          expect(tag_two.related(true)).to eq([tag_one])
         end
 
         context "when reloading" do
 
           it "sets the front side of the relation" do
-            expect(tag_one.reload.related).to eq([ tag_two ])
+            expect(tag_one.reload.related).to eq([tag_two])
           end
 
           it "sets the inverse side of the relation" do
-            expect(tag_two.reload.related).to eq([ tag_one ])
+            expect(tag_two.reload.related).to eq([tag_one])
           end
         end
 
@@ -1719,11 +1719,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "sets the front side of the relation" do
-            expect(loaded_tag_one.related).to eq([ tag_two ])
+            expect(loaded_tag_one.related).to eq([tag_two])
           end
 
           it "sets the inverse side of the relation" do
-            expect(loaded_tag_two.related).to eq([ tag_one ])
+            expect(loaded_tag_two.related).to eq([tag_one])
           end
         end
       end
@@ -1835,7 +1835,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       context "when the documents are part of the relation" do
 
         before do
-          Preference.create!(person_ids: [ person.id ])
+          Preference.create!(person_ids: [person.id])
         end
 
         it "returns the count from the db" do
@@ -1982,7 +1982,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [ :create, :create! ].each do |method|
+  [:create, :create!].each do |method|
 
     describe "##{method}" do
 
@@ -1999,7 +1999,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "does not convert the string key to an object id" do
-            expect(agent.account_ids).to eq([ "test-again" ])
+            expect(agent.account_ids).to eq(["test-again"])
           end
         end
 
@@ -2027,19 +2027,19 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "sets the foreign key on the relation" do
-            expect(person.preference_ids).to eq([ preference.id ])
+            expect(person.preference_ids).to eq([preference.id])
           end
 
           it "sets the foreign key on the inverse relation" do
-            expect(preference.person_ids).to eq([ person.id ])
+            expect(preference.person_ids).to eq([person.id])
           end
 
           it "adds the document" do
-            expect(person.preferences).to eq([ preference ])
+            expect(person.preferences).to eq([preference])
           end
 
           it "sets the base on the inverse relation" do
-            expect(preference.people).to eq([ person ])
+            expect(preference.people).to eq([person])
           end
 
           it "sets the attributes" do
@@ -2100,7 +2100,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     before do
-      person.preferences << [ preference_one, preference_two ]
+      person.preferences << [preference_one, preference_two]
     end
 
     context "when the document exists" do
@@ -2110,7 +2110,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "removes the document from the relation" do
-        expect(person.preferences).to eq([ preference_two ])
+        expect(person.preferences).to eq([preference_two])
       end
 
       it "returns the document" do
@@ -2118,7 +2118,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "removes the document key from the foreign key" do
-        expect(person.preference_ids).to eq([ preference_two.id ])
+        expect(person.preference_ids).to eq([preference_two.id])
       end
 
       it "removes the inverse reference" do
@@ -2138,11 +2138,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "nullifies the deleted preference" do
-          expect(person.preferences).to eq([ preference_two ])
+          expect(person.preferences).to eq([preference_two])
         end
 
         it "retains the ids for one preference" do
-          expect(person.preference_ids).to eq([ preference_two.id ])
+          expect(person.preference_ids).to eq([preference_two.id])
         end
       end
     end
@@ -2158,11 +2158,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "does not modify the relation" do
-        expect(person.preferences).to eq([ preference_one, preference_two ])
+        expect(person.preferences).to eq([preference_one, preference_two])
       end
 
       it "does not modify the keys" do
-        expect(person.preference_ids).to eq([ preference_one.id, preference_two.id ])
+        expect(person.preference_ids).to eq([preference_one.id, preference_two.id])
       end
     end
 
@@ -2175,7 +2175,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.administrated_events << [ event ]
+          person.administrated_events << [event]
         end
 
         it "deletes the document" do
@@ -2314,7 +2314,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "does not remove the document from the relation" do
-            expect(post.tags).to eq([ tag ])
+            expect(post.tags).to eq([tag])
           end
         end
       end
@@ -2351,7 +2351,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [ :delete_all, :destroy_all ].each do |method|
+  [:delete_all, :destroy_all].each do |method|
 
     describe "##{method}" do
 
@@ -2391,7 +2391,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "removes the ids from the foreign key" do
-            expect(person.preference_ids).to eq([ preference_two.id ])
+            expect(person.preference_ids).to eq([preference_two.id])
           end
 
           it "sets the association locally" do
@@ -2549,11 +2549,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         context "when the ids match" do
 
           let(:preferences) do
-            person.preferences.find([ preference_one.id, preference_two.id ])
+            person.preferences.find([preference_one.id, preference_two.id])
           end
 
           it "returns the matching documents" do
-            expect(preferences).to eq([ preference_one, preference_two ])
+            expect(preferences).to eq([preference_one, preference_two])
           end
         end
 
@@ -2561,7 +2561,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           let(:preferences) do
             person.preferences.find(
-              [ unrelated_pref.id, unrelated_pref_two.id ]
+              [unrelated_pref.id, unrelated_pref_two.id]
             )
           end
 
@@ -2579,7 +2579,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             it "raises an error" do
               expect {
-                person.preferences.find([ BSON::ObjectId.new ])
+                person.preferences.find([BSON::ObjectId.new])
               }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
             end
           end
@@ -2588,7 +2588,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             config_override :raise_not_found_error, false
 
             let(:preferences) do
-              person.preferences.find([ BSON::ObjectId.new ])
+              person.preferences.find([BSON::ObjectId.new])
             end
 
             it "returns an empty array" do
@@ -2810,7 +2810,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "applies the criteria to the documents" do
-        expect(preferences).to eq([ preference_one ])
+        expect(preferences).to eq([preference_one])
       end
 
       context 'when providing a collation' do
@@ -2820,7 +2820,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "applies the collation option to the query" do
-          expect(preferences).to eq([ preference_one ])
+          expect(preferences).to eq([preference_one])
         end
       end
     end
@@ -2843,18 +2843,18 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "applies the criteria to the documents" do
-        expect(preferences).to eq([ preference_one ])
+        expect(preferences).to eq([preference_one])
       end
     end
 
     context "when chaining criteria" do
 
       let(:preferences) do
-        person.preferences.posting.where(:name.in => [ "First" ])
+        person.preferences.posting.where(:name.in => ["First"])
       end
 
       it "applies the criteria to the documents" do
-        expect(preferences).to eq([ preference_one ])
+        expect(preferences).to eq([preference_one])
       end
     end
 
@@ -2878,7 +2878,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it "returns the distinct values for the fields" do
-            expect(person.houses.distinct(:name)).to eq([ house.name ])
+            expect(person.houses.distinct(:name)).to eq([house.name])
           end
         end
       end
@@ -2967,25 +2967,25 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     it "removes the foreign key from the base document" do
-      [ preference_one, preference_two ].each do |preference|
+      [preference_one, preference_two].each do |preference|
         expect(person.preference_ids).to_not include(preference.id)
       end
     end
 
     it "removes the foreign key from the target documents" do
-      [ preference_one, preference_two ].each do |preference|
+      [preference_one, preference_two].each do |preference|
         expect(preference.person_ids).to_not include(person.id)
       end
     end
 
     it "removes the reference from the base document" do
-      [ preference_one, preference_two ].each do |preference|
+      [preference_one, preference_two].each do |preference|
         expect(person.preferences).to_not include(preference)
       end
     end
 
     it "removes the reference from the target documents" do
-      [ preference_one, preference_two ].each do |preference|
+      [preference_one, preference_two].each do |preference|
         expect(preference.people).to_not include(person)
       end
     end
@@ -3064,9 +3064,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     context 'when association is not empty' do
 
       let(:person) do
-        Person.create!(preferences: [
-                         Preference.new(id: 123),
-                       ])
+        Person.create!(preferences: [Preference.new(id: 123)])
       end
 
       it "returns with a selector including association element ids" do
@@ -3075,7 +3073,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [ :size, :length ].each do |method|
+  [:size, :length].each do |method|
 
     describe "##{method}" do
 
@@ -3129,7 +3127,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "returns only the associated documents" do
-        expect(unscoped).to eq([ preference_one ])
+        expect(unscoped).to eq([preference_one])
       end
     end
 
@@ -3152,7 +3150,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "only returns associated documents" do
-        expect(unscoped).to eq([ house_one ])
+        expect(unscoped).to eq([house_one])
       end
 
       it "removes the default scoping options" do
@@ -3181,15 +3179,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
     before do
       person.update_attributes!(
-        houses: [ wife_house, exwife_house, girlfriend_house ]
+        houses: [wife_house, exwife_house, girlfriend_house]
       )
-      person.update_attributes!(house_ids: [ girlfriend_house.id ])
+      person.update_attributes!(house_ids: [girlfriend_house.id])
     end
 
     context "when reloading" do
 
       it "properly sets the references" do
-        expect(person.houses(true)).to eq([ girlfriend_house ])
+        expect(person.houses(true)).to eq([girlfriend_house])
       end
     end
   end
@@ -3203,15 +3201,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let(:business) do
-        Business.new(name: "serious", owners: [ user ])
+        Business.new(name: "serious", owners: [user])
       end
 
       before do
-        user.businesses = [ business ]
+        user.businesses = [business]
       end
 
       it "sets the businesses" do
-        expect(user.businesses).to eq([ business ])
+        expect(user.businesses).to eq([business])
       end
 
       it "sets the inverse users" do
@@ -3219,7 +3217,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "sets the inverse businesses" do
-        expect(business.owners).to eq([ user ])
+        expect(business.owners).to eq([user])
       end
     end
 
@@ -3230,15 +3228,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let!(:business) do
-        Business.create!(name: "serious", owners: [ user ])
+        Business.create!(name: "serious", owners: [user])
       end
 
       before do
-        user.businesses = [ business ]
+        user.businesses = [business]
       end
 
       it "sets the businesses" do
-        expect(user.businesses).to eq([ business ])
+        expect(user.businesses).to eq([business])
       end
 
       it "sets the inverse users" do
@@ -3246,7 +3244,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "sets the inverse businesses" do
-        expect(business.owners).to eq([ user ])
+        expect(business.owners).to eq([user])
       end
 
       context "when reloading" do
@@ -3257,7 +3255,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "persists the businesses" do
-          expect(user.businesses).to eq([ business ])
+          expect(user.businesses).to eq([business])
         end
 
         it "persists the inverse users" do
@@ -3265,7 +3263,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "persists the inverse businesses" do
-          expect(business.owners).to eq([ user ])
+          expect(business.owners).to eq([user])
         end
       end
     end
@@ -3277,15 +3275,15 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let(:business) do
-        Business.create!(name: "srs", owners: [ user ])
+        Business.create!(name: "srs", owners: [user])
       end
 
       before do
-        user.businesses = [ business ]
+        user.businesses = [business]
       end
 
       it "sets the businesses" do
-        expect(user.businesses).to eq([ business ])
+        expect(user.businesses).to eq([business])
       end
 
       it "sets the inverse users" do
@@ -3293,7 +3291,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "sets the inverse businesses" do
-        expect(business.owners).to eq([ user ])
+        expect(business.owners).to eq([user])
       end
 
       context "when reloading" do
@@ -3304,7 +3302,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "persists the businesses" do
-          expect(user.businesses).to eq([ business ])
+          expect(user.businesses).to eq([business])
         end
 
         it "persists the inverse users" do
@@ -3312,7 +3310,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it "persists the inverse businesses" do
-          expect(business.owners).to eq([ user ])
+          expect(business.owners).to eq([user])
         end
       end
     end
@@ -3331,13 +3329,13 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     before do
       2.times do
         person.preferences.each do |preference|
-          expect(preference.person_ids).to eq([ person.id ])
+          expect(preference.person_ids).to eq([person.id])
         end
       end
     end
 
     it "does not duplicate foreign keys" do
-      expect(person.preference_ids).to eq([ preference.id ])
+      expect(person.preference_ids).to eq([preference.id])
     end
   end
 
@@ -3388,7 +3386,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     before do
-      person.preferences = [ preference ]
+      person.preferences = [preference]
       person.save!
       person.reload
       person.preferences = nil
@@ -3431,7 +3429,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       before do
         Preference.collection.find({ _id: preference_one.id })
-                  .update_one({ "$set" => { name: "reloaded" }})
+                  .update_one({ "$set" => { name: "reloaded" } })
       end
 
       let(:reloaded) do
@@ -3454,7 +3452,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "reloads the new document from the database" do
-        expect(reloaded).to eq([ preference_one, preference_two ])
+        expect(reloaded).to eq([preference_one, preference_two])
       end
     end
   end
@@ -3480,7 +3478,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "sets the first inverse" do
-        expect(preference_one.people).to eq([ person ])
+        expect(preference_one.people).to eq([person])
       end
 
       it "persists the second preference" do
@@ -3488,7 +3486,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "sets the second inverse keys" do
-        expect(preference_two.people).to eq([ person ])
+        expect(preference_two.people).to eq([person])
       end
     end
   end
@@ -3508,14 +3506,14 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     before do
-      person.preference_ids = [ preference_one.id, preference_two.id ]
+      person.preference_ids = [preference_one.id, preference_two.id]
       person.save!
     end
 
     context "and the order is changed" do
 
       before do
-        person.preference_ids = [ preference_two.id, preference_one.id ]
+        person.preference_ids = [preference_two.id, preference_one.id]
         person.save!
       end
 
@@ -3525,7 +3523,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       it "persists the change in id order" do
         expect(reloaded.preference_ids).to eq(
-          [ preference_two.id, preference_one.id ]
+          [preference_two.id, preference_one.id]
         )
       end
     end
@@ -3538,7 +3536,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       before do
         person.preference_ids =
-          [ preference_two.id, preference_one.id, preference_three.id ]
+          [preference_two.id, preference_one.id, preference_three.id]
         person.save!
       end
 
@@ -3548,7 +3546,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       it "also persists the change in id order" do
         expect(reloaded.preference_ids).to eq(
-          [ preference_two.id, preference_one.id, preference_three.id ]
+          [preference_two.id, preference_one.id, preference_three.id]
         )
       end
     end
@@ -3561,10 +3559,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       before do
         person.preference_ids =
-          [ preference_one.id, preference_two.id, preference_three.id ]
+          [preference_one.id, preference_two.id, preference_three.id]
         person.save!
         person.preference_ids =
-          [ preference_three.id, preference_two.id ]
+          [preference_three.id, preference_two.id]
         person.save!
       end
 
@@ -3574,7 +3572,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
       it "also persists the change in id order" do
         expect(reloaded.preference_ids).to eq(
-          [ preference_three.id, preference_two.id ]
+          [preference_three.id, preference_two.id]
         )
       end
     end
@@ -3605,7 +3603,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it "adds both documents" do
-        expect(result).to eq([ preference_one, preference_two ])
+        expect(result).to eq([preference_one, preference_two])
       end
     end
   end
@@ -3627,11 +3625,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       before do
-        person.preference_ids = [ pref_two.id ]
+        person.preference_ids = [pref_two.id]
       end
 
       it "sets the new documents on the relation" do
-        expect(person.preferences).to eq([ pref_two ])
+        expect(person.preferences).to eq([pref_two])
       end
     end
   end

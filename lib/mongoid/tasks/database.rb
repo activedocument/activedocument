@@ -38,6 +38,7 @@ module Mongoid
       def create_indexes(models = ::Mongoid.models)
         models.each do |model|
           next if model.index_specifications.empty?
+
           if !model.embedded? || model.cyclic?
             model.create_indexes
             logger.info("MONGOID: Created indexes on #{model}:")
@@ -115,6 +116,7 @@ module Mongoid
       def remove_indexes(models = ::Mongoid.models)
         models.each do |model|
           next if model.embedded?
+
           begin
             model.remove_indexes
           rescue Mongo::Error::OperationFailure

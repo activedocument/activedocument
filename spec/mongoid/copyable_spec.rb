@@ -6,7 +6,7 @@ require_relative './copyable_spec_models'
 
 describe Mongoid::Copyable do
 
-  [ :clone, :dup ].each do |method|
+  [:clone, :dup].each do |method|
 
     describe "##{method}" do
 
@@ -252,7 +252,7 @@ describe Mongoid::Copyable do
         end
 
         it "marks the fields as dirty" do
-          expect(copy.changes["age"]).to eq([ nil, 100 ])
+          expect(copy.changes["age"]).to eq([nil, 100])
         end
 
         it "flags the document as changed" do
@@ -273,7 +273,7 @@ describe Mongoid::Copyable do
           end
 
           before do
-            person[:versions] = [ { number: 1 } ]
+            person[:versions] = [{ number: 1 }]
           end
 
           it "returns a new document" do
@@ -289,7 +289,7 @@ describe Mongoid::Copyable do
           end
 
           it "marks fields as dirty" do
-            expect(copy.changes["age"]).to eq([ nil, 100 ])
+            expect(copy.changes["age"]).to eq([nil, 100])
           end
 
           it "has a different id from the original" do
@@ -386,7 +386,7 @@ describe Mongoid::Copyable do
           end
 
           before do
-            person[:versions] = [ { number: 1 } ]
+            person[:versions] = [{ number: 1 }]
           end
 
           it "copys embeds many documents" do
@@ -463,7 +463,7 @@ describe Mongoid::Copyable do
           end
 
           before do
-            person[:versions] = [ { number: 1 } ]
+            person[:versions] = [{ number: 1 }]
           end
 
           it "flags the document as changed" do
@@ -471,7 +471,7 @@ describe Mongoid::Copyable do
           end
 
           it "marks fields as dirty" do
-            expect(copy.changes["age"]).to eq([ nil, 100 ])
+            expect(copy.changes["age"]).to eq([nil, 100])
           end
 
           it "returns a new document" do
@@ -956,7 +956,7 @@ describe Mongoid::Copyable do
 
           before do
             parent = CloneParent.new(a: "1", b: "2")
-            parent.clone_children = [ CloneChild.new(c: "3", d: "4"), CloneChild.new(c: "3", d: "4") ]
+            parent.clone_children = [CloneChild.new(c: "3", d: "4"), CloneChild.new(c: "3", d: "4")]
             parent.save
 
             Object.send(:remove_const, :CloneParent)
@@ -1012,9 +1012,9 @@ describe Mongoid::Copyable do
 
           before do
             parent = CloneParent.new(a: "1", b: "2")
-            parent.clone_children = [ CloneChild.new(c: "3", d: "4"), CloneChild.new(c: "3", d: "4") ]
+            parent.clone_children = [CloneChild.new(c: "3", d: "4"), CloneChild.new(c: "3", d: "4")]
             parent.clone_children.each do |cc|
-              cc.clone_grandchildren = [ CloneGrandchild.new(e: "5", f: "6"), CloneGrandchild.new(e: "5", f: "6") ]
+              cc.clone_grandchildren = [CloneGrandchild.new(e: "5", f: "6"), CloneGrandchild.new(e: "5", f: "6")]
             end
             parent.save
 

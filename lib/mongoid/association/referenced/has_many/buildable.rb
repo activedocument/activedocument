@@ -23,6 +23,7 @@ module Mongoid
           def build(base, object, type = nil, selected_fields = nil)
             return (object || []) unless query?(object)
             return [] if object.is_a?(Array)
+
             query_criteria(object, base)
           end
 

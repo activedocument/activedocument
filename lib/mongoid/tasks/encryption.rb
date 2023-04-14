@@ -55,18 +55,22 @@ module Mongoid
         unless client_options.is_a?(Hash)
           raise Errors::NoClientConfig.new(client)
         end
+
         auto_encryption_options = client_options.dig(:options, :auto_encryption_options)
         unless auto_encryption_options.is_a?(Hash)
           raise Errors::InvalidAutoEncryptionConfiguration.new(client)
         end
+
         key_vault_namespace = auto_encryption_options[:key_vault_namespace]
         unless key_vault_namespace.is_a?(String)
           raise Errors::InvalidAutoEncryptionConfiguration.new(client)
         end
+
         kms_providers = auto_encryption_options[:kms_providers]
         unless kms_providers.is_a?(Hash)
           raise Errors::InvalidAutoEncryptionConfiguration.new(client)
         end
+
         valid_kms_provider_name = get_kms_provider_name(kms_provider_name, kms_providers)
         unless kms_providers.key?(valid_kms_provider_name)
           raise Errors::InvalidAutoEncryptionConfiguration.new(client, valid_kms_provider_name)

@@ -11,11 +11,11 @@ describe Mongoid::Persistable::Poppable do
       shared_examples_for "a poppable root document" do
 
         it "pops for positive values" do
-          expect(person.array).to eq([ 1, 2, 3 ])
+          expect(person.array).to eq([1, 2, 3])
         end
 
         it "shifts for negative values" do
-          expect(person.aliases).to eq([ "b" ])
+          expect(person.aliases).to eq(["b"])
         end
 
         it "returns the self object" do
@@ -23,11 +23,11 @@ describe Mongoid::Persistable::Poppable do
         end
 
         it "persists pops" do
-          expect(person.reload.array).to eq([ 1, 2, 3 ])
+          expect(person.reload.array).to eq([1, 2, 3])
         end
 
         it "persists shifts" do
-          expect(person.reload.aliases).to eq([ "b" ])
+          expect(person.reload.aliases).to eq(["b"])
         end
 
         it "clears out dirty changes" do
@@ -36,7 +36,7 @@ describe Mongoid::Persistable::Poppable do
       end
 
       let(:person) do
-        Person.create!(array: [ 1, 2, 3, 4 ], aliases: %w[a b])
+        Person.create!(array: [1, 2, 3, 4], aliases: %w[a b])
       end
 
       context "when provided string fields" do
@@ -63,11 +63,11 @@ describe Mongoid::Persistable::Poppable do
       shared_examples_for "a poppable embedded document" do
 
         it "pops for positive values" do
-          expect(address.services).to eq([ 1, 2, 3 ])
+          expect(address.services).to eq([1, 2, 3])
         end
 
         it "shifts for negative values" do
-          expect(address.aliases).to eq([ "b" ])
+          expect(address.aliases).to eq(["b"])
         end
 
         it "returns self object" do
@@ -75,11 +75,11 @@ describe Mongoid::Persistable::Poppable do
         end
 
         it "persists pops" do
-          expect(address.reload.services).to eq([ 1, 2, 3 ])
+          expect(address.reload.services).to eq([1, 2, 3])
         end
 
         it "persists shifts" do
-          expect(address.reload.aliases).to eq([ "b" ])
+          expect(address.reload.aliases).to eq(["b"])
         end
 
         it "clears out dirty changes" do
@@ -92,7 +92,7 @@ describe Mongoid::Persistable::Poppable do
       end
 
       let(:address) do
-        person.addresses.create!(street: "test", services: [ 1, 2, 3, 4 ], aliases: %w[a b])
+        person.addresses.create!(street: "test", services: [1, 2, 3, 4], aliases: %w[a b])
       end
 
       context "when provided string fields" do
@@ -123,7 +123,7 @@ describe Mongoid::Persistable::Poppable do
       it "marks a dirty change for the popped fields" do
         person.atomically do
           person.pop test_array: 1
-          expect(person.changes).to eq({"test_array" => [[1, 2, 3], [1, 2]]})
+          expect(person.changes).to eq({ "test_array" => [[1, 2, 3], [1, 2]] })
         end
       end
     end
@@ -144,7 +144,7 @@ describe Mongoid::Persistable::Poppable do
         it "persists the changes" do
           expect(person).to be_readonly
           person.pop(test_array: 1)
-          expect(person.test_array).to eq([ 1, 2 ])
+          expect(person.test_array).to eq([1, 2])
         end
       end
 

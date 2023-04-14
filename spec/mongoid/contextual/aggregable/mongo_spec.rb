@@ -520,7 +520,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
   describe '#pipeline' do
     let(:context) { Mongoid::Contextual::Mongo.new(criteria) }
     let(:pipeline) { context.send(:pipeline, :likes) }
-    subject(:stages) { pipeline.map {|s| s.keys.first } }
+    subject(:stages) { pipeline.map { |s| s.keys.first } }
 
     context "with sort" do
 

@@ -159,11 +159,11 @@ module Mongoid
         end
 
         def relation_complements
-          @relation_complements ||= [ Embedded::EmbeddedIn ].freeze
+          @relation_complements ||= [Embedded::EmbeddedIn].freeze
         end
 
         def polymorphic_inverses(other = nil)
-          [ as ]
+          [as]
         end
 
         def determine_inverses(other)
@@ -175,6 +175,7 @@ module Mongoid
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
+
           matches.collect { |m| m.name } unless matches.blank?
         end
       end

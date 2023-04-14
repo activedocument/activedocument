@@ -317,7 +317,7 @@ describe Mongoid::Extensions::Date do
       end
 
       let(:array) do
-        [ 2010, 1, 1, 2, 3, 4, 0 ]
+        [2010, 1, 1, 2, 3, 4, 0]
       end
 
       let(:mongoized) do

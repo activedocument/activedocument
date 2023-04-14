@@ -165,7 +165,7 @@ describe Mongoid::Validatable::AssociatedValidator do
 
         before do
           expect(associated).to receive(:validated?).and_return(false)
-          validator.validate_each(person, :addresses, [ associated ])
+          validator.validate_each(person, :addresses, [associated])
         end
 
         it "adds errors to the parent document" do
@@ -181,7 +181,7 @@ describe Mongoid::Validatable::AssociatedValidator do
 
         before do
           expect(associated).to receive(:validated?).and_return(false)
-          validator.validate_each(person, :addresses, [ associated ])
+          validator.validate_each(person, :addresses, [associated])
         end
 
         it "adds no errors" do
@@ -202,7 +202,7 @@ describe Mongoid::Validatable::AssociatedValidator do
     end
 
     it "adds the validation only to the instance" do
-      expect(validators).to eq([ described_class ])
+      expect(validators).to eq([described_class])
     end
   end
 end

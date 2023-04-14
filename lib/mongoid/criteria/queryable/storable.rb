@@ -55,7 +55,7 @@ module Mongoid
               new_value = selector[field].merge(value)
               selector.store(field, new_value)
             elsif selector[field] != value
-              add_operator_expression('$and', [{field => value}])
+              add_operator_expression('$and', [{ field => value }])
             end
           else
             selector.store(field, value)
@@ -201,7 +201,7 @@ module Mongoid
           # query, add the new condition with $and, otherwise add the
           # new condition to the top level.
           if selector[operator]
-            add_logical_operator_expression('$and', [{operator => op_expr}])
+            add_logical_operator_expression('$and', [{ operator => op_expr }])
           else
             selector.store(operator, op_expr)
           end

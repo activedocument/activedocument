@@ -31,6 +31,7 @@ module Mongoid
           # @return [ true | false ] If the objects are equal.
           def ==(other)
             return false unless other.respond_to?(:entries)
+
             entries == other.entries
           end
 
@@ -45,6 +46,7 @@ module Mongoid
           # @return [ true | false ] If the objects are equal in a case.
           def ===(other)
             return false unless other.respond_to?(:entries)
+
             entries === other.entries
           end
 
@@ -162,6 +164,7 @@ module Mongoid
             unless block_given?
               return to_enum
             end
+
             if _loaded?
               _loaded.each_pair do |id, doc|
                 document = _added.delete(doc._id) || doc
@@ -282,6 +285,7 @@ module Mongoid
           # @return [ true | false ] If the document is in the target.
           def include?(doc)
             return super unless _unloaded
+
             _unloaded.where(_id: doc._id).exists? || _added.has_key?(doc._id)
           end
 

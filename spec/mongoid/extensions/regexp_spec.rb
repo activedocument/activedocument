@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe Mongoid::Extensions::Regexp do
 
-  [ :mongoize, :demongoize ].each do |method|
+  [:mongoize, :demongoize].each do |method|
 
     describe ".#{method}" do
 

@@ -28,6 +28,7 @@ module Mongoid
         if other == Mongoid::Boolean || other.instance_of?(Mongoid::Boolean)
           return true
         end
+
         super(other)
       end
     end

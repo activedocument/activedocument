@@ -60,7 +60,7 @@ describe Mongoid::Loadable do
 
     context "when using default paths" do
       around(:each) do |example|
-        $LOAD_PATH.concat [ app_models_root, lib_models_root ]
+        $LOAD_PATH.concat [app_models_root, lib_models_root]
 
         Dir.chdir(model_root) do
           Mongoid.load_models
@@ -77,8 +77,8 @@ describe Mongoid::Loadable do
 
     context "when using custom model_paths" do
       before do
-        Mongoid.model_paths = [ app_models_root ]
-        $LOAD_PATH.concat [ app_models_root ]
+        Mongoid.model_paths = [app_models_root]
+        $LOAD_PATH.concat [app_models_root]
         Mongoid.load_models
       end
 
@@ -91,8 +91,8 @@ describe Mongoid::Loadable do
 
     context "when passing paths directly" do
       before do
-        $LOAD_PATH.concat [ model_root ]
-        Mongoid.load_models([ model_root ])
+        $LOAD_PATH.concat [model_root]
+        Mongoid.load_models([model_root])
       end
 
       it "should find models in the specified paths" do

@@ -34,7 +34,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [ :blank?, :empty? ].each do |method|
+  [:blank?, :empty?].each do |method|
 
     describe "##{method}" do
 
@@ -50,7 +50,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(street: "hobrecht").tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end
         end
 
@@ -67,7 +67,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(street: "pfluger").tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end
         end
 
@@ -84,7 +84,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(street: "hobrecht").tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end.collation(locale: 'en_US', strength: 2)
         end
 
@@ -109,7 +109,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.where(street: "hobrecht").tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -128,7 +128,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.where(street: "hobrecht").tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -194,7 +194,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [ :delete, :delete_all ].each do |method|
+  [:delete, :delete_all].each do |method|
 
     let(:person) do
       Person.create!
@@ -218,7 +218,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
-            crit.documents = [ hobrecht, friedel, pfluger ]
+            crit.documents = [hobrecht, friedel, pfluger]
           end
         end
 
@@ -243,7 +243,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "removes the docs from the relation" do
-          expect(person.addresses).to eq([ pfluger ])
+          expect(person.addresses).to eq([pfluger])
         end
 
         it "removes the docs from the context" do
@@ -251,7 +251,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "persists the changes to the database" do
-          expect(person.reload.addresses).to eq([ pfluger ])
+          expect(person.reload.addresses).to eq([pfluger])
         end
 
         it "returns the number of deleted documents" do
@@ -271,7 +271,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Location.where(name: "work").tap do |crit|
-            crit.documents = [ home, work ]
+            crit.documents = [home, work]
           end
         end
 
@@ -292,7 +292,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "removes the docs from the relation" do
-          expect(person.addresses.first.locations).to eq([ home ])
+          expect(person.addresses.first.locations).to eq([home])
         end
 
         it "removes the docs from the context" do
@@ -300,7 +300,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "persists the changes to the database" do
-          expect(person.reload.addresses.first.locations).to eq([ home ])
+          expect(person.reload.addresses.first.locations).to eq([home])
         end
 
         it "returns the number of deleted documents" do
@@ -312,7 +312,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
-            crit.documents = [ hobrecht, friedel, pfluger ]
+            crit.documents = [hobrecht, friedel, pfluger]
           end.collation(locale: 'en_US', strength: 2)
         end
 
@@ -325,7 +325,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [ :destroy, :destroy_all ].each do |method|
+  [:destroy, :destroy_all].each do |method|
 
     let(:person) do
       Person.create!
@@ -345,7 +345,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
-        crit.documents = [ hobrecht, friedel, pfluger ]
+        crit.documents = [hobrecht, friedel, pfluger]
       end
     end
 
@@ -374,7 +374,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "removes the docs from the relation" do
-          expect(person.addresses).to eq([ pfluger ])
+          expect(person.addresses).to eq([pfluger])
         end
 
         it "removes the docs from the context" do
@@ -382,7 +382,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "persists the changes to the database" do
-          expect(person.reload.addresses).to eq([ pfluger ])
+          expect(person.reload.addresses).to eq([pfluger])
         end
 
         it "returns the number of destroyed documents" do
@@ -394,7 +394,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
-            crit.documents = [ hobrecht, friedel, pfluger ]
+            crit.documents = [hobrecht, friedel, pfluger]
           end.collation(locale: 'en_US', strength: 2)
         end
 
@@ -414,7 +414,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, new_order, maniacs ]
+        crit.documents = [depeche, new_order, maniacs]
       end
     end
 
@@ -426,33 +426,33 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Band.where(name: "Depeche Mode").tap do |crit|
-          crit.documents = [ depeche ]
+          crit.documents = [depeche]
         end
       end
 
       it "returns the distinct matching fields" do
-        expect(context.distinct(:name)).to eq([ "Depeche Mode" ])
+        expect(context.distinct(:name)).to eq(["Depeche Mode"])
       end
     end
 
     context "when not limiting the result set" do
 
       it "returns the distinct field values" do
-        expect(context.distinct(:name).sort).to eq([ "10,000 Maniacs", "Depeche Mode", "New Order" ].sort)
+        expect(context.distinct(:name).sort).to eq(["10,000 Maniacs", "Depeche Mode", "New Order"].sort)
       end
     end
 
     context "when providing an aliased field" do
 
       it "returns the distinct field values" do
-        expect(context.distinct(:years).sort).to eq([ 20, 25, 30 ])
+        expect(context.distinct(:years).sort).to eq([20, 25, 30])
       end
     end
 
     context "when providing a demongoizable field" do
 
       it "returns the non-demongoized distinct field values" do
-        expect(context.distinct(:sales).sort).to eq([ BigDecimal("1E2"), BigDecimal("2E3") ])
+        expect(context.distinct(:sales).sort).to eq([BigDecimal("1E2"), BigDecimal("2E3")])
       end
     end
 
@@ -469,20 +469,20 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Dictionary.all.tap do |crit|
-          crit.documents = [ Dictionary.first ]
+          crit.documents = [Dictionary.first]
         end
       end
 
       context "when getting the field without _translations" do
         it "gets the demongoized localized field" do
-          expect(context.distinct(:description)).to eq([ 'deutsch-text' ])
+          expect(context.distinct(:description)).to eq(['deutsch-text'])
         end
       end
 
       context "when getting the field with _translations" do
 
         it "gets the full hash" do
-          expect(context.distinct(:description_translations)).to eq([ { "de" => "deutsch-text", "en" => "english-text" } ])
+          expect(context.distinct(:description_translations)).to eq([{ "de" => "deutsch-text", "en" => "english-text" }])
         end
       end
 
@@ -493,7 +493,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'returns the specific translation' do
-          expect(distinct).to eq([ "deutsch-text" ])
+          expect(distinct).to eq(["deutsch-text"])
         end
       end
 
@@ -513,7 +513,7 @@ describe Mongoid::Contextual::Memory do
         with_default_i18n_configs
 
         before do
-          I18n.fallbacks[:he] = [ :en ]
+          I18n.fallbacks[:he] = [:en]
         end
 
         let(:distinct) do
@@ -543,7 +543,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Person.where(employer_id: 12345).tap do |crit|
-            crit.documents = [ person ]
+            crit.documents = [person]
           end
         end
 
@@ -579,12 +579,12 @@ describe Mongoid::Contextual::Memory do
       let!(:band) { Band.create!(label: label) }
       let(:criteria) do
         Band.where(_id: band.id).tap do |crit|
-          crit.documents = [ band ]
+          crit.documents = [band]
         end
       end
 
       it "returns the distinct matching fields" do
-        expect(context.distinct("label.sales")).to eq([ BigDecimal("1E2") ])
+        expect(context.distinct("label.sales")).to eq([BigDecimal("1E2")])
       end
     end
   end
@@ -601,7 +601,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.where(street: "hobrecht").tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -678,7 +678,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.where(street: "hobrecht").tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -702,7 +702,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.where(street: "hobrecht").tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -723,7 +723,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(street: "pfluger").tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end
         end
 
@@ -740,7 +740,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(street: "pfluger").tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end.collation(locale: 'en_US', strength: 2)
         end
 
@@ -856,7 +856,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [ :first, :one ].each do |method|
+  [:first, :one].each do |method|
 
     describe "##{method}" do
 
@@ -872,7 +872,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end
       end
 
@@ -885,11 +885,11 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "returns a list when passing a limit" do
-        expect(context.send(method, 2)).to eq([ hobrecht, friedel ])
+        expect(context.send(method, 2)).to eq([hobrecht, friedel])
       end
 
       it "returns a list when passing 1" do
-        expect(context.send(method, 1)).to eq([ hobrecht ])
+        expect(context.send(method, 1)).to eq([hobrecht])
       end
 
       include_examples "returns nil when no documents"
@@ -898,7 +898,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end.collation(locale: 'en_US', strength: 2)
         end
 
@@ -925,7 +925,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -954,7 +954,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -967,11 +967,11 @@ describe Mongoid::Contextual::Memory do
     end
 
     it "returns an array when passing a limit" do
-      expect(context.take(2)).to eq([ hobrecht, friedel ])
+      expect(context.take(2)).to eq([hobrecht, friedel])
     end
 
     it "returns an array when passing a limit as 1" do
-      expect(context.take(1)).to eq([ hobrecht ])
+      expect(context.take(1)).to eq([hobrecht])
     end
 
     include_examples "returns nil when no documents"
@@ -980,7 +980,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -1006,7 +1006,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -1024,7 +1024,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -1050,7 +1050,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.where(street: "hobrecht").tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end
       end
 
@@ -1067,7 +1067,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "sets the matching documents" do
-        expect(context.documents).to eq([ hobrecht ])
+        expect(context.documents).to eq([hobrecht])
       end
     end
 
@@ -1083,7 +1083,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.all.skip(1).tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end
       end
 
@@ -1092,7 +1092,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "limits the matching documents" do
-        expect(context).to eq([ friedel ])
+        expect(context).to eq([friedel])
       end
     end
 
@@ -1108,7 +1108,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.all.limit(1).tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end
       end
 
@@ -1117,7 +1117,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "limits the matching documents" do
-        expect(context).to eq([ hobrecht ])
+        expect(context).to eq([hobrecht])
       end
     end
 
@@ -1125,7 +1125,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.all.limit(1).tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -1151,7 +1151,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -1164,11 +1164,11 @@ describe Mongoid::Contextual::Memory do
     end
 
     it "returns a list when a limit is passed" do
-      expect(context.last(2)).to eq([ hobrecht, friedel ])
+      expect(context.last(2)).to eq([hobrecht, friedel])
     end
 
     it "returns a list when the limit is 1" do
-      expect(context.last(1)).to eq([ friedel ])
+      expect(context.last(1)).to eq([friedel])
     end
 
     include_examples "returns nil when no documents"
@@ -1177,7 +1177,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -1202,7 +1202,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -1217,12 +1217,12 @@ describe Mongoid::Contextual::Memory do
     include_examples "raises an error when no documents"
   end
 
-  [ :second,
-    :third,
-    :fourth,
-    :fifth,
-    :second_to_last,
-    :third_to_last].each do |meth|
+  [:second,
+   :third,
+   :fourth,
+   :fifth,
+   :second_to_last,
+   :third_to_last].each do |meth|
     describe "##{meth}" do
       let(:method) { meth }
 
@@ -1232,7 +1232,7 @@ describe Mongoid::Contextual::Memory do
           Address.new,
           Address.new,
           Address.new,
-          Address.new,
+          Address.new
         ]
       end
 
@@ -1262,7 +1262,7 @@ describe Mongoid::Contextual::Memory do
           Address.new,
           Address.new,
           Address.new,
-          Address.new,
+          Address.new
         ]
       end
 
@@ -1284,7 +1284,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [ :length, :size ].each do |method|
+  [:length, :size].each do |method|
 
     describe "##{method}" do
 
@@ -1300,7 +1300,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(street: "hobrecht").tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end
         end
 
@@ -1317,7 +1317,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(street: "pfluger").tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end
         end
 
@@ -1334,7 +1334,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Address.where(street: "hobrecht").tap do |crit|
-            crit.documents = [ hobrecht, friedel ]
+            crit.documents = [hobrecht, friedel]
           end.collation(locale: 'en_US', strength: 2)
         end
 
@@ -1363,7 +1363,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.all.tap do |crit|
-        crit.documents = [ hobrecht, friedel, pfluger ]
+        crit.documents = [hobrecht, friedel, pfluger]
       end
     end
 
@@ -1386,7 +1386,7 @@ describe Mongoid::Contextual::Memory do
         context "when only a limit exists" do
 
           it "only returns the limited documents" do
-            expect(context.entries).to eq([ hobrecht, friedel ])
+            expect(context.entries).to eq([hobrecht, friedel])
           end
         end
 
@@ -1397,7 +1397,7 @@ describe Mongoid::Contextual::Memory do
           end
 
           it "applies the skip before the limit" do
-            expect(context.entries).to eq([ friedel, pfluger ])
+            expect(context.entries).to eq([friedel, pfluger])
           end
         end
       end
@@ -1407,7 +1407,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.all.tap do |crit|
-          crit.documents = [ hobrecht, friedel, pfluger ]
+          crit.documents = [hobrecht, friedel, pfluger]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -1443,7 +1443,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, tool, photek, maniacs ]
+        crit.documents = [depeche, tool, photek, maniacs]
       end
     end
 
@@ -1459,7 +1459,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Product.all.tap do |crit|
-          crit.documents = [ expensive, cheap ]
+          crit.documents = [expensive, cheap]
         end
       end
 
@@ -1470,7 +1470,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "uses the aliases" do
-          expect(plucked).to eq([ 100000, 1 ])
+          expect(plucked).to eq([100000, 1])
         end
       end
     end
@@ -1501,7 +1501,7 @@ describe Mongoid::Contextual::Memory do
               Band.where(name: 'FKA Twigs').tap do |crit|
                 crit.documents = [
                   Band.create!(name: 'FKA Twigs'),
-                  Band.create!(name: 'FKA Twigs', records: [ Record.new(name: 'LP1') ])
+                  Band.create!(name: 'FKA Twigs', records: [Record.new(name: 'LP1')])
                 ]
               end
             end
@@ -1528,7 +1528,7 @@ describe Mongoid::Contextual::Memory do
               Band.where(name: 'FKA Twigs').tap do |crit|
                 crit.documents = [
                   Band.create!(name: 'FKA Twigs'),
-                  Band.create!(name: 'FKA Twigs', records: [ Record.new(name: 'LP1') ])
+                  Band.create!(name: 'FKA Twigs', records: [Record.new(name: 'LP1')])
                 ]
               end
             end
@@ -1581,7 +1581,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "returns the field values" do
-        expect(plucked).to eq([ depeche.id, tool.id, photek.id, maniacs.id ])
+        expect(plucked).to eq([depeche.id, tool.id, photek.id, maniacs.id])
       end
     end
 
@@ -1592,7 +1592,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "returns nil for the field that doesnt exist" do
-        expect(plucked).to eq([[depeche.id, nil], [tool.id, nil], [photek.id, nil], [maniacs.id, nil] ])
+        expect(plucked).to eq([[depeche.id, nil], [tool.id, nil], [photek.id, nil], [maniacs.id, nil]])
       end
     end
 
@@ -1634,7 +1634,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Dictionary.all.tap do |crit|
-          crit.documents = [ Dictionary.first ]
+          crit.documents = [Dictionary.first]
         end
       end
 
@@ -1657,11 +1657,11 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({"de" => "deutsch-text", "en" => "english-text"})
+          expect(plucked_translations.first).to eq({ "de" => "deutsch-text", "en" => "english-text" })
         end
 
         it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{"de" => "deutsch-text", "en" => "english-text"}, "deutsch-text"])
+          expect(plucked_translations_both.first).to eq([{ "de" => "deutsch-text", "en" => "english-text" }, "deutsch-text"])
         end
       end
 
@@ -1692,7 +1692,7 @@ describe Mongoid::Contextual::Memory do
         with_default_i18n_configs
 
         before do
-          I18n.fallbacks[:he] = [ :en ]
+          I18n.fallbacks[:he] = [:en]
         end
 
         let(:plucked) do
@@ -1767,12 +1767,12 @@ describe Mongoid::Contextual::Memory do
 
       let(:plucked) do
         Band.where(_id: band.id).tap do |crit|
-          crit.documents = [ band ]
+          crit.documents = [band]
         end.pluck("label.sales")
       end
 
       it "demongoizes the field" do
-        expect(plucked).to eq([ BigDecimal("1E2") ])
+        expect(plucked).to eq([BigDecimal("1E2")])
       end
     end
 
@@ -1783,7 +1783,7 @@ describe Mongoid::Contextual::Memory do
       let(:plucked) { Band.where(_id: band.id).pluck("labels.sales") }
 
       it "demongoizes the field" do
-        expect(plucked.first).to eq([ BigDecimal("1E2") ])
+        expect(plucked.first).to eq([BigDecimal("1E2")])
       end
     end
 
@@ -1793,7 +1793,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:plucked) do
         Band.where(_id: band.id).tap do |crit|
-          crit.documents = [ band ]
+          crit.documents = [band]
         end.pluck("label.qwerty")
       end
 
@@ -1807,9 +1807,9 @@ describe Mongoid::Contextual::Memory do
       let(:criteria) do
         Person.all.tap do |crit|
           crit.documents = [
-            Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ]),
-            Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ]),
-            Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ]),
+            Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))]),
+            Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))]),
+            Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }])))])
           ]
         end
       end
@@ -1820,7 +1820,7 @@ describe Mongoid::Contextual::Memory do
 
       it "returns the correct hash" do
         expect(plucked).to eq([
-          [ [ 1, 2 ] ], [ [ 1, 2 ] ], [ [ 1, 3 ] ]
+          [[1, 2]], [[1, 2]], [[1, 3]]
         ])
       end
     end
@@ -1838,7 +1838,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.all.tap do |crit|
-        crit.documents = [ hobrecht, friedel ]
+        crit.documents = [hobrecht, friedel]
       end
     end
 
@@ -1891,7 +1891,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "yields values to the block" do
-        expect(plucked_values).to eq([ ["hobrecht", 213], ["friedel", 11] ])
+        expect(plucked_values).to eq([["hobrecht", 213], ["friedel", 11]])
       end
     end
 
@@ -1934,7 +1934,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.all.tap do |crit|
-          crit.documents = [ hobrecht, friedel ]
+          crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -1958,7 +1958,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, tool ]
+        crit.documents = [depeche, tool]
       end
     end
 
@@ -1984,7 +1984,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "returns an array" do
-        expect(picked).to eq([ "Depeche Mode", 3 ])
+        expect(picked).to eq(["Depeche Mode", 3])
       end
     end
 
@@ -2007,13 +2007,13 @@ describe Mongoid::Contextual::Memory do
   end
 
   describe "#tally" do
-    let(:fans1) { [ Fanatic.new(age: 1), Fanatic.new(age: 2) ] }
-    let(:fans2) { [ Fanatic.new(age: 1), Fanatic.new(age: 2) ] }
-    let(:fans3) { [ Fanatic.new(age: 1), Fanatic.new(age: 3) ] }
+    let(:fans1) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
+    let(:fans2) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
+    let(:fans3) { [Fanatic.new(age: 1), Fanatic.new(age: 3)] }
 
-    let(:genres1) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 3 } ]}
-    let(:genres2) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 4 } ]}
-    let(:genres3) { [ { x: 1, y: { z: 1 } }, { x: 3, y: { z: 3 } }, { y: 5 } ]}
+    let(:genres1) { [{ x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 3 }] }
+    let(:genres2) { [{ x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 4 }] }
+    let(:genres3) { [{ x: 1, y: { z: 1 } }, { x: 3, y: { z: 3 } }, { y: 5 }] }
 
     let(:label1) {  Label.new(name: "Atlantic") }
     let(:label2) {  Label.new(name: "Atlantic") }
@@ -2028,13 +2028,13 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Band.where(origin: "tally").all.tap do |crit|
-        crit.documents = [ band1, band2, band3 ]
+        crit.documents = [band1, band2, band3]
       end
     end
 
     let(:criteria2) do
       Band.where(origin: "tally2").tap do |crit|
-        crit.documents = [ band4, band5, band6 ]
+        crit.documents = [band4, band5, band6]
       end
     end
 
@@ -2104,7 +2104,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Dictionary.all.tap do |crit|
-            crit.documents = [ d1, d2, d3, d4 ]
+            crit.documents = [d1, d2, d3, d4]
           end
         end
 
@@ -2135,9 +2135,9 @@ describe Mongoid::Contextual::Memory do
 
           it "returns the correct hash" do
             expect(tallied).to eq(
-              {"de" => "de1", "en" => "en1" } => 2,
-              {"de" => "de2", "en" => "en1" } => 1,
-              {"de" => "de3", "en" => "en2" } => 1
+              { "de" => "de1", "en" => "en1" } => 2,
+              { "de" => "de2", "en" => "en1" } => 1,
+              { "de" => "de3", "en" => "en2" } => 1
             )
           end
         end
@@ -2147,7 +2147,7 @@ describe Mongoid::Contextual::Memory do
 
         let(:criteria) do
           Band.where(origin: "tally").all.tap do |crit|
-            crit.documents = [ band1, band2, band3 ]
+            crit.documents = [band1, band2, band3]
             3.times { crit.documents << Band.new(origin: "tally") }
           end
         end
@@ -2176,8 +2176,8 @@ describe Mongoid::Contextual::Memory do
     context "when tallying an embedded localized field" do
       with_default_i18n_configs
 
-      let(:person1) { Person.create!(addresses: [ address1a, address1b ]) }
-      let(:person2) { Person.create!(addresses: [ address2a, address2b ]) }
+      let(:person1) { Person.create!(addresses: [address1a, address1b]) }
+      let(:person2) { Person.create!(addresses: [address2a, address2b]) }
 
       let(:address1a) { Address.new(name: "en1") }
       let(:address1b) { Address.new(name: "en2") }
@@ -2202,7 +2202,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Person.all.tap do |crit|
-          crit.documents = [ person1, person2 ]
+          crit.documents = [person1, person2]
         end
       end
 
@@ -2214,7 +2214,7 @@ describe Mongoid::Contextual::Memory do
         it "returns the translation for the current locale" do
           expect(tallied).to eq(
             %w[en1 en2] => 1,
-            %w[en1 en3] => 1,
+            %w[en1 en3] => 1
           )
         end
 
@@ -2237,7 +2237,7 @@ describe Mongoid::Contextual::Memory do
         it "returns the translation for the the specific locale" do
           expect(tallied).to eq(
             %w[de1 de2] => 1,
-            %w[de1 de3] => 1,
+            %w[de1 de3] => 1
           )
         end
 
@@ -2260,7 +2260,7 @@ describe Mongoid::Contextual::Memory do
         it "returns the correct hash" do
           expect(tallied).to eq(
             [{ "de" => "de1", "en" => "en1" }, { "de" => "de2", "en" => "en2" }] => 1,
-            [{ "de" => "de1", "en" => "en1" }, { "de" => "de3", "en" => "en3" }] => 1,
+            [{ "de" => "de1", "en" => "en1" }, { "de" => "de3", "en" => "en3" }] => 1
           )
         end
 
@@ -2320,7 +2320,7 @@ describe Mongoid::Contextual::Memory do
         expect(tally).to eq(
           fans1 => 1,
           fans2 => 1,
-          fans3 => 1,
+          fans3 => 1
         )
       end
 
@@ -2384,11 +2384,11 @@ describe Mongoid::Contextual::Memory do
 
     context "when tallying an element from an array of hashes; with duplicate" do
 
-      let(:band4) { Band.new(origin: "tally", genres: [ { x: 1 }, {x: 1} ]) }
+      let(:band4) { Band.new(origin: "tally", genres: [{ x: 1 }, { x: 1 }]) }
 
       let(:criteria) do
         Band.where(origin: "tally").all.tap do |crit|
-          crit.documents = [ band1, band2, band3, band4 ]
+          crit.documents = [band1, band2, band3, band4]
         end
       end
 
@@ -2400,7 +2400,7 @@ describe Mongoid::Contextual::Memory do
         expect(tally).to eq(
           [1, 2] => 2,
           [1, 3] => 1,
-          [1, 1] => 1,
+          [1, 1] => 1
         )
       end
 
@@ -2417,12 +2417,12 @@ describe Mongoid::Contextual::Memory do
 
     context "when tallying an aliased field of type array" do
 
-      let(:person1) { Person.new(array: [ 1, 2 ]) }
-      let(:person2) { Person.new(array: [ 1, 3 ]) }
+      let(:person1) { Person.new(array: [1, 2]) }
+      let(:person2) { Person.new(array: [1, 3]) }
 
       let(:criteria) do
         Person.all.tap do |crit|
-          crit.documents = [ person1, person2 ]
+          crit.documents = [person1, person2]
         end
       end
 
@@ -2498,13 +2498,13 @@ describe Mongoid::Contextual::Memory do
 
     context "when tallying deeply nested arrays/embedded associations" do
 
-      let(:person1) { Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ]) }
-      let(:person2) { Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ]) }
-      let(:person3) { Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ]) }
+      let(:person1) { Person.new(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))]) }
+      let(:person2) { Person.new(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))]) }
+      let(:person3) { Person.new(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }])))]) }
 
       let(:criteria) do
         Person.all.tap do |crit|
-          crit.documents = [ person1, person2, person3 ]
+          crit.documents = [person1, person2, person3]
         end
       end
 
@@ -2514,8 +2514,8 @@ describe Mongoid::Contextual::Memory do
 
       it "returns the correct hash" do
         expect(tally).to eq(
-          [ [ 1, 2 ] ] => 2,
-          [ [ 1, 3 ] ] => 1
+          [[1, 2]] => 2,
+          [[1, 3]] => 1
         )
       end
 
@@ -2523,8 +2523,8 @@ describe Mongoid::Contextual::Memory do
         let(:unwind) { true }
 
         it "returns the correct hash without the nil keys" do
-          expect(tally).to eq([ 1, 2 ] => 2,
-                              [ 1, 3 ] => 1)
+          expect(tally).to eq([1, 2] => 2,
+                              [1, 3] => 1)
         end
       end
     end
@@ -2532,23 +2532,23 @@ describe Mongoid::Contextual::Memory do
     context "when tallying deeply nested arrays/embedded associations" do
 
       let(:person1) do
-        Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))),
-                                Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
+        Person.new(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }]))),
+                               Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
       end
 
       let(:person2) do
-        Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))),
-                                Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
+        Person.new(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }]))),
+                               Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
       end
 
       let(:person3) do
-        Person.new(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))),
-                                Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ])
+        Person.new(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }]))),
+                               Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }])))])
       end
 
       let(:criteria) do
         Person.all.tap do |crit|
-          crit.documents = [ person1, person2, person3 ]
+          crit.documents = [person1, person2, person3]
         end
       end
 
@@ -2558,8 +2558,8 @@ describe Mongoid::Contextual::Memory do
 
       it "returns the correct hash" do
         expect(tally).to eq(
-          [ [ 1, 2 ], [ 1, 2 ] ] => 2,
-          [ [ 1, 3 ], [ 1, 3 ] ] => 1
+          [[1, 2], [1, 2]] => 2,
+          [[1, 3], [1, 3]] => 1
         )
       end
 
@@ -2567,20 +2567,20 @@ describe Mongoid::Contextual::Memory do
         let(:unwind) { true }
 
         it "returns the correct hash without the nil keys" do
-          expect(tally).to eq([ 1, 2 ] => 4,
-                              [ 1, 3 ] => 2)
+          expect(tally).to eq([1, 2] => 4,
+                              [1, 3] => 2)
         end
       end
     end
 
     context "when the first element is an embeds_one" do
-      let(:person1) { Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 2) ])) }
-      let(:person2) { Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 2) ])) }
-      let(:person3) { Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 3) ])) }
+      let(:person1) { Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 2)])) }
+      let(:person2) { Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 2)])) }
+      let(:person3) { Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 3)])) }
 
       let(:criteria) do
         Person.all.tap do |crit|
-          crit.documents = [ person1, person2, person3 ]
+          crit.documents = [person1, person2, person3]
         end
       end
 
@@ -2611,9 +2611,9 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.all.tap do |crit|
-        crit.documents = [ Address.new(number: 1),
-                           Address.new(number: 2),
-                           Address.new(number: 3) ]
+        crit.documents = [Address.new(number: 1),
+                          Address.new(number: 2),
+                          Address.new(number: 3)]
       end
     end
 
@@ -2642,7 +2642,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.all.tap do |crit|
-        crit.documents = [ hobrecht, friedel, pfluger ]
+        crit.documents = [hobrecht, friedel, pfluger]
       end
     end
 
@@ -2665,7 +2665,7 @@ describe Mongoid::Contextual::Memory do
         context "when only a skip exists" do
 
           it "skips the correct number" do
-            expect(context.entries).to eq([ friedel, pfluger ])
+            expect(context.entries).to eq([friedel, pfluger])
           end
         end
 
@@ -2676,7 +2676,7 @@ describe Mongoid::Contextual::Memory do
           end
 
           it "applies the skip before the limit" do
-            expect(context.entries).to eq([ friedel ])
+            expect(context.entries).to eq([friedel])
           end
         end
       end
@@ -2686,7 +2686,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.all.tap do |crit|
-          crit.documents = [ hobrecht, friedel, pfluger ]
+          crit.documents = [hobrecht, friedel, pfluger]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -2714,7 +2714,7 @@ describe Mongoid::Contextual::Memory do
 
     let(:criteria) do
       Address.all.tap do |crit|
-        crit.documents = [ hobrecht, friedel, pfluger ]
+        crit.documents = [hobrecht, friedel, pfluger]
       end
     end
 
@@ -2731,7 +2731,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "sorts the documents" do
-          expect(context.entries).to eq([ friedel, hobrecht, pfluger ])
+          expect(context.entries).to eq([friedel, hobrecht, pfluger])
         end
 
         it "returns the context" do
@@ -2748,7 +2748,7 @@ describe Mongoid::Contextual::Memory do
           end
 
           it "sorts the documents" do
-            expect(context.entries).to eq([ pfluger, hobrecht, friedel ])
+            expect(context.entries).to eq([pfluger, hobrecht, friedel])
           end
 
           it "returns the context" do
@@ -2768,7 +2768,7 @@ describe Mongoid::Contextual::Memory do
           end
 
           it "sorts the documents" do
-            expect(context.entries).to eq([ friedel, hobrecht, pfluger ])
+            expect(context.entries).to eq([friedel, hobrecht, pfluger])
           end
 
           it "returns the context" do
@@ -2800,7 +2800,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "sorts the documents" do
-          expect(context.entries).to eq([ friedel, kampuchea_krom, lenau, pfluger, hobrecht ])
+          expect(context.entries).to eq([friedel, kampuchea_krom, lenau, pfluger, hobrecht])
         end
 
         it "returns the context" do
@@ -2815,7 +2815,7 @@ describe Mongoid::Contextual::Memory do
         end
 
         it "sorts the documents" do
-          expect(context.entries).to eq([ hobrecht, pfluger, lenau, kampuchea_krom, friedel ])
+          expect(context.entries).to eq([hobrecht, pfluger, lenau, kampuchea_krom, friedel])
         end
 
         it "returns the context" do
@@ -2831,7 +2831,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "does not sort the documents" do
-        expect(context.entries).to eq([ hobrecht, friedel, pfluger ])
+        expect(context.entries).to eq([hobrecht, friedel, pfluger])
       end
 
       it "returns the context" do
@@ -2846,7 +2846,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it "sorts the documents" do
-        expect(context.entries).to eq([ friedel, hobrecht, pfluger ])
+        expect(context.entries).to eq([friedel, hobrecht, pfluger])
       end
     end
 
@@ -2854,7 +2854,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.all.tap do |crit|
-          crit.documents = [ hobrecht, friedel, pfluger ]
+          crit.documents = [hobrecht, friedel, pfluger]
         end.collation(locale: 'en_US', strength: 2)
       end
 
@@ -2888,7 +2888,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
-          crit.documents = [ hobrecht, friedel, pfluger ]
+          crit.documents = [hobrecht, friedel, pfluger]
         end
       end
 
@@ -2950,7 +2950,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Location.where(name: "work").tap do |crit|
-          crit.documents = [ home, work ]
+          crit.documents = [home, work]
         end
       end
 
@@ -3060,7 +3060,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Address.any_in(street: %w[hobrecht friedel]).tap do |crit|
-          crit.documents = [ hobrecht, friedel, pfluger ]
+          crit.documents = [hobrecht, friedel, pfluger]
         end
       end
 
@@ -3152,7 +3152,7 @@ describe Mongoid::Contextual::Memory do
 
       let(:criteria) do
         Location.where(name: "work").tap do |crit|
-          crit.documents = [ home, work ]
+          crit.documents = [home, work]
         end
       end
 

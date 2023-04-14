@@ -9,7 +9,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe "#build" do
@@ -29,7 +29,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
       end
 
       let(:object) do
-        [ object_id ]
+        [object_id]
       end
 
       let(:criteria) do
@@ -54,7 +54,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
       end
 
       let(:object) do
-        [ object_id ]
+        [object_id]
       end
 
       let(:criteria) do
@@ -79,7 +79,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
       end
 
       let(:object) do
-        [ object_id ]
+        [object_id]
       end
 
       let(:criteria) do
@@ -96,7 +96,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
       context "when the object is not nil" do
 
         let(:object) do
-          [ Post.new ]
+          [Post.new]
         end
 
         it "returns the objects" do
@@ -136,7 +136,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Buildable do
         end
 
         before do
-          person.preference_ids = [ BSON::ObjectId.new ]
+          person.preference_ids = [BSON::ObjectId.new]
         end
 
         it "returns an empty array" do

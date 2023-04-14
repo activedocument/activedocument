@@ -782,7 +782,7 @@ describe Mongoid::Clients do
           before do
             StoreChild1.store_in collection: :store_ones
             StoreChild2.store_in collection: :store_twos
-            [ parent, child1, child2 ]
+            [parent, child1, child2]
           end
 
           let(:db_parent) { client['store_parents'].find.first }
@@ -806,7 +806,7 @@ describe Mongoid::Clients do
 
           before do
             StoreChild1.store_in collection: :store_ones
-            [ parent, child1, child2 ]
+            [parent, child1, child2]
           end
 
           let(:db_parent) { client['store_parents'].find.first }
@@ -838,7 +838,7 @@ describe Mongoid::Clients do
           before do
             StoreChild1.store_in collection: :store_ones
             StoreChild2.store_in collection: :store_twos
-            [ parent, child1, child2 ]
+            [parent, child1, child2]
           end
 
           let(:db_parent) { client['st_parents'].find.first }
@@ -856,7 +856,7 @@ describe Mongoid::Clients do
 
           before do
             StoreChild1.store_in collection: :store_ones
-            [ parent, child1, child2 ]
+            [parent, child1, child2]
           end
 
           let(:db_parent) { client['st_parents'].find.first }

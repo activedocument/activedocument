@@ -9,7 +9,7 @@ describe 'i18n fallbacks' do
     with_default_i18n_configs
 
     before do
-      I18n.fallbacks[:de] = [ :en ]
+      I18n.fallbacks[:de] = [:en]
     end
 
     context 'when translation is present in active locale' do

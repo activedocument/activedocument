@@ -630,7 +630,7 @@ describe Mongoid::Extensions::Time do
     context "when given an array" do
 
       let(:array) do
-        [ 2010, 11, 19, 0, 24, 49 ]
+        [2010, 11, 19, 0, 24, 49]
       end
 
       it "returns a time" do

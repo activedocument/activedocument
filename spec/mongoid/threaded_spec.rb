@@ -19,7 +19,7 @@ describe Mongoid::Threaded do
     end
 
     it "adds a boolean to the load stack" do
-      expect(described_class.stack("load")).to eq([ true ])
+      expect(described_class.stack("load")).to eq([true])
     end
   end
 
@@ -35,7 +35,7 @@ describe Mongoid::Threaded do
     context "when the stack has elements" do
 
       before do
-        Thread.current["[mongoid]:load-stack"] = [ true ]
+        Thread.current["[mongoid]:load-stack"] = [true]
       end
 
       after do
@@ -75,7 +75,7 @@ describe Mongoid::Threaded do
     context "when a stack has been initialized" do
 
       before do
-        Thread.current["[mongoid]:load-stack"] = [ true ]
+        Thread.current["[mongoid]:load-stack"] = [true]
       end
 
       let(:loading) do
@@ -87,7 +87,7 @@ describe Mongoid::Threaded do
       end
 
       it "returns the stack" do
-        expect(loading).to eq([ true ])
+        expect(loading).to eq([true])
       end
     end
   end
@@ -123,7 +123,7 @@ describe Mongoid::Threaded do
     end
 
     it "marks the document as being validated" do
-      expect(described_class.validations_for(Person)).to eq([ person.id ])
+      expect(described_class.validations_for(Person)).to eq([person.id])
     end
   end
 
@@ -187,7 +187,7 @@ describe Mongoid::Threaded do
     end
 
     it "marks the document as being autosaved" do
-      expect(described_class.autosaves_for(Person)).to eq([ person.id ])
+      expect(described_class.autosaves_for(Person)).to eq([person.id])
     end
   end
 

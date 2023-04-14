@@ -6,7 +6,7 @@ describe Mongoid::Document do
   context 'when including class uses delegate' do
     let(:patient) do
       DelegatingPatient.new(
-        email: Email.new(address: 'test@example.com'),
+        email: Email.new(address: 'test@example.com')
       )
     end
 

@@ -58,11 +58,11 @@ describe Mongoid::Persistable do
         let(:operations) do
           [{
             "$inc" => { "member_count" => 10 },
-            "$bit" => { "likes" => { :and => 13 }},
+            "$bit" => { "likes" => { :and => 13 } },
             "$set" => { "name" => "Placebo" },
             "$unset" => { "origin" => true }
           },
-           { :session => nil } ]
+           { :session => nil }]
         end
 
         before do
@@ -86,11 +86,11 @@ describe Mongoid::Persistable do
         let(:operations) do
           [{
             "$inc" => { "member_count" => 10 },
-            "$bit" => { "likes" => { :and => 13 }},
+            "$bit" => { "likes" => { :and => 13 } },
             "$set" => { "name" => "Placebo" },
             "$unset" => { "origin" => true }
           },
-           { :session => nil } ]
+           { :session => nil }]
         end
 
         before do
@@ -115,11 +115,11 @@ describe Mongoid::Persistable do
         let(:operations) do
           [{
             "$inc" => { "member_count" => 10, "other_count" => 10 },
-            "$bit" => { "likes" => { :and => 13 }},
+            "$bit" => { "likes" => { :and => 13 } },
             "$set" => { "name" => "Placebo" },
             "$unset" => { "origin" => true }
           },
-           { :session => nil } ]
+           { :session => nil }]
         end
 
         before do
@@ -153,11 +153,11 @@ describe Mongoid::Persistable do
         let(:operations) do
           [{
             "$inc" => { "member_count" => 10 },
-            "$bit" => { "likes" => { :and => 13 }},
+            "$bit" => { "likes" => { :and => 13 } },
             "$set" => { "name" => "Placebo" },
             "$unset" => { "origin" => true }
           },
-           { :session => nil } ]
+           { :session => nil }]
         end
 
         before do

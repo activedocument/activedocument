@@ -13,11 +13,11 @@ describe "StringifiedSymbol fields" do
     end
 
     let(:string_query) do
-      {'saved_status' => {'$eq' => 'test'}}
+      { 'saved_status' => { '$eq' => 'test' } }
     end
 
     let(:symbol_query) do
-      {'saved_status' => {'$eq' => :test}}
+      { 'saved_status' => { '$eq' => :test } }
     end
 
     it "can be queried with a string" do
@@ -63,7 +63,7 @@ describe "StringifiedSymbol fields" do
   end
 
   let(:query) do
-    {'saved_status' => {'$eq' => 'test'}}
+    { 'saved_status' => { '$eq' => 'test' } }
   end
 
   let!(:document1) do

@@ -84,12 +84,12 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Eager do
         before { eager }
 
         it "puts the documents in the parent document" do
-          expect(eager.ivar(:preferences)).to eq([ preference ])
+          expect(eager.ivar(:preferences)).to eq([preference])
         end
 
         it "does not query when touching the association" do
           expect_query(0) do
-            expect(eager.preferences).to eq([ preference ])
+            expect(eager.preferences).to eq([preference])
           end
         end
 

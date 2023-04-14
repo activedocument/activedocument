@@ -656,7 +656,7 @@ describe Mongoid::Touchable do
         end
       end
 
-      [ :save!, :destroy, :touch].each do |meth|
+      [:save!, :destroy, :touch].each do |meth|
         context "with #{meth} on referenced associations" do
           let(:parent_cls) { TouchableSpec::Referenced::Building }
           let(:meth) { meth }
@@ -715,7 +715,7 @@ describe Mongoid::Touchable do
         end
       end
 
-      [ :save!, :destroy, :touch].each do |meth|
+      [:save!, :destroy, :touch].each do |meth|
         context "with #{meth} on belongs_to" do
           let(:meth) { meth }
           let(:parent_cls) { TouchableSpec::Referenced::Building }
@@ -832,7 +832,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Embedded::Sofa
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -849,7 +849,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Embedded::Chair
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -873,7 +873,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Embedded::Camera
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -890,7 +890,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Embedded::Keypad
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -919,7 +919,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Referenced::Sofa
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -936,7 +936,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Referenced::Chair
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -960,7 +960,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Referenced::Camera
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -977,7 +977,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Referenced::Keypad
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -1006,7 +1006,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Referenced::Window
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -1023,7 +1023,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Referenced::Plant
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -1047,7 +1047,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Referenced::Window
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -1064,7 +1064,7 @@ describe Mongoid::Touchable do
               TouchableSpec::Referenced::Plant
             end
 
-            [ :save!, :destroy, :touch ].each do |meth|
+            [:save!, :destroy, :touch].each do |meth|
               context "when calling #{meth} method" do
                 let(:meth) { meth }
 
@@ -1225,7 +1225,7 @@ describe Mongoid::Touchable do
       end
 
       let(:book) do
-        Book.new(covers: [ cover ])
+        Book.new(covers: [cover])
       end
 
       let(:cover) do

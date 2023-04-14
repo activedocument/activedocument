@@ -21,6 +21,7 @@ module Mongoid
         unless Array === condition
           raise Errors::InvalidQuery, "$in argument must be an array: #{Errors::InvalidQuery.truncate_expr(condition)}"
         end
+
         if Array === value
           if value.any? { |v|
             condition.any? do |c|

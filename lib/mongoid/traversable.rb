@@ -202,6 +202,7 @@ module Mongoid
         to_expand = []
         expanding.each do |child|
           next if expanded[child]
+
           # Don't mark expanded if _id is nil, since documents are compared by
           # their _ids, multiple embedded documents with nil ids will compare
           # equally, and some documents will not be expanded.

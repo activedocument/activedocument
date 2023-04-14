@@ -13,7 +13,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
   end
 
   let(:target) do
-    Mongoid::Association::Referenced::HasMany::Enumerable.new([ preference ])
+    Mongoid::Association::Referenced::HasMany::Enumerable.new([preference])
   end
 
   let(:association) do
@@ -37,7 +37,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
       end
 
       it "sets the inverse foreign key" do
-        expect(preference_two.person_ids).to eq([ person.id ])
+        expect(preference_two.person_ids).to eq([person.id])
       end
 
       it "passes the binding options through to the inverse" do
@@ -173,7 +173,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
       end
 
       it "does not unset the foreign key" do
-        expect(preference.person_ids).to eq([ person.id ])
+        expect(preference.person_ids).to eq([person.id])
       end
     end
   end

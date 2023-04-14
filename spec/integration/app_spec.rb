@@ -37,7 +37,7 @@ describe 'Mongoid application tests' do
       it 'runs' do
         clone_application(
           'https://github.com/mongoid/mongoid-demo',
-          subdir: 'sinatra-minimal',
+          subdir: 'sinatra-minimal'
         ) do
 
           # JRuby needs a long timeout
@@ -56,7 +56,7 @@ describe 'Mongoid application tests' do
       it 'runs' do
         clone_application(
           'https://github.com/mongoid/mongoid-demo',
-          subdir: 'rails-api',
+          subdir: 'rails-api'
         ) do
 
           # JRuby needs a long timeout
@@ -217,7 +217,7 @@ describe 'Mongoid application tests' do
 
               it 'creates an index' do
                 index = client['posts'].indexes.detect do |index|
-                  index['key'] == {'subject' => 1}
+                  index['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be nil
 
@@ -226,7 +226,7 @@ describe 'Mongoid application tests' do
                            env: env)
 
                 index = client['posts'].indexes.detect do |index|
-                  index['key'] == {'subject' => 1}
+                  index['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be_a(Hash)
               end
@@ -273,7 +273,7 @@ describe 'Mongoid application tests' do
       protocol: protocol,
       hosts: hosts,
       database: database,
-      query: query,
+      query: query
     }
   end
 
@@ -288,12 +288,12 @@ describe 'Mongoid application tests' do
     parts[:database] = 'mongoid_test'
     uri = build_mongodb_uri(parts)
     p uri
-    env_config = {'clients' => {'default' => {
+    env_config = { 'clients' => { 'default' => {
       # TODO massive hack, will fail if uri specifies a database name or
       # any uri options
-      'uri' => uri,
-    }}}
-    config = {'development' => env_config, 'production' => env_config}
+      'uri' => uri
+    } } }
+    config = { 'development' => env_config, 'production' => env_config }
     File.open('config/mongoid.yml', 'w') do |f|
       f << YAML.dump(config)
     end
@@ -336,6 +336,7 @@ describe 'Mongoid application tests' do
 
   def remove_bundler_req
     return unless File.file?('Gemfile.lock')
+
     # TODO: Remove this method completely when we get rid of .lock files in
     # mongoid-demo apps.
     lock_lines = File.readlines('Gemfile.lock')
@@ -359,7 +360,7 @@ describe 'Mongoid application tests' do
   end
 
   def clean_env
-    @clean_env ||= Hash[ENV.keys.grep(/BUNDLE|RUBYOPT/).map { |k| [k, nil ] }]
+    @clean_env ||= Hash[ENV.keys.grep(/BUNDLE|RUBYOPT/).map { |k| [k, nil] }]
   end
 
   def wait_for_port(port, timeout, process)

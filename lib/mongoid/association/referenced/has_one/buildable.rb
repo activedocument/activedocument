@@ -37,7 +37,7 @@ module Mongoid
                 @owner_class,
                 name,
                 object.class,
-                foreign_key,
+                foreign_key
               )
             end
             if object && (associated = object.send(inverse))

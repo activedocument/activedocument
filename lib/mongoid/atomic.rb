@@ -201,7 +201,7 @@ module Mongoid
           path ||= doc.flag_as_destroyed
           doc._id
         end
-        pulls[path] = { "_id" => { "$in" => ids }} and path = nil
+        pulls[path] = { "_id" => { "$in" => ids } } and path = nil
       end
       pulls
     end

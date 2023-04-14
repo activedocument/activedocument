@@ -88,7 +88,7 @@ describe Mongoid::Criteria::Scopable do
 
         it "merges in the inclusions" do
           expect(scoped.inclusions).to eq(
-            [ Band.relations["records"] ]
+            [Band.relations["records"]]
           )
         end
 
@@ -107,7 +107,7 @@ describe Mongoid::Criteria::Scopable do
 
         it "merges in the inclusions" do
           expect(scoped.inclusions).to eq(
-            [ Band.relations["records"], Band.relations["label"] ]
+            [Band.relations["records"], Band.relations["label"]]
           )
         end
 
@@ -314,7 +314,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       it "removes the matching inclusions" do
-        expect(criteria.inclusions).to eq([ Band.relations["records"] ])
+        expect(criteria.inclusions).to eq([Band.relations["records"]])
       end
     end
   end
@@ -413,7 +413,7 @@ describe Mongoid::Criteria::Scopable do
     end
 
     it "returns the scoping options" do
-      expect(criteria.scoping_options).to eq([ true, false ])
+      expect(criteria.scoping_options).to eq([true, false])
     end
   end
 
@@ -549,12 +549,12 @@ describe Mongoid::Criteria::Scopable do
     class ArgumentScopeWhereModel
       include Mongoid::Document
 
-      scope :my_text_search, ->(search) { where('$text' => {'$search' => search}) }
+      scope :my_text_search, ->(search) { where('$text' => { '$search' => search }) }
     end
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['$text']).to eq({'$search' => 'bar'})
+        expect(result.selector['$text']).to eq({ '$search' => 'bar' })
         expect(result.selector['hello']).to eq('world')
       end
     end
@@ -581,7 +581,7 @@ describe Mongoid::Criteria::Scopable do
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['$text']).to eq({'$search' => 'bar'})
+        expect(result.selector['$text']).to eq({ '$search' => 'bar' })
         expect(result.selector['hello']).to eq('world')
       end
     end

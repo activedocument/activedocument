@@ -244,15 +244,15 @@ describe Mongoid::Association::EagerLoadable do
       end
 
       it "runs the has_one preload" do
-        expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([ book_association ], docs).once.and_call_original
-        expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([ cat_association ], docs).once.and_call_original
+        expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([book_association], docs).once.and_call_original
+        expect(Mongoid::Association::Referenced::HasOne::Eager).to receive(:new).with([cat_association], docs).once.and_call_original
         context.eager_load(docs)
       end
     end
 
     context "when including an embedded_in relation" do
       let!(:account) { Account.create(name: "home", memberships: memberships) }
-      let(:memberships) { [ Membership.new(name: "his"), Membership.new(name: "hers") ] }
+      let(:memberships) { [Membership.new(name: "his"), Membership.new(name: "hers")] }
       let(:criteria) { Account.includes(memberships: :account) }
 
       it "loads the parent document" do
@@ -264,7 +264,7 @@ describe Mongoid::Association::EagerLoadable do
 
     context "when including an embeds_many relation" do
       let!(:account) { Account.create(name: "home", memberships: memberships) }
-      let(:memberships) { [ Membership.new(name: "his"), Membership.new(name: "hers") ] }
+      let(:memberships) { [Membership.new(name: "his"), Membership.new(name: "hers")] }
       let(:criteria) { Account.includes(:memberships) }
 
       it "loads the subdocuments" do
@@ -287,7 +287,7 @@ describe Mongoid::Association::EagerLoadable do
     end
 
     context "when chaining a referenced association from an embedded relation" do
-      let!(:person) { Person.create(username: "test", messages: [ message ]) }
+      let!(:person) { Person.create(username: "test", messages: [message]) }
       let!(:post) { Post.create(title: "notice", posteable: message) }
       let(:message) { Message.new(body: "hello") }
       let(:criteria) { Person.includes(messages: :post) }

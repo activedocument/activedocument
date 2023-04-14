@@ -103,7 +103,7 @@ describe Mongoid::Indexable do
         Class.new do
           include Mongoid::Document
           store_in collection: "test_db_indexes"
-          index({ name: 1 }, { collation: { locale: 'en_US', strength: 2 }})
+          index({ name: 1 }, { collation: { locale: 'en_US', strength: 2 } })
         end
       end
 

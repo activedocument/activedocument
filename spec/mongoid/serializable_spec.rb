@@ -306,7 +306,7 @@ describe Mongoid::Serializable do
 
         it "includes the extra fields" do
           expect(person.serializable_hash(
-            methods: [ :_type ]
+            methods: [:_type]
           ).has_key?("_type")).to be true
         end
       end
@@ -523,7 +523,7 @@ describe Mongoid::Serializable do
           context "when providing the include as an array" do
 
             let(:hash) do
-              person.serializable_hash(include: [ :addresses ])
+              person.serializable_hash(include: [:addresses])
             end
 
             it "includes the first relation" do
@@ -564,7 +564,7 @@ describe Mongoid::Serializable do
                 person.serializable_hash(
                   include: { addresses: {
                     except: :_id, include: { locations: { except: :_id } }
-                  }}
+                  } }
                 )
               end
 
@@ -588,7 +588,7 @@ describe Mongoid::Serializable do
                   db_person.serializable_hash(
                     include: { addresses: {
                       except: :_id, include: { locations: { except: :_id } }
-                    }}
+                    } }
                   )
                 end
 
@@ -616,7 +616,7 @@ describe Mongoid::Serializable do
               let(:hash) do
                 person.serializable_hash(
                   except: :_id,
-                  include: [ :addresses, :name ]
+                  include: [:addresses, :name]
                 )
               end
 
@@ -660,7 +660,7 @@ describe Mongoid::Serializable do
           context "when providing the include as an array" do
 
             let(:hash) do
-              person.serializable_hash(include: [ :name ])
+              person.serializable_hash(include: [:name])
             end
 
             it "includes the specified relation" do
@@ -672,7 +672,7 @@ describe Mongoid::Serializable do
           context "when providing the include as a hash" do
 
             let(:hash) do
-              person.serializable_hash(include: { name: { except: :_id }})
+              person.serializable_hash(include: { name: { except: :_id } })
             end
 
             it "includes the specified relation sans exceptions" do
@@ -718,7 +718,7 @@ describe Mongoid::Serializable do
           context "when providing the include as an array" do
 
             let(:hash) do
-              person.serializable_hash(include: [ :posts ])
+              person.serializable_hash(include: [:posts])
             end
 
             it "includes the specified relation" do
@@ -798,7 +798,7 @@ describe Mongoid::Serializable do
           context "when providing the include as an array" do
 
             let(:hash) do
-              person.serializable_hash(include: [ :preferences ])
+              person.serializable_hash(include: [:preferences])
             end
 
             it "includes the specified relation" do

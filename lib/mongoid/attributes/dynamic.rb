@@ -121,6 +121,7 @@ module Mongoid
       def method_missing(name, *args)
         attr = name.to_s
         return super unless attributes.has_key?(attr.reader)
+
         if attr.writer?
           getter = attr.reader
           define_dynamic_writer(getter)

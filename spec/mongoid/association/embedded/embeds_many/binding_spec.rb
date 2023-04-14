@@ -13,7 +13,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Binding do
   end
 
   let(:target) do
-    [ address ]
+    [address]
   end
 
   let(:association) do

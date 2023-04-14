@@ -38,7 +38,7 @@ describe BigDecimal do
         end
 
         let(:array) do
-          [ bd_one, bd_two ]
+          [bd_one, bd_two]
         end
 
         let(:evolved) do
@@ -46,7 +46,7 @@ describe BigDecimal do
         end
 
         it "returns the array as strings" do
-          expect(evolved).to eq([ bd_one.to_s, bd_two.to_s ])
+          expect(evolved).to eq([bd_one.to_s, bd_two.to_s])
         end
 
         it "does not evolve in place" do
@@ -118,7 +118,7 @@ describe BigDecimal do
         end
 
         let(:array) do
-          [ bd_one, bd_two ]
+          [bd_one, bd_two]
         end
 
         let(:evolved) do
@@ -126,7 +126,7 @@ describe BigDecimal do
         end
 
         it "returns the array as BSON::Decimal128s" do
-          expect(evolved).to eq([ BSON::Decimal128.new(bd_one), BSON::Decimal128.new(bd_two) ])
+          expect(evolved).to eq([BSON::Decimal128.new(bd_one), BSON::Decimal128.new(bd_two)])
         end
 
         it "does not evolve in place" do

@@ -27,5 +27,5 @@ Rails.logger = Logger.new($stdout)
 Rails.application = Rails::Application
 
 Rails.application.config = OpenStruct.new(
-  paths: { "app/models" => OpenStruct.new(expanded: [ "app/models" ]) }
+  paths: { "app/models" => OpenStruct.new(expanded: ["app/models"]) }
 )

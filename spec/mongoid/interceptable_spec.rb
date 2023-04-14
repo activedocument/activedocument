@@ -507,7 +507,7 @@ describe Mongoid::Interceptable do
 
           before(:all) do
             Exhibition.define_model_callbacks(:rearrange)
-            Exhibition.after_rearrange { }
+            Exhibition.after_rearrange {}
           end
 
           after(:all) do
@@ -1181,7 +1181,7 @@ describe Mongoid::Interceptable do
             end
 
             before do
-              band.update(records: [ { name: 'Black on Both Sides' }])
+              band.update(records: [{ name: 'Black on Both Sides' }])
             end
 
             it 'executes the callback' do
@@ -1201,7 +1201,7 @@ describe Mongoid::Interceptable do
           end
 
           before do
-            band.update(records: [ { name: 'Black on Both Sides' }])
+            band.update(records: [{ name: 'Black on Both Sides' }])
           end
 
           it 'executes the callback' do
@@ -1653,7 +1653,7 @@ describe Mongoid::Interceptable do
     context "when creating a document" do
 
       let(:person) do
-        Person.new(mode: :prevent_save, title: "Associate", addresses: [ address ])
+        Person.new(mode: :prevent_save, title: "Associate", addresses: [address])
       end
 
       it "fails to save" do
@@ -1684,7 +1684,7 @@ describe Mongoid::Interceptable do
           person.attributes = {
             mode: :prevent_save,
             title: "Associate",
-            addresses: [ address ]
+            addresses: [address]
           }
         end
       end
@@ -1752,7 +1752,7 @@ describe Mongoid::Interceptable do
         [InterceptableSpec::CbParent, :around_create_close],
         [InterceptableSpec::CbParent, :after_create],
         [InterceptableSpec::CbParent, :around_save_close],
-        [InterceptableSpec::CbParent, :after_save],
+        [InterceptableSpec::CbParent, :after_save]
       ]
     end
 
@@ -1847,7 +1847,7 @@ describe Mongoid::Interceptable do
           [InterceptableSpec::CbHasOneParent, :around_create_close],
           [InterceptableSpec::CbHasOneParent, :after_create],
           [InterceptableSpec::CbHasOneParent, :around_save_close],
-          [InterceptableSpec::CbHasOneParent, :after_save],
+          [InterceptableSpec::CbHasOneParent, :after_save]
         ]
       end
 
@@ -2024,7 +2024,7 @@ describe Mongoid::Interceptable do
         InterceptableSpec::CbEmbedsManyParent.new(registry).tap do |parent|
           parent.children = [
             InterceptableSpec::CbEmbedsManyChild.new(registry),
-            InterceptableSpec::CbEmbedsManyChild.new(registry),
+            InterceptableSpec::CbEmbedsManyChild.new(registry)
           ]
         end
       end

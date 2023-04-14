@@ -37,15 +37,15 @@ describe NilClass do
     context "when provided an array" do
 
       it "returns the array" do
-        expect(nil.__intersect__([ 1, 2 ])).to eq([ 1, 2 ])
+        expect(nil.__intersect__([1, 2])).to eq([1, 2])
       end
     end
 
     context "when provided a hash" do
 
       it "returns the hash" do
-        expect(nil.__intersect__({ "$in" => [ 1, 2 ] })).to eq(
-          { "$in" => [ 1, 2 ] }
+        expect(nil.__intersect__({ "$in" => [1, 2] })).to eq(
+          { "$in" => [1, 2] }
         )
       end
     end
@@ -63,15 +63,15 @@ describe NilClass do
     context "when provided an array" do
 
       it "returns the array" do
-        expect(nil.__union__([ 1, 2 ])).to eq([ 1, 2 ])
+        expect(nil.__union__([1, 2])).to eq([1, 2])
       end
     end
 
     context "when provided a hash" do
 
       it "returns the hash" do
-        expect(nil.__union__({ "$in" => [ 1, 2 ] })).to eq(
-          { "$in" => [ 1, 2 ] }
+        expect(nil.__union__({ "$in" => [1, 2] })).to eq(
+          { "$in" => [1, 2] }
         )
       end
     end

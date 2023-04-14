@@ -23,6 +23,7 @@ module Mongoid
             def evolve(object)
               __evolve__(object) do |obj|
                 return if obj.nil?
+
                 case obj
                 when ::BigDecimal
                   if Mongoid.map_big_decimal_to_decimal128

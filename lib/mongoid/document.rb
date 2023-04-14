@@ -84,7 +84,7 @@ module Mongoid
     #
     # @return [ Array ] An array containing [document.class, document._id]
     def identity
-      [ self.class, self._id ]
+      [self.class, self._id]
     end
 
     # Instantiate a new +Document+, setting the Document's attributes if
@@ -121,7 +121,7 @@ module Mongoid
     #
     # @return [ String ] The id of the document or nil if new.
     def to_key
-      (persisted? || destroyed?) ? [ _id.to_s ] : nil
+      (persisted? || destroyed?) ? [_id.to_s] : nil
     end
 
     # Return a hash of the entire document hierarchy from this document and
@@ -237,6 +237,7 @@ module Mongoid
     # @return [ Hash ] The attributes hash.
     def as_attributes
       return attributes if frozen?
+
       embedded_relations.each_pair do |name, meta|
         without_autobuild do
           relation, stored = send(name), meta.store_as
@@ -324,7 +325,7 @@ module Mongoid
       #
       # @return [ Array<Class> ] All subclasses of the current document.
       def _types
-        @_type ||= (descendants + [ self ]).uniq.map(&:discriminator_value)
+        @_type ||= (descendants + [self]).uniq.map(&:discriminator_value)
       end
 
       # Clear the @_type cache. This is generally called when changing the discriminator

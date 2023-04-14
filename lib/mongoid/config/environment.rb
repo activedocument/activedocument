@@ -30,6 +30,7 @@ module Mongoid
         if defined?(::Sinatra)
           return ::Sinatra::Base.environment.to_s
         end
+
         ENV["RACK_ENV"] || ENV["MONGOID_ENV"] or raise Errors::NoEnvironment
       end
 
@@ -61,7 +62,7 @@ module Mongoid
           Symbol,
           # BSON::Binary occur as keyId values for FLE (more precisely,
           # the keyIds are UUIDs).
-          BSON::Binary,
+          BSON::Binary
         ]
 
         result = ERB.new(contents).result

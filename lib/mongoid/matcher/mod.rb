@@ -25,6 +25,7 @@ module Mongoid
         if condition.length != 2
           raise Errors::InvalidQuery, "Malformed $mod argument #{condition}, should have 2 elements"
         end
+
         condition[1] == value % condition[0]
       end
     end

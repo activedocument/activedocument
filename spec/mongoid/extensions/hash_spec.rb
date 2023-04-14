@@ -169,7 +169,7 @@ describe Mongoid::Extensions::Hash do
       context "when the $set is first" do
 
         let(:hash) do
-          { "$set" => { name: "Tool" }, likes: 10, "$inc" => { plays: 1 }}
+          { "$set" => { name: "Tool" }, likes: 10, "$inc" => { plays: 1 } }
         end
 
         let(:consolidated) do
@@ -186,7 +186,7 @@ describe Mongoid::Extensions::Hash do
       context "when the $set is not first" do
 
         let(:hash) do
-          { likes: 10, "$inc" => { plays: 1 }, "$set" => { name: "Tool" }}
+          { likes: 10, "$inc" => { plays: 1 }, "$set" => { name: "Tool" } }
         end
 
         let(:consolidated) do
@@ -204,7 +204,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash does not contain the key" do
 
       let(:hash) do
-        { likes: 10, "$inc" => { plays: 1 }, name: "Tool"}
+        { likes: 10, "$inc" => { plays: 1 }, name: "Tool" }
       end
 
       let(:consolidated) do
@@ -418,7 +418,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash has only an empty _id criteria" do
 
       let(:hash) do
-        { "_id" => { "$in" => [] }}
+        { "_id" => { "$in" => [] } }
       end
 
       it "is true" do
@@ -429,7 +429,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash has an empty _id criteria and another criteria" do
 
       let(:hash) do
-        { "_id" => { "$in" => [] }, 'foo' => 'bar'}
+        { "_id" => { "$in" => [] }, 'foo' => 'bar' }
       end
 
       it "is false" do
@@ -440,7 +440,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash has an empty _id criteria via $and" do
 
       let(:hash) do
-        {'$and' => [{ "_id" => { "$in" => [] }}]}
+        { '$and' => [{ "_id" => { "$in" => [] } }] }
       end
 
       it "is true" do
@@ -451,7 +451,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash has an empty _id criteria via $and and another criteria at top level" do
 
       let(:hash) do
-        {'$and' => [{ "_id" => { "$in" => [] }}], 'foo' => 'bar'}
+        { '$and' => [{ "_id" => { "$in" => [] } }], 'foo' => 'bar' }
       end
 
       it "is false" do
@@ -462,7 +462,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash has an empty _id criteria via $and and another criteria in $and" do
 
       let(:hash) do
-        {'$and' => [{ "_id" => { "$in" => [] }}, {'foo' => 'bar'}]}
+        { '$and' => [{ "_id" => { "$in" => [] } }, { 'foo' => 'bar' }] }
       end
 
       it "is true" do
@@ -473,7 +473,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash has an empty _id criteria via $and and another criteria in $and value" do
 
       let(:hash) do
-        {'$and' => [{ "_id" => { "$in" => [] }, 'foo' => 'bar'}]}
+        { '$and' => [{ "_id" => { "$in" => [] }, 'foo' => 'bar' }] }
       end
 
       it "is false" do
@@ -484,7 +484,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash has an empty _id criteria via $or" do
 
       let(:hash) do
-        {'$or' => [{ "_id" => { "$in" => [] }}]}
+        { '$or' => [{ "_id" => { "$in" => [] } }] }
       end
 
       it "is false" do
@@ -495,7 +495,7 @@ describe Mongoid::Extensions::Hash do
     context "when the hash has an empty _id criteria via $nor" do
 
       let(:hash) do
-        {'$nor' => [{ "_id" => { "$in" => [] }}]}
+        { '$nor' => [{ "_id" => { "$in" => [] } }] }
       end
 
       it "is false" do

@@ -9,7 +9,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe "#build" do
@@ -25,7 +25,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     context "when passed an array of documents" do
 
       let(:object) do
-        [ Address.new(city: "London") ]
+        [Address.new(city: "London")]
       end
 
       it "returns an array of documents" do
@@ -58,7 +58,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
     context "when no type is in the object" do
 
       let(:object) do
-        [ { "city" => "London" }, { "city" => "Shanghai" } ]
+        [{ "city" => "London" }, { "city" => "Shanghai" }]
       end
 
       it "returns an array of documents" do
@@ -170,12 +170,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
         Appointment.new
       end
 
-      let(:apts) { [ appointment ] }
+      let(:apts) { [appointment] }
 
       before do
         person1.appointments = apts
         person2.appointments = apts
-        expect(apts).to eq([ appointment ])
+        expect(apts).to eq([appointment])
       end
 
       it 'clears the object of its previous association' do
@@ -202,16 +202,16 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
         Appointment.new
       end
 
-      let(:apts) { [ appointment1, appointment2 ] }
+      let(:apts) { [appointment1, appointment2] }
 
       before do
         person1.appointments = apts
         person1.appointments = person1.appointments.reverse
-        expect(apts).to eq([ appointment1, appointment2 ])
+        expect(apts).to eq([appointment1, appointment2])
       end
 
       it 'clears the object of its previous association' do
-        expect(person1.appointments).to eq([ appointment2, appointment1 ])
+        expect(person1.appointments).to eq([appointment2, appointment1])
       end
     end
   end

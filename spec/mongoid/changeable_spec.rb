@@ -20,13 +20,13 @@ describe Mongoid::Changeable do
 
         it "returns an array of the old value and new value" do
           expect(person.send(:attribute_change, "title")).to eq(
-            [ "Grand Poobah", "Captain Obvious" ]
+            ["Grand Poobah", "Captain Obvious"]
           )
         end
 
         it "allows access via (attribute)_change" do
           expect(person.title_change).to eq(
-            [ "Grand Poobah", "Captain Obvious" ]
+            ["Grand Poobah", "Captain Obvious"]
           )
         end
 
@@ -42,13 +42,13 @@ describe Mongoid::Changeable do
 
           it "returns an array of the old value and new value" do
             expect(person.send(:attribute_change, "test")).to eq(
-              [ "Aliased 1", "Aliased 2" ]
+              ["Aliased 1", "Aliased 2"]
             )
           end
 
           it "allows access via (attribute)_change" do
             expect(person.test_change).to eq(
-              [ "Aliased 1", "Aliased 2" ]
+              ["Aliased 1", "Aliased 2"]
             )
           end
         end
@@ -66,13 +66,13 @@ describe Mongoid::Changeable do
 
         it "returns an array of the old value and new value" do
           expect(person.send(:attribute_change, "title")).to eq(
-            [ "Grand Poobah", "Captain Obvious" ]
+            ["Grand Poobah", "Captain Obvious"]
           )
         end
 
         it "allows access via (attribute)_change" do
           expect(person.title_change).to eq(
-            [ "Grand Poobah", "Captain Obvious" ]
+            ["Grand Poobah", "Captain Obvious"]
           )
         end
       end
@@ -87,11 +87,11 @@ describe Mongoid::Changeable do
         end
 
         it "returns an array of nil and new value" do
-          expect(person.send(:attribute_change, "pets")).to eq([ nil, true ])
+          expect(person.send(:attribute_change, "pets")).to eq([nil, true])
         end
 
         it "allows access via (attribute)_change" do
-          expect(person.pets_change).to eq([ nil, true ])
+          expect(person.pets_change).to eq([nil, true])
         end
       end
 
@@ -108,11 +108,11 @@ describe Mongoid::Changeable do
           end
 
           it "returns an array of nil and new value" do
-            expect(person.send(:attribute_change, "pets")).to eq([ nil, true ])
+            expect(person.send(:attribute_change, "pets")).to eq([nil, true])
           end
 
           it "allows access via (attribute)_change" do
-            expect(person.pets_change).to eq([ nil, true ])
+            expect(person.pets_change).to eq([nil, true])
           end
         end
 
@@ -127,7 +127,7 @@ describe Mongoid::Changeable do
           end
 
           it "returns an array of nil and new value" do
-            expect(person.send(:attribute_change, "t")).to eq([ nil, "test" ])
+            expect(person.send(:attribute_change, "t")).to eq([nil, "test"])
           end
         end
       end
@@ -146,13 +146,13 @@ describe Mongoid::Changeable do
 
       it "returns an array of the original value and new value" do
         expect(person.send(:attribute_change, "title")).to eq(
-          [ "Grand Poobah", "Dark Helmet" ]
+          ["Grand Poobah", "Dark Helmet"]
         )
       end
 
       it "allows access via (attribute)_change" do
         expect(person.title_change).to eq(
-          [ "Grand Poobah", "Dark Helmet" ]
+          ["Grand Poobah", "Dark Helmet"]
         )
       end
     end
@@ -162,7 +162,7 @@ describe Mongoid::Changeable do
       context "when the attribute is an array" do
 
         let(:person) do
-          Person.new(aliases: [ "Grand Poobah" ]).tap(&:move_changes)
+          Person.new(aliases: ["Grand Poobah"]).tap(&:move_changes)
         end
 
         before do
@@ -171,13 +171,13 @@ describe Mongoid::Changeable do
 
         it "returns an array of the original value and new value" do
           expect(person.send(:attribute_change, "aliases")).to eq(
-            [[ "Grand Poobah" ],  [ "Dark Helmet" ]]
+            [["Grand Poobah"],  ["Dark Helmet"]]
           )
         end
 
         it "allows access via (attribute)_change" do
           expect(person.aliases_change).to eq(
-            [[ "Grand Poobah" ],  [ "Dark Helmet" ]]
+            [["Grand Poobah"],  ["Dark Helmet"]]
           )
         end
 
@@ -189,7 +189,7 @@ describe Mongoid::Changeable do
 
           it "returns an array of the original value and new value" do
             expect(person.send(:attribute_change, "aliases")).to eq(
-              [[ "Grand Poobah" ], [ "Dark Helmet", "Colonel Sanders" ]]
+              [["Grand Poobah"], ["Dark Helmet", "Colonel Sanders"]]
             )
           end
         end
@@ -234,9 +234,9 @@ describe Mongoid::Changeable do
 
           let(:map) do
             {
-              "stack1" => [ 1, 2, 3, 4 ],
-              "stack2" => [ 1, 2, 3, 4 ],
-              "stack3" => [ 1, 2, 3, 4 ]
+              "stack1" => [1, 2, 3, 4],
+              "stack2" => [1, 2, 3, 4],
+              "stack3" => [1, 2, 3, 4]
             }
           end
 
@@ -255,15 +255,15 @@ describe Mongoid::Changeable do
               expect(person.send(:attribute_change, "map")).to eq(
                 [
                   {
-                    "stack1" => [ 1, 2, 3, 4 ],
-                    "stack2" => [ 1, 2, 3, 4 ],
-                    "stack3" => [ 1, 2, 3, 4 ]
+                    "stack1" => [1, 2, 3, 4],
+                    "stack2" => [1, 2, 3, 4],
+                    "stack3" => [1, 2, 3, 4]
                   },
                   {
-                    "stack1" => [ 4, 3, 2, 1 ],
-                    "stack2" => [ 1, 2, 3, 4 ],
-                    "stack3" => [ 1, 2, 3, 4 ]
-                  },
+                    "stack1" => [4, 3, 2, 1],
+                    "stack2" => [1, 2, 3, 4],
+                    "stack3" => [1, 2, 3, 4]
+                  }
                 ]
               )
             end
@@ -292,7 +292,7 @@ describe Mongoid::Changeable do
         end
 
         it "returns the change" do
-          expect(person.send(:attribute_change, "pets")).to eq([ nil, false ])
+          expect(person.send(:attribute_change, "pets")).to eq([nil, false])
         end
       end
 
@@ -335,7 +335,7 @@ describe Mongoid::Changeable do
 
       it "returns an empty array" do
         expect(person.send(:attribute_change, "title")).to eq(
-          [ "Grand Poobah", nil ]
+          ["Grand Poobah", nil]
         )
       end
     end
@@ -441,7 +441,7 @@ describe Mongoid::Changeable do
       context "when the attribute is an array" do
 
         let!(:person) do
-          Person.new(aliases: [ "Bond" ])
+          Person.new(aliases: ["Bond"])
         end
 
         context "when the array is only accessed" do
@@ -790,7 +790,7 @@ describe Mongoid::Changeable do
   describe "#attribute_will_change!" do
 
     let(:aliases) do
-      [ "007" ]
+      ["007"]
     end
 
     let(:person) do
@@ -832,7 +832,7 @@ describe Mongoid::Changeable do
       end
 
       it "returns the value in the changes" do
-        expect(changes).to eq({ "aliases" => [[ "007" ], %w[007 008]] })
+        expect(changes).to eq({ "aliases" => [["007"], %w[007 008]] })
       end
     end
 
@@ -1001,7 +1001,7 @@ describe Mongoid::Changeable do
       context "when a dynamic field is changed in place" do
 
         let(:person) do
-          Person.create!(other_name: { full: {first: 'first', last: 'last'} })
+          Person.create!(other_name: { full: { first: 'first', last: 'last' } })
         end
 
         before do
@@ -1169,13 +1169,13 @@ describe Mongoid::Changeable do
 
       it "returns a hash of changes" do
         expect(person.changes["title"]).to eq(
-          [ nil, "Captain Obvious" ]
+          [nil, "Captain Obvious"]
         )
       end
 
       it "returns a hash with indifferent access" do
         expect(person.changes[:title]).to eq(
-          [ nil, "Captain Obvious" ]
+          [nil, "Captain Obvious"]
         )
       end
     end
@@ -1215,7 +1215,7 @@ describe Mongoid::Changeable do
       end
 
       it 'should add to the changes or changed_attributes hash' do
-        expect(person.changes).to eq({ "user_account_ids" => [ nil, [ user_account._id ] ] })
+        expect(person.changes).to eq({ "user_account_ids" => [nil, [user_account._id]] })
         expect(person.changed_attributes).to eq({ "user_account_ids" => nil })
       end
     end
@@ -1255,8 +1255,8 @@ describe Mongoid::Changeable do
       end
 
       it 'should not add to the changes or changed_attributes hash' do
-        expect(person.changes).to eq({ "user_account_ids" => [ [ user_account._id ], [] ] })
-        expect(person.changed_attributes).to eq({ "user_account_ids" => [ user_account._id ] })
+        expect(person.changes).to eq({ "user_account_ids" => [[user_account._id], []] })
+        expect(person.changed_attributes).to eq({ "user_account_ids" => [user_account._id] })
       end
     end
 
@@ -1277,7 +1277,7 @@ describe Mongoid::Changeable do
     context "when the document has changed" do
 
       let(:person) do
-        Person.new(aliases: [ "007" ]).tap do |p|
+        Person.new(aliases: ["007"]).tap do |p|
           p.new_record = false
           p.move_changes
         end
@@ -1327,7 +1327,7 @@ describe Mongoid::Changeable do
           end
 
           it "does not contain array changes in the setters" do
-            expect(setters).to eq({ "aliases" => [ "008" ]})
+            expect(setters).to eq({ "aliases" => ["008"] })
           end
         end
       end
@@ -1403,7 +1403,7 @@ describe Mongoid::Changeable do
 
       it "returns the changes before the save" do
         expect(person.previous_changes["title"]).to eq(
-          [ nil, "Captain Obvious" ]
+          [nil, "Captain Obvious"]
         )
       end
     end
@@ -1631,7 +1631,7 @@ describe Mongoid::Changeable do
       end
 
       it "returns the changes" do
-        expect(person.title_previous_change).to eq([ nil, "Captain Obvious" ])
+        expect(person.title_previous_change).to eq([nil, "Captain Obvious"])
       end
     end
 
@@ -1863,7 +1863,7 @@ describe Mongoid::Changeable do
   context "when changing a hash of hashes" do
 
     let!(:person) do
-      Person.create!(map: { "test" => {}})
+      Person.create!(map: { "test" => {} })
     end
 
     before do
@@ -1872,7 +1872,7 @@ describe Mongoid::Changeable do
 
     it "records the changes" do
       expect(person.changes).to eq(
-        { "map" => [{ "test" => {}}, { "test" => { "value" => 10 }}]}
+        { "map" => [{ "test" => {} }, { "test" => { "value" => 10 } }] }
       )
     end
   end
@@ -1888,12 +1888,12 @@ describe Mongoid::Changeable do
     end
 
     before do
-      person.update_attributes!(preference_ids: [ preference.id ])
+      person.update_attributes!(preference_ids: [preference.id])
     end
 
     it "records the foreign key dirty changes" do
       expect(person.previous_changes["preference_ids"]).to eq(
-        [nil, [ preference.id ]]
+        [nil, [preference.id]]
       )
     end
   end
@@ -1915,7 +1915,7 @@ describe Mongoid::Changeable do
       end
 
       it "flags the change" do
-        expect(from_db.changes["preference_ids"]).to eq([ nil, []])
+        expect(from_db.changes["preference_ids"]).to eq([nil, []])
       end
 
       it "does not include the changes in the setters" do
@@ -1965,7 +1965,7 @@ describe Mongoid::Changeable do
     it "marks field changes" do
       expect(person.changes).to eq({
         "title" => %w[MC DJ],
-        "ssn" => [ nil, "222-22-2222" ],
+        "ssn" => [nil, "222-22-2222"],
         "some_dynamic_field" => %w[blah bloop]
       })
     end
@@ -2004,7 +2004,7 @@ describe Mongoid::Changeable do
 
       it "stores previous changes" do
         expect(person.previous_changes["title"]).to eq(%w[MC DJ])
-        expect(person.previous_changes["ssn"]).to eq([ nil, "222-22-2222" ])
+        expect(person.previous_changes["ssn"]).to eq([nil, "222-22-2222"])
       end
     end
 
@@ -2049,8 +2049,8 @@ describe Mongoid::Changeable do
 
       it "does not retain the changes until after all callbacks" do
         acolyte.update_attribute(:status, "testing")
-        expect(acolyte.changed_in_before_callback).to eq({"status" => [nil, "testing"]})
-        expect(acolyte.changed_in_after_callback).to eq({ })
+        expect(acolyte.changed_in_before_callback).to eq({ "status" => [nil, "testing"] })
+        expect(acolyte.changed_in_after_callback).to eq({})
       end
     end
 
@@ -2080,7 +2080,7 @@ describe Mongoid::Changeable do
 
       it "does not retain the changes until after all callbacks" do
         acolyte.save!
-        expect(acolyte.changed_before_in_callback["name"]).to eq([ nil, "callback-test" ])
+        expect(acolyte.changed_before_in_callback["name"]).to eq([nil, "callback-test"])
         expect(acolyte.changed_after_in_callback["name"]).to be_nil
       end
     end
@@ -2089,11 +2089,11 @@ describe Mongoid::Changeable do
   context "when associations are getting changed" do
 
     let(:person) do
-      Person.create!(addresses: [ Address.new ])
+      Person.create!(addresses: [Address.new])
     end
 
     before do
-      person.addresses = [ Address.new ]
+      person.addresses = [Address.new]
     end
 
     it "does not set the association to nil when hitting the database" do

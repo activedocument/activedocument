@@ -26,6 +26,7 @@ module Mongoid
         # @return [ Mongoid::Document ] The built document.
         def build(parent)
           return if reject?(parent, attributes)
+
           @existing = parent.send(association.name)
           if update?
             attributes.delete_id

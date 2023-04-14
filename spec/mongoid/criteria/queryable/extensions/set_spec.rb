@@ -9,18 +9,18 @@ describe Set do
     context "when provided a set" do
 
       let(:set) do
-        ::Set.new([ 1, 2, 3 ])
+        ::Set.new([1, 2, 3])
       end
 
       it "returns an array" do
-        expect(described_class.evolve(set)).to eq([ 1, 2, 3 ])
+        expect(described_class.evolve(set)).to eq([1, 2, 3])
       end
     end
 
     context "when provided an array" do
 
       it "returns an array" do
-        expect(described_class.evolve([ 1, 2, 3 ])).to eq([ 1, 2, 3 ])
+        expect(described_class.evolve([1, 2, 3])).to eq([1, 2, 3])
       end
     end
 

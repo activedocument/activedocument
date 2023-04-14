@@ -16,11 +16,11 @@ describe 'nested attributes assignment' do
                 volume: 2,
                 toys_attributes: {
                   '0' => {
-                    name: 'Bear',
-                  },
-                },
-              },
-            },
+                    name: 'Bear'
+                  }
+                }
+              }
+            }
           }
 
           truck.save!
@@ -44,8 +44,8 @@ describe 'nested attributes assignment' do
             capacity: 1,
             crates: [Crate.new(
               volume: 2,
-              toys: [Toy.new(name: 'Bear')],
-            )],
+              toys: [Toy.new(name: 'Bear')]
+            )]
           )
         end
 
@@ -61,11 +61,11 @@ describe 'nested attributes assignment' do
                   toys_attributes: {
                     '0' => {
                       id: truck.crates.first.toys.first.id,
-                      name: 'Rhino',
-                    },
-                  },
-                },
-              },
+                      name: 'Rhino'
+                    }
+                  }
+                }
+              }
             }
 
             truck.save!
@@ -89,11 +89,11 @@ describe 'nested attributes assignment' do
                   volume: 3,
                   toys_attributes: {
                     '0' => {
-                      name: 'Rhino',
-                    },
-                  },
-                },
-              },
+                      name: 'Rhino'
+                    }
+                  }
+                }
+              }
             }
 
             truck.save!

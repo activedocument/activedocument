@@ -13,7 +13,7 @@ describe Mongoid::Errors::InvalidIncludes do
       end
 
       let(:args) do
-        [ :members ]
+        [:members]
       end
 
       let(:error) do

@@ -102,7 +102,7 @@ module Mongoid
         def storage_pair(key)
           field = key.to_s
           name = Fields.database_field_name(field, associations, aliases, aliased_associations)
-          [ name, get_serializer(name) ]
+          [name, get_serializer(name)]
         end
 
         private

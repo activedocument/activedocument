@@ -23,7 +23,7 @@ describe Mongoid::Atomic do
     end
 
     it "adds the document to the delayed atomic pulls" do
-      expect(person.delayed_atomic_pulls["addresses"]).to eq([ address ])
+      expect(person.delayed_atomic_pulls["addresses"]).to eq([address])
     end
 
     it "flags the document for destruction" do
@@ -46,7 +46,7 @@ describe Mongoid::Atomic do
     end
 
     it "adds the document to the delayed atomic unsets" do
-      expect(person.delayed_atomic_unsets["name"]).to eq([ name ])
+      expect(person.delayed_atomic_unsets["name"]).to eq([name])
     end
 
     it "flags the document for destruction" do
@@ -69,7 +69,7 @@ describe Mongoid::Atomic do
         end
 
         it "returns the atomic updates" do
-          expect(person.atomic_updates).to eq({ "$set" => { "title" => "Sir" }})
+          expect(person.atomic_updates).to eq({ "$set" => { "title" => "Sir" } })
         end
 
         context "when an embeds many child is added" do
@@ -79,14 +79,14 @@ describe Mongoid::Atomic do
           end
 
           it "returns a $set and $push with $each for modifications" do
-            expect(person.atomic_updates).to eq(
-              {
-                "$set" => { "title" => "Sir" },
-                "$push" => { "addresses" => { "$each" => [
-                    { "_id" => "oxford-st", "street" => "Oxford St" }
-                  ] } }
+            expect(person.atomic_updates).to eq({
+              "$set" => { "title" => "Sir" },
+              "$push" => {
+                "addresses" => {
+                  "$each" => [{ "_id" => "oxford-st", "street" => "Oxford St" }]
+                }
               }
-            )
+            })
           end
         end
 
@@ -122,7 +122,7 @@ describe Mongoid::Atomic do
 
             it "returns the $set with correct position and modifications" do
               expect(person.atomic_updates).to eq(
-                { "$set" => { "title" => "Sir", "addresses.0.street" => "Bond St" }}
+                { "$set" => { "title" => "Sir", "addresses.0.street" => "Bond St" } }
               )
             end
           end
@@ -131,7 +131,7 @@ describe Mongoid::Atomic do
 
             it "returns the $set with correct position and modifications" do
               expect(address.atomic_updates).to eq(
-                { "$set" => { "addresses.0.street" => "Bond St" }}
+                { "$set" => { "addresses.0.street" => "Bond St" } }
               )
             end
           end
@@ -149,36 +149,34 @@ describe Mongoid::Atomic do
             context "when asking for the updates from the root" do
 
               it "returns the $set with correct positions and modifications" do
-                expect(person.atomic_updates).to eq(
-                  { "$set" => {
+                expect(person.atomic_updates).to eq({
+                  "$set" => {
                     "title" => "Sir",
                     "addresses.0.street" => "Bond St",
-                    "addresses.0.locations.0.name" => "Work" }
+                    "addresses.0.locations.0.name" => "Work"
                   }
-                )
+                })
               end
             end
 
             context "when asking for the updates from the 1st level child" do
 
               it "returns the $set with correct positions and modifications" do
-                expect(address.atomic_updates).to eq(
-                  { "$set" => {
+                expect(address.atomic_updates).to eq({
+                  "$set" => {
                     "addresses.0.street" => "Bond St",
-                    "addresses.0.locations.0.name" => "Work" }
+                    "addresses.0.locations.0.name" => "Work"
                   }
-                )
+                })
               end
             end
 
             context "when asking for the updates from the 2nd level child" do
 
               it "returns the $set with correct positions and modifications" do
-                expect(location.atomic_updates).to eq(
-                  { "$set" => {
-                    "addresses.0.locations.0.name" => "Work" }
-                  }
-                )
+                expect(location.atomic_updates).to eq({
+                  "$set" => { "addresses.0.locations.0.name" => "Work" }
+                })
               end
             end
           end
@@ -258,35 +256,35 @@ describe Mongoid::Atomic do
             context "when asking for the updates from the root document" do
 
               it "returns the $set for 1st level and other for the 2nd level" do
-                expect(person.atomic_updates).to eq(
-                  {
-                    "$set" => {
-                      "title" => "Sir",
-                      "addresses.0.street" => "Bond St"
-                    },
-                    conflicts: {
-                      "$push" => {
-                        "addresses" => { '$each' => [{
+                expect(person.atomic_updates).to eq({
+                  "$set" => {
+                    "title" => "Sir",
+                    "addresses.0.street" => "Bond St"
+                  },
+                  conflicts: {
+                    "$push" => {
+                      "addresses" => {
+                        '$each' => [{
                           "_id" => new_address.id,
                           "street" => "Another",
                           "locations" => [
                             "_id" => location.id,
                             "name" => "Home"
                           ]
-                        }]}
+                        }]
                       }
                     }
                   }
-                )
+                })
               end
             end
 
             context "when asking for the updates from the 1st level document" do
 
               it "returns the $set for 1st level and other for the 2nd level" do
-                expect(address.atomic_updates).to eq(
-                  { "$set" => { "addresses.0.street" => "Bond St" }}
-                )
+                expect(address.atomic_updates).to eq({
+                  "$set" => { "addresses.0.street" => "Bond St" }
+                })
               end
             end
           end
@@ -345,7 +343,7 @@ describe Mongoid::Atomic do
             expect(person.atomic_updates).to eq(
               {
                 "$set" => {
-                  "title" => "Sir",
+                  "title" => "Sir"
                 },
                 "$push" => {
                   "addresses" => { '$each' => [{
@@ -376,11 +374,11 @@ describe Mongoid::Atomic do
             pending 'https://jira.mongodb.org/browse/MONGOID-4982'
 
             expect(truck.atomic_updates).to eq({
-              '$set' => {'crates.0.volume' => 2},
-              '$push' => {'crates.0.toys' => {'$each' => [crate.toys.first.attributes]}},
+              '$set' => { 'crates.0.volume' => 2 },
+              '$push' => { 'crates.0.toys' => { '$each' => [crate.toys.first.attributes] } },
               conflicts: {
-                '$push' => {'crates' => {'$each' => [truck.crates.last.attributes]}},
-              },
+                '$push' => { 'crates' => { '$each' => [truck.crates.last.attributes] } }
+              }
             })
           end
         end

@@ -28,7 +28,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#VALID_OPTIONS' do
@@ -253,7 +253,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
             end
           end
 
@@ -291,7 +291,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
             end
           end
 
@@ -313,7 +313,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([ :inverse_name ])
+            expect(association.inverses).to eq([:inverse_name])
           end
         end
 
@@ -371,7 +371,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([ :inverse_name ])
+          expect(association.inverses).to eq([:inverse_name])
         end
       end
 
@@ -382,7 +382,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :embedded_objects ])
+          expect(association.inverses).to eq([:embedded_objects])
         end
       end
 
@@ -414,7 +414,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :embedded_objects ])
+          expect(association.inverses).to eq([:embedded_objects])
         end
       end
     end
@@ -864,7 +864,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
     context 'when cascade_callbacks is specified in the options' do
 
       let(:options) do
-        {cascade_callbacks: true}
+        { cascade_callbacks: true }
       end
 
       it 'raises a Mongoid::Errors::InvalidRelationOption exception' do

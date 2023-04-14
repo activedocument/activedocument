@@ -28,6 +28,7 @@ module Mongoid
           if over_limit?(attributes)
             raise Errors::TooManyNestedAttributeRecords.new(existing, options[:limit])
           end
+
           attributes.each do |attrs|
             if attrs.is_a?(::Hash)
               process_attributes(parent, attrs.with_indifferent_access)
@@ -100,6 +101,7 @@ module Mongoid
         # @param [ Hash ] attrs The single document attributes to process.
         def process_attributes(parent, attrs)
           return if reject?(parent, attrs)
+
           if id = attrs.extract_id
             update_nested_relation(parent, id, attrs)
           else

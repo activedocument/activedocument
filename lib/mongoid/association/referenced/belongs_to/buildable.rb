@@ -22,6 +22,7 @@ module Mongoid
           # @return [ Mongoid::Document ] A single document.
           def build(base, object, type = nil, selected_fields = nil)
             return object unless query?(object)
+
             execute_query(object, type)
           end
 

@@ -9,7 +9,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe "#build" do

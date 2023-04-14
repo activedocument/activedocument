@@ -21,7 +21,7 @@ module Mongoid
         @operator = operator
         super(compose_message("invalid_field_operator",
                               operator: operator,
-                              valid_operators: VALID_OPERATORS.map { |op| "'$#{op}'" }.join(', '),))
+                              valid_operators: VALID_OPERATORS.map { |op| "'$#{op}'" }.join(', ')))
       end
 
       # @return [ String ] The operator that was used.

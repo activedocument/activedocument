@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
     'changelog_uri' => 'https://github.com/tablecheck/mongoid/releases',
     'documentation_uri' => 'https://www.mongodb.com/docs/mongoid/',
     'homepage_uri' => 'https://github.com/tablecheck/mongoid',
-    'source_code_uri' => 'https://github.com/tablecheck/mongoid',
+    'source_code_uri' => 'https://github.com/tablecheck/mongoid'
   }
 
   s.required_ruby_version = ">= 2.7"

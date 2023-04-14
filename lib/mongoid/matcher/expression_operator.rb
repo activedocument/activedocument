@@ -9,7 +9,7 @@ module Mongoid
       MAP = {
         '$and' => And,
         '$nor' => Nor,
-        '$or' => Or,
+        '$or' => Or
       }.freeze
 
       # Returns the matcher module for a given operator.

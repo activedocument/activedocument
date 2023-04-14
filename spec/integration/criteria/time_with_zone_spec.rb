@@ -14,15 +14,15 @@ describe 'TimeWithZone in queries' do
     context 'Mongo driver static field' do
 
       let(:view_lt) do
-        Book.collection.find(updated_at: {'$lt' => query_time + 10.minutes})
+        Book.collection.find(updated_at: { '$lt' => query_time + 10.minutes })
       end
 
       let(:view_gt) do
-        Book.collection.find(updated_at: {'$gt' => query_time - 10.minutes})
+        Book.collection.find(updated_at: { '$gt' => query_time - 10.minutes })
       end
 
       let(:view_range) do
-        Book.collection.find(updated_at: {'$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes})
+        Book.collection.find(updated_at: { '$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes })
       end
 
       it 'finds the document' do
@@ -35,15 +35,15 @@ describe 'TimeWithZone in queries' do
     context 'Mongo driver dynamic field' do
 
       let(:view_lt) do
-        Book.collection.find(dynamic_time: {'$lt' => query_time + 10.minutes})
+        Book.collection.find(dynamic_time: { '$lt' => query_time + 10.minutes })
       end
 
       let(:view_gt) do
-        Book.collection.find(dynamic_time: {'$gt' => query_time - 10.minutes})
+        Book.collection.find(dynamic_time: { '$gt' => query_time - 10.minutes })
       end
 
       let(:view_range) do
-        Book.collection.find(dynamic_time: {'$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes})
+        Book.collection.find(dynamic_time: { '$gt' => query_time - 10.minutes, '$lt' => query_time + 10.minutes })
       end
 
       it 'finds the document' do

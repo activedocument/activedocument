@@ -69,7 +69,7 @@ describe Time do
         end
 
         let(:evolved) do
-          described_class.evolve([ time ])
+          described_class.evolve([time])
         end
 
         let(:expected) do
@@ -77,7 +77,7 @@ describe Time do
         end
 
         it "returns the array with evolved times" do
-          expect(evolved).to eq([ expected ])
+          expect(evolved).to eq([expected])
         end
 
         it "returns utc times" do
@@ -92,11 +92,11 @@ describe Time do
         end
 
         let(:evolved) do
-          described_class.evolve([ time.to_s ])
+          described_class.evolve([time.to_s])
         end
 
         it "returns the strings as a times" do
-          expect(evolved).to eq([ time.to_time ])
+          expect(evolved).to eq([time.to_time])
         end
 
         it "returns the times in utc" do
@@ -111,7 +111,7 @@ describe Time do
         end
 
         let(:evolved) do
-          described_class.evolve([ integer ])
+          described_class.evolve([integer])
         end
 
         let(:expected) do
@@ -119,7 +119,7 @@ describe Time do
         end
 
         it "returns the integers as times" do
-          expect(evolved).to eq([ expected ])
+          expect(evolved).to eq([expected])
         end
 
         it "returns the times in utc" do
@@ -134,7 +134,7 @@ describe Time do
         end
 
         let(:evolved) do
-          described_class.evolve([ float ])
+          described_class.evolve([float])
         end
 
         let(:expected) do
@@ -142,7 +142,7 @@ describe Time do
         end
 
         it "returns the floats as times" do
-          expect(evolved).to eq([ expected ])
+          expect(evolved).to eq([expected])
         end
 
         it "returns the times in utc" do

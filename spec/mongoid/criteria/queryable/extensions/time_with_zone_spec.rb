@@ -42,7 +42,7 @@ describe ActiveSupport::TimeWithZone do
         end
 
         let(:evolved) do
-          described_class.evolve([ date ])
+          described_class.evolve([date])
         end
 
         let(:expected) do
@@ -50,7 +50,7 @@ describe ActiveSupport::TimeWithZone do
         end
 
         it "returns the array with evolved times" do
-          expect(evolved).to eq([ expected ])
+          expect(evolved).to eq([expected])
         end
 
         it "returns utc times" do
@@ -65,11 +65,11 @@ describe ActiveSupport::TimeWithZone do
         end
 
         let(:evolved) do
-          described_class.evolve([ date.to_s ])
+          described_class.evolve([date.to_s])
         end
 
         it "returns the strings as a times" do
-          expect(evolved).to eq([ date.to_time ])
+          expect(evolved).to eq([date.to_time])
         end
 
         it "returns the times in utc" do
@@ -84,7 +84,7 @@ describe ActiveSupport::TimeWithZone do
         end
 
         let(:evolved) do
-          described_class.evolve([ integer ])
+          described_class.evolve([integer])
         end
 
         let(:expected) do
@@ -92,7 +92,7 @@ describe ActiveSupport::TimeWithZone do
         end
 
         it "returns the integers as times" do
-          expect(evolved).to eq([ expected ])
+          expect(evolved).to eq([expected])
         end
 
         it "returns the times in utc" do
@@ -107,7 +107,7 @@ describe ActiveSupport::TimeWithZone do
         end
 
         let(:evolved) do
-          described_class.evolve([ float ])
+          described_class.evolve([float])
         end
 
         let(:expected) do
@@ -115,7 +115,7 @@ describe ActiveSupport::TimeWithZone do
         end
 
         it "returns the floats as times" do
-          expect(evolved).to eq([ expected ])
+          expect(evolved).to eq([expected])
         end
 
         it "returns the times in utc" do

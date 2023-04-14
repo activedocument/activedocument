@@ -17,7 +17,7 @@ describe Mongoid::Clients::Factory do
       [
         configured_address,
         configured_address.sub(/\Alocalhost:/, '127.0.0.1:'),
-        configured_address.sub(/\A127\.0\.0\.1:/, 'localhost:'),
+        configured_address.sub(/\A127\.0\.0\.1:/, 'localhost:')
       ].uniq
     end
 
@@ -98,8 +98,8 @@ describe Mongoid::Clients::Factory do
                   hosts: SpecConfig.instance.addresses,
                   database: database_id,
                   options: {
-                    wrapping_libraries: [{name: 'Foo'}],
-                  },
+                    wrapping_libraries: [{ name: 'Foo' }]
+                  }
                 }
               }
             end
@@ -107,7 +107,7 @@ describe Mongoid::Clients::Factory do
             it 'adds Mongoid as another wrapping library' do
               expected = [
                 BSON::Document.new(Mongoid::Clients::Factory::MONGOID_WRAPPING_LIBRARY),
-                {'name' => 'Foo'},
+                { 'name' => 'Foo' }
               ]
               expect(client.options[:wrapping_libraries]).to eq(expected)
             end
@@ -119,8 +119,8 @@ describe Mongoid::Clients::Factory do
 
           let(:config) do
             {
-              default: { hosts: [ "127.0.0.1" ], database: database_id },
-              analytics: { hosts: [ "127.0.0.1" ], database: database_id }
+              default: { hosts: ["127.0.0.1"], database: database_id },
+              analytics: { hosts: ["127.0.0.1"], database: database_id }
             }
           end
 
@@ -164,7 +164,7 @@ describe Mongoid::Clients::Factory do
 
             let(:config) do
               {
-                default: { hosts: [ "127.0.0.1:27017" ], database: database_id },
+                default: { hosts: ["127.0.0.1:27017"], database: database_id },
                 analytics: { uri: "mongodb://127.0.0.1:27017/mongoid_test" }
               }
             end
@@ -203,7 +203,7 @@ describe Mongoid::Clients::Factory do
 
             let(:config) do
               {
-                default: { hosts: [ "127.0.0.1:1234" ], database: database_id, server_selection_timeout: 1 },
+                default: { hosts: ["127.0.0.1:1234"], database: database_id, server_selection_timeout: 1 },
                 analytics: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/mongoid_test?serverSelectionTimeoutMS=1000" }
               }
             end
@@ -233,7 +233,7 @@ describe Mongoid::Clients::Factory do
             end
 
             it "sets the cluster's seeds" do
-              expect(seeds).to eq([ "127.0.0.1:1234", "127.0.0.1:5678" ])
+              expect(seeds).to eq(["127.0.0.1:1234", "127.0.0.1:5678"])
             end
           end
         end
@@ -298,7 +298,7 @@ describe Mongoid::Clients::Factory do
       restore_config_clients
 
       let(:config) do
-        { default: { hosts: SpecConfig.instance.addresses, database: database_id }}
+        { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
       end
 
       before do
@@ -347,7 +347,7 @@ describe Mongoid::Clients::Factory do
     restore_config_clients
 
     let(:config) do
-      { default: { hosts: SpecConfig.instance.addresses, database: database_id }}
+      { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
     end
 
     before do
@@ -445,8 +445,8 @@ describe Mongoid::Clients::Factory do
     let(:config) do
       {
         default: { hosts: SpecConfig.instance.addresses, database: database_id },
-        good_one: { hosts: [ "127.0.0.1:1234" ], database: database_id},
-        bad_one: { hosts: [ "127.0.0.1:1234" ], database: database_id}.merge(unknown_opts),
+        good_one: { hosts: ["127.0.0.1:1234"], database: database_id },
+        bad_one: { hosts: ["127.0.0.1:1234"], database: database_id }.merge(unknown_opts),
         good_two: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/#{database_id}" },
         bad_two: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/#{database_id}" }.merge(unknown_opts)
       }

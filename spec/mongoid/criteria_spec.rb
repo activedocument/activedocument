@@ -44,7 +44,7 @@ describe Mongoid::Criteria do
         end
 
         let(:other) do
-          [ band ]
+          [band]
         end
 
         it "returns true" do
@@ -63,7 +63,7 @@ describe Mongoid::Criteria do
         end
 
         let(:other) do
-          [ other_band ]
+          [other_band]
         end
 
         it "returns false" do
@@ -126,7 +126,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns the sorted documents" do
-        expect(criteria).to eq([ friedel, hobrecht, pfluger ])
+        expect(criteria).to eq([friedel, hobrecht, pfluger])
       end
     end
   end
@@ -146,7 +146,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the correct documents" do
-      expect(criteria).to eq([ person ])
+      expect(criteria).to eq([person])
     end
   end
 
@@ -233,7 +233,7 @@ describe Mongoid::Criteria do
     end
   end
 
-  [ :all, :all_in ].each do |method|
+  [:all, :all_in].each do |method|
 
     describe "\##{method}" do
 
@@ -242,7 +242,7 @@ describe Mongoid::Criteria do
       end
 
       let!(:non_match) do
-        Band.create!(genres: [ "house" ])
+        Band.create!(genres: ["house"])
       end
 
       let(:criteria) do
@@ -250,21 +250,21 @@ describe Mongoid::Criteria do
       end
 
       it "returns the matching documents" do
-        expect(criteria).to eq([ match ])
+        expect(criteria).to eq([match])
       end
     end
   end
 
-  [ :and, :all_of ].each do |method|
+  [:and, :all_of].each do |method|
 
     describe "\##{method}" do
 
       let!(:match) do
-        Band.create!(name: "Depeche Mode", genres: [ "electro" ])
+        Band.create!(name: "Depeche Mode", genres: ["electro"])
       end
 
       let!(:non_match) do
-        Band.create!(genres: [ "house" ])
+        Band.create!(genres: ["house"])
       end
 
       let(:criteria) do
@@ -272,7 +272,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns the matching documents" do
-        expect(criteria).to eq([ match ])
+        expect(criteria).to eq([match])
       end
     end
   end
@@ -288,7 +288,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the criteria as a json hash" do
-      expect(criteria.as_json).to eq([ band.serializable_hash.as_json ])
+      expect(criteria.as_json).to eq([band.serializable_hash.as_json])
     end
   end
 
@@ -307,11 +307,11 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
-  [ :build, :new ].each do |method|
+  [:build, :new].each do |method|
 
     describe "##{method}" do
 
@@ -322,7 +322,7 @@ describe Mongoid::Criteria do
       context "when provided valid attributes" do
 
         let(:band) do
-          criteria.send(method, genres: [ "electro" ])
+          criteria.send(method, genres: ["electro"])
         end
 
         it "returns the new document" do
@@ -334,7 +334,7 @@ describe Mongoid::Criteria do
         end
 
         it "sets the attributes passed to build" do
-          expect(band.genres).to eq([ "electro" ])
+          expect(band.genres).to eq(["electro"])
         end
       end
 
@@ -342,7 +342,7 @@ describe Mongoid::Criteria do
         context "when provided valid attributes" do
           let(:band) do
             criteria.send(method) do |c|
-              c.genres = [ "electro" ]
+              c.genres = ["electro"]
             end
           end
 
@@ -355,7 +355,7 @@ describe Mongoid::Criteria do
           end
 
           it "sets the attributes passed to build" do
-            expect(band.genres).to eq([ "electro" ])
+            expect(band.genres).to eq(["electro"])
           end
         end
       end
@@ -409,7 +409,7 @@ describe Mongoid::Criteria do
     end
   end
 
-  [ :clone, :dup ].each do |method|
+  [:clone, :dup].each do |method|
 
     describe "\##{method}" do
 
@@ -422,7 +422,7 @@ describe Mongoid::Criteria do
       end
 
       before do
-        criteria.documents = [ band ]
+        criteria.documents = [band]
         criteria.context
       end
 
@@ -447,7 +447,7 @@ describe Mongoid::Criteria do
       end
 
       it "contains equal inclusions" do
-        expect(clone.inclusions).to eq([ Band.relations["records"] ])
+        expect(clone.inclusions).to eq([Band.relations["records"]])
       end
 
       it "clones the inclusions" do
@@ -455,7 +455,7 @@ describe Mongoid::Criteria do
       end
 
       it "contains equal documents" do
-        expect(clone.documents).to eq([ band ])
+        expect(clone.documents).to eq([band])
       end
 
       it "clones the documents" do
@@ -463,7 +463,7 @@ describe Mongoid::Criteria do
       end
 
       it "contains equal scoping options" do
-        expect(clone.scoping_options).to eq([ nil, nil ])
+        expect(clone.scoping_options).to eq([nil, nil])
       end
 
       it "clones the scoping options" do
@@ -537,12 +537,12 @@ describe Mongoid::Criteria do
 
     let(:criteria) do
       described_class.new(Band) do |criteria|
-        criteria.documents = [ band ]
+        criteria.documents = [band]
       end
     end
 
     it "returns the documents" do
-      expect(criteria.documents).to eq([ band ])
+      expect(criteria.documents).to eq([band])
     end
   end
 
@@ -557,11 +557,11 @@ describe Mongoid::Criteria do
     end
 
     before do
-      criteria.documents = [ band ]
+      criteria.documents = [band]
     end
 
     it "sets the documents" do
-      expect(criteria.documents).to eq([ band ])
+      expect(criteria.documents).to eq([band])
     end
   end
 
@@ -595,7 +595,7 @@ describe Mongoid::Criteria do
     end
 
     let!(:non_match) do
-      Band.create!(genres: [ "house" ])
+      Band.create!(genres: ["house"])
     end
 
     let(:criteria) do
@@ -603,7 +603,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -684,7 +684,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -769,7 +769,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns the fields with required _id minus type" do
-        expect(criteria.field_list).to eq([ "_id" ])
+        expect(criteria.field_list).to eq(["_id"])
       end
     end
 
@@ -810,7 +810,7 @@ describe Mongoid::Criteria do
 
     context "when given a Proc and a block" do
       it "behaves as Enumerable" do
-        result = criteria.find(-> {"default"}) { |c| c.name == "Not Depeche Mode" }
+        result = criteria.find(-> { "default" }) { |c| c.name == "Not Depeche Mode" }
         expect(result).to eq("default")
       end
     end
@@ -818,7 +818,7 @@ describe Mongoid::Criteria do
     context "when given a Proc without a block" do
       it "raises an error" do
         expect do
-          criteria.find(-> {"default"})
+          criteria.find(-> { "default" })
           # Proc is not serializable to a BSON type
         end.to raise_error(BSON::Error::UnserializableClass)
       end
@@ -853,7 +853,7 @@ describe Mongoid::Criteria do
           end
 
           let(:result) do
-            criteria.find_one_and_update({ "$inc" => { likes: 1 }}, return_document: :after)
+            criteria.find_one_and_update({ "$inc" => { likes: 1 } }, return_document: :after)
           end
 
           it "returns the first matching document" do
@@ -949,7 +949,7 @@ describe Mongoid::Criteria do
         end
 
         let!(:result) do
-          criteria.find_one_and_update({ "$inc" => { likes: 1 }}, return_document: :after)
+          criteria.find_one_and_update({ "$inc" => { likes: 1 } }, return_document: :after)
         end
 
         it "returns the first matching document" do
@@ -1044,7 +1044,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1063,7 +1063,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1082,11 +1082,11 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
-  [ :in, :any_in ].each do |method|
+  [:in, :any_in].each do |method|
 
     describe "\##{method}" do
 
@@ -1097,15 +1097,15 @@ describe Mongoid::Criteria do
         end
 
         let!(:non_match) do
-          Band.create!(genres: [ "house" ])
+          Band.create!(genres: ["house"])
         end
 
         let(:criteria) do
-          Band.send(method, genres: [ "dub" ])
+          Band.send(method, genres: ["dub"])
         end
 
         it "returns the matching documents" do
-          expect(criteria).to eq([ match ])
+          expect(criteria).to eq([match])
         end
       end
 
@@ -1116,28 +1116,28 @@ describe Mongoid::Criteria do
         end
 
         let!(:match_one) do
-          Person.create!(preference_ids: [ id ])
+          Person.create!(preference_ids: [id])
         end
 
         context "when providing valid ids" do
 
           let(:criteria) do
-            Person.send(method, preference_ids: [ id ])
+            Person.send(method, preference_ids: [id])
           end
 
           it "returns the matching documents" do
-            expect(criteria).to eq([ match_one ])
+            expect(criteria).to eq([match_one])
           end
         end
 
         context "when providing empty strings" do
 
           let(:criteria) do
-            Person.send(method, preference_ids: [ id, "" ])
+            Person.send(method, preference_ids: [id, ""])
           end
 
           it "returns the matching documents" do
-            expect(criteria).to eq([ match_one ])
+            expect(criteria).to eq([match_one])
           end
         end
 
@@ -1146,11 +1146,11 @@ describe Mongoid::Criteria do
           context "when the relation is a many to many" do
 
             let(:criteria) do
-              Person.send(method, preference_ids: [ id, nil ])
+              Person.send(method, preference_ids: [id, nil])
             end
 
             it "returns the matching documents" do
-              expect(criteria).to eq([ match_one ])
+              expect(criteria).to eq([match_one])
             end
           end
 
@@ -1161,11 +1161,11 @@ describe Mongoid::Criteria do
             end
 
             let(:criteria) do
-              Game.send(method, person_id: [ nil ])
+              Game.send(method, person_id: [nil])
             end
 
             it "returns the matching documents" do
-              expect(criteria).to eq([ game ])
+              expect(criteria).to eq([game])
             end
           end
         end
@@ -1207,7 +1207,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1226,7 +1226,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1266,8 +1266,8 @@ describe Mongoid::Criteria do
 
       it "returns the map/reduce results" do
         expect(map_reduce.sort_by { |doc| doc['_id'] }).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         ])
       end
     end
@@ -1322,19 +1322,19 @@ describe Mongoid::Criteria do
     end
 
     let!(:match) do
-      Bar.create!(location: [ 52.30, 13.25 ])
+      Bar.create!(location: [52.30, 13.25])
     end
 
     let!(:non_match) do
-      Bar.create!(location: [ 19.26, 99.70 ])
+      Bar.create!(location: [19.26, 99.70])
     end
 
     let(:criteria) do
-      Bar.near(location: [ 52, 13 ]).max_distance(location: 5)
+      Bar.near(location: [52, 13]).max_distance(location: 5)
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1352,7 +1352,7 @@ describe Mongoid::Criteria do
 
       let(:mergeable) do
         Band.includes(:records).tap do |crit|
-          crit.documents = [ band ]
+          crit.documents = [band]
         end
       end
 
@@ -1369,19 +1369,19 @@ describe Mongoid::Criteria do
       end
 
       it "merges the options" do
-        expect(merged.options).to eq({ sort: { "name" => 1 }})
+        expect(merged.options).to eq({ sort: { "name" => 1 } })
       end
 
       it "merges the documents" do
-        expect(merged.documents).to eq([ band ])
+        expect(merged.documents).to eq([band])
       end
 
       it "merges the scoping options" do
-        expect(merged.scoping_options).to eq([ nil, nil ])
+        expect(merged.scoping_options).to eq([nil, nil])
       end
 
       it "merges the inclusions" do
-        expect(merged.inclusions).to eq([ association ])
+        expect(merged.inclusions).to eq([association])
       end
 
       it "returns a new criteria" do
@@ -1392,7 +1392,7 @@ describe Mongoid::Criteria do
     context "when merging with a hash" do
 
       let(:mergeable) do
-        { klass: Band, includes: [ :records ] }
+        { klass: Band, includes: [:records] }
       end
 
       let(:association) do
@@ -1408,15 +1408,15 @@ describe Mongoid::Criteria do
       end
 
       it "merges the options" do
-        expect(merged.options).to eq({ sort: { "name" => 1 }})
+        expect(merged.options).to eq({ sort: { "name" => 1 } })
       end
 
       it "merges the scoping options" do
-        expect(merged.scoping_options).to eq([ nil, nil ])
+        expect(merged.scoping_options).to eq([nil, nil])
       end
 
       it "merges the inclusions" do
-        expect(merged.inclusions).to eq([ association ])
+        expect(merged.inclusions).to eq([association])
       end
 
       it "returns a new criteria" do
@@ -1437,7 +1437,7 @@ describe Mongoid::Criteria do
 
     let(:mergeable) do
       Band.includes(:records).tap do |crit|
-        crit.documents = [ band ]
+        crit.documents = [band]
       end
     end
 
@@ -1454,19 +1454,19 @@ describe Mongoid::Criteria do
     end
 
     it "merges the options" do
-      expect(merged.options).to eq({ sort: { "name" => 1 }})
+      expect(merged.options).to eq({ sort: { "name" => 1 } })
     end
 
     it "merges the documents" do
-      expect(merged.documents).to eq([ band ])
+      expect(merged.documents).to eq([band])
     end
 
     it "merges the scoping options" do
-      expect(merged.scoping_options).to eq([ nil, nil ])
+      expect(merged.scoping_options).to eq([nil, nil])
     end
 
     it "merges the inclusions" do
-      expect(merged.inclusions).to eq([ association ])
+      expect(merged.inclusions).to eq([association])
     end
 
     it "returns the same criteria" do
@@ -1527,11 +1527,11 @@ describe Mongoid::Criteria do
     end
 
     let(:criteria) do
-      Band.mod(member_count: [ 4, 1 ])
+      Band.mod(member_count: [4, 1])
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1550,7 +1550,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1561,15 +1561,15 @@ describe Mongoid::Criteria do
     end
 
     let!(:match) do
-      Bar.create!(location: [ 52.30, 13.25 ])
+      Bar.create!(location: [52.30, 13.25])
     end
 
     let(:criteria) do
-      Bar.near(location: [ 52, 13 ])
+      Bar.near(location: [52, 13])
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1580,15 +1580,15 @@ describe Mongoid::Criteria do
     end
 
     let!(:match) do
-      Bar.create!(location: [ 52.30, 13.25 ])
+      Bar.create!(location: [52.30, 13.25])
     end
 
     let(:criteria) do
-      Bar.near_sphere(location: [ 52, 13 ])
+      Bar.near_sphere(location: [52, 13])
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1603,11 +1603,11 @@ describe Mongoid::Criteria do
     end
 
     let(:criteria) do
-      Band.nin(name: [ "Tool" ])
+      Band.nin(name: ["Tool"])
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -1626,11 +1626,11 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
-  [ :or, :any_of ].each do |method|
+  [:or, :any_of].each do |method|
 
     describe "\##{method}" do
 
@@ -1649,7 +1649,7 @@ describe Mongoid::Criteria do
         end
 
         it "returns the matching documents" do
-          expect(criteria).to eq([ match ])
+          expect(criteria).to eq([match])
         end
       end
 
@@ -1660,7 +1660,7 @@ describe Mongoid::Criteria do
         end
 
         it "returns the matching documents" do
-          expect(criteria).to eq([ match ])
+          expect(criteria).to eq([match])
         end
       end
     end
@@ -1701,7 +1701,7 @@ describe Mongoid::Criteria do
         end
 
         it "uses the aliases" do
-          expect(plucked).to eq([ 100000, 1 ])
+          expect(plucked).to eq([100000, 1])
         end
       end
     end
@@ -1737,7 +1737,7 @@ describe Mongoid::Criteria do
           context 'when a top-level field and a subdocument field are plucked' do
             before do
               Band.create!(name: 'FKA Twigs')
-              Band.create!(name: 'FKA Twigs', records: [ Record.new(name: 'LP1') ])
+              Band.create!(name: 'FKA Twigs', records: [Record.new(name: 'LP1')])
             end
 
             let(:embedded_pluck) do
@@ -1760,7 +1760,7 @@ describe Mongoid::Criteria do
 
             before do
               Band.create!(name: 'FKA Twigs')
-              Band.create!(name: 'FKA Twigs', records: [ Record.new(name: 'LP1') ])
+              Band.create!(name: 'FKA Twigs', records: [Record.new(name: 'LP1')])
             end
 
             let(:embedded_pluck) do
@@ -1822,7 +1822,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns the field values" do
-        expect(plucked).to eq([ depeche.id, tool.id, photek.id ])
+        expect(plucked).to eq([depeche.id, tool.id, photek.id])
       end
     end
 
@@ -1833,7 +1833,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns nil for the field that doesnt exist" do
-        expect(plucked).to eq([[depeche.id, nil], [tool.id, nil], [photek.id, nil] ])
+        expect(plucked).to eq([[depeche.id, nil], [tool.id, nil], [photek.id, nil]])
       end
     end
 
@@ -1891,11 +1891,11 @@ describe Mongoid::Criteria do
         end
 
         it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({"de" => "deutsch-text", "en" => "english-text"})
+          expect(plucked_translations.first).to eq({ "de" => "deutsch-text", "en" => "english-text" })
         end
 
         it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{"de" => "deutsch-text", "en" => "english-text"}, "deutsch-text"])
+          expect(plucked_translations_both.first).to eq([{ "de" => "deutsch-text", "en" => "english-text" }, "deutsch-text"])
         end
       end
 
@@ -1925,7 +1925,7 @@ describe Mongoid::Criteria do
         with_i18n_fallbacks
 
         before do
-          I18n.fallbacks[:he] = [ :en ]
+          I18n.fallbacks[:he] = [:en]
         end
 
         let(:plucked) do
@@ -2011,7 +2011,7 @@ describe Mongoid::Criteria do
       let(:plucked) { Band.where(_id: band.id).pluck("label.sales") }
 
       it "demongoizes the field" do
-        expect(plucked).to eq([ BigDecimal("1E2") ])
+        expect(plucked).to eq([BigDecimal("1E2")])
       end
     end
 
@@ -2022,7 +2022,7 @@ describe Mongoid::Criteria do
       let(:plucked) { Band.where(_id: band.id).pluck("labels.sales") }
 
       it "demongoizes the field" do
-        expect(plucked.first).to eq([ BigDecimal("1E2") ])
+        expect(plucked.first).to eq([BigDecimal("1E2")])
       end
     end
 
@@ -2040,9 +2040,9 @@ describe Mongoid::Criteria do
     context "when tallying deeply nested arrays/embedded associations" do
 
       before do
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }])))])
       end
 
       let(:plucked) do
@@ -2050,9 +2050,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns the correct hash" do
-        expect(plucked).to eq([
-          [ [ 1, 2 ] ], [ [ 1, 2 ] ], [ [ 1, 3 ] ]
-        ])
+        expect(plucked).to eq([[[1, 2]], [[1, 2]], [[1, 3]]])
       end
     end
   end
@@ -2088,7 +2086,7 @@ describe Mongoid::Criteria do
       end
 
       it "yields values to the block" do
-        expect(plucked_values).to eq([ "Depeche Mode", "Tool", "Photek" ])
+        expect(plucked_values).to eq(["Depeche Mode", "Tool", "Photek"])
       end
     end
 
@@ -2103,7 +2101,7 @@ describe Mongoid::Criteria do
       end
 
       it "can yield the values" do
-        expect(plucked.map { |value| value }).to eq([ "Depeche Mode", "Tool", "Photek" ])
+        expect(plucked.map { |value| value }).to eq(["Depeche Mode", "Tool", "Photek"])
       end
     end
 
@@ -2123,7 +2121,7 @@ describe Mongoid::Criteria do
         let!(:pluck_each) { Product.pluck_each(:price) { |v| plucked << v } }
 
         it "uses the aliases" do
-          expect(plucked).to eq([ 100000, 1 ])
+          expect(plucked).to eq([100000, 1])
         end
       end
     end
@@ -2158,7 +2156,7 @@ describe Mongoid::Criteria do
           context 'when a top-level field and a subdocument field are plucked' do
             before do
               Band.create!(name: 'FKA Twigs')
-              Band.create!(name: 'FKA Twigs', records: [ Record.new(name: 'LP1') ])
+              Band.create!(name: 'FKA Twigs', records: [Record.new(name: 'LP1')])
             end
 
             let(:expected) do
@@ -2179,7 +2177,7 @@ describe Mongoid::Criteria do
 
             before do
               Band.create!(name: 'FKA Twigs')
-              Band.create!(name: 'FKA Twigs', records: [ Record.new(name: 'LP1') ])
+              Band.create!(name: 'FKA Twigs', records: [Record.new(name: 'LP1')])
             end
 
             let(:expected) do
@@ -2235,7 +2233,7 @@ describe Mongoid::Criteria do
       let!(:pluck_each) { Band.all.pluck_each(:id) { |v| plucked << v } }
 
       it "returns the field values" do
-        expect(plucked).to eq([ depeche.id, tool.id, photek.id ])
+        expect(plucked).to eq([depeche.id, tool.id, photek.id])
       end
     end
 
@@ -2245,7 +2243,7 @@ describe Mongoid::Criteria do
       let!(:pluck_each) { Band.all.pluck_each(:id, :fooz) { |v| plucked << v } }
 
       it "returns nil for the field that doesnt exist" do
-        expect(plucked).to eq([[depeche.id, nil], [tool.id, nil], [photek.id, nil] ])
+        expect(plucked).to eq([[depeche.id, nil], [tool.id, nil], [photek.id, nil]])
       end
     end
 
@@ -2309,11 +2307,11 @@ describe Mongoid::Criteria do
         end
 
         it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({"de" => "deutsch-text", "en" => "english-text"})
+          expect(plucked_translations.first).to eq({ "de" => "deutsch-text", "en" => "english-text" })
         end
 
         it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{"de" => "deutsch-text", "en" => "english-text"}, "deutsch-text"])
+          expect(plucked_translations_both.first).to eq([{ "de" => "deutsch-text", "en" => "english-text" }, "deutsch-text"])
         end
       end
 
@@ -2344,7 +2342,7 @@ describe Mongoid::Criteria do
 
         around(:all) do |example|
           prev_fallbacks = I18n.fallbacks.dup
-          I18n.fallbacks[:he] = [ :en ]
+          I18n.fallbacks[:he] = [:en]
           example.run
           I18n.fallbacks = prev_fallbacks
         end
@@ -2496,7 +2494,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns an array" do
-        expect(picked).to eq([ "Depeche Mode", 3 ])
+        expect(picked).to eq(["Depeche Mode", 3])
       end
     end
   end
@@ -2596,7 +2594,7 @@ describe Mongoid::Criteria do
     end
 
     it "sorts the results in memory" do
-      expect(sorted).to eq([ tool, depeche ])
+      expect(sorted).to eq([tool, depeche])
     end
   end
 
@@ -2651,7 +2649,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the executed criteria" do
-      expect(criteria.to_ary).to eq([ band ])
+      expect(criteria.to_ary).to eq([band])
     end
   end
 
@@ -2694,7 +2692,7 @@ describe Mongoid::Criteria do
         end
 
         it "returns documents with the provided type" do
-          expect(criteria).to eq([ browser ])
+          expect(criteria).to eq([browser])
         end
       end
 
@@ -2709,7 +2707,7 @@ describe Mongoid::Criteria do
         end
 
         it "returns documents with the provided types" do
-          expect(criteria).to eq([ browser ])
+          expect(criteria).to eq([browser])
         end
       end
     end
@@ -2734,7 +2732,7 @@ describe Mongoid::Criteria do
         end
 
         it "returns documents with the provided type" do
-          expect(criteria).to eq([ browser ])
+          expect(criteria).to eq([browser])
         end
       end
 
@@ -2749,7 +2747,7 @@ describe Mongoid::Criteria do
         end
 
         it "returns documents with the provided types" do
-          expect(criteria).to eq([ browser ])
+          expect(criteria).to eq([browser])
         end
       end
     end
@@ -2783,7 +2781,7 @@ describe Mongoid::Criteria do
       context 'on a model class' do
         it 'raises ArgumentError' do
           expect do
-            Band.where({foo: 1}, {bar: 2})
+            Band.where({ foo: 1 }, { bar: 2 })
           end.to raise_error(ArgumentError, /where requires zero or one arguments/)
         end
       end
@@ -2791,7 +2789,7 @@ describe Mongoid::Criteria do
       context 'on an association' do
         it 'raises ArgumentError' do
           expect do
-            match.records.where({foo: 1}, {bar: 2})
+            match.records.where({ foo: 1 }, { bar: 2 })
           end.to raise_error(ArgumentError, /where requires zero or one arguments/)
         end
       end
@@ -2815,7 +2813,7 @@ describe Mongoid::Criteria do
         end
 
         it "returns the matching documents" do
-          expect(criteria).to eq([ match ])
+          expect(criteria).to eq([match])
         end
       end
     end
@@ -2829,7 +2827,7 @@ describe Mongoid::Criteria do
         end
 
         it "returns the matching documents" do
-          expect(criteria).to eq([ match ])
+          expect(criteria).to eq([match])
         end
       end
 
@@ -2844,11 +2842,11 @@ describe Mongoid::Criteria do
         end
 
         let(:criteria) do
-          Account.where(agent_ids: [ id_one, id_two ])
+          Account.where(agent_ids: [id_one, id_two])
         end
 
         it "does not wrap the array in another array" do
-          expect(criteria.selector).to eq({ "agent_ids" => [ id_one, id_two ]})
+          expect(criteria.selector).to eq({ "agent_ids" => [id_one, id_two] })
         end
       end
 
@@ -3038,7 +3036,7 @@ describe Mongoid::Criteria do
       let(:criteria) { Band.where(foo: 1).where(foo: 2) }
 
       it 'combines criteria' do
-        expect(criteria.selector).to eq('foo' => 1, '$and' => [{'foo' => 2}])
+        expect(criteria.selector).to eq('foo' => 1, '$and' => [{ 'foo' => 2 }])
       end
     end
 
@@ -3047,7 +3045,7 @@ describe Mongoid::Criteria do
 
       it 'combines criteria' do
         expect(criteria.selector).to eq(
-          'foo' => 1, '$and' => [{'foo' => 2}], 'bar' => 3
+          'foo' => 1, '$and' => [{ 'foo' => 2 }], 'bar' => 3
         )
       end
     end
@@ -3057,7 +3055,7 @@ describe Mongoid::Criteria do
 
       it 'combines criteria' do
         expect(criteria.selector).to eq(
-          'foo' => 1, '$and' => [{'foo' => 2}], 'bar' => 3
+          'foo' => 1, '$and' => [{ 'foo' => 2 }], 'bar' => 3
         )
       end
     end
@@ -3075,7 +3073,7 @@ describe Mongoid::Criteria do
 
       it 'does not duplicate criteria' do
         expect(criteria.selector).to eq(
-          'active' => true, '$and' => [{'active' => false}]
+          'active' => true, '$and' => [{ 'active' => false }]
         )
       end
     end
@@ -3088,7 +3086,7 @@ describe Mongoid::Criteria do
     context "when searching by _id twice" do
       let(:_id) { BSON::ObjectId.new }
       let(:criteria) { Band.where(_id: _id) }
-      let(:dup_criteria) { criteria.where(_id: _id)}
+      let(:dup_criteria) { criteria.where(_id: _id) }
 
       it "does not duplicate the criteria" do
         expect(dup_criteria.selector).to eq({ "_id" => _id })
@@ -3275,17 +3273,16 @@ describe Mongoid::Criteria do
 
       context "when there are multiple conditions" do
         let(:criteria) do
-          Band.where("$or" => [{"labels.age" => 10..15}, {labels: 8}])
+          Band.where("$or" => [{ "labels.age" => 10..15 }, { labels: 8 }])
         end
 
         it "correctly combines the conditions" do
-          expect(criteria.selector).to eq("$or" => [
-            { "labels" => {
-              "$elemMatch" => {
-                "age" => { "$gte" => 10, "$lte" => 15 }
-              } } },
-            { "labels" => 8 }
-          ])
+          expect(criteria.selector).to eq({
+            "$or" => [
+              { "labels" => { "$elemMatch" => { "age" => { "$gte" => 10, "$lte" => 15 } } } },
+              { "labels" => 8 }
+            ]
+          })
         end
       end
 
@@ -3307,7 +3304,7 @@ describe Mongoid::Criteria do
     end
 
     context "when searching for a regex on a symbol field" do
-      let!(:person) { Person.create!(species: :hello)}
+      let!(:person) { Person.create!(species: :hello) }
       let(:criteria) { Person.where(species: /ell/) }
 
       it "creates the correct criteria" do
@@ -3333,7 +3330,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns the matching documents" do
-        expect(criteria).to eq([ match ])
+        expect(criteria).to eq([match])
       end
     end
 
@@ -3345,7 +3342,7 @@ describe Mongoid::Criteria do
       end
 
       it "returns the matching documents" do
-        expect(criteria).to eq([ match ])
+        expect(criteria).to eq([match])
       end
     end
   end
@@ -3422,7 +3419,7 @@ describe Mongoid::Criteria do
     end
 
     it "passes the block through method_missing" do
-      expect(criteria.uniq(&:name)).to eq([ band_one ])
+      expect(criteria.uniq(&:name)).to eq([band_one])
     end
   end
 
@@ -3434,7 +3431,7 @@ describe Mongoid::Criteria do
         collection = crit.collection
         crit
       end
-      [ criteria, collection ]
+      [criteria, collection]
     end
 
     let(:criteria) do
@@ -3463,17 +3460,17 @@ describe Mongoid::Criteria do
       end
 
       let!(:match) do
-        Bar.create!(location: [ 52.30, 13.25 ])
+        Bar.create!(location: [52.30, 13.25])
       end
 
       let(:criteria) do
         Bar.geo_spatial(
-          :location.within_polygon => [[[ 50, 10 ], [ 50, 20 ], [ 60, 20 ], [ 60, 10 ], [ 50, 10 ]]]
+          :location.within_polygon => [[[50, 10], [50, 20], [60, 20], [60, 10], [50, 10]]]
         )
       end
 
       it "returns the matching documents" do
-        expect(criteria).to eq([ match ])
+        expect(criteria).to eq([match])
       end
     end
   end
@@ -3485,7 +3482,7 @@ describe Mongoid::Criteria do
     end
 
     let!(:non_match) do
-      Band.create!(genres: [ "house" ])
+      Band.create!(genres: ["house"])
     end
 
     let(:criteria) do
@@ -3493,7 +3490,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -3508,7 +3505,7 @@ describe Mongoid::Criteria do
     end
 
     it "returns the matching documents" do
-      expect(criteria).to eq([ match ])
+      expect(criteria).to eq([match])
     end
   end
 
@@ -3540,7 +3537,7 @@ describe Mongoid::Criteria do
         end
 
         it "does not use an $in query" do
-          expect(selection).to eq({ _type: { "$in" => %w[Firefox Browser]}})
+          expect(selection).to eq({ _type: { "$in" => %w[Firefox Browser] } })
         end
       end
     end
@@ -3580,7 +3577,7 @@ describe Mongoid::Criteria do
         end
 
         it "does not use an $in query" do
-          expect(selection).to eq({ dkey: { "$in" => %w[Firefox Browser]}})
+          expect(selection).to eq({ dkey: { "$in" => %w[Firefox Browser] } })
         end
       end
     end

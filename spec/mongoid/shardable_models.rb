@@ -35,7 +35,7 @@ class SmProducer
   include Mongoid::Document
 
   index age: 1, gender: 1
-  shard_key({age: 1, gender: 'hashed'}, unique: true, numInitialChunks: 2)
+  shard_key({ age: 1, gender: 'hashed' }, unique: true, numInitialChunks: 2)
 end
 
 class SmDirector

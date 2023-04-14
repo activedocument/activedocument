@@ -45,7 +45,7 @@ describe Mongoid::Criteria do
       context "when passing an array" do
 
         let(:criteria) do
-          Band.only([ :name, :likes ])
+          Band.only([:name, :likes])
         end
 
         it "includes the limited fields" do
@@ -212,7 +212,7 @@ describe Mongoid::Criteria do
         end
 
         it 'raises an Mongoid::Errors::AttributeNotLoaded when attempting to access the field' do
-          expect {dictionary.description}.to raise_error Mongoid::Errors::AttributeNotLoaded
+          expect { dictionary.description }.to raise_error Mongoid::Errors::AttributeNotLoaded
         end
       end
 
@@ -241,7 +241,7 @@ describe Mongoid::Criteria do
       context 'when id is aliased to _id' do
         shared_examples 'requests _id field' do
           it 'requests _id field' do
-            expect(criteria.options[:fields]).to eq({'_id' => 1})
+            expect(criteria.options[:fields]).to eq({ '_id' => 1 })
           end
         end
 
@@ -261,7 +261,7 @@ describe Mongoid::Criteria do
           end
 
           it 'requests content field and _id field' do
-            expect(criteria.options[:fields]).to eq({'_id' => 1, 'name' => 1})
+            expect(criteria.options[:fields]).to eq({ '_id' => 1, 'name' => 1 })
           end
         end
       end
@@ -269,13 +269,13 @@ describe Mongoid::Criteria do
       context 'when id is not aliased to _id' do
         shared_examples 'requests _id field' do
           it 'requests _id field' do
-            expect(criteria.options[:fields]).to eq({'_id' => 1})
+            expect(criteria.options[:fields]).to eq({ '_id' => 1 })
           end
         end
 
         shared_examples 'requests id field and _id field' do
           it 'requests id field and _id field' do
-            expect(criteria.options[:fields]).to eq({'_id' => 1, 'id' => 1})
+            expect(criteria.options[:fields]).to eq({ '_id' => 1, 'id' => 1 })
           end
         end
 
@@ -344,7 +344,7 @@ describe Mongoid::Criteria do
 
       shared_examples 'unprojects id' do
         it 'does not unproject _id' do
-          expect(criteria.options[:fields]).to eq({'id' => 0})
+          expect(criteria.options[:fields]).to eq({ 'id' => 0 })
         end
 
         let(:instance) { criteria.first }

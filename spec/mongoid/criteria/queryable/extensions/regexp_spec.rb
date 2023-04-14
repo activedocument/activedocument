@@ -46,7 +46,7 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp do
         end
 
         let(:array) do
-          [ regexp ]
+          [regexp]
         end
 
         let(:evolved) do
@@ -54,7 +54,7 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp do
         end
 
         it "returns the regexps" do
-          expect(evolved).to eq([ regexp ])
+          expect(evolved).to eq([regexp])
         end
 
         it "does not evolve in place" do
@@ -69,11 +69,11 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp do
         end
 
         let(:evolved) do
-          Regexp.evolve([ regexp ])
+          Regexp.evolve([regexp])
         end
 
         it "returns the regexps" do
-          expect(evolved).to eq([ /\A[123]/ ])
+          expect(evolved).to eq([/\A[123]/])
         end
       end
     end

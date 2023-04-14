@@ -36,11 +36,11 @@ describe Mongoid::Criteria::Queryable::Expandable do
 
     context 'literal value' do
       let(:criterion) do
-        {foo: 4}
+        { foo: 4 }
       end
 
       let(:expected) do
-        {foo: [4]}
+        { foo: [4] }
       end
 
       it_behaves_like 'expands'
@@ -48,11 +48,11 @@ describe Mongoid::Criteria::Queryable::Expandable do
 
     context 'Range value' do
       let(:criterion) do
-        {foo: 1..4}
+        { foo: 1..4 }
       end
 
       let(:expected) do
-        {foo: [1, 2, 3, 4]}
+        { foo: [1, 2, 3, 4] }
       end
 
       it_behaves_like 'expands'

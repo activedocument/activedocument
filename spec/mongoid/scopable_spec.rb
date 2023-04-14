@@ -149,7 +149,7 @@ describe Mongoid::Scopable do
       end
 
       it "the subclass doesn't duplicate the default scope in the selector" do
-        expect(selector).to eq({'active' => true})
+        expect(selector).to eq({ 'active' => true })
       end
     end
 
@@ -191,7 +191,7 @@ describe Mongoid::Scopable do
     context "when the default scope is dotted with a query" do
 
       let(:criteria) do
-        Band.where('tags.foo' => {'$eq' => 'bar'})
+        Band.where('tags.foo' => { '$eq' => 'bar' })
       end
 
       before do
@@ -410,7 +410,7 @@ describe Mongoid::Scopable do
           end
 
           it "returns the correct documents" do
-            expect(scoped).to eq([ undertow ])
+            expect(scoped).to eq([undertow])
           end
         end
       end
@@ -574,7 +574,7 @@ describe Mongoid::Scopable do
           end
 
           it "sets the conditions from keyword arguments" do
-            expect(scope.selector).to eq({'name' => 'Emily', 'deleted' => true})
+            expect(scope.selector).to eq({ 'name' => 'Emily', 'deleted' => true })
           end
         end
 
@@ -881,12 +881,12 @@ describe Mongoid::Scopable do
           expect(criteria.selector).to eq({
             "$or" => [
               { "ccc" => nil },
-              { "ccc" => { "$gt" => 1.0 }},
+              { "ccc" => { "$gt" => 1.0 } }
             ],
             '$and' => ['$or' => [
-              { "aaa" => { "$gt" => 0.0 }},
-              { "bbb" => { "$gt" => 0.0 }}
-            ]],
+              { "aaa" => { "$gt" => 0.0 } },
+              { "bbb" => { "$gt" => 0.0 } }
+            ]]
           })
         end
       end
@@ -895,8 +895,8 @@ describe Mongoid::Scopable do
     context "when working with a subclass" do
 
       before do
-        Shape.scope(:located_at, ->(x, y) {Shape.where(x: x, y: y)})
-        Circle.scope(:with_radius, ->(r) {Circle.where(radius: r)})
+        Shape.scope(:located_at, ->(x, y) { Shape.where(x: x, y: y) })
+        Circle.scope(:with_radius, ->(r) { Circle.where(radius: r) })
       end
 
       after do
@@ -1218,7 +1218,7 @@ describe Mongoid::Scopable do
     context "when using #current_scope" do
 
       it "pops the criteria off the stack" do
-        Band.with_scope(criteria) { }
+        Band.with_scope(criteria) {}
         expect(Mongoid::Threaded.current_scope).to be_nil
       end
     end
@@ -1226,7 +1226,7 @@ describe Mongoid::Scopable do
     context "when using #current_scope(klass)" do
 
       it "pops the criteria off the stack" do
-        Band.with_scope(criteria) { }
+        Band.with_scope(criteria) {}
         expect(Mongoid::Threaded.current_scope(Band)).to be_nil
       end
     end
@@ -1241,12 +1241,12 @@ describe Mongoid::Scopable do
 
             expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
               'active' => true,
-              '$and' => ['active' => false],
+              '$and' => ['active' => false]
             })
           end
 
           expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
-            'active' => true,
+            'active' => true
           })
         end
       end
@@ -1262,7 +1262,7 @@ describe Mongoid::Scopable do
           end
 
           expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
-            'active' => true,
+            'active' => true
           })
         end
       end

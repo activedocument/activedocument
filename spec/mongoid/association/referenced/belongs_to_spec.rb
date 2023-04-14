@@ -28,7 +28,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#relation_complements' do
@@ -421,14 +421,14 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           it 'does not set up an index' do
-            expect(belonging_class.index_specifications).to eq([ ])
+            expect(belonging_class.index_specifications).to eq([])
           end
         end
 
         context 'when not polymorphic' do
 
           it 'does not set up an index' do
-            expect(belonging_class.index_specifications).to eq([ ])
+            expect(belonging_class.index_specifications).to eq([])
           end
         end
       end
@@ -1009,7 +1009,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     context 'when :touch is in the options' do
 
       let(:options) do
-        { touch: true}
+        { touch: true }
       end
 
       it 'returns true' do
@@ -1210,7 +1210,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
             end
           end
 
@@ -1236,7 +1236,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
             end
           end
 
@@ -1270,7 +1270,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([ :inverse_name ])
+            expect(association.inverses).to eq([:inverse_name])
           end
         end
 
@@ -1292,7 +1292,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([ :inverse_name ])
+          expect(association.inverses).to eq([:inverse_name])
         end
       end
 
@@ -1303,7 +1303,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :belonging_objects ])
+          expect(association.inverses).to eq([:belonging_objects])
         end
       end
 
@@ -1335,7 +1335,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :belonging_objects ])
+          expect(association.inverses).to eq([:belonging_objects])
         end
       end
     end

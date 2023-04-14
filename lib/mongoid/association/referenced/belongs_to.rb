@@ -30,7 +30,7 @@ module Mongoid
           :touch,
           :optional,
           :required,
-          :scope,
+          :scope
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -53,7 +53,7 @@ module Mongoid
         #
         # @return [ Array<Mongoid::Association::Relatable> ] The association complements.
         def relation_complements
-          @relation_complements ||= [ HasMany, HasOne ].freeze
+          @relation_complements ||= [HasMany, HasOne].freeze
         end
 
         # Setup the instance methods, fields, etc. on the association owning class.
@@ -200,6 +200,7 @@ module Mongoid
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
+
           matches.collect { |m| m.name }
         end
 

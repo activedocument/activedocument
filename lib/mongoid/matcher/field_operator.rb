@@ -26,7 +26,7 @@ module Mongoid
         '$not' => Not,
         '$regex' => Regex,
         '$size' => Size,
-        '$type' => Type,
+        '$type' => Type
       }.freeze
 
       # Returns the matcher module for a given operator.

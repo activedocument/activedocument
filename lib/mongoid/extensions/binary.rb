@@ -29,6 +29,7 @@ module Mongoid
         # @return [ BSON::Binary | nil ] A Binary representing the object or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when BSON::Binary then object
           when String, Symbol then BSON::Binary.new(object.to_s)

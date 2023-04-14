@@ -119,7 +119,7 @@ module Mongoid
           #
           # @return [ Array ] The multi-dimensional array.
           def multi
-            first.is_a?(::Symbol) || first.is_a?(::String) ? [ self ] : self
+            first.is_a?(::Symbol) || first.is_a?(::String) ? [self] : self
           end
 
           module ClassMethods

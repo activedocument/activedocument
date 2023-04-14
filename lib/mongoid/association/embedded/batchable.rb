@@ -314,6 +314,7 @@ module Mongoid
         def pre_process_batch_insert(docs)
           docs.map do |doc|
             next unless doc
+
             append(doc)
             if persistable? && !_assigning?
               self.path = doc.atomic_path unless path

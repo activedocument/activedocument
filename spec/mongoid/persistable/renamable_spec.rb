@@ -143,7 +143,7 @@ describe Mongoid::Persistable::Renamable do
       it "marks a dirty change for the renamed fields" do
         person.atomically do
           person.rename title: :salutation
-          expect(person.changes).to eq({"title" => ["sir", nil], "salutation" => [nil, "sir"]})
+          expect(person.changes).to eq({ "title" => ["sir", nil], "salutation" => [nil, "sir"] })
         end
       end
     end

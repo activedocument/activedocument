@@ -81,7 +81,7 @@ describe Date do
         end
 
         let(:evolved) do
-          described_class.evolve([ date ])
+          described_class.evolve([date])
         end
 
         let(:expected) do
@@ -89,7 +89,7 @@ describe Date do
         end
 
         it "returns the array with evolved times" do
-          expect(evolved).to eq([ expected ])
+          expect(evolved).to eq([expected])
         end
       end
 
@@ -100,11 +100,11 @@ describe Date do
         end
 
         let(:evolved) do
-          described_class.evolve([ date.to_s ])
+          described_class.evolve([date.to_s])
         end
 
         it "returns the strings as a times" do
-          expect(evolved).to eq([ Time.new(2010, 1, 1, 0, 0, 0, 0).utc ])
+          expect(evolved).to eq([Time.new(2010, 1, 1, 0, 0, 0, 0).utc])
         end
       end
 
@@ -119,7 +119,7 @@ describe Date do
         end
 
         let(:evolved) do
-          described_class.evolve([ integer ])
+          described_class.evolve([integer])
         end
 
         let(:expected) do
@@ -127,7 +127,7 @@ describe Date do
         end
 
         it "returns the integers as times" do
-          expect(evolved).to eq([ time ])
+          expect(evolved).to eq([time])
         end
       end
 
@@ -142,7 +142,7 @@ describe Date do
         end
 
         let(:evolved) do
-          described_class.evolve([ float ])
+          described_class.evolve([float])
         end
 
         let(:expected) do
@@ -150,7 +150,7 @@ describe Date do
         end
 
         it "returns the floats as times" do
-          expect(evolved).to eq([ time ])
+          expect(evolved).to eq([time])
         end
       end
     end

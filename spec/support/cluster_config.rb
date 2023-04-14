@@ -120,6 +120,7 @@ class ClusterConfig
                             if shards['shards'].empty?
                               raise 'Shards are empty'
                             end
+
                             shard = shards['shards'].first
                             address_str = shard['host'].sub(%r{^.*/}, '').sub(/,.*/, '')
                             client = ClusterTools.instance.direct_client(address_str,
@@ -129,7 +130,7 @@ class ClusterConfig
                           rv = rv['storageEngine']['name']
                           rv_map = {
                             'wiredTiger' => :wired_tiger,
-                            'mmapv1' => :mmapv1,
+                            'mmapv1' => :mmapv1
                           }
                           rv_map[rv] || rv
                         end

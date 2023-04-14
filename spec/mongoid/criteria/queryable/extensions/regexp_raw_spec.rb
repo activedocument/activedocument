@@ -45,7 +45,7 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp::RawExt do
         end
 
         let(:array) do
-          [ regexp ]
+          [regexp]
         end
 
         let(:evolved) do
@@ -53,7 +53,7 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp::RawExt do
         end
 
         it "returns the array containing raw regexps" do
-          expect(evolved).to eq([ regexp ])
+          expect(evolved).to eq([regexp])
         end
 
         it "does not evolve in place" do
@@ -68,11 +68,11 @@ describe Mongoid::Criteria::Queryable::Extensions::Regexp::RawExt do
         end
 
         let(:evolved) do
-          BSON::Regexp::Raw.evolve([ regexp_string ])
+          BSON::Regexp::Raw.evolve([regexp_string])
         end
 
         it "returns the regexps" do
-          expect(evolved).to eq([ BSON::Regexp::Raw.new(regexp_string) ])
+          expect(evolved).to eq([BSON::Regexp::Raw.new(regexp_string)])
         end
       end
     end

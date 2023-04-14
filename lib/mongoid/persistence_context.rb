@@ -23,8 +23,8 @@ module Mongoid
     #
     # @return [ Array<Symbol> ] The list of extra options besides client options
     #   that determine the persistence context.
-    EXTRA_OPTIONS = [ :client,
-                      :collection].freeze
+    EXTRA_OPTIONS = [:client,
+                     :collection].freeze
 
     # The full list of valid persistence context options.
     #
@@ -126,6 +126,7 @@ module Mongoid
     # @return [ true | false ] Whether the two persistence contexts are equal.
     def ==(other)
       return false unless other.is_a?(PersistenceContext)
+
       options == other.options
     end
 
@@ -151,12 +152,14 @@ module Mongoid
         unless VALID_OPTIONS.include?(key.to_sym)
           raise Errors::InvalidPersistenceOption.new(key.to_sym, VALID_OPTIONS)
         end
+
         value ? _options.merge!(key => value) : _options
       end
     end
 
     def __evaluate__(name)
       return nil unless name
+
       name.respond_to?(:call) ? name.call.to_sym : name.to_sym
     end
 
@@ -166,7 +169,7 @@ module Mongoid
           Mongo::Client::VALID_OPTIONS.include?(k.to_sym)
         end
         if opts[:read].is_a?(Symbol)
-          opts[:read] = {mode: opts[:read]}
+          opts[:read] = { mode: opts[:read] }
         end
         opts
       end

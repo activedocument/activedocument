@@ -27,7 +27,7 @@ module Mongoid
       :before_save,
       :before_update,
       :before_upsert,
-      :before_validation,
+      :before_validation
     ].freeze
 
     included do
@@ -70,7 +70,7 @@ module Mongoid
     #
     # @return [ true | false ] If the document is in a callback state.
     def in_callback_state?(kind)
-      [ :create, :destroy ].include?(kind) || new_record? || flagged_for_destroy? || changed?
+      [:create, :destroy].include?(kind) || new_record? || flagged_for_destroy? || changed?
     end
 
     # Run only the after callbacks for the specific event.
@@ -125,6 +125,7 @@ module Mongoid
       if skip_if&.call
         return block&.call
       end
+
       if with_children
         cascadable_children(kind).each do |child|
           if child.run_callbacks(child_callback_type(kind, child), with_children: with_children) == false
@@ -225,6 +226,7 @@ module Mongoid
     def cascadable_children(kind, children = Set.new)
       embedded_relations.each_pair do |name, association|
         next unless association.cascading_callbacks?
+
         without_autobuild do
           delayed_pulls = delayed_atomic_pulls[name]
           delayed_unsets = delayed_atomic_unsets[name]
@@ -233,6 +235,7 @@ module Mongoid
           relation = send(name)
           Array.wrap(relation).each do |child|
             next if children.include?(child)
+
             children.add(child) if cascadable_child?(kind, child, association)
             child.send(:cascadable_children, kind, children)
           end
@@ -253,6 +256,7 @@ module Mongoid
     def cascadable_child?(kind, child, association)
       return false if [:initialize, :find, :touch].include?(kind)
       return false if kind == :validate && association.validate?
+
       child.callback_executable?(kind) ? child.in_callback_state?(kind) : false
     end
 

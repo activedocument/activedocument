@@ -10,7 +10,7 @@ module Mongoid
         "sum" => 0,
         "avg" => nil,
         "min" => nil,
-        "max" => nil,
+        "max" => nil
       }.freeze
     end
   end

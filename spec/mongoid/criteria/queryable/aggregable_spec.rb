@@ -33,7 +33,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
 
       it "sets the projection" do
         expect(pipeline).to eq([
-          { "$project" => { "author" => 1, "title" => 0 }}
+          { "$project" => { "author" => 1, "title" => 0 } }
         ])
       end
 
@@ -52,7 +52,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
 
       it "sets the aliased projection" do
         expect(pipeline).to eq([
-          { "$project" => { "_id" => 1, "title" => "$docTitle" }}
+          { "$project" => { "_id" => 1, "title" => "$docTitle" } }
         ])
       end
 
@@ -71,8 +71,8 @@ describe Mongoid::Criteria::Queryable::Aggregable do
 
       it "converts the selection to a $match" do
         expect(pipeline).to eq([
-          { "$match" => { "name" => "test" }},
-          { "$project" => { "author" => 1, "title" => 0 }}
+          { "$match" => { "name" => "test" } },
+          { "$project" => { "author" => 1, "title" => 0 } }
         ])
       end
 
@@ -93,8 +93,8 @@ describe Mongoid::Criteria::Queryable::Aggregable do
 
         it "converts the option to a $sort" do
           expect(pipeline).to eq([
-            { "$sort" => { "name" => 1 }},
-            { "$project" => { "author" => 1, "title" => 0 }}
+            { "$sort" => { "name" => 1 } },
+            { "$project" => { "author" => 1, "title" => 0 } }
           ])
         end
 
@@ -114,7 +114,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
         it "converts the option to a $sort" do
           expect(pipeline).to eq([
             { "$limit" => 10 },
-            { "$project" => { "author" => 1, "title" => 0 }}
+            { "$project" => { "author" => 1, "title" => 0 } }
           ])
         end
 
@@ -134,7 +134,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
         it "converts the option to a $sort" do
           expect(pipeline).to eq([
             { "$skip" => 10 },
-            { "$project" => { "author" => 1, "title" => 0 }}
+            { "$project" => { "author" => 1, "title" => 0 } }
           ])
         end
 
@@ -154,9 +154,9 @@ describe Mongoid::Criteria::Queryable::Aggregable do
 
       it "converts the option to a $sort" do
         expect(pipeline).to eq([
-          { "$match" => { "name" => "test" }},
+          { "$match" => { "name" => "test" } },
           { "$skip" => 10 },
-          { "$project" => { "author" => 1, "title" => 0 }}
+          { "$project" => { "author" => 1, "title" => 0 } }
         ])
       end
 
@@ -178,7 +178,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
 
       it "adds the unwind to the pipeline" do
         expect(pipeline).to eq([
-          { "$project" => { "name" => 1 }},
+          { "$project" => { "name" => 1 } },
           { "$unwind" => "$author" }
         ])
       end
@@ -297,7 +297,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
 
         it "adds the group operation to the pipeline" do
           expect(pipeline).to eq([
-            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" }}}
+            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" } } }
           ])
         end
 
@@ -316,7 +316,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
 
         it "adds the group operation to the pipeline" do
           expect(pipeline).to eq([
-            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" }}}
+            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "likes" } } }
           ])
         end
 
@@ -340,7 +340,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
           pending
           fail
           expect(pipeline).to eq([
-            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "a" }}}
+            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "a" } } }
           ])
         end
 
@@ -361,7 +361,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
           pending
           fail
           expect(pipeline).to eq([
-            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "a" }}}
+            { "$group" => { "count" => { "$sum" => 1 }, "max" => { "$max" => "a" } } }
           ])
         end
 

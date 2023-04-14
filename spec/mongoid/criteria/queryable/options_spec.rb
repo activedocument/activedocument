@@ -7,7 +7,7 @@ describe Mongoid::Criteria::Queryable::Options do
   describe "#__deep_copy__" do
 
     let(:sort) do
-      [[ :name, :asc ]]
+      [[:name, :asc]]
     end
 
     let(:options) do
@@ -131,7 +131,7 @@ describe Mongoid::Criteria::Queryable::Options do
     end
   end
 
-  [ :store, :[]= ].each do |method|
+  [:store, :[]=].each do |method|
 
     describe "##{method}" do
 
@@ -303,7 +303,7 @@ describe Mongoid::Criteria::Queryable::Options do
         expect(pipeline).to eq([
           { "$skip" => 10 },
           { "$limit" => 10 },
-          { "$sort" => { "name" => 1 }}
+          { "$sort" => { "name" => 1 } }
         ])
       end
     end
@@ -320,7 +320,7 @@ describe Mongoid::Criteria::Queryable::Options do
 
       it "converts the option to a $sort" do
         expect(pipeline).to eq([
-          { "$sort" => { "name" => 1 }}
+          { "$sort" => { "name" => 1 } }
         ])
       end
     end

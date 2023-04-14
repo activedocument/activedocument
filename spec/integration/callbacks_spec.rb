@@ -63,7 +63,7 @@ describe 'callbacks integration tests' do
         context 'set as a document instance' do
           let(:instance) do
             Galaxy.create!(stars: [Star.new(
-              planets: [Planet.new],
+              planets: [Planet.new]
             )])
           end
 
@@ -73,7 +73,7 @@ describe 'callbacks integration tests' do
         context 'set as attributes on parent' do
           let(:instance) do
             Galaxy.create!(stars: [
-              planets: [{}],
+              planets: [{}]
             ])
           end
 
@@ -396,7 +396,7 @@ describe 'callbacks integration tests' do
         # Field values are nil before create
         [nil, nil],
         [title, age]
-        ])
+      ])
     end
   end
 
@@ -519,19 +519,19 @@ describe 'callbacks integration tests' do
       expect(subject.saved_change_to_attribute_values_before).to eq(
         {
           :name => [nil, [nil, "Name 1"], nil],
-          :age => [nil, nil, [nil, 18]],
+          :age => [nil, nil, [nil, 18]]
         }
       )
       expect(subject.saved_change_to_attribute_values_after).to eq(
         {
           :name => [[nil, "Name 1"], nil, ["Name 1", "Name 2"]],
-          :age => [nil, [nil, 18], nil],
+          :age => [nil, [nil, 18], nil]
         }
       )
       expect(subject.saved_change_to_attribute_q_values_after).to eq(
         {
           :name => [true, false, true],
-          :age => [false, true, false],
+          :age => [false, true, false]
         }
       )
       expect(subject.attribute_before_last_save_values_before).to eq(

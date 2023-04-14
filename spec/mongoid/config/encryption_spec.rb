@@ -50,13 +50,13 @@ describe Mongoid::Config::Encryption do
                     }
                   }
                 }
-              },
+              }
             }
           }
         end
 
         let(:models) do
-          [ Crypt::Patient ]
+          [Crypt::Patient]
         end
 
         it "returns a map of encryption schemas" do
@@ -65,7 +65,7 @@ describe Mongoid::Config::Encryption do
 
         context "when models are related" do
           let(:models) do
-            [ Crypt::Patient, Crypt::Insurance ]
+            [Crypt::Patient, Crypt::Insurance]
           end
 
           it "returns a map of encryption schemas" do
@@ -75,7 +75,7 @@ describe Mongoid::Config::Encryption do
 
         context 'and fields do not have encryption options' do
           let(:models) do
-            [ Crypt::Car ]
+            [Crypt::Car]
           end
 
           let(:expected_schema_map) do
@@ -128,7 +128,7 @@ describe Mongoid::Config::Encryption do
         end
 
         let(:models) do
-          [ Crypt::User ]
+          [Crypt::User]
         end
 
         it "returns a map of encryption schemas" do
@@ -139,7 +139,7 @@ describe Mongoid::Config::Encryption do
 
     context 'when a model does not have encrypted fields' do
       let(:models) do
-        [ Person ]
+        [Person]
       end
 
       it 'returns an empty map' do

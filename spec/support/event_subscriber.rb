@@ -102,6 +102,7 @@ class EventSubscriber
     if events.length != 1
       raise "Expected a single '#{command_name}' #{kind} event#{database_name ? " for '#{database_name}'" : ''} but we have #{events.length}"
     end
+
     events.first
   end
 
@@ -115,6 +116,7 @@ class EventSubscriber
     if cls.nil?
       raise ArgumentError, "Bogus event name #{name}"
     end
+
     matching = succeeded_events.find do |event|
       cls === event
     end

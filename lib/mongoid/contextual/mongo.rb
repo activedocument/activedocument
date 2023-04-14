@@ -23,17 +23,17 @@ module Mongoid
       include Queryable
 
       # Options constant.
-      OPTIONS = [ :hint,
-                  :limit,
-                  :skip,
-                  :sort,
-                  :batch_size,
-                  :max_time_ms,
-                  :snapshot,
-                  :comment,
-                  :read,
-                  :cursor_type,
-                  :collation].freeze
+      OPTIONS = [:hint,
+                 :limit,
+                 :skip,
+                 :sort,
+                 :batch_size,
+                 :max_time_ms,
+                 :snapshot,
+                 :comment,
+                 :read,
+                 :cursor_type,
+                 :collation].freeze
 
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
@@ -59,6 +59,7 @@ module Mongoid
       # @return [ Integer ] The number of matches.
       def count(options = {}, &block)
         return super(&block) if block_given?
+
         view.count_documents(options)
       end
 
@@ -169,6 +170,7 @@ module Mongoid
       #   Always false if passed nil or false.
       def exists?(id_or_conditions = :none)
         return false if self.view.limit == 0
+
         case id_or_conditions
         when :none then !!(view.projection(_id: 1).limit(1).first)
         when nil, false then false
@@ -791,6 +793,7 @@ module Mongoid
       # @return [ true | false ] If the update succeeded.
       def update_documents(attributes, method = :update_one, opts = {})
         return false unless attributes
+
         attributes = attributes.transform_keys { |k| klass.database_field_name(k.to_s) }
         view.send(method, attributes.__consolidate__(klass), opts)
       end
@@ -840,7 +843,7 @@ module Mongoid
       # @api private
       def inverse_sorting
         sort = view.sort || { _id: 1 }
-        sort.transform_values {|v| -1 * v}
+        sort.transform_values { |v| -1 * v }
       end
 
       # Get the documents the context should iterate.
@@ -861,6 +864,7 @@ module Mongoid
           end
         else
           return view unless eager_loadable?
+
           docs = view.map do |doc|
             Factory.from_db(klass, doc, criteria)
           end

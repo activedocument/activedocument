@@ -36,7 +36,7 @@ describe Mongoid::Validatable do
       end
 
       let(:documents) do
-        Mongoid::Association::Referenced::HasMany::Enumerable.new([ address ])
+        Mongoid::Association::Referenced::HasMany::Enumerable.new([address])
       end
 
       before do
@@ -44,7 +44,7 @@ describe Mongoid::Validatable do
       end
 
       it "returns the value" do
-        expect(value).to eq([ address ])
+        expect(value).to eq([address])
       end
     end
 
@@ -158,7 +158,7 @@ describe Mongoid::Validatable do
 
             it "adds the errors to the document" do
               movie.valid?
-              expect(movie.errors[:ratings]).to eq([ "is invalid" ])
+              expect(movie.errors[:ratings]).to eq(["is invalid"])
             end
           end
 
@@ -204,7 +204,7 @@ describe Mongoid::Validatable do
 
             it "adds the errors to the document" do
               person.valid?
-              expect(person.errors[:services]).to eq([ "is invalid" ])
+              expect(person.errors[:services]).to eq(["is invalid"])
             end
           end
 

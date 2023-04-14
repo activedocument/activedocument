@@ -41,7 +41,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
 
       let(:options) do
         {
-          order: :rating.asc,
+          order: :rating.asc
         }
       end
 
@@ -62,7 +62,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
 
       let(:options) do
         {
-          scope: -> { where(rating: 3) },
+          scope: -> { where(rating: 3) }
         }
       end
 
@@ -107,7 +107,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
     context "when provided a object" do
 
       let(:object) do
-        [ Person.new ]
+        [Person.new]
       end
 
       it "returns the object" do
@@ -120,7 +120,7 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
       context "when the ids are empty" do
 
         let(:object) do
-          [ nil ]
+          [nil]
         end
 
         it "returns an empty array" do

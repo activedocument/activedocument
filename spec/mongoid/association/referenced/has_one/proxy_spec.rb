@@ -1080,7 +1080,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
 
       before do
         Game.collection.find({ _id: game_one.id })
-            .update_one({ "$set" => { name: "Diablo 2" }})
+            .update_one({ "$set" => { name: "Diablo 2" } })
       end
 
       let(:reloaded) do

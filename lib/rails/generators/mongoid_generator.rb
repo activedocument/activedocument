@@ -34,6 +34,7 @@ module Rails
         return "Time" if type == :datetime
         return "String" if type == :text
         return "Mongoid::Boolean" if type == :boolean
+
         type.to_s.camelcase
       end
     end

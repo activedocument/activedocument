@@ -98,7 +98,7 @@ module Mongoid
       #
       # @return [ Array<Symbol> ] The list of inverse names.
       def inverses(other = nil)
-        return [ inverse_of ] if inverse_of
+        return [inverse_of] if inverse_of
         return [] if @options.key?(:inverse_of) && !inverse_of
 
         if polymorphic?
@@ -487,6 +487,7 @@ module Mongoid
           # Raise the first exception, this is from the most specific namespace
           raise exc
         end
+
         cls
       end
     end

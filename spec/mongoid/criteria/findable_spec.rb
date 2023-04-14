@@ -191,7 +191,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -206,7 +206,7 @@ describe Mongoid::Criteria::Findable do
         context "when all ids match" do
 
           let(:found) do
-            Band.find([ band.id, band_two.id ])
+            Band.find([band.id, band_two.id])
           end
 
           it "contains the first match" do
@@ -220,7 +220,7 @@ describe Mongoid::Criteria::Findable do
           context "when ids are duplicates" do
 
             let(:found) do
-              Band.find([ band.id, band.id ])
+              Band.find([band.id, band.id])
             end
 
             it "contains only the first match" do
@@ -235,7 +235,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find([ band.id, BSON::ObjectId.new ])
+              Band.find([band.id, BSON::ObjectId.new])
             end
 
             it "raises an error" do
@@ -249,11 +249,11 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find([ band.id, BSON::ObjectId.new ])
+              Band.find([band.id, BSON::ObjectId.new])
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -358,7 +358,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -373,7 +373,7 @@ describe Mongoid::Criteria::Findable do
         context "when all ids match" do
 
           let(:found) do
-            Band.find([ band.id.as_json, band_two.id.as_json ])
+            Band.find([band.id.as_json, band_two.id.as_json])
           end
 
           it "contains the first match" do
@@ -387,7 +387,7 @@ describe Mongoid::Criteria::Findable do
           context "when ids are duplicates" do
 
             let(:found) do
-              Band.find([ band.id, band.id ])
+              Band.find([band.id, band.id])
             end
 
             it "contains only the first match" do
@@ -402,7 +402,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find([ band.id.as_json, BSON::ObjectId.new.as_json ])
+              Band.find([band.id.as_json, BSON::ObjectId.new.as_json])
             end
 
             it "raises an error" do
@@ -416,11 +416,11 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find([ band.id.as_json, BSON::ObjectId.new.as_json ])
+              Band.find([band.id.as_json, BSON::ObjectId.new.as_json])
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -533,7 +533,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -550,7 +550,7 @@ describe Mongoid::Criteria::Findable do
         context "when all ids match" do
 
           let(:found) do
-            Band.find([ band.id, band_two.id ])
+            Band.find([band.id, band_two.id])
           end
 
           it "contains the first match" do
@@ -568,7 +568,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find([ band.id, "new-order" ])
+              Band.find([band.id, "new-order"])
             end
 
             it "raises an error" do
@@ -582,11 +582,11 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find([ band.id, "new-order" ])
+              Band.find([band.id, "new-order"])
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -605,7 +605,7 @@ describe Mongoid::Criteria::Findable do
 
       let!(:band) do
         Band.create! do |band|
-          band.id = {"new-order" => true, "Depeche Mode" => false}
+          band.id = { "new-order" => true, "Depeche Mode" => false }
         end
       end
 
@@ -628,7 +628,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find({"new-order" => false, "Faith no More" => true})
+              Band.find({ "new-order" => false, "Faith no More" => true })
             end
 
             it "raises an error" do
@@ -642,7 +642,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find({"new-order" => false, "Faith no More" => true})
+              Band.find({ "new-order" => false, "Faith no More" => true })
             end
 
             it "returns nil" do
@@ -656,7 +656,7 @@ describe Mongoid::Criteria::Findable do
 
         let!(:band_two) do
           Band.create! do |band|
-            band.id = {"Radiohead" => false, "Nirvana" => true}
+            band.id = { "Radiohead" => false, "Nirvana" => true }
           end
         end
 
@@ -681,7 +681,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find(band.id, {"Radiohead" => true, "Nirvana" => false})
+              Band.find(band.id, { "Radiohead" => true, "Nirvana" => false })
             end
 
             it "raises an error" do
@@ -695,11 +695,11 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find(band.id, {"Radiohead" => true, "Nirvana" => false})
+              Band.find(band.id, { "Radiohead" => true, "Nirvana" => false })
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -709,14 +709,14 @@ describe Mongoid::Criteria::Findable do
 
         let!(:band_two) do
           Band.create! do |band|
-            band.id = {"Radiohead" => false, "Nirvana" => true}
+            band.id = { "Radiohead" => false, "Nirvana" => true }
           end
         end
 
         context "when all ids match" do
 
           let(:found) do
-            Band.find([ band.id, band_two.id ])
+            Band.find([band.id, band_two.id])
           end
 
           it "contains the first match" do
@@ -734,7 +734,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find([ band.id, {"Radiohead" => true, "Nirvana" => false} ])
+              Band.find([band.id, { "Radiohead" => true, "Nirvana" => false }])
             end
 
             it "raises an error" do
@@ -748,11 +748,11 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find([ band.id, {"Radiohead" => true, "Nirvana" => false} ])
+              Band.find([band.id, { "Radiohead" => true, "Nirvana" => false }])
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -865,7 +865,7 @@ describe Mongoid::Criteria::Findable do
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -882,7 +882,7 @@ describe Mongoid::Criteria::Findable do
         context "when all ids match" do
 
           let(:found) do
-            Band.find([ band.id, band_two.id ])
+            Band.find([band.id, band_two.id])
           end
 
           it "contains the first match" do
@@ -900,7 +900,7 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find([ band.id, 3 ])
+              Band.find([band.id, 3])
             end
 
             it "raises an error" do
@@ -914,11 +914,11 @@ describe Mongoid::Criteria::Findable do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find([ band.id, 3 ])
+              Band.find([band.id, 3])
             end
 
             it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+              expect(found).to eq([band])
             end
           end
         end
@@ -997,7 +997,7 @@ describe Mongoid::Criteria::Findable do
         context "when ids are duplicates" do
 
           let(:found) do
-            Band.find([ band.id.to_s, band.id ])
+            Band.find([band.id.to_s, band.id])
           end
 
           it "contains only the first match" do
@@ -1027,7 +1027,7 @@ describe Mongoid::Criteria::Findable do
 
       it "acts like findable find" do
         docs = Band.find(band1.id, band2.id) { |b| b.name == '2' }
-        expect(docs).to eq([ band1, band2 ])
+        expect(docs).to eq([band1, band2])
       end
     end
 
@@ -1053,7 +1053,7 @@ describe Mongoid::Criteria::Findable do
       end
 
       let(:criteria) do
-        Band.queryable.for_ids([ id ])
+        Band.queryable.for_ids([id])
       end
 
       it "does not turn the selector into an $in" do
@@ -1079,7 +1079,7 @@ describe Mongoid::Criteria::Findable do
       end
 
       let(:from_db) do
-        criteria.multiple_from_db([ band.id ])
+        criteria.multiple_from_db([band.id])
       end
 
       it "returns the document from the database" do
@@ -1094,11 +1094,11 @@ describe Mongoid::Criteria::Findable do
     context "when providing multiple ids" do
 
       let(:criteria) do
-        Band.where(:_id.in => [ band.id, band_two.id ])
+        Band.where(:_id.in => [band.id, band_two.id])
       end
 
       let(:from_db) do
-        criteria.multiple_from_db([ band.id, band_two.id ])
+        criteria.multiple_from_db([band.id, band_two.id])
       end
 
       it "returns the document from the database" do
@@ -1125,7 +1125,7 @@ describe Mongoid::Criteria::Findable do
       let(:criteria) { Mongoid::Criteria.new(Band).where(id: 2) }
 
       it 'adds id' do
-        expect(result.selector).to eq('_id' => 2, '$and' => [{'_id' => 1}])
+        expect(result.selector).to eq('_id' => 2, '$and' => [{ '_id' => 1 }])
       end
     end
   end

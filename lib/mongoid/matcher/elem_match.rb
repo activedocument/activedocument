@@ -21,6 +21,7 @@ module Mongoid
         unless Hash === condition
           raise Errors::InvalidQuery, "$elemMatch requires a Hash operand: #{Errors::InvalidQuery.truncate_expr(condition)}"
         end
+
         if Array === value && !value.empty?
           value.any? do |v|
             ElemMatchExpression.matches?(v, condition)

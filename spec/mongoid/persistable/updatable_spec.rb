@@ -80,11 +80,11 @@ describe Mongoid::Persistable::Updatable do
       end
 
       it "sets the new value in the document" do
-        expect(person.aliases).to eq([ "Bond" ])
+        expect(person.aliases).to eq(["Bond"])
       end
 
       it "persists the changes" do
-        expect(person.reload.aliases).to eq([ "Bond" ])
+        expect(person.reload.aliases).to eq(["Bond"])
       end
     end
 
@@ -616,15 +616,15 @@ describe Mongoid::Persistable::Updatable do
             end
 
             it "sets the instance of the relation" do
-              expect(person.posts).to eq([ post ])
+              expect(person.posts).to eq([post])
             end
 
             it "sets properly through method_missing" do
-              expect(person.posts.to_a).to eq([ post ])
+              expect(person.posts.to_a).to eq([post])
             end
 
             it "persists the reference" do
-              expect(person.posts(true)).to eq([ post ])
+              expect(person.posts(true)).to eq([post])
             end
           end
 
@@ -636,15 +636,15 @@ describe Mongoid::Persistable::Updatable do
             end
 
             it "sets the instance of the relation" do
-              expect(person.posts).to eq([ post ])
+              expect(person.posts).to eq([post])
             end
 
             it "sets properly through method_missing" do
-              expect(person.posts.to_a).to eq([ post ])
+              expect(person.posts.to_a).to eq([post])
             end
 
             it "persists the reference" do
-              expect(person.posts(true)).to eq([ post ])
+              expect(person.posts(true)).to eq([post])
             end
           end
         end

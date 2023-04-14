@@ -52,9 +52,9 @@ module Mongoid
               send(strategy, condition, "$all")
             else
               condition.inject(query) do |_query, (field, value)|
-                v = {'$all' => value}
+                v = { '$all' => value }
                 if negating?
-                  v = {'$not' => v}
+                  v = { '$not' => v }
                 end
                 _query.add_field_expression(field.to_s, v)
               end
@@ -327,9 +327,9 @@ module Mongoid
             send(strategy, condition, "$in")
           else
             condition.inject(clone) do |query, (field, value)|
-              v = {'$in' => value}
+              v = { '$in' => value }
               if negating?
-                v = {'$not' => v}
+                v = { '$not' => v }
               end
               query.add_field_expression(field.to_s, v)
             end.reset_strategies!
@@ -501,9 +501,9 @@ module Mongoid
             send(strategy, condition, "$nin")
           else
             condition.inject(clone) do |query, (field, value)|
-              v = {'$nin' => value}
+              v = { '$nin' => value }
               if negating?
-                v = {'$not' => v}
+                v = { '$not' => v }
               end
               query.add_field_expression(field.to_s, v)
             end.reset_strategies!
@@ -561,17 +561,17 @@ module Mongoid
               _mongoid_expand_keys(new_s).each do |k, v|
                 k = k.to_s
                 if c.selector[k] || k.start_with?('$')
-                  c = c.send(:__multi__, [{'$nor' => [{k => v}]}], '$and')
+                  c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
                 else
                   if v.is_a?(Hash)
-                    c = c.send(:__multi__, [{'$nor' => [{k => v}]}], '$and')
+                    c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
                   else
                     if v.is_a?(Regexp)
                       negated_operator = '$not'
                     else
                       negated_operator = '$ne'
                     end
-                    c = c.send(:__override__, {k => v}, negated_operator)
+                    c = c.send(:__override__, { k => v }, negated_operator)
                   end
                 end
               end
@@ -779,7 +779,7 @@ module Mongoid
           end
 
           clone.tap do |query|
-            criterion = {'$text' => { '$search' => terms }}
+            criterion = { '$text' => { '$search' => terms } }
             criterion['$text'].merge!(opts) if opts
             if query.selector['$text']
               # Per https://www.mongodb.com/docs/manual/reference/operator/query/text/
@@ -788,7 +788,7 @@ module Mongoid
               # overwriting previous text search condition with the currently
               # given one.
               Mongoid.logger.warn('Multiple $text expressions per query are not currently supported by the server')
-              query.selector = {'$and' => [query.selector]}.merge(criterion)
+              query.selector = { '$and' => [query.selector] }.merge(criterion)
             else
               query.selector = query.selector.merge(criterion)
             end
@@ -905,7 +905,7 @@ module Mongoid
           clone.tap do |query|
             if negating?
               query.add_operator_expression('$and',
-                                            [{'$nor' => [{'$where' => criterion}]}])
+                                            [{ '$nor' => [{ '$where' => criterion }] }])
             else
               query.add_operator_expression('$where', criterion)
             end
@@ -944,7 +944,7 @@ module Mongoid
           # @return [ Array<Symbol> ] The names of the forwardable methods.
           def forwardables
             public_instance_methods(false) -
-              [ :negating, :negating=, :negating?, :selector, :selector= ]
+              [:negating, :negating=, :negating?, :selector, :selector=]
           end
         end
       end

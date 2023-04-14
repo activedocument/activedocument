@@ -386,7 +386,7 @@ describe Mongoid::Association::Accessors do
           end
 
           it "reloads the correct documents" do
-            expect(preferences).to eq([ preference ])
+            expect(preferences).to eq([preference])
           end
 
           it "reloads a new instance" do
@@ -401,7 +401,7 @@ describe Mongoid::Association::Accessors do
           end
 
           it "reloads the correct documents" do
-            expect(preferences).to eq([ preference ])
+            expect(preferences).to eq([preference])
           end
 
           it "reloads a new instance" do
@@ -416,7 +416,7 @@ describe Mongoid::Association::Accessors do
           end
 
           it "reloads the correct documents" do
-            expect(preferences).to eq([ preference ])
+            expect(preferences).to eq([preference])
           end
         end
       end
@@ -438,7 +438,7 @@ describe Mongoid::Association::Accessors do
           end
 
           it "reloads the correct documents" do
-            expect(posts).to eq([ post ])
+            expect(posts).to eq([post])
           end
 
           it "reloads a new instance" do
@@ -453,7 +453,7 @@ describe Mongoid::Association::Accessors do
           end
 
           it "reloads the correct documents" do
-            expect(posts).to eq([ post ])
+            expect(posts).to eq([post])
           end
 
           it "reloads a new instance" do
@@ -468,7 +468,7 @@ describe Mongoid::Association::Accessors do
           end
 
           it "reloads the correct documents" do
-            expect(posts).to eq([ post ])
+            expect(posts).to eq([post])
           end
         end
       end
@@ -564,7 +564,7 @@ describe Mongoid::Association::Accessors do
           end
 
           it "returns the correct documents" do
-            expect(ratings).to eq([ movie_rating ])
+            expect(ratings).to eq([movie_rating])
           end
         end
 
@@ -668,7 +668,7 @@ describe Mongoid::Association::Accessors do
 
         let!(:person) do
           Person.create!(phone_numbers: [
-            Phone.new(number: '111-111-1111', landline: true),
+            Phone.new(number: '111-111-1111', landline: true)
           ])
         end
 
@@ -848,7 +848,7 @@ describe Mongoid::Association::Accessors do
         end
 
         before do
-          person.post_ids = [ "" ]
+          person.post_ids = [""]
         end
 
         it "ignore blank values" do
@@ -866,7 +866,7 @@ describe Mongoid::Association::Accessors do
       context "when setting the foreign key" do
 
         before do
-          person.preference_ids = [ "", "" ]
+          person.preference_ids = ["", ""]
         end
 
         it "does not add them" do

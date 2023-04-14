@@ -206,7 +206,7 @@ describe Mongoid::Document do
   describe 'Hash field' do
     context 'with symbol key and value' do
       let(:church) do
-        Church.create!(location: {state: :ny})
+        Church.create!(location: { state: :ny })
       end
 
       let(:found_church) do
@@ -227,7 +227,7 @@ describe Mongoid::Document do
         church
 
         v = Church.collection.find.first
-        expect(v['location']).to eq({'state' => :ny})
+        expect(v['location']).to eq({ 'state' => :ny })
       end
     end
   end

@@ -116,7 +116,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       context "when the document is not bindable" do
 
         before do
-          person.posts = [ post ]
+          person.posts = [post]
         end
 
         it "does nothing" do

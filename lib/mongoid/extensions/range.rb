@@ -49,6 +49,7 @@ module Mongoid
         # @return [ Range | nil ] The range, or nil if object cannot be represented as range.
         def demongoize(object)
           return if object.nil?
+
           if object.is_a?(Hash)
             hash = object.slice('min', 'max', 'exclude_end', :min, :max, :exclude_end)
             unless hash.blank?
@@ -74,6 +75,7 @@ module Mongoid
         # @return [ Hash | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.nil?
+
           case object
           when Hash then __mongoize_hash__(object)
           when Range then __mongoize_range__(object)

@@ -6,8 +6,8 @@ class HabtmmCompany
   field :c_id, type: Integer
   field :e_ids, type: Array
   has_and_belongs_to_many :employees, class_name: 'HabtmmEmployee',
-    primary_key: :e_id, foreign_key: :e_ids,
-    inverse_primary_key: :c_id, inverse_foreign_key: :c_ids
+                                      primary_key: :e_id, foreign_key: :e_ids,
+                                      inverse_primary_key: :c_id, inverse_foreign_key: :c_ids
 end
 
 class HabtmmEmployee
@@ -17,8 +17,8 @@ class HabtmmEmployee
   field :c_ids, type: Array
   field :habtmm_company_ids, type: Array
   has_and_belongs_to_many :companies, class_name: 'HabtmmCompany',
-    primary_key: :c_id, foreign_key: :c_ids,
-    inverse_primary_key: :e_id, inverse_foreign_key: :e_ids
+                                      primary_key: :c_id, foreign_key: :c_ids,
+                                      inverse_primary_key: :e_id, inverse_foreign_key: :e_ids
 end
 
 class HabtmmContract

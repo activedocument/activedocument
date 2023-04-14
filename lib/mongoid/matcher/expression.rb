@@ -22,12 +22,14 @@ module Mongoid
         unless Hash === expr
           raise Errors::InvalidQuery, "MQL query must be provided as a Hash"
         end
+
         expr.all? do |k, expr_v|
           k = k.to_s
           if k == "$comment"
             # Nothing
             return true
           end
+
           if k.start_with?('$')
             ExpressionOperator.get(k).matches?(document, expr_v)
           else

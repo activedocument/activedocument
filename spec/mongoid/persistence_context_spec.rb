@@ -136,7 +136,7 @@ describe Mongoid::PersistenceContext do
 
     context 'with reusable client' do
       let(:options) do
-        {client: :some_client}
+        { client: :some_client }
       end
 
       let(:cluster) do
@@ -309,7 +309,7 @@ describe Mongoid::PersistenceContext do
       context 'when there are no options passed to the Persistence Context' do
 
         let(:options) do
-          { }
+          {}
         end
 
         after do
@@ -403,7 +403,7 @@ describe Mongoid::PersistenceContext do
       context 'when there are no options passed to the Persistence Context' do
 
         let(:options) do
-          { }
+          {}
         end
 
         after do
@@ -531,7 +531,7 @@ describe Mongoid::PersistenceContext do
     end
 
     let(:options) do
-      { }
+      {}
     end
 
     before do
@@ -597,7 +597,7 @@ describe Mongoid::PersistenceContext do
     context 'when there is no client option set' do
 
       let(:options) do
-        { }
+        {}
       end
 
       context 'when there is a client override' do

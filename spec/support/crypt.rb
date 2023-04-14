@@ -18,7 +18,7 @@ module Mongoid
       let(:extra_options) do
         {
           mongocryptd_spawn_args: ["--port=#{mongocryptd_port}"],
-          mongocryptd_uri: "mongodb://localhost:#{mongocryptd_port}",
+          mongocryptd_uri: "mongodb://localhost:#{mongocryptd_port}"
         }
       end
 

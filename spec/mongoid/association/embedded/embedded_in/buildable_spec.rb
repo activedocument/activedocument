@@ -11,7 +11,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Buildable do
     end
 
     let(:options) do
-      { }
+      {}
     end
 
     let(:association) do

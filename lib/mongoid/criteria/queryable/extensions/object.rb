@@ -17,7 +17,7 @@ module Mongoid
           #
           # @return [ Object ] The result of the add.
           def __add__(object)
-            (object == self) ? self : [ self, object ].flatten.uniq
+            (object == self) ? self : [self, object].flatten.uniq
           end
 
           # Merge this object into the provided array.
@@ -108,7 +108,7 @@ module Mongoid
           #
           # @return [ Array ] The wrapped object.
           def __array__
-            [ self ]
+            [self]
           end
 
           # Get the object as expanded.
@@ -161,6 +161,7 @@ module Mongoid
             # @return [ Object ] The evolved object.
             def __evolve__(object)
               return nil if object.nil?
+
               case object
               when ::Array
                 object.map { |obj| evolve(obj) }

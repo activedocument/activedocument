@@ -21,6 +21,7 @@ module Mongoid
           attrs = sanitize_for_mass_assignment(attrs)
           attrs.each_pair do |key, value|
             next if pending_attribute?(key, value)
+
             process_attribute(key, value)
           end
         end
@@ -95,6 +96,7 @@ module Mongoid
         end
         responds = respond_to?("#{name}=", true)
         raise Errors::UnknownAttribute.new(self.class, name) unless responds
+
         send("#{name}=", value)
       end
 

@@ -134,7 +134,7 @@ class Architect
   include Mongoid::Document
 
   has_and_belongs_to_many :buildings, after_add: :after_add_callback,
-    after_remove: :after_remove_callback, dependent: :nullify
+                                      after_remove: :after_remove_callback, dependent: :nullify
 
   field :after_add_num_buildings, type: Integer
   field :after_remove_num_buildings, type: Integer

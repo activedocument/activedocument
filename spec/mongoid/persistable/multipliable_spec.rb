@@ -181,7 +181,7 @@ describe Mongoid::Persistable::Multipliable do
       it "marks a dirty change for the multiplied fields" do
         person.atomically do
           person.mul age: 15, score: 2
-          expect(person.changes).to eq({"age" => [10, 150], "score" => [100, 200]})
+          expect(person.changes).to eq({ "age" => [10, 150], "score" => [100, 200] })
         end
       end
     end

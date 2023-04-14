@@ -52,6 +52,7 @@ module Mongoid
         # @return [ Time | nil ] The object as a time.
         def demongoize(object)
           return if object.blank?
+
           time = if object.acts_like?(:time)
                    Mongoid::Config.use_utc? ? object : object.getlocal
                  elsif object.acts_like?(:date)
@@ -82,6 +83,7 @@ module Mongoid
         # @return [ Time | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.blank?
+
           begin
             time = object.__mongoize_time__
           rescue ArgumentError

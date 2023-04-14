@@ -77,13 +77,15 @@ module Mongoid
           if relation_object.is_a?(Hash)
             relation_object.each do |relation, _includes|
               association = _parent_class.reflect_on_association(relation)
-              raise Errors::InvalidIncludes.new(_klass, [ relation ]) unless association
+              raise Errors::InvalidIncludes.new(_klass, [relation]) unless association
+
               add_inclusion(association, parent)
               extract_includes_list(association.klass, association.name, _includes)
             end
           else
             association = _parent_class.reflect_on_association(relation_object)
-            raise Errors::InvalidIncludes.new(_parent_class, [ relation_object ]) unless association
+            raise Errors::InvalidIncludes.new(_parent_class, [relation_object]) unless association
+
             add_inclusion(association, parent)
           end
         end

@@ -84,6 +84,7 @@ module Mongoid
           # @return [ Mongoid::Document ] The document.
           def normalize(replacement)
             return replacement if replacement.is_a?(Document)
+
             _association.build(klass, replacement)
           end
 

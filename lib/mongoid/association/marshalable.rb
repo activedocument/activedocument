@@ -14,7 +14,7 @@ module Mongoid
       #
       # @return [ Array<Object> ] The dumped data.
       def marshal_dump
-        [ _base, _target, _association ]
+        [_base, _target, _association]
       end
 
       # Takes the provided data and sets it back on the proxy.

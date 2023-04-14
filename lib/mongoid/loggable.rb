@@ -16,6 +16,7 @@ module Mongoid
     # @return [ Logger ] The logger.
     def logger
       return @logger if defined?(@logger)
+
       @logger = rails_logger || default_logger
     end
 

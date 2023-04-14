@@ -16,7 +16,7 @@ describe BSON::Binary do
   end
 
 
-  [ :mongoize, :demongoize].each do |method|
+  [:mongoize, :demongoize].each do |method|
     describe ".#{method}" do
 
       let(:binary) do

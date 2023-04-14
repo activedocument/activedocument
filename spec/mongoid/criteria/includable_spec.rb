@@ -23,7 +23,7 @@ describe Mongoid::Criteria::Includable do
     context "when providing one association" do
 
       let!(:user) do
-        User.create!(posts: [ post1 ])
+        User.create!(posts: [post1])
       end
 
       let!(:post1) do
@@ -39,14 +39,14 @@ describe Mongoid::Criteria::Includable do
       end
 
       it "includes the related objects" do
-        expect(result.posts).to eq([ post1 ])
+        expect(result.posts).to eq([post1])
       end
     end
 
     context "when providing a list of associations" do
 
       let!(:user) do
-        User.create!(posts: [ post1 ], descriptions: [ description1 ])
+        User.create!(posts: [post1], descriptions: [description1])
       end
 
       let!(:post1) do
@@ -66,8 +66,8 @@ describe Mongoid::Criteria::Includable do
       end
 
       it "includes the related objects" do
-        expect(result.posts).to eq([ post1 ])
-        expect(result.descriptions).to eq([ description1 ])
+        expect(result.posts).to eq([post1])
+        expect(result.descriptions).to eq([description1])
       end
     end
 
@@ -78,8 +78,8 @@ describe Mongoid::Criteria::Includable do
       end
 
       before do
-        p = Post.create!(alerts: [ Alert.create! ])
-        user.posts = [ p ]
+        p = Post.create!(alerts: [Alert.create!])
+        user.posts = [p]
         user.save!
       end
 
@@ -323,7 +323,7 @@ describe Mongoid::Criteria::Includable do
       end
 
       it "does not duplicate the association in the inclusions" do
-        expect(criteria.inclusions).to eq([ association ])
+        expect(criteria.inclusions).to eq([association])
       end
     end
 
@@ -512,7 +512,7 @@ describe Mongoid::Criteria::Includable do
           end
 
           it "returns the documents" do
-            expect(documents).to eq([ address_one, address_two ])
+            expect(documents).to eq([address_one, address_two])
           end
         end
       end
@@ -547,7 +547,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
 
         it "eager loads the first document" do
@@ -667,7 +667,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(criteria).to eq([ person ])
+          expect(criteria).to eq([person])
         end
 
         it "eager loads the first document" do
@@ -697,7 +697,7 @@ describe Mongoid::Criteria::Includable do
       context "when one of the related items is deleted" do
 
         before do
-          person.preferences = [ preference_one, preference_two ]
+          person.preferences = [preference_one, preference_two]
           preference_two.delete
         end
 
@@ -706,7 +706,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "only loads the existing related items" do
-          expect(criteria.entries.first.preferences).to eq([ preference_one ])
+          expect(criteria.entries.first.preferences).to eq([preference_one])
         end
       end
 
@@ -721,7 +721,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
 
         it "eager loads the first document" do
@@ -813,7 +813,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
 
         it "eager loads the first document" do
@@ -850,7 +850,7 @@ describe Mongoid::Criteria::Includable do
           end
 
           it "returns the correct documents" do
-            expect(documents).to eq([ person ])
+            expect(documents).to eq([person])
           end
         end
       end
@@ -876,7 +876,7 @@ describe Mongoid::Criteria::Includable do
           end
 
           it "returns the correct documents" do
-            expect(documents).to eq([ person ])
+            expect(documents).to eq([person])
           end
         end
       end
@@ -900,7 +900,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
@@ -908,7 +908,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
       end
     end
@@ -934,7 +934,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
@@ -942,7 +942,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
       end
 
@@ -965,7 +965,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
@@ -973,7 +973,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+          expect(documents).to eq([person])
         end
       end
     end
@@ -1011,7 +1011,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(criteria).to eq([ game_one, game_two ])
+          expect(criteria).to eq([game_one, game_two])
         end
       end
 
@@ -1026,7 +1026,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ game_one ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([game_one]).once.and_call_original
         end
 
         let!(:documents) do
@@ -1034,7 +1034,7 @@ describe Mongoid::Criteria::Includable do
         end
 
         it "returns the correct documents" do
-          expect(documents).to eq([ game_one ])
+          expect(documents).to eq([game_one])
         end
       end
     end
@@ -1074,7 +1074,7 @@ describe Mongoid::Criteria::Includable do
       end
 
       it "returns the correct documents" do
-        expect(criteria).to eq([ person ])
+        expect(criteria).to eq([person])
       end
     end
 
@@ -1290,7 +1290,7 @@ describe Mongoid::Criteria::Includable do
       end
 
       let!(:posts) do
-        [ IncPost.create!(comments: post_comments) ]
+        [IncPost.create!(comments: post_comments)]
       end
 
       let!(:user_comments) do
@@ -1374,7 +1374,7 @@ describe Mongoid::Criteria::Includable do
     end
 
     it "returns the inclusions" do
-      expect(criteria.inclusions).to eq([ association ])
+      expect(criteria.inclusions).to eq([association])
     end
   end
 
@@ -1389,11 +1389,11 @@ describe Mongoid::Criteria::Includable do
     end
 
     before do
-      criteria.inclusions = [ association ]
+      criteria.inclusions = [association]
     end
 
     it "sets the inclusions" do
-      expect(criteria.inclusions).to eq([ association ])
+      expect(criteria.inclusions).to eq([association])
     end
   end
 
@@ -1403,7 +1403,7 @@ describe Mongoid::Criteria::Includable do
         posts: [
           IncBlogPost.create(author: IncAuthor.create),
           IncBlogPost.create(author: IncAuthor.create),
-          IncBlogPost.create(author: IncAuthor.create),
+          IncBlogPost.create(author: IncAuthor.create)
         ],
         highlighted_post: IncBlogPost.create(author: IncAuthor.create)
       )
@@ -1435,7 +1435,7 @@ describe Mongoid::Criteria::Includable do
         posts: [
           IncBlogPost.create(author: IncAuthor.create),
           IncBlogPost.create(author: IncAuthor.create),
-          IncBlogPost.create(author: IncAuthor.create),
+          IncBlogPost.create(author: IncAuthor.create)
         ],
         highlighted_post: IncBlogPost.create(author: IncAuthor.create),
         pinned_post: IncBlogPost.create(author: IncAuthor.create)
@@ -1468,7 +1468,7 @@ describe Mongoid::Criteria::Includable do
 
       before do
         p = IncPerson.create!(name: "name")
-        4.times { IncPost.create!(person: p)}
+        4.times { IncPost.create!(person: p) }
         criteria
         expect_query(2, skip_if_sharded: true) do
           criteria.each(&:person)

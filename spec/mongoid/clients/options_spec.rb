@@ -88,7 +88,7 @@ describe Mongoid::Clients::Options, retry: 3 do
             connections = Minim.mongo_client.database.command(serverStatus: 1).first['connections']['current']
             cluster = Minim.collection.cluster
           end
-          [ connections, cluster ]
+          [connections, cluster]
         end
 
         let(:connections_during) do
@@ -208,7 +208,7 @@ describe Mongoid::Clients::Options, retry: 3 do
               collection = klass.all.collection
               klass.persistence_context
             end
-            [ cxt, collection ]
+            [cxt, collection]
           end
 
           let(:persistence_context) do
@@ -225,13 +225,13 @@ describe Mongoid::Clients::Options, retry: 3 do
         end
 
         context 'read: :secondary shorthand' do
-          let(:read_secondary_option) { {read: :secondary} }
+          let(:read_secondary_option) { { read: :secondary } }
 
           it_behaves_like 'applies secondary read preference'
         end
 
         context 'read: {mode: :secondary}' do
-          let(:read_secondary_option) { {read: {mode: :secondary}} }
+          let(:read_secondary_option) { { read: { mode: :secondary } } }
 
           it_behaves_like 'applies secondary read preference'
         end
@@ -354,8 +354,8 @@ describe Mongoid::Clients::Options, retry: 3 do
             analytics: {
               uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db",
               options: {
-                server_selection_timeout: 0.5,
-              },
+                server_selection_timeout: 0.5
+              }
             }
           }
         end
@@ -389,7 +389,7 @@ describe Mongoid::Clients::Options, retry: 3 do
             connections = test_model.mongo_client.database.command(serverStatus: 1).first['connections']['current']
             b.persistence_context.cluster
           end
-          [ connections, cluster ]
+          [connections, cluster]
         end
 
         let(:connections_during) do

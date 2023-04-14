@@ -34,7 +34,7 @@ describe Mongoid::Errors::DocumentNotFound do
     context "when providing ids" do
 
       let(:error) do
-        described_class.new(Person, [ 1, 2, 3 ], [ 1 ])
+        described_class.new(Person, [1, 2, 3], [1])
       end
 
       it "contains the problem in the message" do

@@ -23,6 +23,7 @@ module Mongoid
         visited = Set.new
         models.each_with_object({}) do |model, map|
           next if visited.include?(model)
+
           visited << model
           next if model.embedded?
           next unless model.encrypted?
@@ -145,6 +146,7 @@ module Mongoid
       def properties_for_relations(model, visited)
         model.relations.each_with_object({}) do |(name, relation), props|
           next if visited.include?(relation.relation_class)
+
           visited << relation.relation_class
           next unless relation.is_a?(Association::Embedded::EmbedsMany) ||
                       relation.is_a?(Association::Embedded::EmbedsOne)
@@ -196,7 +198,7 @@ module Mongoid
       def key_id_for(key_id_base64)
         return nil if key_id_base64.nil?
 
-        [ BSON::Binary.new(Base64.decode64(key_id_base64), :uuid) ]
+        [BSON::Binary.new(Base64.decode64(key_id_base64), :uuid)]
       end
     end
   end

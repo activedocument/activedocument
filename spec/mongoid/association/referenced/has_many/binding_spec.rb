@@ -13,7 +13,7 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
   end
 
   let(:target) do
-    Mongoid::Association::Referenced::HasMany::Enumerable.new([ post ])
+    Mongoid::Association::Referenced::HasMany::Enumerable.new([post])
   end
 
   let(:association) do

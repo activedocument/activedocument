@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe Mongoid::Contextual::Mongo do
 
-  [ :blank?, :empty? ].each do |method|
+  [:blank?, :empty?].each do |method|
 
     describe "##{method}" do
 
@@ -253,7 +253,7 @@ describe Mongoid::Contextual::Mongo do
 
 
 
-  [ :delete, :delete_all ].each do |method|
+  [:delete, :delete_all].each do |method|
 
     describe "##{method}" do
 
@@ -357,7 +357,7 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [ :destroy, :destroy_all ].each do |method|
+  [:destroy, :destroy_all].each do |method|
 
     describe "##{method}" do
 
@@ -484,7 +484,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the distinct matching fields" do
-        expect(context.distinct(:name)).to eq([ "Depeche Mode" ])
+        expect(context.distinct(:name)).to eq(["Depeche Mode"])
       end
     end
 
@@ -499,7 +499,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the distinct field values" do
-        expect(context.distinct(:name).sort).to eq([ "10,000 Maniacs", "Depeche Mode", "New Order" ].sort)
+        expect(context.distinct(:name).sort).to eq(["10,000 Maniacs", "Depeche Mode", "New Order"].sort)
       end
     end
 
@@ -514,7 +514,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the distinct field values" do
-        expect(context.distinct(:years).sort).to eq([ 20, 25, 30 ])
+        expect(context.distinct(:years).sort).to eq([20, 25, 30])
       end
     end
 
@@ -550,7 +550,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the non-demongoized distinct field values" do
-        expect(context.distinct(:sales).sort).to eq([ BigDecimal("1E2"), BigDecimal("2E3") ])
+        expect(context.distinct(:sales).sort).to eq([BigDecimal("1E2"), BigDecimal("2E3")])
       end
     end
 
@@ -575,13 +575,13 @@ describe Mongoid::Contextual::Mongo do
 
       context "when getting the field without _translations" do
         it "gets the demongoized localized field" do
-          expect(context.distinct(:description)).to eq([ 'deutsch-text' ])
+          expect(context.distinct(:description)).to eq(['deutsch-text'])
         end
       end
 
       context "when getting the field with _translations" do
         it "gets the full hash" do
-          expect(context.distinct(:description_translations)).to eq([ { "de" => "deutsch-text", "en" => "english-text" } ])
+          expect(context.distinct(:description_translations)).to eq([{ "de" => "deutsch-text", "en" => "english-text" }])
         end
       end
 
@@ -592,7 +592,7 @@ describe Mongoid::Contextual::Mongo do
         end
 
         it 'returns the specific translation' do
-          expect(distinct).to eq([ "deutsch-text" ])
+          expect(distinct).to eq(["deutsch-text"])
         end
       end
 
@@ -612,7 +612,7 @@ describe Mongoid::Contextual::Mongo do
         with_default_i18n_configs
 
         before do
-          I18n.fallbacks[:he] = [ :en ]
+          I18n.fallbacks[:he] = [:en]
         end
 
         let(:distinct) do
@@ -682,19 +682,19 @@ describe Mongoid::Contextual::Mongo do
       let(:context) { described_class.new(criteria) }
 
       it "returns the distinct matching fields" do
-        expect(context.distinct("label.sales")).to eq([ BigDecimal("1E2") ])
+        expect(context.distinct("label.sales")).to eq([BigDecimal("1E2")])
       end
     end
   end
 
   describe "#tally" do
-    let(:fans1) { [ Fanatic.new(age: 1), Fanatic.new(age: 2) ] }
-    let(:fans2) { [ Fanatic.new(age: 1), Fanatic.new(age: 2) ] }
-    let(:fans3) { [ Fanatic.new(age: 1), Fanatic.new(age: 3) ] }
+    let(:fans1) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
+    let(:fans2) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
+    let(:fans3) { [Fanatic.new(age: 1), Fanatic.new(age: 3)] }
 
-    let(:genres1) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 3 } ]}
-    let(:genres2) { [ { x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 4 } ]}
-    let(:genres3) { [ { x: 1, y: { z: 1 } }, { x: 3, y: { z: 3 } }, { y: 5 } ]}
+    let(:genres1) { [{ x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 3 }] }
+    let(:genres2) { [{ x: 1, y: { z: 1 } }, { x: 2, y: { z: 2 } }, { y: 4 }] }
+    let(:genres3) { [{ x: 1, y: { z: 1 } }, { x: 3, y: { z: 3 } }, { y: 5 }] }
 
     let(:label1) {  Label.new(name: "Atlantic") }
     let(:label2) {  Label.new(name: "Atlantic") }
@@ -792,9 +792,9 @@ describe Mongoid::Contextual::Mongo do
 
           it "returns the correct hash" do
             expect(tallied).to eq(
-              {"de" => "de1", "en" => "en1" } => 2,
-              {"de" => "de2", "en" => "en1" } => 1,
-              {"de" => "de3", "en" => "en2" } => 1
+              { "de" => "de1", "en" => "en1" } => 2,
+              { "de" => "de2", "en" => "en1" } => 1,
+              { "de" => "de3", "en" => "en2" } => 1
             )
           end
         end
@@ -886,8 +886,8 @@ describe Mongoid::Contextual::Mongo do
         address1b.name = "de2"
         address2a.name = "de1"
         address2b.name = "de3"
-        Person.create!(addresses: [ address1a, address1b ])
-        Person.create!(addresses: [ address2a, address2b ])
+        Person.create!(addresses: [address1a, address1b])
+        Person.create!(addresses: [address2a, address2b])
         I18n.locale = :en
       end
 
@@ -899,7 +899,7 @@ describe Mongoid::Contextual::Mongo do
         it "returns the translation for the current locale" do
           expect(tallied).to eq(
             %w[en1 en2] => 1,
-            %w[en1 en3] => 1,
+            %w[en1 en3] => 1
           )
         end
 
@@ -922,7 +922,7 @@ describe Mongoid::Contextual::Mongo do
         it "returns the translation for the the specific locale" do
           expect(tallied).to eq(
             %w[de1 de2] => 1,
-            %w[de1 de3] => 1,
+            %w[de1 de3] => 1
           )
         end
 
@@ -945,7 +945,7 @@ describe Mongoid::Contextual::Mongo do
         it "returns the correct hash" do
           expect(tallied).to eq(
             [{ "de" => "de1", "en" => "en1" }, { "de" => "de2", "en" => "en2" }] => 1,
-            [{ "de" => "de1", "en" => "en1" }, { "de" => "de3", "en" => "en3" }] => 1,
+            [{ "de" => "de1", "en" => "en1" }, { "de" => "de3", "en" => "en3" }] => 1
           )
         end
 
@@ -1061,7 +1061,7 @@ describe Mongoid::Contextual::Mongo do
     context "when tallying an element from an array of hashes; with duplicate" do
 
       before do
-        Band.create!(origin: "tally", genres: [ { x: 1 }, {x: 1} ])
+        Band.create!(origin: "tally", genres: [{ x: 1 }, { x: 1 }])
       end
 
       let(:criteria) { Band.where(origin: "tally") }
@@ -1074,7 +1074,7 @@ describe Mongoid::Contextual::Mongo do
         expect(tally).to eq(
           [1, 2] => 2,
           [1, 3] => 1,
-          [1, 1] => 1,
+          [1, 1] => 1
         )
       end
 
@@ -1092,8 +1092,8 @@ describe Mongoid::Contextual::Mongo do
     context "when tallying an aliased field of type array" do
 
       before do
-        Person.create!(array: [ 1, 2 ])
-        Person.create!(array: [ 1, 3 ])
+        Person.create!(array: [1, 2])
+        Person.create!(array: [1, 3])
       end
 
       let(:tally) do
@@ -1145,9 +1145,9 @@ describe Mongoid::Contextual::Mongo do
 
     context "when tallying deeply nested arrays/embedded associations" do
       before do
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }])))])
       end
 
       let(:tally) do
@@ -1155,16 +1155,16 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "returns the correct hash" do
-        expect(tally).to eq([ [ 1, 2 ] ] => 2,
-                            [ [ 1, 3 ] ] => 1)
+        expect(tally).to eq([[1, 2]] => 2,
+                            [[1, 3]] => 1)
       end
 
       context "when :unwind true" do
         let(:unwind) { true }
 
         it "returns the correct hash without the nil keys" do
-          expect(tally).to eq([ 1, 2 ] => 2,
-                              [ 1, 3 ] => 1)
+          expect(tally).to eq([1, 2] => 2,
+                              [1, 3] => 1)
         end
       end
     end
@@ -1172,12 +1172,12 @@ describe Mongoid::Contextual::Mongo do
     context "when tallying deeply nested arrays/embedded associations" do
 
       before do
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 2 } } ]))) ])
-        Person.create!(addresses: [ Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))),
-                                    Address.new(code: Code.new(deepest: Deepest.new(array: [ { y: { z: 1 } }, { y: { z: 3 } } ]))) ])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }]))),
+                                   Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }]))),
+                                   Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
+        Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }]))),
+                                   Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 3 } }])))])
       end
 
       let(:tally) do
@@ -1186,8 +1186,8 @@ describe Mongoid::Contextual::Mongo do
 
       it "returns the correct hash" do
         expect(tally).to eq(
-          [ [ 1, 2 ], [ 1, 2 ] ] => 2,
-          [ [ 1, 3 ], [ 1, 3 ] ] => 1
+          [[1, 2], [1, 2]] => 2,
+          [[1, 3], [1, 3]] => 1
         )
       end
 
@@ -1195,17 +1195,17 @@ describe Mongoid::Contextual::Mongo do
         let(:unwind) { true }
 
         it "returns the correct hash without the nil keys" do
-          expect(tally).to eq([ 1, 2 ] => 4,
-                              [ 1, 3 ] => 2)
+          expect(tally).to eq([1, 2] => 4,
+                              [1, 3] => 2)
         end
       end
     end
 
     context "when the first element is an embeds_one" do
       before do
-        Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 2) ]))
-        Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 2) ]))
-        Person.create!(name: Name.new(translations: [ Translation.new(language: 1), Translation.new(language: 3) ]))
+        Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 2)]))
+        Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 2)]))
+        Person.create!(name: Name.new(translations: [Translation.new(language: 1), Translation.new(language: 3)]))
       end
 
       let(:tally) do
@@ -1833,7 +1833,7 @@ describe Mongoid::Contextual::Mongo do
         end
 
         let!(:result) do
-          context.find_one_and_update({ "$inc" => { likes: 1 }}, return_document: :after)
+          context.find_one_and_update({ "$inc" => { likes: 1 } }, return_document: :after)
         end
 
         it "returns the first matching document" do
@@ -1856,7 +1856,7 @@ describe Mongoid::Contextual::Mongo do
         end
 
         let!(:result) do
-          context.find_one_and_update({ "$inc" => { likes: 1 }}, return_document: :after)
+          context.find_one_and_update({ "$inc" => { likes: 1 } }, return_document: :after)
         end
 
         it "returns the first matching document" do
@@ -1965,7 +1965,7 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [ :first, :one ].each do |method|
+  [:first, :one].each do |method|
 
     describe "##{method}" do
 
@@ -2149,7 +2149,7 @@ describe Mongoid::Contextual::Mongo do
             end
 
             it "returns an array of documents" do
-              expect(docs).to eq([ depeche_mode ])
+              expect(docs).to eq([depeche_mode])
             end
           end
 
@@ -2163,7 +2163,7 @@ describe Mongoid::Contextual::Mongo do
             end
 
             it "returns the number of documents in order" do
-              expect(docs).to eq([ depeche_mode, new_order ])
+              expect(docs).to eq([depeche_mode, new_order])
             end
           end
 
@@ -2174,7 +2174,7 @@ describe Mongoid::Contextual::Mongo do
             end
 
             it "returns the first matching document" do
-              expect(context.send(method, 1)).to eq([ depeche_mode ])
+              expect(context.send(method, 1)).to eq([depeche_mode])
             end
           end
         end
@@ -2212,7 +2212,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns all documents without touching the database" do
                   expect_no_queries do
-                    expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                    expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                   end
                 end
               end
@@ -2222,7 +2222,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents without touching the database" do
                   expect_no_queries do
-                    expect(docs).to eq([ depeche_mode, new_order ])
+                    expect(docs).to eq([depeche_mode, new_order])
                   end
                 end
               end
@@ -2236,7 +2236,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents without touching the database" do
                   expect_no_queries do
-                    expect(docs).to eq([ depeche_mode, new_order ])
+                    expect(docs).to eq([depeche_mode, new_order])
                   end
                 end
               end
@@ -2246,7 +2246,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents and touches the database" do
                   expect_query(1) do
-                    expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                    expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                   end
                 end
               end
@@ -2260,7 +2260,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents without touching the database" do
                   expect_no_queries do
-                    expect(docs).to eq([ depeche_mode ])
+                    expect(docs).to eq([depeche_mode])
                   end
                 end
               end
@@ -2270,7 +2270,7 @@ describe Mongoid::Contextual::Mongo do
 
                 it "returns the correct documents and touches the database" do
                   expect_query(1) do
-                    expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                    expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                   end
                 end
               end
@@ -2493,7 +2493,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "returns an array of documents" do
-            expect(docs).to eq([ rolling_stones ])
+            expect(docs).to eq([rolling_stones])
           end
         end
 
@@ -2507,7 +2507,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "returns the number of documents in order" do
-            expect(docs).to eq([ new_order, rolling_stones ])
+            expect(docs).to eq([new_order, rolling_stones])
           end
         end
 
@@ -2518,7 +2518,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "returns the first matching document" do
-            expect(context.last(1)).to eq([ depeche_mode ])
+            expect(context.last(1)).to eq([depeche_mode])
           end
         end
       end
@@ -2556,7 +2556,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns all documents without touching the db" do
                 expect_no_queries do
-                  expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                  expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                 end
               end
             end
@@ -2566,7 +2566,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents without touching the db" do
                 expect_no_queries do
-                  expect(docs).to eq([ new_order, rolling_stones ])
+                  expect(docs).to eq([new_order, rolling_stones])
                 end
               end
             end
@@ -2580,7 +2580,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents without touching the db" do
                 expect_no_queries do
-                  expect(docs).to eq([ new_order, rolling_stones ])
+                  expect(docs).to eq([new_order, rolling_stones])
                 end
               end
             end
@@ -2590,7 +2590,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents and touches the database" do
                 expect_query(1) do
-                  expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                  expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                 end
               end
             end
@@ -2604,7 +2604,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents without touching the database" do
                 expect_no_queries do
-                  expect(docs).to eq([ rolling_stones ])
+                  expect(docs).to eq([rolling_stones])
                 end
               end
             end
@@ -2614,7 +2614,7 @@ describe Mongoid::Contextual::Mongo do
 
               it "returns the correct documents and touches the database" do
                 expect_query(1) do
-                  expect(docs).to eq([ depeche_mode, new_order, rolling_stones ])
+                  expect(docs).to eq([depeche_mode, new_order, rolling_stones])
                 end
               end
             end
@@ -2653,7 +2653,7 @@ describe Mongoid::Contextual::Mongo do
         end
 
         it "gets the correct document" do
-          expect(docs).to eq([ depeche_mode ])
+          expect(docs).to eq([depeche_mode])
         end
       end
     end
@@ -2686,7 +2686,7 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [ :length, :size ].each do |method|
+  [:length, :size].each do |method|
 
     describe "##{method}" do
 
@@ -2799,7 +2799,7 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it "limits the results" do
-      expect(context.limit(1).entries).to eq([ depeche_mode ])
+      expect(context.limit(1).entries).to eq([depeche_mode])
     end
   end
 
@@ -2826,11 +2826,11 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it "takes the correct number results" do
-      expect(context.take(2)).to eq([ depeche_mode, new_order ])
+      expect(context.take(2)).to eq([depeche_mode, new_order])
     end
 
     it "returns an array when passing 1" do
-      expect(context.take(1)).to eq([ depeche_mode ])
+      expect(context.take(1)).to eq([depeche_mode])
     end
 
     it "does not return an array when not passing an argument" do
@@ -2838,7 +2838,7 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it "returns all the documents taking more than whats in the db" do
-      expect(context.take(5)).to eq([ depeche_mode, new_order, rolling_stones ])
+      expect(context.take(5)).to eq([depeche_mode, new_order, rolling_stones])
     end
   end
 
@@ -2957,13 +2957,13 @@ describe Mongoid::Contextual::Mongo do
 
       it "returns the first aggregate result" do
         expect(results).to include(
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         )
       end
 
       it "returns the second aggregate result" do
         expect(results).to include(
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         )
       end
 
@@ -2973,8 +2973,8 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         ])
       end
 
@@ -3025,7 +3025,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "includes the aggregate result" do
         expect(results).to include(
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         )
       end
 
@@ -3035,7 +3035,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
 
@@ -3091,13 +3091,13 @@ describe Mongoid::Contextual::Mongo do
 
       it "returns the first aggregate result" do
         expect(results).to include(
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         )
       end
 
       it "returns the second aggregate result" do
         expect(results).to include(
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         )
       end
 
@@ -3107,8 +3107,8 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(ordered_results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }},
-          { "_id" => "Tool", "value" => { "likes" => 100 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } },
+          { "_id" => "Tool", "value" => { "likes" => 100 } }
         ])
       end
     end
@@ -3132,7 +3132,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "returns the first aggregate result" do
         expect(results).to include(
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         )
       end
 
@@ -3142,7 +3142,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire raw results" do
         expect(results["results"]).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
     end
@@ -3167,7 +3167,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
     end
@@ -3192,7 +3192,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
     end
@@ -3217,7 +3217,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
         ])
       end
     end
@@ -3252,8 +3252,8 @@ describe Mongoid::Contextual::Mongo do
 
         it "contains the entire results" do
           expect(results).to eq([
-                                    { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
-                                ])
+            { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
+          ])
         end
 
         it 'writes to the specified db' do
@@ -3273,8 +3273,8 @@ describe Mongoid::Contextual::Mongo do
 
         it "contains the entire results" do
           expect(results).to eq([
-                                    { "_id" => "Depeche Mode", "value" => { "likes" => 200 }}
-                                ])
+            { "_id" => "Depeche Mode", "value" => { "likes" => 200 } }
+          ])
         end
 
         it 'writes to the specified db' do
@@ -3332,7 +3332,7 @@ describe Mongoid::Contextual::Mongo do
 
       it "contains the entire results" do
         expect(results).to eq([
-          { "_id" => "Depeche Mode", "value" => { "likes" => 200, "extra" => true }}
+          { "_id" => "Depeche Mode", "value" => { "likes" => 200, "extra" => true } }
         ])
       end
     end
@@ -3357,7 +3357,7 @@ describe Mongoid::Contextual::Mongo do
     end
 
     it "limits the results" do
-      expect(context.skip(1).entries).to eq([ new_order ])
+      expect(context.skip(1).entries).to eq([new_order])
     end
   end
 
@@ -3382,7 +3382,7 @@ describe Mongoid::Contextual::Mongo do
     context "when providing a spec" do
 
       it "sorts the results" do
-        expect(context.sort(name: -1).entries).to eq([ new_order, depeche_mode ])
+        expect(context.sort(name: -1).entries).to eq([new_order, depeche_mode])
       end
 
       it "returns the context" do
@@ -3399,7 +3399,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "sorts the results in memory" do
-        expect(sorted).to eq([ new_order, depeche_mode ])
+        expect(sorted).to eq([new_order, depeche_mode])
       end
     end
   end
@@ -3438,7 +3438,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it "adds a single element to the array" do
-        expect(person.reload.preference_ids).to eq([ preference.id ])
+        expect(person.reload.preference_ids).to eq([preference.id])
       end
     end
 

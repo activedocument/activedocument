@@ -44,6 +44,7 @@ module Mongoid
 
             @docs.each_with_object({}) do |doc, keys_by_type|
               next unless doc.respond_to?(inverse_type_field) && doc.respond_to?(group_by_key)
+
               inverse_type_name = doc.send(inverse_type_field)
               # If a particular document does not have a value for this
               # association, inverse_type_name will be nil.

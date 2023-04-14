@@ -25,7 +25,7 @@ module Mongoid
           :dependent,
           :foreign_key,
           :primary_key,
-          :scope,
+          :scope
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -43,7 +43,7 @@ module Mongoid
         #
         # @return [ Array<Mongoid::Association::Relatable> ] The association complements.
         def relation_complements
-          @relation_complements ||= [ Referenced::BelongsTo ].freeze
+          @relation_complements ||= [Referenced::BelongsTo].freeze
         end
 
         # Setup the instance methods, fields, etc. on the association owning class.
@@ -163,7 +163,7 @@ module Mongoid
         end
 
         def polymorphic_inverses(other)
-          [ as ]
+          [as]
         end
 
         def determine_inverses(other)
@@ -175,6 +175,7 @@ module Mongoid
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
+
           matches.collect { |m| m.name } unless matches.blank?
         end
 

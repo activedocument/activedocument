@@ -202,7 +202,7 @@ describe Mongoid::Factory do
           end
 
           it "sets the attributes to generated _id only" do
-            expect(document.attributes).to eq({'_id' => document.id})
+            expect(document.attributes).to eq({ '_id' => document.id })
           end
         end
       end
@@ -222,7 +222,7 @@ describe Mongoid::Factory do
         it "sets the attributes to _type only" do
           skip 'https://jira.mongodb.org/browse/MONGOID-5179'
           # Note that Address provides the _id override.
-          expect(document.attributes).to eq({'_type' => 'Address'})
+          expect(document.attributes).to eq({ '_type' => 'Address' })
         end
       end
 
@@ -235,7 +235,7 @@ describe Mongoid::Factory do
 
         it "sets the attributes to empty" do
           # Note that Address provides the _id override.
-          expect(document.attributes).to eq({'_type' => 'ShipmentAddress'})
+          expect(document.attributes).to eq({ '_type' => 'ShipmentAddress' })
         end
       end
     end

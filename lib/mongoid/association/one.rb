@@ -24,7 +24,7 @@ module Mongoid
       #
       # @return [ Array<Mongoid::Document> ] The documents in memory.
       def in_memory
-        [ _target ]
+        [_target]
       end
 
       # Since method_missing is overridden we should override this as well.

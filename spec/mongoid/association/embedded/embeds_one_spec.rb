@@ -28,14 +28,14 @@ describe Mongoid::Association::Embedded::EmbedsOne do
   end
 
   let(:options) do
-    { }
+    {}
   end
 
   describe '#relation_complements' do
 
     let(:expected_complements) do
       [
-        Mongoid::Association::Embedded::EmbeddedIn,
+        Mongoid::Association::Embedded::EmbeddedIn
       ]
     end
 
@@ -417,7 +417,7 @@ describe Mongoid::Association::Embedded::EmbedsOne do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
+            expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
           end
         end
 
@@ -438,14 +438,14 @@ describe Mongoid::Association::Embedded::EmbedsOne do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([ :inverse_name ])
+            expect(association.inverses).to eq([:inverse_name])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns the :as attribute' do
-            expect(association.inverses).to eq([ :containable ])
+            expect(association.inverses).to eq([:containable])
           end
 
           context 'when class_name is given and is a :: prefixed string' do
@@ -488,14 +488,14 @@ describe Mongoid::Association::Embedded::EmbedsOne do
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([ :inverse_name ])
+          expect(association.inverses).to eq([:inverse_name])
         end
       end
 
       context 'when inverse_of is not specified' do
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([ :container ])
+          expect(association.inverses).to eq([:container])
         end
       end
 

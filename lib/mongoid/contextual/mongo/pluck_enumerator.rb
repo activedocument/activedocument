@@ -55,15 +55,15 @@ module Mongoid
         private
 
         def database_field_names
-          @database_field_names ||= @fields.map {|f| @klass.database_field_name(f) }
+          @database_field_names ||= @fields.map { |f| @klass.database_field_name(f) }
         end
 
         def normalized_field_names
-          @normalized_field_names ||= @fields.map {|f| @klass.cleanse_localized_field_names(f) }
+          @normalized_field_names ||= @fields.map { |f| @klass.cleanse_localized_field_names(f) }
         end
 
         def yield_result(doc)
-          values = database_field_names.map {|n| extract_value(doc, n) }
+          values = database_field_names.map { |n| extract_value(doc, n) }
           yield(values.size == 1 ? values.first : values)
         end
 

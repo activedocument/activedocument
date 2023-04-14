@@ -10,8 +10,8 @@ describe Mongoid::Attributes::Readonly do
 
   after do
     Person.readonly_attributes.reject! do |a|
-      [ attributes ].flatten.include?(a.to_sym) ||
-        [ attributes ].flatten.include?(Person.aliased_fields.key(a).to_sym)
+      [attributes].flatten.include?(a.to_sym) ||
+        [attributes].flatten.include?(Person.aliased_fields.key(a).to_sym)
     end
   end
 
@@ -42,7 +42,7 @@ describe Mongoid::Attributes::Readonly do
     context "when providing multiple fields" do
 
       let(:attributes) do
-        [ :title, :terms ]
+        [:title, :terms]
       end
 
       it "adds the fields to readonly attributes" do
@@ -53,7 +53,7 @@ describe Mongoid::Attributes::Readonly do
     context "when creating a new document with a readonly field" do
 
       let(:attributes) do
-        [ :title, :terms, :aliased_timestamp ]
+        [:title, :terms, :aliased_timestamp]
       end
 
       let(:person) do
@@ -88,7 +88,7 @@ describe Mongoid::Attributes::Readonly do
     context "when updating an existing readonly field" do
 
       let(:attributes) do
-        [ :title, :terms, :score, :aliased_timestamp ]
+        [:title, :terms, :score, :aliased_timestamp]
       end
 
       let(:person) do
@@ -146,7 +146,7 @@ describe Mongoid::Attributes::Readonly do
         context 'with multiple fields operation' do
 
           it "updates the attribute" do
-            person.bit(age: {and: 13}, score: {or: 13})
+            person.bit(age: { and: 13 }, score: { or: 13 })
             person.save!
             expect(person.reload.score).to eq(13)
             expect(person.reload.age).to eq(4)

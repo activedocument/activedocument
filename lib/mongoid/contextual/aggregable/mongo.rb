@@ -124,13 +124,13 @@ module Mongoid
           pipeline << { "$skip" => skip } if skip
           pipeline << { "$limit" => limit } if limit
           pipeline << {
-            "$group"  => {
-              "_id"   => field.to_s,
+            "$group" => {
+              "_id" => field.to_s,
               "count" => { "$sum" => 1 },
-              "max"   => { "$max" => db_field },
-              "min"   => { "$min" => db_field },
-              "sum"   => { "$sum" => db_field },
-              "avg"   => { "$avg" => db_field }
+              "max" => { "$max" => db_field },
+              "min" => { "$min" => db_field },
+              "sum" => { "$sum" => db_field },
+              "avg" => { "$avg" => db_field }
             }
           }
         end

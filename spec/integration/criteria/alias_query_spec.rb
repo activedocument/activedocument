@@ -79,7 +79,7 @@ describe 'pluck on aliased fields' do
     it 'expands the alias' do
       query
 
-      expect(command['projection']).to eq({'t' => true})
+      expect(command['projection']).to eq({ 't' => true })
     end
   end
 
@@ -91,7 +91,7 @@ describe 'pluck on aliased fields' do
     it 'expands the alias' do
       query
 
-      expect(command['projection']).to eq({'phone_numbers.ext' => true})
+      expect(command['projection']).to eq({ 'phone_numbers.ext' => true })
     end
   end
 end

@@ -51,7 +51,7 @@ class Person
   attr_reader :rescored
 
   embeds_many :favorites, order: :title.desc, inverse_of: :perp, validate: false
-  embeds_many :videos, order: [[ :title, :asc ]], validate: false
+  embeds_many :videos, order: [[:title, :asc]], validate: false
   embeds_many :phone_numbers, class_name: "Phone", validate: false
   embeds_many :phones, store_as: :mobile_phones, validate: false
   embeds_many :addresses, as: :addressable, validate: false do
@@ -119,7 +119,7 @@ class Person
     :administrated_events,
     class_name: 'Event',
     inverse_of: :administrators,
-    dependent:  :nullify,
+    dependent: :nullify,
     validate: false
 
   belongs_to :mother, class_name: 'Person'

@@ -193,6 +193,7 @@ module Mongoid
       if result.nil? && Mongoid.raise_not_found_error
         raise(Errors::DocumentNotFound.new(self, attrs))
       end
+
       yield(result) if result && block_given?
       result
     end
@@ -211,6 +212,7 @@ module Mongoid
     def find_by!(attrs = {})
       result = where(attrs).find_first
       raise(Errors::DocumentNotFound.new(self, attrs)) unless result
+
       yield(result) if result && block_given?
       result
     end

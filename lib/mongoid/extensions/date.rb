@@ -42,6 +42,7 @@ module Mongoid
         # @return [ Date | nil ] The object as a date or nil.
         def demongoize(object)
           return if object.nil?
+
           if object.is_a?(String)
             object = begin
               object.__mongoize_time__
@@ -66,6 +67,7 @@ module Mongoid
         # @return [ Time | nil ] The object mongoized or nil.
         def mongoize(object)
           return if object.blank?
+
           begin
             if object.is_a?(String)
               # https://jira.mongodb.org/browse/MONGOID-4460

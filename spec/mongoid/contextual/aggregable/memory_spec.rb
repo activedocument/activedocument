@@ -26,7 +26,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
     context 'when documents found' do
       let(:criteria) do
         Band.all.tap do |crit|
-          crit.documents = [ depeche, tool ]
+          crit.documents = [depeche, tool]
         end
       end
 
@@ -58,7 +58,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
       let(:criteria) do
         Band.all.tap do |criteria|
-          criteria.documents = [ depeche, tool ]
+          criteria.documents = [depeche, tool]
         end
       end
 
@@ -102,7 +102,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
       let(:criteria) do
         Band.all.tap do |criteria|
-          criteria.documents = [ depeche, tool ]
+          criteria.documents = [depeche, tool]
         end
       end
 
@@ -137,9 +137,9 @@ describe Mongoid::Contextual::Aggregable::Memory do
     context "when there are a mix of types" do
 
       let!(:bands) do
-        [ Band.create!(name: "The Flaming Lips", mojo: 7.7),
-          Band.create!(name: "Spirit of the Beehive", mojo: 10),
-          Band.create!(name: "Justin Bieber", mojo: nil) ]
+        [Band.create!(name: "The Flaming Lips", mojo: 7.7),
+         Band.create!(name: "Spirit of the Beehive", mojo: 10),
+         Band.create!(name: "Justin Bieber", mojo: nil)]
       end
 
       let(:criteria) do
@@ -164,7 +164,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
     context "when there no numeric values" do
 
       let!(:bands) do
-        [ Band.create!(name: "Justin Bieber", mojo: nil) ]
+        [Band.create!(name: "Justin Bieber", mojo: nil)]
       end
 
       let(:criteria) do
@@ -199,7 +199,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, tool ]
+        crit.documents = [depeche, tool]
       end
     end
 
@@ -231,9 +231,9 @@ describe Mongoid::Contextual::Aggregable::Memory do
       context "when there are a mix of types" do
 
         let!(:bands) do
-          [ Band.create!(name: "The Flaming Lips", mojo: 7.7),
-            Band.create!(name: "Spirit of the Beehive", mojo: 10),
-            Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "The Flaming Lips", mojo: 7.7),
+           Band.create!(name: "Spirit of the Beehive", mojo: 10),
+           Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -255,7 +255,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
       context "when there no numeric values" do
 
         let!(:bands) do
-          [ Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -300,7 +300,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, tool ]
+        crit.documents = [depeche, tool]
       end
     end
 
@@ -332,9 +332,9 @@ describe Mongoid::Contextual::Aggregable::Memory do
       context "when there are a mix of types" do
 
         let!(:bands) do
-          [ Band.create!(name: "The Flaming Lips", mojo: 7.7),
-            Band.create!(name: "Spirit of the Beehive", mojo: 10),
-            Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "The Flaming Lips", mojo: 7.7),
+           Band.create!(name: "Spirit of the Beehive", mojo: 10),
+           Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -356,7 +356,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
       context "when there no numeric values" do
 
         let!(:bands) do
-          [ Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -401,7 +401,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
 
     let(:criteria) do
       Band.all.tap do |crit|
-        crit.documents = [ depeche, tool ]
+        crit.documents = [depeche, tool]
       end
     end
 
@@ -508,9 +508,9 @@ describe Mongoid::Contextual::Aggregable::Memory do
       context "when there are a mix of types" do
 
         let!(:bands) do
-          [ Band.create!(name: "The Flaming Lips", mojo: 7.7),
-            Band.create!(name: "Spirit of the Beehive", mojo: 10),
-            Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "The Flaming Lips", mojo: 7.7),
+           Band.create!(name: "Spirit of the Beehive", mojo: 10),
+           Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do
@@ -536,7 +536,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
       context "when there no numeric values" do
 
         let!(:bands) do
-          [ Band.create!(name: "Justin Bieber", mojo: nil) ]
+          [Band.create!(name: "Justin Bieber", mojo: nil)]
         end
 
         let(:criteria) do

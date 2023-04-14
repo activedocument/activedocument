@@ -72,6 +72,7 @@ module Mongoid
       def prepare_upsert(options = {})
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
         return false if performing_validations?(options) && invalid?(:upsert)
+
         result = run_callbacks(:upsert) do
           yield(self)
           true

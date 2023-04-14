@@ -54,7 +54,7 @@ module Mongoid
       # @return [ Array<String, Integer> ] The location of the method.
       def location(klass, name)
         @location ||=
-          (klass.instance_method(name).source_location || [ "Unknown", 0 ])
+          (klass.instance_method(name).source_location || ["Unknown", 0])
       end
     end
   end

@@ -100,17 +100,17 @@ module Mongoid
     # separately.
     #
     # @return [ Array<Symbol> ] A list of reserved method names.
-    RESERVED_METHOD_NAMES = [ :fields,
-                              :aliased_fields,
-                              :localized_fields,
-                              :index_specifications,
-                              :shard_key_fields,
-                              :nested_attributes,
-                              :readonly_attributes,
-                              :storage_options,
-                              :cascades,
-                              :cyclic,
-                              :cache_timestamp_format]
+    RESERVED_METHOD_NAMES = [:fields,
+                             :aliased_fields,
+                             :localized_fields,
+                             :index_specifications,
+                             :shard_key_fields,
+                             :nested_attributes,
+                             :readonly_attributes,
+                             :storage_options,
+                             :cascades,
+                             :cyclic,
+                             :cache_timestamp_format]
 
     class << self
 

@@ -38,7 +38,7 @@ describe Mongoid::Contextual::Mongo::DocumentsLoader do
       # our task will stay in its initial state.
       Concurrent::ThreadPoolExecutor.new(
         min_threads: 0,
-        max_threads: 0,
+        max_threads: 0
       )
     end
 
@@ -114,7 +114,7 @@ describe Mongoid::Contextual::Mongo::DocumentsLoader do
         # our task will stay in its initial state.
         Concurrent::ThreadPoolExecutor.new(
           min_threads: 0,
-          max_threads: 0,
+          max_threads: 0
         )
       end
 
