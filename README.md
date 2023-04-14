@@ -146,9 +146,9 @@ Please raise a [Mongoid Ultra Github issue](https://github.com/tablecheck/mongoi
 Mongoid started as an open-source project created by Durran Jordan in 2009. MongoDB Inc. took over maintainership in 2015.
 Since the transition, the hallmarks of user-disconnect and corporate fumbling have become apparent:
 
-- Introduction of [critical semver-breaking issues](https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/).
-- Lack of a publicly visible roadmap or direction (when requested, it was said to be a "corporate secret".)
-- Unwillingness to adopt basic best industry-standard practices, e.g. Rubocop linter and a publicly-visible CI workflow.
+- Introduction of [critical semver-breaking issues](https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/), with [no](https://jira.mongodb.org/browse/MONGOID-5272) [sign](https://github.com/mongodb/mongoid/pull/5601#issuecomment-1506630267) of [improvement](https://jira.mongodb.org/browse/MONGOID-5016).
+- Lack of a publicly visible roadmap and direction (when requested, it was said to be a "corporate secret".)
+- [Unwillingness](https://github.com/mongodb/mongoid/pull/5546#issuecomment-1448910968) to [adopt](https://github.com/mongodb/mongoid/pull/5553#issuecomment-1500361845) [basic](https://github.com/mongodb/bson-ruby/pull/284) industry-standard best practices, e.g. Rubocop linter and a publicly-visible CI workflow.
 - Refusal to merge patches which would be of obvious benefit to the community.
 - Lack of bandwidth and resources to review simple PR contributions.
 
