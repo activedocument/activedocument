@@ -95,7 +95,7 @@ module Mongoid
           BSON::CodeWithScope === value
         when 16
           # 32-bit int
-          BSON::Int32 === value || Integer === value && (-2**32..2**32 - 1).include?(value)
+          BSON::Int32 === value || Integer === value && (-2**32..2**32 - 1).cover?(value)
         when 17
           # Timestamp
           BSON::Timestamp === value
@@ -103,8 +103,8 @@ module Mongoid
           # Long
           BSON::Int64 === value ||
           Integer === value &&
-          (-2**64..2**64 - 1).include?(value) &&
-          !(-2**32..2**32 - 1).include?(value)
+          (-2**64..2**64 - 1).cover?(value) &&
+          !(-2**32..2**32 - 1).cover?(value)
         when 19
           # Decimal
           BSON::Decimal128 === value

@@ -22,7 +22,7 @@ module Mongoid
       end
 
       reloaded = _reload
-      if Mongoid.raise_not_found_error && (reloaded.nil? || reloaded.empty?)
+      if Mongoid.raise_not_found_error && reloaded.blank?
         shard_keys = atomic_selector.with_indifferent_access.slice(*shard_key_fields, :_id)
         raise Errors::DocumentNotFound.new(self.class, _id, shard_keys)
       end

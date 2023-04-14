@@ -53,7 +53,7 @@ module Mongoid
         # @return [ Object ] The updated values.
         def remove_inverse_keys(association)
           foreign_keys = send(association.foreign_key)
-          unless foreign_keys.nil? || foreign_keys.empty?
+          unless foreign_keys.blank?
             association.criteria(self, foreign_keys).pull(association.inverse_foreign_key => _id)
           end
         end

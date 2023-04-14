@@ -302,7 +302,7 @@ describe 'Mongoid application tests' do
   def adjust_app_gemfile(rails_version: SpecConfig.instance.rails_version)
     remove_bundler_req
 
-    gemfile_lines = IO.readlines('Gemfile')
+    gemfile_lines = File.readlines('Gemfile')
     gemfile_lines.delete_if do |line|
       line =~ /mongoid/
     end
@@ -324,7 +324,7 @@ describe 'Mongoid application tests' do
 
   def adjust_rails_defaults(rails_version: SpecConfig.instance.rails_version)
     if File.exist?('config/application.rb')
-      lines = IO.readlines('config/application.rb')
+      lines = File.readlines('config/application.rb')
       lines.each do |line|
         line.gsub!(/config.load_defaults \d\.\d/, "config.load_defaults #{rails_version}")
       end
@@ -338,7 +338,7 @@ describe 'Mongoid application tests' do
     return unless File.file?('Gemfile.lock')
     # TODO: Remove this method completely when we get rid of .lock files in
     # mongoid-demo apps.
-    lock_lines = IO.readlines('Gemfile.lock')
+    lock_lines = File.readlines('Gemfile.lock')
     # Get rid of the bundled with line so that whatever bundler is installed
     # on the system is usable with the application.
     if i = lock_lines.index("BUNDLED WITH\n")

@@ -519,15 +519,6 @@ Performance/CompareWithBlock:
     - 'spec/mongoid/contextual/mongo_spec.rb'
     - 'spec/mongoid/criteria_spec.rb'
 
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: SafeMultiline.
-Performance/DeletePrefix:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embeds_many.rb'
-    - 'lib/mongoid/association/embedded/embeds_one.rb'
-    - 'spec/mongoid/config/environment_spec.rb'
-
 # Offense count: 8
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Performance/InefficientHashSearch:
@@ -552,12 +543,6 @@ Performance/MapCompact:
     - 'lib/mongoid/serializable.rb'
     - 'lib/mongoid/tasks/database.rb'
     - 'spec/mongoid/association/referenced/belongs_to/eager_spec.rb'
-
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Performance/RangeInclude:
-  Exclude:
-    - 'lib/mongoid/matcher/type.rb'
 
 # Offense count: 12
 # This cop supports safe autocorrection (--autocorrect).
@@ -1036,15 +1021,6 @@ Rails/BelongsTo:
     - 'spec/mongoid/association/referenced/belongs_to_models.rb'
     - 'spec/mongoid/timestamps_spec_models.rb'
 
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
-Rails/Blank:
-  Exclude:
-    - 'lib/mongoid/association/referenced/syncable.rb'
-    - 'lib/mongoid/fields.rb'
-    - 'lib/mongoid/reloadable.rb'
-
 # Offense count: 11
 # Configuration parameters: EnforcedStyle, AllowToTime.
 # SupportedStyles: strict, flexible
@@ -1177,12 +1153,6 @@ Rake/Desc:
   Exclude:
     - 'lib/mongoid/railties/database.rake'
     - 'lib/mongoid/tasks/database.rake'
-
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Security/IoMethods:
-  Exclude:
-    - 'spec/integration/app_spec.rb'
 
 # Offense count: 32
 # This cop supports unsafe autocorrection (--autocorrect-all).
