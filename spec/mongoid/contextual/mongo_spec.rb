@@ -1324,7 +1324,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it "does not load all documents" do
-            subscriber = Mrss::EventSubscriber.new
+            subscriber = EventSubscriber.new
             context.view.client.subscribe(Mongo::Monitoring::COMMAND, subscriber)
 
             enum.next

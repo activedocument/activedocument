@@ -7,7 +7,7 @@ describe 'distinct on aliased fields' do
   let(:client) { Person.collection.client }
 
   let(:subscriber) do
-    Mrss::EventSubscriber.new
+    EventSubscriber.new
   end
 
   before do
@@ -54,7 +54,7 @@ describe 'pluck on aliased fields' do
   let(:client) { Person.collection.client }
 
   let(:subscriber) do
-    Mrss::EventSubscriber.new
+    EventSubscriber.new
   end
 
   before do

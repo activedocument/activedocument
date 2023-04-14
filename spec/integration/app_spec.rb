@@ -7,7 +7,7 @@ TMP_BASE = File.join(BASE, 'tmp')
 
 def check_call(cmd, **opts)
   puts "Executing #{cmd.join(' ')}"
-  Mrss::ChildProcessHelper.check_call(cmd, **opts)
+  ChildProcessHelper.check_call(cmd, **opts)
 end
 
 def gem_version_argument(version)
@@ -26,8 +26,8 @@ describe 'Mongoid application tests' do
     end
 
     require 'fileutils'
-    require 'mrss/child_process_helper'
     require 'open-uri'
+    require 'support/child_process_helper'
 
     FileUtils.mkdir_p(TMP_BASE)
   end

@@ -2,13 +2,9 @@
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'shared', 'lib'))
 
 autoload :Timecop, 'timecop'
 require 'support/spec_config'
-require 'mrss/session_registry'
-Mrss.patch_mongo_for_session_registry
-
 require 'mongoid'
 
 # require all shared examples
@@ -40,20 +36,9 @@ def database_id_alt
   'mongoid_test_alt'
 end
 
-begin
-  require 'mrss/cluster_config'
-  require 'support/client_registry'
-  require 'mrss/event_subscriber'
-rescue LoadError => exc
-  raise LoadError.new <<~MSG.strip
-    The test suite requires shared tooling to be installed.
-    Please refer to spec/README.md for instructions.
-    #{exc.class}: #{exc}
-  MSG
-end
-
-ClusterConfig = Mrss::ClusterConfig
-
+require 'support/cluster_config'
+require 'support/client_registry'
+require 'support/event_subscriber'
 require 'support/authorization'
 require 'support/expectations'
 require 'support/helpers'
@@ -183,56 +168,5 @@ RSpec.configure do |config|
     config.around(:each) do |example|
       timeout_lib.timeout(30) { example.run }
     end
-  end
-end
-
-# A subscriber to be used with the Ruby driver for testing.
-class EventSubscriber
-
-  # The started events.
-  attr_reader :started_events
-
-  # The succeeded events.
-  attr_reader :succeeded_events
-
-  # The failed events.
-  attr_reader :failed_events
-
-  # Create the test event subscriber.
-  #
-  # @example Create the subscriber
-  #   EventSubscriber.new
-  def initialize
-    @started_events = []
-    @succeeded_events = []
-    @failed_events = []
-  end
-
-  # Cache the succeeded event.
-  #
-  # @param [ Event ] event The event.
-  def succeeded(event)
-    @succeeded_events.push(event)
-  end
-
-  # Cache the started event.
-  #
-  # @param [ Event ] event The event.
-  def started(event)
-    @started_events.push(event)
-  end
-
-  # Cache the failed event.
-  #
-  # @param [ Event ] event The event.
-  def failed(event)
-    @failed_events.push(event)
-  end
-
-  # Clear all cached events.
-  def clear_events!
-    @started_events = []
-    @succeeded_events = []
-    @failed_events = []
   end
 end
