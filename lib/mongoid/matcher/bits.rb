@@ -19,13 +19,13 @@ module Mongoid
       def matches?(exists, value, condition)
         case value
         when BSON::Binary
-          value = value.data.split('').map { |n| '%02x' % n.ord }.join.to_i(16)
+          value = value.data.chars.map { |n| '%02x' % n.ord }.join.to_i(16)
         end
         case condition
         when Array
           array_matches?(value, condition)
         when BSON::Binary
-          int_cond = condition.data.split('').map { |n| '%02x' % n.ord }.join.to_i(16)
+          int_cond = condition.data.chars.map { |n| '%02x' % n.ord }.join.to_i(16)
           int_matches?(value, int_cond)
         when Integer
           if condition < 0

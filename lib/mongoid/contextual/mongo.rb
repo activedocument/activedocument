@@ -840,7 +840,7 @@ module Mongoid
       # @api private
       def inverse_sorting
         sort = view.sort || { _id: 1 }
-        Hash[sort.map {|k, v| [k, -1 * v]}]
+        sort.transform_values {|v| -1 * v}
       end
 
       # Get the documents the context should iterate.

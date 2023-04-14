@@ -272,10 +272,8 @@ module Mongoid
       if kind == :update
         return :create if child.new_record?
         return :destroy if child.flagged_for_destroy?
-        kind
-      else
-        kind
       end
+      kind
     end
 
     # We need to hook into this for autosave, since we don't want it firing if

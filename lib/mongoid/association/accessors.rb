@@ -155,7 +155,7 @@ module Mongoid
         # If the list of fields was specified using #without instead of #only
         # and the provided list does not include the association, any of its
         # fields should be allowed.
-        if __selected_fields.values.all? { |v| v == 0 } &&
+        if __selected_fields.values.all?(0) &&
            __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
         then
           return nil

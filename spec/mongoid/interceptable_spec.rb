@@ -233,7 +233,7 @@ describe Mongoid::Interceptable do
       end
 
       it 'runs the callback on the embedded documents and saves the parent document' do
-        expect(expected_messages.all? { |m| m == new_message }).to be(true)
+        expect(expected_messages.all?(new_message)).to be(true)
       end
     end
   end

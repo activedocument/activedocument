@@ -57,9 +57,9 @@ module Mongoid
             raise ArgumentError, 'Criterion cannot be nil here'
           end
 
-          Hash[criterion.map do |key, value|
-            [key, value.__array__]
-          end]
+          criterion.transform_values do |value|
+            value.__array__
+          end
         end
 
       end

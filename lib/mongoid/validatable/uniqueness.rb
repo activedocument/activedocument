@@ -135,7 +135,7 @@ module Mongoid
         end
 
         if document.persisted? && !document.embedded?
-          selector.merge!(_id: { "$ne" => document._id })
+          selector[:_id] = { "$ne" => document._id }
         end
         selector
       end

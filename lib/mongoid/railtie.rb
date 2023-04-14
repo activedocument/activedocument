@@ -97,8 +97,8 @@ module Rails
       # generating a mongoid.yml. So instead of failing, we catch all the
       # errors and print them out.
       def handle_configuration_error(e)
-        puts "There is a configuration error with the current mongoid.yml."
-        puts e.message
+        Rails.logger.error "There is a configuration error with the current mongoid.yml."
+        Rails.logger.error e.message
       end
 
       # Include Controller extension that measures Mongoid runtime
@@ -116,7 +116,6 @@ module Rails
         Mongo::Monitoring::Global.subscribe Mongo::Monitoring::COMMAND,
                                             ::Mongoid::Railties::ControllerRuntime::Collector.new
       end
-
     end
   end
 end

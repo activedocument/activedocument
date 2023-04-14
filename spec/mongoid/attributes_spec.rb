@@ -2682,7 +2682,7 @@ describe Mongoid::Attributes do
     let(:church) { Church.create!(location: { x: 1 }) }
 
     before do
-      church[:location].merge!(y: 2)
+      church[:location][:y] = 2
       church.save!
       church.reload
     end
