@@ -70,6 +70,10 @@ Security/MarshalLoad:
   Exclude:
     - 'spec/mongoid/criteria/marshalable_spec.rb'
 
+RSpec/SubjectStub:
+  Exclude:
+    - 'spec/mongoid/collection_configurable_spec.rb'
+
 # --------------------------------------------------
 # These cops are intentionally disabled due to incompatibility.
 

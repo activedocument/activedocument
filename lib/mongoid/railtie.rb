@@ -56,7 +56,7 @@ module Rails
       # options can override options specified in
       # (e.g.) config/initializers/mongoid.rb.
       initializer 'mongoid.load-config', after: :load_config_initializers do
-        config_file = Rails.root.join('config', 'mongoid.yml')
+        config_file = Rails.root.join('config/mongoid.yml')
         if config_file.file?
           begin
             ::Mongoid.load!(config_file)
