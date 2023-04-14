@@ -76,7 +76,7 @@ module Mongoid
       #
       # @return [ true | false ] If the validation is case sensitive.
       def case_sensitive?
-        !(options[:case_sensitive] == false)
+        options[:case_sensitive] != false
       end
 
       # Create the validation criteria.

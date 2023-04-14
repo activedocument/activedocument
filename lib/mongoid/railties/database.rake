@@ -19,7 +19,7 @@ namespace :db do
     # if another ORM has defined db:seed, don"t run it twice.
     desc "Load the seed data from db/seeds.rb"
     task :seed => :environment do
-      seed_file = File.join(Rails.root, "db", "seeds.rb")
+      seed_file = Rails.root.join("db", "seeds.rb")
       load(seed_file) if File.exist?(seed_file)
     end
   end

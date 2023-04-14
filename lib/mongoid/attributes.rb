@@ -255,7 +255,7 @@ module Mongoid
     #
     # @return [ Object ] The hash with keys and values of the type-casted attributes.
     def typed_attributes
-      attribute_names.map { |name| [name, send(name)] }.to_h
+      attribute_names.to_h { |name| [name, send(name)] }
     end
 
     private

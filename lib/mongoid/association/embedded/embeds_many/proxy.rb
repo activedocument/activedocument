@@ -130,7 +130,7 @@ module Mongoid
           def count(*args, &block)
             return _target.count(*args, &block) if args.any? || block
 
-            _target.select { |doc| doc.persisted? }.size
+            _target.count { |doc| doc.persisted? }
           end
 
           # Delete the supplied document from the target. This method is proxied

@@ -22,7 +22,7 @@ module Rails
 end
 
 Rails.env = "development"
-Rails.root = "."
+Rails.root = Pathname.new(".")
 Rails.logger = Logger.new($stdout)
 Rails.application = Rails::Application
 

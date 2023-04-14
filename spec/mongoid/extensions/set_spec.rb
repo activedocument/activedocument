@@ -117,7 +117,7 @@ describe Mongoid::Extensions::Set do
 
       context "when the input is a set" do
         let(:input) do
-          [ 1, 2, 3, 4 ].map(&:to_d).to_set
+          [ 1, 2, 3, 4 ].to_set(&:to_d)
         end
 
         it "removes duplicates" do

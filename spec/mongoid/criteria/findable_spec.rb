@@ -96,7 +96,7 @@ describe Mongoid::Criteria::Findable do
           context "when finding by a JSON-dumped id" do
 
             let(:found) do
-              Band.find(JSON.load(JSON.dump(band.id)))
+              Band.find(JSON.parse(JSON.dump(band.id)))
             end
 
             it "properly parses the id format" do

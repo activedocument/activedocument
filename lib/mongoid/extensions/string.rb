@@ -92,7 +92,7 @@ module Mongoid
       #
       # @return [ String ] The string stripped of "=".
       def reader
-        delete("=").sub(/\_before\_type\_cast\z/, '')
+        delete("=").delete_suffix('_before_type_cast')
       end
 
       # Is this string a writer?
