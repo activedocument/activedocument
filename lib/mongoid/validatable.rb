@@ -141,7 +141,7 @@ module Mongoid
         if args.first == PresenceValidator
           args.last[:attributes].each do |name|
             association = relations[name.to_s]
-            if association && association.autosave?
+            if association&.autosave?
               Association::Referenced::AutoSave.define_autosave!(association)
             end
           end

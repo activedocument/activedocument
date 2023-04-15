@@ -24,7 +24,7 @@ module Mongoid
       # The primary key default.
       #
       # @return [ String ] The primary key field default.
-      PRIMARY_KEY_DEFAULT = '_id'.freeze
+      PRIMARY_KEY_DEFAULT = '_id'
 
       # The name of the association.
       #
@@ -89,7 +89,9 @@ module Mongoid
       # @param [ Mongoid::Document ] doc The document to be bound.
       #
       # @return [ true | false ] Whether the document can be bound.
-      def bindable?(doc); false; end
+      def bindable?(doc)
+        false
+      end
 
       # Get the inverse names.
       #
@@ -242,7 +244,7 @@ module Mongoid
       #
       # @return [ String ] The foreign key check.
       def foreign_key_check
-        @foreign_key_check ||= "#{foreign_key}_previously_changed?" if (stores_foreign_key? && foreign_key)
+        @foreign_key_check ||= "#{foreign_key}_previously_changed?" if stores_foreign_key? && foreign_key
       end
 
       # Create an association proxy object using the owner and target.
@@ -267,9 +269,12 @@ module Mongoid
       #
       # @return [ String ] The counter cache column name.
       def counter_cache_column_name
-        @counter_cache_column_name ||= (@options[:counter_cache].is_a?(String) ||
-            @options[:counter_cache].is_a?(Symbol)) ?
-            @options[:counter_cache] : "#{inverse || inverse_class_name.demodulize.underscore.pluralize}_count"
+        @counter_cache_column_name ||= if @options[:counter_cache].is_a?(String) ||
+                                          @options[:counter_cache].is_a?(Symbol)
+                                         @options[:counter_cache]
+                                       else
+                                         "#{inverse || inverse_class_name.demodulize.underscore.pluralize}_count"
+                                       end
       end
 
       # Get the extension.
@@ -284,7 +289,7 @@ module Mongoid
       # @return [ Symbol ] The inverse name.
       def inverse(other = nil)
         candidates = inverses(other)
-        candidates.detect { |c| c } if candidates
+        candidates&.detect { |c| c }
       end
 
       # Whether the associated object(s) should be validated.
@@ -398,7 +403,7 @@ module Mongoid
       end
 
       def validate!
-        @options.keys.each do |opt|
+        @options.each_key do |opt|
           unless self.class::VALID_OPTIONS.include?(opt)
             raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
           end
@@ -440,11 +445,9 @@ module Mongoid
         hier = [parent]
 
         # name is not present on anonymous modules
-        if mod.name
-          mod.name.split('::').each do |part|
-            parent = parent.const_get(part)
-            hier << parent
-          end
+        mod.name&.split('::')&.each do |part|
+          parent = parent.const_get(part)
+          hier << parent
         end
 
         hier.reverse
@@ -460,33 +463,30 @@ module Mongoid
       def resolve_name(mod, name)
         cls = exc = nil
         parts = name.to_s.split('::')
+
         if parts.first == ''
           parts.shift
           hierarchy = [Object]
         else
           hierarchy = namespace_hierarchy(mod)
         end
+
         hierarchy.each do |ns|
-          begin
-            parts.each do |part|
-              # Simple const_get sometimes pulls names out of weird scopes,
-              # perhaps confusing the receiver (ns in this case) with the
-              # local scope. Walk the class hierarchy ourselves one node
-              # at a time by specifying false as the second argument.
-              ns = ns.const_get(part, false)
-            end
-            cls = ns
-            break
-          rescue NameError => e
-            if exc.nil?
-              exc = e
-            end
-          end
+
+          # Simple const_get sometimes pulls names out of weird scopes,
+          # perhaps confusing the receiver (ns in this case) with the
+          # local scope. Walk the class hierarchy ourselves one node
+          # at a time by specifying false as the second argument.
+          parts.each { |part| ns = ns.const_get(part, false) }
+
+          cls = ns
+          break
+        rescue NameError => e
+          exc = e if exc.nil?
         end
-        if cls.nil?
-          # Raise the first exception, this is from the most specific namespace
-          raise exc
-        end
+
+        # Raise the first exception, this is from the most specific namespace
+        raise exc if cls.nil?
 
         cls
       end

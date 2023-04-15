@@ -96,11 +96,9 @@ module Mongoid
       #   end
       #
       # @return [ Enumerator ] The enumerator.
-      def each
+      def each(&block)
         if block_given?
-          documents_for_iteration.each do |doc|
-            yield(doc)
-          end
+          documents_for_iteration.each(&block)
           self
         else
           to_enum
@@ -762,11 +760,11 @@ module Mongoid
                  res.nil? ? document.try(meth) : res
                elsif document.is_a?(Hash)
                  # TODO: Remove the indifferent access when implementing MONGOID-5410.
-                 document.key?(segment.to_s) ?
-                   document[segment.to_s] :
+                 if document.key?(segment.to_s)
+                   document[segment.to_s]
+                 else
                    document[segment.to_sym]
-               else
-                 nil
+                 end
                end
 
         return curr unless remaining

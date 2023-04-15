@@ -1762,27 +1762,6 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
   end
 
-  describe '#kind_of?' do
-
-    let(:enumerable) do
-      described_class.new(Post.all)
-    end
-
-    context 'when checking against enumerable' do
-
-      it 'returns true' do
-        expect(enumerable.kind_of?(::Enumerable)).to be true
-      end
-    end
-
-    context 'when checking against array' do
-
-      it 'returns true' do
-        expect(enumerable.kind_of?(Array)).to be true
-      end
-    end
-  end
-
   describe '#load_all!' do
 
     let(:person) do

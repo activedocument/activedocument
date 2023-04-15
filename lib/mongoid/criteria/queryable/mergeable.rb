@@ -60,15 +60,13 @@ module Mongoid
         # @return [ Mongoid::Criteria ] The resulting criteria.
         def and_with_operator(criterion, operator)
           crit = self
-          if criterion
-            criterion.each_pair do |field, value|
-              val = prepare(field, operator, value)
-              # The prepare method already takes the negation into account. We
-              # set negating to false here so that ``and`` doesn't also apply
-              # negation and we have a double negative.
-              crit.negating = false
-              crit = crit.and(field => val)
-            end
+          criterion&.each_pair do |field, value|
+            val = prepare(field, operator, value)
+            # The prepare method already takes the negation into account. We
+            # set negating to false here so that ``and`` doesn't also apply
+            # negation and we have a double negative.
+            crit.negating = false
+            crit = crit.and(field => val)
           end
           crit
         end
@@ -192,11 +190,11 @@ module Mongoid
           clone.tap do |query|
             sel = query.selector
             _mongoid_flatten_arrays(criteria).each do |criterion|
-              if criterion.is_a?(Selectable)
-                expr = _mongoid_expand_keys(criterion.selector)
-              else
-                expr = _mongoid_expand_keys(criterion)
-              end
+              expr = if criterion.is_a?(Selectable)
+                       _mongoid_expand_keys(criterion.selector)
+                     else
+                       _mongoid_expand_keys(criterion)
+                     end
               if sel.empty?
                 sel.store(operator, [expr])
               elsif sel.keys == [operator]

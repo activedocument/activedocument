@@ -307,7 +307,7 @@ describe Mongoid::Serializable do
         it 'includes the extra fields' do
           expect(person.serializable_hash(
             methods: [:_type]
-          ).has_key?('_type')).to be true
+          ).key?('_type')).to be true
         end
       end
 
@@ -498,7 +498,7 @@ describe Mongoid::Serializable do
 
             it 'does not generate new ids' do
               pending
-              fail
+              raise
               expect(hash['addresses'].first['_id']).to be_nil
             end
           end

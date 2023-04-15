@@ -41,7 +41,7 @@ module Mongoid
         :nullify,
         :restrict_with_exception,
         :restrict_with_error
-      ]
+      ].freeze
 
       # Attempt to add the cascading information for the document to know how
       # to handle associated documents on a removal.

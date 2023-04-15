@@ -69,12 +69,12 @@ module Mongoid
           return if object.blank?
 
           begin
-            if object.is_a?(String)
-              # https://jira.mongodb.org/browse/MONGOID-4460
-              time = ::Time.parse(object)
-            else
-              time = object.__mongoize_time__
-            end
+            time = if object.is_a?(String)
+                     # https://jira.mongodb.org/browse/MONGOID-4460
+                     ::Time.parse(object)
+                   else
+                     object.__mongoize_time__
+                   end
           rescue ArgumentError
             nil
           end

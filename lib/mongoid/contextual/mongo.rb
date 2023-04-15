@@ -172,7 +172,7 @@ module Mongoid
         return false if self.view.limit == 0
 
         case id_or_conditions
-        when :none then !!(view.projection(_id: 1).limit(1).first)
+        when :none then !!view.projection(_id: 1).limit(1).first
         when nil, false then false
         when Hash then Mongo.new(criteria.where(id_or_conditions)).exists?
         else Mongo.new(criteria.where(_id: id_or_conditions)).exists?
@@ -446,9 +446,9 @@ module Mongoid
         fld = klass.traverse_association_tree(name)
         pipeline = []
         pipeline << { '$match' => view.filter } if view.filter.present?
-        pipeline << { '$project' => { "#{projected}" => "$#{name}" } } if projected
+        pipeline << { '$project' => { projected.to_s => "$#{name}" } } if projected
         pipeline << { '$unwind' => "$#{projected || name}" } if unwind
-        pipeline << { '$group' => { _id: "$#{projected || name}", counts: { "$sum": 1 } } }
+        pipeline << { '$group' => { _id: "$#{projected || name}", counts: { '$sum': 1 } } }
 
         collection.aggregate(pipeline).each_with_object({}) do |doc, tallies|
           val = doc['_id']
@@ -883,8 +883,11 @@ module Mongoid
       #
       # @param [ Mongoid::Document ] document The document to yield to.
       def yield_document(document, &block)
-        doc = document.respond_to?(:_id) ?
-            document : Factory.from_db(klass, document, criteria)
+        doc = if document.respond_to?(:_id)
+                document
+              else
+                Factory.from_db(klass, document, criteria)
+              end
         yield(doc)
       end
 

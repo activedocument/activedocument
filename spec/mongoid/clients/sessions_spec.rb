@@ -7,7 +7,7 @@ describe Mongoid::Clients::Sessions do
   before(:all) do
     CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
     CONFIG[:clients][:other][:database] = 'other'
-    Mongoid::Clients.clients.values.each(&:close)
+    Mongoid::Clients.clients.each_value(&:close)
     Mongoid::Config.send(:clients=, CONFIG[:clients])
     Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
   end
@@ -119,7 +119,7 @@ describe Mongoid::Clients::Sessions do
                 Person.create!
                 Post.create!
               end
-            rescue => ex
+            rescue StandardError => ex
               e = ex
             end
             e
@@ -148,7 +148,7 @@ describe Mongoid::Clients::Sessions do
                   Post.create!
                 end
               end
-            rescue => ex
+            rescue StandardError => ex
               e = ex
             end
             e
@@ -243,7 +243,7 @@ describe Mongoid::Clients::Sessions do
                 person.save!
                 person.posts << Post.create!
               end
-            rescue => ex
+            rescue StandardError => ex
               e = ex
             end
             e
@@ -273,7 +273,7 @@ describe Mongoid::Clients::Sessions do
                   person.posts << Post.create!
                 end
               end
-            rescue => ex
+            rescue StandardError => ex
               e = ex
             end
             e

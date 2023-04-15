@@ -24,11 +24,11 @@ module Mongoid
     #   the current working directory.
     def load_models(paths = model_paths)
       paths.each do |path|
-        if preload_models.resizable?
-          files = preload_models.map { |model| "#{path}/#{model.underscore}.rb" }
-        else
-          files = Dir.glob("#{path}/**/*.rb")
-        end
+        files = if preload_models.resizable?
+                  preload_models.map { |model| "#{path}/#{model.underscore}.rb" }
+                else
+                  Dir.glob("#{path}/**/*.rb")
+                end
 
         files.sort.each do |file|
           load_model(file.gsub(%r{^#{path}/}, '').gsub(/\.rb$/, ''))
@@ -65,9 +65,11 @@ module Mongoid
     #
     # @return [ Array<String> ] the array of model paths
     def model_paths
-      @model_paths ||= defined?(Rails) ?
-        Rails.application.config.paths['app/models'].expanded :
-        DEFAULT_MODEL_PATHS
+      @model_paths ||= if defined?(Rails)
+                         Rails.application.config.paths['app/models'].expanded
+                       else
+                         DEFAULT_MODEL_PATHS
+                       end
     end
 
     # Sets the model paths to the given array of paths. These are the paths

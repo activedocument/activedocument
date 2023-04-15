@@ -28,10 +28,12 @@ class HomAccreditation
   end
 end
 
-class HomAccreditation::Child
-  include Mongoid::Document
+class HomAccreditation
+  class Child
+    include Mongoid::Document
 
-  belongs_to :hom_college
+    belongs_to :hom_college
+  end
 end
 
 class HomAddress

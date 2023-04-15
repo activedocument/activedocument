@@ -31,9 +31,7 @@ module Rails
 
       config.app_generators.orm :mongoid, migration: false
 
-      if config.action_dispatch.rescue_responses
-        config.action_dispatch.rescue_responses.merge!(rescue_responses)
-      end
+      config.action_dispatch.rescue_responses&.merge!(rescue_responses)
 
       rake_tasks do
         load 'mongoid/railties/database.rake'
@@ -97,8 +95,8 @@ module Rails
       # generating a mongoid.yml. So instead of failing, we catch all the
       # errors and print them out.
       def handle_configuration_error(e)
-        Rails.logger.error 'There is a configuration error with the current mongoid.yml.'
-        Rails.logger.error e.message
+        ::Mongoid.logger.error 'There is a configuration error with the current mongoid.yml.'
+        ::Mongoid.logger.error e.message
       end
 
       # Include Controller extension that measures Mongoid runtime

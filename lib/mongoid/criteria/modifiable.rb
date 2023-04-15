@@ -172,11 +172,10 @@ module Mongoid
       # @return [ Mongoid::Document ] The new or saved document.
       def create_document(method, attrs = nil, &block)
         attrs = (create_attrs || {}).merge(attrs || {})
-        attributes = selector.reduce(attrs) do |hash, (key, value)|
+        attributes = selector.each_with_object(attrs) do |(key, value), hash|
           unless invalid_key?(hash, key) || invalid_embedded_doc?(value)
             hash[key] = value
           end
-          hash
         end
         if embedded?
           attributes[:_parent] = parent_document

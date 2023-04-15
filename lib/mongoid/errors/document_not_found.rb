@@ -23,9 +23,7 @@ module Mongoid
       # @param [ Array | Hash ] unmatched The unmatched ids, if appropriate. If
       #   there is a shard key this will be a hash.
       def initialize(klass, params, unmatched = nil)
-        if !unmatched && !params.is_a?(Hash)
-          unmatched = Array(params) if params
-        end
+        unmatched = Array(params) if !unmatched && !params.is_a?(Hash) && params
 
         @klass, @params = klass, params
         super(
@@ -73,7 +71,7 @@ module Mongoid
       # @return [ String ] The searched string.
       def searched(params)
         if params.is_a?(::Array)
-          params.take(3).join(', ') + ' ...'
+          "#{params.take(3).join(', ')} ..."
         else
           params
         end

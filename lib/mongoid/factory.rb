@@ -104,7 +104,7 @@ module Mongoid
       type = (attributes || {})[klass.discriminator_key]
       if type.blank?
         obj = klass.instantiate_document(attributes, selected_fields, execute_callbacks: execute_callbacks)
-        if criteria && criteria.association && criteria.parent_document
+        if criteria&.association && criteria&.parent_document
           obj.set_relation(criteria.association.inverse, criteria.parent_document)
         end
         obj
@@ -123,7 +123,7 @@ module Mongoid
         end
 
         # Check if the class is a Document class
-        if !constantized.respond_to?(:instantiate)
+        unless constantized.respond_to?(:instantiate)
           raise Errors::UnknownModel.new(camelized, type)
         end
 

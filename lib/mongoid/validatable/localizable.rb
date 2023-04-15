@@ -17,7 +17,7 @@ module Mongoid
       def validate_each(document, attribute, value)
         field = document.fields[document.database_field_name(attribute)]
         if field.try(:localized?) && !value.blank?
-          value.values.each do |_value|
+          value.each_value do |_value|
             super(document, attribute, _value)
           end
         else

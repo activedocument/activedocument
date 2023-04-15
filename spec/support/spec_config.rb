@@ -21,8 +21,7 @@ class SpecConfig
     @uri = Mongo::URI.new(@uri_str)
   end
 
-  attr_reader :uri_str
-  attr_reader :uri
+  attr_reader :uri_str, :uri
 
   def addresses
     @uri.servers
@@ -69,7 +68,7 @@ class SpecConfig
   def installed_rails_version
     output = `gem list --exact rails`
     if output =~ /^rails \((.*)\)/
-      versions = $1.split(/,\s*/)
+      versions = ::Regexp.last_match(1).split(/,\s*/)
       rails_version_re = /^#{rails_version}(?:\..*)?$/
       versions.detect { |v| v =~ rails_version_re }
     end

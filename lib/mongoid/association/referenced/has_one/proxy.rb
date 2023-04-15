@@ -58,8 +58,8 @@ module Mongoid
               if persistable?
                 if _association.destructive?
                   send(_association.dependent)
-                else
-                  save if persisted?
+                elsif persisted?
+                  save
                 end
               end
             end

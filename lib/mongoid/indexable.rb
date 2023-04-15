@@ -48,17 +48,17 @@ module Mongoid
       def remove_indexes
         indexed_database_names.each do |database|
           with(database: database) do |klass|
-            begin
-              klass.collection.indexes(session: _session).each do |spec|
-                unless spec['name'] == '_id_'
-                  klass.collection.indexes(session: _session).drop_one(spec['key'])
-                  logger.info(
-                    "MONGOID: Removed index '#{spec["name"]}' on collection " +
-                    "'#{klass.collection.name}' in database '#{database}'."
-                  )
-                end
-              end
-            rescue Mongo::Error::OperationFailure; end
+
+            klass.collection.indexes(session: _session).each do |spec|
+              next if spec['name'] == '_id_'
+
+              klass.collection.indexes(session: _session).drop_one(spec['key'])
+              logger.info(
+                "MONGOID: Removed index '#{spec['name']}' on collection " \
+                "'#{klass.collection.name}' in database '#{database}'."
+              )
+            end
+          rescue Mongo::Error::OperationFailure
           end
         end and true
       end
@@ -92,7 +92,7 @@ module Mongoid
       # @return [ Hash ] The index options.
       def index(spec, options = nil)
         specification = Specification.new(self, spec, options)
-        if !index_specifications.include?(specification)
+        unless index_specifications.include?(specification)
           index_specifications.push(specification)
         end
       end

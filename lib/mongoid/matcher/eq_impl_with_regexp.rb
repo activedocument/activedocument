@@ -25,7 +25,7 @@ module Mongoid
         when ::BSON::Regexp::Raw
           value =~ condition.compile
         else
-          if value.kind_of?(Time) && condition.kind_of?(Time)
+          if value.is_a?(Time) && condition.is_a?(Time)
             EqImpl.time_eq?(value, condition)
           else
             value == condition

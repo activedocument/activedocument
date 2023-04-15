@@ -103,7 +103,7 @@ module Mongoid
               _target.delete(document) do |doc|
                 if doc
                   unbind_one(doc)
-                  cascade!(doc) if !_assigning?
+                  cascade!(doc) unless _assigning?
                 end
               end.tap do
                 reset_unloaded
@@ -154,9 +154,9 @@ module Mongoid
           #   end
           #
           # @return [ Array<Mongoid::Document> ] The loaded docs.
-          def each
-            if block_given?
-              _target.each { |doc| yield(doc) }
+          def each(&block)
+            if block
+              _target.each(&block)
             else
               to_enum
             end
@@ -265,7 +265,7 @@ module Mongoid
                 doc.destroyed = true
                 begin
                   execute_callback :after_remove, doc
-                rescue => e
+                rescue StandardError => e
                   after_remove_error = e
                 end
               end
@@ -505,12 +505,12 @@ module Mongoid
               removed.update_all(foreign_key => nil)
             end
             in_memory.each do |doc|
-              if !ids.include?(doc._id)
-                unbind_one(doc)
-                _target.delete(doc)
-                if _association.destructive?
-                  doc.destroyed = true
-                end
+              next if ids.include?(doc._id)
+
+              unbind_one(doc)
+              _target.delete(doc)
+              if _association.destructive?
+                doc.destroyed = true
               end
             end
           end

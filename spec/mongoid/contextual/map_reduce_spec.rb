@@ -5,21 +5,23 @@ require 'spec_helper'
 describe Mongoid::Contextual::MapReduce do
 
   let(:map) do
-    %Q{
-    function() {
-      emit(this.name, { likes: this.likes });
-    }}
+    <<~JAVASCRIPT
+      function() {
+        emit(this.name, { likes: this.likes });
+      }
+    JAVASCRIPT
   end
 
   let(:reduce) do
-    %Q{
-    function(key, values) {
-      var result = { likes: 0 };
-      values.forEach(function(value) {
-        result.likes += value.likes;
-      });
-      return result;
-    }}
+    <<~JAVASCRIPT
+      function(key, values) {
+        var result = { likes: 0 };
+        values.forEach(function(value) {
+          result.likes += value.likes;
+        });
+        return result;
+      }
+    JAVASCRIPT
   end
 
   let!(:depeche_mode) do
@@ -178,17 +180,19 @@ describe Mongoid::Contextual::MapReduce do
     context 'when there is a collation on the criteria' do
 
       let(:map) do
-        %Q{
-         function() {
-           emit(this.name, 1);
-        }}
+        <<~JAVASCRIPT
+          function() {
+            emit(this.name, 1);
+          }
+        JAVASCRIPT
       end
 
       let(:reduce) do
-        %Q{
-         function(key, values) {
-           return Array.sum(values);
-        }}
+        <<~JAVASCRIPT
+          function(key, values) {
+            return Array.sum(values);
+          }
+        JAVASCRIPT
       end
 
       let(:criteria) do
@@ -372,11 +376,12 @@ describe Mongoid::Contextual::MapReduce do
   describe '#scope' do
 
     let(:finalize) do
-      %Q{
-      function(key, value) {
-        value.global = test;
-        return value;
-      }}
+      <<~JAVASCRIPT
+        function(key, value) {
+          value.global = test;
+          return value;
+        }
+      JAVASCRIPT
     end
 
     let(:results) do

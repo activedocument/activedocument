@@ -31,8 +31,8 @@ module Mongoid
         end
       end
 
-      attr_reader :id_projection_value
-      attr_reader :content_projection
+      attr_reader :id_projection_value,
+                  :content_projection
 
       # Determine if the specified attribute, or a dot notation path, is allowed
       # by the configured projection, if any.
@@ -65,7 +65,7 @@ module Mongoid
         # This handles the case when, for example, the projection was
         # {foo: true} and we want to know if foo.bar is allowed.
         item, value = content_projection.detect do |path, value|
-          (name + '.').start_with?(path + '.')
+          "#{name}.".start_with?("#{path}.")
         end
         if item
           return value_inclusionary?(value)
@@ -77,7 +77,7 @@ module Mongoid
           # {"foo.bar" => true} and we want to know if foo is allowed.
           # (It is as a container of bars.)
           item, value = content_projection.detect do |path, value|
-            (path + '.').start_with?(name + '.')
+            "#{path}.".start_with?("#{name}.")
           end
           if item
             return true

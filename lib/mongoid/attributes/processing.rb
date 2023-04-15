@@ -17,7 +17,7 @@ module Mongoid
       # @param [ Hash ] attrs The attributes to set.
       def process_attributes(attrs = nil)
         attrs ||= {}
-        if !attrs.empty?
+        unless attrs.empty?
           attrs = sanitize_for_mass_assignment(attrs)
           attrs.each_pair do |key, value|
             next if pending_attribute?(key, value)
@@ -51,15 +51,17 @@ module Mongoid
                     name
                   end
 
-        if relations.has_key?(aliased)
+        if relations.key?(aliased)
           pending_relations[name] = value
           return true
         end
-        if nested_attributes.has_key?(aliased)
+
+        if nested_attributes.key?(aliased)
           pending_nested[name] = value
           return true
         end
-        return false
+
+        false
       end
 
       # Get all the pending associations that need to be set.

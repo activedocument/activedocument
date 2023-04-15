@@ -8,7 +8,6 @@ module Mongoid
       let(:mongocryptd_port) do
         if ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'] &&
            !ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'].empty?
-        then
           ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'].to_i
         else
           27020

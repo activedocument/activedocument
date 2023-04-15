@@ -158,7 +158,7 @@ describe 'StringifiedSymbol fields' do
     end
 
     it 'receives the value as a symbol' do
-      expect(Order.find(13).saved_status).to eq(:"42")
+      expect(Order.find(13).saved_status).to eq(:'42')
     end
 
     it 'saves the value as a string' do
@@ -176,7 +176,7 @@ describe 'StringifiedSymbol fields' do
     end
 
     it 'receives the value as a symbol' do
-      expect(Order.find(14).saved_status).to be(:"[0, 1, 2]")
+      expect(Order.find(14).saved_status).to be(:'[0, 1, 2]')
     end
 
     it 'saves the value as a string' do

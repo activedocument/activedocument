@@ -100,11 +100,11 @@ module Mongoid
           ar.each_with_index do |fn, i|
             key = fn
             unless klass.fields.key?(fn) || klass.relations.key?(fn)
-              if tr = fn.match(/(.*)_translations\z/)&.captures&.first
-                key = tr
-              else
-                key = fn
-              end
+              key = if tr = fn.match(/(.*)_translations\z/)&.captures&.first
+                      tr
+                    else
+                      fn
+                    end
 
             end
             res.push(key)
@@ -175,13 +175,11 @@ module Mongoid
     #
     # @param [ String ] name The name of the field.
     def apply_default(name)
-      unless attributes.key?(name)
-        if field = fields[name]
-          default = field.eval_default(self)
-          unless default.nil? || field.lazy?
-            attribute_will_change!(name)
-            attributes[name] = default
-          end
+      if !attributes.key?(name) && field = fields[name]
+        default = field.eval_default(self)
+        unless default.nil? || field.lazy?
+          attribute_will_change!(name)
+          attributes[name] = default
         end
       end
     end
@@ -358,8 +356,8 @@ module Mongoid
           elsif rs && rel = rs[aliased]
             klass = rel.klass
             yield(meth, rel, false) if block_given?
-          else
-            yield(meth, nil, false) if block_given?
+          elsif block_given?
+            yield(meth, nil, false)
           end
         end
         field
@@ -819,16 +817,14 @@ module Mongoid
         result = type_mapping || unmapped_type(type)
         if !result.is_a?(Class)
           raise Errors::InvalidFieldType.new(self, name, type)
-        else
-          if INVALID_BSON_CLASSES.include?(result)
-            warn_message = "Using #{result} as the field type is not supported. "
-            if result == BSON::Decimal128
-              warn_message += 'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+.'
-            else
-              warn_message += 'Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type.'
-            end
-            Mongoid.logger.warn(warn_message)
-          end
+        elsif INVALID_BSON_CLASSES.include?(result)
+          warn_message = "Using #{result} as the field type is not supported. "
+          warn_message += if result == BSON::Decimal128
+                            'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+.'
+                          else
+                            'Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type.'
+                          end
+          Mongoid.logger.warn(warn_message)
         end
 
         result

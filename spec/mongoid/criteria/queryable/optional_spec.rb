@@ -623,7 +623,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           context 'when the query is aggregating' do
 
             let(:selection) do
-              query.project(name: 1).send("#{method}", field_one: 1, field_two: -1)
+              query.project(name: 1).send(method, field_one: 1, field_two: -1)
             end
 
             it 'adds the sorting criteria' do
@@ -650,7 +650,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           context 'when the hash has integer values' do
 
             let(:selection) do
-              query.send("#{method}", field_one: 1, field_two: -1)
+              query.send(method, field_one: 1, field_two: -1)
             end
 
             it 'adds the sorting criteria' do
@@ -665,7 +665,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           context 'when the hash has symbol values' do
 
             let(:selection) do
-              query.send("#{method}", field_one: :asc, field_two: :desc)
+              query.send(method, field_one: :asc, field_two: :desc)
             end
 
             it 'adds the sorting criteria' do
@@ -680,7 +680,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           context 'when the hash has string values' do
 
             let(:selection) do
-              query.send("#{method}", field_one: 'asc', field_two: 'desc')
+              query.send(method, field_one: 'asc', field_two: 'desc')
             end
 
             it 'adds the sorting criteria' do
@@ -695,7 +695,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           context 'when the hash has hash values' do
 
             let(:selection) do
-              query.send("#{method}", score: { '$meta' => 'textScore' })
+              query.send(method, score: { '$meta' => 'textScore' })
             end
 
             it 'adds the sorting criteria' do
@@ -715,7 +715,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when the arrays have integer values' do
 
               let(:selection) do
-                query.send("#{method}", [[:field_one, 1], [:field_two, -1]])
+                query.send(method, [[:field_one, 1], [:field_two, -1]])
               end
 
               it 'adds the sorting criteria' do
@@ -730,7 +730,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when the arrays have symbol values' do
 
               let(:selection) do
-                query.send("#{method}", [[:field_one, :asc], [:field_two, :desc]])
+                query.send(method, [[:field_one, :asc], [:field_two, :desc]])
               end
 
               it 'adds the sorting criteria' do
@@ -745,7 +745,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when the arrays have string values' do
 
               let(:selection) do
-                query.send("#{method}", [[:field_one, 'asc'], [:field_two, 'desc']])
+                query.send(method, [[:field_one, 'asc'], [:field_two, 'desc']])
               end
 
               it 'adds the sorting criteria' do
@@ -761,7 +761,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           context 'when the array is selectable keys' do
 
             let(:selection) do
-              query.send("#{method}", [:field_one.asc, :field_two.desc])
+              query.send(method, [:field_one.asc, :field_two.desc])
             end
 
             it 'adds the sorting criteria' do
@@ -781,7 +781,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when the values have integer directions' do
 
               let(:selection) do
-                query.send("#{method}", [:field_one, 1], [:field_two, -1])
+                query.send(method, [:field_one, 1], [:field_two, -1])
               end
 
               it 'adds the sorting criteria' do
@@ -796,7 +796,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when the values have symbol directions' do
 
               let(:selection) do
-                query.send("#{method}", [:field_one, :asc], [:field_two, :desc])
+                query.send(method, [:field_one, :asc], [:field_two, :desc])
               end
 
               it 'adds the sorting criteria' do
@@ -811,7 +811,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when the values have string directions' do
 
               let(:selection) do
-                query.send("#{method}", [:field_one, 'asc'], [:field_two, 'desc'])
+                query.send(method, [:field_one, 'asc'], [:field_two, 'desc'])
               end
 
               it 'adds the sorting criteria' do
@@ -827,7 +827,7 @@ describe Mongoid::Criteria::Queryable::Optional do
           context 'when the values are selectable keys' do
 
             let(:selection) do
-              query.send("#{method}", :field_one.asc, :field_two.desc)
+              query.send(method, :field_one.asc, :field_two.desc)
             end
 
             it 'adds the sorting criteria' do
@@ -847,7 +847,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when abbreviated' do
 
               let(:selection) do
-                query.send("#{method}", 'field_one asc, field_two desc')
+                query.send(method, 'field_one asc, field_two desc')
               end
 
               it 'adds the sorting criteria' do
@@ -862,7 +862,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when spelled out' do
 
               let(:selection) do
-                query.send("#{method}", 'field_one ascending, field_two descending')
+                query.send(method, 'field_one ascending, field_two descending')
               end
 
               it 'adds the sorting criteria' do
@@ -880,7 +880,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when abbreviated' do
 
               let(:selection) do
-                query.send("#{method}", 'field_one ASC, field_two DESC')
+                query.send(method, 'field_one ASC, field_two DESC')
               end
 
               it 'adds the sorting criteria' do
@@ -895,7 +895,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when spelled out' do
 
               let(:selection) do
-                query.send("#{method}", 'field_one ASCENDING, field_two DESCENDING')
+                query.send(method, 'field_one ASCENDING, field_two DESCENDING')
               end
 
               it 'adds the sorting criteria' do
@@ -925,7 +925,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         context 'when provided nil' do
 
           let(:selection) do
-            query.send("#{method}", nil)
+            query.send(method, nil)
           end
 
           it 'returns the query' do
@@ -959,7 +959,7 @@ describe Mongoid::Criteria::Queryable::Optional do
 
   [:skip, :offset].each do |method|
 
-    describe "\##{method}" do
+    describe "##{method}" do
 
       context 'when provided no options' do
 

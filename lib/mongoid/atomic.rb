@@ -18,7 +18,7 @@ module Mongoid
       :delayed_atomic_sets,
       :delayed_atomic_pulls,
       :delayed_atomic_unsets
-    ]
+    ].freeze
 
     included do
 
@@ -178,13 +178,11 @@ module Mongoid
     #
     # @return [ Object ] The associated path.
     def atomic_paths
-      @atomic_paths ||= begin
-        if _association
-          _association.path(self)
-        else
-          Atomic::Paths::Root.new(self)
-        end
-      end
+      @atomic_paths ||= if _association
+                          _association.path(self)
+                        else
+                          Atomic::Paths::Root.new(self)
+                        end
     end
 
     # Get all the attributes that need to be pulled.

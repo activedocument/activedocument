@@ -221,8 +221,8 @@ module Mongoid
       # @return [ Array<Object, Object> ] The field and value.
       def to_validate(document, attribute, value)
         association = document.relations[attribute.to_s]
-        if association && association.stores_foreign_key?
-          [association.foreign_key, value && value._id]
+        if association&.stores_foreign_key?
+          [association.foreign_key, value&._id]
         else
           [attribute, value]
         end

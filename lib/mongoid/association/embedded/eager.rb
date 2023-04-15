@@ -13,8 +13,7 @@ module Mongoid
         # Embedded associations have no preload phase, since the embedded
         # documents are loaded with the parent document. This method is
         # implemented as a no-op to represent that.
-        def preload
-        end
+        def preload; end
       end
 
     end

@@ -108,7 +108,7 @@ module Mongoid
           end
 
           specs.map do |spec|
-            Hash[spec.map do |key, value|
+            spec.to_h do |key, value|
               # If an application nests conditionals, e.g.
               # {'$or' => [{'$or' => {...}}]},
               # when evolve_multi is called for the top level hash,
@@ -135,7 +135,7 @@ module Mongoid
               end
 
               [final_key, evolved_value]
-            end]
+            end
           end.uniq
         end
 
@@ -195,11 +195,11 @@ module Mongoid
         # @return [ Object ] The serialized hash.
         def evolve_hash(serializer, value)
           value.each_pair do |operator, _value|
-            if /exists|type|size/.match?(operator)
-              value[operator] = _value
-            else
-              value[operator] = evolve(serializer, _value)
-            end
+            value[operator] = if /exists|type|size/.match?(operator)
+                                _value
+                              else
+                                evolve(serializer, _value)
+                              end
           end
         end
 

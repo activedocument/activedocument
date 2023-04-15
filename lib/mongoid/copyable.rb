@@ -89,7 +89,7 @@ module Mongoid
     #
     # @param [ Hash ] attrs The attributes.
     def process_localized_attributes(klass, attrs)
-      klass.localized_fields.keys.each do |name|
+      klass.localized_fields.each_key do |name|
         if value = attrs.delete(name)
           attrs["#{name}_translations"] = value
         end

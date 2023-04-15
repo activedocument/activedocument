@@ -15,7 +15,7 @@ module Mongoid
       # @param [ Hash ] modifications The add to set modifiers.
       def add_to_set(modifications)
         modifications.each_pair do |field, value|
-          if add_to_sets.has_key?(field)
+          if add_to_sets.key?(field)
             value.each do |val|
               add_to_sets[field]['$each'].push(val)
             end
@@ -105,7 +105,7 @@ module Mongoid
       # @param [ String ] field The field.
       # @param [ Hash ] value The atomic op.
       def add_operation(mods, field, value)
-        if mods.has_key?(field)
+        if mods.key?(field)
           if mods[field].is_a?(Array)
             value.each do |val|
               mods[field].push(val)
@@ -128,7 +128,7 @@ module Mongoid
       # @param [ String ] field The field.
       # @param [ Hash ] value The atomic op.
       def add_each_operation(mods, field, value)
-        if mods.has_key?(field)
+        if mods.key?(field)
           value.each do |val|
             mods[field]['$each'].push(val)
           end
@@ -157,7 +157,7 @@ module Mongoid
       # @return [ true | false ] If this field is a conflict.
       def set_conflict?(field)
         name = field.split('.', 2)[0]
-        pull_fields.has_key?(name) || push_fields.has_key?(name)
+        pull_fields.key?(name) || push_fields.key?(name)
       end
 
       # Is the operation going to be a conflict for a $push?
@@ -170,7 +170,7 @@ module Mongoid
       # @return [ true | false ] If this field is a conflict.
       def push_conflict?(field)
         name = field.split('.', 2)[0]
-        set_fields.has_key?(name) || pull_fields.has_key?(name) ||
+        set_fields.key?(name) || pull_fields.key?(name) ||
           (push_fields.keys.count { |item| item.split('.', 2).first == name } > 1)
       end
 

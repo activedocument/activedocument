@@ -42,7 +42,7 @@ module Mongoid
 
     # Static array used to check with method missing - we only need to ever
     # instantiate once.
-    CHECK = []
+    CHECK = [].freeze
 
     attr_accessor :embedded, :klass, :parent_document, :association
 
@@ -508,7 +508,7 @@ module Mongoid
           klass.send(name, *args, &block)
         end
       elsif CHECK.respond_to?(name)
-        return entries.send(name, *args, &block)
+        entries.send(name, *args, &block)
       else
         super
       end

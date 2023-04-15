@@ -49,7 +49,6 @@ module Mongoid
                  key_s = key.to_s
                  key_s.start_with?('$') && !selector[field].key?(key_s)
                }
-            then
               # Multiple operators can be combined on the same field by
               # adding them to the existing hash.
               new_value = selector[field].merge(value)
@@ -129,13 +128,11 @@ module Mongoid
             else
               selector.store(operator, op_expr)
             end
-          else
+          elsif selector[operator]
             # Other operators need to be added separately
-            if selector[operator]
-              add_logical_operator_expression('$and', [operator => op_expr])
-            else
-              selector.store(operator, op_expr)
-            end
+            add_logical_operator_expression('$and', [operator => op_expr])
+          else
+            selector.store(operator, op_expr)
           end
 
           self

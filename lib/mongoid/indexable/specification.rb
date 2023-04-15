@@ -10,7 +10,7 @@ module Mongoid
       # option name.
       MAPPINGS = {
         expire_after_seconds: :expire_after
-      }
+      }.freeze
 
       # @!attribute klass
       #   @return [ Class ] The class the index is defined on.

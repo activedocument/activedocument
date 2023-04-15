@@ -41,7 +41,7 @@ module Mongoid
         each_pair do |key, value|
           if /\$/.match?(key)
             value.each_pair do |_key, _value|
-              value[_key] = (key == '$rename') ? _value.to_s : mongoize_for(key, klass, _key, _value)
+              value[_key] = key == '$rename' ? _value.to_s : mongoize_for(key, klass, _key, _value)
             end
             consolidated[key] ||= {}
             consolidated[key].update(value)
@@ -202,8 +202,8 @@ module Mongoid
         field = klass.fields[key.to_s]
         if field
           val = field.mongoize(value)
-          if Mongoid::Persistable::LIST_OPERATIONS.include?(operator) && field.resizable?
-            val = val.first if !value.is_a?(Array)
+          if Mongoid::Persistable::LIST_OPERATIONS.include?(operator) && field.resizable? && !value.is_a?(Array)
+            val = val.first
           end
           val
         else

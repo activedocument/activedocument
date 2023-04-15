@@ -63,8 +63,8 @@ module Mongoid
         # an existing field.
         # This condition also checks if the class has any descendants, because
         # if it doesn't then it doesn't need a discriminator key.
-        if !fields.has_key?(self.discriminator_key) && !descendants.empty?
-          default_proc = lambda { self.class.discriminator_value }
+        if !fields.key?(self.discriminator_key) && !descendants.empty?
+          default_proc = -> { self.class.discriminator_value }
           field(self.discriminator_key, default: default_proc, type: String)
         end
       end
@@ -285,7 +285,7 @@ module Mongoid
     #
     # @api private
     def _reset_memoized_descendants!
-      _parent._reset_memoized_descendants! if _parent
+      _parent&._reset_memoized_descendants!
       @__children = nil
       @__descendants = nil
     end
@@ -354,8 +354,8 @@ module Mongoid
 
         # We only need the _type field if inheritance is in play, but need to
         # add to the root class as well for backwards compatibility.
-        unless fields.has_key?(self.discriminator_key)
-          default_proc = lambda { self.class.discriminator_value }
+        unless fields.key?(self.discriminator_key)
+          default_proc = -> { self.class.discriminator_value }
           field(self.discriminator_key, default: default_proc, type: String)
         end
       end

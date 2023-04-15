@@ -44,8 +44,6 @@ module Mongoid
         type = @attributes[association.inverse_type]
         target = if t = association.build(self, object, type, selected_fields)
                    association.create_relation(self, t)
-                 else
-                   nil
                  end
 
         # Only need to do this on embedded associations. The pending callbacks
@@ -157,7 +155,6 @@ module Mongoid
         # fields should be allowed.
         if __selected_fields.values.all?(0) &&
            __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
-        then
           return nil
         end
 
@@ -343,7 +340,7 @@ module Mongoid
           klass.re_define_method("#{name}=") do |object|
             without_autobuild do
               if value = get_relation(name, association, object)
-                if !value.respond_to?(:substitute)
+                unless value.respond_to?(:substitute)
                   value = __build__(name, value, association)
                 end
 

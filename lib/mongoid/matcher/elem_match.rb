@@ -31,15 +31,15 @@ module Mongoid
           # matching it.
           condition.each do |k, v|
             k = k.to_s
-            if k.start_with?('$')
+            next unless k.start_with?('$')
+
+            begin
+              ExpressionOperator.get(k)
+            rescue Mongoid::Errors::InvalidExpressionOperator
               begin
-                ExpressionOperator.get(k)
-              rescue Mongoid::Errors::InvalidExpressionOperator
-                begin
-                  FieldOperator.get(k)
-                rescue Mongoid::Errors::InvalidFieldOperator => exc
-                  raise Mongoid::Errors::InvalidElemMatchOperator.new(exc.operator)
-                end
+                FieldOperator.get(k)
+              rescue Mongoid::Errors::InvalidFieldOperator => exc
+                raise Mongoid::Errors::InvalidElemMatchOperator.new(exc.operator)
               end
             end
           end

@@ -973,7 +973,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.symptoms.concat([headache, cough])
+          person.symptoms.push(headache, cough)
         end
 
         let(:document) do
@@ -996,7 +996,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.appointments.concat([active, inactive])
+          person.appointments.push(active, inactive)
         end
 
         let(:document) do
@@ -1222,7 +1222,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.addresses.concat([address])
+        person.addresses.push(address)
       end
 
       it 'appends to the target' do
@@ -1269,7 +1269,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.addresses.concat([address])
+        person.addresses.push(address)
       end
 
       it 'saves the new document' do
@@ -1285,7 +1285,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
       before do
         expect(person.addresses).to_not receive(:batch_insert)
-        person.addresses.concat([])
+        person.addresses.push
       end
 
       it "doesn't update the target" do
@@ -1308,7 +1308,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.addresses.concat([address_one, address_two])
+        person.addresses.push(address_one, address_two)
       end
 
       it 'saves the first document' do
@@ -1333,7 +1333,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          parent_role.child_roles.concat([child_role])
+          parent_role.child_roles.push(child_role)
         end
 
         it 'appends to the target' do
@@ -1376,7 +1376,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          parent_role.child_roles.concat([child_role])
+          parent_role.child_roles.push(child_role)
         end
 
         it 'saves the new document' do
@@ -1852,7 +1852,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          begin; book.update_attributes!({ 'pages' => nil }); rescue; end
+          book.update_attributes!({ 'pages' => nil })
+        rescue StandardError
         end
 
         it 'does not delete the embedded relation' do
@@ -3140,7 +3141,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
     end
 
-    Address.scopes.keys.each do |method|
+    Address.scopes.each_key do |method|
 
       context "when checking #{method}" do
 
@@ -3811,7 +3812,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.symptoms.concat([nausea, cough, headache])
+        person.symptoms.push(nausea, cough, headache)
       end
 
       context 'when accessing the relation' do
@@ -3877,7 +3878,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        person.appointments.concat([inactive, active])
+        person.appointments.push(inactive, active)
       end
 
       let(:relation) do
@@ -4619,23 +4620,23 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   context 'when substituting polymorphic documents' do
 
     before(:all) do
-      class DNS; end
+      module DNS
+        class Zone
+          include Mongoid::Document
+          embeds_many :rrsets, class_name: 'DNS::RRSet',  inverse_of: :zone
+          embeds_one  :soa,    class_name: 'DNS::Record', as: :container
+        end
 
-      class DNS::Zone
-        include Mongoid::Document
-        embeds_many :rrsets, class_name: 'DNS::RRSet',  inverse_of: :zone
-        embeds_one  :soa,    class_name: 'DNS::Record', as: :container
-      end
+        class RRSet
+          include Mongoid::Document
+          embedded_in :zone, class_name: 'DNS::Zone', inverse_of: :rrsets
+          embeds_many :records, class_name: 'DNS::Record', as: :container
+        end
 
-      class DNS::RRSet
-        include Mongoid::Document
-        embedded_in :zone, class_name: 'DNS::Zone', inverse_of: :rrsets
-        embeds_many :records, class_name: 'DNS::Record', as: :container
-      end
-
-      class DNS::Record
-        include Mongoid::Document
-        embedded_in :container, polymorphic: true
+        class Record
+          include Mongoid::Document
+          embedded_in :container, polymorphic: true
+        end
       end
     end
 

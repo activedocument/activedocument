@@ -77,9 +77,9 @@ module Mongoid
           #   end
           #
           # @return [ Array<Mongoid::Document> ] The cleared out _added docs.
-          def clear
-            if block_given?
-              in_memory { |doc| yield(doc) }
+          def clear(&block)
+            if block
+              in_memory(&block)
             end
             _loaded.clear and _added.clear
           end
@@ -106,11 +106,9 @@ module Mongoid
           # @return [ Mongoid::Document ] The deleted document.
           def delete(document)
             doc = (_loaded.delete(document._id) || _added.delete(document._id))
-            unless doc
-              if _unloaded && _unloaded.where(_id: document._id).exists?
-                yield(document) if block_given?
-                return document
-              end
+            if !doc && _unloaded&.where(_id: document._id)&.exists?
+              yield(document) if block_given?
+              return document
             end
             yield(doc) if block_given?
             doc
@@ -268,9 +266,8 @@ module Mongoid
               @_added, @executed, @_loaded, @_unloaded = {}, false, {}, target
             else
               @_added, @executed = {}, true
-              @_loaded = target.inject({}) do |_target, doc|
+              @_loaded = target.each_with_object({}) do |doc, _target|
                 _target[doc._id] = doc if doc
-                _target
               end
             end
           end
@@ -286,7 +283,7 @@ module Mongoid
           def include?(doc)
             return super unless _unloaded
 
-            _unloaded.where(_id: doc._id).exists? || _added.has_key?(doc._id)
+            _unloaded.where(_id: doc._id).exists? || _added.key?(doc._id)
           end
 
           # Inspection will just inspect the entries for nice array-style
@@ -471,9 +468,9 @@ module Mongoid
           private
 
           def set_base(document)
-            if @_association.is_a?(Referenced::HasMany)
-              document.set_relation(@_association.inverse, @_base) if @_association
-            end
+            return unless @_association.is_a?(Referenced::HasMany)
+
+            document.set_relation(@_association.inverse, @_base)
           end
 
           ruby2_keywords def method_missing(name, *args, &block)

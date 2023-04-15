@@ -432,10 +432,8 @@ describe Mongoid::Traversable do
       end
 
       before :each do
-        begin
-          set_discriminator_key
-        rescue
-        end
+        set_discriminator_key
+      rescue StandardError
       end
 
       it 'raises an error' do

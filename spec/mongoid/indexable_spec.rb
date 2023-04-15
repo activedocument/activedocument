@@ -456,7 +456,7 @@ describe Mongoid::Indexable do
         end
 
         let(:options) do
-          klass.index_specification(:"$**" => 'text').options
+          klass.index_specification(:'$**' => 'text').options
         end
 
         it 'allows the set of the text index' do

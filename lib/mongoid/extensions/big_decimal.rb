@@ -77,12 +77,10 @@ module Mongoid
             elsif !object.is_a?(String)
               object.try(:to_d)
             end
-          else
-            if object.is_a?(BSON::Decimal128) || object.numeric?
-              object.to_s
-            elsif !object.is_a?(String)
-              object.try(:to_d)&.to_s
-            end
+          elsif object.is_a?(BSON::Decimal128) || object.numeric?
+            object.to_s
+          elsif !object.is_a?(String)
+            object.try(:to_d)&.to_s
           end
         end
       end

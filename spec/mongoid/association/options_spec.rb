@@ -8,7 +8,7 @@ describe Mongoid::Association::Options do
     [
       Mongoid::Association::Referenced::HasAndBelongsToMany,
       Mongoid::Association::Referenced::BelongsTo
-    ]
+    ].freeze
 
   [
     Mongoid::Association::Embedded::EmbeddedIn,
@@ -1046,7 +1046,7 @@ describe Mongoid::Association::Options do
             end
 
             it 'should support the option' do
-              fail('All association types should support this option')
+              raise('All association types should support this option')
             end
           end
         end
@@ -1156,7 +1156,10 @@ describe Mongoid::Association::Options do
 
             before do
               class ClassLeft; end
-              module ClassLeft::Handle; end
+
+              class ClassLeft
+                module Handle; end
+              end
             end
 
             let(:options) do
@@ -1191,7 +1194,7 @@ describe Mongoid::Association::Options do
         context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:extend) do
 
           it 'should support the option' do
-            fail('All association types should support this option')
+            raise('All association types should support this option')
           end
         end
       end
@@ -1237,7 +1240,7 @@ describe Mongoid::Association::Options do
             end
 
             it 'should support the option' do
-              fail('All association types should support this option')
+              raise('All association types should support this option')
             end
           end
         end
@@ -1313,7 +1316,7 @@ describe Mongoid::Association::Options do
             end
 
             it 'should support the option' do
-              fail('All association types should support this option')
+              raise('All association types should support this option')
             end
           end
         end

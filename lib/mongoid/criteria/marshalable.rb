@@ -42,9 +42,8 @@ module Mongoid
       private
 
       def dump_hash(name)
-        send(name).inject({}) do |raw, (key, value)|
+        send(name).each_with_object({}) do |(key, value), raw|
           raw[key] = value
-          raw
         end
       end
 

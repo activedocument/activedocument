@@ -20,7 +20,7 @@ module Mongoid
           # @return [ Mongoid::Document ] A single document.
           def build(base, object, type = nil, selected_fields = nil)
             if query?(object)
-              if !base.new_record?
+              unless base.new_record?
                 execute_query(object, base)
               end
             else

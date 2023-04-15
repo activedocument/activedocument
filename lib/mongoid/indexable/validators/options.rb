@@ -29,7 +29,7 @@ module Mongoid
           :partial_filter_expression,
           :collation,
           :wildcard_projection
-        ]
+        ].freeze
 
         VALID_TYPES = [
           1,
@@ -39,7 +39,7 @@ module Mongoid
           'geoHaystack',
           'text',
           'hashed'
-        ]
+        ].freeze
 
         # Validate the index specification.
         #
@@ -91,7 +91,7 @@ module Mongoid
         #
         # @raise [ Errors::InvalidIndex ] If validation failed.
         def validate_spec(klass, spec, options)
-          raise Errors::InvalidIndex.new(klass, spec, options) if !spec.is_a?(::Hash)
+          raise Errors::InvalidIndex.new(klass, spec, options) unless spec.is_a?(::Hash)
 
           spec.each_pair do |name, value|
             next if name == :options

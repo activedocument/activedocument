@@ -257,9 +257,9 @@ describe 'Mongoid application tests' do
   def parse_mongodb_uri(uri)
     pre, query = uri.split('?', 2)
     if pre =~ %r,\A(mongodb(?:.*?))://([^/]+)(?:/(.*))?\z,
-      protocol = $1
-      hosts = $2
-      database = $3
+      protocol = Regexp.last_match(1)
+      hosts = Regexp.last_match(2)
+      database = Regexp.last_match(3)
       if database == ''
         database = nil
       end
@@ -311,11 +311,11 @@ describe 'Mongoid application tests' do
       gemfile_lines.delete_if do |line|
         line =~ /rails/
       end
-      if rails_version == 'master'
-        gemfile_lines << "gem 'rails', git: 'https://github.com/rails/rails'\n"
-      else
-        gemfile_lines << "gem 'rails', '~> #{rails_version}.0'\n"
-      end
+      gemfile_lines << if rails_version == 'master'
+                         "gem 'rails', git: 'https://github.com/rails/rails'\n"
+                       else
+                         "gem 'rails', '~> #{rails_version}.0'\n"
+                       end
     end
     File.open('Gemfile', 'w') do |f|
       f << gemfile_lines.join
@@ -360,23 +360,22 @@ describe 'Mongoid application tests' do
   end
 
   def clean_env
-    @clean_env ||= Hash[ENV.keys.grep(/BUNDLE|RUBYOPT/).map { |k| [k, nil] }]
+    @clean_env ||= ENV.keys.grep(/BUNDLE|RUBYOPT/).to_h { |k| [k, nil] }
   end
 
   def wait_for_port(port, timeout, process)
     deadline = Mongoid::Utils.monotonic_time + timeout
     loop do
-      begin
-        Socket.tcp('localhost', port, nil, nil, connect_timeout: 0.5) do |socket|
-          break
-        end
-      rescue IOError, SystemCallError
-        unless process.alive?
-          raise "Process #{process} died while waiting for port #{port}"
-        end
-        if Mongoid::Utils.monotonic_time > deadline
-          raise
-        end
+      Socket.tcp('localhost', port, nil, nil, connect_timeout: 0.5) do |socket|
+        break
+      end
+    rescue IOError, SystemCallError
+      unless process.alive?
+        raise "Process #{process} died while waiting for port #{port}"
+      end
+
+      if Mongoid::Utils.monotonic_time > deadline
+        raise
       end
     end
   end

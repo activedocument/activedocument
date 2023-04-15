@@ -56,9 +56,11 @@ module Mongoid
     # @return [ Mongo::Collection ] The collection for this persistence
     #   context.
     def collection(parent = nil)
-      parent ?
-        parent.collection.with(client_options.except(:database, 'database')) :
+      if parent
+        parent.collection.with(client_options.except(:database, 'database'))
+      else
         client[collection_name.to_sym]
+      end
     end
 
     # Get the collection name for this persistence context.
@@ -233,10 +235,10 @@ module Mongoid
       # @param [ Mongoid::PersistenceContext ] original_context The original persistence
       #   context that was set before this context was used.
       def clear(object, cluster = nil, original_context = nil)
-        if context = get(object)
-          unless cluster.nil? || context.cluster.equal?(cluster)
-            context.client.close unless context.reusable_client?
-          end
+        if (context = get(object)) &&
+           !(cluster.nil? || context.cluster.equal?(cluster)) &&
+           !context.reusable_client?
+          context.client.close
         end
       ensure
         store_context(object, original_context)
@@ -247,7 +249,7 @@ module Mongoid
       # Key to store persistence contexts in the thread local storage.
       #
       # @api private
-      PERSISTENCE_CONTEXT_KEY = :"[mongoid]:persistence_context"
+      PERSISTENCE_CONTEXT_KEY = :'[mongoid]:persistence_context'
 
       # Get the persistence context for a given object from the thread local
       #   storage.

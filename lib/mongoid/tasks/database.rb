@@ -64,22 +64,21 @@ module Mongoid
         undefined_by_model = {}
 
         models.each do |model|
-          unless model.embedded?
-            begin
-              model.collection.indexes(session: model.send(:_session)).each do |index|
-                # ignore default index
-                unless index['name'] == '_id_'
-                  key = index['key'].symbolize_keys
-                  spec = model.index_specification(key, index['name'])
-                  unless spec
-                    # index not specified
-                    undefined_by_model[model] ||= []
-                    undefined_by_model[model] << index
-                  end
-                end
-              end
-            rescue Mongo::Error::OperationFailure; end
+          next if model.embedded?
+
+          model.collection.indexes(session: model.send(:_session)).each do |index|
+            # ignore default index
+            next if index['name'] == '_id_'
+
+            key = index['key'].symbolize_keys
+            spec = model.index_specification(key, index['name'])
+            next if spec
+
+            # index not specified
+            undefined_by_model[model] ||= []
+            undefined_by_model[model] << index
           end
+        rescue Mongo::Error::OperationFailure
         end
 
         undefined_by_model
@@ -99,7 +98,7 @@ module Mongoid
             collection = model.collection
             collection.indexes(session: model.send(:_session)).drop_one(key)
             logger.info(
-              "MONGOID: Removed index '#{index['name']}' on collection " +
+              "MONGOID: Removed index '#{index['name']}' on collection " \
               "'#{collection.name}' in database '#{collection.database.name}'."
             )
           end
@@ -168,7 +167,6 @@ module Mongoid
             # On 3.6 and earlier match the text of exception message.
             if exc.code == 26 || exc.code == 8 ||
                exc.code.nil? && exc.message =~ /not found/
-            then
               model.collection.create
 
               stats = model.collection.database.command(collStats: model.collection.name).first

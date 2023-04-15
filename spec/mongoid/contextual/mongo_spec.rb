@@ -2920,21 +2920,23 @@ describe Mongoid::Contextual::Mongo do
     end
 
     let(:map) do
-      %Q{
-      function() {
-        emit(this.name, { likes: this.likes });
-      }}
+      <<~JAVASCRIPT
+        function() {
+          emit(this.name, { likes: this.likes });
+        }
+      JAVASCRIPT
     end
 
     let(:reduce) do
-      %Q{
-      function(key, values) {
-        var result = { likes: 0 };
-        values.forEach(function(value) {
-          result.likes += value.likes;
-        });
-        return result;
-      }}
+      <<~JAVASCRIPT
+        function(key, values) {
+          var result = { likes: 0 };
+          values.forEach(function(value) {
+            result.likes += value.likes;
+          });
+          return result;
+        }
+      JAVASCRIPT
     end
 
     let(:ordered_results) do
@@ -3315,11 +3317,12 @@ describe Mongoid::Contextual::Mongo do
       end
 
       let(:finalize) do
-        %Q{
-        function(key, value) {
-          value.extra = true;
-          return value;
-        }}
+        <<~JAVASCRIPT
+          function(key, value) {
+            value.extra = true;
+            return value;
+          }
+        JAVASCRIPT
       end
 
       let(:results) do

@@ -146,8 +146,8 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
       end
 
       before do
-        person1.appointments.concat([appointment])
-        person2.appointments.concat([appointment])
+        person1.appointments.push(appointment)
+        person2.appointments.push(appointment)
       end
 
       it 'clears the object of its previous association' do

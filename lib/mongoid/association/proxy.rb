@@ -69,7 +69,7 @@ module Mongoid
       #
       # @return [ Class ] The association class.
       def klass
-        _association ? _association.klass : nil
+        _association&.klass
       end
 
       # Resets the criteria inside the association proxy. Used by many to many

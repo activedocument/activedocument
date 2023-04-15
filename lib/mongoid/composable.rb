@@ -91,7 +91,7 @@ module Mongoid
       Association::Macros,
       ActiveModel::Model,
       ActiveModel::Validations
-    ]
+    ].freeze
 
     # These are methods names defined in included blocks that may conflict
     # with user-defined association or field names.
@@ -110,7 +110,7 @@ module Mongoid
                              :storage_options,
                              :cascades,
                              :cyclic,
-                             :cache_timestamp_format]
+                             :cache_timestamp_format].freeze
 
     class << self
 

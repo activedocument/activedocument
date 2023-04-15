@@ -123,9 +123,9 @@ module Mongoid
             raise ArgumentError, 'Shorthand shard_key syntax does not permit options'
           end
 
-          spec = Hash[args.map do |name|
+          spec = args.to_h do |name|
             [name, 1]
-          end]
+          end
 
           return shard_key(spec)
         end
@@ -136,12 +136,12 @@ module Mongoid
 
         spec, options = args
 
-        spec = Hash[spec.map do |name, value|
+        spec = spec.to_h do |name, value|
           if value.is_a?(Symbol)
             value = value.to_s
           end
           [database_field_name(name).to_sym, value]
-        end]
+        end
 
         self.shard_key_fields = spec.keys
         self.shard_config = {

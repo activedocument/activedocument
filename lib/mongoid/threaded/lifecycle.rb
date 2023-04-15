@@ -2,11 +2,11 @@
 
 module Mongoid
   module Threaded
-    BIND = 'bind'.freeze
-    ASSIGN = 'assign'.freeze
-    BUILD = 'build'.freeze
-    LOAD = 'load'.freeze
-    CREATE = 'create'.freeze
+    BIND = 'bind'
+    ASSIGN = 'assign'
+    BUILD = 'build'
+    LOAD = 'load'
+    CREATE = 'create'
 
     # This module contains convenience methods for document lifecycle that
     # resides on thread locals.

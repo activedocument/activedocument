@@ -59,12 +59,10 @@ module Mongoid
           #
           # @param [ Mongoid::Document ] doc The document to check.
           def check_polymorphic_inverses!(doc)
-            if inverses = _association.inverses(doc)
-              if inverses.length > 1
-                raise Errors::InvalidSetPolymorphicRelation.new(
-                  _association.name, _base.class.name, _target.class.name
-                )
-              end
+            if (inverses = _association.inverses(doc)) && (inverses.length > 1)
+              raise Errors::InvalidSetPolymorphicRelation.new(
+                _association.name, _base.class.name, _target.class.name
+              )
             end
           end
         end

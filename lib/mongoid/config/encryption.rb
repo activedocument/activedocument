@@ -183,8 +183,6 @@ module Mongoid
           DETERMINISTIC_ALGORITHM
         when false
           RANDOM_ALGORITHM
-        else
-          nil
         end
       end
 

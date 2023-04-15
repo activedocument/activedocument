@@ -62,30 +62,30 @@ module Mongoid
           removals = pre_process_batch_remove(docs, method)
           pulls, pull_alls = removals.partition { |o| !o['_id'].nil? }
 
-          if !_base.persisted?
+          unless _base.persisted?
             post_process_batch_remove(docs, method) unless docs.empty?
             return reindex
           end
 
-          if !docs.empty?
-            if !pulls.empty?
+          if docs.empty?
+            collection.find(selector).update_one(
+              positionally(selector, '$set' => { path => [] }),
+              session: _session
+            )
+          else
+            unless pulls.empty?
               collection.find(selector).update_one(
                 positionally(selector, '$pull' => { path => { '_id' => { '$in' => pulls.pluck('_id') } } }),
                 session: _session
               )
             end
-            if !pull_alls.empty?
+            unless pull_alls.empty?
               collection.find(selector).update_one(
                 positionally(selector, '$pullAll' => { path => pull_alls }),
                 session: _session
               )
             end
             post_process_batch_remove(docs, method)
-          else
-            collection.find(selector).update_one(
-              positionally(selector, '$set' => { path => [] }),
-              session: _session
-            )
           end
           reindex
         end

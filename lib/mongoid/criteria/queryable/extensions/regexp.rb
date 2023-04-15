@@ -14,7 +14,9 @@ module Mongoid
           #   /\A[123]/.regexp?
           #
           # @return [ true ] Always true.
-          def regexp?; true; end
+          def regexp?
+            true
+          end
 
           module ClassMethods
 
@@ -42,7 +44,9 @@ module Mongoid
             #   bson_raw_regexp.regexp?
             #
             # @return [ true ] Always true.
-            def regexp?; true; end
+            def regexp?
+              true
+            end
 
             module ClassMethods
 

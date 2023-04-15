@@ -80,7 +80,10 @@ describe Mongoid::PersistenceContext do
       end
 
       it 'clears the context anyway' do
-        begin; described_class.clear(object); rescue; end
+        begin
+          described_class.clear(object)
+        rescue StandardError
+        end
         expect(described_class.get(object)).to be(nil)
       end
     end

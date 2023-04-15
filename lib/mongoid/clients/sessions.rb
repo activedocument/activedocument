@@ -82,22 +82,20 @@ module Mongoid
         # @yield Provided block will be executed inside a transaction.
         def transaction(options = {}, session_options: {})
           with_session(session_options) do |session|
-            begin
-              session.start_transaction(options)
-              yield
-              commit_transaction(session)
-            rescue Mongoid::Errors::Rollback
-              abort_transaction(session)
-            rescue Mongoid::Errors::InvalidSessionNesting
-              # Session should be ended here.
-              raise Mongoid::Errors::InvalidTransactionNesting.new
-            rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => e
-              abort_transaction(session)
-              raise Mongoid::Errors::TransactionError(e)
-            rescue StandardError => e
-              abort_transaction(session)
-              raise e
-            end
+            session.start_transaction(options)
+            yield
+            commit_transaction(session)
+          rescue Mongoid::Errors::Rollback
+            abort_transaction(session)
+          rescue Mongoid::Errors::InvalidSessionNesting
+            # Session should be ended here.
+            raise Mongoid::Errors::InvalidTransactionNesting.new
+          rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => e
+            abort_transaction(session)
+            raise Mongoid::Errors::TransactionError(e)
+          rescue StandardError => e
+            abort_transaction(session)
+            raise e
           end
         end
 

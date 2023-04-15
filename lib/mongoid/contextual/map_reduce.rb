@@ -31,12 +31,10 @@ module Mongoid
       #   end
       #
       # @return [ Enumerator ] The enumerator.
-      def each
+      def each(&block)
         validate_out!
-        if block_given?
-          @map_reduce.each do |doc|
-            yield doc
-          end
+        if block
+          @map_reduce.each(&block)
         else
           @map_reduce.to_enum
         end

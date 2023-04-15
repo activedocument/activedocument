@@ -2404,7 +2404,7 @@ describe Mongoid::Attributes do
         let(:doc) { NestedBook.create! }
         before do
           doc.pages << NestedPage.new
-          doc.pages.concat([NestedPage.new, NestedPage.new])
+          doc.pages.push(NestedPage.new, NestedPage.new)
         end
 
         it 'updates the attributes' do

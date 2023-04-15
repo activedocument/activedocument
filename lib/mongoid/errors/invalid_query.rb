@@ -22,7 +22,7 @@ module Mongoid
           expr = if /\A<#((?:.|\n)*)>\z/.match?(expr)
                    "<##{expr.slice(0, 97)}...>"
                  else
-                   expr.slice(0, 100) + '...'
+                   "#{expr.slice(0, 100)}..."
                  end
         end
 

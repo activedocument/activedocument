@@ -564,9 +564,9 @@ describe Mongoid::Scopable do
 
         context 'when with optional and keyword arguments' do
           before do
-            Band.scope(:named_by, ->(name, deleted: false) {
+            Band.scope(:named_by, lambda do |name, deleted: false|
               Band.where(name: name, deleted: deleted)
-            })
+            end)
           end
 
           let(:scope) do
@@ -760,10 +760,10 @@ describe Mongoid::Scopable do
             before do
               Author.scope(:author, -> { where(author: true) })
               Article.scope(:is_public, -> { where(public: true) })
-              Article.scope(:authored, -> {
+              Article.scope(:authored, lambda do
                 author_ids = Author.author.pluck(:id)
                 where(:author_id.in => author_ids)
-              })
+              end)
 
               Author.create!(author: true, id: 1)
               Author.create!(author: true, id: 2)

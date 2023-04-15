@@ -28,11 +28,11 @@ module Mongoid
           raise Errors::InvalidQuery, "Range is not supported as an argument to '#{original_operator}'"
         else
           # When doing a comparison with Time objects, compare using millisecond precision
-          if value.kind_of?(Time) && condition.kind_of?(Time)
+          if value.is_a?(Time) && condition.is_a?(Time)
             time_eq?(value, condition)
-          elsif value.is_a?(Array) && condition.kind_of?(Time)
+          elsif value.is_a?(Array) && condition.is_a?(Time)
             value.map do |v|
-              if v.kind_of?(Time)
+              if v.is_a?(Time)
                 time_rounded_to_millis(v)
               else
                 v
@@ -69,7 +69,7 @@ module Mongoid
       #
       # @return [ true | false ] The time rounded to the millisecond.
       module_function def time_rounded_to_millis(time)
-        return time._bson_to_i * 1000 + time.usec.divmod(1000).first
+        time._bson_to_i * 1000 + time.usec.divmod(1000).first
       end
     end
   end

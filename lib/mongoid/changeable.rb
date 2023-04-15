@@ -121,15 +121,15 @@ module Mongoid
     def setters
       mods = {}
       changes.each_pair do |name, changes|
-        if changes
-          old, new = changes
-          field = fields[name]
-          key = atomic_attribute_name(name)
-          if field && field.resizable?
-            field.add_atomic_changes(self, name, key, mods, new, old)
-          else
-            mods[key] = new unless atomic_unsets.include?(key)
-          end
+        next unless changes
+
+        old, new = changes
+        field = fields[name]
+        key = atomic_attribute_name(name)
+        if field&.resizable?
+          field.add_atomic_changes(self, name, key, mods, new, old)
+        else
+          mods[key] = new unless atomic_unsets.include?(key)
         end
       end
       mods
@@ -249,11 +249,12 @@ module Mongoid
       return false unless changed_attributes.key?(attr)
       return false if changed_attributes[attr] == attributes[attr]
 
-      if kwargs.key?(:from)
-        return false if changed_attributes[attr] != kwargs[:from]
+      if kwargs.key?(:from) && (changed_attributes[attr] != kwargs[:from])
+        return false
       end
-      if kwargs.key?(:to)
-        return false if attributes[attr] != kwargs[:to]
+
+      if kwargs.key?(:to) && (attributes[attr] != kwargs[:to])
+        return false
       end
 
       true

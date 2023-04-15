@@ -8,9 +8,9 @@ describe 'Dots and Dollars' do
   before(:all) do
     class DADMUser
       include Mongoid::Document
-      field :"first.last", type: String, default: 'Neil.Shweky'
-      field :"$_amount", type: Integer, default: 0
-      field :"$a.b", type: Boolean, default: true
+      field :'first.last', type: String, default: 'Neil.Shweky'
+      field :'$_amount', type: Integer, default: 0
+      field :'$a.b', type: Boolean, default: true
     end
   end
 
@@ -22,19 +22,19 @@ describe 'Dots and Dollars' do
 
       context 'on dotted fields' do
         it 'gets the right value' do
-          expect(user.send(:"first.last")).to eq('Neil.Shweky')
+          expect(user.send(:'first.last')).to eq('Neil.Shweky')
         end
       end
 
       context 'on dollared fields' do
         it 'gets the right value' do
-          expect(user.send(:"$_amount")).to eq(0)
+          expect(user.send(:'$_amount')).to eq(0)
         end
       end
 
       context 'on dotted and dollared fields' do
         it 'gets the right value' do
-          expect(user.send(:"$a.b")).to be true
+          expect(user.send(:'$a.b')).to be true
         end
       end
     end
@@ -65,7 +65,7 @@ describe 'Dots and Dollars' do
       context 'on dotted fields' do
         it 'raises an error' do
           expect do
-            user.send(:"first.last=", 'Nissim.Shweky')
+            user.send(:'first.last=', 'Nissim.Shweky')
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -73,7 +73,7 @@ describe 'Dots and Dollars' do
       context 'on dollared fields' do
         it 'raises an error' do
           expect do
-            user.send(:"$_amount=", 1)
+            user.send(:'$_amount=', 1)
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -81,7 +81,7 @@ describe 'Dots and Dollars' do
       context 'on dotted and dollared fields' do
         it 'raises an error' do
           expect do
-            user.send(:"$a.b=", false)
+            user.send(:'$a.b=', false)
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -146,7 +146,7 @@ describe 'Dots and Dollars' do
       context 'on dotted fields' do
         it 'raises an error' do
           expect do
-            user.update_attributes!("first.last": 'Nissim.Shweky')
+            user.update_attributes!('first.last': 'Nissim.Shweky')
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -154,7 +154,7 @@ describe 'Dots and Dollars' do
       context 'on dollared fields' do
         it 'raises an error' do
           expect do
-            user.update_attributes!("$_amount": 1)
+            user.update_attributes!('$_amount': 1)
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -162,7 +162,7 @@ describe 'Dots and Dollars' do
       context 'on dotted and dollared fields' do
         it 'raises an error' do
           expect do
-            user.update_attributes!("$a.b": false)
+            user.update_attributes!('$a.b': false)
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -173,7 +173,7 @@ describe 'Dots and Dollars' do
       context 'on dotted fields' do
         it 'raises an error' do
           expect do
-            user[:"first.last"] = 'Nissim.Shweky'
+            user[:'first.last'] = 'Nissim.Shweky'
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -181,7 +181,7 @@ describe 'Dots and Dollars' do
       context 'on dollared fields' do
         it 'raises an error' do
           expect do
-            user[:"$_amount"] = 1
+            user[:'$_amount'] = 1
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -189,7 +189,7 @@ describe 'Dots and Dollars' do
       context 'on dotted and dollared fields' do
         it 'raises an error' do
           expect do
-            user[:"$a.b"] = false
+            user[:'$a.b'] = false
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -253,7 +253,7 @@ describe 'Dots and Dollars' do
     context 'when attempting to query a dotted field' do
 
       let(:queried) do
-        DADMUser.where("first.last": 'Neil.Shweky').first
+        DADMUser.where('first.last': 'Neil.Shweky').first
       end
 
       it 'does not work' do
@@ -264,7 +264,7 @@ describe 'Dots and Dollars' do
     context 'when attempting to query a dollared field' do
 
       let(:queried) do
-        DADMUser.where("$_amount": 0).first
+        DADMUser.where('$_amount': 0).first
       end
 
       it 'raise an error' do

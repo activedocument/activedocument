@@ -79,14 +79,12 @@ describe 'Matcher operators' do
             context 'via driver' do
               if mop_error?(spec, 'driver')
                 it 'produces an error' do
-                  begin
-                    Mop.collection.find(query).any?
-                  rescue Mongo::Error::OperationFailure
-                  rescue Mongo::Error::InvalidDocument
-                  rescue BSON::Error::UnserializableClass
-                  else
-                    fail 'Expected an exception to be raised'
-                  end
+                  Mop.collection.find(query).any?
+                rescue Mongo::Error::OperationFailure
+                rescue Mongo::Error::InvalidDocument
+                rescue BSON::Error::UnserializableClass
+                else
+                  raise 'Expected an exception to be raised'
                 end
               else
                 it 'produces the correct result' do
@@ -98,15 +96,13 @@ describe 'Matcher operators' do
             context 'via Mongoid DSL' do
               if mop_error?(spec, 'dsl')
                 it 'produces an error' do
-                  begin
-                    Mop.where(query).any?
-                  rescue Mongo::Error::OperationFailure
-                  rescue BSON::Error::UnserializableClass
-                  rescue Mongoid::Errors::InvalidQuery
-                  rescue Mongoid::Errors::CriteriaArgumentRequired
-                  else
-                    fail 'Expected the query to raise an error'
-                  end
+                  Mop.where(query).any?
+                rescue Mongo::Error::OperationFailure
+                rescue BSON::Error::UnserializableClass
+                rescue Mongoid::Errors::InvalidQuery
+                rescue Mongoid::Errors::CriteriaArgumentRequired
+                else
+                  raise 'Expected the query to raise an error'
                 end
               else
                 it 'produces the correct result' do

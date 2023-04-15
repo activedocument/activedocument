@@ -24,13 +24,13 @@ module InterceptableSpec
             callback_registry&.record_call(self.class, "#{whn}_#{what}".to_sym)
           end
         end
-        unless what == :validation
-          send("around_#{what}", "around_#{what}_stub".to_sym)
-          define_method("around_#{what}_stub") do |&block|
-            callback_registry&.record_call(self.class, "around_#{what}_open".to_sym)
-            block.call
-            callback_registry&.record_call(self.class, "around_#{what}_close".to_sym)
-          end
+        next if what == :validation
+
+        send("around_#{what}", "around_#{what}_stub".to_sym)
+        define_method("around_#{what}_stub") do |&block|
+          callback_registry&.record_call(self.class, "around_#{what}_open".to_sym)
+          block.call
+          callback_registry&.record_call(self.class, "around_#{what}_close".to_sym)
         end
       end
     end

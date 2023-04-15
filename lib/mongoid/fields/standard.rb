@@ -194,7 +194,7 @@ module Mongoid
       # @return [ true | false ] If the field was included.
       def included?(fields)
         (fields.values.first == 1 && fields[name.to_s] == 1) ||
-          (fields.values.first == 0 && !fields.has_key?(name.to_s))
+          (fields.values.first == 0 && !fields.key?(name.to_s))
       end
 
       # Get the evaluated default.

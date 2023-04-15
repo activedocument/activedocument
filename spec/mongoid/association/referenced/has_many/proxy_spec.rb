@@ -1200,7 +1200,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         before do
-          person.posts.concat([post])
+          person.posts.push(post)
         end
 
         it 'sets the foreign key on the association' do
@@ -1232,7 +1232,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
         let!(:person) do
           Person.create! do |doc|
-            doc.posts.concat([post])
+            doc.posts.push(post)
           end
         end
 
@@ -1272,7 +1272,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         before do
-          person.posts.concat([post, post_three])
+          person.posts.push(post, post_three)
         end
 
         it 'sets the foreign key on the association' do
@@ -1302,7 +1302,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           before do
-            person.posts.concat([post_two])
+            person.posts.push(post_two)
           end
 
           it 'sets the foreign key on the association' do
@@ -1350,7 +1350,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       before do
-        movie.ratings.concat([rating])
+        movie.ratings.push(rating)
       end
 
       it 'sets the foreign key on the association' do
@@ -1381,7 +1381,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       before do
-        movie.ratings.concat([rating])
+        movie.ratings.push(rating)
       end
 
       it 'sets the foreign key on the association' do
@@ -3470,7 +3470,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
     end
 
-    Post.scopes.keys.each do |method|
+    Post.scopes.each_key do |method|
 
       context "when checking #{method}" do
 
@@ -3752,7 +3752,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
       before do
         expect(artist).to receive(:before_add_album).and_raise
-        begin; artist.albums << album; rescue; end
+        begin
+          artist.albums << album
+        rescue StandardError
+        end
       end
 
       it 'does not add the document to the association' do
@@ -3780,7 +3783,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
       before do
         expect(artist).to receive(:after_add_album).and_raise
-        begin; artist.albums << album; rescue; end
+        begin
+          artist.albums << album
+        rescue StandardError
+        end
       end
 
       it 'adds the document to the association' do
@@ -3862,7 +3868,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         describe '#delete' do
 
           before do
-            begin; artist.albums.delete(album); rescue; end
+            artist.albums.delete(album)
+          rescue StandardError
           end
 
           it 'does not remove the document from the association' do
@@ -3873,7 +3880,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         describe '#clear' do
 
           before do
-            begin; artist.albums.clear; rescue; end
+            artist.albums.clear
+          rescue StandardError
           end
 
           it 'does not clear the association' do
@@ -3933,7 +3941,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       describe '#delete' do
 
         before do
-          begin; artist.albums.delete(album); rescue; end
+          artist.albums.delete(album)
+        rescue StandardError
         end
 
         it 'removes the documents from the association' do
@@ -3944,7 +3953,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       describe '#clear' do
 
         before do
-          begin; artist.albums.clear; rescue; end
+          artist.albums.clear
+        rescue StandardError
         end
 
         it 'removes the documents from the association' do
@@ -4105,7 +4115,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     let!(:basic) { Basic.first }
 
     before do
-      agent.basic_ids.concat([basic.id])
+      agent.basic_ids.push(basic.id)
     end
 
     it 'works on the first attempt' do

@@ -42,23 +42,23 @@ module Mongoid
         queue = [klass.to_s]
 
         while klass = queue.shift
-          if as = assoc_map.delete(klass)
-            as.each do |assoc|
-              queue << assoc.class_name
+          next unless as = assoc_map.delete(klass)
 
-              # If this class is nested in the inclusion tree, only load documents
-              # for the association above it. If there is no parent association,
-              # we will include documents from the documents passed to this method.
-              ds = docs
-              unless assoc.parent_inclusions.empty?
-                ds = assoc.parent_inclusions.map { |p| docs_map[p].to_a }.flatten
-              end
+          as.each do |assoc|
+            queue << assoc.class_name
 
-              res = assoc.relation.eager_loader([assoc], ds).run
-
-              docs_map[assoc.name] ||= [].to_set
-              docs_map[assoc.name].merge(res)
+            # If this class is nested in the inclusion tree, only load documents
+            # for the association above it. If there is no parent association,
+            # we will include documents from the documents passed to this method.
+            ds = docs
+            unless assoc.parent_inclusions.empty?
+              ds = assoc.parent_inclusions.map { |p| docs_map[p].to_a }.flatten
             end
+
+            res = assoc.relation.eager_loader([assoc], ds).run
+
+            docs_map[assoc.name] ||= [].to_set
+            docs_map[assoc.name].merge(res)
           end
         end
       end

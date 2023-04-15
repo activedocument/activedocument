@@ -142,11 +142,11 @@ module Mongoid
         #
         # @return [ Hash ] The raw MongoDB selector.
         def transform_value(value, negating = false)
-          if block
-            expr = block[value]
-          else
-            expr = value
-          end
+          expr = if block
+                   block[value]
+                 else
+                   value
+                 end
 
           if expanded
             expr = { expanded => expr }

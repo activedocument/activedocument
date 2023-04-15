@@ -157,11 +157,11 @@ module Mongoid
               execute_callback :before_remove, doc
             end
             unless _association.forced_nil_inverse?
-              if field = _association.options[:inverse_primary_key]
-                ipk = _base.public_send(field)
-              else
-                ipk = _base._id
-              end
+              ipk = if (field = _association.options[:inverse_primary_key])
+                      _base.public_send(field)
+                    else
+                      _base._id
+                    end
               if replacement
                 objects_to_clear = _base.public_send(foreign_key) - replacement.collect do |object|
                   object.public_send(_association.primary_key)
@@ -182,7 +182,7 @@ module Mongoid
               end
               begin
                 execute_callback :after_remove, doc
-              rescue => e
+              rescue StandardError => e
                 after_remove_error = e
               end
             end

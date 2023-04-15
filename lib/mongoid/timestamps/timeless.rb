@@ -107,7 +107,7 @@ module Mongoid
         # @return [ Integer | nil ] The counter value, or nil
         #   if the counter was cleared.
         def set_timeless_counter(counter)
-          Timeless[name] = (counter == 0) ? nil : counter
+          Timeless[name] = counter == 0 ? nil : counter
         end
 
         # Returns whether the current class should skip timestamping.

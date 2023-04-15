@@ -17,7 +17,7 @@ module Mongoid
           #
           # @return [ Object ] The result of the add.
           def __add__(object)
-            (object == self) ? self : [self, object].flatten.uniq
+            object == self ? self : [self, object].flatten.uniq
           end
 
           # Merge this object into the provided array.
@@ -99,7 +99,9 @@ module Mongoid
           #   1.__deep_copy__
           #
           # @return [ Object ] self.
-          def __deep_copy__; self; end
+          def __deep_copy__
+            self
+          end
 
           # Get the object as an array.
           #

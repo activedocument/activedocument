@@ -1,5 +1,5 @@
 Mongoid.configure do
-  target_version = "<%= Mongoid::VERSION[/^\d+\.\d+/] %>"
+  target_version = "<%= Mongoid::VERSION[/^\d+.\d+/] %>"
 
   # Load Mongoid behavior defaults. This automatically sets
   # features flags (refer to documentation)

@@ -18,8 +18,8 @@ module Mongoid
       #   person.suppress_touch_callbacks { ... }
       #
       # @api private
-      def suppress_touch_callbacks
-        Touchable.suppress_touch_callbacks(self.class.name) { yield }
+      def suppress_touch_callbacks(&block)
+        Touchable.suppress_touch_callbacks(self.class.name, &block)
       end
 
       # Queries whether touch callbacks are being suppressed for the class

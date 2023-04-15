@@ -80,7 +80,7 @@ module Mongoid
           #
           # @return [ String ] "parent_" plus the class name underscored.
           def cyclic_parent_name
-            ("parent_#{self.name.demodulize.underscore.singularize}").to_sym
+            "parent_#{self.name.demodulize.underscore.singularize}".to_sym
           end
 
           # Determines the child name given the class.
@@ -93,7 +93,7 @@ module Mongoid
           # @return [ String ] "child_" plus the class name underscored in
           #   singular or plural form.
           def cyclic_child_name(many = true)
-            ("child_#{self.name.demodulize.underscore.send(many ? :pluralize : :singularize)}").to_sym
+            "child_#{self.name.demodulize.underscore.send(many ? :pluralize : :singularize)}".to_sym
           end
         end
       end

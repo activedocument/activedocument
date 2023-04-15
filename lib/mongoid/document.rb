@@ -121,7 +121,7 @@ module Mongoid
     #
     # @return [ String ] The id of the document or nil if new.
     def to_key
-      (persisted? || destroyed?) ? [_id.to_s] : nil
+      persisted? || destroyed? ? [_id.to_s] : nil
     end
 
     # Return a hash of the entire document hierarchy from this document and
@@ -242,10 +242,10 @@ module Mongoid
         without_autobuild do
           relation, stored = send(name), meta.store_as
           if attributes.key?(stored) || !relation.blank?
-            if !relation.nil?
-              attributes[stored] = relation.send(:as_attributes)
-            else
+            if relation.nil?
               attributes.delete(stored)
+            else
+              attributes[stored] = relation.send(:as_attributes)
             end
           end
         end

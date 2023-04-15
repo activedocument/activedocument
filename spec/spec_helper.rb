@@ -85,7 +85,7 @@ CONFIG = {
                  :info
                end
   }
-}
+}.freeze
 
 # Set the database that the spec suite connects to.
 Mongoid.configure do |config|

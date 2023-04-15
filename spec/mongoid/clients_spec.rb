@@ -662,7 +662,7 @@ describe Mongoid::Clients do
       end
 
       it 'does not set the Mongoid.app_name option' do
-        expect(mongo_client.options.has_key?(:app_name)).to be(false)
+        expect(mongo_client.options.key?(:app_name)).to be(false)
       end
     end
   end

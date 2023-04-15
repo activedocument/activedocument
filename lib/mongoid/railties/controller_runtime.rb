@@ -55,19 +55,19 @@ module Mongoid
       # MongoDB operations from background threads.
       class Collector
 
-        VARIABLE_NAME = 'Mongoid.controller_runtime'.freeze
+        VARIABLE_NAME = 'Mongoid.controller_runtime'
 
         # Call when event started. Does nothing.
         #
         # @return [ nil ] Nil.
-        def started _; end
+        def started(_); end
 
         # Call when event completed. Updates the runtime value.
         #
         # @param [ Mongo::Event::Base ] e The monitoring event.
         #
         # @return [ Integer ] The current runtime value.
-        def _completed e
+        def _completed(e)
           Collector.runtime += e.duration * 1000
         end
         alias :succeeded :_completed
@@ -85,7 +85,7 @@ module Mongoid
         # @param [ Integer ] value The runtime value.
         #
         # @return [ Integer ] The runtime value.
-        def self.runtime= value
+        def self.runtime=(value)
           Thread.current[VARIABLE_NAME] = value
         end
 

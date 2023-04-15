@@ -81,7 +81,7 @@ module Mongoid
             # @return [ Hash ] The selection.
             def __expr_part__(key, value, negating = false)
               if negating
-                { key => { "$#{value.regexp? ? "not" : "ne"}" => value } }
+                { key => { "$#{value.regexp? ? 'not' : 'ne'}" => value } }
               else
                 { key => value }
               end

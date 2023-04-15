@@ -348,7 +348,7 @@ module Mongoid
 
     # Mixin used to deprecate Mongoid configuration options.
     module DeprecatedOptions
-      OPTIONS = %i[]
+      OPTIONS = %i[].freeze
 
       if RUBY_VERSION < '3.0'
 

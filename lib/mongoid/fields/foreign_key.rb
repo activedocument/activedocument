@@ -163,7 +163,9 @@ module Mongoid
       # @param [ Object ] object The default.
       #
       # @return [ Object ] The serialized default.
-      def serialize_default(object); object; end
+      def serialize_default(object)
+        object
+      end
     end
   end
 end

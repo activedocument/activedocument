@@ -82,7 +82,9 @@ module Mongoid
       # Whether this association is polymorphic.
       #
       # @return [ true | false ] Whether the association is polymorphic.
-      def polymorphic?; false; end
+      def polymorphic?
+        false
+      end
 
       # Whether the association has callbacks cascaded down from the parent.
       #
@@ -99,7 +101,9 @@ module Mongoid
       # Whether the association has forced nil inverse (So no foreign keys are saved).
       #
       # @return [ false ] Default is false.
-      def forced_nil_inverse?; false; end
+      def forced_nil_inverse?
+        false
+      end
 
       # The field for saving the associated object's type.
       #
@@ -110,7 +114,7 @@ module Mongoid
       #
       # @return [ nil ] Default is nil.
       def touch_field
-        @touch_field ||= options[:touch] if (options[:touch].is_a?(String) || options[:touch].is_a?(Symbol))
+        @touch_field ||= options[:touch] if options[:touch].is_a?(String) || options[:touch].is_a?(Symbol)
       end
 
       # Whether the association object should be automatically touched

@@ -36,12 +36,12 @@ module Mongoid
               **options.merge(location: _locale)
             )
           end
-        elsif document.relations.has_key?(attribute.to_s)
+        elsif document.relations.key?(attribute.to_s)
           if relation_or_fk_missing?(document, attribute, value)
             document.errors.add(attribute, :blank, **options)
           end
-        else
-          document.errors.add(attribute, :blank, **options) if not_present?(value)
+        elsif not_present?(value)
+          document.errors.add(attribute, :blank, **options)
         end
       end
 

@@ -43,7 +43,7 @@ module Mongoid
     #
     # @return [ Logger ] The default logger.
     def default_logger
-      logger = Logger.new(STDERR)
+      logger = Logger.new($stderr)
       logger.level = Mongoid::Config.log_level
       logger
     end
@@ -57,11 +57,9 @@ module Mongoid
     #
     # @return [ Logger ] The Rails logger.
     def rails_logger
-      if defined?(::Rails)
-        ::Rails.logger
-      else
-        nil
-      end
+      return unless defined?(::Rails)
+
+      ::Rails.logger
     end
   end
 end

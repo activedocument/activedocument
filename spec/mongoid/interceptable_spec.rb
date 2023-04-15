@@ -539,7 +539,8 @@ describe Mongoid::Interceptable do
           after(:all) do
             # ActiveSupport may raise an error when trying to reset callbacks on all of Band's
             # descendants, regardless of whether they have a particular callback defined.
-            begin; Band.reset_callbacks(:rearrange); rescue; end
+            Band.reset_callbacks(:rearrange)
+          rescue StandardError
           end
 
           let(:attributes) do

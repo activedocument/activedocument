@@ -144,10 +144,7 @@ module Mongoid
       #
       # @return [ nil ] Nil.
       def rename(renames)
-        operations = renames.inject({}) do |ops, (old_name, new_name)|
-          ops[old_name] = new_name.to_s
-          ops
-        end
+        operations = renames.transform_values(&:to_s)
         view.update_many('$rename' => collect_operations(operations))
       end
 
@@ -178,7 +175,7 @@ module Mongoid
         fields = args.map { |a| a.is_a?(Hash) ? a.keys : a }
                      .__find_args__
                      .map { |f| [database_field_name(f), true] }
-        view.update_many('$unset' => Hash[fields])
+        view.update_many('$unset' => fields.to_h)
       end
 
       # Performs an atomic $min update operation on the given field or fields.

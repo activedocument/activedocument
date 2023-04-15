@@ -183,8 +183,8 @@ describe Mongoid::Association::Referenced::HasMany::Buildable do
         end
 
         before do
-          person1.drugs.concat([drug])
-          person2.drugs.concat([drug])
+          person1.drugs.push(drug)
+          person2.drugs.push(drug)
         end
 
         it 'clears the object of its previous association' do

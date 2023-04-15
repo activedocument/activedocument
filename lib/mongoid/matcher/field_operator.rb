@@ -50,9 +50,9 @@ module Mongoid
       # @todo Refactor this as it is only relevant to $lt, $lte, $gt, $gte.
       #
       # @api private
-      module_function def apply_array_field_operator(exists, value, condition)
+      module_function def apply_array_field_operator(exists, value, condition, &block)
         if Array === value
-          value.any? { |v| yield v }
+          value.any?(&block)
         else
           yield value
         end

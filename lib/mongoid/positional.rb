@@ -63,7 +63,7 @@ module Mongoid
       if matches.size == 1
         keys.each do |kk|
           if position =~ /\A#{kk}\.\d+\.(.*)\z/
-            return "#{kk}.$.#{$1}"
+            return "#{kk}.$.#{::Regexp.last_match(1)}"
           end
         end
       end

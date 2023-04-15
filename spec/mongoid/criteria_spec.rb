@@ -235,7 +235,7 @@ describe Mongoid::Criteria do
 
   [:all, :all_in].each do |method|
 
-    describe "\##{method}" do
+    describe "##{method}" do
 
       let!(:match) do
         Band.create!(genres: %w[electro dub])
@@ -257,7 +257,7 @@ describe Mongoid::Criteria do
 
   [:and, :all_of].each do |method|
 
-    describe "\##{method}" do
+    describe "##{method}" do
 
       let!(:match) do
         Band.create!(name: 'Depeche Mode', genres: ['electro'])
@@ -411,7 +411,7 @@ describe Mongoid::Criteria do
 
   [:clone, :dup].each do |method|
 
-    describe "\##{method}" do
+    describe "##{method}" do
 
       let(:band) do
         Band.new
@@ -1088,7 +1088,7 @@ describe Mongoid::Criteria do
 
   [:in, :any_in].each do |method|
 
-    describe "\##{method}" do
+    describe "##{method}" do
 
       context 'when querying on a normal field' do
 
@@ -1233,21 +1233,23 @@ describe Mongoid::Criteria do
   describe '#map_reduce' do
 
     let(:map) do
-      %Q{
-      function() {
-        emit(this.name, { likes: this.likes });
-      }}
+      <<~JAVASCRIPT
+        function() {
+          emit(this.name, { likes: this.likes });
+        }
+      JAVASCRIPT
     end
 
     let(:reduce) do
-      %Q{
-      function(key, values) {
-        var result = { likes: 0 };
-        values.forEach(function(value) {
-          result.likes += value.likes;
-        });
-        return result;
-      }}
+      <<~JAVASCRIPT
+        function(key, values) {
+          var result = { likes: 0 };
+          values.forEach(function(value) {
+            result.likes += value.likes;
+          });
+          return result;
+        }
+      JAVASCRIPT
     end
 
     let!(:depeche_mode) do
@@ -1632,7 +1634,7 @@ describe Mongoid::Criteria do
 
   [:or, :any_of].each do |method|
 
-    describe "\##{method}" do
+    describe "##{method}" do
 
       let!(:match) do
         Band.create!(name: 'Depeche Mode')
@@ -2507,7 +2509,9 @@ describe Mongoid::Criteria do
 
     before do
       class Person
-        def self.ages; self; end
+        def self.ages
+          self
+        end
       end
     end
 
@@ -3094,7 +3098,7 @@ describe Mongoid::Criteria do
     end
 
     context 'when querying an embedded field' do
-      let(:criteria) { Band.where("label.name": 12345) }
+      let(:criteria) { Band.where('label.name': 12345) }
 
       it 'mongoizes the embedded field in the selector' do
         expect(criteria.selector).to eq('label.name' => '12345')

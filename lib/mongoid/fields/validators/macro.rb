@@ -21,7 +21,7 @@ module Mongoid
           :type,
           :overwrite,
           :encrypt
-        ]
+        ].freeze
 
         # Validate the field definition.
         #
@@ -90,8 +90,8 @@ module Mongoid
           if !options[:overwrite] && klass.fields.keys.include?(name.to_s)
             if Mongoid.duplicate_fields_exception
               raise Errors::InvalidField.new(klass, name, name)
-            else
-              Mongoid.logger.warn("Overwriting existing field #{name} in class #{klass.name}.") if Mongoid.logger
+            elsif Mongoid.logger
+              Mongoid.logger.warn("Overwriting existing field #{name} in class #{klass.name}.")
             end
           end
         end
@@ -109,7 +109,7 @@ module Mongoid
         #
         # @raise [ Errors::InvalidFieldOption ] If an option is invalid.
         def validate_options(klass, name, options)
-          options.keys.each do |option|
+          options.each_key do |option|
             if !OPTIONS.include?(option) && !Fields.options.include?(option)
               raise Errors::InvalidFieldOption.new(klass, name, option, OPTIONS)
             end

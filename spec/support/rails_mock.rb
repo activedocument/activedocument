@@ -6,18 +6,14 @@ require 'ostruct'
 module Rails
   extend self
 
-  attr_accessor :env
-  attr_accessor :root
-  attr_accessor :logger
-  attr_accessor :application
+  attr_accessor :env, :root, :logger, :application
 
   module Application
     extend self
 
     attr_accessor :config
 
-    def eager_load!
-    end
+    def eager_load!; end
   end
 end
 

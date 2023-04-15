@@ -36,7 +36,7 @@ module Mongoid
             raise Errors::DropCollectionFailure.new(collection_name)
           else
             logger.debug(
-              "MONGOID: Collection '#{collection_name}' already exists " +
+              "MONGOID: Collection '#{collection_name}' already exists " \
               "in database '#{database_name}' with options '#{coll_options}'."
             )
           end

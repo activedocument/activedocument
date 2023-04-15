@@ -62,16 +62,13 @@ module Mongoid
               new << doc[field]
             end
           when Array
-            if (index = field.to_i).to_s == field
-              if doc.length > index
-                new << doc[index]
-              end
+            if (index = field.to_i).to_s == field && (doc.length > index)
+              new << doc[index]
             end
+
             doc.each do |subdoc|
-              if Hash === subdoc
-                if subdoc.key?(field)
-                  new << subdoc[field]
-                end
+              if Hash === subdoc && subdoc.key?(field)
+                new << subdoc[field]
               end
             end
           end

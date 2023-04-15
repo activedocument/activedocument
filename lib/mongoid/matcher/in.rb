@@ -22,18 +22,12 @@ module Mongoid
           raise Errors::InvalidQuery, "$in argument must be an array: #{Errors::InvalidQuery.truncate_expr(condition)}"
         end
 
-        if Array === value
-          if value.any? { |v|
-            condition.any? do |c|
-              EqImplWithRegexp.matches?('$in', v, c)
-            end
-          } then
-            return true
-          end
+        if Array === value &&
+           value.any? { |v| condition.any? { |c| EqImplWithRegexp.matches?('$in', v, c) } }
+          return true
         end
-        condition.any? do |c|
-          EqImplWithRegexp.matches?('$in', value, c)
-        end
+
+        condition.any? { |c| EqImplWithRegexp.matches?('$in', value, c) }
       end
     end
   end

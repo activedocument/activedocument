@@ -26,7 +26,9 @@ module Mongoid
           #   [ 1, 2 ].__array__
           #
           # @return [ Array ] self
-          def __array__; self; end
+          def __array__
+            self
+          end
 
           # Makes a deep copy of the array, deep copying every element inside the
           # array.
@@ -92,9 +94,8 @@ module Mongoid
           #
           # @return [ Hash ] The array as sort criterion.
           def __sort_option__
-            multi.inject({}) do |options, criteria|
+            multi.each_with_object({}) do |criteria, options|
               options.merge!(criteria.__sort_pair__)
-              options
             end
           end
 

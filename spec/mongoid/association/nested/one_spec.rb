@@ -137,7 +137,7 @@ describe Mongoid::Association::Nested::One do
       end
 
       %i(id _id).each do |id_field|
-        context "#{id_field}" do
+        context id_field.to_s do
           let(:builder) do
             described_class.new(association, {
               id_field => name.id,

@@ -27,7 +27,7 @@ module Mongoid
           :after_add,
           :before_remove,
           :after_remove
-        ]
+        ].freeze
 
         # The complete list of valid options for this association, including
         # the shared ones.
@@ -62,7 +62,9 @@ module Mongoid
         # Is this association type embedded?
         #
         # @return [ true ] Always true.
-        def embedded?; true; end
+        def embedded?
+          true
+        end
 
         # Get the default validation setting for the association. Determines if
         # by default a validates associated will occur.
@@ -71,12 +73,16 @@ module Mongoid
         #   Proxy.validation_default
         #
         # @return [ true ] Always true.
-        def validation_default; true; end
+        def validation_default
+          true
+        end
 
         # Does this association type store the foreign key?
         #
         # @return [ false ] Always false.
-        def stores_foreign_key?; false; end
+        def stores_foreign_key?
+          false
+        end
 
         # The primary key
         #

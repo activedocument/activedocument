@@ -48,9 +48,9 @@ module Mongoid
       #   end
       #
       # @return [ Enumerator ] The enumerator.
-      def each
+      def each(&block)
         if block_given?
-          [].each { |doc| yield(doc) }
+          [].each(&block)
           self
         else
           to_enum
@@ -68,11 +68,13 @@ module Mongoid
       # @example Do any documents exist for given conditions.
       #   context.exists?(name: "...")
       #
-      # @param [ Hash | Object | false ] id_or_conditions an _id to
+      # @param [ Hash | Object | false ] _id_or_conditions An _id to
       #   search for, a hash of conditions, nil or false.
       #
       # @return [ false ] Always false.
-      def exists?(id_or_conditions = :none); false; end
+      def exists?(_id_or_conditions = :none)
+        false
+      end
 
       # Pluck the field values in null context.
       #

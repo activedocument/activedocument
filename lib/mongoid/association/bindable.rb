@@ -82,13 +82,11 @@ module Mongoid
       def remove_associated_many(doc, inverse)
         # We only want to remove the inverse association when the inverse
         # document is in memory.
-        if inv = doc.ivar(inverse)
-          # This first condition is needed because when assigning the
-          # embeds_many association using the same embeds_many
-          # association, we delete from the array we are about to assign.
-          if _base != inv && (associated = inv.ivar(_association.name))
-            associated.delete(doc)
-          end
+        # This first condition is needed because when assigning the
+        # embeds_many association using the same embeds_many
+        # association, we delete from the array we are about to assign.
+        if (inv = doc.ivar(inverse)) && (_base != inv && (associated = inv.ivar(_association.name)))
+          associated.delete(doc)
         end
       end
 

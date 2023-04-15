@@ -7,7 +7,9 @@ describe Mongoid::Errors::InvalidRelation do
   describe '#message' do
 
     module MyModule
-      def crazy_method; self; end
+      def crazy_method
+        self
+      end
     end
 
     before do

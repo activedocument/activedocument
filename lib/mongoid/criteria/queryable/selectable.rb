@@ -94,7 +94,6 @@ module Mongoid
                    (existing_kv = c.selector[k]).is_a?(Hash) &&
                    !existing_kv.key?(new_k) &&
                    existing_kv.keys.all? { |sub_k| sub_k.start_with?('$') }
-                then
                   merged_v = c.selector[k].merge(v)
                   c.selector.store(k, merged_v)
                 else
@@ -560,19 +559,15 @@ module Mongoid
               end
               _mongoid_expand_keys(new_s).each do |k, v|
                 k = k.to_s
-                if c.selector[k] || k.start_with?('$')
+                if c.selector[k] || k.start_with?('$') || v.is_a?(Hash)
                   c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
                 else
-                  if v.is_a?(Hash)
-                    c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
-                  else
-                    if v.is_a?(Regexp)
-                      negated_operator = '$not'
-                    else
-                      negated_operator = '$ne'
-                    end
-                    c = c.send(:__override__, { k => v }, negated_operator)
-                  end
+                  negated_operator = if v.is_a?(Regexp)
+                                       '$not'
+                                     else
+                                       '$ne'
+                                     end
+                  c = c.send(:__override__, { k => v }, negated_operator)
                 end
               end
               c
@@ -603,8 +598,7 @@ module Mongoid
 
           exprs = criteria.map do |criterion|
             _mongoid_expand_keys(
-              criterion.is_a?(Selectable) ?
-                criterion.selector : criterion
+              criterion.is_a?(Selectable) ? criterion.selector : criterion
             )
           end
 
@@ -688,13 +682,13 @@ module Mongoid
               if criterion.is_a?(Selectable)
                 _mongoid_expand_keys(criterion.selector)
               else
-                Hash[criterion.map do |k, v|
+                criterion.to_h do |k, v|
                   if k.is_a?(Symbol)
                     [k.to_s, v]
                   else
                     [k, v]
                   end
-                end]
+                end
               end
             end
             self.and('$or' => exprs)
@@ -882,12 +876,8 @@ module Mongoid
         #   end
         #
         # @param [ Hash ] criterion The criterion.
-        def typed_override(criterion, operator)
-          if criterion
-            criterion.transform_values! do |value|
-              yield(value)
-            end
-          end
+        def typed_override(criterion, operator, &block)
+          criterion&.transform_values!(&block)
           __override__(criterion, operator)
         end
 
@@ -925,10 +915,8 @@ module Mongoid
         # @api private
         def selection(criterion = nil)
           clone.tap do |query|
-            if criterion
-              criterion.each_pair do |field, value|
-                yield(query.selector, field.is_a?(Key) ? field : field.to_s, value)
-              end
+            criterion&.each_pair do |field, value|
+              yield(query.selector, field.is_a?(Key) ? field : field.to_s, value)
             end
             query.reset_strategies!
           end

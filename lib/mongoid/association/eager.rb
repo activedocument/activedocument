@@ -63,7 +63,7 @@ module Mongoid
       # When the documents are retrieved, the set of inclusions applied
       # is the set of inclusions applied to the host document minus the
       # association that is being eagerly loaded.
-      private def each_loaded_document_of_class(cls, keys)
+      private def each_loaded_document_of_class(cls, keys, &block)
         # Note: keys should not include nil elements.
         # Upstream code is responsible for eliminating nils from keys.
         return cls.none if keys.empty?
@@ -72,9 +72,7 @@ module Mongoid
         criteria = criteria.apply_scope(@association.scope)
         criteria = criteria.any_in(key => keys)
         criteria.inclusions = criteria.inclusions - [@association]
-        criteria.each do |doc|
-          yield doc
-        end
+        criteria.each(&block)
       end
 
       # Set the pre-loaded document into its parent.

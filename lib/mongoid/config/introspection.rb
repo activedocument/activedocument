@@ -123,7 +123,7 @@ module Mongoid
           :(\w+),\s+         # match the option's name, followed by a comma
           default:\s+(.*)    # match the default value for the option
         \n)                  # end with a newline
-      /x
+      /x.freeze
 
       # The full path to the source file of the Mongoid::Config module.
       CONFIG_RB_PATH = File.absolute_path(File.join(

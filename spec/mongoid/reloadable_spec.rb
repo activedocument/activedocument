@@ -467,7 +467,7 @@ describe Mongoid::Reloadable do
       before(:all) do
         CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
         CONFIG[:clients][:other][:database] = 'other'
-        Mongoid::Clients.clients.values.each(&:close)
+        Mongoid::Clients.clients.each_value(&:close)
         Mongoid::Config.send(:clients=, CONFIG[:clients])
         Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
       end

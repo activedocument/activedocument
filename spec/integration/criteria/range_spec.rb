@@ -240,20 +240,20 @@ describe 'Queries with Range criteria' do
 
     context 'endless range' do
       it 'returns all objects above the value' do
-        expect(Band.where("labels.age": eval('1..')).to_a).to eq [band5]
+        expect(Band.where('labels.age': eval('1..')).to_a).to eq [band5]
       end
 
       it 'does not return the objects under the value' do
-        expect(Band.where("labels.age": eval('100..')).to_a).to eq []
+        expect(Band.where('labels.age': eval('100..')).to_a).to eq []
       end
     end
 
     context 'beginless range' do
       it 'returns all objects under the value' do
-        expect(Band.where("labels.age": eval('..16')).to_a).to eq [band5]
+        expect(Band.where('labels.age': eval('..16')).to_a).to eq [band5]
       end
       it 'does not return the objects above the value' do
-        expect(Band.where("labels.age": eval('...12')).to_a).to eq []
+        expect(Band.where('labels.age': eval('...12')).to_a).to eq []
       end
     end
   end

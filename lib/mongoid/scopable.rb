@@ -79,8 +79,8 @@ module Mongoid
       # @raise [ Errors::InvalidScope ] If the scope is not a proc or criteria.
       #
       # @return [ Proc ] The default scope.
-      def default_scope(value = nil)
-        value = Proc.new { yield } if block_given?
+      def default_scope(value = nil, &block)
+        value = proc(&block) if block
         check_scope_validity(value)
         self.default_scoping = process_default_scope(value)
       end
@@ -105,7 +105,7 @@ module Mongoid
       # @return [ Mongoid::Criteria ] The queryable.
       def queryable
         crit = Threaded.current_scope(self) || Criteria.new(self)
-        crit.embedded = true if (crit.klass.embedded? && !crit.klass.cyclic?)
+        crit.embedded = true if crit.klass.embedded? && !crit.klass.cyclic?
         crit
       end
 
@@ -249,9 +249,9 @@ module Mongoid
             raise Errors::ScopeOverwrite.new(self.name, name)
           else
             Mongoid.logger.warn(
-              "Creating scope :#{name} which conflicts with #{self.name}.#{name}. " +
-              "Calls to `Mongoid::Criteria##{name}` will delegate to " +
-              "`Mongoid::Criteria##{name}` for criteria with klass #{self.name} " +
+              "Creating scope :#{name} which conflicts with #{self.name}.#{name}. " \
+              "Calls to `Mongoid::Criteria##{name}` will delegate to " \
+              "`Mongoid::Criteria##{name}` for criteria with klass #{self.name} " \
               'and will ignore the declared scope.'
             )
           end

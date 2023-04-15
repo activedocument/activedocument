@@ -7,7 +7,7 @@ def capture_exception
   e = nil
   begin
     yield
-  rescue => ex
+  rescue StandardError => ex
     e = ex
   end
   e
@@ -24,7 +24,7 @@ describe Mongoid::Clients::Sessions do
     if Gem::Version.new(Mongo::VERSION) >= Gem::Version.new('2.6')
       CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
       CONFIG[:clients][:other][:database] = 'other'
-      Mongoid::Clients.clients.values.each(&:close)
+      Mongoid::Clients.clients.each_value(&:close)
       Mongoid::Config.send(:clients=, CONFIG[:clients])
       Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
     end
@@ -503,7 +503,7 @@ describe Mongoid::Clients::Sessions do
                   person.save!
                   person.posts << Post.create!
                 end
-              rescue => ex
+              rescue StandardError => ex
               end
             end
 
@@ -809,14 +809,12 @@ describe Mongoid::Clients::Sessions do
 
           context 'when modified once' do
             before do
-              begin
-                subject.transaction do
-                  subject.name = 'Austin Powers'
-                  subject.save!
-                  raise 'Something went wrong'
-                end
-              rescue RuntimeError
+              subject.transaction do
+                subject.name = 'Austin Powers'
+                subject.save!
+                raise 'Something went wrong'
               end
+            rescue RuntimeError
             end
 
             it_behaves_like 'rollback callbacks are called'
@@ -843,12 +841,10 @@ describe Mongoid::Clients::Sessions do
               end
 
               before do
-                begin
-                  subject.transaction do
-                    subject.save!
-                  end
-                rescue RuntimeError
+                subject.transaction do
+                  subject.save!
                 end
+              rescue RuntimeError
               end
 
               it 'does not call any transaction callbacks' do
@@ -864,12 +860,10 @@ describe Mongoid::Clients::Sessions do
               end
 
               before do
-                begin
-                  subject.transaction do
-                    subject.save!
-                  end
-                rescue RuntimeError
+                subject.transaction do
+                  subject.save!
                 end
+              rescue RuntimeError
               end
 
               it_behaves_like 'rollback callbacks are called'

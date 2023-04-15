@@ -42,7 +42,7 @@ module Mongoid
         # The default foreign key suffix.
         #
         # @return [ String ] '_id'
-        FOREIGN_KEY_SUFFIX = '_id'.freeze
+        FOREIGN_KEY_SUFFIX = '_id'
 
         # The list of association complements.
         #
@@ -80,24 +80,33 @@ module Mongoid
         # @return [ String ] The foreign key field on the inverse for saving the
         #   association reference.
         def foreign_key
-          @foreign_key ||= @options[:foreign_key] ? @options[:foreign_key].to_s :
+          @foreign_key ||= if @options[:foreign_key]
+                             @options[:foreign_key].to_s
+                           else
                              default_foreign_key_field
+                           end
         end
 
         # Is this association type embedded?
         #
         # @return [ false ] Always false.
-        def embedded?; false; end
+        def embedded?
+          false
+        end
 
         # The default for validation the association object.
         #
         # @return [ true ] Always true.
-        def validation_default; true; end
+        def validation_default
+          true
+        end
 
         # Does this association type store the foreign key?
         #
         # @return [ true ] Always true.
-        def stores_foreign_key?; false; end
+        def stores_foreign_key?
+          false
+        end
 
         # Get the association proxy class for this association type.
         #

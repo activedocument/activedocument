@@ -46,7 +46,7 @@ module Mongoid
       #
       # @return [ true ] True.
       def disconnect
-        clients.values.each do |client|
+        clients.each_value do |client|
           client.close
         end
       end

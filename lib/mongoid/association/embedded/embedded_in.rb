@@ -43,7 +43,9 @@ module Mongoid
         # Is this association type embedded?
         #
         # @return [ true ] Always true.
-        def embedded?; true; end
+        def embedded?
+          true
+        end
 
         # The primary key
         #
@@ -53,12 +55,16 @@ module Mongoid
         # Does this association type store the foreign key?
         #
         # @return [ false ] Always false.
-        def stores_foreign_key?; false; end
+        def stores_foreign_key?
+          false
+        end
 
         # The default for validating the association object.
         #
         # @return [ false ] Always false.
-        def validation_default; false; end
+        def validation_default
+          false
+        end
 
         # The key that is used to get the attributes for the associated object.
         #

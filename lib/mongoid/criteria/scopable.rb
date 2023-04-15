@@ -162,7 +162,7 @@ module Mongoid
       def reject_matching(other, *methods)
         methods.each do |method|
           send(method).reject! do |key, value|
-            other.send(method).has_key?(key) && other.send(method)[key] == value
+            other.send(method).key?(key) && other.send(method)[key] == value
           end
         end
       end

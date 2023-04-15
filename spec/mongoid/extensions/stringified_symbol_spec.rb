@@ -31,7 +31,7 @@ describe Mongoid::StringifiedSymbol do
     context 'when the object is an integer' do
 
       it 'returns a symbol' do
-        expect(Mongoid::StringifiedSymbol.demongoize(14)).to eq(:"14")
+        expect(Mongoid::StringifiedSymbol.demongoize(14)).to eq(:'14')
       end
     end
 

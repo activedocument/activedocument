@@ -202,7 +202,7 @@ class ClusterConfig
     build_info = client.database.command(buildInfo: 1).first
 
     @server_version = build_info['version']
-    @enterprise = build_info['modules'] && build_info['modules'].include?('enterprise')
+    @enterprise = build_info['modules']&.include?('enterprise')
 
     @server_parameters = begin
       client.use(:admin).command(getParameter: '*').first
