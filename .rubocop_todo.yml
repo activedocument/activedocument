@@ -15,59 +15,6 @@ Lint/AmbiguousBlockAssociation:
     - 'spec/mongoid/interceptable_spec.rb'
     - 'spec/mongoid/touchable_spec.rb'
 
-# Offense count: 16
-# This cop supports safe autocorrection (--autocorrect).
-Lint/AmbiguousOperatorPrecedence:
-  Exclude:
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/extensions/array.rb'
-    - 'lib/mongoid/extensions/time.rb'
-    - 'lib/mongoid/extensions/time_with_zone.rb'
-    - 'lib/mongoid/matcher/eq_impl.rb'
-    - 'lib/mongoid/matcher/type.rb'
-    - 'lib/mongoid/persistence_context.rb'
-    - 'lib/mongoid/tasks/database.rb'
-    - 'spec/integration/matcher_operator_spec.rb'
-
-# Offense count: 51
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowSafeAssignment.
-Lint/AssignmentInCondition:
-  Exclude:
-    - 'lib/mongoid/association/accessors.rb'
-    - 'lib/mongoid/association/depending.rb'
-    - 'lib/mongoid/association/eager_loadable.rb'
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/nested/many.rb'
-    - 'lib/mongoid/association/referenced/auto_save.rb'
-    - 'lib/mongoid/association/referenced/counter_cache.rb'
-    - 'lib/mongoid/association/referenced/has_and_belongs_to_many.rb'
-    - 'lib/mongoid/association/referenced/has_and_belongs_to_many/binding.rb'
-    - 'lib/mongoid/association/referenced/has_and_belongs_to_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/attributes/processing.rb'
-    - 'lib/mongoid/changeable.rb'
-    - 'lib/mongoid/collection_configurable.rb'
-    - 'lib/mongoid/config/options.rb'
-    - 'lib/mongoid/contextual/memory.rb'
-    - 'lib/mongoid/contextual/mongo.rb'
-    - 'lib/mongoid/copyable.rb'
-    - 'lib/mongoid/criteria/includable.rb'
-    - 'lib/mongoid/criteria/queryable/mergeable.rb'
-    - 'lib/mongoid/criteria/queryable/smash.rb'
-    - 'lib/mongoid/criteria/queryable/storable.rb'
-    - 'lib/mongoid/extensions/hash.rb'
-    - 'lib/mongoid/fields.rb'
-    - 'lib/mongoid/fields/standard.rb'
-    - 'lib/mongoid/indexable.rb'
-    - 'lib/mongoid/matcher/field_expression.rb'
-    - 'lib/mongoid/persistable/updatable.rb'
-    - 'lib/mongoid/scopable.rb'
-    - 'lib/mongoid/serializable.rb'
-    - 'lib/mongoid/timestamps/timeless.rb'
-    - 'lib/mongoid/touchable.rb'
-    - 'spec/integration/app_spec.rb'
-
 # Offense count: 211
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: enums
@@ -205,60 +152,6 @@ Lint/MissingSuper:
     - 'lib/mongoid/criteria/queryable/pipeline.rb'
     - 'lib/mongoid/criteria/queryable/smash.rb'
 
-# Offense count: 6
-# This cop supports safe autocorrection (--autocorrect).
-Lint/RedundantStringCoercion:
-  Exclude:
-    - 'lib/mongoid/association/proxy.rb'
-    - 'spec/mongoid/association/depending_spec.rb'
-    - 'spec/mongoid/errors/document_not_found_spec.rb'
-    - 'spec/mongoid/shardable_spec.rb'
-
-# Offense count: 56
-# This cop supports safe autocorrection (--autocorrect).
-Lint/SendWithMixinArgument:
-  Exclude:
-    - 'lib/mongoid/criteria/queryable/extensions/array.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/big_decimal.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/boolean.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/date.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/date_time.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/hash.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/nil_class.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/numeric.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/object.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/range.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/regexp.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/set.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/string.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/symbol.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/time.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/time_with_zone.rb'
-    - 'lib/mongoid/extensions/array.rb'
-    - 'lib/mongoid/extensions/big_decimal.rb'
-    - 'lib/mongoid/extensions/binary.rb'
-    - 'lib/mongoid/extensions/date.rb'
-    - 'lib/mongoid/extensions/date_time.rb'
-    - 'lib/mongoid/extensions/decimal128.rb'
-    - 'lib/mongoid/extensions/false_class.rb'
-    - 'lib/mongoid/extensions/float.rb'
-    - 'lib/mongoid/extensions/hash.rb'
-    - 'lib/mongoid/extensions/integer.rb'
-    - 'lib/mongoid/extensions/module.rb'
-    - 'lib/mongoid/extensions/nil_class.rb'
-    - 'lib/mongoid/extensions/object.rb'
-    - 'lib/mongoid/extensions/object_id.rb'
-    - 'lib/mongoid/extensions/range.rb'
-    - 'lib/mongoid/extensions/set.rb'
-    - 'lib/mongoid/extensions/string.rb'
-    - 'lib/mongoid/extensions/symbol.rb'
-    - 'lib/mongoid/extensions/time.rb'
-    - 'lib/mongoid/extensions/time_with_zone.rb'
-    - 'lib/mongoid/extensions/true_class.rb'
-    - 'spec/mongoid/errors/invalid_field_spec.rb'
-    - 'spec/mongoid/errors/invalid_relation_spec.rb'
-    - 'spec/mongoid/fields_spec.rb'
-
 # Offense count: 11
 Lint/ShadowingOuterLocalVariable:
   Exclude:
@@ -287,17 +180,6 @@ Lint/SuppressedException:
     - 'spec/mongoid/persistence_context_spec.rb'
     - 'spec/mongoid/traversable_spec.rb'
     - 'spec/spec_helper.rb'
-
-# Offense count: 16
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: strict, consistent
-Lint/SymbolConversion:
-  Exclude:
-    - 'spec/integration/dots_and_dollars_spec.rb'
-    - 'spec/mongoid/attributes/nested_spec.rb'
-    - 'spec/mongoid/fields_spec.rb'
-    - 'spec/mongoid/indexable_spec.rb'
 
 # Offense count: 54
 # Configuration parameters: AllowKeywordBlockArguments.
@@ -419,19 +301,6 @@ Lint/UnusedMethodArgument:
     - 'spec/support/client_registry.rb'
     - 'spec/support/models/artist.rb'
     - 'spec/support/models/post.rb'
-
-# Offense count: 9
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
-Lint/UselessAccessModifier:
-  Exclude:
-    - 'lib/mongoid/attributes.rb'
-    - 'lib/mongoid/clients.rb'
-    - 'lib/mongoid/contextual/memory.rb'
-    - 'lib/mongoid/criteria/modifiable.rb'
-    - 'lib/mongoid/criteria/queryable/smash.rb'
-    - 'lib/mongoid/timestamps/timeless.rb'
-    - 'spec/support/models/override.rb'
 
 # Offense count: 21
 Lint/UselessAssignment:
@@ -561,16 +430,6 @@ Naming/PredicateName:
   Exclude:
     - 'lib/mongoid/association/macros.rb'
     - 'lib/mongoid/attributes.rb'
-
-# Offense count: 9
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: PreferredName.
-Naming/RescuedExceptionsVariableName:
-  Exclude:
-    - 'lib/mongoid/clients/sessions.rb'
-    - 'lib/mongoid/tasks/database.rb'
-    - 'spec/mongoid/clients/sessions_spec.rb'
-    - 'spec/mongoid/clients/transactions_spec.rb'
 
 # Offense count: 8
 # Configuration parameters: EnforcedStyle, CheckMethodNames, CheckSymbols, AllowedIdentifiers, AllowedPatterns.

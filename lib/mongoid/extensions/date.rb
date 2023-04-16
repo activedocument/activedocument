@@ -87,5 +87,5 @@ module Mongoid
   end
 end
 
-Date.__send__(:include, Mongoid::Extensions::Date)
+Date.include Mongoid::Extensions::Date
 Date.extend(Mongoid::Extensions::Date::ClassMethods)

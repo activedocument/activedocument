@@ -4928,10 +4928,10 @@ describe Mongoid::Attributes::Nested do
 
     before do
       school.attributes = {
-        '_id': school.id,
-        'students_attributes': [{
-          '_id': student.id,
-          '_destroy': 1
+        _id: school.id,
+        students_attributes: [{
+          _id: student.id,
+          _destroy: 1
         }]
       }
     end
@@ -4953,10 +4953,10 @@ describe Mongoid::Attributes::Nested do
     before do
       student.schools << school
       school.attributes = {
-        '_id': school.id,
-        'students_attributes': [{
-          '_id': student.id,
-          '_destroy': 1
+        _id: school.id,
+        students_attributes: [{
+          _id: student.id,
+          _destroy: 1
         }]
       }
     end

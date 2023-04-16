@@ -183,9 +183,9 @@ module Mongoid
       #
       # @return [ Object ] The result of the given block
       def execute_callbacks_around(name, doc)
-        execute_callback :"before_#{name.to_s}", doc
+        execute_callback :"before_#{name}", doc
         yield.tap do
-          execute_callback :"after_#{name.to_s}", doc
+          execute_callback :"after_#{name}", doc
         end
       end
 

@@ -76,7 +76,7 @@ module Mongoid
       # @api private
       def extract_id_field(attributes)
         id_fields.each do |k|
-          if v = attributes[k]
+          if (v = attributes[k])
             return v
           end
         end
@@ -100,7 +100,7 @@ module Mongoid
           ar.each_with_index do |fn, i|
             key = fn
             unless klass.fields.key?(fn) || klass.relations.key?(fn)
-              key = if tr = fn.match(/(.*)_translations\z/)&.captures&.first
+              key = if (tr = fn.match(/(.*)_translations\z/)&.captures&.first)
                       tr
                     else
                       fn
@@ -175,7 +175,7 @@ module Mongoid
     #
     # @param [ String ] name The name of the field.
     def apply_default(name)
-      return unless !attributes.key?(name) && field = fields[name]
+      return unless !attributes.key?(name) && (field = fields[name])
 
       default = field.eval_default(self)
       return if default.nil? || field.lazy?
@@ -344,16 +344,16 @@ module Mongoid
           # key. We can convert them back to their names by looking in the
           # aliased_associations hash.
           aliased = meth
-          if as && a = as.fetch(meth, nil)
+          if as && (a = as.fetch(meth, nil))
             aliased = a.to_s
           end
 
           field = nil
           klass = nil
-          if fs && f = fs[aliased]
+          if fs && (f = fs[aliased])
             field = f
             yield(meth, f, true) if block_given?
-          elsif rs && rel = rs[aliased]
+          elsif rs && (rel = rs[aliased])
             klass = rel.klass
             yield(meth, rel, false) if block_given?
           elsif block_given?

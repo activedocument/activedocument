@@ -122,7 +122,7 @@ module Mongoid
             end
 
             klass.after_create do
-              if record = __send__(name)
+              if (record = __send__(name))
                 record[cache_column] = (record[cache_column] || 0) + 1
 
                 if record.persisted?
@@ -135,7 +135,7 @@ module Mongoid
             end
 
             klass.before_destroy do
-              if record = __send__(name)
+              if (record = __send__(name))
                 record[cache_column] = (record[cache_column] || 0) - 1 unless record.frozen?
 
                 if record.persisted?

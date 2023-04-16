@@ -223,7 +223,7 @@ module Mongoid
       association.inverse_class.class_eval do
         define_method(method_name) do
           without_autobuild do
-            if !touch_callbacks_suppressed? && relation = __send__(name)
+            if !touch_callbacks_suppressed? && (relation = __send__(name))
               # This looks up touch_field at runtime, rather than at method definition time.
               # If touch_field is nil, it will only touch the default field (updated_at).
               relation.touch(association.touch_field)

@@ -218,8 +218,6 @@ module Mongoid
         first || create_document(method, attrs, &block)
       end
 
-      private
-
       def invalid_key?(hash, key)
         # @todo Change this to BSON::String::ILLEGAL_KEY when ruby driver 2.3.0 is
         # released and mongoid is updated to depend on driver >= 2.3.0

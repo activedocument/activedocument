@@ -93,7 +93,7 @@ module Mongoid
       # @param [ Symbol ] name The name of the field.
       # @param [ Object ] value The value of the field.
       def process_attribute(name, value)
-        if !respond_to?("#{name}=", true) && store_as = aliased_fields.invert[name.to_s]
+        if !respond_to?("#{name}=", true) && (store_as = aliased_fields.invert[name.to_s])
           name = store_as
         end
         responds = respond_to?("#{name}=", true)

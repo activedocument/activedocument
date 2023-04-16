@@ -161,12 +161,12 @@ module Mongoid
           # collection (https://jira.mongodb.org/browse/SERVER-50070).
           begin
             stats = model.collection.database.command(collStats: model.collection.name).first
-          rescue Mongo::Error::OperationFailure => exc
+          rescue Mongo::Error::OperationFailure => e
             # Code 26 is database does not exist.
             # Code 8 is collection does not exist, as of 4.0.
             # On 3.6 and earlier match the text of exception message.
-            if exc.code == 26 || exc.code == 8 ||
-               exc.code.nil? && exc.message =~ /not found/
+            if e.code == 26 || e.code == 8 ||
+               (e.code.nil? && e.message =~ /not found/)
               model.collection.create
 
               stats = model.collection.database.command(collStats: model.collection.name).first

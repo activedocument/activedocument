@@ -60,5 +60,5 @@ module Mongoid
   end
 end
 
-Symbol.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Symbol)
-Symbol.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Symbol::ClassMethods)
+Symbol.include Mongoid::Criteria::Queryable::Extensions::Symbol
+Symbol.extend Mongoid::Criteria::Queryable::Extensions::Symbol::ClassMethods

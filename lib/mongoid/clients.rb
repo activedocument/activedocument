@@ -17,6 +17,8 @@ module Mongoid
     include Options
     include Sessions
 
+    CREATE_LOCK = Mutex.new
+
     class << self
 
       # Clear all clients from the current thread.
@@ -87,10 +89,6 @@ module Mongoid
       def clients
         @clients ||= {}
       end
-
-      private
-
-      CREATE_LOCK = Mutex.new
     end
   end
 end

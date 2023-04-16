@@ -54,7 +54,7 @@ module Mongoid
       # @param [ String ] parent The name of the association above this one in
       #   the inclusion tree, if it is a nested inclusion.
       def add_inclusion(association, parent = nil)
-        if assoc = inclusions.detect { |a| a == association }
+        if (assoc = inclusions.detect { |a| a == association })
           assoc.parent_inclusions.push(parent) if parent
         else
           assoc = association.dup

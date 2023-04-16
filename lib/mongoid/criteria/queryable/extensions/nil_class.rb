@@ -84,4 +84,4 @@ module Mongoid
   end
 end
 
-NilClass.__send__(:include, Mongoid::Criteria::Queryable::Extensions::NilClass)
+NilClass.include Mongoid::Criteria::Queryable::Extensions::NilClass

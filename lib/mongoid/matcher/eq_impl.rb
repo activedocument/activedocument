@@ -44,7 +44,7 @@ module Mongoid
             end.include?(time_rounded_to_millis(condition))
           else
             value == condition ||
-              value.is_a?(Array) && value.include?(condition)
+              (value.is_a?(Array) && value.include?(condition))
           end
         end
       end
@@ -79,7 +79,7 @@ module Mongoid
       #
       # @api private
       def time_rounded_to_millis(time)
-        time._bson_to_i * 1000 + time.usec.divmod(1000).first
+        (time._bson_to_i * 1000) + time.usec.divmod(1000).first
       end
     end
   end

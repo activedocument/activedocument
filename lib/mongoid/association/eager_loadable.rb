@@ -39,8 +39,8 @@ module Mongoid
         docs_map = {}
         queue = [klass.to_s]
 
-        while klass = queue.shift
-          next unless as = assoc_map.delete(klass)
+        while (klass = queue.shift)
+          next unless (as = assoc_map.delete(klass))
 
           as.each do |assoc|
             queue << assoc.class_name

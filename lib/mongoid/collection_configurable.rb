@@ -29,7 +29,7 @@ module Mongoid
 
         collection.drop if force
 
-        if coll_options = collection.database.list_collections(filter: { name: collection_name.to_s }).first
+        if (coll_options = collection.database.list_collections(filter: { name: collection_name.to_s }).first)
           raise Errors::DropCollectionFailure.new(collection_name) if force
 
           logger.debug(

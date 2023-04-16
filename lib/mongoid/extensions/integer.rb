@@ -60,5 +60,5 @@ module Mongoid
   end
 end
 
-Integer.__send__(:include, Mongoid::Extensions::Integer)
+Integer.include Mongoid::Extensions::Integer
 Integer.extend(Mongoid::Extensions::Integer::ClassMethods)

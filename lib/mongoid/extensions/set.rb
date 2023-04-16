@@ -56,5 +56,5 @@ module Mongoid
   end
 end
 
-Set.__send__(:include, Mongoid::Extensions::Set)
+Set.include Mongoid::Extensions::Set
 Set.extend(Mongoid::Extensions::Set::ClassMethods)

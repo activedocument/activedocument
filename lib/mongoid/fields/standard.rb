@@ -40,7 +40,7 @@ module Mongoid
       #
       # @return [ Object ] The serialized default value.
       def eval_default(doc)
-        if fields = doc.__selected_fields
+        if (fields = doc.__selected_fields)
           evaluated_default(doc) if included?(fields)
         else
           evaluated_default(doc)

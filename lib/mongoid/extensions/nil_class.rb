@@ -29,4 +29,4 @@ module Mongoid
   end
 end
 
-NilClass.__send__(:include, Mongoid::Extensions::NilClass)
+NilClass.include Mongoid::Extensions::NilClass

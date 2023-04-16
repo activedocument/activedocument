@@ -638,8 +638,8 @@ describe Mongoid::Indexable do
         let(:expected) do
           {
             '$and': [
-              { 'a': { '$gte' => 0 } },
-              { 'a': { '$type' => 16 } }
+              { a: { '$gte' => 0 } },
+              { a: { '$type' => 16 } }
             ]
           }
         end
@@ -702,8 +702,8 @@ describe Mongoid::Indexable do
             username: { '$eq' => 'authentication_token' },
             'adrs.h': { '$exists' => true },
             '$and': [
-              { 'a': { '$gte' => 0 } },
-              { 'a': { '$type' => 16 } }
+              { a: { '$gte' => 0 } },
+              { a: { '$type' => 16 } }
             ]
           }
         end

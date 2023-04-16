@@ -55,7 +55,7 @@ module Mongoid
           #
           # @return [ BSON::ObjectId ] The inverse id.
           def inverse_record_id(doc)
-            if pk = _association.options[:inverse_primary_key]
+            if (pk = _association.options[:inverse_primary_key])
               _base.send(pk)
             else
               inverse_association = determine_inverse_association(doc)

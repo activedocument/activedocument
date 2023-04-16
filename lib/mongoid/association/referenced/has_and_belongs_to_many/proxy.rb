@@ -33,7 +33,7 @@ module Mongoid
             docs = args.flatten
             return concat(docs) if docs.size > 1
 
-            if doc = docs.first
+            if (doc = docs.first)
               append(doc) do
                 # We ignore the changes to the value for the foreign key in the
                 # changed_attributes hash in this block of code for two reasons:

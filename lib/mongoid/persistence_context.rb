@@ -111,7 +111,7 @@ module Mongoid
     def client_name
       @client_name ||= options[:client] ||
                        Threaded.client_override ||
-                       storage_options && __evaluate__(storage_options[:client])
+                       (storage_options && __evaluate__(storage_options[:client]))
     end
 
     # Determine if this persistence context is equal to another.
@@ -175,7 +175,7 @@ module Mongoid
     def database_name_option
       @database_name_option ||= options[:database] ||
                                 Threaded.database_override ||
-                                storage_options && storage_options[:database]
+                                (storage_options && storage_options[:database])
     end
 
     class << self

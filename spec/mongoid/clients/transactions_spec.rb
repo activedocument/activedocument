@@ -4,13 +4,13 @@ require 'spec_helper'
 require_relative './transactions_spec_models'
 
 def capture_exception
-  e = nil
+  error = nil
   begin
     yield
-  rescue StandardError => ex
-    e = ex
+  rescue StandardError => e
+    error = e
   end
-  e
+  error
 end
 
 describe Mongoid::Clients::Sessions do
@@ -493,7 +493,7 @@ describe Mongoid::Clients::Sessions do
                   person.save!
                   person.posts << Post.create!
                 end
-              rescue StandardError => ex
+              rescue StandardError => e
               end
             end
 

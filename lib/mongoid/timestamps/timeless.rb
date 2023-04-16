@@ -58,7 +58,6 @@ module Mongoid
         def_delegators :timeless_table, :[]=, :[]
       end
 
-      private
 
       module ClassMethods
 
@@ -80,7 +79,7 @@ module Mongoid
         #
         # @return [ true ] Always true.
         def clear_timeless_option
-          if counter = Timeless[name]
+          if (counter = Timeless[name])
             counter -= 1
             set_timeless_counter(counter)
           end

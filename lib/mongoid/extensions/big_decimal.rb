@@ -88,5 +88,5 @@ module Mongoid
   end
 end
 
-BigDecimal.__send__(:include, Mongoid::Extensions::BigDecimal)
+BigDecimal.include Mongoid::Extensions::BigDecimal
 BigDecimal.extend(Mongoid::Extensions::BigDecimal::ClassMethods)

@@ -73,7 +73,7 @@ module Mongoid
       #
       # @return [ Integer ] The log level.
       def log_level
-        return unless level = settings[:log_level]
+        return unless (level = settings[:log_level])
 
         unless level.is_a?(Integer)
           # JRuby String#constantize does not work here.

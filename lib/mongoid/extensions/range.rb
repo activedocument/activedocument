@@ -104,5 +104,5 @@ module Mongoid
   end
 end
 
-Range.__send__(:include, Mongoid::Extensions::Range)
+Range.include Mongoid::Extensions::Range
 Range.extend(Mongoid::Extensions::Range::ClassMethods)

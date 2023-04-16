@@ -91,7 +91,7 @@ describe Mongoid::Errors::DocumentNotFound do
 
       it 'contains the problem in the message' do
         expect(error.message).to include(
-          "Document not found for class Person with id #{id.to_s} and shard key a: syd."
+          "Document not found for class Person with id #{id} and shard key a: syd."
         )
       end
 

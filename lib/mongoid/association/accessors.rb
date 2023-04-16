@@ -42,7 +42,7 @@ module Mongoid
       # @return [ Mongoid::Association::Proxy ] The association.
       def create_relation(object, association, selected_fields = nil)
         type = @attributes[association.inverse_type]
-        target = if t = association.build(self, object, type, selected_fields)
+        target = if (t = association.build(self, object, type, selected_fields))
                    association.create_relation(self, t)
                  end
 
@@ -337,7 +337,7 @@ module Mongoid
         association.inverse_class.tap do |klass|
           klass.re_define_method("#{name}=") do |object|
             without_autobuild do
-              if value = get_relation(name, association, object)
+              if (value = get_relation(name, association, object))
                 unless value.respond_to?(:substitute)
                   value = __build__(name, value, association)
                 end

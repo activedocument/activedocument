@@ -128,7 +128,7 @@ module Mongoid
       inclusions = options[:include]
       relation_names(inclusions).each do |name|
         association = relations[name.to_s]
-        if association && relation = send(association.name)
+        if association && (relation = send(association.name))
           attributes[association.name.to_s] =
             relation.serializable_hash(relation_options(inclusions, options, name))
         end

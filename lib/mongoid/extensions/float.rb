@@ -52,5 +52,5 @@ module Mongoid
   end
 end
 
-Float.__send__(:include, Mongoid::Extensions::Float)
+Float.include Mongoid::Extensions::Float
 Float.extend(Mongoid::Extensions::Float::ClassMethods)

@@ -6,7 +6,7 @@ def mop_error?(spec, kind)
   raise ArgumentError.new("Bogus kind: #{kind}") unless %w[matcher driver dsl].include?(kind)
 
   spec['error'] == true || spec['error'] == kind ||
-    spec['error'].is_a?(Array) && spec['error'].include?(kind)
+    (spec['error'].is_a?(Array) && spec['error'].include?(kind))
 end
 
 describe 'Matcher operators' do

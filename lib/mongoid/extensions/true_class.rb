@@ -33,4 +33,4 @@ module Mongoid
   end
 end
 
-TrueClass.__send__(:include, Mongoid::Extensions::TrueClass)
+TrueClass.include Mongoid::Extensions::TrueClass

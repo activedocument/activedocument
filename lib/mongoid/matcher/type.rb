@@ -99,14 +99,14 @@ module Mongoid
           value.is_a?(BSON::CodeWithScope)
         when 16
           # 32-bit int
-          value.is_a?(BSON::Int32) || value.is_a?(Integer) && (-2**32..2**32 - 1).cover?(value)
+          value.is_a?(BSON::Int32) || (value.is_a?(Integer) && (-2**32..(2**32) - 1).cover?(value))
         when 17
           # Timestamp
           value.is_a?(BSON::Timestamp)
         when 18
           # Long
           value.is_a?(BSON::Int64) ||
-            value.is_a?(Integer) && (-2**64..2**64 - 1).cover?(value) && !(-2**32..2**32 - 1).cover?(value)
+            (value.is_a?(Integer) && (-2**64..(2**64) - 1).cover?(value) && !(-2**32..(2**32) - 1).cover?(value))
         when 19
           # Decimal
           value.is_a?(BSON::Decimal128)

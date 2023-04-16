@@ -362,7 +362,7 @@ describe Mongoid::Association::Depending do
           it 'deletes the associated documents' do
             expect do
               child.class.find(child.id)
-            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class #{child.class.to_s} with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class #{child.class} with id\(s\)/)
           end
         end
 

@@ -102,7 +102,7 @@ module Mongoid
         def process_attributes(parent, attrs)
           return if reject?(parent, attrs)
 
-          if id = attrs.extract_id
+          if (id = attrs.extract_id)
             update_nested_relation(parent, id, attrs)
           else
             existing.push(Factory.build(@class_name, attrs)) unless destroyable?(attrs)

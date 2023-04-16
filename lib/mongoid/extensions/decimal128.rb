@@ -34,5 +34,5 @@ module Mongoid
   end
 end
 
-BSON::Decimal128.__send__(:include, Mongoid::Extensions::Decimal128)
+BSON::Decimal128.include Mongoid::Extensions::Decimal128
 BSON::Decimal128.extend(Mongoid::Extensions::Decimal128::ClassMethods)

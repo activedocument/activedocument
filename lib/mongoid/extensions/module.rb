@@ -26,4 +26,4 @@ module Mongoid
   end
 end
 
-Module.__send__(:include, Mongoid::Extensions::Module)
+Module.include Mongoid::Extensions::Module

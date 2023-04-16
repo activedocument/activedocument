@@ -90,7 +90,7 @@ module Mongoid
     # @param [ Hash ] attrs The attributes.
     def process_localized_attributes(klass, attrs)
       klass.localized_fields.each_key do |name|
-        if value = attrs.delete(name)
+        if (value = attrs.delete(name))
           attrs["#{name}_translations"] = value
         end
       end
@@ -99,7 +99,7 @@ module Mongoid
 
         if association.is_a?(Association::Embedded::EmbedsMany)
           attrs[association.key].each do |attr|
-            embedded_klass = if type = attr[self.class.discriminator_key]
+            embedded_klass = if (type = attr[self.class.discriminator_key])
                                association.relation_class.get_discriminator_mapping(type) || association.relation_class
                              else
                                association.relation_class

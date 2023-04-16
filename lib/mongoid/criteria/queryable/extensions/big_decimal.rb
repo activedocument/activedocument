@@ -52,4 +52,4 @@ module Mongoid
   end
 end
 
-BigDecimal.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::BigDecimal::ClassMethods)
+BigDecimal.extend Mongoid::Criteria::Queryable::Extensions::BigDecimal::ClassMethods

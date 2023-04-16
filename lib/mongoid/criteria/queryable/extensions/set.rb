@@ -31,4 +31,4 @@ module Mongoid
   end
 end
 
-Set.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Set::ClassMethods)
+Set.extend Mongoid::Criteria::Queryable::Extensions::Set::ClassMethods

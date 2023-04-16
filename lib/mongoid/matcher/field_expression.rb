@@ -32,7 +32,7 @@ module Mongoid
                 end
 
                 if k == '$regex'
-                  if options = condition['$options']
+                  if (options = condition['$options'])
                     cond_v = case cond_v
                              when Regexp
                                BSON::Regexp::Raw.new(cond_v.source, options)

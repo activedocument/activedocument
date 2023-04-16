@@ -58,5 +58,5 @@ module Mongoid
   end
 end
 
-DateTime.__send__(:include, Mongoid::Extensions::DateTime)
+DateTime.include Mongoid::Extensions::DateTime
 DateTime.extend(Mongoid::Extensions::DateTime::ClassMethods)

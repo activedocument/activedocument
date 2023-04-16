@@ -47,5 +47,5 @@ module Mongoid
   end
 end
 
-BSON::ObjectId.__send__(:include, Mongoid::Extensions::ObjectId)
+BSON::ObjectId.include Mongoid::Extensions::ObjectId
 BSON::ObjectId.extend(Mongoid::Extensions::ObjectId::ClassMethods)

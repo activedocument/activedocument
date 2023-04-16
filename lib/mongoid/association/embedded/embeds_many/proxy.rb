@@ -30,7 +30,7 @@ module Mongoid
             docs = args.flatten
             return concat(docs) if docs.size > 1
 
-            if doc = docs.first
+            if (doc = docs.first)
               append(doc)
               doc.save if persistable? && !_assigning?
             end
@@ -298,7 +298,7 @@ module Mongoid
           # @return [ Mongoid::Document | Array<Mongoid::Document> ] The popped document(s).
           def pop(count = nil)
             if count
-              if docs = _target[_target.size - count, _target.size]
+              if (docs = _target[_target.size - count, _target.size])
                 docs.each { |doc| delete(doc) }
               end
             else
@@ -323,7 +323,7 @@ module Mongoid
           # @return [ Mongoid::Document | Array<Mongoid::Document> ] The shifted document(s).
           def shift(count = nil)
             if count
-              if !_target.empty? && docs = _target[0, count]
+              if !_target.empty? && (docs = _target[0, count])
                 docs.each { |doc| delete(doc) }
               end
             else

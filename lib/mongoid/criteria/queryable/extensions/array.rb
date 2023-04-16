@@ -146,5 +146,5 @@ module Mongoid
   end
 end
 
-Array.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Array)
-Array.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Array::ClassMethods)
+Array.include Mongoid::Criteria::Queryable::Extensions::Array
+Array.extend Mongoid::Criteria::Queryable::Extensions::Array::ClassMethods

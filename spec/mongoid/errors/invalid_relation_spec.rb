@@ -13,7 +13,7 @@ describe Mongoid::Errors::InvalidRelation do
     end
 
     before do
-      Object.send(:include, MyModule)
+      Object.include MyModule
     end
 
     let(:error) do

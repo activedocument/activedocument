@@ -36,7 +36,7 @@ module Mongoid
             docs = args.flatten
             return concat(docs) if docs.size > 1
 
-            if doc = docs.first
+            if (doc = docs.first)
               append(doc)
               doc.save if persistable? && !_assigning? && !doc.validated?
             end
@@ -465,7 +465,7 @@ module Mongoid
           #
           # @return [ true | false ] If the association is persistable.
           def persistable?
-            !_binding? && (_creating? || _base.persisted? && !_building?)
+            !_binding? && (_creating? || (_base.persisted? && !_building?))
           end
 
           # Deletes all related documents from the database given the supplied

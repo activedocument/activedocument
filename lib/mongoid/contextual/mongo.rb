@@ -203,7 +203,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The result of the command.
       def find_one_and_update(update, options = {})
-        return unless doc = view.find_one_and_update(update, options)
+        return unless (doc = view.find_one_and_update(update, options))
 
         Factory.from_db(klass, doc)
       end
@@ -223,7 +223,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The result of the command.
       def find_one_and_replace(replacement, options = {})
-        return unless doc = view.find_one_and_replace(replacement, options)
+        return unless (doc = view.find_one_and_replace(replacement, options))
 
         Factory.from_db(klass, doc)
       end
@@ -236,7 +236,7 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The result of the command.
       def find_one_and_delete
-        return unless doc = view.find_one_and_delete
+        return unless (doc = view.find_one_and_delete)
 
         Factory.from_db(klass, doc)
       end
@@ -245,7 +245,7 @@ module Mongoid
       #
       # @api private
       def find_first
-        return unless raw_doc = view.first
+        return unless (raw_doc = view.first)
 
         doc = Factory.from_db(klass, raw_doc, criteria)
         eager_load([doc]).first
@@ -803,7 +803,7 @@ module Mongoid
       # @example Apply the field limitations.
       #   context.apply_fields
       def apply_fields
-        return unless spec = criteria.options[:fields]
+        return unless (spec = criteria.options[:fields])
 
         @view = view.projection(spec)
       end
@@ -831,7 +831,7 @@ module Mongoid
       # @example Apply the skip option.
       #   context.apply_option(:skip)
       def apply_option(name)
-        return unless spec = criteria.options[name]
+        return unless (spec = criteria.options[name])
 
         @view = view.send(name, spec)
       end
@@ -964,7 +964,7 @@ module Mongoid
         sort = view.sort || { _id: 1 }
         v = view.sort(sort).limit(limit || 1)
         v = v.skip(n) if n > 0
-        return unless raw_docs = v.to_a
+        return unless (raw_docs = v.to_a)
 
         process_raw_docs(raw_docs, limit)
       end

@@ -105,8 +105,6 @@ module Mongoid
           [name, get_serializer(name)]
         end
 
-        private
-
         # Retrieves the serializer for the given name. If the name exists in
         # the serializers hash then return that immediately, otherwise
         # recursively look through the associations and find the appropriate
@@ -116,7 +114,7 @@ module Mongoid
         #
         # @return [ Object ] The serializer.
         def get_serializer(name)
-          if s = serializers[name]
+          if (s = serializers[name])
             s
           else
             Fields.traverse_association_tree(name, serializers, associations, aliased_associations)

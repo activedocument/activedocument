@@ -41,5 +41,5 @@ module Mongoid
   end
 end
 
-BSON::Binary.__send__(:include, Mongoid::Extensions::Binary)
+BSON::Binary.include Mongoid::Extensions::Binary
 BSON::Binary.extend(Mongoid::Extensions::Binary::ClassMethods)

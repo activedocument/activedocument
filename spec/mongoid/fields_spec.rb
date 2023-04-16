@@ -1367,7 +1367,7 @@ describe Mongoid::Fields do
   context 'when sending an include of another module at runtime' do
 
     before do
-      Basic.send(:include, Ownable)
+      Basic.include Ownable
     end
 
     context 'when the class is a parent' do
@@ -1918,7 +1918,7 @@ describe Mongoid::Fields do
     end
 
     context 'when cleansing dotted translation field as a symbol' do
-      let(:field_name) { 'passport.name_translations.asd'.to_sym }
+      let(:field_name) { :'passport.name_translations.asd' }
       it 'returns the correct field name' do
         expect(field).to eq('pass.name.asd')
       end

@@ -287,7 +287,7 @@ module Mongoid
       #
       # @return [ Object | Array<Object> ] The picked values.
       def pick(*fields)
-        return unless doc = documents.first
+        return unless (doc = documents.first)
 
         pluck_from_doc(doc, *fields)
       end
@@ -655,7 +655,7 @@ module Mongoid
       # @example Apply the sorting params.
       #   context.apply_sorting
       def apply_sorting
-        return unless spec = criteria.options[:sort]
+        return unless (spec = criteria.options[:sort])
 
         in_place_sort(spec)
       end
@@ -712,8 +712,6 @@ module Mongoid
         doc._parent.remove_child(doc)
         doc.destroyed = true
       end
-
-      private
 
       def _session
         @criteria.send(:_session)

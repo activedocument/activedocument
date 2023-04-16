@@ -334,7 +334,7 @@ describe 'Mongoid application tests' do
     lock_lines = File.readlines('Gemfile.lock')
     # Get rid of the bundled with line so that whatever bundler is installed
     # on the system is usable with the application.
-    return unless i = lock_lines.index("BUNDLED WITH\n")
+    return unless (i = lock_lines.index("BUNDLED WITH\n"))
 
     lock_lines.slice!(i, 2)
     File.open('Gemfile.lock', 'w') do |f|

@@ -57,11 +57,5 @@ module Mongoid
   end
 end
 
-ActiveSupport::TimeWithZone.__send__(
-  :include,
-  Mongoid::Criteria::Queryable::Extensions::TimeWithZone
-)
-ActiveSupport::TimeWithZone.__send__(
-  :extend,
-  Mongoid::Criteria::Queryable::Extensions::TimeWithZone::ClassMethods
-)
+ActiveSupport::TimeWithZone.include Mongoid::Criteria::Queryable::Extensions::TimeWithZone
+ActiveSupport::TimeWithZone.extend Mongoid::Criteria::Queryable::Extensions::TimeWithZone::ClassMethods

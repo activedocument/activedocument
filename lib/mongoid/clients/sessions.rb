@@ -42,19 +42,19 @@ module Mongoid
           session = persistence_context.client.start_session(options)
           Threaded.set_session(session, client: persistence_context.client)
           yield(session)
-        rescue Mongo::Error::InvalidSession => ex
-          if Mongo::Error::SessionsNotSupported === ex
+        rescue Mongo::Error::InvalidSession => e
+          if Mongo::Error::SessionsNotSupported === e
             raise Mongoid::Errors::SessionsNotSupported.new
           end
 
-          raise ex
-        rescue Mongo::Error::OperationFailure => ex
-          if (ex.code == 40415 && ex.server_message =~ /startTransaction/) ||
-             (ex.code == 20 && ex.server_message =~ /Transaction/)
+          raise e
+        rescue Mongo::Error::OperationFailure => e
+          if (e.code == 40415 && e.server_message =~ /startTransaction/) ||
+             (e.code == 20 && e.server_message =~ /Transaction/)
             raise Mongoid::Errors::TransactionsNotSupported
           end
 
-          raise ex
+          raise e
         ensure
           Threaded.clear_session(client: persistence_context.client)
         end

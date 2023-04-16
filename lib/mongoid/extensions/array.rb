@@ -80,7 +80,7 @@ module Mongoid
       #
       # @return [ true | false ] If the array is multi args.
       def multi_arged?
-        !first.is_a?(Hash) && first.resizable? || size > 1
+        (!first.is_a?(Hash) && first.resizable?) || size > 1
       end
 
       # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -170,7 +170,7 @@ module Mongoid
   end
 end
 
-Array.__send__(:include, Mongoid::Extensions::Array)
+Array.include Mongoid::Extensions::Array
 Array.extend(Mongoid::Extensions::Array::ClassMethods)
 
 Mongoid.deprecate(Array, :blank_criteria)

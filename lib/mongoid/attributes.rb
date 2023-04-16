@@ -284,8 +284,6 @@ module Mongoid
       fields.key?(key) ? fields[key].mongoize(value) : value.mongoize
     end
 
-    private
-
     def read_raw_attribute(name)
       normalized = database_field_name(name.to_s)
 
@@ -354,8 +352,6 @@ module Mongoid
         remove_method "#{name}_before_type_cast"
       end
     end
-
-    private
 
     def lookup_attribute_presence(name, value)
       if localized_fields.key?(name) && value

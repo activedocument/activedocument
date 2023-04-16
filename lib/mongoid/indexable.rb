@@ -29,7 +29,7 @@ module Mongoid
         index_specifications.each do |spec|
           key = spec.key
           options = spec.options
-          if database = options[:database]
+          if (database = options[:database])
             with(database: database) do |klass|
               klass.collection.indexes(session: _session).create_one(key, options.except(:database))
             end

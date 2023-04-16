@@ -112,17 +112,17 @@ describe Mongoid::Clients::Sessions do
         context 'when the other class uses a different client' do
 
           let!(:error) do
-            e = nil
+            error = nil
             begin
               Person.with_session do
                 Person.create!
                 Person.create!
                 Post.create!
               end
-            rescue StandardError => ex
-              e = ex
+            rescue StandardError => e
+              error = e
             end
-            e
+            error
           end
 
           it 'does not raise an error' do
@@ -140,7 +140,7 @@ describe Mongoid::Clients::Sessions do
         context 'when sessions are nested' do
 
           let!(:error) do
-            e = nil
+            error = nil
             begin
               Person.with_session do
                 Person.with_session do
@@ -148,10 +148,10 @@ describe Mongoid::Clients::Sessions do
                   Post.create!
                 end
               end
-            rescue StandardError => ex
-              e = ex
+            rescue StandardError => e
+              error = e
             end
-            e
+            error
           end
 
           it 'raises an error' do
@@ -234,17 +234,17 @@ describe Mongoid::Clients::Sessions do
         context 'when the other class uses a different client' do
 
           let!(:error) do
-            e = nil
+            error = nil
             begin
               person.with_session do
                 person.username = 'Emily'
                 person.save!
                 person.posts << Post.create!
               end
-            rescue StandardError => ex
-              e = ex
+            rescue StandardError => e
+              error = e
             end
-            e
+            error
           end
 
           it 'does not raise an error' do
@@ -262,7 +262,7 @@ describe Mongoid::Clients::Sessions do
         context 'when sessions are nested' do
 
           let!(:error) do
-            e = nil
+            error = nil
             begin
               person.with_session do
                 person.with_session do
@@ -271,10 +271,10 @@ describe Mongoid::Clients::Sessions do
                   person.posts << Post.create!
                 end
               end
-            rescue StandardError => ex
-              e = ex
+            rescue StandardError => e
+              error = e
             end
-            e
+            error
           end
 
           it 'raises an error' do

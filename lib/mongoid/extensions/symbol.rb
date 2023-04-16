@@ -36,5 +36,5 @@ module Mongoid
   end
 end
 
-Symbol.__send__(:include, Mongoid::Extensions::Symbol)
+Symbol.include Mongoid::Extensions::Symbol
 Symbol.extend(Mongoid::Extensions::Symbol::ClassMethods)

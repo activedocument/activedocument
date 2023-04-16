@@ -329,7 +329,7 @@ module Mongoid
 
     def reset_attribute_to_default!(attr)
       attr = database_field_name(attr)
-      if field = fields[attr]
+      if (field = fields[attr])
         __send__("#{attr}=", field.eval_default(self))
       else
         __send__("#{attr}=", nil)

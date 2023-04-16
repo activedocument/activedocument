@@ -181,5 +181,5 @@ module Mongoid
   end
 end
 
-Object.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Object)
-Object.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Object::ClassMethods)
+Object.include Mongoid::Criteria::Queryable::Extensions::Object
+Object.extend Mongoid::Criteria::Queryable::Extensions::Object::ClassMethods

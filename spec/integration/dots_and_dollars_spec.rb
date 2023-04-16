@@ -9,7 +9,7 @@ describe 'Dots and Dollars' do
     class DADMUser
       include Mongoid::Document
       field :'first.last', type: String, default: 'Neil.Shweky'
-      field :'$_amount', type: Integer, default: 0
+      field :$_amount, type: Integer, default: 0
       field :'$a.b', type: Boolean, default: true
     end
   end
@@ -28,7 +28,7 @@ describe 'Dots and Dollars' do
 
       context 'on dollared fields' do
         it 'gets the right value' do
-          expect(user.send(:'$_amount')).to eq(0)
+          expect(user.send(:$_amount)).to eq(0)
         end
       end
 
@@ -181,7 +181,7 @@ describe 'Dots and Dollars' do
       context 'on dollared fields' do
         it 'raises an error' do
           expect do
-            user[:'$_amount'] = 1
+            user[:$_amount] = 1
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
