@@ -30,13 +30,14 @@ When loading, Mongoid Ultra will raise a `GemConflict` error if
 - JRuby 9.4+
 - MongoDB server 4.4+
 
-Version support may differ from MongoDB Mongoid. As a general policy, Mongoid Ultra will drop support
-for end-of-life (EOL) versions fairly soon after EOL. We will target to have support for new Ruby and Rails
-versions within 1 month of release.
+Version support may differ from MongoDB Mongoid. We will target to have support for new
+Ruby and Rails versions within 1 month of release. As a general policy, Mongoid Ultra will
+drop support for end-of-life (EOL) versions soon after EOL. If you are using unsupported EOL
+software, please stick with an older version of Mongoid until you upgrade.
 
 ## Purpose & Principles
 
-This is a *community-driven fork of Mongoid*, intend to improve the following over MongoDB's Mongoid:
+This is a *community-driven fork of Mongoid*, intended to improve the following over MongoDB's Mongoid:
 
 - Performance
 - Feature robustness
@@ -89,9 +90,9 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 
 #### Best Practices
 
-- ✅ [MONGOID-5572](https://jira.mongodb.org/browse/MONGOID-5572) - RSpec: Use expectation syntax, enforced with RSpec config setting.
 - ✅ [MONGOID-5570](https://jira.mongodb.org/browse/MONGOID-5570) - Code Docs: Ensure 100% documentation coverage, enforced with Rubocop.
 - ✅ [MONGOID-5564](https://jira.mongodb.org/browse/MONGOID-5564) - Code Docs: Use full namespaces in docs.
+- ✅ [MONGOID-5572](https://jira.mongodb.org/browse/MONGOID-5572) - RSpec: Use expectation syntax, enforced with RSpec config setting.
 
 #### Removals
 
