@@ -132,13 +132,13 @@ module Mongoid
         #
         # @param [ Array<Hash> ] sets The atomic sets.
         def add_atomic_sets(sets)
-          if _assigning?
-            _base.delayed_atomic_sets[path].try(:clear)
-            _base.collect_children.each do |child|
-              child.delayed_atomic_sets.clear
-            end
-            _base.delayed_atomic_sets[path] = sets
+          return unless _assigning?
+
+          _base.delayed_atomic_sets[path].try(:clear)
+          _base.collect_children.each do |child|
+            child.delayed_atomic_sets.clear
           end
+          _base.delayed_atomic_sets[path] = sets
         end
 
         # Perform a batch persist of the provided documents with a $set.

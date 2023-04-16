@@ -59,5 +59,5 @@ module Mongoid
   end
 end
 
-::Date.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Date)
-::Date.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Date::ClassMethods)
+Date.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Date)
+Date.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Date::ClassMethods)

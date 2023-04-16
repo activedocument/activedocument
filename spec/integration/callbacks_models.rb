@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Galaxy
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -140,11 +142,11 @@ class Architect
   field :after_remove_num_buildings, type: Integer
 
   def after_add_callback(obj)
-    self.after_add_num_buildings = self.buildings.length
+    self.after_add_num_buildings = buildings.length
   end
 
   def after_remove_callback(obj)
-    self.after_remove_num_buildings = self.buildings.length
+    self.after_remove_num_buildings = buildings.length
   end
 end
 

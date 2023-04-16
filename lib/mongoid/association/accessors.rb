@@ -67,9 +67,9 @@ module Mongoid
       #
       # @param [ Symbol ] name The name of the association.
       def reset_relation_criteria(name)
-        if instance_variable_defined?("@_#{name}")
-          send(name).reset_unloaded
-        end
+        return unless instance_variable_defined?("@_#{name}")
+
+        send(name).reset_unloaded
       end
 
       # Set the supplied association to an instance variable on the class with the
@@ -102,7 +102,7 @@ module Mongoid
       # @param [ true | false ] reload If the association is to be reloaded.
       #
       # @return [ Mongoid::Association::Proxy ] The association.
-      def get_relation(name, association, object, reload = false)
+      def get_relation(name, association, object, reload = false) # rubocop:disable Style/OptionalBooleanParameter
         field_name = database_field_name(name)
 
         # As per the comments under MONGOID-5034, I've decided to only raise on
@@ -205,9 +205,7 @@ module Mongoid
         # document that the $ is referring to should be retrieved with all
         # fields. See https://www.mongodb.com/docs/manual/reference/operator/projection/positional/
         # and https://jira.mongodb.org/browse/MONGOID-4769.
-        if filtered.keys == %w($)
-          filtered = nil
-        end
+        return nil if filtered.keys == %w[$]
 
         filtered
       end

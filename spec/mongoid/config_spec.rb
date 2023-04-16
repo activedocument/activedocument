@@ -590,9 +590,9 @@ describe Mongoid::Config do
     context 'when provided a non-existent option' do
 
       it 'raises an error' do
-        expect {
+        expect do
           described_class.options = { bad_option: true }
-        }.to raise_error(Mongoid::Errors::InvalidConfigOption)
+        end.to raise_error(Mongoid::Errors::InvalidConfigOption)
       end
     end
 
@@ -613,18 +613,18 @@ describe Mongoid::Config do
     context 'when no clients configuration exists' do
 
       it 'raises an error' do
-        expect {
+        expect do
           described_class.send(:clients=, nil)
-        }.to raise_error(Mongoid::Errors::NoClientsConfig)
+        end.to raise_error(Mongoid::Errors::NoClientsConfig)
       end
     end
 
     context 'when no default client exists' do
 
       it 'raises an error' do
-        expect {
+        expect do
           described_class.send(:clients=, {})
-        }.to raise_error(Mongoid::Errors::NoDefaultClient)
+        end.to raise_error(Mongoid::Errors::NoDefaultClient)
       end
     end
 
@@ -637,9 +637,9 @@ describe Mongoid::Config do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             described_class.send(:clients=, clients)
-          }.to raise_error(Mongoid::Errors::NoClientHosts)
+          end.to raise_error(Mongoid::Errors::NoClientHosts)
         end
       end
 
@@ -650,9 +650,9 @@ describe Mongoid::Config do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             described_class.send(:clients=, clients)
-          }.to raise_error(Mongoid::Errors::NoClientDatabase)
+          end.to raise_error(Mongoid::Errors::NoClientDatabase)
         end
       end
 
@@ -668,9 +668,9 @@ describe Mongoid::Config do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             described_class.send(:clients=, clients)
-          }.to raise_error(Mongoid::Errors::MixedClientConfiguration)
+          end.to raise_error(Mongoid::Errors::MixedClientConfiguration)
         end
       end
     end

@@ -132,9 +132,9 @@ module Mongoid
         touchable_keys << field.to_s if field.present?
 
         updates.keys.each_with_object({}) do |key, touches|
-          if touchable_keys.include?(key.split('.').last)
-            touches[key] = updates.delete(key)
-          end
+          next unless touchable_keys.include?(key.split('.').last)
+
+          touches[key] = updates.delete(key)
         end
       end
     end
@@ -168,7 +168,8 @@ module Mongoid
     #
     # @api private
     def suppress_touch_callbacks(name)
-      save, touch_callback_statuses[name] = touch_callback_statuses[name], true
+      save = touch_callback_statuses[name]
+      touch_callback_statuses[name] = true
       yield
     ensure
       touch_callback_statuses[name] = save

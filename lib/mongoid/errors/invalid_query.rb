@@ -14,9 +14,7 @@ module Mongoid
       #
       # @api private
       def self.truncate_expr(expr)
-        unless expr.is_a?(String)
-          expr = expr.inspect
-        end
+        expr = expr.inspect unless expr.is_a?(String)
 
         if expr.length > 103
           expr = if /\A<#((?:.|\n)*)>\z/.match?(expr)

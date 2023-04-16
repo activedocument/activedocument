@@ -218,7 +218,7 @@ describe Mongoid::Document do
       end
 
       it 'stringifies the key' do
-        expect(found_church.location.keys).to eq(%w(state))
+        expect(found_church.location.keys).to eq(%w[state])
       end
 
       it 'retrieves value as symbol via driver' do

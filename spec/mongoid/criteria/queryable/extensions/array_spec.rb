@@ -399,7 +399,7 @@ describe Array do
     context 'when the direction is a symbol' do
 
       it 'converts the symbol to an integer' do
-        expect([:field, :asc].__sort_pair__).to eq({ field: 1 })
+        expect(%i[field asc].__sort_pair__).to eq({ field: 1 })
       end
     end
 
@@ -457,7 +457,7 @@ describe Array do
       context 'when the arrays have symbol values' do
 
         let(:selection) do
-          [[:field_one, :asc], [:field_two, :desc]]
+          [%i[field_one asc], %i[field_two desc]]
         end
 
         it 'adds the sorting criteria' do

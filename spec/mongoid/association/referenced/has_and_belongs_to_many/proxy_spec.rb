@@ -18,7 +18,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     Person.reset_callbacks(:destroy)
   end
 
-  [:<<, :push].each do |method|
+  %i[<< push].each do |method|
 
     describe "##{method}" do
 
@@ -521,7 +521,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             before do
               expect(post).to receive(:before_add_tag).and_raise
-              begin; post.tags.send(method, tag); rescue; end
+              begin
+                post.tags.send(method, tag)
+              rescue StandardError
+              end
             end
 
             it 'does not add the document to the relation' do
@@ -541,7 +544,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             before do
               expect(post).to receive(:after_add_tag).and_raise
-              begin; post.tags.send(method, tag); rescue; end
+              begin
+                post.tags.send(method, tag)
+              rescue StandardError
+              end
             end
 
             it 'adds the document to the relation' do
@@ -1028,7 +1034,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [:build, :new].each do |method|
+  %i[build new].each do |method|
 
     describe "##{method}" do
 
@@ -1242,7 +1248,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:before_remove_tag).and_raise
-            begin; post.tags.clear; rescue; end
+            begin
+              post.tags.clear
+            rescue StandardError
+            end
           end
 
           it 'does not remove the document from the relation' do
@@ -1272,7 +1281,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:after_remove_tag).and_raise
-            begin; post.tags.clear; rescue; end
+            begin
+              post.tags.clear
+            rescue StandardError
+            end
           end
 
           it 'removes the document from the relation' do
@@ -1296,7 +1308,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let(:result) do
-        person.preferences.concat([preference])
+        person.preferences.push(preference)
       end
 
       it 'returns an array of loaded documents' do
@@ -1315,7 +1327,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       let(:result) do
-        person.preferences.concat([preference])
+        person.preferences.push(preference)
       end
 
       it 'returns an array of loaded documents' do
@@ -1336,7 +1348,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.houses.concat([house])
+          person.houses.push(house)
         end
 
         it 'appends the document to the relation' do
@@ -1356,7 +1368,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
         let!(:person) do
           Person.create! do |doc|
-            doc.preferences.concat([preference])
+            doc.preferences.push(preference)
           end
         end
 
@@ -1398,7 +1410,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([preference])
+            person.preferences.push(preference)
           end
 
           it 'adds the documents to the relation' do
@@ -1424,7 +1436,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           context 'when appending a second time' do
 
             before do
-              person.preferences.concat([preference])
+              person.preferences.push(preference)
             end
 
             it 'does not allow the document to be added again' do
@@ -1448,7 +1460,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([preference])
+            person.preferences.push(preference)
             person.save!
           end
 
@@ -1528,7 +1540,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.preferences.concat([preference])
+          person.preferences.push(preference)
         end
 
         it 'adds the documents to the relation' do
@@ -1566,7 +1578,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           before do
-            person.preferences.concat([preference_two])
+            person.preferences.push(preference_two)
           end
 
           it 'adds the documents to the relation' do
@@ -1610,7 +1622,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          person.administrated_events.concat([event])
+          person.administrated_events.push(event)
         end
 
         it 'sets the front side of the relation' do
@@ -1667,7 +1679,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          artwork.exhibitors.concat([exhibitor])
+          artwork.exhibitors.push(exhibitor)
         end
 
         it 'creates a single artwork object' do
@@ -1686,7 +1698,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         before do
-          tag_one.related.concat([tag_two])
+          tag_one.related.push(tag_two)
         end
 
         it 'sets the front side of the relation' do
@@ -1982,7 +1994,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [:create, :create!].each do |method|
+  %i[create create!].each do |method|
 
     describe "##{method}" do
 
@@ -2010,9 +2022,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it 'raises an unsaved document error' do
-            expect {
+            expect do
               person.preferences.send(method, name: 'Testing')
-            }.to raise_error(Mongoid::Errors::UnsavedDocument)
+            end.to raise_error(Mongoid::Errors::UnsavedDocument)
           end
         end
 
@@ -2077,9 +2089,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       context 'when the relation is not polymorphic' do
 
         it 'raises an error' do
-          expect {
+          expect do
             person.preferences.create!(name: 'a')
-          }.to raise_error(Mongoid::Errors::Validations)
+          end.to raise_error(Mongoid::Errors::Validations)
         end
       end
     end
@@ -2310,7 +2322,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:before_remove_tag).and_raise
-            begin; post.tags.delete(tag); rescue; end
+            begin
+              post.tags.delete(tag)
+            rescue StandardError
+            end
           end
 
           it 'does not remove the document from the relation' do
@@ -2340,7 +2355,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:after_remove_tag).and_raise
-            begin; post.tags.delete(tag); rescue; end
+            begin
+              post.tags.delete(tag)
+            rescue StandardError
+            end
           end
 
           it 'removes the document from the relation' do
@@ -2351,7 +2369,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [:delete_all, :destroy_all].each do |method|
+  %i[delete_all destroy_all].each do |method|
 
     describe "##{method}" do
 
@@ -2512,9 +2530,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               preference
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
           end
         end
 
@@ -2524,9 +2542,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.preferences.find(BSON::ObjectId.new)
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
             end
           end
 
@@ -2566,9 +2584,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               preferences
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
           end
         end
 
@@ -2578,9 +2596,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.preferences.find([BSON::ObjectId.new])
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
             end
           end
 
@@ -2680,9 +2698,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         context 'when validation fails' do
 
           it 'raises an error' do
-            expect {
+            expect do
               person.preferences.find_or_create_by!(name: 'A')
-            }.to raise_error(Mongoid::Errors::Validations)
+            end.to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -3073,7 +3091,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
   end
 
-  [:size, :length].each do |method|
+  %i[size length].each do |method|
 
     describe "##{method}" do
 
@@ -3401,9 +3419,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     it 'does not delete the target from the database' do
-      expect {
+      expect do
         preference.reload
-      }.not_to raise_error
+      end.not_to raise_error
     end
   end
 
@@ -3799,7 +3817,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     let!(:signature) { HabtmmSignature.first }
 
     before do
-      contract.signature_ids.concat([signature.id])
+      contract.signature_ids.push(signature.id)
     end
 
     it 'works on the first attempt' do

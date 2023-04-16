@@ -246,16 +246,11 @@ module Mongoid
     # @return [ true | false ] Whether the attribute has changed.
     def attribute_changed?(attr, **kwargs)
       attr = database_field_name(attr)
-      return false unless changed_attributes.key?(attr)
-      return false if changed_attributes[attr] == attributes[attr]
 
-      if kwargs.key?(:from) && (changed_attributes[attr] != kwargs[:from])
-        return false
-      end
-
-      if kwargs.key?(:to) && (attributes[attr] != kwargs[:to])
-        return false
-      end
+      return false if !changed_attributes.key?(attr) ||
+                      (changed_attributes[attr] == attributes[attr]) ||
+                      (kwargs.key?(:from) && (changed_attributes[attr] != kwargs[:from])) ||
+                      (kwargs.key?(:to) && (attributes[attr] != kwargs[:to]))
 
       true
     end
@@ -314,9 +309,9 @@ module Mongoid
     #
     # @return [ Object ] The old value.
     def attribute_will_change!(attr)
-      unless changed_attributes.key?(attr)
-        changed_attributes[attr] = read_raw_attribute(attr).__deep_copy__
-      end
+      return if changed_attributes.key?(attr)
+
+      changed_attributes[attr] = read_raw_attribute(attr).__deep_copy__
     end
 
     # Set the attribute back to its old value.

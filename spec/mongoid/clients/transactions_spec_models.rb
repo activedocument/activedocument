@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TransactionsSpecCounter
   def initialize
     @called = 0

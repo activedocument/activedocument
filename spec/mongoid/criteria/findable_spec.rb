@@ -115,9 +115,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -177,9 +177,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -239,9 +239,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -282,9 +282,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -344,9 +344,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -406,9 +406,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -466,9 +466,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -519,9 +519,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -572,9 +572,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -632,9 +632,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -685,9 +685,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -738,9 +738,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -798,9 +798,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -851,9 +851,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -904,9 +904,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
@@ -957,9 +957,9 @@ describe Mongoid::Criteria::Findable do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 

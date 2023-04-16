@@ -10,14 +10,14 @@ module Mongoid
   module Atomic
     extend ActiveSupport::Concern
 
-    UPDATES = [
-      :atomic_array_pushes,
-      :atomic_array_pulls,
-      :atomic_array_add_to_sets,
-      :atomic_pulls,
-      :delayed_atomic_sets,
-      :delayed_atomic_pulls,
-      :delayed_atomic_unsets
+    UPDATES = %i[
+      atomic_array_pushes
+      atomic_array_pulls
+      atomic_array_add_to_sets
+      atomic_pulls
+      delayed_atomic_sets
+      delayed_atomic_pulls
+      delayed_atomic_unsets
     ].freeze
 
     included do
@@ -126,7 +126,7 @@ module Mongoid
       end
       mods
     end
-    alias :_updates :atomic_updates
+    alias_method :_updates, :atomic_updates
 
     # Get the removal modifier for the document. Will be nil on root
     # documents, $unset on embeds_one, $set on embeds_many.

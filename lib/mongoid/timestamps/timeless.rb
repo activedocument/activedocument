@@ -15,7 +15,7 @@ module Mongoid
       #
       # @return [ true ] True.
       def clear_timeless_option
-        if self.persisted?
+        if persisted?
           self.class.clear_timeless_option_on_update
         else
           self.class.clear_timeless_option
@@ -92,11 +92,11 @@ module Mongoid
         #
         # @return [ true ] Always true.
         def clear_timeless_option_on_update
-          if counter = Timeless[name]
-            counter -= 1 if self < Mongoid::Timestamps::Created
-            counter -= 1 if self < Mongoid::Timestamps::Updated
-            set_timeless_counter(counter)
-          end
+          return unless (counter = Timeless[name])
+
+          counter -= 1 if self < Mongoid::Timestamps::Created
+          counter -= 1 if self < Mongoid::Timestamps::Updated
+          set_timeless_counter(counter)
         end
 
         # Clears the timeless counter for the current class

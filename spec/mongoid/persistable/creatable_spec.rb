@@ -320,8 +320,8 @@ describe Mongoid::Persistable::Creatable do
       end
 
       it 'does not bleed relations from one subclass to another' do
-        expect(Truck.relations.keys).to eq(%w/shipping_container driver crates seats bed/)
-        expect(Car.relations.keys).to eq(%w/shipping_container driver crates seats/)
+        expect(Truck.relations.keys).to eq(%w[shipping_container driver crates seats bed])
+        expect(Car.relations.keys).to eq(%w[shipping_container driver crates seats])
       end
 
       context 'when appending new documents' do
@@ -617,9 +617,9 @@ describe Mongoid::Persistable::Creatable do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             4.times { Person.create!(ssn: '555-55-1029') }
-          }.to raise_error(Mongo::Error::OperationFailure)
+          end.to raise_error(Mongo::Error::OperationFailure)
         end
       end
     end

@@ -17,9 +17,9 @@ describe Mongoid::Persistable::Deletable do
 
       it 'raises an error' do
         expect(from_db.readonly?).to be true
-        expect {
+        expect do
           from_db.delete
-        }.to raise_error(Mongoid::Errors::ReadonlyDocument)
+        end.to raise_error(Mongoid::Errors::ReadonlyDocument)
       end
     end
 
@@ -44,9 +44,9 @@ describe Mongoid::Persistable::Deletable do
       end
 
       it 'deletes the document from the collection' do
-        expect {
+        expect do
           Person.find(person.id)
-        }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
+        end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
 
       it 'returns true' do

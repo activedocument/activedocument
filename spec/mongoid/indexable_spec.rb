@@ -456,7 +456,7 @@ describe Mongoid::Indexable do
         end
 
         let(:options) do
-          klass.index_specification(:'$**' => 'text').options
+          klass.index_specification('$**': 'text').options
         end
 
         it 'allows the set of the text index' do
@@ -871,9 +871,9 @@ describe Mongoid::Indexable do
     context 'when providing an invalid option' do
 
       it 'raises an error' do
-        expect {
+        expect do
           klass.index({ name: 1 }, { invalid: true })
-        }.to raise_error(Mongoid::Errors::InvalidIndex)
+        end.to raise_error(Mongoid::Errors::InvalidIndex)
       end
     end
 
@@ -882,18 +882,18 @@ describe Mongoid::Indexable do
       context 'when the spec is not a hash' do
 
         it 'raises an error' do
-          expect {
+          expect do
             klass.index(:name)
-          }.to raise_error(Mongoid::Errors::InvalidIndex)
+          end.to raise_error(Mongoid::Errors::InvalidIndex)
         end
       end
 
       context 'when the spec key is invalid' do
 
         it 'raises an error' do
-          expect {
+          expect do
             klass.index({ name: 'something' })
-          }.to raise_error(Mongoid::Errors::InvalidIndex)
+          end.to raise_error(Mongoid::Errors::InvalidIndex)
         end
       end
     end

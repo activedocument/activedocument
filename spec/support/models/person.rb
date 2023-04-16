@@ -51,7 +51,7 @@ class Person
   attr_reader :rescored
 
   embeds_many :favorites, order: :title.desc, inverse_of: :perp, validate: false
-  embeds_many :videos, order: [[:title, :asc]], validate: false
+  embeds_many :videos, order: [%i[title asc]], validate: false
   embeds_many :phone_numbers, class_name: 'Phone', validate: false
   embeds_many :phones, store_as: :mobile_phones, validate: false
   embeds_many :addresses, as: :addressable, validate: false do
@@ -204,7 +204,7 @@ class Person
     names.split(',').each do |name|
       preference = Preference.where(name: name).first
       if preference
-        self.preferences << preference
+        preferences << preference
       else
         preferences.build(name: name)
       end
@@ -212,7 +212,7 @@ class Person
   end
 
   def set_on_map_with_default=(value)
-    self.map_with_default['key'] = value
+    map_with_default['key'] = value
   end
 
   def set_personal_data(ssn:, age:)

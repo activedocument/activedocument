@@ -14,11 +14,11 @@ module Mongoid
       # The options shared between all association types.
       #
       # @return [ Array<Symbol> ] The shared options.
-      SHARED_OPTIONS = [
-        :class_name,
-        :inverse_of,
-        :validate,
-        :extend
+      SHARED_OPTIONS = %i[
+        class_name
+        inverse_of
+        validate
+        extend
       ].freeze
 
       # The primary key default.
@@ -149,7 +149,7 @@ module Mongoid
       def relation_class_name
         @class_name ||= @options[:class_name] || ActiveSupport::Inflector.classify(name)
       end
-      alias :class_name :relation_class_name
+      alias_method :class_name, :relation_class_name
 
       # The class of the association object(s).
       #
@@ -171,7 +171,7 @@ module Mongoid
           resolve_name(inverse_class, cls_name)
         end
       end
-      alias :klass :relation_class
+      alias_method :klass, :relation_class
 
       # The class name of the object owning this association.
       #
@@ -186,7 +186,7 @@ module Mongoid
       def inverse_class
         @owner_class
       end
-      alias :inverse_klass :inverse_class
+      alias_method :inverse_klass, :inverse_class
 
       # The foreign key field if this association stores a foreign key.
       # Otherwise, the primary key.
@@ -214,7 +214,7 @@ module Mongoid
       #
       # @return [ String ] The name of the foreign key setter.
       def foreign_key_setter
-        # note: You can't check if this association stores foreign key
+        # NOTE: You can't check if this association stores foreign key
         # See HasOne and HasMany binding, they referenced foreign_key_setter
         @foreign_key_setter ||= "#{foreign_key}=" if foreign_key
       end
@@ -320,14 +320,14 @@ module Mongoid
       #
       # @return [ true | false ] true if it is a *_many association, false if not.
       def many?
-        [Referenced::HasMany, Embedded::EmbedsMany].any? { |a| self.is_a?(a) }
+        [Referenced::HasMany, Embedded::EmbedsMany].any? { |a| is_a?(a) }
       end
 
       # Is this association an embeds_one or has_one association?
       #
       # @return [ true | false ] true if it is a *_one association, false if not.
       def one?
-        [Referenced::HasOne, Embedded::EmbedsOne].any? { |a| self.is_a?(a) }
+        [Referenced::HasOne, Embedded::EmbedsOne].any? { |a| is_a?(a) }
       end
 
       # Is this association an embedded_in or belongs_to association?
@@ -335,7 +335,7 @@ module Mongoid
       # @return [ true | false ] true if it is an embedded_in or belongs_to
       #   association, false if not.
       def in_to?
-        [Referenced::BelongsTo, Embedded::EmbeddedIn].any? { |a| self.is_a?(a) }
+        [Referenced::BelongsTo, Embedded::EmbeddedIn].any? { |a| is_a?(a) }
       end
 
       private
@@ -351,15 +351,15 @@ module Mongoid
       end
 
       def define_touchable!
-        if touchable?
-          Touchable.define_touchable!(self)
-        end
+        return unless touchable?
+
+        Touchable.define_touchable!(self)
       end
 
       def define_autosaver!
-        if autosave?
-          Association::Referenced::AutoSave.define_autosave!(self)
-        end
+        return unless autosave?
+
+        Association::Referenced::AutoSave.define_autosave!(self)
       end
 
       def define_builder!
@@ -391,45 +391,45 @@ module Mongoid
       end
 
       def define_counter_cache_callbacks!
-        if counter_cached?
-          Association::Referenced::CounterCache.define_callbacks!(self)
-        end
+        return unless counter_cached?
+
+        Association::Referenced::CounterCache.define_callbacks!(self)
       end
 
       def define_dependency!
-        if dependent
-          Association::Depending.define_dependency!(self)
-        end
+        return unless dependent
+
+        Association::Depending.define_dependency!(self)
       end
 
       def validate!
         @options.each_key do |opt|
-          unless self.class::VALID_OPTIONS.include?(opt)
-            raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
-          end
+          next if self.class::VALID_OPTIONS.include?(opt)
+
+          raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
         end
 
         [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
-          if Mongoid.destructive_fields.include?(n)
-            raise Errors::InvalidRelation.new(@owner_class, n)
-          end
+          next unless Mongoid.destructive_fields.include?(n)
+
+          raise Errors::InvalidRelation.new(@owner_class, n)
         end
       end
 
       def polymorph!
-        if polymorphic?
-          @owner_class.polymorphic = true
-        end
+        return unless polymorphic?
+
+        @owner_class.polymorphic = true
       end
 
       def create_extension!(&block)
-        if block
-          extension_module_name = "#{@owner_class.to_s.demodulize}#{name.to_s.camelize}RelationExtension"
-          silence_warnings do
-            @owner_class.const_set(extension_module_name, Module.new(&block))
-          end
-          @extension = "#{@owner_class}::#{extension_module_name}".constantize
+        return unless block
+
+        extension_module_name = "#{@owner_class.to_s.demodulize}#{name.to_s.camelize}RelationExtension"
+        silence_warnings do
+          @owner_class.const_set(extension_module_name, Module.new(&block))
         end
+        @extension = "#{@owner_class}::#{extension_module_name}".constantize
       end
 
       def default_inverse

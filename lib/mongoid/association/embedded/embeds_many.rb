@@ -17,16 +17,16 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-          :as,
-          :cascade_callbacks,
-          :cyclic,
-          :order,
-          :store_as,
-          :before_add,
-          :after_add,
-          :before_remove,
-          :after_remove
+        ASSOCIATION_OPTIONS = %i[
+          as
+          cascade_callbacks
+          cyclic
+          order
+          store_as
+          before_add
+          after_add
+          before_remove
+          after_remove
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -178,11 +178,12 @@ module Mongoid
               # https://jira.mongodb.org/browse/MONGOID-4882
               rel.relation_class_name.delete_prefix('::') == inverse_class_name
           end
+
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
 
-          matches.collect { |m| m.name } unless matches.blank?
+          matches.collect(&:name) unless matches.blank?
         end
       end
     end

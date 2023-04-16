@@ -218,7 +218,7 @@ describe Mongoid::Extensions::Object do
     context 'when the object is frozen' do
 
       let(:person) do
-        Person.new.tap { |peep| peep.freeze }
+        Person.new.tap(&:freeze)
       end
 
       let(:result) do

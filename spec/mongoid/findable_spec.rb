@@ -78,9 +78,9 @@ describe Mongoid::Findable do
           config_override :raise_not_found_error, true
 
           it 'raises an error' do
-            expect {
+            expect do
               person.messages.find_by(body: 'bar')
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class Message with attributes/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class Message with attributes/)
           end
         end
 
@@ -127,9 +127,9 @@ describe Mongoid::Findable do
         config_override :raise_not_found_error, true
 
         it 'raises an error' do
-          expect {
+          expect do
             Person.find_by(ssn: '333-22-1111')
-          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class Person with attributes/)
+          end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class Person with attributes/)
         end
       end
 
@@ -191,14 +191,14 @@ describe Mongoid::Findable do
     context 'when the document is not found' do
 
       it 'raises an error' do
-        expect {
+        expect do
           Person.find_by!(ssn: '333-22-1111')
-        }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class Person with attributes/)
+        end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document not found for class Person with attributes/)
       end
     end
   end
 
-  [:first, :one].each do |method|
+  %i[first one].each do |method|
 
     describe "##{method}" do
 

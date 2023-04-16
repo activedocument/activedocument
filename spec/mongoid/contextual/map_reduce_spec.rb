@@ -145,9 +145,9 @@ describe Mongoid::Contextual::MapReduce do
       context 'when the results are iterated' do
 
         it 'raises an error' do
-          expect {
+          expect do
             map_reduce.entries
-          }.to raise_error(Mongoid::Errors::NoMapReduceOutput)
+          end.to raise_error(Mongoid::Errors::NoMapReduceOutput)
         end
       end
 
@@ -155,9 +155,9 @@ describe Mongoid::Contextual::MapReduce do
         max_server_version '4.2'
 
         it 'raises an error' do
-          expect {
+          expect do
             map_reduce.counts
-          }.to raise_error(Mongoid::Errors::NoMapReduceOutput)
+          end.to raise_error(Mongoid::Errors::NoMapReduceOutput)
         end
       end
     end
@@ -329,9 +329,9 @@ describe Mongoid::Contextual::MapReduce do
     context 'when not specifying an out' do
 
       it 'raises a NoMapReduceOutput error' do
-        expect {
+        expect do
           map_reduce.raw
-        }.to raise_error(Mongoid::Errors::NoMapReduceOutput)
+        end.to raise_error(Mongoid::Errors::NoMapReduceOutput)
       end
     end
 
@@ -353,9 +353,9 @@ describe Mongoid::Contextual::MapReduce do
 
         it 'uses the read preference' do
 
-          expect {
+          expect do
             replace_map_reduce.raw
-          }.to raise_exception(Mongo::Error::OperationFailure)
+          end.to raise_exception(Mongo::Error::OperationFailure)
         end
       end
     end

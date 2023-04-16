@@ -30,7 +30,7 @@ module Mongoid
           { '$max' => ops } unless ops.empty?
         end
       end
-      alias :clamp_lower_bound :set_max
+      alias_method :clamp_lower_bound, :set_max
     end
   end
 end

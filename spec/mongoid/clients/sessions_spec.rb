@@ -102,7 +102,7 @@ describe Mongoid::Clients::Sessions do
           end
 
           it 'uses a single session id for all operations on the class' do
-            expect(Post.with(client: :other) { |klass| klass.count }).to be(1)
+            expect(Post.with(client: :other, &:count)).to be(1)
             lsids_sent = insert_events.collect { |event| event.command['lsid'] }
             expect(lsids_sent.size).to eq(3)
             expect(lsids_sent.uniq.size).to eq(1)
@@ -170,9 +170,7 @@ describe Mongoid::Clients::Sessions do
   context 'when a session is used on a model instance' do
 
     let!(:person) do
-      Person.with(client: :other) do |klass|
-        klass.create!
-      end
+      Person.with(client: :other, &:create!)
     end
 
     context 'when sessions are supported' do

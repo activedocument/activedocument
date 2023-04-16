@@ -1092,7 +1092,7 @@ describe Mongoid::Association::Referenced::HasMany do
     context 'when a block is passed' do
 
       let(:association) do
-        has_many_class.embeds_one name, options do; end
+        has_many_class.embeds_one(name, options) {}
       end
 
       it 'defines an extension module' do
@@ -1216,7 +1216,7 @@ describe Mongoid::Association::Referenced::HasMany do
   describe '#path' do
 
     it 'returns an instance of Mongoid::Atomic::Paths::Root' do
-      expect(association.path(double(:_parent => true))).to be_a(Mongoid::Atomic::Paths::Root)
+      expect(association.path(double(_parent: true))).to be_a(Mongoid::Atomic::Paths::Root)
     end
   end
 

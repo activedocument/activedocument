@@ -36,7 +36,7 @@ module Mongoid
         when Symbol
           to_direction(value.to_s)
         else
-          raise ArgumentError, "cannot translate #{value.inspect} (#{value.class}) to a direction specification"
+          raise ArgumentError.new("cannot translate #{value.inspect} (#{value.class}) to a direction specification")
         end
       end
     end

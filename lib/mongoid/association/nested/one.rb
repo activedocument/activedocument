@@ -145,11 +145,9 @@ module Mongoid
 
           # otherwise, an attempt has been made to set the _id of an existing,
           # persisted document.
-          if Mongoid::Config.immutable_ids
-            raise Errors::ImmutableAttribute.new(:_id, id)
-          else
-            Mongoid::Warnings.warn_mutable_ids
-          end
+          raise Errors::ImmutableAttribute.new(:_id, id) if Mongoid::Config.immutable_ids
+
+          Mongoid::Warnings.warn_mutable_ids
         end
       end
     end

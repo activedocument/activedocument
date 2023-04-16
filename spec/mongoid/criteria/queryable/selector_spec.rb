@@ -726,7 +726,7 @@ describe Mongoid::Criteria::Queryable::Selector do
           end
 
           before do
-            ::I18n.locale = :de
+            I18n.locale = :de
           end
 
           context 'when the criterion is simple' do

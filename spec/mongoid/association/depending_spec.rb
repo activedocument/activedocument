@@ -175,9 +175,9 @@ describe Mongoid::Association::Depending do
             owned = DependentOwnedOne.create!(dependent_superclass: subclass)
             subclass.destroy!
 
-            expect {
+            expect do
               DependentOwnedOne.find(owned.id)
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class DependentOwnedOne with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class DependentOwnedOne with id\(s\)/)
           end
         end
 
@@ -301,9 +301,9 @@ describe Mongoid::Association::Depending do
       end
 
       it 'does not raise an error' do
-        expect {
+        expect do
           klass.new.apply_destroy_dependencies!
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
 
@@ -360,9 +360,9 @@ describe Mongoid::Association::Depending do
           end
 
           it 'deletes the associated documents' do
-            expect {
+            expect do
               child.class.find(child.id)
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class #{child.class.to_s} with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class #{child.class.to_s} with id\(s\)/)
           end
         end
 
@@ -469,7 +469,7 @@ describe Mongoid::Association::Depending do
               Book.create!(title: 'Neuromancer')
             end
 
-            [:delete, :destroy].each do |method|
+            %i[delete destroy].each do |method|
 
               describe "##{method}" do
                 it 'succeeds' do
@@ -525,7 +525,7 @@ describe Mongoid::Association::Depending do
       end
 
       shared_examples 'deletes the parent with #delete and #destroy' do
-        [:delete, :destroy].each do |method|
+        %i[delete destroy].each do |method|
 
           describe "##{method}" do
             it 'raises no error' do
@@ -672,9 +672,9 @@ describe Mongoid::Association::Depending do
           end
 
           it 'persists the deletion' do
-            expect {
+            expect do
               home.reload
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Home with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Home with id\(s\)/)
           end
         end
 
@@ -731,15 +731,15 @@ describe Mongoid::Association::Depending do
             end
 
             it 'persists the first deletion' do
-              expect {
+              expect do
                 post_one.reload
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
             end
 
             it 'persists the second deletion' do
-              expect {
+              expect do
                 post_two.reload
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
             end
           end
         end

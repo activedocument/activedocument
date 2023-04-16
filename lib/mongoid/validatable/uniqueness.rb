@@ -267,9 +267,9 @@ module Mongoid
         criteria = create_criteria(klass, document, attribute, value)
         criteria = criteria.merge(options[:conditions].call) if options[:conditions]
 
-        if criteria.read(mode: :primary).exists?
-          add_error(document, attribute, value)
-        end
+        return unless criteria.read(mode: :primary).exists?
+
+        add_error(document, attribute, value)
       end
 
       # Are we required to validate the document?

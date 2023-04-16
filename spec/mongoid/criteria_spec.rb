@@ -233,7 +233,7 @@ describe Mongoid::Criteria do
     end
   end
 
-  [:all, :all_in].each do |method|
+  %i[all all_in].each do |method|
 
     describe "##{method}" do
 
@@ -255,7 +255,7 @@ describe Mongoid::Criteria do
     end
   end
 
-  [:and, :all_of].each do |method|
+  %i[and all_of].each do |method|
 
     describe "##{method}" do
 
@@ -311,7 +311,7 @@ describe Mongoid::Criteria do
     end
   end
 
-  [:build, :new].each do |method|
+  %i[build new].each do |method|
 
     describe "##{method}" do
 
@@ -409,7 +409,7 @@ describe Mongoid::Criteria do
     end
   end
 
-  [:clone, :dup].each do |method|
+  %i[clone dup].each do |method|
 
     describe "##{method}" do
 
@@ -976,9 +976,9 @@ describe Mongoid::Criteria do
         end
 
         it 'deletes the document from the database' do
-          expect {
+          expect do
             depeche.reload
-          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+          end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
         end
       end
     end
@@ -1086,7 +1086,7 @@ describe Mongoid::Criteria do
     end
   end
 
-  [:in, :any_in].each do |method|
+  %i[in any_in].each do |method|
 
     describe "##{method}" do
 
@@ -1632,7 +1632,7 @@ describe Mongoid::Criteria do
     end
   end
 
-  [:or, :any_of].each do |method|
+  %i[or any_of].each do |method|
 
     describe "##{method}" do
 
@@ -2804,9 +2804,9 @@ describe Mongoid::Criteria do
       context 'when the criteria is embedded' do
 
         it 'raises an error' do
-          expect {
+          expect do
             match.records.where('this.name == null')
-          }.to raise_error(Mongoid::Errors::UnsupportedJavascript)
+          end.to raise_error(Mongoid::Errors::UnsupportedJavascript)
         end
       end
 
@@ -3401,9 +3401,9 @@ describe Mongoid::Criteria do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           criteria.to_hash
-        }.to raise_error(NoMethodError)
+        end.to raise_error(NoMethodError)
       end
     end
   end

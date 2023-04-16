@@ -93,7 +93,7 @@ describe Mongoid::Factory do
         context 'when the type is a symbol' do
 
           let(:person) do
-            described_class.build(Person, { :_type => 'Doctor' })
+            described_class.build(Person, { _type: 'Doctor' })
           end
 
           it 'instantiates the subclass' do
@@ -126,7 +126,7 @@ describe Mongoid::Factory do
         context 'when the type is a symbol' do
 
           let(:person) do
-            described_class.build(Person, { :dkey => 'Doctor' })
+            described_class.build(Person, { dkey: 'Doctor' })
           end
 
           it 'instantiates the subclass' do
@@ -386,9 +386,9 @@ describe Mongoid::Factory do
       end
 
       it 'raises a exception' do
-        expect {
+        expect do
           person
-        }.to raise_exception(Mongoid::Errors::UnknownModel)
+        end.to raise_exception(Mongoid::Errors::UnknownModel)
       end
     end
 
@@ -411,9 +411,9 @@ describe Mongoid::Factory do
       end
 
       it 'raises a exception' do
-        expect {
+        expect do
           person
-        }.to raise_exception(Mongoid::Errors::UnknownModel)
+        end.to raise_exception(Mongoid::Errors::UnknownModel)
       end
     end
 
@@ -464,9 +464,9 @@ describe Mongoid::Factory do
       end
 
       it 'raises a exception' do
-        expect {
+        expect do
           person
-        }.to raise_exception(NoMethodError)
+        end.to raise_exception(NoMethodError)
       end
 
     end

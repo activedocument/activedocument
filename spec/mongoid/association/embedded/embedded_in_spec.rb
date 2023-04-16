@@ -401,9 +401,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'raises a Mongoid::Errors::AmbiguousRelationship exception' do
-          expect {
+          expect do
             association.inverses
-          }.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
+          end.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
         end
       end
 
@@ -553,9 +553,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         end
 
         it 'raises a Mongoid::Errors::AmbiguousRelationship exception' do
-          expect {
+          expect do
             association.inverse
-          }.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
+          end.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
         end
       end
 
@@ -814,7 +814,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
     context 'when a block is passed' do
 
       let(:association) do
-        embedded_class.embedded_in name, options do; end
+        embedded_class.embedded_in(name, options) {}
       end
 
       it 'defines an extension module' do
@@ -839,9 +839,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
   describe '#criteria' do
 
     it 'does not respond to the method' do
-      expect {
+      expect do
         association.criteria
-      }.to raise_exception(NoMethodError)
+      end.to raise_exception(NoMethodError)
     end
   end
 
@@ -868,9 +868,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
       end
 
       it 'raises a Mongoid::Errors::InvalidRelationOption exception' do
-        expect {
+        expect do
           association.cascading_callbacks?
-        }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+        end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
       end
     end
 

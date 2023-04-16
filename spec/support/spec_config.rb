@@ -44,11 +44,11 @@ class SpecConfig
   end
 
   def client_debug?
-    %w(1 true yes).include?(ENV['CLIENT_DEBUG']&.downcase)
+    %w[1 true yes].include?(ENV['CLIENT_DEBUG']&.downcase)
   end
 
   def app_tests?
-    %w(1 true yes).include?(ENV['APP_TESTS']&.downcase)
+    %w[1 true yes].include?(ENV['APP_TESTS']&.downcase)
   end
 
   def ci?
@@ -67,10 +67,10 @@ class SpecConfig
   #    nil if nothing matches.
   def installed_rails_version
     output = `gem list --exact rails`
-    if output =~ /^rails \((.*)\)/
-      versions = ::Regexp.last_match(1).split(/,\s*/)
-      rails_version_re = /^#{rails_version}(?:\..*)?$/
-      versions.detect { |v| v =~ rails_version_re }
-    end
+    return unless output =~ /^rails \((.*)\)/
+
+    versions = ::Regexp.last_match(1).split(/,\s*/)
+    rails_version_re = /^#{rails_version}(?:\..*)?$/
+    versions.detect { |v| v =~ rails_version_re }
   end
 end

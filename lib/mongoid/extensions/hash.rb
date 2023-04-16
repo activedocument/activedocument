@@ -81,7 +81,7 @@ module Mongoid
       def _mongoid_unsatisfiable_criteria?
         unsatisfiable_criteria = { '_id' => { '$in' => [] } }
         return true if self == unsatisfiable_criteria
-        return false unless length == 1 && keys == %w($and)
+        return false unless length == 1 && keys == %w[$and]
 
         value = values.first
         value.is_a?(Array) && value.any? do |sub_v|
@@ -100,7 +100,7 @@ module Mongoid
       # @return [ true | false ] Whether hash contains known unsatisfiable
       #   conditions.
       # @deprecated
-      alias :blank_criteria? :_mongoid_unsatisfiable_criteria?
+      alias_method :blank_criteria?, :_mongoid_unsatisfiable_criteria?
 
       # Deletes an id value from the hash.
       #
@@ -247,7 +247,7 @@ module Mongoid
   end
 end
 
-::Hash.__send__(:include, Mongoid::Extensions::Hash)
-::Hash.extend(Mongoid::Extensions::Hash::ClassMethods)
+Hash.__send__(:include, Mongoid::Extensions::Hash)
+Hash.extend(Mongoid::Extensions::Hash::ClassMethods)
 
-::Mongoid.deprecate(Hash, :blank_criteria)
+Mongoid.deprecate(Hash, :blank_criteria)

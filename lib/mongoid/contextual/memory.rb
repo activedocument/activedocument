@@ -57,7 +57,7 @@ module Mongoid
         end
         deleted
       end
-      alias :delete_all :delete
+      alias_method :delete_all, :delete
 
       # Destroy all documents in the database that match the selector.
       #
@@ -73,7 +73,7 @@ module Mongoid
         end
         deleted
       end
-      alias :destroy_all :destroy
+      alias_method :destroy_all, :destroy
 
       # Get the distinct values in the db for the provided field.
       #
@@ -145,8 +145,8 @@ module Mongoid
           eager_load([documents.first]).first
         end
       end
-      alias :one :first
-      alias :find_first :first
+      alias_method :one, :first
+      alias_method :find_first, :first
 
       # Get the first document in the database for the criteria's selector or
       # raise an error if none is found.
@@ -169,7 +169,8 @@ module Mongoid
       #
       # @param [ Mongoid::Criteria ] criteria The criteria.
       def initialize(criteria)
-        @criteria, @klass = criteria, criteria.klass
+        @criteria = criteria
+        @klass = criteria.klass
         @documents = criteria.documents.select do |doc|
           @root ||= doc._root
           @collection ||= root.collection
@@ -232,7 +233,7 @@ module Mongoid
       def length
         documents.length
       end
-      alias :size :length
+      alias_method :size, :length
 
       # Limits the number of documents that are returned.
       #
@@ -286,9 +287,9 @@ module Mongoid
       #
       # @return [ Object | Array<Object> ] The picked values.
       def pick(*fields)
-        if doc = documents.first
-          pluck_from_doc(doc, *fields)
-        end
+        return unless doc = documents.first
+
+        pluck_from_doc(doc, *fields)
       end
 
       # Tally the field values in memory.
@@ -565,9 +566,7 @@ module Mongoid
       # @return [ Array<Mongoid::Document> ] The docs to iterate.
       def documents_for_iteration
         docs = documents[skipping || 0, limiting || documents.length] || []
-        if eager_loadable?
-          eager_load(docs)
-        end
+        eager_load(docs) if eager_loadable?
         docs
       end
 
@@ -646,7 +645,7 @@ module Mongoid
       #
       # @return [ Memory ] self.
       def apply_options
-        raise Errors::InMemoryCollationNotSupported.new if criteria.options[:collation]
+        raise Errors::InMemoryCollationNotSupported if criteria.options[:collation]
 
         skip(criteria.options[:skip]).limit(criteria.options[:limit])
       end
@@ -656,9 +655,9 @@ module Mongoid
       # @example Apply the sorting params.
       #   context.apply_sorting
       def apply_sorting
-        if spec = criteria.options[:sort]
-          in_place_sort(spec)
-        end
+        return unless spec = criteria.options[:sort]
+
+        in_place_sort(spec)
       end
 
       # Compare two values, checking for nil.
@@ -691,7 +690,8 @@ module Mongoid
       def in_place_sort(values)
         documents.sort! do |a, b|
           values.map do |field, direction|
-            a_value, b_value = a[field], b[field]
+            a_value = a[field]
+            b_value = b[field]
             direction * compare(a_value.__sortable__, b_value.__sortable__)
           end.find { |value| !value.zero? } || 0
         end
@@ -752,9 +752,7 @@ module Mongoid
                          # If this is a localized field, and there are remaining, get the
                          # _translations hash so that we can get the specified translation in
                          # the remaining
-                         if field&.localized?
-                           document.send("#{segment}_translations")
-                         end
+                         document.send("#{segment}_translations") if field&.localized?
                        end
                  meth = klass.aliased_associations[segment] || segment
                  res.nil? ? document.try(meth) : res

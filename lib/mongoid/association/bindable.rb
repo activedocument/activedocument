@@ -18,7 +18,9 @@ module Mongoid
       # @param [ Mongoid::Document | Array<Mongoid::Document> ] target The target of the binding.
       # @param [ Mongoid::Association::Relatable ] association The association metadata.
       def initialize(base, target, association)
-        @_base, @_target, @_association = base, target, association
+        @_base = base
+        @_target = target
+        @_association = association
       end
 
       # Execute the provided block inside a binding.
@@ -30,10 +32,10 @@ module Mongoid
       #
       # @return [ Object ] The result of the yield.
       def binding
-        unless _binding?
-          _binding do
-            yield(self) if block_given?
-          end
+        return if _binding?
+
+        _binding do
+          yield(self) if block_given?
         end
       end
 
@@ -50,26 +52,26 @@ module Mongoid
       #
       # @raise [ Errors::InverseNotFound ] If no inverse found.
       def check_inverse!(doc)
-        unless _association.bindable?(doc)
-          raise Errors::InverseNotFound.new(
-            _base.class,
-            _association.name,
-            doc.class,
-            _association.foreign_key
-          )
-        end
+        return if _association.bindable?(doc)
+
+        raise Errors::InverseNotFound.new(
+          _base.class,
+          _association.name,
+          doc.class,
+          _association.foreign_key
+        )
       end
 
       # Remove the associated document from the inverse's association.
       #
       # @param [ Mongoid::Document ] doc The document to remove.
       def remove_associated(doc)
-        if inverse = _association.inverse(doc)
-          if _association.many?
-            remove_associated_many(doc, inverse)
-          elsif _association.in_to?
-            remove_associated_in_to(doc, inverse)
-          end
+        return unless (inverse = _association.inverse(doc))
+
+        if _association.many?
+          remove_associated_many(doc, inverse)
+        elsif _association.in_to?
+          remove_associated_in_to(doc, inverse)
         end
       end
 
@@ -85,9 +87,10 @@ module Mongoid
         # This first condition is needed because when assigning the
         # embeds_many association using the same embeds_many
         # association, we delete from the array we are about to assign.
-        if (inv = doc.ivar(inverse)) && (_base != inv && (associated = inv.ivar(_association.name)))
-          associated.delete(doc)
-        end
+        return unless (inv = doc.ivar(inverse)) &&
+                      (_base != inv && (associated = inv.ivar(_association.name)))
+
+        associated.delete(doc)
       end
 
       # Remove the associated document from the inverse's association.
@@ -100,9 +103,9 @@ module Mongoid
       def remove_associated_in_to(doc, inverse)
         # We only want to remove the inverse association when the inverse
         # document is in memory.
-        if associated = doc.ivar(inverse)
-          associated.send(_association.setter, nil)
-        end
+        return unless (associated = doc.ivar(inverse))
+
+        associated.send(_association.setter, nil)
       end
 
       # Set the id of the related document in the foreign key field on the
@@ -116,9 +119,9 @@ module Mongoid
       # @param [ Mongoid::Document ] keyed The document that stores the foreign key.
       # @param [ Object ] id The id of the bound document.
       def bind_foreign_key(keyed, id)
-        unless keyed.frozen?
-          keyed.you_must(_association.foreign_key_setter, id)
-        end
+        return if keyed.frozen?
+
+        keyed.you_must(_association.foreign_key_setter, id)
       end
 
       # Set the type of the related document on the foreign type field, used
@@ -132,9 +135,9 @@ module Mongoid
       # @param [ Mongoid::Document ] typed The document that stores the type field.
       # @param [ String ] name The name of the model.
       def bind_polymorphic_type(typed, name)
-        if _association.type
-          typed.you_must(_association.type_setter, name)
-        end
+        return unless _association.type
+
+        typed.you_must(_association.type_setter, name)
       end
 
       # Set the type of the related document on the foreign type field, used
@@ -148,9 +151,9 @@ module Mongoid
       # @param [ Mongoid::Document ] typed The document that stores the type field.
       # @param [ String ] name The name of the model.
       def bind_polymorphic_inverse_type(typed, name)
-        if _association.inverse_type
-          typed.you_must(_association.inverse_type_setter, name)
-        end
+        return unless _association.inverse_type
+
+        typed.you_must(_association.inverse_type_setter, name)
       end
 
       # Bind the inverse document to the child document so that the in memory
@@ -164,9 +167,9 @@ module Mongoid
       # @param [ Mongoid::Document ] doc The base document.
       # @param [ Mongoid::Document ] inverse The inverse document.
       def bind_inverse(doc, inverse)
-        if doc.respond_to?(_association.inverse_setter)
-          doc.you_must(_association.inverse_setter, inverse)
-        end
+        return unless doc.respond_to?(_association.inverse_setter)
+
+        doc.you_must(_association.inverse_setter, inverse)
       end
 
       # Bind the provided document with the base from the parent association.
@@ -201,9 +204,9 @@ module Mongoid
       # @return [ true | false ] If the association changed.
       def set_base_association
         inverse_association = _association.inverse_association(_target)
-        if inverse_association != _association && !inverse_association.nil?
-          _base._association = inverse_association
-        end
+        return unless inverse_association != _association && !inverse_association.nil?
+
+        _base._association = inverse_association
       end
 
       # Bind the provided document with the base from the parent association.

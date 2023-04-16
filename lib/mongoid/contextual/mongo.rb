@@ -23,17 +23,17 @@ module Mongoid
       include Queryable
 
       # Options constant.
-      OPTIONS = [:hint,
-                 :limit,
-                 :skip,
-                 :sort,
-                 :batch_size,
-                 :max_time_ms,
-                 :snapshot,
-                 :comment,
-                 :read,
-                 :cursor_type,
-                 :collation].freeze
+      OPTIONS = %i[hint
+                   limit
+                   skip
+                   sort
+                   batch_size
+                   max_time_ms
+                   snapshot
+                   comment
+                   read
+                   cursor_type
+                   collation].freeze
 
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
@@ -76,13 +76,12 @@ module Mongoid
       #
       # @return [ Integer ] The number of matches.
       def estimated_count(options = {})
-        unless self.criteria.selector.empty?
-          if klass.default_scoping?
-            raise Mongoid::Errors::InvalidEstimatedCountScoping.new(self.klass)
-          else
-            raise Mongoid::Errors::InvalidEstimatedCountCriteria.new(self.klass)
-          end
+        unless criteria.selector.empty?
+          raise Mongoid::Errors::InvalidEstimatedCountScoping.new(klass) if klass.default_scoping?
+
+          raise Mongoid::Errors::InvalidEstimatedCountCriteria.new(klass)
         end
+
         view.estimated_document_count(options)
       end
 
@@ -95,7 +94,7 @@ module Mongoid
       def delete
         view.delete_many.deleted_count
       end
-      alias :delete_all :delete
+      alias_method :delete_all, :delete
 
       # Destroy all documents in the database that match the selector.
       #
@@ -110,7 +109,7 @@ module Mongoid
           count
         end
       end
-      alias :destroy_all :destroy
+      alias_method :destroy_all, :destroy
 
       # Get the distinct values in the db for the provided field.
       #
@@ -169,7 +168,7 @@ module Mongoid
       # @return [ true | false ] If the count is more than zero.
       #   Always false if passed nil or false.
       def exists?(id_or_conditions = :none)
-        return false if self.view.limit == 0
+        return false if view.limit == 0
 
         case id_or_conditions
         when :none then !!view.projection(_id: 1).limit(1).first
@@ -204,9 +203,9 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The result of the command.
       def find_one_and_update(update, options = {})
-        if doc = view.find_one_and_update(update, options)
-          Factory.from_db(klass, doc)
-        end
+        return unless doc = view.find_one_and_update(update, options)
+
+        Factory.from_db(klass, doc)
       end
 
       # Execute the find and modify command, used for MongoDB's
@@ -224,9 +223,9 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The result of the command.
       def find_one_and_replace(replacement, options = {})
-        if doc = view.find_one_and_replace(replacement, options)
-          Factory.from_db(klass, doc)
-        end
+        return unless doc = view.find_one_and_replace(replacement, options)
+
+        Factory.from_db(klass, doc)
       end
 
       # Execute the find and modify command, used for MongoDB's
@@ -237,19 +236,19 @@ module Mongoid
       #
       # @return [ Mongoid::Document ] The result of the command.
       def find_one_and_delete
-        if doc = view.find_one_and_delete
-          Factory.from_db(klass, doc)
-        end
+        return unless doc = view.find_one_and_delete
+
+        Factory.from_db(klass, doc)
       end
 
       # Return the first result without applying sort
       #
       # @api private
       def find_first
-        if raw_doc = view.first
-          doc = Factory.from_db(klass, raw_doc, criteria)
-          eager_load([doc]).first
-        end
+        return unless raw_doc = view.first
+
+        doc = Factory.from_db(klass, raw_doc, criteria)
+        eager_load([doc]).first
       end
 
       # Create the new Mongo context. This delegates operations to the
@@ -260,7 +259,8 @@ module Mongoid
       #
       # @param [ Mongoid::Criteria ] criteria The criteria.
       def initialize(criteria)
-        @criteria, @klass = criteria, criteria.klass
+        @criteria = criteria
+        @klass = criteria.klass
         @collection = @klass.collection
         criteria.send(:merge_type_selection)
         @view = collection.find(criteria.selector, session: _session)
@@ -277,9 +277,9 @@ module Mongoid
       #
       # @return [ Integer ] The number of documents.
       def length
-        self.count
+        count
       end
-      alias :size :length
+      alias_method :size, :length
 
       # Limits the number of documents that are returned from the database.
       #
@@ -389,11 +389,9 @@ module Mongoid
       def take!
         # Do to_a first so that the Mongo#first method is not used and the
         # result is not sorted.
-        if fst = limit(1).to_a.first
-          fst
-        else
-          raise Errors::DocumentNotFound.new(klass, nil, nil)
-        end
+        raise Errors::DocumentNotFound.new(klass, nil, nil) unless (first_result = limit(1).to_a.first)
+
+        first_result
       end
 
       # Get a hash of counts for the values of a single field. For example,
@@ -555,7 +553,7 @@ module Mongoid
           retrieve_nth_with_limit(0, limit)
         end
       end
-      alias :one :first
+      alias_method :one, :first
 
       # Get the first document in the database for the criteria's selector or
       # raise an error if none is found.
@@ -805,9 +803,9 @@ module Mongoid
       # @example Apply the field limitations.
       #   context.apply_fields
       def apply_fields
-        if spec = criteria.options[:fields]
-          @view = view.projection(spec)
-        end
+        return unless spec = criteria.options[:fields]
+
+        @view = view.projection(spec)
       end
 
       # Apply the options.
@@ -821,9 +819,9 @@ module Mongoid
         OPTIONS.each do |name|
           apply_option(name)
         end
-        if criteria.options[:timeout] == false
-          @view = view.no_cursor_timeout
-        end
+        return unless criteria.options[:timeout] == false
+
+        @view = view.no_cursor_timeout
       end
 
       # Apply an option.
@@ -833,9 +831,9 @@ module Mongoid
       # @example Apply the skip option.
       #   context.apply_option(:skip)
       def apply_option(name)
-        if spec = criteria.options[name]
-          @view = view.send(name, spec)
-        end
+        return unless spec = criteria.options[name]
+
+        @view = view.send(name, spec)
       end
 
       # Map the inverse sort symbols to the correct MongoDB values.
@@ -966,9 +964,9 @@ module Mongoid
         sort = view.sort || { _id: 1 }
         v = view.sort(sort).limit(limit || 1)
         v = v.skip(n) if n > 0
-        if raw_docs = v.to_a
-          process_raw_docs(raw_docs, limit)
-        end
+        return unless raw_docs = v.to_a
+
+        process_raw_docs(raw_docs, limit)
       end
 
       def retrieve_nth_to_last(n)

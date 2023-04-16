@@ -31,21 +31,21 @@ describe Mongoid::Loadable do
       end
 
       it "should return Rails' \"app/models\" paths" do
-        expect(Mongoid.model_paths).to eq %w(app/models)
+        expect(Mongoid.model_paths).to eq %w[app/models]
       end
     end
 
     context 'when Rails is not defined' do
       it "should return Mongoid's default model paths" do
-        expect(Mongoid.model_paths).to eq %w(./app/models ./lib/models)
+        expect(Mongoid.model_paths).to eq %w[./app/models ./lib/models]
       end
     end
 
     context 'when explicitly set' do
-      before { Mongoid.model_paths = %w(/infra/models) }
+      before { Mongoid.model_paths = %w[/infra/models] }
 
       it 'should return the given value' do
-        expect(Mongoid.model_paths).to eq %w(/infra/models)
+        expect(Mongoid.model_paths).to eq %w[/infra/models]
       end
     end
   end

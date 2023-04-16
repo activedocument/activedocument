@@ -175,13 +175,13 @@ module Mongoid
     #
     # @param [ String ] name The name of the field.
     def apply_default(name)
-      if !attributes.key?(name) && field = fields[name]
-        default = field.eval_default(self)
-        unless default.nil? || field.lazy?
-          attribute_will_change!(name)
-          attributes[name] = default
-        end
-      end
+      return unless !attributes.key?(name) && field = fields[name]
+
+      default = field.eval_default(self)
+      return if default.nil? || field.lazy?
+
+      attribute_will_change!(name)
+      attributes[name] = default
     end
 
     # Apply all the defaults at once.
@@ -266,9 +266,9 @@ module Mongoid
     #
     # @param [ String ] name The field name.
     def validate_writable_field_name!(name)
-      if dot_dollar_field?(name)
-        raise Errors::InvalidDotDollarAssignment.new(self.class, name)
-      end
+      return unless dot_dollar_field?(name)
+
+      raise Errors::InvalidDotDollarAssignment.new(self.class, name)
     end
 
     class << self
@@ -538,14 +538,15 @@ module Mongoid
       #
       # @api private
       def add_defaults(field)
-        default, name = field.default_val, field.name.to_s
+        default = field.default_val
+        name = field.name.to_s
         remove_defaults(name)
-        unless default.nil?
-          if field.pre_processed?
-            pre_processed_defaults.push(name)
-          else
-            post_processed_defaults.push(name)
-          end
+        return if default.nil?
+
+        if field.pre_processed?
+          pre_processed_defaults.push(name)
+        else
+          post_processed_defaults.push(name)
         end
       end
 
@@ -591,9 +592,9 @@ module Mongoid
         field_options = field.options
 
         Fields.options.each_pair do |option_name, handler|
-          if field_options.key?(option_name)
-            handler.call(self, field, field_options[option_name])
-          end
+          next unless field_options.key?(option_name)
+
+          handler.call(self, field, field_options[option_name])
         end
       end
 
@@ -619,11 +620,11 @@ module Mongoid
         create_field_setter(name, meth, field)
         create_field_check(name, meth)
 
-        if options[:localize]
-          create_translations_getter(name, meth)
-          create_translations_setter(name, meth, field)
-          localized_fields[name] = field
-        end
+        return unless options[:localize]
+
+        create_translations_getter(name, meth)
+        create_translations_setter(name, meth, field)
+        localized_fields[name] = field
       end
 
       # Create the getter method for the provided field.
@@ -686,9 +687,7 @@ module Mongoid
         generated_methods.module_eval do
           re_define_method("#{meth}=") do |value|
             val = write_attribute(name, value)
-            if field.foreign_key?
-              remove_ivar(field.association.name)
-            end
+            remove_ivar(field.association.name) if field.foreign_key?
             val
           end
         end

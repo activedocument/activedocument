@@ -56,5 +56,5 @@ module Mongoid
   end
 end
 
-::Time.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Time)
-::Time.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Time::ClassMethods)
+Time.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Time)
+Time.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Time::ClassMethods)

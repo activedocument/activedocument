@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module ImmutableIds
     def immutable_id_examples_as(name)

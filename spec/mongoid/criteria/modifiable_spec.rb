@@ -85,9 +85,9 @@ describe Mongoid::Criteria::Modifiable do
     context 'when provided invalid attributes' do
 
       it 'raises an error' do
-        expect {
+        expect do
           criteria.create!
-        }.to raise_error(Mongoid::Errors::Validations)
+        end.to raise_error(Mongoid::Errors::Validations)
       end
     end
 
@@ -115,7 +115,7 @@ describe Mongoid::Criteria::Modifiable do
     end
   end
 
-  [:delete, :delete_all, :destroy, :destroy_all].each do |method|
+  %i[delete delete_all destroy destroy_all].each do |method|
 
     describe "##{method}" do
 
@@ -487,9 +487,9 @@ describe Mongoid::Criteria::Modifiable do
         end
 
         it 'raises an exception' do
-          expect {
+          expect do
             Person.find_or_create_by!(ssn: 'test')
-          }.to raise_error(Mongoid::Errors::Validations)
+          end.to raise_error(Mongoid::Errors::Validations)
         end
       end
 
@@ -877,9 +877,9 @@ describe Mongoid::Criteria::Modifiable do
     context 'when validation fails on the new document' do
 
       it 'raises an error' do
-        expect {
+        expect do
           Account.where(number: '12345').first_or_create!
-        }.to raise_error(Mongoid::Errors::Validations)
+        end.to raise_error(Mongoid::Errors::Validations)
       end
     end
 

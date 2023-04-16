@@ -71,7 +71,7 @@ class EventSubscriber
   end
 
   def non_auth_command_started_events
-    auth_commands = %w(authenticate getnonce saslSstart saslContinue)
+    auth_commands = %w[authenticate getnonce saslSstart saslContinue]
     started_events.reject do |event|
       auth_commands.any? { |cmd| event.command[cmd] }
     end
@@ -113,9 +113,7 @@ class EventSubscriber
   # @return [ Event ] The matching event.
   def first_event(name)
     cls = MAPPINGS[name]
-    if cls.nil?
-      raise ArgumentError, "Bogus event name #{name}"
-    end
+    raise ArgumentError.new("Bogus event name #{name}") if cls.nil?
 
     matching = succeeded_events.find do |event|
       cls === event
@@ -198,7 +196,7 @@ class PhasedEventSubscriber < EventSubscriber
 end
 
 class VerboseEventSubscriber < EventSubscriber
-  %w(started succeeded failed published).each do |meth|
+  %w[started succeeded failed published].each do |meth|
     define_method(meth) do |event|
       puts event.summary
       super(event)

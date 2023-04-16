@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InterceptableSpec
   class CallbackRegistry
     def initialize
@@ -15,10 +17,10 @@ module InterceptableSpec
     extend ActiveSupport::Concern
 
     included do
-      %i(
+      %i[
         validation save create update
-      ).each do |what|
-        %i(before after).each do |whn|
+      ].each do |what|
+        %i[before after].each do |whn|
           send("#{whn}_#{what}", "#{whn}_#{what}_stub".to_sym)
           define_method("#{whn}_#{what}_stub") do
             callback_registry&.record_call(self.class, "#{whn}_#{what}".to_sym)

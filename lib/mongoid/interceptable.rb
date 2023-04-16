@@ -6,28 +6,28 @@ module Mongoid
   module Interceptable
     extend ActiveSupport::Concern
 
-    CALLBACKS = [
-      :after_build,
-      :after_create,
-      :after_destroy,
-      :after_find,
-      :after_initialize,
-      :after_save,
-      :after_touch,
-      :after_update,
-      :after_upsert,
-      :after_validation,
-      :around_create,
-      :around_destroy,
-      :around_save,
-      :around_update,
-      :around_upsert,
-      :before_create,
-      :before_destroy,
-      :before_save,
-      :before_update,
-      :before_upsert,
-      :before_validation
+    CALLBACKS = %i[
+      after_build
+      after_create
+      after_destroy
+      after_find
+      after_initialize
+      after_save
+      after_touch
+      after_update
+      after_upsert
+      after_validation
+      around_create
+      around_destroy
+      around_save
+      around_update
+      around_upsert
+      before_create
+      before_destroy
+      before_save
+      before_update
+      before_upsert
+      before_validation
     ].freeze
 
     included do
@@ -70,7 +70,7 @@ module Mongoid
     #
     # @return [ true | false ] If the document is in a callback state.
     def in_callback_state?(kind)
-      [:create, :destroy].include?(kind) || new_record? || flagged_for_destroy? || changed?
+      %i[create destroy].include?(kind) || new_record? || flagged_for_destroy? || changed?
     end
 
     # Run only the after callbacks for the specific event.
@@ -122,9 +122,7 @@ module Mongoid
     # @param [ Proc | nil ] skip_if If this proc returns true, the callbacks
     #   will not be triggered, while the given block will be still called.
     def run_callbacks(kind, with_children: true, skip_if: nil, &block)
-      if skip_if&.call
-        return block&.call
-      end
+      return block&.call if skip_if&.call
 
       if with_children
         cascadable_children(kind).each do |child|
@@ -191,10 +189,10 @@ module Mongoid
     # @api private
     def run_pending_callbacks
       pending_callbacks.each do |cb|
-        if [:apply_defaults, :apply_post_processed_defaults].include?(cb)
+        if %i[apply_defaults apply_post_processed_defaults].include?(cb)
           send(cb)
         else
-          self.run_callbacks(cb, with_children: false)
+          run_callbacks(cb, with_children: false)
         end
       end
       pending_callbacks.clear
@@ -254,7 +252,7 @@ module Mongoid
     #
     # @return [ true | false ] If the child should fire the callback.
     def cascadable_child?(kind, child, association)
-      return false if [:initialize, :find, :touch].include?(kind)
+      return false if %i[initialize find touch].include?(kind)
       return false if kind == :validate && association.validate?
 
       child.callback_executable?(kind) ? child.in_callback_state?(kind) : false

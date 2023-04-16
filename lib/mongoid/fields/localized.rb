@@ -93,14 +93,16 @@ module Mongoid
                 elsif object.key?(locale)
                   object[locale]
                 end
+
         return value unless value.nil?
 
-        if fallbacks? && ::I18n.respond_to?(:fallbacks)
-          fallback_key = ::I18n.fallbacks[locale].find do |loc|
-            object.key?(loc.to_s) || object.key?(loc)
-          end
-          object[fallback_key.to_s] || object[fallback_key]
+        return unless fallbacks? && ::I18n.respond_to?(:fallbacks)
+
+        fallback_key = ::I18n.fallbacks[locale].find do |loc|
+          object.key?(loc.to_s) || object.key?(loc)
         end
+
+        object[fallback_key.to_s] || object[fallback_key]
       end
     end
   end

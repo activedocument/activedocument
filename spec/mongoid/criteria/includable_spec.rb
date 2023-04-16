@@ -14,9 +14,9 @@ describe Mongoid::Criteria::Includable do
     context 'when providing a name that is not a relation' do
 
       it 'raises an error' do
-        expect {
+        expect do
           Person.includes(:members)
-        }.to raise_error(Mongoid::Errors::InvalidIncludes)
+        end.to raise_error(Mongoid::Errors::InvalidIncludes)
       end
     end
 
@@ -84,7 +84,7 @@ describe Mongoid::Criteria::Includable do
       end
 
       let(:result) do
-        User.includes(:posts => [:alerts]).first
+        User.includes(posts: [:alerts]).first
       end
 
       it 'executes the query' do
@@ -104,7 +104,7 @@ describe Mongoid::Criteria::Includable do
       end
 
       let(:results) do
-        User.includes(:posts => [{ :alerts => :items }]).to_a
+        User.includes(posts: [{ alerts: :items }]).to_a
       end
 
       it 'executes the query' do
@@ -1422,9 +1422,7 @@ describe Mongoid::Criteria::Includable do
 
     it 'executes a query for the non-retrieved elements' do
       expect_query(3, skip_if_sharded: true) do
-        result.posts.each do |post|
-          post.author
-        end
+        result.posts.each(&:author)
       end
     end
   end
@@ -1456,9 +1454,7 @@ describe Mongoid::Criteria::Includable do
 
     it 'executes a query for the non-retrieved elements' do
       expect_query(3, skip_if_sharded: true) do
-        result.posts.each do |post|
-          post.author
-        end
+        result.posts.each(&:author)
       end
     end
 

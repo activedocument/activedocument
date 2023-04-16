@@ -7,9 +7,7 @@ describe Symbol do
   describe '.add_key' do
 
     before do
-      described_class.add_key(:fubar, :union, '$fu', '$bar') do |value|
-        value.to_s
-      end
+      described_class.add_key(:fubar, :union, '$fu', '$bar', &:to_s)
     end
 
     let(:fubar) do

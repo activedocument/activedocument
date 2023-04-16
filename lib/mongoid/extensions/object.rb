@@ -15,7 +15,7 @@ module Mongoid
       def __evolve_object_id__
         self
       end
-      alias :__mongoize_object_id__ :__evolve_object_id__
+      alias_method :__mongoize_object_id__, :__evolve_object_id__
 
       # Convert the object to args for a find query.
       #
@@ -247,7 +247,7 @@ module Mongoid
   end
 end
 
-::Object.__send__(:include, Mongoid::Extensions::Object)
-::Object.extend(Mongoid::Extensions::Object::ClassMethods)
+Object.__send__(:include, Mongoid::Extensions::Object)
+Object.extend(Mongoid::Extensions::Object::ClassMethods)
 
-::Mongoid.deprecate(Object, :blank_criteria)
+Mongoid.deprecate(Object, :blank_criteria)

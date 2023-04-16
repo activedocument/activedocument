@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Mongoid::Boolean do
 
-  [:mongoize, :demongoize].each do |method|
+  %i[mongoize demongoize].each do |method|
 
     describe ".#{method}" do
 

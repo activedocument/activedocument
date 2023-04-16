@@ -8,27 +8,27 @@ module Mongoid
       module Options
         extend self
 
-        VALID_OPTIONS = [
-          :database,
-          :default_language,
-          :language_override,
-          :name,
-          :sparse,
-          :unique,
-          :max,
-          :min,
-          :bits,
-          :bucket_size,
-          :expire_after_seconds,
-          :weights,
-          :storage_engine,
-          :key,
-          :sphere_version,
-          :text_version,
-          :version,
-          :partial_filter_expression,
-          :collation,
-          :wildcard_projection
+        VALID_OPTIONS = %i[
+          database
+          default_language
+          language_override
+          name
+          sparse
+          unique
+          max
+          min
+          bits
+          bucket_size
+          expire_after_seconds
+          weights
+          storage_engine
+          key
+          sphere_version
+          text_version
+          version
+          partial_filter_expression
+          collation
+          wildcard_projection
         ].freeze
 
         VALID_TYPES = [
@@ -95,13 +95,12 @@ module Mongoid
 
           spec.each_pair do |name, value|
             next if name == :options
+
             unless VALID_TYPES.include?(value)
               raise Errors::InvalidIndex.new(klass, spec, options)
             end
 
-            if value == 'geoHaystack'
-              Mongoid::Warnings.warn_geo_haystack_deprecated
-            end
+            Mongoid::Warnings.warn_geo_haystack_deprecated if value == 'geoHaystack'
           end
         end
       end

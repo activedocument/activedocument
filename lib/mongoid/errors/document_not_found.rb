@@ -25,7 +25,8 @@ module Mongoid
       def initialize(klass, params, unmatched = nil)
         unmatched = Array(params) if !unmatched && !params.is_a?(Hash) && params
 
-        @klass, @params = klass, params
+        @klass = klass
+        @params = params
         super(
           compose_message(
             message_key(params, unmatched),
@@ -98,9 +99,9 @@ module Mongoid
       def message_key(params, unmatched)
         if !params && !unmatched
           'no_documents_found'
-        elsif Hash === params
+        elsif params.is_a?(Hash)
           'document_with_attributes_not_found'
-        elsif Hash === unmatched && unmatched.size >= 2
+        elsif unmatched.is_a?(Hash) && unmatched.size >= 2
           'document_with_shard_key_not_found'
         else
           'document_not_found'
@@ -111,12 +112,12 @@ module Mongoid
       #
       # @return [ String ] the shard key and value.
       def shard_key(unmatched)
-        if Hash === unmatched
-          h = unmatched.dup
-          h.delete('_id')
-          h.delete(:_id)
-          h.map { |k, v| "#{k}: #{v}" }.join(', ')
-        end
+        return unless unmatched.is_a?(Hash)
+
+        h = unmatched.dup
+        h.delete('_id')
+        h.delete(:_id)
+        h.map { |k, v| "#{k}: #{v}" }.join(', ')
       end
     end
   end

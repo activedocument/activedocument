@@ -23,8 +23,8 @@ module Mongoid
     #
     # @return [ Array<Symbol> ] The list of extra options besides client options
     #   that determine the persistence context.
-    EXTRA_OPTIONS = [:client,
-                     :collection].freeze
+    EXTRA_OPTIONS = %i[client
+                       collection].freeze
 
     # The full list of valid persistence context options.
     #
@@ -95,12 +95,8 @@ module Mongoid
     def client
       @client ||= begin
         client = Clients.with_name(client_name)
-        if database_name_option
-          client = client.use(database_name)
-        end
-        unless client_options.empty?
-          client = client.with(client_options)
-        end
+        client = client.use(database_name) if database_name_option
+        client = client.with(client_options) unless client_options.empty?
         client
       end
     end
@@ -170,9 +166,8 @@ module Mongoid
         opts = options.select do |k, v|
           Mongo::Client::VALID_OPTIONS.include?(k.to_sym)
         end
-        if opts[:read].is_a?(Symbol)
-          opts[:read] = { mode: opts[:read] }
-        end
+
+        opts[:read] = { mode: opts[:read] } if opts[:read].is_a?(Symbol)
         opts
       end
     end

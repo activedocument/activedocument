@@ -71,7 +71,7 @@ module Mongoid
   end
 end
 
-::Regexp.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Regexp)
-::Regexp.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Regexp::ClassMethods)
+Regexp.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Regexp)
+Regexp.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Regexp::ClassMethods)
 BSON::Regexp::Raw.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Regexp::RawExt)
 BSON::Regexp::Raw.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Regexp::RawExt::ClassMethods)

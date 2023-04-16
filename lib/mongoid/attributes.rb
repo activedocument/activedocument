@@ -18,7 +18,7 @@ module Mongoid
     include Readonly
 
     attr_reader :attributes
-    alias :raw_attributes :attributes
+    alias_method :raw_attributes, :attributes
 
     # Determine if an attribute is present.
     #
@@ -88,7 +88,7 @@ module Mongoid
       raw = read_raw_attribute(name)
       process_raw_attribute(name.to_s, raw, field)
     end
-    alias :[] :read_attribute
+    alias_method :[], :read_attribute
 
 
     # Process the raw attribute values just read from the documents attributes.
@@ -195,11 +195,10 @@ module Mongoid
 
           typed_value
         end
-      else
-        # TODO: MONGOID-5072
+        # else TODO: MONGOID-5072
       end
     end
-    alias :[]= :write_attribute
+    alias_method :[]=, :write_attribute
 
     # Allows you to set all the attributes for a particular mass-assignment security role
     # by passing in a hash of attributes with keys matching the attribute names
@@ -233,7 +232,7 @@ module Mongoid
     def write_attributes(attrs = nil)
       assign_attributes(attrs)
     end
-    alias :attributes= :write_attributes
+    alias_method :attributes=, :write_attributes
 
     # Determine if the attribute is missing from the document, due to loading
     # it from the database with missing fields.
@@ -340,7 +339,7 @@ module Mongoid
       # @param [ Symbol ] name The aliased field name to remove.
       def unalias_attribute(name)
         unless aliased_fields.delete(name.to_s)
-          raise AttributeError, "Field #{name} is not an aliased field"
+          raise AttributeError.new("Field #{name} is not an aliased field")
         end
 
         remove_method name

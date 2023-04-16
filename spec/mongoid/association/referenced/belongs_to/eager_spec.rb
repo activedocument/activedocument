@@ -383,7 +383,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
       it 'works' do
         id = BSON::ObjectId.new
-        game = Game.new(:person_id => id)
+        game = Game.new(person_id: id)
         expect(game.person_id).to eql(id)
       end
     end

@@ -17,11 +17,11 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-          :autobuild,
-          :cyclic,
-          :polymorphic,
-          :touch
+        ASSOCIATION_OPTIONS = %i[
+          autobuild
+          cyclic
+          polymorphic
+          touch
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -120,15 +120,15 @@ module Mongoid
         end
 
         def polymorphic_inverses(other = nil)
-          if other
-            matches = other.relations.values.select do |rel|
-              relation_complements.include?(rel.class) &&
-                rel.as == name &&
-                rel.relation_class_name == inverse_class_name
-            end
+          return unless other
 
-            matches.map { |m| m.name }
+          matches = other.relations.values.select do |rel|
+            relation_complements.include?(rel.class) &&
+              rel.as == name &&
+              rel.relation_class_name == inverse_class_name
           end
+
+          matches.map(&:name)
         end
 
         def determine_inverses(other)
@@ -136,11 +136,12 @@ module Mongoid
             relation_complements.include?(rel.class) &&
               rel.relation_class_name == inverse_class_name
           end
+
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
 
-          matches.collect { |m| m.name } unless matches.blank?
+          matches.collect(&:name) unless matches.blank?
         end
       end
     end

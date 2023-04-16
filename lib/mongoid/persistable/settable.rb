@@ -55,18 +55,14 @@ module Mongoid
               old_value = attributes[field]
 
               # if the old value is not a hash, clobber it
-              unless Hash === old_value
-                old_value = {}
-              end
+              old_value = {} unless old_value.is_a?(Hash)
 
               # descend into the hash, creating intermediate keys as needed
               cur_value = old_value
               while field_seq.length > 1
                 cur_key = field_seq.shift
                 # clobber on each level if type is not a hash
-                unless Hash === cur_value[cur_key]
-                  cur_value[cur_key] = {}
-                end
+                cur_value[cur_key] = {} unless cur_value[cur_key].is_a?(Hash)
                 cur_value = cur_value[cur_key]
               end
 

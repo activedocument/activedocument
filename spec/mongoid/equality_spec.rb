@@ -113,14 +113,14 @@ describe Mongoid::Equality do
     context 'when the comparable is a subclass' do
 
       it 'returns false' do
-        expect(Person === Doctor).to be false
+        expect(Doctor.is_a?(Person)).to be false
       end
     end
 
     context 'when the comparable is an instance of a subclass' do
 
       it 'returns true' do
-        expect(Person === Doctor.new).to be true
+        expect(Doctor.new.is_a?(Person)).to be true
       end
     end
   end

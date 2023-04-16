@@ -137,9 +137,7 @@ describe Mongoid::Config::Environment do
     context 'when configuration includes schema map' do
       paths = Dir.glob(File.join(File.dirname(__FILE__), '../../support/schema_maps/*.json'))
 
-      if paths.empty?
-        raise 'Expected to find some schema maps'
-      end
+      raise 'Expected to find some schema maps' if paths.empty?
 
       before do
         allow(File).to receive(:read).with('mongoid.yml').and_return(file_contents)

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Mongoid::Contextual::Mongo do
 
-  [:blank?, :empty?].each do |method|
+  %i[blank? empty?].each do |method|
 
     describe "##{method}" do
 
@@ -253,7 +253,7 @@ describe Mongoid::Contextual::Mongo do
 
 
 
-  [:delete, :delete_all].each do |method|
+  %i[delete delete_all].each do |method|
 
     describe "##{method}" do
 
@@ -357,7 +357,7 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [:destroy, :destroy_all].each do |method|
+  %i[destroy destroy_all].each do |method|
 
     describe "##{method}" do
 
@@ -1914,9 +1914,9 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it 'deletes the document from the database' do
-        expect {
+        expect do
           depeche.reload
-        }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+        end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
       end
 
       context 'when a collation is specified on the criteria' do
@@ -1938,9 +1938,9 @@ describe Mongoid::Contextual::Mongo do
         end
 
         it 'deletes the document from the database' do
-          expect {
+          expect do
             depeche.reload
-          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+          end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
         end
       end
     end
@@ -1965,7 +1965,7 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [:first, :one].each do |method|
+  %i[first one].each do |method|
 
     describe "##{method}" do
 
@@ -2083,7 +2083,7 @@ describe Mongoid::Contextual::Mongo do
       context 'when using .sort' do
 
         let(:criteria) do
-          Band.all.sort(:name => -1).criteria
+          Band.all.sort(name: -1).criteria
         end
 
         let(:context) do
@@ -2427,7 +2427,7 @@ describe Mongoid::Contextual::Mongo do
     context 'when using .sort' do
 
       let(:criteria) do
-        Band.all.sort(:name => -1).criteria
+        Band.all.sort(name: -1).criteria
       end
 
       let(:context) do
@@ -2686,7 +2686,7 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-  [:length, :size].each do |method|
+  %i[length size].each do |method|
 
     describe "##{method}" do
 
@@ -3300,9 +3300,9 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           results.entries
-        }.to raise_error(Mongoid::Errors::NoMapReduceOutput)
+        end.to raise_error(Mongoid::Errors::NoMapReduceOutput)
       end
     end
 

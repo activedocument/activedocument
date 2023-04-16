@@ -79,12 +79,12 @@ describe Mongoid::Validatable do
         end
 
         let(:validation) do
-          princess.valid?([:create, :update])
+          princess.valid?(%i[create update])
         end
 
         it 'validates using each context' do
           expect(validation).to be(false)
-          expect(princess.errors.messages.keys).to eq([:color, :name])
+          expect(princess.errors.messages.keys).to eq(%i[color name])
         end
       end
     end

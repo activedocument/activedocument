@@ -190,7 +190,7 @@ describe Mongoid::Interceptable do
 
       let(:book) do
         book = Book.new({
-          :pages => [
+          pages: [
             {
               content: 'Page 1',
               notes: [
@@ -609,9 +609,9 @@ describe Mongoid::Interceptable do
     context 'when attempting to cascade on a referenced relation' do
 
       it 'raises an error' do
-        expect {
+        expect do
           Band.has_and_belongs_to_many :tags, cascade_callbacks: true
-        }.to raise_error(Mongoid::Errors::InvalidRelationOption)
+        end.to raise_error(Mongoid::Errors::InvalidRelationOption)
       end
     end
 
@@ -1615,7 +1615,7 @@ describe Mongoid::Interceptable do
     it 'goes in all validation callback in good order' do
       shin = ValidationCallback.new
       shin.valid?
-      expect(shin.history).to eq([:before_validation, :validate, :after_validation])
+      expect(shin.history).to eq(%i[before_validation validate after_validation])
     end
   end
 
@@ -2136,9 +2136,7 @@ describe Mongoid::Interceptable do
 
       context 'when the child is an embeds_one association' do
         let!(:player) do
-          Player.create!.tap do |player|
-            player.create_augmentation
-          end
+          Player.create!.tap(&:create_augmentation)
         end
 
         let(:unpersisted) { player.augmentation }

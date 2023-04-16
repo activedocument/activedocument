@@ -121,13 +121,13 @@ describe Mongoid::Attributes::Nested do
     context 'when the association is referenced in and polymorphic' do
 
       it 'infers the class name of the polymorphic with the inverse type' do
-        expect {
+        expect do
           Post.create!(
             title: 'Some title',
             posteable_type: 'Sandwich',
             posteable_attributes: { name: 'Grilled Cheese' }
           )
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
 
@@ -1117,9 +1117,9 @@ describe Mongoid::Attributes::Nested do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.addresses_attributes = attributes
-              }.to raise_error(Mongoid::Errors::TooManyNestedAttributeRecords)
+              end.to raise_error(Mongoid::Errors::TooManyNestedAttributeRecords)
             end
           end
 
@@ -1353,10 +1353,10 @@ describe Mongoid::Attributes::Nested do
             context 'when the ids do not match' do
 
               it 'raises an error' do
-                expect {
+                expect do
                   person.addresses_attributes =
                     { 'foo' => { 'id' => 'test', 'street' => 'Test' } }
-                }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Address with id\(s\)/)
+                end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Address with id\(s\)/)
               end
             end
           end
@@ -1371,7 +1371,7 @@ describe Mongoid::Attributes::Nested do
 
                   class BandWithAllowDestroyedRecords < Band
                     validates_presence_of :name
-                    accepts_nested_attributes_for :records, :allow_destroy => true
+                    accepts_nested_attributes_for :records, allow_destroy: true
                   end
 
                   let!(:band) do
@@ -1409,7 +1409,7 @@ describe Mongoid::Attributes::Nested do
                 context 'when the child accesses the parent after destroy' do
 
                   before do
-                    Band.accepts_nested_attributes_for :records, :allow_destroy => true
+                    Band.accepts_nested_attributes_for :records, allow_destroy: true
                   end
 
                   after do
@@ -2939,9 +2939,9 @@ describe Mongoid::Attributes::Nested do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.posts_attributes = attributes
-              }.to raise_error(Mongoid::Errors::TooManyNestedAttributeRecords)
+              end.to raise_error(Mongoid::Errors::TooManyNestedAttributeRecords)
             end
           end
 
@@ -3012,11 +3012,11 @@ describe Mongoid::Attributes::Nested do
                 end
 
                 it 'raises a document not found error' do
-                  expect {
+                  expect do
                     person.posts_attributes = {
                       '0' => { 'id' => BSON::ObjectId.new.to_s, 'title' => 'Rogue' }
                     }
-                  }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+                  end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
                 end
               end
             end
@@ -3047,10 +3047,10 @@ describe Mongoid::Attributes::Nested do
             context 'when the ids do not match' do
 
               it 'raises an error' do
-                expect {
+                expect do
                   person.posts_attributes =
                     { 'foo' => { 'id' => 'test', 'title' => 'Test' } }
-                }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+                end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
               end
             end
           end
@@ -3699,9 +3699,9 @@ describe Mongoid::Attributes::Nested do
             end
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.preferences_attributes = attributes
-              }.to raise_error(Mongoid::Errors::TooManyNestedAttributeRecords)
+              end.to raise_error(Mongoid::Errors::TooManyNestedAttributeRecords)
             end
           end
 
@@ -3765,10 +3765,10 @@ describe Mongoid::Attributes::Nested do
             context 'when the ids do not match' do
 
               it 'raises an error' do
-                expect {
+                expect do
                   person.preferences_attributes =
                     { 'foo' => { 'id' => 'test', 'name' => 'Test' } }
-                }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
+                end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Preference with id\(s\)/)
               end
             end
           end
@@ -4859,11 +4859,11 @@ describe Mongoid::Attributes::Nested do
           end
 
           let(:error_raising_update) do
-            league.update!(:divisions => nil)
+            league.update!(divisions: nil)
           end
 
           before do
-            league.update(:divisions => nil)
+            league.update(divisions: nil)
             league.reload
           end
 

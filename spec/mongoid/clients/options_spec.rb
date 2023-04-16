@@ -18,9 +18,7 @@ describe Mongoid::Clients::Options, retry: 3 do
     context 'when passing some options' do
 
       let(:persistence_context) do
-        Minim.with(options) do |klass|
-          klass.persistence_context
-        end
+        Minim.with(options, &:persistence_context)
       end
 
       let(:options) { { database: 'other' } }
@@ -36,17 +34,15 @@ describe Mongoid::Clients::Options, retry: 3 do
       context 'when the options are not valid mongo client options' do
 
         let(:persistence_context) do
-          Minim.with(invalid_options) do |klass|
-            klass.persistence_context
-          end
+          Minim.with(invalid_options, &:persistence_context)
         end
 
         let(:invalid_options) { { bad: 'option' } }
 
         it 'raises an error' do
-          expect {
+          expect do
             persistence_context
-          }.to raise_exception(Mongoid::Errors::InvalidPersistenceOption)
+          end.to raise_exception(Mongoid::Errors::InvalidPersistenceOption)
         end
 
         it 'clears the persistence context' do
@@ -171,9 +167,7 @@ describe Mongoid::Clients::Options, retry: 3 do
           end
 
           let(:persistence_context) do
-            Minim.with(client: :analytics) do |klass|
-              klass.persistence_context
-            end
+            Minim.with(client: :analytics, &:persistence_context)
           end
 
           it 'uses the database specified in the uri' do
@@ -254,7 +248,7 @@ describe Mongoid::Clients::Options, retry: 3 do
               end
             end
           end
-          threads.collect { |t| t.value }
+          threads.collect(&:value)
         end
 
         let(:british_count) do
@@ -283,9 +277,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       let(:persistence_context) do
-        instance.with(options) do |inst|
-          inst.persistence_context
-        end
+        instance.with(options, &:persistence_context)
       end
 
       let(:options) { { database: 'other' } }
@@ -311,9 +303,7 @@ describe Mongoid::Clients::Options, retry: 3 do
       end
 
       let(:persistence_context) do
-        test_model.with(options) do |object|
-          object.persistence_context
-        end
+        test_model.with(options, &:persistence_context)
       end
 
       it 'sets the options on the client' do
@@ -327,17 +317,15 @@ describe Mongoid::Clients::Options, retry: 3 do
       context 'when the options are not valid mongo client options' do
 
         let(:persistence_context) do
-          test_model.with(invalid_options) do |object|
-            object.persistence_context
-          end
+          test_model.with(invalid_options, &:persistence_context)
         end
 
         let(:invalid_options) { { bad: 'option' } }
 
         it 'raises an error' do
-          expect {
+          expect do
             persistence_context
-          }.to raise_exception(Mongoid::Errors::InvalidPersistenceOption)
+          end.to raise_exception(Mongoid::Errors::InvalidPersistenceOption)
         end
 
         it 'clears the persistence context' do
@@ -365,9 +353,7 @@ describe Mongoid::Clients::Options, retry: 3 do
         end
 
         let(:persistence_context) do
-          test_model.with(client: :analytics) do |object|
-            object.persistence_context
-          end
+          test_model.with(client: :analytics, &:persistence_context)
         end
 
         it 'uses the database specified in the uri' do
@@ -481,7 +467,7 @@ describe Mongoid::Clients::Options, retry: 3 do
               end
             end
           end
-          threads.collect { |t| t.value }
+          threads.collect(&:value)
         end
 
         let(:british_count) do
@@ -506,9 +492,7 @@ describe Mongoid::Clients::Options, retry: 3 do
     context 'when passing a persistence context' do
 
       let(:persistence_context) do
-        Minim.with(options) do |klass|
-          klass.persistence_context
-        end
+        Minim.with(options, &:persistence_context)
       end
 
       let(:options) { { database: 'other' } }

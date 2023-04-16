@@ -68,10 +68,10 @@ module Mongoid
   end
 end
 
-::Integer.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Numeric)
-::Integer.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Numeric::ClassMethods)
+Integer.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Numeric)
+Integer.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Numeric::ClassMethods)
 
-::Float.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Numeric)
-::Float.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Numeric::ClassMethods)
+Float.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Numeric)
+Float.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Numeric::ClassMethods)
 
-::BigDecimal.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Numeric)
+BigDecimal.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Numeric)

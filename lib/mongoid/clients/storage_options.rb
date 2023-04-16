@@ -50,7 +50,7 @@ module Mongoid
         # @return [ Class ] The model class.
         def store_in(options)
           Validators::Storage.validate(self, options)
-          self.storage_options = self.storage_options.merge(options)
+          self.storage_options = storage_options.merge(options)
         end
 
         # Reset the store_in options

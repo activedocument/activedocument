@@ -70,7 +70,7 @@ module Mongoid
       def autosave
         !!@options[:autosave]
       end
-      alias :autosave? :autosave
+      alias_method :autosave?, :autosave
 
       # Whether the association is counter-cached.
       #

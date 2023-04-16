@@ -55,7 +55,7 @@ module Mongoid
           # @param [ String ] id The id of the object to update.
           # @param [ Hash ] counters
           def update_counters(id, counters)
-            where(:_id => id).inc(counters)
+            where(_id: id).inc(counters)
           end
 
           # Increment the counter name from the entries that match the

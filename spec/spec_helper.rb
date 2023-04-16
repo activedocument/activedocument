@@ -112,7 +112,7 @@ end
 I18n.config.enforce_available_locales = false
 
 
-if %w(yes true 1).include?((ENV['TEST_I18N_FALLBACKS'] || '').downcase)
+if %w[yes true 1].include?((ENV['TEST_I18N_FALLBACKS'] || '').downcase)
   require 'i18n/backend/fallbacks'
 end
 
@@ -147,13 +147,8 @@ RSpec.configure do |config|
   # Drop all collections and clear the identity map before each spec.
   config.before(:each) do
     cluster = Mongoid.default_client.cluster
-    # Older drivers do not have a #connected? method
-    if cluster.respond_to?(:connected?) && !cluster.connected?
-      Mongoid.default_client.reconnect
-    end
-    Mongoid.default_client.collections.each do |coll|
-      coll.delete_many
-    end
+    Mongoid.default_client.reconnect unless cluster.connected?
+    Mongoid.default_client.collections.each(&:delete_many)
   end
 
   if SpecConfig.instance.mri? && !SpecConfig.instance.windows?
@@ -164,7 +159,7 @@ RSpec.configure do |config|
     timeout_lib = Timeout
   end
 
-  if SpecConfig.instance.ci? && !%w(1 true yes).include?(ENV['INTERACTIVE']&.downcase)
+  if SpecConfig.instance.ci? && !%w[1 true yes].include?(ENV['INTERACTIVE']&.downcase)
     config.around(:each) do |example|
       timeout_lib.timeout(30) { example.run }
     end

@@ -22,7 +22,7 @@ describe 'Matcher operators' do
   context 'when comparing Time objects' do
     let(:time) { Time.utc(2021, 10, 25, 10, 30, 30, 581345) }
     let(:document) do
-      ConsumptionPeriod.new(:started_at => time)
+      ConsumptionPeriod.new(started_at: time)
     end
 
     context 'comparing millisecond precision' do
@@ -54,7 +54,7 @@ describe 'Matcher operators' do
 
       context 'when matching an element in an array' do
         let(:document) do
-          Mop.new(:array_field => [time])
+          Mop.new(array_field: [time])
         end
 
         context 'with equals match' do

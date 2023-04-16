@@ -7,7 +7,7 @@ describe Mongoid::Criteria::Queryable::Options do
   describe '#__deep_copy__' do
 
     let(:sort) do
-      [[:name, :asc]]
+      [%i[name asc]]
     end
 
     let(:options) do
@@ -144,7 +144,7 @@ describe Mongoid::Criteria::Queryable::Options do
           end
 
           before do
-            options.send(method, :sort, { :id => 1 })
+            options.send(method, :sort, { id: 1 })
           end
 
           it 'stores the field in the options by database name' do
@@ -211,7 +211,7 @@ describe Mongoid::Criteria::Queryable::Options do
           context 'when the criterion is complex' do
 
             before do
-              options.send(method, :sort, { :key => 1 })
+              options.send(method, :sort, { key: 1 })
             end
 
             it 'does not localize the keys' do
@@ -240,7 +240,7 @@ describe Mongoid::Criteria::Queryable::Options do
           end
 
           before do
-            ::I18n.locale = :de
+            I18n.locale = :de
           end
 
           context 'when the criterion is simple' do
@@ -257,7 +257,7 @@ describe Mongoid::Criteria::Queryable::Options do
           context 'when the criterion is complex' do
 
             before do
-              options.send(method, :sort, { :key => 1 })
+              options.send(method, :sort, { key: 1 })
             end
 
             it 'does not localize the keys' do

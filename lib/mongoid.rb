@@ -33,9 +33,7 @@ require 'mongoid/utils'
 
 # If we are using Rails then we will include the Mongoid railtie.
 # This configures initializers required to integrate Mongoid with Rails.
-if defined?(Rails)
-  require 'mongoid/railtie'
-end
+require 'mongoid/railtie' if defined?(Rails)
 
 # Add English locale config to load path by default.
 I18n.load_path << File.join(File.dirname(__FILE__), 'config', 'locales', 'en.yml')
@@ -49,7 +47,7 @@ module Mongoid
   extend Clients::Sessions::ClassMethods
 
   # A string added to the platform details of Ruby driver client handshake documents.
-  PLATFORM_DETAILS = "mongoid-#{VERSION}".freeze
+  PLATFORM_DETAILS = "mongoid-#{VERSION}".freeze # rubocop:disable Style/RedundantFreeze
 
   # The minimum MongoDB version supported.
   MONGODB_VERSION = '2.6.0'
@@ -116,7 +114,7 @@ module Mongoid
   #
   # @example Delegate the configuration methods.
   #   Mongoid.database = Mongo::Connection.new.db("test")
-  def_delegators Config, *(Config.public_instance_methods(false) - [:logger=, :logger])
+  def_delegators Config, *(Config.public_instance_methods(false) - %i[logger= logger])
 
   # Define persistence context that is used when a transaction method is called
   # on Mongoid module.

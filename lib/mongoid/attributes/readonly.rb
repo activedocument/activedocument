@@ -29,11 +29,9 @@ module Mongoid
 
       def as_writable_attribute!(name, value = :nil)
         normalized_name = database_field_name(name)
-        if attribute_writable?(normalized_name)
-          yield(normalized_name)
-        else
-          raise Errors::ReadonlyAttribute.new(name, value)
-        end
+        raise Errors::ReadonlyAttribute.new(name, value) unless attribute_writable?(normalized_name)
+
+        yield(normalized_name)
       end
 
       def _loaded?(name)

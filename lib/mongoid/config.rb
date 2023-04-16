@@ -275,12 +275,12 @@ module Mongoid
     #
     # @param [ Hash ] options The configuration options.
     def options=(options)
-      if options
-        Validators::AsyncQueryExecutor.validate(options)
-        options.each_pair do |option, value|
-          Validators::Option.validate(option)
-          send("#{option}=", value)
-        end
+      return unless options
+
+      Validators::AsyncQueryExecutor.validate(options)
+      options.each_pair do |option, value|
+        Validators::Option.validate(option)
+        send("#{option}=", value)
       end
     end
 
@@ -322,7 +322,7 @@ module Mongoid
     end
 
     def clients=(clients)
-      raise Errors::NoClientsConfig.new unless clients
+      raise Errors::NoClientsConfig unless clients
 
       c = clients.with_indifferent_access
       Validators::Client.validate(c)

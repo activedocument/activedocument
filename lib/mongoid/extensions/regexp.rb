@@ -28,10 +28,10 @@ module Mongoid
         rescue RegexpError
           nil
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end
 end
 
-::Regexp.extend(Mongoid::Extensions::Regexp::ClassMethods)
+Regexp.extend(Mongoid::Extensions::Regexp::ClassMethods)

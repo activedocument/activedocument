@@ -58,11 +58,11 @@ describe Mongoid::Persistable do
         let(:operations) do
           [{
             '$inc' => { 'member_count' => 10 },
-            '$bit' => { 'likes' => { :and => 13 } },
+            '$bit' => { 'likes' => { and: 13 } },
             '$set' => { 'name' => 'Placebo' },
             '$unset' => { 'origin' => true }
           },
-           { :session => nil }]
+           { session: nil }]
         end
 
         before do
@@ -86,11 +86,11 @@ describe Mongoid::Persistable do
         let(:operations) do
           [{
             '$inc' => { 'member_count' => 10 },
-            '$bit' => { 'likes' => { :and => 13 } },
+            '$bit' => { 'likes' => { and: 13 } },
             '$set' => { 'name' => 'Placebo' },
             '$unset' => { 'origin' => true }
           },
-           { :session => nil }]
+           { session: nil }]
         end
 
         before do
@@ -115,11 +115,11 @@ describe Mongoid::Persistable do
         let(:operations) do
           [{
             '$inc' => { 'member_count' => 10, 'other_count' => 10 },
-            '$bit' => { 'likes' => { :and => 13 } },
+            '$bit' => { 'likes' => { and: 13 } },
             '$set' => { 'name' => 'Placebo' },
             '$unset' => { 'origin' => true }
           },
-           { :session => nil }]
+           { session: nil }]
         end
 
         before do
@@ -153,11 +153,11 @@ describe Mongoid::Persistable do
         let(:operations) do
           [{
             '$inc' => { 'member_count' => 10 },
-            '$bit' => { 'likes' => { :and => 13 } },
+            '$bit' => { 'likes' => { and: 13 } },
             '$set' => { 'name' => 'Placebo' },
             '$unset' => { 'origin' => true }
           },
-           { :session => nil }]
+           { session: nil }]
         end
 
         before do
@@ -199,7 +199,7 @@ describe Mongoid::Persistable do
                 doc2.inc(member_count: 10)
               end
               doc.inc likes: 1
-              raise PersistableSpecTestException, 'oops'
+              raise PersistableSpecTestException.new('oops')
             end
           end
 
@@ -261,7 +261,7 @@ describe Mongoid::Persistable do
                 doc.atomically(join_context: true) do |doc3|
                   doc.inc likes: 1
                 end
-                raise PersistableSpecTestException, 'oops'
+                raise PersistableSpecTestException.new('oops')
               end
             rescue PersistableSpecTestException
             end
@@ -304,9 +304,9 @@ describe Mongoid::Persistable do
     end
 
     it 'raises the validation error' do
-      expect {
+      expect do
         document.fail_due_to_validation!
-      }.to raise_error(Mongoid::Errors::Validations)
+      end.to raise_error(Mongoid::Errors::Validations)
     end
   end
 
@@ -317,9 +317,9 @@ describe Mongoid::Persistable do
     end
 
     it 'raises the callback error' do
-      expect {
+      expect do
         document.fail_due_to_callback!(:save!)
-      }.to raise_error(Mongoid::Errors::Callback)
+      end.to raise_error(Mongoid::Errors::Callback)
     end
   end
 end

@@ -35,7 +35,7 @@ describe Mongoid::Extensions::Symbol do
     end
   end
 
-  [:mongoize, :demongoize].each do |method|
+  %i[mongoize demongoize].each do |method|
 
     describe '.mongoize' do
 

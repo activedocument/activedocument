@@ -74,17 +74,17 @@ describe 'Mongoid::Tasks::Encryption' do
 
     context 'when the client name is incorrect' do
       it 'raises an error' do
-        expect {
+        expect do
           Mongoid::Tasks::Encryption.create_data_key(kms_provider_name: 'local', client_name: :wrong_client)
-        }.to raise_error(Mongoid::Errors::NoClientConfig)
+        end.to raise_error(Mongoid::Errors::NoClientConfig)
       end
     end
 
     context 'when the client does not have auto_encryption_options' do
       it 'raises an error' do
-        expect {
+        expect do
           Mongoid::Tasks::Encryption.create_data_key(kms_provider_name: 'local', client_name: :default)
-        }.to raise_error(Mongoid::Errors::InvalidAutoEncryptionConfiguration)
+        end.to raise_error(Mongoid::Errors::InvalidAutoEncryptionConfiguration)
       end
     end
 
@@ -106,9 +106,9 @@ describe 'Mongoid::Tasks::Encryption' do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           Mongoid::Tasks::Encryption.create_data_key(kms_provider_name: 'local', client_name: :encrypted)
-        }.to raise_error(Mongoid::Errors::InvalidAutoEncryptionConfiguration)
+        end.to raise_error(Mongoid::Errors::InvalidAutoEncryptionConfiguration)
       end
     end
 
@@ -130,17 +130,17 @@ describe 'Mongoid::Tasks::Encryption' do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           Mongoid::Tasks::Encryption.create_data_key(kms_provider_name: 'local', client_name: :encrypted)
-        }.to raise_error(Mongoid::Errors::InvalidAutoEncryptionConfiguration)
+        end.to raise_error(Mongoid::Errors::InvalidAutoEncryptionConfiguration)
       end
     end
 
     context 'when kms_providers does not include used provider' do
       it 'raises an error' do
-        expect {
+        expect do
           Mongoid::Tasks::Encryption.create_data_key(kms_provider_name: 'aws', client_name: :encrypted)
-        }.to raise_error(Mongoid::Errors::InvalidAutoEncryptionConfiguration)
+        end.to raise_error(Mongoid::Errors::InvalidAutoEncryptionConfiguration)
       end
     end
   end

@@ -50,17 +50,17 @@ module Mongoid
         def demongoize(object)
           return if object.nil?
 
-          if object.is_a?(Hash)
-            hash = object.slice('min', 'max', 'exclude_end', :min, :max, :exclude_end)
-            unless hash.blank?
-              begin
-                ::Range.new(hash['min'] || hash[:min],
-                            hash['max'] || hash[:max],
-                            hash['exclude_end'] || hash[:exclude_end])
-              rescue ArgumentError
-                nil
-              end
-            end
+          return unless object.is_a?(Hash)
+
+          hash = object.slice('min', 'max', 'exclude_end', :min, :max, :exclude_end)
+          return if hash.blank?
+
+          begin
+            ::Range.new(hash['min'] || hash[:min],
+                        hash['max'] || hash[:max],
+                        hash['exclude_end'] || hash[:exclude_end])
+          rescue ArgumentError
+            nil
           end
         end
 
@@ -96,9 +96,7 @@ module Mongoid
           hash = {}
           hash['min'] = object.begin.mongoize if object.begin
           hash['max'] = object.end.mongoize if object.end
-          if object.respond_to?(:exclude_end?) && object.exclude_end?
-            hash['exclude_end'] = true
-          end
+          hash['exclude_end'] = true if object.respond_to?(:exclude_end?) && object.exclude_end?
           hash
         end
       end
@@ -106,5 +104,5 @@ module Mongoid
   end
 end
 
-::Range.__send__(:include, Mongoid::Extensions::Range)
-::Range.extend(Mongoid::Extensions::Range::ClassMethods)
+Range.__send__(:include, Mongoid::Extensions::Range)
+Range.extend(Mongoid::Extensions::Range::ClassMethods)

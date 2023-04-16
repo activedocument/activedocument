@@ -3,9 +3,7 @@
 require 'spec_helper'
 
 def mop_error?(spec, kind)
-  unless %w(matcher driver dsl).include?(kind)
-    raise ArgumentError, "Bogus kind: #{kind}"
-  end
+  raise ArgumentError.new("Bogus kind: #{kind}") unless %w[matcher driver dsl].include?(kind)
 
   spec['error'] == true || spec['error'] == kind ||
     spec['error'].is_a?(Array) && spec['error'].include?(kind)
@@ -50,9 +48,7 @@ describe 'Matcher operators' do
             end
           end
 
-          if spec['min_server_version']
-            min_server_version spec['min_server_version'].to_s
-          end
+          min_server_version spec['min_server_version'].to_s if spec['min_server_version']
 
           let(:query) { spec.fetch('query') }
           let(:result) { spec.fetch('matches') }

@@ -25,10 +25,10 @@ module Mongoid
     #
     # @return [ true | false ] If default scoping was applied.
     def apply_default_scoping
-      if default_scoping
-        default_scoping.call.selector.each do |field, value|
-          attributes[field] = value unless value.respond_to?(:each)
-        end
+      return unless default_scoping
+
+      default_scoping.call.selector.each do |field, value|
+        attributes[field] = value unless value.respond_to?(:each)
       end
     end
 
@@ -49,11 +49,13 @@ module Mongoid
       # @return [ Hash ] The scopes defined for this class
       def scopes
         defined_scopes = {}
+
         ancestors.reverse_each do |klass|
-          if klass.respond_to?(:_declared_scopes)
-            defined_scopes.merge!(klass._declared_scopes)
-          end
+          next unless klass.respond_to?(:_declared_scopes)
+
+          defined_scopes.merge!(klass._declared_scopes)
         end
+
         defined_scopes.freeze
       end
 
@@ -194,7 +196,7 @@ module Mongoid
       def with_default_scope
         queryable.with_default_scope
       end
-      alias :criteria :with_default_scope
+      alias_method :criteria, :with_default_scope
 
       # Pushes the provided criteria onto the scope stack, and removes it after the
       # provided block is yielded.
@@ -244,18 +246,16 @@ module Mongoid
       # @raise [ Errors::ScopeOverwrite ] If the name exists and configured to
       #   raise the error.
       def check_scope_name(name)
-        if _declared_scopes[name] || respond_to?(name, true)
-          if Mongoid.scope_overwrite_exception
-            raise Errors::ScopeOverwrite.new(self.name, name)
-          else
-            Mongoid.logger.warn(
-              "Creating scope :#{name} which conflicts with #{self.name}.#{name}. " \
-              "Calls to `Mongoid::Criteria##{name}` will delegate to " \
-              "`Mongoid::Criteria##{name}` for criteria with klass #{self.name} " \
-              'and will ignore the declared scope.'
-            )
-          end
-        end
+        return unless _declared_scopes[name] || respond_to?(name, true)
+
+        raise Errors::ScopeOverwrite.new(self.name, name) if Mongoid.scope_overwrite_exception
+
+        Mongoid.logger.warn(
+          "Creating scope :#{name} which conflicts with #{self.name}.#{name}. " \
+          "Calls to `Mongoid::Criteria##{name}` will delegate to " \
+          "`Mongoid::Criteria##{name}` for criteria with klass #{self.name} " \
+          'and will ignore the declared scope.'
+        )
       end
 
       # Checks if the intended scope is a valid object, either a criteria or
@@ -270,9 +270,9 @@ module Mongoid
       #
       # @raise [ Errors::InvalidScope ] If the scope is not a valid object.
       def check_scope_validity(value)
-        unless value.respond_to?(:call)
-          raise Errors::InvalidScope.new(self, value)
-        end
+        return if value.respond_to?(:call)
+
+        raise Errors::InvalidScope.new(self, value)
       end
 
       # Defines the actual class method that will execute the scope when

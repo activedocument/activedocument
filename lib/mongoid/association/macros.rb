@@ -48,7 +48,7 @@ module Mongoid
       #
       # @return [ Hash ] The associations.
       def associations
-        self.relations
+        relations
       end
 
       module ClassMethods
@@ -216,9 +216,9 @@ module Mongoid
         def define_association!(macro_name, name, options = {}, &block)
           Association::MACRO_MAPPING[macro_name].new(self, name, options, &block).tap do |assoc|
             assoc.setup!
-            self.relations = self.relations.merge(name => assoc)
+            self.relations = relations.merge(name => assoc)
             if assoc.embedded? && assoc.respond_to?(:store_as) && assoc.store_as != name
-              self.aliased_associations[assoc.store_as] = name
+              aliased_associations[assoc.store_as] = name
             end
           end
         end

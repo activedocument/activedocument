@@ -44,21 +44,21 @@ describe 'Syncable Association' do
     end
 
     it 'prohibits the use of :_sycned as an attribute' do
-      expect {
+      expect do
         model_synced
-      }.to raise_exception(Mongoid::Errors::InvalidField)
+      end.to raise_exception(Mongoid::Errors::InvalidField)
     end
 
     it 'prohibits the use of :_synced? as an attribute' do
-      expect {
+      expect do
         model_synced?
-      }.to raise_exception(Mongoid::Errors::InvalidField)
+      end.to raise_exception(Mongoid::Errors::InvalidField)
     end
 
     it 'prohibits the use of :_syncable? as an attribute' do
-      expect {
+      expect do
         model_syncable?
-      }.to raise_exception(Mongoid::Errors::InvalidField)
+      end.to raise_exception(Mongoid::Errors::InvalidField)
     end
   end
 

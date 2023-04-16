@@ -122,9 +122,9 @@ describe Mongoid::Persistable::Updatable do
       it 'raises exception for an unknown attribute ' do
         account = Account.create!(name: 'Foobar')
 
-        expect {
+        expect do
           account.update_attribute(:somethingnew, 'somethingnew')
-        }.to raise_error(Mongoid::Errors::UnknownAttribute)
+        end.to raise_error(Mongoid::Errors::UnknownAttribute)
       end
 
       it 'will update value of aliased field' do
@@ -189,9 +189,9 @@ describe Mongoid::Persistable::Updatable do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             post.update_attribute(:title, 'something')
-          }.to raise_error(RuntimeError)
+          end.to raise_error(RuntimeError)
         end
       end
     end
@@ -241,7 +241,7 @@ describe Mongoid::Persistable::Updatable do
       end
 
       before do
-        ::I18n.locale = :de
+        I18n.locale = :de
         product.update_attribute(:description, 'Die Bombe')
       end
 
@@ -304,17 +304,17 @@ describe Mongoid::Persistable::Updatable do
       end
 
       it 'raises an error when trying to set the attribute' do
-        expect {
+        expect do
           person.update_attribute(:species, :reptile)
-        }.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
+        end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
       end
 
       context 'when referring to the attribute with a string' do
 
         it 'raises an error when trying to set the attribute' do
-          expect {
+          expect do
             person.update_attribute('species', :reptile)
-          }.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
+          end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
         end
       end
 
@@ -329,15 +329,15 @@ describe Mongoid::Persistable::Updatable do
         end
 
         it 'raises an error when trying to set the attribute using the db name' do
-          expect {
+          expect do
             person.update_attribute(:at, Time.now)
-          }.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
+          end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
         end
 
         it 'raises an error when trying to set the attribute using the aliased name' do
-          expect {
+          expect do
             person.update_attribute(:aliased_timestamp, Time.now)
-          }.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
+          end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
         end
       end
     end
@@ -372,9 +372,9 @@ describe Mongoid::Persistable::Updatable do
         end
 
         it 'does not allow the field to be updated' do
-          expect {
+          expect do
             person.update_attribute(:age, 20)
-          }.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
+          end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
         end
 
         it 'does not persist the change' do
@@ -384,9 +384,9 @@ describe Mongoid::Persistable::Updatable do
         context 'when referring to the attribute with a string' do
 
           it 'does not allow the field to be updated' do
-            expect {
+            expect do
               person.update_attribute('age', 20)
-            }.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
+            end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
           end
 
           it 'does not persist the change' do
@@ -426,9 +426,9 @@ describe Mongoid::Persistable::Updatable do
         end
 
         it 'does not allow the field to be updated' do
-          expect {
+          expect do
             person.update_attribute(:title, 'Esteemed')
-          }.to raise_exception(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+          end.to raise_exception(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
         end
 
         it 'does not persist the change' do
@@ -438,9 +438,9 @@ describe Mongoid::Persistable::Updatable do
         context 'when referring to the attribute with a string' do
 
           it 'does not allow the field to be updated' do
-            expect {
+            expect do
               person.update_attribute('title', 'Esteemed')
-            }.to raise_exception(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+            end.to raise_exception(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
           end
 
           it 'does not persist the change' do
@@ -459,7 +459,7 @@ describe Mongoid::Persistable::Updatable do
     end
   end
 
-  [:update_attributes, :update].each do |method|
+  %i[update_attributes update].each do |method|
 
     describe "##{method}" do
 
@@ -471,9 +471,9 @@ describe Mongoid::Persistable::Updatable do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             person.update_attributes!(map: { '$bad.key' => 'value' })
-          }.to raise_error(Mongo::Error::OperationFailure)
+          end.to raise_error(Mongo::Error::OperationFailure)
         end
       end
 
@@ -485,9 +485,9 @@ describe Mongoid::Persistable::Updatable do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             person.send(method, map: { '$bad.key' => 'value' })
-          }.to raise_error(Mongo::Error::OperationFailure)
+          end.to raise_error(Mongo::Error::OperationFailure)
         end
       end
 
@@ -525,9 +525,9 @@ describe Mongoid::Persistable::Updatable do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             person.send(method, title: 'something')
-          }.to raise_error(RuntimeError)
+          end.to raise_error(RuntimeError)
         end
       end
 
@@ -725,9 +725,9 @@ describe Mongoid::Persistable::Updatable do
       end
 
       it 'raises a callback error' do
-        expect {
+        expect do
           oscar.update!(title: 'The Grouch')
-        }.to raise_error(Mongoid::Errors::Callback)
+        end.to raise_error(Mongoid::Errors::Callback)
       end
     end
   end

@@ -98,7 +98,7 @@ module Mongoid
         elsif kms_providers.keys.length == 1
           kms_providers.keys.first
         else
-          raise ArgumentError, 'kms_provider_name must be provided when there are multiple kms providers'
+          raise ArgumentError.new('kms_provider_name must be provided when there are multiple kms providers')
         end
       end
     end

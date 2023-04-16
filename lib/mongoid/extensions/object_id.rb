@@ -15,7 +15,7 @@ module Mongoid
       def __evolve_object_id__
         self
       end
-      alias :__mongoize_object_id__ :__evolve_object_id__
+      alias_method :__mongoize_object_id__, :__evolve_object_id__
 
       module ClassMethods
 

@@ -61,7 +61,7 @@ module Mongoid
         def store(key, value, localize = true)
           super(key, evolve(value, localize))
         end
-        alias :[]= :store
+        alias_method :[]=, :store
 
         # Convert the options to aggregation pipeline friendly options.
         #

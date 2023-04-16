@@ -30,7 +30,7 @@ module Mongoid
           end
         end
       end
-      alias :remove :delete
+      alias_method :remove, :delete
 
       private
 

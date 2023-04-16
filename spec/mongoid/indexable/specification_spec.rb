@@ -74,7 +74,7 @@ describe Mongoid::Indexable::Specification do
     end
 
     it 'returns the key fields in order' do
-      expect(spec.fields).to eq([:name, :title])
+      expect(spec.fields).to eq(%i[name title])
     end
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   # This module is used to extend Mongoid::Document
   # to add encryption functionality.
@@ -42,7 +44,7 @@ module Mongoid
       #
       # @api private
       def set_key_id(key_id)
-        self.encrypt_metadata[:key_id] = key_id
+        encrypt_metadata[:key_id] = key_id
       end
     end
   end

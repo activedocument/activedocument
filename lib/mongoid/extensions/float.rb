@@ -41,18 +41,16 @@ module Mongoid
           return if object.blank?
 
           if object.is_a?(String)
-            if object.numeric?
-              object.to_f
-            end
+            object.to_f if object.numeric?
           else
             object.try(:to_f)
           end
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end
 end
 
-::Float.__send__(:include, Mongoid::Extensions::Float)
-::Float.extend(Mongoid::Extensions::Float::ClassMethods)
+Float.__send__(:include, Mongoid::Extensions::Float)
+Float.extend(Mongoid::Extensions::Float::ClassMethods)

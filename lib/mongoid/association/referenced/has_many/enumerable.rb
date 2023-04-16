@@ -63,7 +63,7 @@ module Mongoid
             self
           end
 
-          alias :push :<<
+          alias_method :push, :<<
 
           # Clears out all the documents in this enumerable. If passed a block it
           # will yield to each document that is in memory.
@@ -78,9 +78,7 @@ module Mongoid
           #
           # @return [ Array<Mongoid::Document> ] The cleared out _added docs.
           def clear(&block)
-            if block
-              in_memory(&block)
-            end
+            in_memory(&block) if block
             _loaded.clear and _added.clear
           end
 
@@ -93,7 +91,7 @@ module Mongoid
           #
           # @return [ Array<Mongoid::Document> ] An array clone of the enumerable.
           def clone
-            collect { |doc| doc.clone }
+            collect(&:clone)
           end
 
           # Delete the supplied document from the enumerable.
@@ -159,9 +157,7 @@ module Mongoid
           #
           # @return [ true ] That the enumerable is now _loaded.
           def each
-            unless block_given?
-              return to_enum
-            end
+            return to_enum unless block_given?
 
             if _loaded?
               _loaded.each_pair do |id, doc|
@@ -177,9 +173,11 @@ module Mongoid
                 yield(document)
               end
             end
+
             _added.each_pair do |id, doc|
               yield(doc)
             end
+
             @executed = true
           end
 
@@ -262,10 +260,14 @@ module Mongoid
           def initialize(target, base = nil, association = nil)
             @_base = base
             @_association = association
+            @_added = {}
+
             if target.is_a?(Criteria)
-              @_added, @executed, @_loaded, @_unloaded = {}, false, {}, target
+              @executed = false
+              @_loaded = {}
+              @_unloaded = target
             else
-              @_added, @executed = {}, true
+              @executed = true
               @_loaded = target.each_with_object({}) do |doc, _target|
                 _target[doc._id] = doc if doc
               end
@@ -341,7 +343,7 @@ module Mongoid
           #   enumerable.load_all!
           #
           # @return [ true ] That the enumerable is _loaded.
-          alias :load_all! :entries
+          alias_method :load_all!, :entries
 
           # Has the enumerable been _loaded? This will be true if the criteria has
           # been executed or we manually load the entire thing.
@@ -423,11 +425,11 @@ module Mongoid
             if count.zero?
               count + _added.count
             else
-              count + _added.values.count { |d| d.new_record? }
+              count + _added.values.count(&:new_record?)
             end
           end
 
-          alias :length :size
+          alias_method :length, :size
 
           # Send #to_json to the entries.
           #

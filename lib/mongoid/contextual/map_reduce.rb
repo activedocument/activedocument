@@ -150,7 +150,7 @@ module Mongoid
         opts = { read: criteria.options.fetch(:read) } if criteria.options[:read]
         @map_reduce.database.command(cmd, (opts || {}).merge(session: _session)).first
       end
-      alias :results :raw
+      alias_method :results, :raw
 
       # Execute the map/reduce, returning the raw output.
       # Useful when you don't care about map/reduce's output.
@@ -159,7 +159,7 @@ module Mongoid
       #   map_reduce.execute
       #
       # @return [ Hash ] The raw output
-      alias :execute :raw
+      alias_method :execute, :raw
 
       # Get the number of documents reduced by the map/reduce.
       #

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mongoid/association/eager_loadable'
 
 module Mongoid

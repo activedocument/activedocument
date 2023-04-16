@@ -15,7 +15,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     Person.has_many :drugs, validate: false
   end
 
-  [:<<, :push].each do |method|
+  %i[<< push].each do |method|
 
     describe "##{method}" do
 
@@ -309,9 +309,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               person.posts.send(method, post)
-            }.to raise_error(Mongo::Error::OperationFailure)
+            end.to raise_error(Mongo::Error::OperationFailure)
           end
         end
       end
@@ -873,7 +873,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
   end
 
-  [:build, :new].each do |method|
+  %i[build new].each do |method|
 
     describe "##{method}" do
 
@@ -1745,11 +1745,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               person.posts.create! do |doc|
                 doc._id = existing.id
               end
-            }.to raise_error(Mongo::Error::OperationFailure)
+            end.to raise_error(Mongo::Error::OperationFailure)
           end
         end
       end
@@ -1963,9 +1963,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         context 'when validation fails' do
 
           it 'raises an error' do
-            expect {
+            expect do
               person.posts.create!(title: '$$$')
-            }.to raise_error(Mongoid::Errors::Validations)
+            end.to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -2021,9 +2021,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         context 'when validation fails' do
 
           it 'raises an error' do
-            expect {
+            expect do
               movie.ratings.create!(value: 1000)
-            }.to raise_error(Mongoid::Errors::Validations)
+            end.to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -2224,7 +2224,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
   end
 
-  [:delete_all, :destroy_all].each do |method|
+  %i[delete_all destroy_all].each do |method|
 
     describe "##{method}" do
 
@@ -2495,9 +2495,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       it 'does not change the in memory size' do
-        expect {
+        expect do
           person.posts.find(post_id)
-        }.not_to change { person.posts.to_a.size }
+        end.not_to change { person.posts.to_a.size }
       end
     end
 
@@ -2535,9 +2535,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               person.posts.find(post.id)
-            }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
           end
         end
 
@@ -2547,9 +2547,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.posts.find(BSON::ObjectId.new)
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
             end
           end
 
@@ -2586,9 +2586,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect {
+              expect do
                 person.posts.find([BSON::ObjectId.new])
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
             end
           end
 
@@ -2640,9 +2640,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect {
+              expect do
                 movie.ratings.find(BSON::ObjectId.new)
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Rating with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Rating with id\(s\)/)
             end
           end
 
@@ -2687,9 +2687,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect {
+              expect do
                 movie.ratings.find([BSON::ObjectId.new])
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Rating with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Rating with id\(s\)/)
             end
           end
 
@@ -2989,9 +2989,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         context 'when validation fails' do
 
           it 'raises an error' do
-            expect {
+            expect do
               movie.comments.find_or_create_by!(title: '')
-            }.to raise_error(Mongoid::Errors::Validations)
+            end.to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -3090,9 +3090,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           post.videos
-        }.to raise_error(Mongoid::Errors::MixedRelations)
+        end.to raise_error(Mongoid::Errors::MixedRelations)
       end
     end
 
@@ -3500,7 +3500,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
   end
 
-  [:size, :length].each do |method|
+  %i[size length].each do |method|
 
     describe "##{method}" do
 

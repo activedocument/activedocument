@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -10,6 +12,8 @@ module Mongoid
     # @api private
     module EqImpl
 
+      extend self
+
       # Returns whether a value satisfies an $eq (or similar) expression.
       #
       # @param [ true | false ] exists Not used.
@@ -20,12 +24,12 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition, original_operator)
+      def matches?(exists, value, condition, original_operator)
         case condition
         when Range
           # Since $ne invokes $eq, the exception message needs to handle
           # both operators.
-          raise Errors::InvalidQuery, "Range is not supported as an argument to '#{original_operator}'"
+          raise Errors::InvalidQuery.new("Range is not supported as an argument to '#{original_operator}'")
         else
           # When doing a comparison with Time objects, compare using millisecond precision
           if value.is_a?(Time) && condition.is_a?(Time)
@@ -40,7 +44,7 @@ module Mongoid
             end.include?(time_rounded_to_millis(condition))
           else
             value == condition ||
-            value.is_a?(Array) && value.include?(condition)
+              value.is_a?(Array) && value.include?(condition)
           end
         end
       end
@@ -59,16 +63,22 @@ module Mongoid
       # @param [ Time ] time_b The second time value.
       #
       # @return [ true | false ] Whether the two times are equal to the millisecond.
-      module_function def time_eq?(time_a, time_b)
+      #
+      # @api private
+      def time_eq?(time_a, time_b)
         time_rounded_to_millis(time_a) == time_rounded_to_millis(time_b)
       end
+
+      private
 
       # Rounds a time value to nearest millisecond.
       #
       # @param [ Time ] time The time value.
       #
       # @return [ true | false ] The time rounded to the millisecond.
-      module_function def time_rounded_to_millis(time)
+      #
+      # @api private
+      def time_rounded_to_millis(time)
         time._bson_to_i * 1000 + time.usec.divmod(1000).first
       end
     end

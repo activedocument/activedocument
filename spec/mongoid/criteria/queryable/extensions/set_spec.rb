@@ -9,7 +9,7 @@ describe Set do
     context 'when provided a set' do
 
       let(:set) do
-        ::Set.new([1, 2, 3])
+        described_class.new([1, 2, 3])
       end
 
       it 'returns an array' do

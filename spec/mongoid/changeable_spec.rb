@@ -2041,7 +2041,7 @@ describe Mongoid::Changeable do
 
       after do
         Acolyte._save_callbacks.select do |callback|
-          [:before, :after].include?(callback.kind)
+          %i[before after].include?(callback.kind)
         end.each do |callback|
           Acolyte._save_callbacks.delete(callback)
         end
@@ -2072,7 +2072,7 @@ describe Mongoid::Changeable do
 
       after do
         Acolyte._save_callbacks.select do |callback|
-          [:before, :after].include?(callback.kind)
+          %i[before after].include?(callback.kind)
         end.each do |callback|
           Acolyte._save_callbacks.delete(callback)
         end

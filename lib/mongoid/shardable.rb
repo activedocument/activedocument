@@ -120,7 +120,7 @@ module Mongoid
         unless args.first.is_a?(Hash)
           # Shorthand syntax
           if args.last.is_a?(Hash)
-            raise ArgumentError, 'Shorthand shard_key syntax does not permit options'
+            raise ArgumentError.new('Shorthand shard_key syntax does not permit options')
           end
 
           spec = args.to_h do |name|
@@ -131,15 +131,13 @@ module Mongoid
         end
 
         if args.length > 2
-          raise ArgumentError, 'Full shard_key syntax requires 1 or 2 arguments'
+          raise ArgumentError.new('Full shard_key syntax requires 1 or 2 arguments')
         end
 
         spec, options = args
 
         spec = spec.to_h do |name, value|
-          if value.is_a?(Symbol)
-            value = value.to_s
-          end
+          value = value.to_s if value.is_a?(Symbol)
           [database_field_name(name).to_sym, value]
         end
 

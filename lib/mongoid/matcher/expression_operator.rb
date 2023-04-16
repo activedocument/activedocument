@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -12,6 +14,8 @@ module Mongoid
         '$or' => Or
       }.freeze
 
+      extend self
+
       # Returns the matcher module for a given operator.
       #
       # @param [ String ] op The operator name.
@@ -22,7 +26,7 @@ module Mongoid
       #   Raised if the given operator is unknown.
       #
       # @api private
-      module_function def get(op)
+      def get(op)
         MAP.fetch(op)
       rescue KeyError
         raise Errors::InvalidExpressionOperator.new(op)

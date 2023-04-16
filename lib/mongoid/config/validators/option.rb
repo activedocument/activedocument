@@ -14,9 +14,9 @@ module Mongoid
         #
         # @param [ String ] option The name of the option.
         def validate(option)
-          unless Config.settings.keys.include?(option.to_sym)
-            raise Errors::InvalidConfigOption.new(option)
-          end
+          return if Config.settings.keys.include?(option.to_sym)
+
+          raise Errors::InvalidConfigOption.new(option)
         end
       end
     end

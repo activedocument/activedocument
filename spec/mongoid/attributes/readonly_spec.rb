@@ -42,7 +42,7 @@ describe Mongoid::Attributes::Readonly do
     context 'when providing multiple fields' do
 
       let(:attributes) do
-        [:title, :terms]
+        %i[title terms]
       end
 
       it 'adds the fields to readonly attributes' do
@@ -53,7 +53,7 @@ describe Mongoid::Attributes::Readonly do
     context 'when creating a new document with a readonly field' do
 
       let(:attributes) do
-        [:title, :terms, :aliased_timestamp]
+        %i[title terms aliased_timestamp]
       end
 
       let(:person) do
@@ -88,7 +88,7 @@ describe Mongoid::Attributes::Readonly do
     context 'when updating an existing readonly field' do
 
       let(:attributes) do
-        [:title, :terms, :score, :aliased_timestamp]
+        %i[title terms score aliased_timestamp]
       end
 
       let(:person) do
@@ -217,18 +217,18 @@ describe Mongoid::Attributes::Readonly do
       context 'when updating via update_attribute' do
 
         it 'raises an error' do
-          expect {
+          expect do
             person.update_attribute(:title, 'mr')
-          }.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
+          end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
         end
       end
 
       context 'when updating via remove_attribute' do
 
         it 'raises an error' do
-          expect {
+          expect do
             person.remove_attribute(:title)
-          }.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
+          end.to raise_exception(Mongoid::Errors::ReadonlyAttribute)
         end
       end
     end

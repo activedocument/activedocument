@@ -67,7 +67,8 @@ module Mongoid
       #
       # @api private
       def initialize(aliases = {}, serializers = {}, associations = {}, aliased_associations = {})
-        @aliases, @serializers = aliases, serializers
+        @aliases = aliases
+        @serializers = serializers
         @options = Options.new(aliases, serializers, associations, aliased_associations)
         @selector = Selector.new(aliases, serializers, associations, aliased_associations)
         @pipeline = Pipeline.new(aliases)

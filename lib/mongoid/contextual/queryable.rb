@@ -21,7 +21,7 @@ module Mongoid
       def blank?
         !exists?
       end
-      alias :empty? :blank?
+      alias_method :empty?, :blank?
     end
   end
 end

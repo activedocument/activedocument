@@ -7,9 +7,7 @@ describe Mongoid::Clients::Factory do
   shared_examples_for 'includes seed address' do
     let(:configured_address) do
       address = SpecConfig.instance.addresses.first
-      unless address.include?(':')
-        address = "#{address}:27017"
-      end
+      address = "#{address}:27017" unless address.include?(':')
       address
     end
 
@@ -149,11 +147,11 @@ describe Mongoid::Clients::Factory do
           end
 
           it "sets the cluster's seed ports to 27017" do
-            expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
+            expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
           end
 
           it 'sets ips with no ports to 27017' do
-            expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
+            expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
           end
         end
 
@@ -190,7 +188,7 @@ describe Mongoid::Clients::Factory do
             end
 
             it "sets the cluster's seeds" do
-              expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
+              expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
             end
 
             it 'sets the database' do
@@ -225,7 +223,7 @@ describe Mongoid::Clients::Factory do
             end
 
             let(:seeds) do
-              cluster.addresses.map { |address| address.to_s }
+              cluster.addresses.map(&:to_s)
             end
 
             it 'returns a client' do
@@ -242,9 +240,9 @@ describe Mongoid::Clients::Factory do
       context 'when the configuration does not exist' do
 
         it 'raises an error' do
-          expect {
+          expect do
             described_class.create(:unknown)
-          }.to raise_error(Mongoid::Errors::NoClientConfig)
+          end.to raise_error(Mongoid::Errors::NoClientConfig)
         end
       end
 
@@ -456,14 +454,14 @@ describe Mongoid::Clients::Factory do
       Mongoid::Config.send(:clients=, config)
     end
 
-    [:good_one, :good_two].each do |env|
+    %i[good_one good_two].each do |env|
       it 'does not log a warning if none' do
         expect(described_class.send(:default_logger)).not_to receive(:warn)
         described_class.create(env).close
       end
     end
 
-    [:bad_one, :bad_two].each do |env|
+    %i[bad_one bad_two].each do |env|
       it 'logs a warning if some' do
         expect(described_class.send(:default_logger)).not_to receive(:warn)
         described_class.create(env).close

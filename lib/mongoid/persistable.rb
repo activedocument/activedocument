@@ -173,9 +173,7 @@ module Mongoid
     def post_process_persist(result, options = {})
       post_persist unless result == false
       errors.clear unless performing_validations?(options)
-      if in_transaction?
-        Threaded.add_modified_document(_session, self)
-      end
+      Threaded.add_modified_document(_session, self) if in_transaction?
       true
     end
 
@@ -313,10 +311,10 @@ module Mongoid
     #
     # @param [ Hash ] operations The atomic operations.
     def persist_atomic_operations(operations)
-      if persisted? && operations && !operations.empty?
-        selector = atomic_selector
-        _root.collection.find(selector).update_one(positionally(selector, operations), session: _session)
-      end
+      return unless persisted? && operations && !operations.empty?
+
+      selector = atomic_selector
+      _root.collection.find(selector).update_one(positionally(selector, operations), session: _session)
     end
   end
 end

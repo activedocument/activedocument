@@ -140,9 +140,9 @@ describe Mongoid::Extensions::String do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             string.__mongoize_time__
-          }.to raise_error(ArgumentError)
+          end.to raise_error(ArgumentError)
         end
       end
     end
@@ -202,7 +202,7 @@ describe Mongoid::Extensions::String do
     end
   end
 
-  [:mongoize, :demongoize].each do |method|
+  %i[mongoize demongoize].each do |method|
 
     describe ".#{method}" do
 

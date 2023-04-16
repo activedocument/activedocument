@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -9,6 +11,8 @@ module Mongoid
     # @api private
     module ElemMatchExpression
 
+      extend self
+
       # Returns whether a document satisfies an $elemMatch expression.
       #
       # @param [ Mongoid::Document ] document The document.
@@ -17,7 +21,7 @@ module Mongoid
       # @return [ true | false ] Whether the document matches.
       #
       # @api private
-      module_function def matches?(document, expr)
+      def matches?(document, expr)
         Expression.matches?(document, expr)
       rescue Mongoid::Errors::InvalidExpressionOperator
         begin

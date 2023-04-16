@@ -364,9 +364,9 @@ module Mongoid
     #   was modified.
     # @param [ Mongoid::Document ] document Mongoid document that was modified.
     def add_modified_document(session, document)
-      if session&.in_transaction?
-        modified_documents[session] << document
-      end
+      return unless session&.in_transaction?
+
+      modified_documents[session] << document
     end
 
     # Clears the set of modified documents for the given session, and return the

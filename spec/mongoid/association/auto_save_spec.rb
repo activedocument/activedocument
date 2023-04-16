@@ -130,12 +130,8 @@ describe Mongoid::Association::Referenced::AutoSave do
             end
 
             after do
-              Person.with(database: other_database) do |person_class|
-                person_class.delete_all
-              end
-              Drug.with(database: other_database) do |drug_class|
-                drug_class.delete_all
-              end
+              Person.with(database: other_database, &:delete_all)
+              Drug.with(database: other_database, &:delete_all)
             end
 
             before do
@@ -233,9 +229,7 @@ describe Mongoid::Association::Referenced::AutoSave do
           it 'sends one insert' do
             account.name = 'account'
             expect_query(1) do
-              person.with(write: { w: 0 }) do |_person|
-                _person.save!
-              end
+              person.with(write: { w: 0 }, &:save!)
             end
           end
         end

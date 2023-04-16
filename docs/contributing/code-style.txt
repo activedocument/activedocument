@@ -1,0 +1,175 @@
+.. _code-style:
+
+**********
+Code Style
+**********
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 2
+   :class: singlecol
+
+.. warning::
+
+  This section only applies to Mongoid Ultra. MongoDB Mongoid does
+  not follow any code style conventions and does not use a code
+  linter such as Rubocop.
+
+Code Style
+==========
+
+Mongoid Ultra follows the `Ruby Style Guide <https://github.com/rubocop/ruby-style-guide>`_
+for code documentation. and uses `Rubocop <https://github.com/rubocop/rubocop>`_
+to ensure style conformity and perform code linting.
+
+
+.. _code-style-target-version:
+
+Target Ruby Version
+-------------------
+
+We set Rubocop's ``TargetRubyVersion`` to Mongoid's minimum supported
+Ruby version. Refer to the `Compatibility <configuration-options>`_ section.
+
+
+.. _code-style-exceptions:
+
+Style Guide Exceptions
+----------------------
+
+In general, we follow the Ruby Style Guide, so please refer to it
+as the source of truth. However, we make a few intentional deviations:
+
+- **Maximum Line Length:** 120 characters.
+
+  (The `Ruby Style Guide <https://github.com/rubocop/ruby-style-guide#max-line-length>`_
+  recommends 80 characters.)
+
+- **Empty Lines before Class and Module Bodies:** We put empty lines
+  at the beginning  of class and module bodies, with the exception of
+  namespace modules. We do not put empty lines at the end of class and
+  module bodies.
+
+  .. code-block:: ruby
+
+    module Mongoid
+      module Things
+
+        # Note the space above this line.
+        class CardboardBox
+
+          def transmogrify
+            # ...
+          end
+        end
+      end
+    end
+
+  We apply the same concept to RSpec ``describe`` and ``context`` blocks.
+
+  .. code-block:: ruby
+
+    RSpec.describe Mongoid::Things::CardboardBox do
+
+      describe '#transmogrify' do
+
+        context 'when human' do
+          let(:target) { Human.new(name: 'Calvin') }
+
+          it { is_expected.to be_a(Tiger) }
+        end
+      end
+    end
+
+  (The `Ruby Style Guide <https://github.com/rubocop/ruby-style-guide#empty-lines-around-bodies>`_
+  recommends no empty lines.)
+
+* **Prefer ``alias_method``:** We prefer to use ``alias_method``
+  over ``alias`` when aliasing methods. We find the lexical scoping
+  (non-heritability) of ``alias`` to be counterintuitive.
+
+  .. code-block:: ruby
+
+    # bad
+    alias :foo :bar
+
+    # good
+    alias_method :foo, :bar
+
+  (The `Ruby Style Guide <https://github.com/rubocop/ruby-style-guide#alias-method-lexically>`_
+  recommends to use ``alias``.)
+
+* **Prefer ``extend self``:** We prefer to use ``extend self`` over
+  ``module_function`` when defining module functions. We find the lexical
+  scoping of ``module_function`` to be counterintuitive.
+
+  .. code-block:: ruby
+
+    # bad
+    module MyModule
+      module_function
+
+      def foo
+      end
+    end
+
+    # good
+    module MyModule
+      extend self
+
+      def foo
+      end
+    end
+
+  (The `Ruby Style Guide <https://github.com/rubocop/ruby-style-guide#module-function>`_
+  recommends to use ``module_function``.)
+
+* **Array and Hash Literals:** We prefer to indent array and hash literals
+  relative to the base line indentation. In most cases there should be one
+  bracket ``[ ] { }`` character per line.
+
+  .. code-block:: ruby
+
+    # good
+    my_method({
+      key: 'value',
+      key2: {
+        foo: 'bar',
+        baz: [
+          'value1',
+          'value2'
+        ]
+      }
+    })
+
+    # bad
+    my_method({ key: 'value',
+      key2: {
+        foo: 'bar',
+        baz: [
+          'value1',
+          'value2'
+    ]} })
+
+  (We use ``EnforcedStyle: consistent`` for `Rubocop's Layout/FirstArrayElementIndentation
+  and Layout/FirstHashElementIndentation cops
+  <https://docs.rubocop.org/rubocop/cops_layout.html#layoutfirstarrayelementindentation>`_.)
+
+* **Raise Args:** Use ``.new`` to pass-in arguments when raising exceptions.
+
+  .. code-block:: ruby
+
+    # good
+    raise StandardError.new('message')
+
+    # bad
+    raise StandardError, 'message'
+
+ (We use ``EnforcedStyle: compact`` for `Rubcop's Style/RaiseArgs cop
+ <https://docs.rubocop.org/rubocop/cops_style.html#styleraiseargs>`_.)
+
+Refer to `.rubocop.yml <https://github.com/tablecheck/mongoid-ultra/blob/master/.rubocop.yml>`_
+for additional style exceptions.

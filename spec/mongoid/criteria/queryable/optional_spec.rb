@@ -15,7 +15,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [:asc, :ascending].each do |method|
+  %i[asc ascending].each do |method|
 
     describe "##{method}" do
 
@@ -66,7 +66,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         context 'when provided an array of symbols' do
 
           let(:selection) do
-            query.send(method, [:field_one, :field_two])
+            query.send(method, %i[field_one field_two])
           end
 
           it 'adds the sorting criteria' do
@@ -187,7 +187,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [:desc, :descending].each do |method|
+  %i[desc descending].each do |method|
 
     describe "##{method}" do
 
@@ -238,7 +238,7 @@ describe Mongoid::Criteria::Queryable::Optional do
         context 'when provided an array of symbols' do
 
           let(:selection) do
-            query.send(method, [:field_one, :field_two])
+            query.send(method, %i[field_one field_two])
           end
 
           it 'adds the sorting criteria' do
@@ -585,7 +585,7 @@ describe Mongoid::Criteria::Queryable::Optional do
       context 'as one argument - array' do
 
         let(:selection) do
-          query.only([:first, :second])
+          query.only(%i[first second])
         end
 
         it 'adds the field options' do
@@ -612,7 +612,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [:order, :order_by].each do |method|
+  %i[order order_by].each do |method|
 
     describe "##{method}" do
 
@@ -730,7 +730,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when the arrays have symbol values' do
 
               let(:selection) do
-                query.send(method, [[:field_one, :asc], [:field_two, :desc]])
+                query.send(method, [%i[field_one asc], %i[field_two desc]])
               end
 
               it 'adds the sorting criteria' do
@@ -796,7 +796,7 @@ describe Mongoid::Criteria::Queryable::Optional do
             context 'when the values have symbol directions' do
 
               let(:selection) do
-                query.send(method, [:field_one, :asc], [:field_two, :desc])
+                query.send(method, %i[field_one asc], %i[field_two desc])
               end
 
               it 'adds the sorting criteria' do
@@ -957,7 +957,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     end
   end
 
-  [:skip, :offset].each do |method|
+  %i[skip offset].each do |method|
 
     describe "##{method}" do
 
@@ -1095,7 +1095,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     context 'when provided a single argument' do
 
       let(:selection) do
-        query.slice(:first => 5)
+        query.slice(first: 5)
       end
 
       it 'adds the field options' do
@@ -1110,7 +1110,7 @@ describe Mongoid::Criteria::Queryable::Optional do
     context 'when provided a multiple arguments' do
 
       let(:selection) do
-        query.slice(:first => 5, :second => [0, 3])
+        query.slice(first: 5, second: [0, 3])
       end
 
       it 'adds the field options' do
@@ -1132,7 +1132,7 @@ describe Mongoid::Criteria::Queryable::Optional do
       end
 
       let(:selection) do
-        limited.slice(:first => 5, :second => [0, 3])
+        limited.slice(first: 5, second: [0, 3])
       end
 
       it 'adds the field options' do
@@ -1257,7 +1257,7 @@ describe Mongoid::Criteria::Queryable::Optional do
       context 'as one argument - array' do
 
         let(:selection) do
-          query.without([:first, :second])
+          query.without(%i[first second])
         end
 
         it 'adds the field options' do

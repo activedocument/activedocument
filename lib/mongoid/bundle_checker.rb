@@ -19,7 +19,7 @@ module Mongoid
     def check_gem_absent!(gem_name)
       return true if !defined?(Bundler) || !find_gem(gem_name)
 
-      raise Errors::GemConflict, gem_name
+      raise Errors::GemConflict.new(gem_name)
     end
 
     private

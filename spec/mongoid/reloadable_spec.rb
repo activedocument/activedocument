@@ -9,15 +9,11 @@ describe Mongoid::Reloadable do
     context 'when persistence options are set' do
 
       let(:person) do
-        Person.with(collection: 'other') do |person_class|
-          person_class.create!
-        end
+        Person.with(collection: 'other', &:create!)
       end
 
       let(:reloaded) do
-        Person.with(collection: 'other') do |person_class|
-          person_class.first
-        end
+        Person.with(collection: 'other', &:first)
       end
 
       it 'applies the persistence options' do
@@ -112,9 +108,9 @@ describe Mongoid::Reloadable do
       context 'when there is no document matching our id' do
 
         it 'raises an error' do
-          expect {
+          expect do
             Person.new.reload
-          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
+          end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
         end
       end
 
@@ -147,9 +143,7 @@ describe Mongoid::Reloadable do
         context 'when persistence options are set' do
 
           let(:person) do
-            Person.with(collection: 'other') do |person_class|
-              person_class.create!
-            end
+            Person.with(collection: 'other', &:create!)
           end
 
           let!(:address) do
@@ -490,9 +484,7 @@ describe Mongoid::Reloadable do
 
       context 'without embedded document' do
         let(:profile) do
-          Profile.with(client: :other) do |klass|
-            klass.create!
-          end
+          Profile.with(client: :other, &:create!)
         end
 
         before do

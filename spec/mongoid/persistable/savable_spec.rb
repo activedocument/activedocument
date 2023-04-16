@@ -462,10 +462,10 @@ describe Mongoid::Persistable::Savable do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           person.username = 'unloaded-attribute'
           person.save
-        }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'username' on Person which was not loaded/)
+        end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'username' on Person which was not loaded/)
       end
 
       context 'when the changed attribute is aliased' do
@@ -669,7 +669,7 @@ describe Mongoid::Persistable::Savable do
     context 'when a callback destroys the document' do
 
       let(:oscar) do
-        Oscar.new(:destroy_after_save => true)
+        Oscar.new(destroy_after_save: true)
       end
 
       before do
@@ -694,9 +694,9 @@ describe Mongoid::Persistable::Savable do
       end
 
       it 'persists with no exceptions thrown' do
-        expect {
+        expect do
           user.save!
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
 
@@ -713,9 +713,9 @@ describe Mongoid::Persistable::Savable do
       end
 
       it 'persists with no exceptions thrown' do
-        expect {
+        expect do
           user.save!
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
 

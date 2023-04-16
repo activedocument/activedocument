@@ -19,9 +19,9 @@ describe Mongoid::Criteria do
         end
 
         it 'limits the returned fields' do
-          expect {
+          expect do
             criteria.first.name
-          }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'name' on Band which was not loaded/)
+          end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'name' on Band which was not loaded/)
         end
 
         it 'does not add _type to the fields' do
@@ -36,16 +36,16 @@ describe Mongoid::Criteria do
         end
 
         it 'responds to id anyway' do
-          expect {
+          expect do
             criteria.first.id
-          }.to_not raise_error
+          end.to_not raise_error
         end
       end
 
       context 'when passing an array' do
 
         let(:criteria) do
-          Band.only([:name, :likes])
+          Band.only(%i[name likes])
         end
 
         it 'includes the limited fields' do
@@ -53,9 +53,9 @@ describe Mongoid::Criteria do
         end
 
         it 'excludes the non included fields' do
-          expect {
+          expect do
             criteria.first.active
-          }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'active' on Band which was not loaded/)
+          end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'active' on Band which was not loaded/)
         end
 
         it 'does not add _type to the fields' do
@@ -326,9 +326,9 @@ describe Mongoid::Criteria do
 
       shared_examples 'does not raise error' do
         it 'does not raise error' do
-          expect {
+          expect do
             criteria.first._id
-          }.to_not raise_error
+          end.to_not raise_error
         end
       end
 

@@ -845,13 +845,13 @@ describe Mongoid::Traversable do
         Person.discriminator_key = nil
       end
 
-      [:_association, :invalid].each do |meth|
+      %i[_association invalid].each do |meth|
         context "when the field is named #{meth}" do
 
           it 'raises an error' do
-            expect {
+            expect do
               Person.discriminator_key = meth
-            }.to raise_error(Mongoid::Errors::InvalidField)
+            end.to raise_error(Mongoid::Errors::InvalidField)
           end
         end
       end
@@ -885,7 +885,7 @@ describe Mongoid::Traversable do
       # after the test only.
       config_override :discriminator_key, '_type'
 
-      [:_association, :invalid].each do |meth|
+      %i[_association invalid].each do |meth|
         context "when the field is named #{meth}" do
 
           it 'raises an error' do

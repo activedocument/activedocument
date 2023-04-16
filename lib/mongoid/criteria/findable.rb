@@ -108,7 +108,14 @@ module Mongoid
         from_database_selector(ids).entries
       end
 
-      private def from_database_selector(ids)
+      # Returns a query criteria to select the document(s) for the given id(s).
+      #
+      # @api private
+      #
+      # @param [ Array<BSON::ObjectId> ] ids The ids to fetch with.
+      #
+      # @return [ Mongoid::Criteria ] The criteria.
+      def from_database_selector(ids)
         if ids.size > 1
           any_in(_id: ids)
         else
@@ -140,7 +147,7 @@ module Mongoid
       #
       # @raise [ Errors::InvalidOptions ] The error.
       def raise_invalid
-        raise Errors::InvalidFind.new
+        raise Errors::InvalidFind
       end
     end
   end

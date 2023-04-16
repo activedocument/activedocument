@@ -15,5 +15,5 @@ class Note
   end
 
   embedded_in :page
-  field :message, :type => String
+  field :message, type: String
 end

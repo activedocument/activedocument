@@ -80,9 +80,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -157,9 +157,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -234,9 +234,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -282,9 +282,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -349,9 +349,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -397,9 +397,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -446,9 +446,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -495,9 +495,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -544,9 +544,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -593,9 +593,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -671,9 +671,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -719,9 +719,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -796,9 +796,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -873,9 +873,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -950,9 +950,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -998,9 +998,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -1121,9 +1121,9 @@ describe Mongoid::Association::Options do
             end
 
             it 'raises a Mongoid::Errors::InvalidRelationOption error' do
-              expect {
+              expect do
                 association
-              }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+              end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
             end
           end
         end
@@ -1136,7 +1136,7 @@ describe Mongoid::Association::Options do
           context 'when a block is passed' do
 
             let!(:association) do
-              association_class.new(class_left, :name, options) do; end
+              association_class.new(class_left, :name, options) {}
             end
 
             after do

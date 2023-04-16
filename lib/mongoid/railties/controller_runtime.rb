@@ -70,8 +70,8 @@ module Mongoid
         def _completed(e)
           Collector.runtime += e.duration * 1000
         end
-        alias :succeeded :_completed
-        alias :failed :_completed
+        alias_method :succeeded, :_completed
+        alias_method :failed, :_completed
 
         # Get the runtime value on the current thread.
         #

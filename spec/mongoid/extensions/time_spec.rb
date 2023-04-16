@@ -526,7 +526,7 @@ describe Mongoid::Extensions::Time do
       end
 
       it 'does not alter seconds' do
-        expect((eom_time_mongoized.usec)).to eq(999999)
+        expect(eom_time_mongoized.usec).to eq(999999)
       end
 
       it 'does not alter seconds with fractions' do
@@ -559,7 +559,7 @@ describe Mongoid::Extensions::Time do
         end
 
         it 'does not alter the seconds' do
-          expect((eom_time_mongoized.usec)).to eq(999999)
+          expect(eom_time_mongoized.usec).to eq(999999)
         end
       end
     end

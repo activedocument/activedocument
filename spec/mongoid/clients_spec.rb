@@ -37,9 +37,7 @@ describe Mongoid::Clients do
       end
 
       let(:class_collection) do
-        Band.with(collection: 'artists') do |klass|
-          klass.collection
-        end
+        Band.with(collection: 'artists', &:collection)
       end
 
       it_behaves_like 'an overridden collection at the class level'
@@ -62,9 +60,7 @@ describe Mongoid::Clients do
       end
 
       let(:class_collection) do
-        Band.with(collection: 'artists') do |klass|
-          klass.collection
-        end
+        Band.with(collection: 'artists', &:collection)
       end
 
       it_behaves_like 'an overridden collection at the class level'
@@ -204,9 +200,7 @@ describe Mongoid::Clients do
       end
 
       let(:class_collection_name) do
-        Band.with(collection: 'artists') do |klass|
-          klass.collection_name
-        end
+        Band.with(collection: 'artists', &:collection_name)
       end
 
       it_behaves_like 'an overridden collection name at the class level'
@@ -222,9 +216,7 @@ describe Mongoid::Clients do
 
         let(:class_collection_name) do
           Band.with(collection: 'ignore') do |klass|
-            Band.with(collection: 'artists') do |klass|
-              klass.collection_name
-            end
+            Band.with(collection: 'artists', &:collection_name)
           end
         end
 
@@ -244,9 +236,7 @@ describe Mongoid::Clients do
 
         let(:class_collection_name) do
           Band.with(collection: 'artists') do |klass|
-            Band.with(client: :reports) do |klass|
-              klass.collection_name
-            end
+            Band.with(client: :reports, &:collection_name)
           end
         end
 
@@ -287,9 +277,7 @@ describe Mongoid::Clients do
       end
 
       let(:class_collection_name) do
-        Band.with(collection: 'artists') do |klass|
-          klass.collection_name
-        end
+        Band.with(collection: 'artists', &:collection_name)
       end
 
       before do
@@ -613,9 +601,9 @@ describe Mongoid::Clients do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           band.mongo_client
-        }.to raise_error(Mongoid::Errors::NoClientConfig)
+        end.to raise_error(Mongoid::Errors::NoClientConfig)
       end
     end
 
@@ -720,9 +708,9 @@ describe Mongoid::Clients do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           Band.mongo_client
-        }.to raise_error(Mongoid::Errors::NoClientConfig)
+        end.to raise_error(Mongoid::Errors::NoClientConfig)
       end
     end
   end
@@ -732,9 +720,9 @@ describe Mongoid::Clients do
     context 'when provided a non hash' do
 
       it 'raises an error' do
-        expect {
+        expect do
           Band.store_in :artists
-        }.to raise_error(Mongoid::Errors::InvalidStorageOptions)
+        end.to raise_error(Mongoid::Errors::InvalidStorageOptions)
       end
     end
 
@@ -743,9 +731,9 @@ describe Mongoid::Clients do
       context 'when the hash is not valid' do
 
         it 'raises an error' do
-          expect {
+          expect do
             Band.store_in coll: 'artists'
-          }.to raise_error(Mongoid::Errors::InvalidStorageOptions)
+          end.to raise_error(Mongoid::Errors::InvalidStorageOptions)
         end
       end
     end
@@ -878,9 +866,7 @@ describe Mongoid::Clients do
     context 'when changing write concern options' do
 
       let(:client_one) do
-        Band.with(write: { w: 2 }) do |klass|
-          klass.mongo_client
-        end
+        Band.with(write: { w: 2 }, &:mongo_client)
       end
 
       let(:client_two) do
@@ -895,23 +881,19 @@ describe Mongoid::Clients do
     context 'when sending operations to a different database' do
 
       after do
-        Band.with(database: database_id_alt) do |klass|
-          klass.delete_all
-        end
+        Band.with(database: database_id_alt, &:delete_all)
       end
 
       describe '.create!' do
 
         let!(:band) do
-          Band.with(database: database_id_alt) do |klass|
-            klass.create!
-          end
+          Band.with(database: database_id_alt, &:create!)
         end
 
         it 'does not persist to the default database' do
-          expect {
+          expect do
             Band.find(band.id)
-          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+          end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
         end
 
         let(:from_db) do
@@ -925,9 +907,7 @@ describe Mongoid::Clients do
         end
 
         let(:count) do
-          Band.with(database: database_id_alt) do |klass|
-            klass.count
-          end
+          Band.with(database: database_id_alt, &:count)
         end
 
         it 'persists the correct number of documents' do
@@ -941,15 +921,13 @@ describe Mongoid::Clients do
       describe '.create!' do
 
         let!(:band) do
-          Band.with(collection: 'artists') do |klass|
-            klass.create!
-          end
+          Band.with(collection: 'artists', &:create!)
         end
 
         it 'does not persist to the default database' do
-          expect {
+          expect do
             Band.find(band.id)
-          }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+          end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
         end
 
         let(:from_db) do
@@ -963,9 +941,7 @@ describe Mongoid::Clients do
         end
 
         let(:count) do
-          Band.with(collection: 'artists') do |klass|
-            klass.count
-          end
+          Band.with(collection: 'artists', &:count)
         end
 
         it 'persists the correct number of documents' do
@@ -998,9 +974,9 @@ describe Mongoid::Clients do
         context 'when a mongodb error occurs' do
 
           it 'bubbles up to the caller' do
-            expect {
+            expect do
               Person.create(ssn: '432-97-1111')
-            }.to raise_error(Mongo::Error::OperationFailure)
+            end.to raise_error(Mongo::Error::OperationFailure)
           end
         end
       end
@@ -1034,18 +1010,18 @@ describe Mongoid::Clients do
           end
 
           it 'bubbles up to the caller' do
-            expect {
+            expect do
               Person.create!(ssn: '432-97-1112')
-            }.to raise_error(Mongo::Error::OperationFailure)
+            end.to raise_error(Mongo::Error::OperationFailure)
           end
         end
 
         context 'when a validation error occurs' do
 
           it 'raises the validation error' do
-            expect {
+            expect do
               Account.create!(name: 'this name is way too long')
-            }.to raise_error(Mongoid::Errors::Validations)
+            end.to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -1072,9 +1048,9 @@ describe Mongoid::Clients do
           end
 
           it 'bubbles up to the caller' do
-            expect {
+            expect do
               person.save
-            }.to raise_error(Mongo::Error::OperationFailure)
+            end.to raise_error(Mongo::Error::OperationFailure)
           end
         end
       end
@@ -1101,9 +1077,9 @@ describe Mongoid::Clients do
           end
 
           it 'bubbles up to the caller' do
-            expect {
+            expect do
               person.save!
-            }.to raise_error(Mongo::Error::OperationFailure)
+            end.to raise_error(Mongo::Error::OperationFailure)
           end
         end
 
@@ -1114,9 +1090,9 @@ describe Mongoid::Clients do
           end
 
           it 'raises the validation error' do
-            expect {
+            expect do
               account.save!
-            }.to raise_error(Mongoid::Errors::Validations)
+            end.to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -1142,13 +1118,9 @@ describe Mongoid::Clients do
       it 'does not close the client' do
         expect(secondary_client).not_to receive(:close)
 
-        Band.with(client: :default) do |klass|
-          klass.mongo_client
-        end
+        Band.with(client: :default, &:mongo_client)
 
-        Band.with(client: :secondary) do |klass|
-          klass.mongo_client
-        end
+        Band.with(client: :secondary, &:mongo_client)
       end
     end
 

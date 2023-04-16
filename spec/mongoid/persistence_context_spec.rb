@@ -224,9 +224,9 @@ describe Mongoid::PersistenceContext do
           end
 
           it 'raises an InvalidPersistenceOption error' do
-            expect {
+            expect do
               persistence_context
-            }.to raise_error(Mongoid::Errors::InvalidPersistenceOption)
+            end.to raise_error(Mongoid::Errors::InvalidPersistenceOption)
           end
         end
       end
@@ -678,9 +678,7 @@ describe Mongoid::PersistenceContext do
     end
 
     before do
-      user.with(database: database_id_alt) do |u|
-        u.save!
-      end
+      user.with(database: database_id_alt, &:save!)
 
       expect do
         user.with(database: database_id_alt) do |u|

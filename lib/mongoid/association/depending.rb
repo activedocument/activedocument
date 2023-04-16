@@ -35,12 +35,12 @@ module Mongoid
       end
 
       # The valid dependent strategies.
-      STRATEGIES = [
-        :delete_all,
-        :destroy,
-        :nullify,
-        :restrict_with_exception,
-        :restrict_with_error
+      STRATEGIES = %i[
+        delete_all
+        destroy
+        nullify
+        restrict_with_exception
+        restrict_with_error
       ].freeze
 
       # Attempt to add the cascading information for the document to know how
@@ -75,11 +75,11 @@ module Mongoid
       # @raises [ Mongoid::Errors::InvalidDependentStrategy ]
       #   Error if invalid.
       def self.validate!(association)
-        unless STRATEGIES.include?(association.dependent)
-          raise Errors::InvalidDependentStrategy.new(association,
-                                                     association.dependent,
-                                                     STRATEGIES)
-        end
+        return if STRATEGIES.include?(association.dependent)
+
+        raise Errors::InvalidDependentStrategy.new(association,
+                                                   association.dependent,
+                                                   STRATEGIES)
       end
 
       # Perform all cascading deletes, destroys, or nullifies. Will delegate to
@@ -98,43 +98,43 @@ module Mongoid
       private
 
       def _dependent_delete_all!(association)
-        if relation = send(association.name)
-          if relation.respond_to?(:dependents) && relation.dependents.blank?
-            relation.clear
-          else
-            ::Array.wrap(send(association.name)).each { |rel| rel.delete }
-          end
+        return unless (relation = send(association.name))
+
+        if relation.respond_to?(:dependents) && relation.dependents.blank?
+          relation.clear
+        else
+          ::Array.wrap(send(association.name)).each(&:delete)
         end
       end
 
       def _dependent_destroy!(association)
-        if relation = send(association.name)
-          if relation.is_a?(Enumerable)
-            relation.entries
-            relation.each { |doc| doc.destroy }
-          else
-            relation.destroy
-          end
+        return unless (relation = send(association.name))
+
+        if relation.is_a?(Enumerable)
+          relation.entries
+          relation.each(&:destroy)
+        else
+          relation.destroy
         end
       end
 
       def _dependent_nullify!(association)
-        if relation = send(association.name)
-          relation.nullify
-        end
+        return unless (relation = send(association.name))
+
+        relation.nullify
       end
 
       def _dependent_restrict_with_exception!(association)
-        if (relation = send(association.name)) && !relation.blank?
-          raise Errors::DeleteRestriction.new(relation, association.name)
-        end
+        return unless (relation = send(association.name)) && !relation.blank?
+
+        raise Errors::DeleteRestriction.new(relation, association.name)
       end
 
       def _dependent_restrict_with_error!(association)
-        if (relation = send(association.name)) && !relation.blank?
-          errors.add(association.name, :destroy_restrict_with_error_dependencies_exist)
-          throw(:abort, false)
-        end
+        return unless (relation = send(association.name)) && !relation.blank?
+
+        errors.add(association.name, :destroy_restrict_with_error_dependencies_exist)
+        throw(:abort, false)
       end
     end
   end

@@ -93,9 +93,7 @@ describe 'has_one associations' do
 
         context 'using send' do
           it 'delegates to the field' do
-            if reloaded
-              pending 'MONGOID-5018'
-            end
+            pending 'MONGOID-5018' if reloaded
 
             expect(parent.accreditation.send(:format)).to eq('fmt')
           end

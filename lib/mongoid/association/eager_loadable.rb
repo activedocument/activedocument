@@ -23,9 +23,7 @@ module Mongoid
       # @return [ Array<Mongoid::Document> ] The given documents.
       def eager_load(docs)
         docs.tap do |d|
-          if eager_loadable?
-            preload(criteria.inclusions, d)
-          end
+          preload(criteria.inclusions, d) if eager_loadable?
         end
       end
 

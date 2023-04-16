@@ -439,7 +439,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
             ['$in', '$in'],
             [:$in, '$in'],
             ['$in', :$in],
-            [:$in, :$in]
+            %i[$in $in]
           ].each do |first_operator, second_operator|
             context "when first operator is #{first_operator.inspect} and second operator is #{second_operator.inspect}" do
               let(:first_operator) { first_operator }
@@ -542,7 +542,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           context 'criteria are provided in separate hashes' do
             let(:selection) do
-              query.send(tested_method, { :field => 3 }, { :field.lt => 5 })
+              query.send(tested_method, { field: 3 }, { :field.lt => 5 })
             end
 
             it_behaves_like 'combines conditions with $and'
@@ -550,7 +550,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           context 'when the criterion is wrapped in an array' do
             let(:selection) do
-              query.send(tested_method, [:field => 3], [:field.lt => 5])
+              query.send(tested_method, [field: 3], [:field.lt => 5])
             end
 
             it_behaves_like 'combines conditions with $and'
@@ -612,7 +612,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           context 'criteria are provided in separate hashes' do
             let(:selection) do
-              query.send(tested_method, { :field.gt => 3 }, { :field => 5 })
+              query.send(tested_method, { :field.gt => 3 }, { field: 5 })
             end
 
             it_behaves_like 'combines conditions with $and'
@@ -620,7 +620,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
           context 'when the criterion is wrapped in an array' do
             let(:selection) do
-              query.send(tested_method, [:field.gt => 3], [:field => 5])
+              query.send(tested_method, [:field.gt => 3], [field: 5])
             end
 
             it_behaves_like 'combines conditions with $and'
@@ -1476,7 +1476,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in separate hashes' do
           let(:selection) do
-            query.send(tested_method, { :field => 3 }, { :field.lt => 5 })
+            query.send(tested_method, { field: 3 }, { :field.lt => 5 })
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1484,7 +1484,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         context 'when the criterion is wrapped in an array' do
           let(:selection) do
-            query.send(tested_method, [:field => 3], [:field.lt => 5])
+            query.send(tested_method, [field: 3], [:field.lt => 5])
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1548,7 +1548,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in separate hashes' do
           let(:selection) do
-            query.send(tested_method, { :field.gt => 3 }, { :field => 5 })
+            query.send(tested_method, { :field.gt => 3 }, { field: 5 })
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1556,7 +1556,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
 
         context 'when the criterion is wrapped in an array' do
           let(:selection) do
-            query.send(tested_method, [:field.gt => 3], [:field => 5])
+            query.send(tested_method, [:field.gt => 3], [field: 5])
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -2366,12 +2366,12 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         context 'criteria are provided in separate hashes' do
-          let(:selection) { query.none_of({ :field => 3 }, { :field.lt => 5 }) }
+          let(:selection) { query.none_of({ field: 3 }, { :field.lt => 5 }) }
           it_behaves_like 'adds conditions with $nor'
         end
 
         context 'when the criterion is wrapped in an array' do
-          let(:selection) { query.none_of([:field => 3], [:field.lt => 5]) }
+          let(:selection) { query.none_of([field: 3], [:field.lt => 5]) }
           it_behaves_like 'adds conditions with $nor'
         end
       end
@@ -2423,12 +2423,12 @@ describe Mongoid::Criteria::Queryable::Selectable do
         end
 
         context 'criteria are provided in separate hashes' do
-          let(:selection) { query.none_of({ :field.gt => 3 }, { :field => 5 }) }
+          let(:selection) { query.none_of({ :field.gt => 3 }, { field: 5 }) }
           it_behaves_like 'adds conditions with $nor'
         end
 
         context 'when the criterion is wrapped in an array' do
-          let(:selection) { query.none_of([:field.gt => 3], [:field => 5]) }
+          let(:selection) { query.none_of([:field.gt => 3], [field: 5]) }
           it_behaves_like 'adds conditions with $nor'
         end
       end

@@ -109,33 +109,6 @@ class ClusterConfig
     @topology
   end
 
-  def storage_engine
-    # 2.6 does not have wired tiger
-    @storage_engine ||= if short_server_version == '2.6'
-                          :mmapv1
-                        else
-                          client = ClientRegistry.instance.global_client('root_authorized')
-                          if sharded_ish?
-                            shards = client.use(:admin).command(listShards: 1).first
-                            if shards['shards'].empty?
-                              raise 'Shards are empty'
-                            end
-
-                            shard = shards['shards'].first
-                            address_str = shard['host'].sub(%r{^.*/}, '').sub(/,.*/, '')
-                            client = ClusterTools.instance.direct_client(address_str,
-                                                                         SpecConfig.instance.test_options.merge(SpecConfig.instance.auth_options).merge(connect: :direct))
-                          end
-                          rv = client.use(:admin).command(serverStatus: 1).first
-                          rv = rv['storageEngine']['name']
-                          rv_map = {
-                            'wiredTiger' => :wired_tiger,
-                            'mmapv1' => :mmapv1
-                          }
-                          rv_map[rv] || rv
-                        end
-  end
-
   # This method returns an alternate address for connecting to the configured
   # deployment. For example, if the replica set is configured with nodes at
   # of localhost:27017 and so on, this method will return 127.0.0.:27017.
@@ -191,9 +164,7 @@ class ClusterConfig
     @topology ||= begin
       topology = client.cluster.topology.class.name.sub(/.*::/, '')
       topology = topology.gsub(/([A-Z])/) { |match| "_#{match.downcase}" }.sub(/^_/, '')
-      if /^replica_set/.match?(topology)
-        topology = 'replica_set'
-      end
+      topology = 'replica_set' if /^replica_set/.match?(topology)
       topology.to_sym
     end
 
@@ -211,10 +182,10 @@ class ClusterConfig
       {}
     end
 
-    if !sharded_ish? && short_server_version >= '3.4'
-      rv = @server_parameters['featureCompatibilityVersion']
-      @fcv = rv['version'] || rv
-    end
+    return unless !sharded_ish? && short_server_version >= '3.4'
+
+    rv = @server_parameters['featureCompatibilityVersion']
+    @fcv = rv['version'] || rv
   end
 
   def basic_client

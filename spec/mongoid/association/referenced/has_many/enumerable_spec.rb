@@ -1534,7 +1534,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     context 'when checking against enumerable' do
 
       it 'returns true' do
-        expect(enumerable.is_a?(::Enumerable)).to be true
+        expect(enumerable.is_a?(Enumerable)).to be true
       end
     end
 

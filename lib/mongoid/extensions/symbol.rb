@@ -30,11 +30,11 @@ module Mongoid
         def mongoize(object)
           object.try(:to_sym)
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end
 end
 
-::Symbol.__send__(:include, Mongoid::Extensions::Symbol)
-::Symbol.extend(Mongoid::Extensions::Symbol::ClassMethods)
+Symbol.__send__(:include, Mongoid::Extensions::Symbol)
+Symbol.extend(Mongoid::Extensions::Symbol::ClassMethods)

@@ -30,7 +30,7 @@ module Mongoid
           { '$min' => ops } unless ops.empty?
         end
       end
-      alias :clamp_upper_bound :set_min
+      alias_method :clamp_upper_bound, :set_min
     end
   end
 end

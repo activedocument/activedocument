@@ -873,7 +873,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
     context 'when a block is passed' do
 
       let(:association) do
-        has_many_left_class.has_and_belongs_to_many name, options do; end
+        has_many_left_class.has_and_belongs_to_many(name, options) {}
       end
 
       it 'defines an extension module' do

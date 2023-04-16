@@ -19,18 +19,18 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-          :after_add,
-          :after_remove,
-          :as,
-          :autosave,
-          :before_add,
-          :before_remove,
-          :dependent,
-          :foreign_key,
-          :order,
-          :primary_key,
-          :scope
+        ASSOCIATION_OPTIONS = %i[
+          after_add
+          after_remove
+          as
+          autosave
+          before_add
+          before_remove
+          dependent
+          foreign_key
+          order
+          primary_key
+          scope
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -208,12 +208,14 @@ module Mongoid
               rel.relation_class_name == inverse_class_name
 
           end
+
           if matches.size > 1
             return [default_inverse.name] if default_inverse
 
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
-          matches.collect { |m| m.name } unless matches.blank?
+
+          matches.collect(&:name) unless matches.blank?
         end
 
         def default_primary_key

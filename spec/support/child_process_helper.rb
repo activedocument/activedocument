@@ -6,40 +6,13 @@ autoload :Tempfile, 'tempfile'
 module ChildProcessHelper
   class SpawnError < StandardError; end
 
-  module_function def call(cmd, env: nil, cwd: nil)
+  extend self
+
+  def get_output(cmd, env: nil, cwd: nil)
     process = ChildProcess.new(*cmd)
     process.io.inherit!
-    if cwd
-      process.cwd = cwd
-    end
-    if env
-      env.each do |k, v|
-        process.environment[k.to_s] = v
-      end
-    end
-    process.start
-    process.wait
-    process
-  end
-
-  module_function def check_call(cmd, env: nil, cwd: nil)
-    process = call(cmd, env: env, cwd: cwd)
-    unless process.exit_code == 0
-      raise SpawnError, "Failed to execute: #{cmd}"
-    end
-  end
-
-  module_function def get_output(cmd, env: nil, cwd: nil)
-    process = ChildProcess.new(*cmd)
-    process.io.inherit!
-    if cwd
-      process.cwd = cwd
-    end
-    if env
-      env.each do |k, v|
-        process.environment[k.to_s] = v
-      end
-    end
+    process.cwd = cwd if cwd
+    env&.each { |k, v| process.environment[k.to_s] = v }
 
     output = ''
     r, w = IO.pipe
@@ -65,12 +38,27 @@ module ChildProcessHelper
     [process, output]
   end
 
-  module_function def check_output(*args)
+  def check_output(*args)
     process, output = get_output(*args)
-    unless process.exit_code == 0
-      raise SpawnError, "Failed to execute: #{args}"
-    end
+    raise SpawnError.new("Failed to execute: #{args}") unless process.exit_code == 0
 
     output
+  end
+
+  def call(cmd, env: nil, cwd: nil)
+    process = ChildProcess.new(*cmd)
+    process.io.inherit!
+    process.cwd = cwd if cwd
+    env&.each { |k, v| process.environment[k.to_s] = v }
+    process.start
+    process.wait
+    process
+  end
+
+  def check_call(cmd, env: nil, cwd: nil)
+    process = call(cmd, env: env, cwd: cwd)
+    return if process.exit_code == 0
+
+    raise SpawnError.new("Failed to execute: #{cmd}")
   end
 end

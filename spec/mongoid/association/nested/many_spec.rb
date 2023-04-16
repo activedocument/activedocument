@@ -54,9 +54,9 @@ describe Mongoid::Association::Nested::Many do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           builder.build(person)
-        }.to raise_error(Mongoid::Errors::TooManyNestedAttributeRecords)
+        end.to raise_error(Mongoid::Errors::TooManyNestedAttributeRecords)
       end
     end
 

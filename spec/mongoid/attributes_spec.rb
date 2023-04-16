@@ -54,8 +54,8 @@ describe Mongoid::Attributes do
               let(:title) { 'Executive' }
               let(:city) { 'NYC' }
               let!(:agent) do
-                agent = Agent.new(:title => title)
-                agent.build_address(:city => city)
+                agent = Agent.new(title: title)
+                agent.build_address(city: city)
                 agent.save!
                 agent
               end
@@ -164,17 +164,17 @@ describe Mongoid::Attributes do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             from_db.title
-          }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+          end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
         end
 
         context 'accessing via []' do
 
           it 'raises an error' do
-            expect {
+            expect do
               from_db['title']
-            }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+            end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
           end
         end
       end
@@ -186,9 +186,9 @@ describe Mongoid::Attributes do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             from_db.title
-          }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+          end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
         end
       end
     end
@@ -268,9 +268,9 @@ describe Mongoid::Attributes do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               from_db[:title]
-            }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+            end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
           end
         end
 
@@ -281,9 +281,9 @@ describe Mongoid::Attributes do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               from_db[:title]
-            }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+            end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
           end
         end
       end
@@ -297,9 +297,9 @@ describe Mongoid::Attributes do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               from_db[:undefined_field]
-            }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'undefined_field' on Person which was not loaded/)
+            end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'undefined_field' on Person which was not loaded/)
           end
         end
 
@@ -310,9 +310,9 @@ describe Mongoid::Attributes do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               from_db[:title]
-            }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+            end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
           end
         end
 
@@ -485,9 +485,9 @@ describe Mongoid::Attributes do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               from_db[:undefined_field] = 'x'
-            }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'undefined_field' on Person which was not loaded/)
+            end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'undefined_field' on Person which was not loaded/)
           end
         end
 
@@ -498,9 +498,9 @@ describe Mongoid::Attributes do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               from_db[:title] = 'x'
-            }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+            end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
           end
         end
 
@@ -794,9 +794,9 @@ describe Mongoid::Attributes do
       context 'when not allowing dynamic fields' do
 
         it 'raises an unknown attribute error on instantiation' do
-          expect {
+          expect do
             Account.new({ anothernew: 'Test' })
-          }.to raise_error(Mongoid::Errors::UnknownAttribute)
+          end.to raise_error(Mongoid::Errors::UnknownAttribute)
         end
       end
     end
@@ -956,9 +956,9 @@ describe Mongoid::Attributes do
       end
 
       it 'raises an error' do
-        expect {
+        expect do
           Person.new(params)
-        }.to raise_error(ActiveModel::ForbiddenAttributesError)
+        end.to raise_error(ActiveModel::ForbiddenAttributesError)
       end
     end
   end
@@ -1094,9 +1094,9 @@ describe Mongoid::Attributes do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             from_db.read_attribute(:undefined_field)
-          }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'undefined_field' on Person which was not loaded/)
+          end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'undefined_field' on Person which was not loaded/)
         end
       end
 
@@ -1107,9 +1107,9 @@ describe Mongoid::Attributes do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             from_db.read_attribute(:title)
-          }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+          end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
         end
       end
 
@@ -1639,9 +1639,9 @@ describe Mongoid::Attributes do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             from_db.write_attribute(:undefined_field, 'x')
-          }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'undefined_field' on Person which was not loaded/)
+          end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'undefined_field' on Person which was not loaded/)
         end
       end
 
@@ -1652,9 +1652,9 @@ describe Mongoid::Attributes do
         end
 
         it 'raises an error' do
-          expect {
+          expect do
             from_db.write_attribute(:title, 'x')
-          }.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
+          end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'title' on Person which was not loaded/)
         end
       end
 
@@ -1765,7 +1765,7 @@ describe Mongoid::Attributes do
     end
   end
 
-  [:attributes=, :write_attributes].each do |method|
+  %i[attributes= write_attributes].each do |method|
 
     describe "##{method}" do
 
@@ -2379,7 +2379,7 @@ describe Mongoid::Attributes do
         end
       end
 
-      [:shift, :pop].each do |meth|
+      %i[shift pop].each do |meth|
         context "when performing #{meth}" do
           let(:doc) { NestedBook.create! }
           before do
@@ -2416,7 +2416,7 @@ describe Mongoid::Attributes do
         end
       end
 
-      [:build, :create].each do |meth|
+      %i[build create].each do |meth|
         context "when preforming #{meth}" do
           let(:doc) { NestedBook.create! }
           before do
@@ -2453,7 +2453,7 @@ describe Mongoid::Attributes do
         end
       end
 
-      [:delete_all, :destroy_all, :remove_all].each do |meth|
+      %i[delete_all destroy_all remove_all].each do |meth|
         context "when performing: #{meth}" do
           let(:doc) { NestedBook.create! }
           before do
@@ -2627,7 +2627,7 @@ describe Mongoid::Attributes do
         end
       end
 
-      [:build, :create].each do |meth|
+      %i[build create].each do |meth|
         context "when preforming #{meth}" do
           let(:doc) { NestedBook.create! }
           before do

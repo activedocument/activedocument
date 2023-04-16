@@ -120,9 +120,9 @@ module Mongoid
       #
       # @param [ Mongoid::Association::Relatable ] association The association metadata.
       def validates_relation(association)
-        if association.validate?
-          validates_associated(association.name)
-        end
+        return unless association.validate?
+
+        validates_associated(association.name)
       end
 
       # Add validation with the supplied validators for the provided fields
@@ -140,12 +140,12 @@ module Mongoid
       def validates_with(*args, &block)
         if args.first == PresenceValidator
           args.last[:attributes].each do |name|
-            association = relations[name.to_s]
-            if association&.autosave?
-              Association::Referenced::AutoSave.define_autosave!(association)
-            end
+            next unless (association = relations[name.to_s])&.autosave?
+
+            Association::Referenced::AutoSave.define_autosave!(association)
           end
         end
+
         super
       end
 

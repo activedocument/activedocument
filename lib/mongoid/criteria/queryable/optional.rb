@@ -23,7 +23,7 @@ module Mongoid
         def ascending(*fields)
           sort_with_list(*fields, 1)
         end
-        alias :asc :ascending
+        alias_method :asc, :ascending
         key :asc, :override, 1
         key :ascending, :override, 1
 
@@ -51,7 +51,7 @@ module Mongoid
         def descending(*fields)
           sort_with_list(*fields, -1)
         end
-        alias :desc :descending
+        alias_method :desc, :descending
         key :desc, :override, -1
         key :descending, :override, -1
 
@@ -163,7 +163,7 @@ module Mongoid
             end
           end
         end
-        alias :order :order_by
+        alias_method :order, :order_by
 
         # Instead of merging the order criteria, use this method to completely
         # replace the existing ordering with the provided.
@@ -195,7 +195,7 @@ module Mongoid
             query.pipeline.push('$skip' => val) if aggregating?
           end
         end
-        alias :offset :skip
+        alias_method :offset, :skip
 
         # Limit the returned results via slicing embedded arrays.
         #
@@ -323,9 +323,7 @@ module Mongoid
         # @return [ Mongoid::Criteria::Queryable ] The cloned queryable.
         def option(*args)
           clone.tap do |query|
-            unless args.compact.empty?
-              yield(query.options, query)
-            end
+            yield(query.options, query) unless args.compact.empty?
           end
         end
 
@@ -358,7 +356,7 @@ module Mongoid
           #
           # @return [ Array<Symbol> ] The names of the forwardable methods.
           def forwardables
-            public_instance_methods(false) - [:options, :options=]
+            public_instance_methods(false) - %i[options options=]
           end
         end
       end

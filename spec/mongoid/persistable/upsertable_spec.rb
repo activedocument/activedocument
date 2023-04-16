@@ -155,9 +155,9 @@ describe Mongoid::Persistable::Upsertable do
       context 'with `replace: true`' do
         it 'should raise an ArgumentError' do
           existing_document.name = 'John and John'
-          expect {
+          expect do
             existing_document.upsert(replace: true, set_on_insert: { member_count: 1 })
-          }.to raise_error(ArgumentError)
+          end.to raise_error(ArgumentError)
         end
       end
 

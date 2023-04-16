@@ -34,9 +34,9 @@ describe Mongoid::Association::Referenced::CounterCache do
       end
 
       it 'expect to raise an error' do
-        expect {
+        expect do
           person.reset_counters(:not_exist)
-        }.to raise_error(NoMethodError)
+        end.to raise_error(NoMethodError)
       end
     end
 
@@ -51,7 +51,7 @@ describe Mongoid::Association::Referenced::CounterCache do
       end
 
       before do
-        Person.update_counters(person.id, :posts_count => 10)
+        Person.update_counters(person.id, posts_count: 10)
         person.reload
         person.reset_counters(:posts)
       end
@@ -131,9 +131,9 @@ describe Mongoid::Association::Referenced::CounterCache do
     context 'when counter is reset with wrong id' do
 
       it 'expect to raise an error' do
-        expect {
+        expect do
           Person.reset_counters '1', :drugs
-        }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
+        end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
     end
 
@@ -144,9 +144,9 @@ describe Mongoid::Association::Referenced::CounterCache do
       end
 
       it 'expect to raise an error' do
-        expect {
+        expect do
           Person.reset_counters person.id, :not_exist
-        }.to raise_error(NoMethodError)
+        end.to raise_error(NoMethodError)
       end
     end
 
@@ -161,7 +161,7 @@ describe Mongoid::Association::Referenced::CounterCache do
       end
 
       before do
-        Person.update_counters(person.id, :posts_count => 10)
+        Person.update_counters(person.id, posts_count: 10)
         Person.reset_counters(person.id, :posts)
       end
 
@@ -203,7 +203,7 @@ describe Mongoid::Association::Referenced::CounterCache do
       context 'and update counter with 5' do
 
         before do
-          Person.update_counters person.id, :drugs_count => 5
+          Person.update_counters person.id, drugs_count: 5
         end
 
         it 'return 8' do
@@ -214,7 +214,7 @@ describe Mongoid::Association::Referenced::CounterCache do
       context 'and update counter with -5' do
 
         before do
-          Person.update_counters person.id, :drugs_count => -5
+          Person.update_counters person.id, drugs_count: -5
         end
 
         it 'return -2' do
@@ -241,7 +241,7 @@ describe Mongoid::Association::Referenced::CounterCache do
       let(:person) { Person.create! }
 
       before do
-        Person.update_counters(person.id, :drugs_count => 2, :second_counter => 5)
+        Person.update_counters(person.id, drugs_count: 2, second_counter: 5)
       end
 
       it 'updates drugs_counter' do

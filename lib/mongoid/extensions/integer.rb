@@ -49,18 +49,16 @@ module Mongoid
           return if object.blank?
 
           if object.is_a?(String)
-            if object.numeric?
-              object.to_i
-            end
+            object.to_i if object.numeric?
           else
             object.try(:to_i)
           end
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end
 end
 
-::Integer.__send__(:include, Mongoid::Extensions::Integer)
-::Integer.extend(Mongoid::Extensions::Integer::ClassMethods)
+Integer.__send__(:include, Mongoid::Extensions::Integer)
+Integer.extend(Mongoid::Extensions::Integer::ClassMethods)

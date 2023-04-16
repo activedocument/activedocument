@@ -27,7 +27,7 @@ describe Mongoid::Extensions::Integer do
     end
   end
 
-  [:mongoize, :demongoize].each do |method|
+  %i[mongoize demongoize].each do |method|
 
     describe ".#{method}" do
 

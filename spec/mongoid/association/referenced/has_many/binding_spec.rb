@@ -146,9 +146,9 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
     context 'when adding the document' do
 
       it 'raises an error' do
-        expect {
+        expect do
           person.posts << band
-        }.to raise_error(Mongoid::Errors::InverseNotFound)
+        end.to raise_error(Mongoid::Errors::InverseNotFound)
       end
     end
   end

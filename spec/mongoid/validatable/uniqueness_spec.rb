@@ -56,7 +56,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 object = klass.new(name: 'websters')
                 object.valid?
               end
-              { :valid => valid, :object => object }
+              { valid: valid, object: object }
             end
 
             it 'performs the validation on the correct collection' do
@@ -865,7 +865,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         context 'when multiple scopes are provided' do
 
           before do
-            Dictionary.validates_uniqueness_of :name, scope: [:publisher, :year]
+            Dictionary.validates_uniqueness_of :name, scope: %i[publisher year]
           end
 
           after do
@@ -1905,7 +1905,7 @@ describe Mongoid::Validatable::UniquenessValidator do
         context 'when multiple scopes are provided' do
 
           before do
-            Definition.validates_uniqueness_of :description, scope: [:part, :regular]
+            Definition.validates_uniqueness_of :description, scope: %i[part regular]
           end
 
           after do
@@ -2511,9 +2511,9 @@ describe Mongoid::Validatable::UniquenessValidator do
     end
 
     it 'transfers the options to the cloned client' do
-      expect {
+      expect do
         Person.create!(ssn: '132-11-1111', username: 'asdfsdfA')
-      }.to raise_error(Mongo::Error::OperationFailure)
+      end.to raise_error(Mongo::Error::OperationFailure)
     end
   end
 

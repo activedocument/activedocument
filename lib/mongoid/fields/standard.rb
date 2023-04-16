@@ -76,9 +76,9 @@ module Mongoid
         # @todo: Durran, change API in 4.0 to take the class as a parameter.
         # This is here temporarily to address #2529 without changing the
         # constructor signature.
-        if default_val.respond_to?(:call)
-          define_default_method(options[:klass])
-        end
+        return unless default_val.respond_to?(:call)
+
+        define_default_method(options[:klass])
       end
 
       # Does this field do lazy default evaluation?

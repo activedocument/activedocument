@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
 
   # Utility module containing methods which assist in performing
@@ -5,6 +7,8 @@ module Mongoid
   #
   # @api private
   module Matcher
+
+    extend self
 
     # Extracts field values in the document at the specified key.
     #
@@ -43,7 +47,7 @@ module Mongoid
     # @param [ String ] key The key path to extract.
     #
     # @return [ Object | Array ] Field value or values.
-    module_function def extract_attribute(document, key)
+    def extract_attribute(document, key)
       if document.respond_to?(:as_attributes, true)
         # If a document has hash fields, as_attributes would keep those fields
         # as Hash instances which do not offer indifferent access.
@@ -58,18 +62,14 @@ module Mongoid
         current.each do |doc|
           case doc
           when Hash
-            if doc.key?(field)
-              new << doc[field]
-            end
+            new << doc[field] if doc.key?(field)
           when Array
             if (index = field.to_i).to_s == field && (doc.length > index)
               new << doc[index]
             end
 
             doc.each do |subdoc|
-              if Hash === subdoc && subdoc.key?(field)
-                new << subdoc[field]
-              end
+              new << subdoc[field] if subdoc.is_a?(Hash) && subdoc.key?(field)
             end
           end
         end

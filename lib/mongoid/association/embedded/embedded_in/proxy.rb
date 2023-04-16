@@ -71,9 +71,9 @@ module Mongoid
           #
           # @param [ Mongoid::Document ] document The document to set the association metadata on.
           def characterize_one(document)
-            unless _base._association
-              _base._association = _association.inverse_association(document)
-            end
+            return if _base._association
+
+            _base._association = _association.inverse_association(document)
           end
 
           # Are we able to persist this association?

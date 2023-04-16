@@ -33,7 +33,7 @@ describe Mongoid::Serializable do
     end
   end
 
-  %i(include_root_in_json include_root_in_json?).each do |meth|
+  %i[include_root_in_json include_root_in_json?].each do |meth|
     describe ".#{meth}" do
 
       before do
@@ -616,7 +616,7 @@ describe Mongoid::Serializable do
               let(:hash) do
                 person.serializable_hash(
                   except: :_id,
-                  include: [:addresses, :name]
+                  include: %i[addresses name]
                 )
               end
 

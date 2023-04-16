@@ -5,8 +5,8 @@ namespace :db do
     namespace :encryption do
 
       desc 'Create encryption key'
-      task :create_data_key, [:client, :provider] => [:environment] do |_t, args|
-        result = ::Mongoid::Tasks::Encryption.create_data_key(
+      task :create_data_key, %i[client provider] => [:environment] do |_t, args|
+        result = Mongoid::Tasks::Encryption.create_data_key(
           client_name: args[:client],
           kms_provider_name: args[:provider]
         )

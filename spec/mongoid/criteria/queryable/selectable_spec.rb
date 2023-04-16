@@ -2279,7 +2279,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
   end
 
   describe 'chained operators' do
-    [:eq, :elem_match, :gt, :gte, :lt, :lte, :mod, :ne, :near, :near_sphere].each do |meth|
+    %i[eq elem_match gt gte lt lte mod ne near near_sphere].each do |meth|
 
       context "when chaining the #{meth} method when using the same field" do
         let(:op) do

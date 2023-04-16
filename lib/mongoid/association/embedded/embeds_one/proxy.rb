@@ -16,12 +16,12 @@ module Mongoid
           # The valid options when defining this association.
           #
           # @return [ Array<Symbol> ] The allowed options when defining this association.
-          VALID_OPTIONS = [
-            :autobuild,
-            :as,
-            :cascade_callbacks,
-            :cyclic,
-            :store_as
+          VALID_OPTIONS = %i[
+            autobuild
+            as
+            cascade_callbacks
+            cyclic
+            store_as
           ].freeze
 
           # Instantiate a new embeds_one association.

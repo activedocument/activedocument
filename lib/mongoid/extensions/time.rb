@@ -90,14 +90,14 @@ module Mongoid
             return
           end
 
-          if time.acts_like?(:time)
-            if object.respond_to?(:sec_fraction)
-              ::Time.at(time.to_i, object.sec_fraction * 10**6).utc
-            elsif time.respond_to?(:subsec)
-              ::Time.at(time.to_i, time.subsec * 10**6).utc
-            else
-              ::Time.at(time.to_i, time.usec).utc
-            end
+          return unless time.acts_like?(:time)
+
+          if object.respond_to?(:sec_fraction)
+            ::Time.at(time.to_i, object.sec_fraction * 10**6).utc
+          elsif time.respond_to?(:subsec)
+            ::Time.at(time.to_i, time.subsec * 10**6).utc
+          else
+            ::Time.at(time.to_i, time.usec).utc
           end
         end
       end
@@ -105,5 +105,5 @@ module Mongoid
   end
 end
 
-::Time.__send__(:include, Mongoid::Extensions::Time)
-::Time.extend(Mongoid::Extensions::Time::ClassMethods)
+Time.__send__(:include, Mongoid::Extensions::Time)
+Time.extend(Mongoid::Extensions::Time::ClassMethods)

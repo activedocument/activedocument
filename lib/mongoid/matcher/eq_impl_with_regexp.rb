@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -6,6 +8,8 @@ module Mongoid
     #
     # @api private
     module EqImplWithRegexp
+
+      extend self
 
       # Returns whether a value satisfies an $eq (or similar) expression,
       # performing a regular expression match if the condition is a regular
@@ -18,7 +22,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(original_operator, value, condition)
+      def matches?(original_operator, value, condition)
         case condition
         when Regexp
           value =~ condition

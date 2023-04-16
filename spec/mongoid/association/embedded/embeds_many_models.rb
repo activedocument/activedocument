@@ -54,17 +54,17 @@ end
 class EmmInner
   include Mongoid::Document
 
-  embeds_many :friends, :class_name => self.name, :cyclic => true
-  embedded_in :parent, :class_name => self.name, :cyclic => true
+  embeds_many :friends, class_name: name, cyclic: true
+  embedded_in :parent, class_name: name, cyclic: true
 
-  field :level, :type => Integer
+  field :level, type: Integer
 end
 
 class EmmOuter
   include Mongoid::Document
   embeds_many :inners, class_name: 'EmmInner'
 
-  field :level, :type => Integer
+  field :level, type: Integer
 end
 
 class EmmCustomerAddress

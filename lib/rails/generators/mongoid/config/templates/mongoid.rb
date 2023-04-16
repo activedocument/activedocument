@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Mongoid.configure do
   target_version = "<%= Mongoid::VERSION[/^\d+.\d+/] %>"
 

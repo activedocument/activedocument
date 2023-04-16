@@ -31,9 +31,7 @@ module Mongoid
     #
     # @return [ Hash ] The new operations.
     def positionally(selector, operations, processed = {})
-      if selector.size == 1 || selector.values.any? { |val| val.nil? }
-        return operations
-      end
+      return operations if selector.size == 1 || selector.values.any?(&:nil?)
 
       keys = selector.keys.map { |m| m.sub('._id', '') } - ['_id']
       keys = keys.sort_by { |s| s.length * -1 }

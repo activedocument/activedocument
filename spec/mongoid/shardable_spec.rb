@@ -27,7 +27,7 @@ describe Mongoid::Shardable do
     context 'when full syntax is used' do
       context 'with symbol value' do
         it 'sets shard key fields to symbol value' do
-          expect(SmProducer.shard_key_fields).to eq %i(age gender)
+          expect(SmProducer.shard_key_fields).to eq %i[age gender]
         end
 
         it 'sets shard config' do
@@ -47,7 +47,7 @@ describe Mongoid::Shardable do
 
       context 'with string value' do
         it 'sets shard key fields to symbol value' do
-          expect(SmActor.shard_key_fields).to eq(%i(age gender hello))
+          expect(SmActor.shard_key_fields).to eq(%i[age gender hello])
         end
 
         it 'sets shard config' do
@@ -71,7 +71,7 @@ describe Mongoid::Shardable do
         end
 
         it 'uses foreign key as shard key in shard key fields' do
-          expect(SmDriver.shard_key_fields).to eq(%i(age agency_id))
+          expect(SmDriver.shard_key_fields).to eq(%i[age agency_id])
         end
       end
     end
@@ -79,13 +79,13 @@ describe Mongoid::Shardable do
     context 'when shorthand syntax is used' do
       context 'with symbol value' do
         it 'sets shard key fields to symbol value' do
-          expect(SmMovie.shard_key_fields).to eq(%i(year))
+          expect(SmMovie.shard_key_fields).to eq(%i[year])
         end
       end
 
       context 'with string value' do
         it 'sets shard key fields to symbol value' do
-          expect(SmTrailer.shard_key_fields).to eq(%i(year))
+          expect(SmTrailer.shard_key_fields).to eq(%i[year])
         end
       end
 
@@ -98,7 +98,7 @@ describe Mongoid::Shardable do
         end
 
         it 'uses foreign key as shard key in shard key fields' do
-          expect(SmDirector.shard_key_fields).to eq(%i(agency_id))
+          expect(SmDirector.shard_key_fields).to eq(%i[agency_id])
         end
       end
     end

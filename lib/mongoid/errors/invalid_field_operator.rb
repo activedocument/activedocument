@@ -8,9 +8,9 @@ module Mongoid
     class InvalidFieldOperator < InvalidQuery
 
       # @api private
-      VALID_OPERATORS = %w(
+      VALID_OPERATORS = %w[
         all elemMatch eq exists gt gte in lt lte ne nin not regex size
-      ).freeze
+      ].freeze
 
       # Creates the exception.
       #

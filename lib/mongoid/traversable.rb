@@ -40,9 +40,7 @@ module Mongoid
       #
       # @api private
       def discriminator_key=(value)
-        if hereditary?
-          raise Errors::InvalidDiscriminatorKeyTarget.new(self, self.superclass)
-        end
+        raise Errors::InvalidDiscriminatorKeyTarget.new(self, superclass) if hereditary?
 
         _mongoid_clear_types
 
@@ -63,10 +61,10 @@ module Mongoid
         # an existing field.
         # This condition also checks if the class has any descendants, because
         # if it doesn't then it doesn't need a discriminator key.
-        if !fields.key?(self.discriminator_key) && !descendants.empty?
-          default_proc = -> { self.class.discriminator_value }
-          field(self.discriminator_key, default: default_proc, type: String)
-        end
+        return unless !fields.key?(discriminator_key) && !descendants.empty?
+
+        default_proc = -> { self.class.discriminator_value }
+        field(discriminator_key, default: default_proc, type: String)
       end
 
       # Returns the discriminator key.
@@ -75,7 +73,7 @@ module Mongoid
       #
       # @api private
       def discriminator_value=(value)
-        value ||= self.name
+        value ||= name
         _mongoid_clear_types
         add_discriminator_mapping(value)
         @discriminator_value = value
@@ -94,7 +92,7 @@ module Mongoid
 
       # Get the name on the reading side if the discriminator_value is nil
       def discriminator_value
-        @discriminator_value || self.name
+        @discriminator_value || name
       end
     end
 
@@ -172,9 +170,7 @@ module Mongoid
       embedded_relations.each_pair do |name, association|
         without_autobuild do
           child = send(name)
-          if child
-            children += Array.wrap(child)
-          end
+          children += Array.wrap(child) if child
         end
       end
       children
@@ -192,9 +188,7 @@ module Mongoid
       embedded_relations.each_pair do |name, association|
         without_autobuild do
           child = send(name)
-          if child
-            to_expand += Array.wrap(child)
-          end
+          to_expand += Array.wrap(child) if child
         end
       end
       until to_expand.empty?
@@ -258,7 +252,7 @@ module Mongoid
     def remove_child(child)
       name = child.association_name
       if child.embedded_one?
-        self.attributes.delete(child._association.store_as)
+        attributes.delete(child._association.store_as)
         remove_ivar(name)
       else
         relation = send(name)
@@ -343,7 +337,7 @@ module Mongoid
         subclass.fields = fields.dup
         subclass.pre_processed_defaults = pre_processed_defaults.dup
         subclass.post_processed_defaults = post_processed_defaults.dup
-        subclass._declared_scopes = Hash.new { |hash, key| self._declared_scopes[key] }
+        subclass._declared_scopes = Hash.new { |hash, key| _declared_scopes[key] }
         subclass.discriminator_value = subclass.name
 
         # We need to do this here because the discriminator_value method is
@@ -354,10 +348,10 @@ module Mongoid
 
         # We only need the _type field if inheritance is in play, but need to
         # add to the root class as well for backwards compatibility.
-        unless fields.key?(self.discriminator_key)
-          default_proc = -> { self.class.discriminator_value }
-          field(self.discriminator_key, default: default_proc, type: String)
-        end
+        return if fields.key?(discriminator_key)
+
+        default_proc = -> { self.class.discriminator_value }
+        field(discriminator_key, default: default_proc, type: String)
       end
     end
   end

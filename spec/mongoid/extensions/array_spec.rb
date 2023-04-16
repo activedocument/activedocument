@@ -366,7 +366,7 @@ describe Mongoid::Extensions::Array do
       include_context 'setting ActiveSupport time zone'
 
       # In AS time zone (could be different from Ruby time zone)
-      let(:expected_time) { ::Time.zone.local(*array).in_time_zone }
+      let(:expected_time) { Time.zone.local(*array).in_time_zone }
 
       it 'converts to the as time zone' do
         expect(mongoized.zone).to eq('JST')

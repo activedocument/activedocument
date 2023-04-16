@@ -51,9 +51,9 @@ module Mongoid
             end
           end
 
-          if object.acts_like?(:time) || object.acts_like?(:date)
-            ::Date.new(object.year, object.month, object.day)
-          end
+          return unless object.acts_like?(:time) || object.acts_like?(:date)
+
+          ::Date.new(object.year, object.month, object.day)
         end
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -78,14 +78,14 @@ module Mongoid
           rescue ArgumentError
             nil
           end
-          if time.acts_like?(:time)
-            ::Time.utc(time.year, time.month, time.day)
-          end
+          return unless time.acts_like?(:time)
+
+          ::Time.utc(time.year, time.month, time.day)
         end
       end
     end
   end
 end
 
-::Date.__send__(:include, Mongoid::Extensions::Date)
-::Date.extend(Mongoid::Extensions::Date::ClassMethods)
+Date.__send__(:include, Mongoid::Extensions::Date)
+Date.extend(Mongoid::Extensions::Date::ClassMethods)

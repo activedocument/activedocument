@@ -477,9 +477,9 @@ describe Mongoid::Fields do
     context 'when the options are not valid' do
 
       it 'raises an error' do
-        expect {
+        expect do
           Label.field :unacceptable, bad: true
-        }.to raise_error(Mongoid::Errors::InvalidFieldOption)
+        end.to raise_error(Mongoid::Errors::InvalidFieldOption)
       end
     end
   end
@@ -1037,13 +1037,13 @@ describe Mongoid::Fields do
 
     context "when the field name conflicts with mongoid's internals" do
 
-      [:_association, :invalid].each do |meth|
+      %i[_association invalid].each do |meth|
         context "when the field is named #{meth}" do
 
           it 'raises an error' do
-            expect {
+            expect do
               Person.field(meth)
-            }.to raise_error(Mongoid::Errors::InvalidField, /Defining a field named '#{meth}' is not allowed/)
+            end.to raise_error(Mongoid::Errors::InvalidField, /Defining a field named '#{meth}' is not allowed/)
           end
         end
       end
@@ -1054,18 +1054,18 @@ describe Mongoid::Fields do
         config_override :duplicate_fields_exception, true
 
         it 'raises an error' do
-          expect {
+          expect do
             Person.field(:title)
-          }.to raise_error(Mongoid::Errors::InvalidField)
+          end.to raise_error(Mongoid::Errors::InvalidField)
         end
       end
 
       context 'when exception is disabled' do
         config_override :duplicate_fields_exception, false
         it "doesn't raise an error" do
-          expect {
+          expect do
             Class.new(Person)
-          }.to_not raise_error
+          end.to_not raise_error
         end
       end
     end

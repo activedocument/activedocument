@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -8,6 +10,8 @@ module Mongoid
     # @api private
     module ElemMatch
 
+      extend self
+
       # Returns whether a value satisfies an $elemMatch expression.
       #
       # @param [ true | false ] exists Not used.
@@ -17,12 +21,12 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      module_function def matches?(exists, value, condition)
-        unless Hash === condition
-          raise Errors::InvalidQuery, "$elemMatch requires a Hash operand: #{Errors::InvalidQuery.truncate_expr(condition)}"
+      def matches?(exists, value, condition)
+        unless condition.is_a?(Hash)
+          raise Errors::InvalidQuery.new("$elemMatch requires a Hash operand: #{Errors::InvalidQuery.truncate_expr(condition)}")
         end
 
-        if Array === value && !value.empty?
+        if value.is_a?(Array) && !value.empty?
           value.any? do |v|
             ElemMatchExpression.matches?(v, condition)
           end

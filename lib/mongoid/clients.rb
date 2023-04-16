@@ -46,9 +46,7 @@ module Mongoid
       #
       # @return [ true ] True.
       def disconnect
-        clients.each_value do |client|
-          client.close
-        end
+        clients.each_value(&:close)
       end
 
       # Get a stored client with the provided name. If no client exists

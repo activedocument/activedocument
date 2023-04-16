@@ -48,5 +48,5 @@ module Mongoid
   end
 end
 
-::DateTime.__send__(:include, Mongoid::Criteria::Queryable::Extensions::DateTime)
-::DateTime.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::DateTime::ClassMethods)
+DateTime.__send__(:include, Mongoid::Criteria::Queryable::Extensions::DateTime)
+DateTime.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::DateTime::ClassMethods)

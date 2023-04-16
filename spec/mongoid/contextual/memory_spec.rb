@@ -34,7 +34,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [:blank?, :empty?].each do |method|
+  %i[blank? empty?].each do |method|
 
     describe "##{method}" do
 
@@ -89,9 +89,9 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'raises an exception' do
-          expect {
+          expect do
             context.send(method)
-          }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+          end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
         end
       end
     end
@@ -133,9 +133,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.count
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
 
@@ -194,7 +194,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [:delete, :delete_all].each do |method|
+  %i[delete delete_all].each do |method|
 
     let(:person) do
       Person.create!
@@ -317,15 +317,15 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'raises an exception' do
-          expect {
+          expect do
             context.send(method)
-          }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+          end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
         end
       end
     end
   end
 
-  [:destroy, :destroy_all].each do |method|
+  %i[destroy destroy_all].each do |method|
 
     let(:person) do
       Person.create!
@@ -399,9 +399,9 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'raises an exception' do
-          expect {
+          expect do
             context.send(method)
-          }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+          end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
         end
       end
     end
@@ -622,9 +622,9 @@ describe Mongoid::Contextual::Memory do
       context 'when calling next on the enumerator' do
 
         it 'raises a stop iteration error' do
-          expect {
+          expect do
             context.each.next
-          }.to raise_error(StopIteration)
+          end.to raise_error(StopIteration)
         end
       end
     end
@@ -683,9 +683,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.each
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -745,9 +745,9 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'raises an exception' do
-          expect {
+          expect do
             context
-          }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+          end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
         end
       end
     end
@@ -856,7 +856,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [:first, :one].each do |method|
+  %i[first one].each do |method|
 
     describe "##{method}" do
 
@@ -903,9 +903,9 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'raises an exception' do
-          expect {
+          expect do
             context.send(method)
-          }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+          end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
         end
       end
     end
@@ -985,9 +985,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.take
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -1029,9 +1029,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.take
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -1130,9 +1130,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -1182,9 +1182,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.last
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -1217,12 +1217,12 @@ describe Mongoid::Contextual::Memory do
     include_examples 'raises an error when no documents'
   end
 
-  [:second,
-   :third,
-   :fourth,
-   :fifth,
-   :second_to_last,
-   :third_to_last].each do |meth|
+  %i[second
+     third
+     fourth
+     fifth
+     second_to_last
+     third_to_last].each do |meth|
     describe "##{meth}" do
       let(:method) { meth }
 
@@ -1284,7 +1284,7 @@ describe Mongoid::Contextual::Memory do
     end
   end
 
-  [:length, :size].each do |method|
+  %i[length size].each do |method|
 
     describe "##{method}" do
 
@@ -1339,9 +1339,9 @@ describe Mongoid::Contextual::Memory do
         end
 
         it 'raises an exception' do
-          expect {
+          expect do
             context.send(method)
-          }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+          end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
         end
       end
     end
@@ -1412,9 +1412,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.limit(2)
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -1918,7 +1918,7 @@ describe Mongoid::Contextual::Memory do
 
       context 'when plucking multiple fields' do
 
-        let(:pluck_args) { [:foo, :bar] }
+        let(:pluck_args) { %i[foo bar] }
 
         it 'returns the context' do
           expect(plucked).to eq context
@@ -1939,9 +1939,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.pluck(:foo, :bar)
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -2691,9 +2691,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.skip(1)
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -2859,9 +2859,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.sort(state: 1)
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -2999,9 +2999,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.update
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
   end
@@ -3031,9 +3031,9 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           context.update_all({})
-        }.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
+        end.to raise_exception(Mongoid::Errors::InMemoryCollationNotSupported)
       end
     end
 

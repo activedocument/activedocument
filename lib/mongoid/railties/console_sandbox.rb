@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mongoid/threaded'
 require 'mongoid/errors/transactions_not_supported'
 
@@ -13,9 +15,9 @@ require 'mongoid/errors/transactions_not_supported'
 # @raise [ Mongoid::Errors::TransactionsNotSupported ] If the cluster
 #   definitely does not support transactions.
 def check_if_transactions_might_be_available!(client)
-  if client.cluster.single?
-    raise Mongoid::Errors::TransactionsNotSupported
-  end
+  return unless client.cluster.single?
+
+  raise Mongoid::Errors::TransactionsNotSupported
 end
 
 # Starts a transaction that should include all the operations inside
@@ -26,7 +28,7 @@ end
 # @param [ Mongo::Client ] client Client to start the transaction.
 def start_sandbox_transaction(client)
   session = client.start_session
-  ::Mongoid::Threaded.set_session(session, client: client)
+  Mongoid::Threaded.set_session(session, client: client)
   session.start_transaction
 end
 

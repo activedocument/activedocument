@@ -53,11 +53,11 @@ module Mongoid
           # @return [ self | nil ] The association or nil.
           def substitute(replacement)
             unbind_one
-            if replacement
-              self._target = normalize(replacement)
-              bind_one
-              self
-            end
+            return unless replacement
+
+            self._target = normalize(replacement)
+            bind_one
+            self
           end
 
           private

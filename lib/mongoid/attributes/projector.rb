@@ -67,9 +67,8 @@ module Mongoid
         item, value = content_projection.detect do |path, value|
           "#{name}.".start_with?("#{path}.")
         end
-        if item
-          return value_inclusionary?(value)
-        end
+
+        return value_inclusionary?(value) if item
 
         if content_inclusionary?
           # Find an item which would be a strict child of the requested name/path.
@@ -79,9 +78,8 @@ module Mongoid
           item, value = content_projection.detect do |path, value|
             "#{path}.".start_with?("#{name}.")
           end
-          if item
-            return true
-          end
+
+          return true if item
         end
 
         !content_inclusionary?

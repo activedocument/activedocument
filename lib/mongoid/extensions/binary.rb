@@ -35,7 +35,7 @@ module Mongoid
           when String, Symbol then BSON::Binary.new(object.to_s)
           end
         end
-        alias :demongoize :mongoize
+        alias_method :demongoize, :mongoize
       end
     end
   end

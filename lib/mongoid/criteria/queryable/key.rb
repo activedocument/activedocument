@@ -88,7 +88,7 @@ module Mongoid
 
           name == other.name && operator == other.operator && expanded == other.expanded
         end
-        alias :eql? :==
+        alias_method :eql?, :==
 
         # Calculate the hash code for a key.
         #
@@ -112,11 +112,14 @@ module Mongoid
         # @param [ String ] expanded The Mongo expanded operator.
         def initialize(name, strategy, operator, expanded = nil, &block)
           unless operator.is_a?(String) || operator.is_a?(Integer)
-            raise ArgumentError, "Operator must be a string or an integer: #{operator.inspect}"
+            raise ArgumentError.new("Operator must be a string or an integer: #{operator.inspect}")
           end
 
-          @name, @strategy, @operator, @expanded, @block =
-            name, strategy, operator, expanded, block
+          @name = name
+          @strategy = strategy
+          @operator = operator
+          @expanded = expanded
+          @block = block
         end
 
         # Gets the raw selector that would be passed to Mongo from this key.
@@ -142,22 +145,10 @@ module Mongoid
         #
         # @return [ Hash ] The raw MongoDB selector.
         def transform_value(value, negating = false)
-          expr = if block
-                   block[value]
-                 else
-                   value
-                 end
-
-          if expanded
-            expr = { expanded => expr }
-          end
-
+          expr = block ? block[value] : value
+          expr = { expanded => expr } if expanded
           expr = { operator => expr }
-
-          if negating && operator != '$not'
-            expr = { '$not' => expr }
-          end
-
+          expr = { '$not' => expr } if negating && operator != '$not'
           expr
         end
 
@@ -170,7 +161,7 @@ module Mongoid
         def __sort_option__
           { name => operator }
         end
-        alias :__sort_pair__ :__sort_option__
+        alias_method :__sort_pair__, :__sort_option__
 
         # Convert the key to a string.
         #

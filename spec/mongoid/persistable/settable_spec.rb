@@ -161,7 +161,7 @@ describe Mongoid::Persistable::Settable do
         end
 
         it 'should persist changes of embeds_many fields' do
-          person.set({ phone_numbers: [home_phone, office_phone].map { |p| p.as_document } })
+          person.set({ phone_numbers: [home_phone, office_phone].map(&:as_document) })
           expect(person.reload.phone_numbers).to eq([home_phone, office_phone])
         end
       end
@@ -225,9 +225,9 @@ describe Mongoid::Persistable::Settable do
     end
 
     it 'raises exception for an unknown attribute ' do
-      expect {
+      expect do
         account.set(somethingnew: 'somethingnew')
-      }.to raise_error(Mongoid::Errors::UnknownAttribute)
+      end.to raise_error(Mongoid::Errors::UnknownAttribute)
     end
   end
 

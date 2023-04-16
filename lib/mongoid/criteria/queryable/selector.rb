@@ -30,9 +30,8 @@ module Mongoid
                 end
               end
             end
-            if multi_selection?(key)
-              value = (self[key.to_s] || []).concat(value)
-            end
+
+            value = (self[key.to_s] || []).concat(value) if multi_selection?(key)
             store(key, value)
           end
         end
@@ -57,7 +56,7 @@ module Mongoid
           end
           super(store_name, store_value)
         end
-        alias :[]= :store
+        alias_method :[]=, :store
 
         # Convert the selector to an aggregation pipeline entry.
         #
@@ -84,7 +83,8 @@ module Mongoid
         # @return [ Array<String, String> ] The store name and store value.
         def store_creds(name, serializer, value)
           store_name = localized_key(name, serializer)
-          if Range === value
+
+          if value.is_a?(Range)
             evolve_range(store_name, serializer, value)
           else
             [store_name, evolve(serializer, value)]
@@ -104,7 +104,7 @@ module Mongoid
         # @api private
         def evolve_multi(specs)
           unless specs.is_a?(Array)
-            raise ArgumentError, "specs is not an array: #{specs.inspect}"
+            raise ArgumentError.new("specs is not an array: #{specs.inspect}")
           end
 
           specs.map do |spec|
@@ -113,9 +113,7 @@ module Mongoid
               # {'$or' => [{'$or' => {...}}]},
               # when evolve_multi is called for the top level hash,
               # this call recursively transforms the bottom level $or.
-              if multi_selection?(key)
-                value = evolve_multi(value)
-              end
+              value = evolve_multi(value) if multi_selection?(key)
 
               # storage_pair handles field aliases but not localization for
               # some reason, although per its documentation Smash supposedly
@@ -130,9 +128,7 @@ module Mongoid
               # involves complex keys. For example, {:foo.lt => 5} produces
               # {'foo' => {'$lt' => 5}}. This step should be done after all
               # value-based processing is complete.
-              if key.is_a?(Key)
-                evolved_value = key.transform_value(evolved_value)
-              end
+              evolved_value = key.transform_value(evolved_value) if key.is_a?(Key)
 
               [final_key, evolved_value]
             end
@@ -282,7 +278,7 @@ module Mongoid
         #
         # @return [ true | false ] If the key is for a multi-select.
         def multi_selection?(key)
-          %w($and $or $nor).include?(key)
+          %w[$and $or $nor].include?(key)
         end
       end
     end

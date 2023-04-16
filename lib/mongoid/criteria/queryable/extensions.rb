@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 if defined?(ActiveSupport)
-  unless defined?(ActiveSupport::TimeWithZone)
-    require 'active_support/time_with_zone'
-  end
+  require 'active_support/time_with_zone' unless defined?(ActiveSupport::TimeWithZone)
   require 'mongoid/criteria/queryable/extensions/time_with_zone'
 end
 

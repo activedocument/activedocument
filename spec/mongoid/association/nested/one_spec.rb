@@ -136,7 +136,7 @@ describe Mongoid::Association::Nested::One do
         { allow_destroy: true }
       end
 
-      %i(id _id).each do |id_field|
+      %i[id _id].each do |id_field|
         context id_field.to_s do
           let(:builder) do
             described_class.new(association, {

@@ -1322,9 +1322,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'raises a Mongoid::Errors::AmbiguousRelationship exception' do
-          expect {
+          expect do
             association.inverses
-          }.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
+          end.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
         end
       end
 
@@ -1474,9 +1474,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'raises a Mongoid::Errors::AmbiguousRelationship exception' do
-          expect {
+          expect do
             association.inverse
-          }.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
+          end.to raise_exception(Mongoid::Errors::AmbiguousRelationship)
         end
       end
 
@@ -1879,7 +1879,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     context 'when a block is passed' do
 
       let(:association) do
-        belonging_class.belongs_to name, options do; end
+        belonging_class.belongs_to(name, options) {}
       end
 
       it 'defines an extension module' do

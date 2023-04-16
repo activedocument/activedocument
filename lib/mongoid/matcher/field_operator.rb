@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mongoid
   module Matcher
 
@@ -6,6 +8,9 @@ module Mongoid
     #
     # @api private
     module FieldOperator
+
+      extend self
+
       MAP = {
         '$all' => All,
         '$bitsAllClear' => BitsAllClear,
@@ -39,7 +44,7 @@ module Mongoid
       #   Raised if the given operator is unknown.
       #
       # @api private
-      module_function def get(op)
+      def get(op)
         MAP.fetch(op)
       rescue KeyError
         raise Errors::InvalidFieldOperator.new(op)
@@ -50,8 +55,8 @@ module Mongoid
       # @todo Refactor this as it is only relevant to $lt, $lte, $gt, $gte.
       #
       # @api private
-      module_function def apply_array_field_operator(exists, value, condition, &block)
-        if Array === value
+      def apply_array_field_operator(exists, value, condition, &block)
+        if value.is_a?(Array)
           value.any?(&block)
         else
           yield value
@@ -63,7 +68,7 @@ module Mongoid
       # @todo Refactor this as it is only relevant to $lt, $lte, $gt, $gte.
       #
       # @api private
-      module_function def apply_comparison_operator(operator, left, right)
+      def apply_comparison_operator(operator, left, right)
         left.send(operator, right)
       rescue ArgumentError, NoMethodError, TypeError
         # We silence bogus comparison attempts, e.g. number to string

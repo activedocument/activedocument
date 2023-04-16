@@ -99,5 +99,5 @@ module Mongoid
   end
 end
 
-::Range.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Range)
-::Range.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Range::ClassMethods)
+Range.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Range)
+Range.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::Range::ClassMethods)

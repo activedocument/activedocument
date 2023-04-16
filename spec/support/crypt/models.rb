@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Crypt
   class Patient
     include Mongoid::Document

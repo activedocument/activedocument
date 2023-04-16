@@ -10,7 +10,7 @@ module Mongoid
     #   Validations.new(person.errors)
     class Validations < MongoidError
       attr_reader :document
-      alias :record :document
+      alias_method :record, :document
 
       def initialize(document)
         @document = document

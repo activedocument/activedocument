@@ -15,19 +15,11 @@ end
 
 describe Mongoid::Clients::Sessions do
   before(:all) do
-    if Gem::Version.new(Mongo::VERSION) < Gem::Version.new('2.6')
-      skip 'Driver does not support transactions'
-    end
-  end
-
-  before(:all) do
-    if Gem::Version.new(Mongo::VERSION) >= Gem::Version.new('2.6')
-      CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
-      CONFIG[:clients][:other][:database] = 'other'
-      Mongoid::Clients.clients.each_value(&:close)
-      Mongoid::Config.send(:clients=, CONFIG[:clients])
-      Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
-    end
+    CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
+    CONFIG[:clients][:other][:database] = 'other'
+    Mongoid::Clients.clients.each_value(&:close)
+    Mongoid::Config.send(:clients=, CONFIG[:clients])
+    Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
   end
 
   after(:all) do
@@ -157,7 +149,7 @@ describe Mongoid::Clients::Sessions do
         context 'when the other class uses the same client' do
           shared_examples 'it uses a single transaction number for all operations on the class' do
             it do
-              expect(Post.with(client: :other) { |klass| klass.count }).to be(1)
+              expect(Post.with(client: :other, &:count)).to be(1)
               expect(insert_events_txn_numbers.size).to eq(3)
               expect(insert_events_txn_numbers.uniq.size).to eq(1)
             end
@@ -361,9 +353,7 @@ describe Mongoid::Clients::Sessions do
   context 'when a transaction is used on a model instance' do
 
     let!(:person) do
-      Person.with(client: :other) do |klass|
-        klass.create!
-      end
+      Person.with(client: :other, &:create!)
     end
 
     context 'when transactions are supported' do

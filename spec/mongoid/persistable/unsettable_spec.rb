@@ -64,7 +64,7 @@ describe Mongoid::Persistable::Unsettable do
       context 'when provided an array of symbols' do
 
         let!(:unset) do
-          person.unset([:title, :age])
+          person.unset(%i[title age])
         end
 
         it_behaves_like 'an unsettable root document'
@@ -138,7 +138,7 @@ describe Mongoid::Persistable::Unsettable do
       context 'when provided an array of symbols' do
 
         let!(:unset) do
-          address.unset([:number, :city])
+          address.unset(%i[number city])
         end
 
         it_behaves_like 'an unsettable embedded document'

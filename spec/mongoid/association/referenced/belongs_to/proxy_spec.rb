@@ -310,15 +310,11 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
           end
 
           let(:other_people_count) do
-            Person.with(collection: 'other-people') do |person_class|
-              person_class.count
-            end
+            Person.with(collection: 'other-people', &:count)
           end
 
           let(:other_posts_count) do
-            Post.with(collection: 'other-posts') do |post_class|
-              post_class.count
-            end
+            Post.with(collection: 'other-posts', &:count)
           end
 
           it 'applies the persistence options when saving the child' do
@@ -395,9 +391,9 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
           end
 
           it 'raises an error' do
-            expect {
+            expect do
               eye.eyeable = face
-            }.to raise_error(Mongoid::Errors::InvalidSetPolymorphicRelation)
+            end.to raise_error(Mongoid::Errors::InvalidSetPolymorphicRelation)
           end
         end
 

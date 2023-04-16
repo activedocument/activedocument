@@ -17,12 +17,12 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-          :autobuild,
-          :as,
-          :cascade_callbacks,
-          :cyclic,
-          :store_as
+        ASSOCIATION_OPTIONS = %i[
+          autobuild
+          as
+          cascade_callbacks
+          cyclic
+          store_as
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -145,11 +145,12 @@ module Mongoid
               rel.relation_class_name.delete_prefix('::') == inverse_class_name
 
           end
+
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
 
-          matches.collect { |m| m.name } unless matches.blank?
+          matches.collect(&:name) unless matches.blank?
         end
       end
     end

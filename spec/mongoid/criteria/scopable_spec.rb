@@ -21,9 +21,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       let(:scoped) do
-        Band.all.tap do |criteria|
-          criteria.apply_default_scope
-        end
+        Band.all.tap(&:apply_default_scope)
       end
 
       it 'merges in the options' do
@@ -50,9 +48,7 @@ describe Mongoid::Criteria::Scopable do
       end
 
       let(:scoped) do
-        Band.all.tap do |criteria|
-          criteria.apply_default_scope
-        end
+        Band.all.tap(&:apply_default_scope)
       end
 
       it 'merges in the options' do
@@ -81,9 +77,7 @@ describe Mongoid::Criteria::Scopable do
       context 'when merging with an empty criteria' do
 
         let(:scoped) do
-          Band.all.tap do |criteria|
-            criteria.apply_default_scope
-          end
+          Band.all.tap(&:apply_default_scope)
         end
 
         it 'merges in the inclusions' do
@@ -100,9 +94,7 @@ describe Mongoid::Criteria::Scopable do
       context 'when merging with a criteria that has inclusions' do
 
         let(:scoped) do
-          Band.includes(:label).tap do |criteria|
-            criteria.apply_default_scope
-          end
+          Band.includes(:label).tap(&:apply_default_scope)
         end
 
         it 'merges in the inclusions' do

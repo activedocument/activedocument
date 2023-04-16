@@ -6,7 +6,7 @@ require_relative './copyable_spec_models'
 
 describe Mongoid::Copyable do
 
-  [:clone, :dup].each do |method|
+  %i[clone dup].each do |method|
 
     describe "##{method}" do
 
@@ -124,8 +124,8 @@ describe Mongoid::Copyable do
           context 'embeds_one' do
 
             it 'clones' do
-              t = StoreAsDupTest1.new(:name => 'hi')
-              t.build_store_as_dup_test2(:name => 'there')
+              t = StoreAsDupTest1.new(name: 'hi')
+              t.build_store_as_dup_test2(name: 'there')
               t.save!
               copy = t.send(method)
               expect(copy.object_id).not_to eq(t.object_id)
@@ -137,7 +137,7 @@ describe Mongoid::Copyable do
 
 
             it 'clones' do
-              t = StoreAsDupTest3.new(:name => 'hi')
+              t = StoreAsDupTest3.new(name: 'hi')
               t.store_as_dup_test4s << StoreAsDupTest4.new
               t.save!
               copy = t.send(method)

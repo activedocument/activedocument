@@ -27,7 +27,8 @@ module Mongoid
         return unless index_specifications
 
         index_specifications.each do |spec|
-          key, options = spec.key, spec.options
+          key = spec.key
+          options = spec.options
           if database = options[:database]
             with(database: database) do |klass|
               klass.collection.indexes(session: _session).create_one(key, options.except(:database))
@@ -71,8 +72,8 @@ module Mongoid
       #
       # @return [ true ] If the operation succeeded.
       def add_indexes
-        if hereditary? && !index_keys.include?(self.discriminator_key.to_sym => 1)
-          index({ self.discriminator_key.to_sym => 1 }, unique: false)
+        if hereditary? && !index_keys.include?(discriminator_key.to_sym => 1)
+          index({ discriminator_key.to_sym => 1 }, unique: false)
         end
         true
       end
@@ -92,9 +93,9 @@ module Mongoid
       # @return [ Hash ] The index options.
       def index(spec, options = nil)
         specification = Specification.new(self, spec, options)
-        unless index_specifications.include?(specification)
-          index_specifications.push(specification)
-        end
+        return if index_specifications.include?(specification)
+
+        index_specifications.push(specification)
       end
 
       # Get an index specification for the provided key.

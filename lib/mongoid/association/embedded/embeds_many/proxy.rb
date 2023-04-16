@@ -37,7 +37,7 @@ module Mongoid
             self
           end
 
-          alias :push :<<
+          alias_method :push, :<<
 
           # Get this association as as its representation in the database.
           #
@@ -84,7 +84,7 @@ module Mongoid
             doc
           end
 
-          alias :new :build
+          alias_method :new, :build
 
           # Clear the association. Will delete the documents from the db
           # if they are already persisted.
@@ -131,7 +131,7 @@ module Mongoid
           def count(*args, &block)
             return _target.count(*args, &block) if args.any? || block
 
-            _target.count { |doc| doc.persisted? }
+            _target.count(&:persisted?)
           end
 
           # Delete the supplied document from the target. This method is proxied
@@ -219,7 +219,7 @@ module Mongoid
           #
           # @return [ true | false ] True is persisted documents exist, false if not.
           def exists?
-            _target.any? { |doc| doc.persisted? }
+            _target.any?(&:persisted?)
           end
 
           # Finds a document in this association through several different
@@ -377,9 +377,7 @@ module Mongoid
           # @param [ Mongoid::Document ] document The document to append to the target.
           def append(document)
             execute_callback :before_add, document
-            unless object_already_related?(document)
-              _target.push(*scope([document]))
-            end
+            _target.push(*scope([document])) unless object_already_related?(document)
             _unscoped.push(document)
             integrate(document)
             update_attributes_hash
@@ -482,9 +480,7 @@ module Mongoid
           #
           # @return [ Array<Mongoid::Document> ] The scoped docs.
           def scope(docs)
-            unless _association.order || _association.klass.default_scoping?
-              return docs
-            end
+            return docs unless _association.order || _association.klass.default_scoping?
 
             crit = _association.klass.order_by(_association.order)
             crit.embedded = true

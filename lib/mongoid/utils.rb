@@ -7,6 +7,8 @@ module Mongoid
   # @api private
   module Utils
 
+    extend self
+
     # This function should be used if you need to measure time.
     # @example Calculate elapsed time.
     #   starting = Utils.monotonic_time
@@ -19,7 +21,7 @@ module Mongoid
     # @return [Float] seconds according to monotonic clock
     #
     # @api private
-    module_function def monotonic_time
+    def monotonic_time
       Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
   end

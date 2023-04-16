@@ -17,9 +17,9 @@ describe Mongoid::Persistable::Destroyable do
 
       it 'raises an error' do
         expect(from_db.readonly?).to be true
-        expect {
+        expect do
           from_db.destroy
-        }.to raise_error(Mongoid::Errors::ReadonlyDocument)
+        end.to raise_error(Mongoid::Errors::ReadonlyDocument)
       end
     end
 
@@ -44,9 +44,9 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       it 'destroys the document from the collection' do
-        expect {
+        expect do
           Person.find(person.id)
-        }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
+        end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
 
       it 'returns true' do
@@ -334,9 +334,9 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       it 'raises an exception' do
-        expect {
+        expect do
           album.destroy!
-        }.to raise_error(Mongoid::Errors::DocumentNotDestroyed)
+        end.to raise_error(Mongoid::Errors::DocumentNotDestroyed)
       end
     end
 
@@ -359,9 +359,9 @@ describe Mongoid::Persistable::Destroyable do
       end
 
       it 'destroys the document from the collection' do
-        expect {
+        expect do
           Person.find(person.id)
-        }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
+        end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
 
       it 'returns true' do

@@ -22,14 +22,14 @@ module Mongoid
     include Enumerable
 
     # @api private
-    alias :_enumerable_find :find
+    alias_method :_enumerable_find, :find
 
     include Contextual
     include Queryable
     include Findable
 
     # @api private
-    alias :_findable_find :find
+    alias_method :_findable_find, :find
 
     include Inspectable
     include Includable
@@ -292,12 +292,9 @@ module Mongoid
       args = args.flatten
       return clone if args.empty?
 
-      if (args & Fields::IDS).empty?
-        args.unshift(:_id)
-      end
-      if klass.hereditary?
-        args.push(klass.discriminator_key.to_sym)
-      end
+      args.unshift(:_id) if (args & Fields::IDS).empty?
+      args.push(klass.discriminator_key.to_sym) if klass.hereditary?
+
       super(*args)
     end
 
@@ -341,7 +338,7 @@ module Mongoid
       super || klass.respond_to?(name) || CHECK.respond_to?(name, include_private)
     end
 
-    alias :to_ary :to_a
+    alias_method :to_ary, :to_a
 
     # Convenience for objects that want to be merged into a criteria.
     #
@@ -374,7 +371,7 @@ module Mongoid
     #
     # @return [ Mongoid::Criteria ] The cloned criteria.
     def type(types)
-      any_in(self.discriminator_key.to_sym => Array(types))
+      any_in(discriminator_key.to_sym => Array(types))
     end
 
     # This is the general entry point for most MongoDB queries. This either
@@ -403,7 +400,7 @@ module Mongoid
       # arguments through this method. This API can be reconsidered in the
       # future.
       if args.length > 1
-        raise ArgumentError, "Criteria#where requires zero or one arguments (given #{args.length})"
+        raise ArgumentError.new("Criteria#where requires zero or one arguments (given #{args.length})")
       end
 
       if args.length == 1
@@ -412,6 +409,7 @@ module Mongoid
           raise Errors::UnsupportedJavascript.new(klass, expression)
         end
       end
+
       super
     end
 
@@ -465,9 +463,9 @@ module Mongoid
     # @raise [ Errors::DocumentNotFound ] If none are found and raising an
     #   error.
     def check_for_missing_documents!(result, ids)
-      if (result.size < ids.size) && Mongoid.raise_not_found_error
-        raise Errors::DocumentNotFound.new(klass, ids, ids - result.map(&:_id))
-      end
+      return unless Mongoid.raise_not_found_error && (result.size < ids.size)
+
+      raise Errors::DocumentNotFound.new(klass, ids, ids - result.map(&:_id))
     end
 
     # Clone or dup the current +Criteria+. This will return a new criteria with
@@ -535,8 +533,8 @@ module Mongoid
     # @return [ true | false ] If type selection should be added.
     def type_selectable?
       klass.hereditary? &&
-        !selector.keys.include?(self.discriminator_key) &&
-        !selector.keys.include?(self.discriminator_key.to_sym)
+        !selector.keys.include?(discriminator_key) &&
+        !selector.keys.include?(discriminator_key.to_sym)
     end
 
     # Get the selector for type selection.

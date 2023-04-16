@@ -228,7 +228,7 @@ module Mongoid
     def first(limit = nil)
       with_default_scope.first(limit)
     end
-    alias :one :first
+    alias_method :one, :first
 
     # Find the last +Document+ given the conditions.
     #

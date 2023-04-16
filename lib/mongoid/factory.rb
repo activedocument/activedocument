@@ -98,9 +98,7 @@ module Mongoid
     #
     # @api private
     def execute_from_db(klass, attributes = nil, criteria = nil, selected_fields = nil, execute_callbacks: true)
-      if criteria
-        selected_fields ||= criteria.options[:fields]
-      end
+      selected_fields ||= criteria.options[:fields] if criteria
       type = (attributes || {})[klass.discriminator_key]
       if type.blank?
         obj = klass.instantiate_document(attributes, selected_fields, execute_callbacks: execute_callbacks)
@@ -109,9 +107,7 @@ module Mongoid
         end
         obj
       else
-        constantized = klass.get_discriminator_mapping(type)
-
-        unless constantized
+        unless (constantized = klass.get_discriminator_mapping(type))
           camelized = type.camelize
 
           # Check if the class exists

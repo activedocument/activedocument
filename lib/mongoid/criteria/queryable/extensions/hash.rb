@@ -160,4 +160,4 @@ module Mongoid
   end
 end
 
-::Hash.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Hash)
+Hash.__send__(:include, Mongoid::Criteria::Queryable::Extensions::Hash)

@@ -18,19 +18,19 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-          :autobuild,
-          :autosave,
-          :counter_cache,
-          :dependent,
-          :foreign_key,
-          :index,
-          :polymorphic,
-          :primary_key,
-          :touch,
-          :optional,
-          :required,
-          :scope
+        ASSOCIATION_OPTIONS = %i[
+          autobuild
+          autosave
+          counter_cache
+          dependent
+          foreign_key
+          index
+          polymorphic
+          primary_key
+          touch
+          optional
+          required
+          scope
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -183,21 +183,22 @@ module Mongoid
         end
 
         def polymorph!
-          if polymorphic?
-            @owner_class.polymorphic = true
-            @owner_class.field(inverse_type, type: String)
-          end
+          return unless polymorphic?
+
+          @owner_class.polymorphic = true
+          @owner_class.field(inverse_type, type: String)
         end
 
         def polymorphic_inverses(other = nil)
-          if other
-            matches = other.relations.values.select do |rel|
-              relation_complements.include?(rel.class) &&
-                rel.as == name &&
-                rel.relation_class_name == inverse_class_name
-            end
-            matches.collect { |m| m.name }
+          return unless other
+
+          matches = other.relations.values.select do |rel|
+            relation_complements.include?(rel.class) &&
+              rel.as == name &&
+              rel.relation_class_name == inverse_class_name
           end
+
+          matches.collect(&:name)
         end
 
         def determine_inverses(other)
@@ -206,11 +207,12 @@ module Mongoid
               rel.relation_class_name == inverse_class_name
 
           end
+
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
 
-          matches.collect { |m| m.name }
+          matches.collect(&:name)
         end
 
         # If set to true, then the associated object will be validated when this object is saved

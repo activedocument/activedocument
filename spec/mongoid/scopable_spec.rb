@@ -86,9 +86,9 @@ describe Mongoid::Scopable do
     context 'when provided a non proc' do
 
       it 'raises an error' do
-        expect {
+        expect do
           Band.default_scope({})
-        }.to raise_error(Mongoid::Errors::InvalidScope)
+        end.to raise_error(Mongoid::Errors::InvalidScope)
       end
     end
 
@@ -533,10 +533,10 @@ describe Mongoid::Scopable do
           end
 
           it 'raises an exception' do
-            expect {
+            expect do
               Band.scope(:active, -> { Band.where(active: true) })
               Band.scope(:active, -> { Band.where(active: true) })
-            }.to raise_error(Mongoid::Errors::ScopeOverwrite)
+            end.to raise_error(Mongoid::Errors::ScopeOverwrite)
           end
         end
 
@@ -822,10 +822,10 @@ describe Mongoid::Scopable do
           end
 
           it 'raises an exception' do
-            expect {
+            expect do
               Band.scope(:active, -> { Band.where(active: true) })
               Band.scope(:active, -> { Band.where(active: true) })
-            }.to raise_error(Mongoid::Errors::ScopeOverwrite)
+            end.to raise_error(Mongoid::Errors::ScopeOverwrite)
           end
         end
 
@@ -850,9 +850,9 @@ describe Mongoid::Scopable do
     context 'when provided a non proc or criteria' do
 
       it 'raises an error' do
-        expect {
+        expect do
           Band.scope(:active, {})
-        }.to raise_error(Mongoid::Errors::InvalidScope)
+        end.to raise_error(Mongoid::Errors::InvalidScope)
       end
     end
 
@@ -862,7 +862,7 @@ describe Mongoid::Scopable do
 
         before do
           Band.scope(:xxx, -> { Band.any_of({ :aaa.gt => 0 }, { :bbb.gt => 0 }) })
-          Band.scope(:yyy, -> { Band.any_of({ :ccc => nil }, { :ccc.gt => 1 }) })
+          Band.scope(:yyy, -> { Band.any_of({ ccc: nil }, { :ccc.gt => 1 }) })
         end
 
         after do

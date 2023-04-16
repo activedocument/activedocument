@@ -28,7 +28,7 @@ describe Mongoid::Extensions::Float do
     end
   end
 
-  [:mongoize, :demongoize].each do |method|
+  %i[mongoize demongoize].each do |method|
 
     describe ".#{method}" do
 

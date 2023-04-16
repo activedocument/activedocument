@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def standard_dependencies
   gem 'rake'
 

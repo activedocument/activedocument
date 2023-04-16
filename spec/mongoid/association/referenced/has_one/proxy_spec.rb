@@ -17,9 +17,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       it 'raises a mixed relation error' do
-        expect {
+        expect do
           game.video = video
-        }.to raise_error(Mongoid::Errors::MixedRelations)
+        end.to raise_error(Mongoid::Errors::MixedRelations)
       end
     end
 
@@ -131,9 +131,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
             end
 
             it 'detaches the previous relation' do
-              expect {
+              expect do
                 game.reload
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Game with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Game with id\(s\)/)
             end
           end
         end
@@ -748,9 +748,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       it 'raises a mixed relation error' do
-        expect {
+        expect do
           game.build_video(title: 'Tron')
-        }.to raise_error(Mongoid::Errors::MixedRelations)
+        end.to raise_error(Mongoid::Errors::MixedRelations)
       end
     end
 
@@ -870,9 +870,9 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       it 'raises a mixed relation error' do
-        expect {
+        expect do
           game.create_video(title: 'Tron')
-        }.to raise_error(Mongoid::Errors::MixedRelations)
+        end.to raise_error(Mongoid::Errors::MixedRelations)
       end
     end
 

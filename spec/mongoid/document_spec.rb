@@ -41,13 +41,13 @@ describe Mongoid::Document do
 
     let(:new_model) do
       new_klass.tap do
-        new_klass.send(:include, ::Mongoid::Document)
+        new_klass.send(:include, Mongoid::Document)
       end
     end
 
     let(:twice_a_new_model) do
       new_klass.tap do
-        2.times { new_klass.send(:include, ::Mongoid::Document) }
+        2.times { new_klass.send(:include, Mongoid::Document) }
       end
     end
 
@@ -296,7 +296,7 @@ describe Mongoid::Document do
 
         before do
           Person.after_initialize do
-            self.game.name = 'Ms. Pacman'
+            game.name = 'Ms. Pacman'
           end
         end
 
@@ -595,9 +595,9 @@ describe Mongoid::Document do
 
       it 'return false' do
         expect(person).to_not be_frozen
-        expect {
+        expect do
           person.title = 'something'
-        }.to_not raise_error
+        end.to_not raise_error
       end
     end
 
@@ -636,9 +636,9 @@ describe Mongoid::Document do
 
         it 'keeps things frozen' do
           person.freeze
-          expect {
+          expect do
             person.title = 'something'
-          }.to raise_error(RuntimeError)
+          end.to raise_error(RuntimeError)
         end
       end
     end
@@ -690,7 +690,7 @@ describe Mongoid::Document do
     end
 
     it 'resets to the global scope' do
-      expect(movie.global_set).to be_a(::Set)
+      expect(movie.global_set).to be_a(Set)
     end
   end
 
@@ -813,9 +813,9 @@ describe Mongoid::Document do
           end
 
           it 'raises an error when inappropriate class is provided' do
-            expect {
+            expect do
               manager.becomes(String)
-            }.to raise_error(ArgumentError, /A class which includes Mongoid::Document is expected/)
+            end.to raise_error(ArgumentError, /A class which includes Mongoid::Document is expected/)
           end
         end
 
@@ -1039,9 +1039,9 @@ describe Mongoid::Document do
         end
 
         it 'raises an error when inappropriate class is provided' do
-          expect {
+          expect do
             person.becomes(String)
-          }.to raise_error(ArgumentError)
+          end.to raise_error(ArgumentError)
         end
       end
 
@@ -1207,10 +1207,10 @@ describe Mongoid::Document do
     describe Marshal, '.dump' do
 
       it 'successfully dumps the document' do
-        expect {
+        expect do
           Marshal.dump(agency)
           Marshal.dump(agent)
-        }.not_to raise_error
+        end.not_to raise_error
       end
     end
 

@@ -8,19 +8,19 @@ module Mongoid
       module Macro
         extend self
 
-        OPTIONS = [
-          :as,
-          :default,
-          :identity,
-          :label,
-          :localize,
-          :fallbacks,
-          :association,
-          :pre_processed,
-          :subtype,
-          :type,
-          :overwrite,
-          :encrypt
+        OPTIONS = %i[
+          as
+          default
+          identity
+          label
+          localize
+          fallbacks
+          association
+          pre_processed
+          subtype
+          type
+          overwrite
+          encrypt
         ].freeze
 
         # Validate the field definition.
@@ -87,13 +87,11 @@ module Mongoid
         #
         # @api private
         def validate_name_uniqueness(klass, name, options)
-          if !options[:overwrite] && klass.fields.keys.include?(name.to_s)
-            if Mongoid.duplicate_fields_exception
-              raise Errors::InvalidField.new(klass, name, name)
-            elsif Mongoid.logger
-              Mongoid.logger.warn("Overwriting existing field #{name} in class #{klass.name}.")
-            end
-          end
+          return unless !options[:overwrite] && klass.fields.keys.include?(name.to_s)
+
+          raise Errors::InvalidField.new(klass, name, name) if Mongoid.duplicate_fields_exception
+
+          Mongoid.logger&.warn("Overwriting existing field #{name} in class #{klass.name}.")
         end
 
         # Validate that the field options are allowed.
@@ -110,7 +108,7 @@ module Mongoid
         # @raise [ Errors::InvalidFieldOption ] If an option is invalid.
         def validate_options(klass, name, options)
           options.each_key do |option|
-            if !OPTIONS.include?(option) && !Fields.options.include?(option)
+            unless OPTIONS.include?(option) || Fields.options.include?(option)
               raise Errors::InvalidFieldOption.new(klass, name, option, OPTIONS)
             end
 

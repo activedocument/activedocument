@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Criteria and default scope' do
@@ -15,7 +17,7 @@ describe 'Criteria and default scope' do
       expect(sort_options).to eq({ 'status' => -1, 'name' => 1 })
 
       # Keys in Ruby are ordered
-      expect(sort_options.keys).to eq(%w(name status))
+      expect(sort_options.keys).to eq(%w[name status])
     end
   end
 

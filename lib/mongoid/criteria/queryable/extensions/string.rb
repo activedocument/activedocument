@@ -108,5 +108,5 @@ module Mongoid
   end
 end
 
-::String.__send__(:include, Mongoid::Criteria::Queryable::Extensions::String)
-::String.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::String::ClassMethods)
+String.__send__(:include, Mongoid::Criteria::Queryable::Extensions::String)
+String.__send__(:extend, Mongoid::Criteria::Queryable::Extensions::String::ClassMethods)

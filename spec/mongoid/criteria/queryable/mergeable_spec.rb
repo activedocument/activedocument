@@ -164,7 +164,7 @@ describe Mongoid::Criteria::Queryable::Mergeable do
 
       context 'string key' do
         let(:condition) do
-          { foo: { '$in' => %w(bar) } }
+          { foo: { '$in' => %w[bar] } }
         end
 
         it_behaves_like 'expands'
@@ -172,7 +172,7 @@ describe Mongoid::Criteria::Queryable::Mergeable do
 
       context 'symbol key' do
         let(:condition) do
-          { foo: { :$in => %w(bar) } }
+          { foo: { :$in => %w[bar] } }
         end
 
         it_behaves_like 'expands'

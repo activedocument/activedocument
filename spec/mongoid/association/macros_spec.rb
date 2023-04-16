@@ -36,9 +36,9 @@ describe Mongoid::Association::Macros do
     end
 
     it 'prohibits the use of :associations as an attribute' do
-      expect {
+      expect do
         model_associations
-      }.to raise_exception(Mongoid::Errors::InvalidField)
+      end.to raise_exception(Mongoid::Errors::InvalidField)
     end
   end
 
@@ -55,9 +55,9 @@ describe Mongoid::Association::Macros do
       end
 
       it 'raises an InvalidRelation exception' do
-        expect {
+        expect do
           relation
-        }.to raise_exception(Mongoid::Errors::InvalidRelation)
+        end.to raise_exception(Mongoid::Errors::InvalidRelation)
       end
     end
 
@@ -92,9 +92,9 @@ describe Mongoid::Association::Macros do
       context 'when an invalid option is provided' do
 
         it 'raises an InvalidRelationOption exception' do
-          expect {
+          expect do
             klass.embedded_in(:person, sandwich: true)
-          }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+          end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
       end
 
@@ -130,9 +130,9 @@ describe Mongoid::Association::Macros do
         end
 
         it 'raises an InvalidRelation exception' do
-          expect {
+          expect do
             relation
-          }.to raise_exception(Mongoid::Errors::InvalidRelation)
+          end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
       end
 
@@ -167,9 +167,9 @@ describe Mongoid::Association::Macros do
       context 'when an invalid option is provided' do
 
         it 'raises an InvalidRelationOption exception' do
-          expect {
+          expect do
             klass.embeds_many(:addresses, sandwich: true)
-          }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+          end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
       end
 
@@ -235,9 +235,9 @@ describe Mongoid::Association::Macros do
         end
 
         it 'raises an InvalidRelation exception' do
-          expect {
+          expect do
             relation
-          }.to raise_exception(Mongoid::Errors::InvalidRelation)
+          end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
       end
 
@@ -280,9 +280,9 @@ describe Mongoid::Association::Macros do
       context 'when an invalid option is provided' do
 
         it 'raises an InvalidRelationOption exception' do
-          expect {
+          expect do
             klass.embeds_one(:name, sandwich: true)
-          }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+          end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
       end
 
@@ -360,9 +360,9 @@ describe Mongoid::Association::Macros do
       context 'when an invalid option is provided' do
 
         it 'raises an InvalidRelationOption exception' do
-          expect {
+          expect do
             klass.belongs_to(:person, sandwich: true)
-          }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+          end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
       end
 
@@ -648,9 +648,9 @@ describe Mongoid::Association::Macros do
         end
 
         it 'raises an InvalidRelation exception' do
-          expect {
+          expect do
             relation
-          }.to raise_exception(Mongoid::Errors::InvalidRelation)
+          end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
       end
 
@@ -720,9 +720,9 @@ describe Mongoid::Association::Macros do
         end
 
         it 'raises an InvalidRelation exception' do
-          expect {
+          expect do
             relation
-          }.to raise_exception(Mongoid::Errors::InvalidRelation)
+          end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
       end
 
@@ -772,9 +772,9 @@ describe Mongoid::Association::Macros do
       context 'when an invalid option is provided' do
 
         it 'raises an InvalidRelationOption exception' do
-          expect {
+          expect do
             klass.has_many(:names, sandwich: true)
-          }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+          end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
       end
     end
@@ -825,18 +825,18 @@ describe Mongoid::Association::Macros do
         end
 
         it 'raises an InvalidRelation exception' do
-          expect {
+          expect do
             relation
-          }.to raise_exception(Mongoid::Errors::InvalidRelation)
+          end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
       end
 
       context 'when an invalid option is provided' do
 
         it 'raises an InvalidRelationOption exception' do
-          expect {
+          expect do
             klass.has_and_belongs_to_many(:fields, sandwich: true)
-          }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+          end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
       end
 
@@ -917,18 +917,18 @@ describe Mongoid::Association::Macros do
         end
 
         it 'raises an InvalidRelation exception' do
-          expect {
+          expect do
             relation
-          }.to raise_exception(Mongoid::Errors::InvalidRelation)
+          end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
       end
 
       context 'when an invalid option is provided' do
 
         it 'raises an InvalidRelationOption exception' do
-          expect {
+          expect do
             klass.has_one(:game, sandwich: true)
-          }.to raise_exception(Mongoid::Errors::InvalidRelationOption)
+          end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
       end
 

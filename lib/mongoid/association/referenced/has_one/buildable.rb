@@ -20,9 +20,7 @@ module Mongoid
           # @return [ Mongoid::Document ] A single document.
           def build(base, object, type = nil, selected_fields = nil)
             if query?(object)
-              unless base.new_record?
-                execute_query(object, base)
-              end
+              execute_query(object, base) unless base.new_record?
             else
               clear_associated(object)
               object
@@ -40,9 +38,10 @@ module Mongoid
                 foreign_key
               )
             end
-            if object && (associated = object.send(inverse))
-              associated.substitute(nil)
-            end
+
+            return unless object && (associated = object.send(inverse))
+
+            associated.substitute(nil)
           end
 
           def query_criteria(object, base)

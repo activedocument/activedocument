@@ -180,7 +180,7 @@ module Mongoid
         # - nil, in which case it is ignored
         #
         # @api private
-        private def _mongoid_add_top_level_operation(operator, criteria)
+        def _mongoid_add_top_level_operation(operator, criteria)
           # Flatten the criteria. The idea is that predicates in MongoDB
           # are always hashes and are never arrays. This method additionally
           # allows Criteria instances as predicates.
@@ -211,7 +211,7 @@ module Mongoid
         # Calling .flatten on an array which includes a Criteria instance
         # evaluates the criteria, which we do not want. Hence this method
         # explicitly only expands Array objects and Array subclasses.
-        private def _mongoid_flatten_arrays(array)
+        def _mongoid_flatten_arrays(array)
           out = []
           pending = array.dup
           until pending.empty?
@@ -254,9 +254,9 @@ module Mongoid
         # @param [ Hash ] expr Criteria including Key instances.
         #
         # @return [ BSON::Document ] The expanded criteria.
-        private def _mongoid_expand_keys(expr)
+        def _mongoid_expand_keys(expr)
           unless expr.is_a?(Hash)
-            raise ArgumentError, 'Argument must be a Hash'
+            raise ArgumentError.new('Argument must be a Hash')
           end
 
           result = BSON::Document.new
@@ -274,7 +274,7 @@ module Mongoid
                     if (v.keys & existing.keys).empty?
                       existing.update(v)
                     else
-                      raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
+                      raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
                       result['$and'] ||= []
                       result['$and'] << { k => v }
                     end
@@ -295,7 +295,7 @@ module Mongoid
                     # expression and add it to the existing hash. Otherwise
                     # add the new condition with $and to the top level.
                     if existing.key?(op)
-                      raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
+                      raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
                       result['$and'] ||= []
                       result['$and'] << { k => v }
                     else
@@ -314,7 +314,7 @@ module Mongoid
                   if v.is_a?(Hash) && !v.key?(op)
                     result[k] = { op => existing }.update(v)
                   else
-                    raise NotImplementedError, 'Ruby does not allow same symbol operator with different values'
+                    raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
                     result['$and'] ||= []
                     result['$and'] << { k => v }
                   end
@@ -339,9 +339,7 @@ module Mongoid
         #
         # @return [ Mergeable ] The new mergeable.
         def __override__(criterion, operator)
-          if criterion.is_a?(Selectable)
-            criterion = criterion.selector
-          end
+          criterion = criterion.selector if criterion.is_a?(Selectable)
           selection(criterion) do |selector, field, value|
             expression = prepare(field, operator, value)
             existing = selector[field]

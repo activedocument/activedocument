@@ -18,21 +18,21 @@ module Mongoid
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = [
-          :after_add,
-          :after_remove,
-          :autosave,
-          :before_add,
-          :before_remove,
-          :counter_cache,
-          :dependent,
-          :foreign_key,
-          :index,
-          :order,
-          :primary_key,
-          :inverse_primary_key,
-          :inverse_foreign_key,
-          :scope
+        ASSOCIATION_OPTIONS = %i[
+          after_add
+          after_remove
+          autosave
+          before_add
+          before_remove
+          counter_cache
+          dependent
+          foreign_key
+          index
+          order
+          primary_key
+          inverse_primary_key
+          inverse_foreign_key
+          scope
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -211,10 +211,10 @@ module Mongoid
         end
 
         def setup_syncing!
-          unless forced_nil_inverse?
-            synced_save
-            synced_destroy
-          end
+          return if forced_nil_inverse?
+
+          synced_save
+          synced_destroy
         end
 
         def synced_destroy
@@ -256,11 +256,12 @@ module Mongoid
               rel.relation_class_name == inverse_class_name
 
           end
+
           if matches.size > 1
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
 
-          matches.collect { |m| m.name } unless matches.blank?
+          matches.collect(&:name) unless matches.blank?
         end
 
         def with_ordering(criteria)
