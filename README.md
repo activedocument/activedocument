@@ -19,9 +19,9 @@ Replace `gem 'mongoid'` in your application's Gemfile with:
 gem 'mongoid-ultra'
 ```
 
-Do **not** install `mongoid` and `mongoid-ultra` at the same time.
+Do **not** install the `mongoid` and `mongoid-ultra` gems at the same time.
 When loading, Mongoid Ultra will raise a `GemConflict` error if
-`mongoid` is present in your bundle.
+`mongoid` gem is present in your bundle.
 
 ## Compatibility
 
