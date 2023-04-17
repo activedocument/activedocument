@@ -149,7 +149,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
   end
 
   describe '#merge!' do
-
+    skip 'TODO'
   end
 
   describe '#touchable?' do
@@ -388,7 +388,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
 
@@ -540,7 +540,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
 
@@ -572,7 +572,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
   end
 
   describe '#inverse_association' do
-
+    skip 'TODO'
   end
 
   describe '#autosave' do
@@ -812,8 +812,9 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
 
     context 'when a block is passed' do
 
+      let(:block) { proc {} }
       let(:association) do
-        embedded_class.embedded_in(name, options) {}
+        embedded_class.embedded_in(name, options) { 1 }
       end
 
       it 'defines an extension module' do

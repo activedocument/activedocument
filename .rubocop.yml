@@ -50,6 +50,10 @@ Layout/LineContinuationLeadingSpace:
   Exclude:
     - 'spec/integration/app_spec.rb'
 
+Lint/EmptyBlock:
+  Exclude:
+    - 'spec/**/*'
+
 Lint/RedundantCopDisableDirective:
   Exclude:
     - 'spec/mongoid/version_spec.rb'

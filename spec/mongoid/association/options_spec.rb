@@ -1130,8 +1130,9 @@ describe Mongoid::Association::Options do
 
           context 'when a block is passed' do
 
+            let(:block) { proc {} }
             let!(:association) do
-              association_class.new(class_left, :name, options) {}
+              association_class.new(class_left, :name, options) { 1 }
             end
 
             after do

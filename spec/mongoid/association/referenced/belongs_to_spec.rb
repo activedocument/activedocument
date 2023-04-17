@@ -994,7 +994,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#merge!' do
-
+    skip 'TODO'
   end
 
   describe '#store_as' do
@@ -1310,7 +1310,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
 
@@ -1462,7 +1462,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
 
@@ -1494,7 +1494,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
   end
 
   describe '#inverse_association' do
-
+    skip 'TODO'
   end
 
   describe '#autosave' do
@@ -1878,8 +1878,9 @@ describe Mongoid::Association::Referenced::BelongsTo do
 
     context 'when a block is passed' do
 
+      let(:block) { proc {} }
       let(:association) do
-        belonging_class.belongs_to(name, options) {}
+        belonging_class.belongs_to(name, options) { 1 }
       end
 
       it 'defines an extension module' do

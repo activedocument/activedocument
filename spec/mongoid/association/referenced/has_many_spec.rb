@@ -455,7 +455,7 @@ describe Mongoid::Association::Referenced::HasMany do
   end
 
   describe '#merge!' do
-
+    skip 'TODO'
   end
 
   describe '#store_as' do
@@ -770,7 +770,7 @@ describe Mongoid::Association::Referenced::HasMany do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
     end
@@ -871,14 +871,14 @@ describe Mongoid::Association::Referenced::HasMany do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-
+          skip 'TODO'
         end
       end
     end
   end
 
   describe '#inverse_association' do
-
+    skip 'TODO'
   end
 
   describe '#autosave' do
@@ -1090,8 +1090,9 @@ describe Mongoid::Association::Referenced::HasMany do
 
     context 'when a block is passed' do
 
+      let(:block) { proc {} }
       let(:association) do
-        has_many_class.embeds_one(name, options) {}
+        has_many_class.embeds_one(name, options) { 1 }
       end
 
       it 'defines an extension module' do

@@ -13,27 +13,6 @@ Lint/DuplicateBranch:
     - 'lib/mongoid/matcher/size.rb'
     - 'lib/mongoid/railtie.rb'
 
-# Offense count: 47
-# Configuration parameters: AllowComments, AllowEmptyLambdas.
-Lint/EmptyBlock:
-  Exclude:
-    - 'spec/mongoid/association/embedded/embedded_in_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_one_spec.rb'
-    - 'spec/mongoid/association/options_spec.rb'
-    - 'spec/mongoid/association/referenced/belongs_to_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many_spec.rb'
-    - 'spec/mongoid/association/referenced/has_one_spec.rb'
-    - 'spec/mongoid/config/environment_spec.rb'
-    - 'spec/mongoid/contextual/mongo_spec.rb'
-    - 'spec/mongoid/criteria_spec.rb'
-    - 'spec/mongoid/fields_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/persistable_spec.rb'
-    - 'spec/mongoid/scopable_spec.rb'
-    - 'spec/mongoid/validatable/presence_spec.rb'
-
 # Offense count: 12
 Lint/IneffectiveAccessModifier:
   Exclude:
