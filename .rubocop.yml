@@ -109,6 +109,12 @@ Style/IfUnlessModifier:
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 
+# False positives
+Lint/HashCompareByIdentity:
+  Exclude:
+    - 'lib/mongoid/persistence_context.rb'
+    - 'lib/mongoid/threaded.rb'
+
 # --------------------------------------------------
 # These cops are intentionally configured due to style preference.
 

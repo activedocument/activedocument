@@ -34,12 +34,6 @@ Lint/EmptyBlock:
     - 'spec/mongoid/scopable_spec.rb'
     - 'spec/mongoid/validatable/presence_spec.rb'
 
-# Offense count: 4
-Lint/HashCompareByIdentity:
-  Exclude:
-    - 'lib/mongoid/persistence_context.rb'
-    - 'lib/mongoid/threaded.rb'
-
 # Offense count: 12
 Lint/IneffectiveAccessModifier:
   Exclude:
