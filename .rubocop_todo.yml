@@ -34,22 +34,6 @@ Lint/EmptyBlock:
     - 'spec/mongoid/scopable_spec.rb'
     - 'spec/mongoid/validatable/presence_spec.rb'
 
-# Offense count: 11
-# Configuration parameters: AllowComments.
-Lint/EmptyClass:
-  Exclude:
-    - 'spec/mongoid/association/embedded/embedded_in_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_one_dnl_models.rb'
-    - 'spec/mongoid/association/embedded/embeds_one_spec.rb'
-    - 'spec/mongoid/association/options_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many_spec.rb'
-    - 'spec/mongoid/association/referenced/has_one_spec.rb'
-    - 'spec/mongoid/extensions/module_spec.rb'
-    - 'spec/support/models/bed.rb'
-    - 'spec/support/models/other_owner_object.rb'
-
 # Offense count: 1
 Lint/FloatComparison:
   Exclude:
