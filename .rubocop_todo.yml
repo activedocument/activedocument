@@ -4,14 +4,6 @@
 # The point is for the user to remove these configuration records
 # one by one as the offenses are removed from the code base.
 
-# Offense count: 8
-# Configuration parameters: AllowedMethods, AllowedPatterns.
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/touchable_spec.rb'
-
 # Offense count: 211
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: enums

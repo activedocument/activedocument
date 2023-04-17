@@ -116,6 +116,12 @@ Layout/FirstArrayElementIndentation:
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
 
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
+    - 'spec/mongoid/interceptable_spec.rb'
+    - 'spec/mongoid/touchable_spec.rb'
+
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 
