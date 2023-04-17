@@ -4,66 +4,6 @@
 # The point is for the user to remove these configuration records
 # one by one as the offenses are removed from the code base.
 
-# Offense count: 211
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: enums
-Lint/ConstantDefinitionInBlock:
-  Exclude:
-    - 'spec/integration/app_spec.rb'
-    - 'spec/integration/callbacks_spec.rb'
-    - 'spec/integration/discriminator_key_spec.rb'
-    - 'spec/integration/dots_and_dollars_spec.rb'
-    - 'spec/mongoid/association/accessors_spec.rb'
-    - 'spec/mongoid/association/auto_save_spec.rb'
-    - 'spec/mongoid/association/depending_spec.rb'
-    - 'spec/mongoid/association/eager_spec.rb'
-    - 'spec/mongoid/association/embedded/cyclic_spec.rb'
-    - 'spec/mongoid/association/embedded/embedded_in_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_one_spec.rb'
-    - 'spec/mongoid/association/macros_spec.rb'
-    - 'spec/mongoid/association/options_spec.rb'
-    - 'spec/mongoid/association/polymorphic_spec.rb'
-    - 'spec/mongoid/association/referenced/belongs_to/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/belongs_to_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many_spec.rb'
-    - 'spec/mongoid/association/referenced/has_one/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_one_spec.rb'
-    - 'spec/mongoid/association/reflections_spec.rb'
-    - 'spec/mongoid/association/syncable_spec.rb'
-    - 'spec/mongoid/attributes/nested_spec.rb'
-    - 'spec/mongoid/clients_spec.rb'
-    - 'spec/mongoid/collection_configurable_spec.rb'
-    - 'spec/mongoid/copyable_spec.rb'
-    - 'spec/mongoid/criteria/includable_spec.rb'
-    - 'spec/mongoid/criteria/queryable/options_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selectable_where_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
-    - 'spec/mongoid/criteria/scopable_spec.rb'
-    - 'spec/mongoid/criteria_spec.rb'
-    - 'spec/mongoid/document_spec.rb'
-    - 'spec/mongoid/errors/invalid_field_spec.rb'
-    - 'spec/mongoid/errors/invalid_relation_spec.rb'
-    - 'spec/mongoid/extensions/module_spec.rb'
-    - 'spec/mongoid/extensions/string_spec.rb'
-    - 'spec/mongoid/factory_spec.rb'
-    - 'spec/mongoid/fields/standard_spec.rb'
-    - 'spec/mongoid/fields_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/persistable_spec.rb'
-    - 'spec/mongoid/scopable_spec.rb'
-    - 'spec/mongoid/stateful_spec.rb'
-    - 'spec/mongoid/tasks/database_spec.rb'
-    - 'spec/mongoid/timestamps/timeless_spec.rb'
-    - 'spec/mongoid/touchable_spec.rb'
-    - 'spec/mongoid/traversable_spec.rb'
-    - 'spec/mongoid/validatable/numericality_spec.rb'
-    - 'spec/mongoid/validatable/uniqueness_spec.rb'
-
 # Offense count: 6
 # Configuration parameters: IgnoreLiteralBranches, IgnoreConstantBranches.
 Lint/DuplicateBranch:

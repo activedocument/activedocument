@@ -58,6 +58,10 @@ Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
     - 'spec/mongoid/equality_spec.rb'
 
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - 'spec/**/*'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'
