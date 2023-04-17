@@ -38,7 +38,8 @@ module Mongoid
 
           int_matches?(value, condition)
         when Float
-          unless (int_cond = condition.to_i).to_f == condition
+          int_cond = condition.to_i
+          unless (condition - int_cond.to_f).abs < Float::EPSILON
             raise Errors::InvalidQuery.new("Invalid type for $#{operator_name} argument: not representable as an integer: #{condition}")
           end
 
