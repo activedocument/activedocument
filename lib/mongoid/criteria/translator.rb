@@ -27,9 +27,7 @@ module Mongoid
       # @return [ Hash | Numeric ] The direction.
       def to_direction(value)
         case value
-        when Hash
-          value
-        when Numeric
+        when Hash, Numeric
           value
         when String
           /desc/i.match?(value) ? -1 : 1

@@ -102,10 +102,8 @@ module Mongoid
         case value
         when Integer
           value >= 1
-        when true
-          true
-        when false
-          false
+        when true, false
+          value
         else
           # The various expressions that are permitted as projection arguments
           # imply an inclusionary projection.

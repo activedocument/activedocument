@@ -58,13 +58,10 @@ module Rails
         if config_file.file?
           begin
             ::Mongoid.load!(config_file)
-          rescue ::Mongoid::Errors::NoClientsConfig => e
-            handle_configuration_error(e)
-          rescue ::Mongoid::Errors::NoDefaultClient => e
-            handle_configuration_error(e)
-          rescue ::Mongoid::Errors::NoClientDatabase => e
-            handle_configuration_error(e)
-          rescue ::Mongoid::Errors::NoClientHosts => e
+          rescue ::Mongoid::Errors::NoClientsConfig,
+                 ::Mongoid::Errors::NoDefaultClient,
+                 ::Mongoid::Errors::NoClientDatabase,
+                 ::Mongoid::Errors::NoClientHosts => e
             handle_configuration_error(e)
           end
         end

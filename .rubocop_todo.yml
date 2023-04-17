@@ -4,15 +4,6 @@
 # The point is for the user to remove these configuration records
 # one by one as the offenses are removed from the code base.
 
-# Offense count: 6
-# Configuration parameters: IgnoreLiteralBranches, IgnoreConstantBranches.
-Lint/DuplicateBranch:
-  Exclude:
-    - 'lib/mongoid/attributes/projector.rb'
-    - 'lib/mongoid/criteria/translator.rb'
-    - 'lib/mongoid/matcher/size.rb'
-    - 'lib/mongoid/railtie.rb'
-
 # Offense count: 12
 Lint/IneffectiveAccessModifier:
   Exclude:
