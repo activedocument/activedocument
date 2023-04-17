@@ -29,7 +29,6 @@ describe Mongoid::Extensions::Regexp do
           expect(value).to eq(/[^abc]/)
         end
 
-
         context 'when the string is empty' do
 
           let(:value) do

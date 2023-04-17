@@ -1178,7 +1178,6 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
     let(:child) { HomChild.new }
     let(:parent) { HomParent.new }
 
-
     context 'when belongs_to_required_by_default is true' do
       config_override :belongs_to_required_by_default, true
 

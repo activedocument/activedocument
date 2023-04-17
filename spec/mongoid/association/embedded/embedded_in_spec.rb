@@ -152,7 +152,6 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
 
   end
 
-
   describe '#touchable?' do
 
     context 'when :touch is in the options' do

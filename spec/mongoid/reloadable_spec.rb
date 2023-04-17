@@ -501,7 +501,6 @@ describe Mongoid::Reloadable do
         end
       end
 
-
       context 'with embedded document' do
         let(:profile_image) do
           Profile.with(client: :other) do |klass|

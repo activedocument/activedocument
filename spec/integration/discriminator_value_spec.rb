@@ -51,7 +51,6 @@ describe '#discriminator_key' do
       Instrument.discriminator_key = nil
     end
 
-
     let(:piano) do
       Piano.new
     end

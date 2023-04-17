@@ -251,8 +251,6 @@ describe Mongoid::Contextual::Mongo do
     end
   end
 
-
-
   %i[delete delete_all].each do |method|
 
     describe "##{method}" do
@@ -2043,7 +2041,6 @@ describe Mongoid::Contextual::Mongo do
           described_class.new(criteria)
         end
 
-
         it 'applies a sort on _id' do
           expect(context.send(method)).to eq(depeche_mode)
         end
@@ -2409,7 +2406,6 @@ describe Mongoid::Contextual::Mongo do
       let(:context) do
         described_class.new(criteria)
       end
-
 
       it 'applies the criteria sort' do
         expect(context.last).to eq(depeche_mode)
@@ -3578,7 +3574,6 @@ describe Mongoid::Contextual::Mongo do
         b.save!
       end
 
-
       let(:criteria) do
         Band.where(name: 'Depeche Mode')
       end
@@ -3749,7 +3744,6 @@ describe Mongoid::Contextual::Mongo do
         b.labels << Label.new(name: 'Cbs')
         b.save!
       end
-
 
       let(:criteria) do
         Band.all

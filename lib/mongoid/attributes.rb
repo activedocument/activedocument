@@ -90,7 +90,6 @@ module Mongoid
     end
     alias_method :[], :read_attribute
 
-
     # Process the raw attribute values just read from the documents attributes.
     #
     # @param [ String ] name The name of the attribute to get.

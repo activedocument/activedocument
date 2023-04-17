@@ -27,7 +27,6 @@ describe Mongoid::StringifiedSymbol do
       end
     end
 
-
     context 'when the object is an integer' do
 
       it 'returns a symbol' do

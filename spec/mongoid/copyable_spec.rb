@@ -135,7 +135,6 @@ describe Mongoid::Copyable do
 
           context 'embeds_many' do
 
-
             it 'clones' do
               t = StoreAsDupTest3.new(name: 'hi')
               t.store_as_dup_test4s << StoreAsDupTest4.new
@@ -1119,7 +1118,6 @@ describe Mongoid::Copyable do
           Object.send(:remove_const, :CloneParent)
           Object.send(:remove_const, :CloneChild)
         end
-
 
         context 'when accessing the parent' do
 

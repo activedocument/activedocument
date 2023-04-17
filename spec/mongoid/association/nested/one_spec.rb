@@ -77,8 +77,6 @@ describe Mongoid::Association::Nested::One do
       end
     end
 
-
-
     context 'when attributes are updatable' do
 
       let(:name) do

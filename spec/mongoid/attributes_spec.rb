@@ -2621,7 +2621,6 @@ describe Mongoid::Attributes do
           expect(doc.attributes['cover']).to eq(attrs.merge('_id' => doc.cover.id))
         end
 
-
         it 'has the same attributes after reloading' do
           expect(doc.attributes).to eq(doc.reload.attributes)
         end

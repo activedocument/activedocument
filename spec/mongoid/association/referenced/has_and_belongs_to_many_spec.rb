@@ -192,7 +192,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
       context 'when index is false' do
 
-
         it 'does not set up an index' do
           expect(has_many_left_class.index_specifications).to eq([])
         end

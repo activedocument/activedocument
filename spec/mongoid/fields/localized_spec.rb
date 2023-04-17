@@ -109,7 +109,6 @@ describe Mongoid::Fields::Localized do
           end
         end
 
-
         context 'passing a bogus value' do
 
           let(:value) do

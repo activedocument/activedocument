@@ -4,7 +4,6 @@ require 'spec_helper'
 
 describe Mongoid::Criteria::Options do
 
-
   context 'when a persistence context with options is set on the class of the criteria' do
 
     let(:context) do

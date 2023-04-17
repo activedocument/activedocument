@@ -58,7 +58,6 @@ module Mongoid
         def_delegators :timeless_table, :[]=, :[]
       end
 
-
       module ClassMethods
 
         # Begin an execution that should skip timestamping.

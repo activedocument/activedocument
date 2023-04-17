@@ -174,7 +174,6 @@ describe Mongoid::Association::Referenced::HasOne do
 
       context 'when the as option is provided' do
 
-
         let(:options) do
           {
             as: :containable

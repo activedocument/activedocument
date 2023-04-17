@@ -915,7 +915,6 @@ describe Mongoid::Traversable do
       end
     end
 
-
     context 'when the discriminator value is set on the child class' do
       before do
         Guitar.discriminator_value = 'some string instrument'

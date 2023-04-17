@@ -4,9 +4,6 @@
 # The point is for the user to remove these configuration records
 # one by one as the offenses are removed from the code base.
 
-Layout/EmptyLines:
-  Enabled: false
-
 # Offense count: 8
 # Configuration parameters: AllowedMethods, AllowedPatterns.
 Lint/AmbiguousBlockAssociation:

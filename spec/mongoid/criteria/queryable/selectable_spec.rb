@@ -155,7 +155,6 @@ describe Mongoid::Criteria::Queryable::Selectable do
         Mongoid::Query.new({}, { 'field' => FieldWithSerializer.new })
       end
 
-
       context 'when the strategy is not set' do
 
         let(:selection) do

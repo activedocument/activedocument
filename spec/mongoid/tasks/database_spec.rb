@@ -52,7 +52,6 @@ describe 'Mongoid::Tasks::Database' do
     Object.send(:remove_const, :DatabaseSpec)
   end
 
-
   let(:logger) do
     double('logger').tap do |log|
       allow(log).to receive(:info)

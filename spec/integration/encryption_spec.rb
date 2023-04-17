@@ -79,5 +79,4 @@ describe 'Encryption' do
     end
   end
 
-
 end

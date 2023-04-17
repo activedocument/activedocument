@@ -432,7 +432,6 @@ describe Mongoid::Association::Options do
 
         context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:after_add) do
 
-
           it 'returns nil' do
             expect(association.get_callbacks(:after_add)).to be_empty
           end
@@ -480,7 +479,6 @@ describe Mongoid::Association::Options do
         end
 
         context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:after_remove) do
-
 
           it 'returns nil' do
             expect(association.get_callbacks(:after_remove)).to be_empty
@@ -530,7 +528,6 @@ describe Mongoid::Association::Options do
 
         context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:before_add) do
 
-
           it 'returns nil' do
             expect(association.get_callbacks(:before_add)).to be_empty
           end
@@ -579,7 +576,6 @@ describe Mongoid::Association::Options do
 
         context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:before_remove) do
 
-
           it 'returns nil' do
             expect(association.get_callbacks(:before_remove)).to be_empty
           end
@@ -600,7 +596,6 @@ describe Mongoid::Association::Options do
           end
         end
       end
-
 
       describe '#indexed?' do
 
@@ -1188,7 +1183,6 @@ describe Mongoid::Association::Options do
             end
           end
 
-
         end
 
         context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:extend) do
@@ -1229,7 +1223,6 @@ describe Mongoid::Association::Options do
           it 'returns nil' do
             expect(association.inverse_of).to be_nil
           end
-
 
           context 'when the option is provided' do
 
@@ -1305,7 +1298,6 @@ describe Mongoid::Association::Options do
           it 'returns false' do
             expect(association.send(:validate?)).to be(false)
           end
-
 
           context 'when the option is provided' do
 
