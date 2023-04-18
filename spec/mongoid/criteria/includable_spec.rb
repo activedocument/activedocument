@@ -1335,14 +1335,14 @@ describe Mongoid::Criteria::Includable do
 
         it 'finds the right document' do
           expect(result).to eq(thread)
-          result.comments.length.times do |i|
-            c1 = result.comments[i]
-            c2 = thread.comments[i]
+          result.comments.length.times do |ci|
+            c1 = result.comments[ci]
+            c2 = thread.comments[ci]
             expect(c1).to eq(c2)
             expect(c1.user).to eq(c2.user)
-            c1.user.posts.length.times do |i|
-              p1 = c1.user.posts[i]
-              p2 = c2.user.posts[i]
+            c1.user.posts.length.times do |pi|
+              p1 = c1.user.posts[pi]
+              p2 = c2.user.posts[pi]
 
               expect(p1).to eq(p2)
               expect(p1.comments).to eq(p2.comments)

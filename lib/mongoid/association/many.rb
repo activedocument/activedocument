@@ -61,8 +61,8 @@ module Mongoid
         else
           doc = build(attributes, type, &block)
 
-          Array(doc).each do |doc|
-            doc.try(:run_pending_callbacks)
+          Array(doc).each do |d|
+            d.try(:run_pending_callbacks)
           end
 
           _base.persisted? ? doc.save! : raise_unsaved(doc)

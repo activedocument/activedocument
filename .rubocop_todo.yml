@@ -6,17 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 11
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'lib/mongoid/association/many.rb'
-    - 'lib/mongoid/attributes/projector.rb'
-    - 'lib/mongoid/config/encryption.rb'
-    - 'lib/mongoid/matcher/type.rb'
-    - 'spec/integration/app_spec.rb'
-    - 'spec/mongoid/clients_spec.rb'
-    - 'spec/mongoid/criteria/includable_spec.rb'
-
 # Offense count: 45
 # Configuration parameters: AllowComments, AllowNil.
 Lint/SuppressedException:

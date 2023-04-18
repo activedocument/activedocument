@@ -32,8 +32,8 @@ module Mongoid
                        raise Errors::InvalidQuery.new("Unknown $type argument: #{condition}")
                      end
 
-        conditions.each do |condition|
-          return true if one_matches?(exists, value, condition)
+        conditions.each do |cond|
+          return true if one_matches?(exists, value, cond)
         end
 
         false

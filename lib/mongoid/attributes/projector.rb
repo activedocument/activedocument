@@ -64,7 +64,7 @@ module Mongoid
         # Find an item which matches or is a parent of the requested name/path.
         # This handles the case when, for example, the projection was
         # {foo: true} and we want to know if foo.bar is allowed.
-        item, value = content_projection.detect do |path, value|
+        item, value = content_projection.detect do |path, _val|
           "#{name}.".start_with?("#{path}.")
         end
 
@@ -75,7 +75,7 @@ module Mongoid
           # This handles the case when, for example, the projection was
           # {"foo.bar" => true} and we want to know if foo is allowed.
           # (It is as a container of bars.)
-          item, value = content_projection.detect do |path, value|
+          item, _value = content_projection.detect do |path, _val|
             "#{path}.".start_with?("#{name}.")
           end
 

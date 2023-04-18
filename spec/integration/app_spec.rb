@@ -216,8 +216,8 @@ describe 'Mongoid application tests' do
               end
 
               it 'creates an index' do
-                index = client['posts'].indexes.detect do |index|
-                  index['key'] == { 'subject' => 1 }
+                index = client['posts'].indexes.detect do |idx|
+                  idx['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be nil
 
@@ -225,8 +225,8 @@ describe 'Mongoid application tests' do
                            cwd: APP_PATH,
                            env: env)
 
-                index = client['posts'].indexes.detect do |index|
-                  index['key'] == { 'subject' => 1 }
+                index = client['posts'].indexes.detect do |idx|
+                  idx['key'] == { 'subject' => 1 }
                 end
                 expect(index).to be_a(Hash)
               end

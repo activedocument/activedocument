@@ -71,7 +71,7 @@ module Mongoid
       #
       # @return [ Hash ] The encryptMetadata object.
       def metadata_for(model)
-        metadata = {}.tap do |metadata|
+        result = {}.tap do |metadata|
           if (key_id = key_id_for(model.encrypt_metadata[:key_id]))
             metadata['keyId'] = key_id
           end
@@ -83,12 +83,12 @@ module Mongoid
                                     end
           end
         end
-        if metadata.empty?
+        if result.empty?
           {}
         else
           {
             'bsonType' => 'object',
-            'encryptMetadata' => metadata
+            'encryptMetadata' => result
           }
         end
       end

@@ -207,7 +207,7 @@ describe Mongoid::Clients do
 
       context 'when nesting #with calls' do
         let(:instance_collection_name) do
-          Band.with(collection: 'ignore') do |klass|
+          Band.with(collection: 'ignore') do |_klass|
             Band.with(collection: 'artists') do |klass|
               klass.new.collection_name
             end
@@ -227,7 +227,7 @@ describe Mongoid::Clients do
         use_spec_mongoid_config
 
         let(:instance_collection_name) do
-          Band.with(collection: 'artists') do |klass|
+          Band.with(collection: 'artists') do |_klass|
             Band.with(client: :reports) do |klass|
               klass.new.collection_name
             end
@@ -248,7 +248,7 @@ describe Mongoid::Clients do
 
         let(:instance_collection_name) do
           Band.with(collection: 'artists') do |klass|
-            Band.with(collection: 'scratch') do |klass|
+            Band.with(collection: 'scratch') do |_klass|
               # nothing
             end
             klass.new.collection_name
@@ -257,7 +257,7 @@ describe Mongoid::Clients do
 
         let(:class_collection_name) do
           Band.with(collection: 'artists') do |klass|
-            Band.with(collection: 'scratch') do |klass|
+            Band.with(collection: 'scratch') do |_klass|
               # nothing
             end
             klass.collection_name
