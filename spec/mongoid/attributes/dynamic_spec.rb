@@ -125,8 +125,8 @@ describe Mongoid::Attributes::Dynamic do
           bar.send("#{attr_name}=", 'new foo bar')
           bar.save!
 
-          _bar = Bar.find(bar.id)
-          expect(_bar.send(attr_name)).to eq('new foo bar')
+          bar_found = Bar.find(bar.id)
+          expect(bar_found.send(attr_name)).to eq('new foo bar')
         end
       end
     end

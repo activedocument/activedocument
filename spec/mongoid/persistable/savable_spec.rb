@@ -296,13 +296,13 @@ describe Mongoid::Persistable::Savable do
           expect(truck.crates[1].toys.size).to eq 0
           expect { truck.save! }.not_to raise_error
 
-          _truck = Truck.find(truck.id)
-          expect(_truck.crates.size).to eq 2
-          expect(_truck.crates[0].volume).to eq 0.4
-          expect(_truck.crates[0].toys.size).to eq 1
-          expect(_truck.crates[0].toys[0].name).to eq 'Teddy bear'
-          expect(_truck.crates[1].volume).to eq 0.8
-          expect(_truck.crates[1].toys.size).to eq 0
+          truck_found = Truck.find(truck.id)
+          expect(truck_found.crates.size).to eq 2
+          expect(truck_found.crates[0].volume).to eq 0.4
+          expect(truck_found.crates[0].toys.size).to eq 1
+          expect(truck_found.crates[0].toys[0].name).to eq 'Teddy bear'
+          expect(truck_found.crates[1].volume).to eq 0.8
+          expect(truck_found.crates[1].toys.size).to eq 0
         end
       end
 
@@ -316,10 +316,10 @@ describe Mongoid::Persistable::Savable do
 
           truck.save!
 
-          _truck = Truck.find(truck.id)
-          expect(_truck.crates.length).to eq(2)
-          expect(_truck.crates.first.volume).to eq(2)
-          expect(_truck.crates.last.volume).to eq(1)
+          truck_found = Truck.find(truck.id)
+          expect(truck_found.crates.length).to eq(2)
+          expect(truck_found.crates.first.volume).to eq(2)
+          expect(truck_found.crates.last.volume).to eq(1)
         end
       end
 
@@ -333,10 +333,10 @@ describe Mongoid::Persistable::Savable do
 
           truck.save!
 
-          _truck = Truck.find(truck.id)
-          expect(_truck.seats.length).to eq(1)
-          expect(_truck.seats.first.armrests.length).to eq(1)
-          expect(_truck.seats.first.armrests.first.side).to eq('left')
+          truck_found = Truck.find(truck.id)
+          expect(truck_found.seats.length).to eq(1)
+          expect(truck_found.seats.first.armrests.length).to eq(1)
+          expect(truck_found.seats.first.armrests.first.side).to eq('left')
         end
       end
 
@@ -350,11 +350,11 @@ describe Mongoid::Persistable::Savable do
 
           truck.save!
 
-          _truck = Truck.find(truck.id)
-          expect(_truck.crates.length).to eq(2)
-          expect(_truck.crates.first.toys.length).to eq(1)
-          expect(_truck.crates.first.toys.first.name).to eq('Bear')
-          expect(_truck.crates.last.toys.length).to eq(0)
+          truck_found = Truck.find(truck.id)
+          expect(truck_found.crates.length).to eq(2)
+          expect(truck_found.crates.first.toys.length).to eq(1)
+          expect(truck_found.crates.first.toys.first.name).to eq('Bear')
+          expect(truck_found.crates.last.toys.length).to eq(0)
         end
 
         context 'when also updating first embedded top level association' do
@@ -365,11 +365,11 @@ describe Mongoid::Persistable::Savable do
 
             truck.save!
 
-            _truck = Truck.find(truck.id)
-            expect(_truck.crates.length).to eq(2)
-            expect(_truck.crates.first.toys.length).to eq(1)
-            expect(_truck.crates.first.toys.first.name).to eq('Bear')
-            expect(_truck.crates.last.toys.length).to eq(0)
+            truck_found = Truck.find(truck.id)
+            expect(truck_found.crates.length).to eq(2)
+            expect(truck_found.crates.first.toys.length).to eq(1)
+            expect(truck_found.crates.first.toys.first.name).to eq('Bear')
+            expect(truck_found.crates.last.toys.length).to eq(0)
           end
         end
       end
@@ -386,10 +386,10 @@ describe Mongoid::Persistable::Savable do
 
           expect { truck.save! }.not_to raise_error
 
-          _truck = Truck.find(truck.id)
-          expect(_truck.seats.size).to eq 2
-          expect(_truck.seats[0].rating).to eq 1
-          expect(_truck.seats[1].rating).to eq 100
+          truck_found = Truck.find(truck.id)
+          expect(truck_found.seats.size).to eq 2
+          expect(truck_found.seats[0].rating).to eq 1
+          expect(truck_found.seats[1].rating).to eq 100
         end
 
         context 'when embedded association embeds another association' do
@@ -402,11 +402,11 @@ describe Mongoid::Persistable::Savable do
 
             expect { truck.save! }.not_to raise_error
 
-            _truck = Truck.find(truck.id)
-            expect(_truck.seats.size).to eq 2
-            expect(_truck.seats[0].rating).to eq 2
-            expect(_truck.seats[0].armrests.length).to eq 1
-            expect(_truck.seats[1].rating).to eq 100
+            truck_found = Truck.find(truck.id)
+            expect(truck_found.seats.size).to eq 2
+            expect(truck_found.seats[0].rating).to eq 2
+            expect(truck_found.seats[0].armrests.length).to eq 1
+            expect(truck_found.seats[1].rating).to eq 100
           end
         end
       end

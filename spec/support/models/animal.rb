@@ -23,7 +23,7 @@ class Animal
     tags.join(', ')
   end
 
-  def tag_list=(_tag_list)
-    self.tags = _tag_list.split(',').map(&:strip)
+  def tag_list=(tg_list)
+    self.tags = tg_list.split(',').map(&:strip)
   end
 end

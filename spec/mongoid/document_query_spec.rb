@@ -31,8 +31,8 @@ describe Mongoid::Document do
       person.age = 42
       expect(person.age).to be 42
       person.save!
-      _person = Person.find(person.id)
-      expect(_person.age).to be 42
+      person_found = Person.find(person.id)
+      expect(person_found.age).to be 42
     end
   end
 

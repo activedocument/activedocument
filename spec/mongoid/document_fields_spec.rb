@@ -23,8 +23,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.data).to eq(data)
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.data).to eq(data)
       end
     end
 
@@ -46,8 +46,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.data).to eq(BSON::Binary.new(data))
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.data).to eq(BSON::Binary.new(data))
       end
     end
 
@@ -67,8 +67,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.data).to be nil
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.data).to be nil
       end
     end
 
@@ -88,8 +88,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.data).to be nil
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.data).to be nil
       end
     end
   end
@@ -113,8 +113,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq(obj_id)
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to eq(obj_id)
       end
     end
 
@@ -134,8 +134,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq(BSON::ObjectId.from_string(obj_id))
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to eq(BSON::ObjectId.from_string(obj_id))
       end
     end
 
@@ -155,8 +155,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to be nil
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to be nil
       end
     end
 
@@ -176,8 +176,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq('hello')
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to eq('hello')
       end
     end
 
@@ -197,8 +197,8 @@ describe Mongoid::Document do
       it 'persists' do
         registry.save!
 
-        _registry = Registry.find(registry.id)
-        expect(_registry.obj_id).to eq(:sym)
+        registry_found = Registry.find(registry.id)
+        expect(registry_found.obj_id).to eq(:sym)
       end
     end
   end

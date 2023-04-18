@@ -744,8 +744,8 @@ module Mongoid
         generated_methods.module_eval do
           re_define_method("#{meth}_translations=") do |value|
             attribute_will_change!(name)
-            value&.transform_values! do |_value|
-              field.type.mongoize(_value)
+            value&.transform_values! do |val|
+              field.type.mongoize(val)
             end
             attributes[name] = value
           end

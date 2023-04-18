@@ -268,8 +268,8 @@ module Mongoid
               @_unloaded = target
             else
               @executed = true
-              @_loaded = target.each_with_object({}) do |doc, _target|
-                _target[doc._id] = doc if doc
+              @_loaded = target.each_with_object({}) do |doc, t|
+                t[doc._id] = doc if doc
               end
             end
           end

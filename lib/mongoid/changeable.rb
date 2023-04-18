@@ -52,12 +52,12 @@ module Mongoid
     #
     # @return [ Hash<String, Array<Object, Object> ] The changes.
     def changes
-      _changes = {}
+      changes = {}
       changed.each do |attr|
         change = attribute_change(attr)
-        _changes[attr] = change if change
+        changes[attr] = change if change
       end
-      _changes.with_indifferent_access
+      changes.with_indifferent_access
     end
 
     # Call this method after save, so the changes can be properly switched.

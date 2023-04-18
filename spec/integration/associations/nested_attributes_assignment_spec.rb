@@ -25,12 +25,12 @@ describe 'nested attributes assignment' do
 
           truck.save!
 
-          _truck = Truck.find(truck.id)
-          expect(_truck.capacity).to eq(1)
-          expect(_truck.crates.length).to eq(1)
-          expect(_truck.crates.first.volume).to eq(2)
-          expect(_truck.crates.first.toys.length).to eq(1)
-          expect(_truck.crates.first.toys.first.name).to eq('Bear')
+          truck_found = Truck.find(truck.id)
+          expect(truck_found.capacity).to eq(1)
+          expect(truck_found.crates.length).to eq(1)
+          expect(truck_found.crates.first.volume).to eq(2)
+          expect(truck_found.crates.first.toys.length).to eq(1)
+          expect(truck_found.crates.first.toys.first.name).to eq('Bear')
         end
       end
     end
@@ -70,12 +70,12 @@ describe 'nested attributes assignment' do
 
             truck.save!
 
-            _truck = Truck.find(truck.id)
-            expect(_truck.capacity).to eq(2)
-            expect(_truck.crates.length).to eq(1)
-            expect(_truck.crates.first.volume).to eq(3)
-            expect(_truck.crates.first.toys.length).to eq(1)
-            expect(_truck.crates.first.toys.first.name).to eq('Rhino')
+            truck_found = Truck.find(truck.id)
+            expect(truck_found.capacity).to eq(2)
+            expect(truck_found.crates.length).to eq(1)
+            expect(truck_found.crates.first.volume).to eq(3)
+            expect(truck_found.crates.first.toys.length).to eq(1)
+            expect(truck_found.crates.first.toys.first.name).to eq('Rhino')
           end
         end
 
@@ -98,15 +98,15 @@ describe 'nested attributes assignment' do
 
             truck.save!
 
-            _truck = Truck.find(truck.id)
-            expect(_truck.capacity).to eq(2)
-            expect(_truck.crates.length).to eq(2)
-            expect(_truck.crates.first.volume).to eq(2)
-            expect(_truck.crates.first.toys.length).to eq(1)
-            expect(_truck.crates.first.toys.first.name).to eq('Bear')
-            expect(_truck.crates.last.volume).to eq(3)
-            expect(_truck.crates.last.toys.length).to eq(1)
-            expect(_truck.crates.last.toys.last.name).to eq('Rhino')
+            truck_found = Truck.find(truck.id)
+            expect(truck_found.capacity).to eq(2)
+            expect(truck_found.crates.length).to eq(2)
+            expect(truck_found.crates.first.volume).to eq(2)
+            expect(truck_found.crates.first.toys.length).to eq(1)
+            expect(truck_found.crates.first.toys.first.name).to eq('Bear')
+            expect(truck_found.crates.last.volume).to eq(3)
+            expect(truck_found.crates.last.toys.length).to eq(1)
+            expect(truck_found.crates.last.toys.last.name).to eq('Rhino')
           end
         end
       end

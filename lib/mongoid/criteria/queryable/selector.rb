@@ -19,8 +19,8 @@ module Mongoid
         def merge!(other)
           other.each_pair do |key, value|
             if value.is_a?(Hash) && self[key.to_s].is_a?(Hash)
-              value = self[key.to_s].merge(value) do |_key, old_val, new_val|
-                case _key
+              value = self[key.to_s].merge(value) do |k, old_val, new_val|
+                case k
                 when '$in'
                   new_val & old_val
                 when '$nin'
@@ -173,8 +173,8 @@ module Mongoid
         #
         # @return [ Object ] The serialized array.
         def evolve_array(serializer, value)
-          value.map do |_value|
-            evolve(serializer, _value)
+          value.map do |val|
+            evolve(serializer, val)
           end
         end
 
@@ -190,11 +190,11 @@ module Mongoid
         #
         # @return [ Object ] The serialized hash.
         def evolve_hash(serializer, value)
-          value.each_pair do |operator, _value|
+          value.each_pair do |operator, val|
             value[operator] = if /exists|type|size/.match?(operator)
-                                _value
+                                val
                               else
-                                evolve(serializer, _value)
+                                evolve(serializer, val)
                               end
           end
         end

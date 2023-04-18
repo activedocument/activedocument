@@ -123,10 +123,10 @@ module Mongoid
         #
         # @return [ Object ] The serialized hash.
         def evolve_hash(value, localize = true)
-          value.each_with_object({}) do |(field, _value), hash|
+          value.each_with_object({}) do |(field, val), hash|
             name, serializer = storage_pair(field)
             name = localized_key(name, serializer) if localize
-            hash[name] = _value
+            hash[name] = val
           end
         end
       end

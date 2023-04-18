@@ -45,10 +45,10 @@ module Mongoid
             if strategy
               send(strategy, condition, '$all')
             else
-              condition.inject(query) do |_query, (field, value)|
+              condition.inject(query) do |q, (field, value)|
                 v = { '$all' => value }
                 v = { '$not' => v } if negating?
-                _query.add_field_expression(field.to_s, v)
+                q.add_field_expression(field.to_s, v)
               end
             end
           end.reset_strategies!

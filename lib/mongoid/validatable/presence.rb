@@ -27,13 +27,13 @@ module Mongoid
       def validate_each(document, attribute, value)
         field = document.fields[document.database_field_name(attribute)]
         if field.try(:localized?) && !value.blank?
-          value.each_pair do |_locale, _value|
-            next unless not_present?(_value)
+          value.each_pair do |loc, val|
+            next unless not_present?(val)
 
             document.errors.add(
               attribute,
               :blank_in_locale,
-              **options.merge(location: _locale)
+              **options.merge(location: loc)
             )
           end
         elsif document.relations.key?(attribute.to_s)

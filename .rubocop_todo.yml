@@ -6,37 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 54
-# Configuration parameters: AllowKeywordBlockArguments.
-Lint/UnderscorePrefixedVariableName:
-  Exclude:
-    - 'lib/mongoid/association/bindable.rb'
-    - 'lib/mongoid/association/referenced/counter_cache.rb'
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
-    - 'lib/mongoid/association/relatable.rb'
-    - 'lib/mongoid/changeable.rb'
-    - 'lib/mongoid/contextual/none.rb'
-    - 'lib/mongoid/copyable.rb'
-    - 'lib/mongoid/criteria/includable.rb'
-    - 'lib/mongoid/criteria/queryable/extensions/string.rb'
-    - 'lib/mongoid/criteria/queryable/options.rb'
-    - 'lib/mongoid/criteria/queryable/selectable.rb'
-    - 'lib/mongoid/criteria/queryable/selector.rb'
-    - 'lib/mongoid/extensions/hash.rb'
-    - 'lib/mongoid/fields.rb'
-    - 'lib/mongoid/persistence_context.rb'
-    - 'lib/mongoid/validatable/localizable.rb'
-    - 'lib/mongoid/validatable/presence.rb'
-    - 'spec/integration/associations/embeds_many_spec.rb'
-    - 'spec/integration/associations/nested_attributes_assignment_spec.rb'
-    - 'spec/integration/matcher_examples_spec.rb'
-    - 'spec/mongoid/attributes/dynamic_spec.rb'
-    - 'spec/mongoid/document_fields_spec.rb'
-    - 'spec/mongoid/document_query_spec.rb'
-    - 'spec/mongoid/persistable/savable_spec.rb'
-    - 'spec/mongoid/persistable/updatable_spec.rb'
-    - 'spec/support/models/animal.rb'
-
 # Offense count: 1
 Lint/UnmodifiedReduceAccumulator:
   Exclude:

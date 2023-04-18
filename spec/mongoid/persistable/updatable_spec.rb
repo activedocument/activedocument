@@ -351,8 +351,8 @@ describe Mongoid::Persistable::Updatable do
       context 'when the loaded attribute is updated' do
 
         let(:person) do
-          Person.only(:title).first.tap do |_person|
-            _person.update_attribute(:title, 'Esteemed')
+          Person.only(:title).first.tap do |pn|
+            pn.update_attribute(:title, 'Esteemed')
           end
         end
 
@@ -405,8 +405,8 @@ describe Mongoid::Persistable::Updatable do
       context 'when the loaded attribute is updated' do
 
         let(:person) do
-          Person.without(:age).first.tap do |_person|
-            _person.update_attribute(:title, 'Esteemed')
+          Person.without(:age).first.tap do |pn|
+            pn.update_attribute(:title, 'Esteemed')
           end
         end
 

@@ -146,12 +146,12 @@ module Mongoid
     private
 
     def set_options!(opts)
-      @options ||= opts.each.reduce({}) do |_options, (key, value)|
+      @options ||= opts.each.reduce({}) do |options, (key, value)|
         unless VALID_OPTIONS.include?(key.to_sym)
           raise Errors::InvalidPersistenceOption.new(key.to_sym, VALID_OPTIONS)
         end
 
-        value ? _options.merge!(key => value) : _options
+        value ? options.merge!(key => value) : options
       end
     end
 

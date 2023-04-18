@@ -115,7 +115,7 @@ describe 'Matcher' do
       end
     end
 
-    shared_examples_for 'a field operator' do |_operator|
+    shared_examples_for 'a field operator' do |optr|
       shared_examples_for 'behaves as expected' do
         context 'matching condition' do
           it 'finds' do
@@ -131,13 +131,13 @@ describe 'Matcher' do
       end
 
       context 'as string' do
-        let(:operator) { _operator.to_s }
+        let(:operator) { optr.to_s }
 
         it_behaves_like 'behaves as expected'
       end
 
       context 'as symbol' do
-        let(:operator) { _operator.to_sym }
+        let(:operator) { optr.to_sym }
 
         it_behaves_like 'behaves as expected'
       end

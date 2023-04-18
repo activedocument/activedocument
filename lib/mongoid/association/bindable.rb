@@ -188,8 +188,8 @@ module Mongoid
         bind_inverse(doc, _base)
       end
 
-      def record_id(_base)
-        _base.__send__(_association.primary_key)
+      def record_id(base)
+        base.__send__(_association.primary_key)
       end
 
       # Ensure that the association on the base is correct, for the cases

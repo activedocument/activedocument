@@ -74,8 +74,8 @@ describe 'embeds_many associations' do
       shared_examples 'persists correctly' do
         it 'persists correctly' do
           expect(canvas.shapes).to be_empty
-          _canvas = Canvas.find(canvas.id)
-          expect(_canvas.shapes).to be_empty
+          canvas_found = Canvas.find(canvas.id)
+          expect(canvas_found.shapes).to be_empty
         end
       end
 
@@ -118,8 +118,8 @@ describe 'embeds_many associations' do
       shared_examples 'persists correctly' do
         it 'persists correctly' do
           expect(canvas.shapes.length).to eq 2
-          _canvas = Canvas.find(canvas.id)
-          expect(_canvas.shapes.length).to eq 2
+          canvas_found = Canvas.find(canvas.id)
+          expect(canvas_found.shapes.length).to eq 2
         end
       end
 
@@ -162,8 +162,8 @@ describe 'embeds_many associations' do
       shared_examples 'persists correctly' do
         it 'persists correctly' do
           expect(canvas.shapes).to be_empty
-          _canvas = Canvas.find(canvas.id)
-          expect(_canvas.shapes).to be_empty
+          canvas_found = Canvas.find(canvas.id)
+          expect(canvas_found.shapes).to be_empty
         end
       end
 

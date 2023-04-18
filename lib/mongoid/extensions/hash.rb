@@ -40,8 +40,8 @@ module Mongoid
         consolidated = {}
         each_pair do |key, value|
           if /\$/.match?(key)
-            value.each_pair do |_key, _value|
-              value[_key] = key == '$rename' ? _value.to_s : mongoize_for(key, klass, _key, _value)
+            value.each_pair do |k, v|
+              value[k] = key == '$rename' ? v.to_s : mongoize_for(key, klass, k, v)
             end
             consolidated[key] ||= {}
             consolidated[key].update(value)

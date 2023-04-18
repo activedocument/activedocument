@@ -66,25 +66,25 @@ module Mongoid
 
       # Iterate through the list of relations and create the inclusions list.
       #
-      # @param [ Class | String | Symbol ] _parent_class The class from which the
+      # @param [ Class | String | Symbol ] parent_class The class from which the
       #   association originates.
       # @param [ String ] parent The name of the association above this one in
       #   the inclusion tree, if it is a nested inclusion.
       # @param [ [ Symbol | Hash | Array<Symbol | Hash> ]... ] *relations_list
       #   The names of the association(s) to eager load.
-      def extract_includes_list(_parent_class, parent, *relations_list)
+      def extract_includes_list(parent_class, parent, *relations_list)
         relations_list.flatten.each do |relation_object|
           if relation_object.is_a?(Hash)
-            relation_object.each do |relation, _includes|
-              association = _parent_class.reflect_on_association(relation)
-              raise Errors::InvalidIncludes.new(_klass, [relation]) unless association
+            relation_object.each do |relation, includes|
+              association = parent_class.reflect_on_association(relation)
+              raise Errors::InvalidIncludes.new(klass, [relation]) unless association
 
               add_inclusion(association, parent)
-              extract_includes_list(association.klass, association.name, _includes)
+              extract_includes_list(association.klass, association.name, includes)
             end
           else
-            association = _parent_class.reflect_on_association(relation_object)
-            raise Errors::InvalidIncludes.new(_parent_class, [relation_object]) unless association
+            association = parent_class.reflect_on_association(relation_object)
+            raise Errors::InvalidIncludes.new(parent_class, [relation_object]) unless association
 
             add_inclusion(association, parent)
           end
