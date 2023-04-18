@@ -30,8 +30,6 @@ module Mongoid
     end
     alias_method :dup, :clone
 
-    private
-
     # Create clone of a document of the given klass with the given attributes
     # hash. This is used recursively so that embedded associations are cloned
     # safely.
@@ -66,6 +64,8 @@ module Mongoid
         end
       end
     end
+
+    private
 
     # Clone the document attributes
     #

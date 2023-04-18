@@ -86,173 +86,6 @@ module Mongoid
         instance_variable_set("@_#{name}", relation)
       end
 
-      private
-
-      # Get the association. Extracted out from the getter method to avoid
-      # infinite recursion when overriding the getter.
-      #
-      # @api private
-      #
-      # @example Get the association.
-      #   document.get_relation(:name, association)
-      #
-      # @param [ Symbol ] name The name of the association.
-      # @param [ Mongoid::Association::Relatable ] association The association metadata.
-      # @param [ Object ] object The object used to build the association.
-      # @param [ true | false ] reload If the association is to be reloaded.
-      #
-      # @return [ Mongoid::Association::Proxy ] The association.
-      def get_relation(name, association, object, reload = false) # rubocop:disable Style/OptionalBooleanParameter
-        field_name = database_field_name(name)
-
-        # As per the comments under MONGOID-5034, I've decided to only raise on
-        # embedded associations for a missing attribute. Rails does not raise
-        # for a missing attribute on referenced associations.
-        # We also don't want to raise if we're retrieving an association within
-        # the codebase. This is often done when retrieving the inverse association
-        # during binding or when cascading callbacks. Whenever we retrieve
-        # associations within the codebase, we use without_autobuild.
-        if !without_autobuild? && association.embedded? && attribute_missing?(field_name)
-          raise Mongoid::Errors::AttributeNotLoaded.new(self.class, field_name)
-        end
-
-        if !reload && (value = ivar(name)) != false
-          value
-        else
-          _building do
-            _loading do
-              if object && needs_no_database_query?(object, association)
-                __build__(name, object, association)
-              else
-                selected_fields = _mongoid_filter_selected_fields(association.key)
-                __build__(name, attributes[association.key], association, selected_fields)
-              end
-            end
-          end
-        end
-      end
-
-      # Returns a subset of __selected_fields attribute applicable to the
-      # (embedded) association with the given key, or nil if no projection
-      # is to be performed.
-      #
-      # Also returns nil if exclusionary projection was requested but it does
-      # not exclude the field of the association.
-      #
-      # For example, if __selected_fields is {'a' => 1, 'b.c' => 2, 'b.c.f' => 3},
-      # and assoc_key is 'b', return value would be {'c' => 2, 'c.f' => 3}.
-      #
-      # @param [ String ] assoc_key
-      #
-      # @return [ Hash | nil ]
-      #
-      # @api private
-      def _mongoid_filter_selected_fields(assoc_key)
-        return nil unless __selected_fields
-
-        # If the list of fields was specified using #without instead of #only
-        # and the provided list does not include the association, any of its
-        # fields should be allowed.
-        if __selected_fields.values.all?(0) &&
-           __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
-          return nil
-        end
-
-        projecting_assoc = false
-
-        filtered = {}
-        __selected_fields.each do |k, v|
-          bits = k.split('.')
-
-          # If we are asked to project an association, we need all of that
-          # association's fields. However, we may be asked to project
-          # an association *and* its fields in the same query. In this case
-          # behavior differs according to server version:
-          #
-          # 4.2 and lower take the most recent projection specification, meaning
-          # projecting foo followed by foo.bar effectively projects foo.bar and
-          # projecting foo.bar followed by foo effectively projects foo.
-          # To match this behavior we need to track when we are being asked
-          # to project the association and when we are asked to project a field,
-          # and if we are asked to project the association last we need to
-          # remove any field projections.
-          #
-          # 4.4 (and presumably higher) do not allow projection to be on an
-          # association and its field, so it doesn't matter what we do. Hence
-          # we just need to handle the 4.2 and lower case correctly.
-          if bits.first == assoc_key
-            # Projecting the entire association OR some of its fields
-            if bits.length > 1
-              # Projecting a field
-              bits.shift
-              filtered[bits.join('.')] = v
-              projecting_assoc = false
-            else
-              # Projecting the entire association
-              projecting_assoc = true
-            end
-          end
-        end
-
-        if projecting_assoc
-          # The last projection was of the entire association; we may have
-          # also been projecting fields, but discard the field projections
-          # and return nil indicating we want the entire association.
-          return nil
-        end
-
-        # Positional projection is specified as "foo.$". In this case the
-        # document that the $ is referring to should be retrieved with all
-        # fields. See https://www.mongodb.com/docs/manual/reference/operator/projection/positional/
-        # and https://jira.mongodb.org/browse/MONGOID-4769.
-        return nil if filtered.keys == %w[$]
-
-        filtered
-      end
-
-      def needs_no_database_query?(object, association)
-        object.is_a?(Document) && !object.embedded? &&
-          object._id == attributes[association.key]
-      end
-
-      # Is the current code executing without autobuild functionality?
-      #
-      # @example Is autobuild disabled?
-      #   document.without_autobuild?
-      #
-      # @return [ true | false ] If autobuild is disabled.
-      def without_autobuild?
-        Threaded.executing?(:without_autobuild)
-      end
-
-      # Yield to the block with autobuild functionality turned off.
-      #
-      # @example Execute without autobuild.
-      #   document.without_autobuild do
-      #     document.name
-      #   end
-      #
-      # @return [ Object ] The result of the yield.
-      def without_autobuild
-        Threaded.begin_execution('without_autobuild')
-        yield
-      ensure
-        Threaded.exit_execution('without_autobuild')
-      end
-
-      # Parse out the attributes and the options from the args passed to a
-      # build_ or create_ methods.
-      #
-      # @example Parse the args.
-      #   doc.parse_args(:name => "Joe")
-      #
-      # @param [ Hash... ] *args The arguments.
-      #
-      # @return [ Array<Hash> ] The attributes and options.
-      def parse_args(*args)
-        [args.first || {}, args.size > 1 ? args[1] : {}]
-      end
-
       # Adds the existence check for associations.
       #
       # @example Add the existence check.
@@ -421,6 +254,173 @@ module Mongoid
             doc
           end
         end
+      end
+
+      private
+
+      # Get the association. Extracted out from the getter method to avoid
+      # infinite recursion when overriding the getter.
+      #
+      # @api private
+      #
+      # @example Get the association.
+      #   document.get_relation(:name, association)
+      #
+      # @param [ Symbol ] name The name of the association.
+      # @param [ Mongoid::Association::Relatable ] association The association metadata.
+      # @param [ Object ] object The object used to build the association.
+      # @param [ true | false ] reload If the association is to be reloaded.
+      #
+      # @return [ Mongoid::Association::Proxy ] The association.
+      def get_relation(name, association, object, reload = false) # rubocop:disable Style/OptionalBooleanParameter
+        field_name = database_field_name(name)
+
+        # As per the comments under MONGOID-5034, I've decided to only raise on
+        # embedded associations for a missing attribute. Rails does not raise
+        # for a missing attribute on referenced associations.
+        # We also don't want to raise if we're retrieving an association within
+        # the codebase. This is often done when retrieving the inverse association
+        # during binding or when cascading callbacks. Whenever we retrieve
+        # associations within the codebase, we use without_autobuild.
+        if !without_autobuild? && association.embedded? && attribute_missing?(field_name)
+          raise Mongoid::Errors::AttributeNotLoaded.new(self.class, field_name)
+        end
+
+        if !reload && (value = ivar(name)) != false
+          value
+        else
+          _building do
+            _loading do
+              if object && needs_no_database_query?(object, association)
+                __build__(name, object, association)
+              else
+                selected_fields = _mongoid_filter_selected_fields(association.key)
+                __build__(name, attributes[association.key], association, selected_fields)
+              end
+            end
+          end
+        end
+      end
+
+      # Returns a subset of __selected_fields attribute applicable to the
+      # (embedded) association with the given key, or nil if no projection
+      # is to be performed.
+      #
+      # Also returns nil if exclusionary projection was requested but it does
+      # not exclude the field of the association.
+      #
+      # For example, if __selected_fields is {'a' => 1, 'b.c' => 2, 'b.c.f' => 3},
+      # and assoc_key is 'b', return value would be {'c' => 2, 'c.f' => 3}.
+      #
+      # @param [ String ] assoc_key
+      #
+      # @return [ Hash | nil ]
+      #
+      # @api private
+      def _mongoid_filter_selected_fields(assoc_key)
+        return nil unless __selected_fields
+
+        # If the list of fields was specified using #without instead of #only
+        # and the provided list does not include the association, any of its
+        # fields should be allowed.
+        if __selected_fields.values.all?(0) &&
+           __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
+          return nil
+        end
+
+        projecting_assoc = false
+
+        filtered = {}
+        __selected_fields.each do |k, v|
+          bits = k.split('.')
+
+          # If we are asked to project an association, we need all of that
+          # association's fields. However, we may be asked to project
+          # an association *and* its fields in the same query. In this case
+          # behavior differs according to server version:
+          #
+          # 4.2 and lower take the most recent projection specification, meaning
+          # projecting foo followed by foo.bar effectively projects foo.bar and
+          # projecting foo.bar followed by foo effectively projects foo.
+          # To match this behavior we need to track when we are being asked
+          # to project the association and when we are asked to project a field,
+          # and if we are asked to project the association last we need to
+          # remove any field projections.
+          #
+          # 4.4 (and presumably higher) do not allow projection to be on an
+          # association and its field, so it doesn't matter what we do. Hence
+          # we just need to handle the 4.2 and lower case correctly.
+          if bits.first == assoc_key
+            # Projecting the entire association OR some of its fields
+            if bits.length > 1
+              # Projecting a field
+              bits.shift
+              filtered[bits.join('.')] = v
+              projecting_assoc = false
+            else
+              # Projecting the entire association
+              projecting_assoc = true
+            end
+          end
+        end
+
+        if projecting_assoc
+          # The last projection was of the entire association; we may have
+          # also been projecting fields, but discard the field projections
+          # and return nil indicating we want the entire association.
+          return nil
+        end
+
+        # Positional projection is specified as "foo.$". In this case the
+        # document that the $ is referring to should be retrieved with all
+        # fields. See https://www.mongodb.com/docs/manual/reference/operator/projection/positional/
+        # and https://jira.mongodb.org/browse/MONGOID-4769.
+        return nil if filtered.keys == %w[$]
+
+        filtered
+      end
+
+      def needs_no_database_query?(object, association)
+        object.is_a?(Document) && !object.embedded? &&
+          object._id == attributes[association.key]
+      end
+
+      # Is the current code executing without autobuild functionality?
+      #
+      # @example Is autobuild disabled?
+      #   document.without_autobuild?
+      #
+      # @return [ true | false ] If autobuild is disabled.
+      def without_autobuild?
+        Threaded.executing?(:without_autobuild)
+      end
+
+      # Yield to the block with autobuild functionality turned off.
+      #
+      # @example Execute without autobuild.
+      #   document.without_autobuild do
+      #     document.name
+      #   end
+      #
+      # @return [ Object ] The result of the yield.
+      def without_autobuild
+        Threaded.begin_execution('without_autobuild')
+        yield
+      ensure
+        Threaded.exit_execution('without_autobuild')
+      end
+
+      # Parse out the attributes and the options from the args passed to a
+      # build_ or create_ methods.
+      #
+      # @example Parse the args.
+      #   doc.parse_args(:name => "Joe")
+      #
+      # @param [ Hash... ] *args The arguments.
+      #
+      # @return [ Array<Hash> ] The attributes and options.
+      def parse_args(*args)
+        [args.first || {}, args.size > 1 ? args[1] : {}]
       end
     end
   end

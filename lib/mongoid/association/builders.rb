@@ -19,21 +19,6 @@ module Mongoid
     module Builders
       extend ActiveSupport::Concern
 
-      private
-
-      # Parse out the attributes and the options from the args passed to a
-      # build_ or create_ methods.
-      #
-      # @example Parse the args.
-      #   doc.parse_args(:name => "Joe")
-      #
-      # @param [ Hash... ] *args The arguments.
-      #
-      # @return [ Array<Hash> ] The attributes and options.
-      def parse_args(*args)
-        [args.first || {}, args.size > 1 ? args[1] : {}]
-      end
-
       # Defines a builder method. This is defined as #build_name.
       #
       # @example
@@ -80,6 +65,21 @@ module Mongoid
             doc
           end
         end
+      end
+
+      private
+
+      # Parse out the attributes and the options from the args passed to a
+      # build_ or create_ methods.
+      #
+      # @example Parse the args.
+      #   doc.parse_args(:name => "Joe")
+      #
+      # @param [ Hash... ] *args The arguments.
+      #
+      # @return [ Array<Hash> ] The attributes and options.
+      def parse_args(*args)
+        [args.first || {}, args.size > 1 ? args[1] : {}]
       end
     end
   end
