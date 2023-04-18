@@ -6,18 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 8
-Lint/MissingSuper:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embedded_in/proxy.rb'
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/embedded/embeds_one/proxy.rb'
-    - 'lib/mongoid/association/referenced/belongs_to/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_one/proxy.rb'
-    - 'lib/mongoid/criteria/queryable/pipeline.rb'
-    - 'lib/mongoid/criteria/queryable/smash.rb'
-
 # Offense count: 11
 Lint/ShadowingOuterLocalVariable:
   Exclude:
