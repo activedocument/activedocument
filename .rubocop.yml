@@ -74,6 +74,10 @@ Lint/SuppressedException:
   Exclude:
     - 'spec/**/*'
 
+Lint/UnmodifiedReduceAccumulator:
+  Exclude:
+    - 'lib/mongoid/criteria/queryable/selectable.rb'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'
