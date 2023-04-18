@@ -78,7 +78,8 @@ module Mongoid
             undefined_by_model[model] ||= []
             undefined_by_model[model] << index
           end
-        rescue Mongo::Error::OperationFailure
+        rescue Mongo::Error::OperationFailure => e
+          logger.info("MONGOID: Could not get indexes for #{model}: #{e.message}")
         end
 
         undefined_by_model

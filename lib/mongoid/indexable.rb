@@ -59,7 +59,8 @@ module Mongoid
                 "'#{klass.collection.name}' in database '#{database}'."
               )
             end
-          rescue Mongo::Error::OperationFailure
+          rescue Mongo::Error::OperationFailure => e
+            logger.info("MONGOID: Failed to remove indexes on #{klass}: #{e.message}")
           end
         end and true
       end

@@ -6,24 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 45
-# Configuration parameters: AllowComments, AllowNil.
-Lint/SuppressedException:
-  Exclude:
-    - 'lib/mongoid/indexable.rb'
-    - 'lib/mongoid/tasks/database.rb'
-    - 'spec/integration/matcher_operator_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
-    - 'spec/mongoid/clients/options_spec.rb'
-    - 'spec/mongoid/clients/transactions_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/persistable_spec.rb'
-    - 'spec/mongoid/persistence_context_spec.rb'
-    - 'spec/mongoid/traversable_spec.rb'
-    - 'spec/spec_helper.rb'
-
 # Offense count: 54
 # Configuration parameters: AllowKeywordBlockArguments.
 Lint/UnderscorePrefixedVariableName:

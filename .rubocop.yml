@@ -70,6 +70,10 @@ Lint/ConstantDefinitionInBlock:
   Exclude:
     - 'spec/**/*'
 
+Lint/SuppressedException:
+  Exclude:
+    - 'spec/**/*'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'

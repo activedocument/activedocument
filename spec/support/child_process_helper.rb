@@ -26,7 +26,7 @@ module ChildProcessHelper
         loop do
           output << r.readpartial(16384)
         end
-      rescue EOFError # rubocop:disable Lint/SuppressedException
+      rescue EOFError
       end
 
       process.wait
