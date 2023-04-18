@@ -109,14 +109,6 @@ Lint/UselessAssignment:
     - 'spec/spec_helper.rb'
     - 'spec/support/immutable_ids.rb'
 
-# Offense count: 6
-# Configuration parameters: CheckForMethodsWithNoSideEffects.
-Lint/Void:
-  Exclude:
-    - 'lib/mongoid/tasks/database.rb'
-    - 'spec/mongoid/association/referenced/has_many/enumerable_spec.rb'
-    - 'spec/mongoid/timestamps_spec.rb'
-
 # Offense count: 120
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:

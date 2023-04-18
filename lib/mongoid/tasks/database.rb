@@ -112,9 +112,9 @@ module Mongoid
       # @example Remove all the indexes.
       #   Mongoid::Tasks::Database.remove_indexes
       #
-      # @return [ Array<Class> ] The un-indexed models.
+      # @return [ Array<Class> ] The model classes whose indexes were successfully removed.
       def remove_indexes(models = ::Mongoid.models)
-        models.each do |model|
+        models.map do |model|
           next if model.embedded?
 
           begin
@@ -122,6 +122,7 @@ module Mongoid
           rescue Mongo::Error::OperationFailure
             next
           end
+          
           model
         end.compact
       end
