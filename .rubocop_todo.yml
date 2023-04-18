@@ -1687,13 +1687,6 @@ Rake/Desc:
     - 'lib/mongoid/railties/database.rake'
     - 'lib/mongoid/tasks/database.rake'
 
-# Offense count: 7
-Style/ClassVars:
-  Exclude:
-    - 'lib/mongoid/contextual/mongo/documents_loader.rb'
-    - 'spec/mongoid/clients/transactions_spec_models.rb'
-    - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
-
 # Offense count: 63
 # This cop supports safe autocorrection (--autocorrect).
 Style/EvalWithLocation:
