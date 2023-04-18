@@ -98,6 +98,12 @@ RSpec/SubjectStub:
   Exclude:
     - 'spec/mongoid/collection_configurable_spec.rb'
 
+Style/CaseEquality:
+  Exclude:
+    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
+    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'spec/**/*'
+
 # --------------------------------------------------
 # These cops are disabled by default, but should be periodically
 # checked and cleaned up.

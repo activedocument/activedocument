@@ -1695,21 +1695,6 @@ Rake/Desc:
     - 'lib/mongoid/railties/database.rake'
     - 'lib/mongoid/tasks/database.rake'
 
-# Offense count: 25
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowOnConstant, AllowOnSelfClass.
-Style/CaseEquality:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
-    - 'lib/mongoid/clients/sessions.rb'
-    - 'spec/mongoid/association/embedded/embedded_in/proxy_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_one/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many/enumerable_spec.rb'
-    - 'spec/mongoid/criteria_spec.rb'
-    - 'spec/mongoid/equality_spec.rb'
-    - 'spec/support/event_subscriber.rb'
-
 # Offense count: 7
 Style/ClassVars:
   Exclude:

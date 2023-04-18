@@ -43,7 +43,7 @@ module Mongoid
           Threaded.set_session(session, client: persistence_context.client)
           yield(session)
         rescue Mongo::Error::InvalidSession => e
-          if Mongo::Error::SessionsNotSupported === e
+          if e.is_a?(Mongo::Error::SessionsNotSupported)
             raise Mongoid::Errors::SessionsNotSupported.new
           end
 
