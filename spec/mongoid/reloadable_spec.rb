@@ -469,13 +469,11 @@ describe Mongoid::Reloadable do
       let(:subscriber) do
         client = Mongoid::Clients.with_name(:other)
         monitoring = client.send(:monitoring)
-        subscriber = monitoring.subscribers['Command'].find do |s|
-          s.is_a?(EventSubscriber)
-        end
+        monitoring.subscribers['Command'].find { |s| s.is_a?(EventSubscriber) }
       end
 
       let(:find_events) do
-        find_events = subscriber.started_events.select { |event| event.command_name.to_s == 'find' }
+        subscriber.started_events.select { |event| event.command_name.to_s == 'find' }
       end
 
       before do

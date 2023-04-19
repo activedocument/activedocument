@@ -1936,7 +1936,7 @@ describe Mongoid::Criteria do
 
         it 'correctly uses the fallback' do
           I18n.locale = :en
-          d = Dictionary.create!(description: 'english-text')
+          Dictionary.create!(description: 'english-text')
           I18n.locale = :he
           expect(plucked).to eq('english-text')
         end

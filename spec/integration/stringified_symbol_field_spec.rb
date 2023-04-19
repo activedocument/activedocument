@@ -103,7 +103,7 @@ describe 'StringifiedSymbol fields' do
   context 'when finding document' do
 
     it 'receives the value as a symbol' do
-      event = find_events.first
+      find_events.first
       expect(document2.saved_status).to eq(:test)
     end
   end

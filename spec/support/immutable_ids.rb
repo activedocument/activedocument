@@ -103,7 +103,6 @@ module Mongoid
                     parent.pet = pet = Pet.new
                     parent.save
 
-                    original_id = pet._id
                     new_id = BSON::ObjectId.new
 
                     expect { parent.update(pet: { _id: new_id }) }

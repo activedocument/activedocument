@@ -161,8 +161,8 @@ module Mongoid
           # Additionally, 3.6 and potentially older servers do not provide
           # the error code when they are asked to collStats a non-existent
           # collection (https://jira.mongodb.org/browse/SERVER-50070).
-          begin
-            stats = model.collection.database.command(collStats: model.collection.name).first
+          stats = begin
+            model.collection.database.command(collStats: model.collection.name).first
           rescue Mongo::Error::OperationFailure => e
             # Code 26 is database does not exist.
             # Code 8 is collection does not exist, as of 4.0.
@@ -171,13 +171,12 @@ module Mongoid
                (e.code.nil? && e.message =~ /not found/)
               model.collection.create
 
-              stats = model.collection.database.command(collStats: model.collection.name).first
+              model.collection.database.command(collStats: model.collection.name).first
             else
               raise
             end
           end
 
-          stats = model.collection.database.command(collStats: model.collection.name).first
           if stats[:sharded]
             logger.info("MONGOID: #{model.collection.namespace} is already sharded for #{model}")
             next model

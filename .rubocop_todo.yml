@@ -91,24 +91,6 @@ Lint/UnusedMethodArgument:
     - 'spec/support/models/artist.rb'
     - 'spec/support/models/post.rb'
 
-# Offense count: 21
-Lint/UselessAssignment:
-  Exclude:
-    - 'lib/mongoid/attributes/projector.rb'
-    - 'lib/mongoid/criteria/marshalable.rb'
-    - 'lib/mongoid/tasks/database.rb'
-    - 'lib/mongoid/touchable.rb'
-    - 'spec/integration/associations/foreign_key_spec.rb'
-    - 'spec/integration/stringified_symbol_field_spec.rb'
-    - 'spec/mongoid/clients/transactions_spec.rb'
-    - 'spec/mongoid/criteria/modifiable_spec.rb'
-    - 'spec/mongoid/criteria_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/persistable/pushable_spec.rb'
-    - 'spec/mongoid/reloadable_spec.rb'
-    - 'spec/spec_helper.rb'
-    - 'spec/support/immutable_ids.rb'
-
 # Offense count: 120
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:

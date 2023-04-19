@@ -226,7 +226,7 @@ describe Mongoid::Interceptable do
 
       let(:expected_messages) do
         book.reload.pages.reduce([]) do |messages, p|
-          messages += p.notes.reduce([]) do |msgs, n|
+          messages + p.notes.reduce([]) do |msgs, n|
             msgs << n.message
           end
         end
@@ -2361,7 +2361,7 @@ describe Mongoid::Interceptable do
   context 'when accessing _ids in validate and access an association in after_initialize' do
     it "doesn't raise AttributeNotLoaded" do
       company = InterceptableCompany.create!
-      shop = InterceptableShop.create!(company: company)
+      _shop = InterceptableShop.create!(company: company)
       user = InterceptableUser.new
       user.company = company
       expect do

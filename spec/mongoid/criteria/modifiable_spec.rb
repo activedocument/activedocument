@@ -723,7 +723,7 @@ describe Mongoid::Criteria::Modifiable do
 
           let(:band) do
             record = Record.new(producers: ['testing'])
-            band = Band.create!(records: [record])
+            Band.create!(records: [record])
           end
 
           let(:document) do

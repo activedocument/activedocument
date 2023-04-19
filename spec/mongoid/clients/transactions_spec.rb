@@ -493,7 +493,7 @@ describe Mongoid::Clients::Sessions do
                   person.save!
                   person.posts << Post.create!
                 end
-              rescue StandardError => e
+              rescue StandardError
               end
             end
 

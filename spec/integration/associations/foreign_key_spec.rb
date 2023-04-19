@@ -29,7 +29,7 @@ describe 'Association foreign key configuration' do
 
     it 'has the correct criteria' do
       company = ForeignKeySpec::Company.create!(c: '3')
-      email = ForeignKeySpec::Email.create!(company: company)
+      _email = ForeignKeySpec::Email.create!(company: company)
 
       criteria = ForeignKeySpec::Email.where(company: company)
 
@@ -41,7 +41,7 @@ describe 'Association foreign key configuration' do
         it 'looks up child' do
           company = ForeignKeySpec::ScopedCompany.create!(c: 'test')
           on_email = ForeignKeySpec::ScopedEmail.create!(company: company, s: 'on')
-          off_email = ForeignKeySpec::ScopedEmail.create!(company: company, s: 'off')
+          _off_email = ForeignKeySpec::ScopedEmail.create!(company: company, s: 'off')
 
           company = ForeignKeySpec::ScopedCompany.find(company.id)
           expect(company.emails.length).to eq(1)
@@ -82,7 +82,7 @@ describe 'Association foreign key configuration' do
       company = ForeignKeySpec::Company.create!(c: 'test')
       founder = ForeignKeySpec::Founder.create!(company: company)
 
-      email = ForeignKeySpec::Founder.find(founder.id)
+      _email = ForeignKeySpec::Founder.find(founder.id)
       expect(founder.company.id).to eq(company.id)
     end
   end

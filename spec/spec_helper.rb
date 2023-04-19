@@ -54,7 +54,7 @@ if SpecConfig.instance.ci?
     begin
       client.command(ping: 1)
       break
-    rescue Mongo::Error::OperationFailure => e
+    rescue Mongo::Error::OperationFailure
       sleep(2)
       client.cluster.scan!
     end
@@ -123,7 +123,7 @@ begin
   # database. This user will need to be authenticated in order to add any
   # more users to any other databases.
   client.database.users.create(MONGOID_ROOT_USER)
-rescue Mongo::Error::OperationFailure => e
+rescue Mongo::Error::OperationFailure
 ensure
   client.close
 end
