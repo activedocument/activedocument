@@ -337,8 +337,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
         end
 
         it 'adds the group operation to the pipeline' do
-          pending
-          raise
+          skip
           expect(pipeline).to eq([
             { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'a' } } }
           ])
@@ -358,8 +357,7 @@ describe Mongoid::Criteria::Queryable::Aggregable do
         end
 
         it 'adds the group operation to the pipeline' do
-          pending
-          raise
+          skip
           expect(pipeline).to eq([
             { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'a' } } }
           ])

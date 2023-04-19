@@ -6,13 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 6
-Lint/UnreachableCode:
-  Exclude:
-    - 'lib/mongoid/criteria/queryable/mergeable.rb'
-    - 'spec/mongoid/criteria/queryable/aggregable_spec.rb'
-    - 'spec/mongoid/serializable_spec.rb'
-
 # Offense count: 56
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.

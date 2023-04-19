@@ -497,8 +497,7 @@ describe Mongoid::Serializable do
             end
 
             it 'does not generate new ids' do
-              pending
-              raise
+              skip
               expect(hash['addresses'].first['_id']).to be_nil
             end
           end
