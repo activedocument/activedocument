@@ -55,7 +55,7 @@ module Mongoid
       # @todo Refactor this as it is only relevant to $lt, $lte, $gt, $gte.
       #
       # @api private
-      def apply_array_field_operator(exists, value, condition, &block)
+      def apply_array_field_operator(_exists, value, _condition, &block)
         if value.is_a?(Array)
           value.any?(&block)
         else

@@ -134,11 +134,11 @@ module Mongoid
           @relation_complements ||= [Embedded::EmbeddedIn].freeze
         end
 
-        def polymorphic_inverses(other = nil)
+        def polymorphic_inverses(_other = nil)
           [as]
         end
 
-        def determine_inverses(other)
+        def determine_inverses(_other)
           matches = relation_class.relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
               # https://jira.mongodb.org/browse/MONGOID-4882

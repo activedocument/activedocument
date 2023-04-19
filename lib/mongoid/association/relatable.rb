@@ -89,7 +89,7 @@ module Mongoid
       # @param [ Mongoid::Document ] doc The document to be bound.
       #
       # @return [ true | false ] Whether the document can be bound.
-      def bindable?(doc)
+      def bindable?(_doc)
         false
       end
 

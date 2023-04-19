@@ -14,14 +14,14 @@ module Mongoid
 
       # Returns whether a value satisfies a $regex expression.
       #
-      # @param [ true | false ] exists Not used.
+      # @param [ true | false ] _exists Not used.
       # @param [ String | Array<String> ] value The value to check.
       # @param [ Regexp | BSON::Regexp::Raw ] condition The $regex condition.
       #
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(exists, value, condition)
+      def matches?(_exists, value, condition)
         condition = case condition
                     when Regexp
                       condition

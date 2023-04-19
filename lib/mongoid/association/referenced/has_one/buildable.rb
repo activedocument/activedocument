@@ -14,11 +14,11 @@ module Mongoid
           #
           # @param [ Object ] base The base object.
           # @param [ Object ] object The object to use to build the association.
-          # @param [ String ] type The type of the association.
-          # @param [ nil ] selected_fields Must be nil.
+          # @param [ String ] _type The type of the association.
+          # @param [ nil ] _selected_fields Must be nil.
           #
           # @return [ Mongoid::Document ] A single document.
-          def build(base, object, type = nil, selected_fields = nil)
+          def build(base, object, _type = nil, _selected_fields = nil)
             if query?(object)
               execute_query(object, base) unless base.new_record?
             else

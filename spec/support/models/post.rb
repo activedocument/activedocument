@@ -28,19 +28,19 @@ class Post
 
   validates_format_of :title, without: /\$\$\$/
 
-  def before_add_tag(tag)
+  def before_add_tag(_tag)
     @before_add_called = true
   end
 
-  def after_add_tag(tag)
+  def after_add_tag(_tag)
     @after_add_called = true
   end
 
-  def before_remove_tag(tag)
+  def before_remove_tag(_tag)
     @before_remove_called = true
   end
 
-  def after_remove_tag(tag)
+  def after_remove_tag(_tag)
     @after_remove_called = true
   end
 

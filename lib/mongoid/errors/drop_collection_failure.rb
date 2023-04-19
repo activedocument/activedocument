@@ -12,7 +12,7 @@ module Mongoid
       #   Mongoid failed to drop.
       #
       # @api private
-      def initialize(collection_name, collection_options, error)
+      def initialize(collection_name)
         super(
           compose_message(
             'drop_collection_failure',

@@ -15,14 +15,14 @@ module Mongoid
       # performing a regular expression match if the condition is a regular
       # expression.
       #
-      # @param [ String ] original_operator Not used.
+      # @param [ String ] _original_operator Not used.
       # @param [ Object ] value The value to check.
       # @param [ Object ] condition The equality condition predicate.
       #
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(original_operator, value, condition)
+      def matches?(_original_operator, value, condition)
         case condition
         when Regexp
           value =~ condition

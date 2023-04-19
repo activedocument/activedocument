@@ -880,7 +880,7 @@ module Mongoid
       #   end
       #
       # @param [ Mongoid::Document ] document The document to yield to.
-      def yield_document(document, &block)
+      def yield_document(document)
         doc = if document.respond_to?(:_id)
                 document
               else

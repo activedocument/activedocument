@@ -6,46 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 59
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods, IgnoreNotImplementedMethods.
-Lint/UnusedMethodArgument:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embedded_in/buildable.rb'
-    - 'lib/mongoid/association/embedded/embeds_many.rb'
-    - 'lib/mongoid/association/embedded/embeds_many/buildable.rb'
-    - 'lib/mongoid/association/embedded/embeds_one.rb'
-    - 'lib/mongoid/association/referenced/belongs_to/buildable.rb'
-    - 'lib/mongoid/association/referenced/has_and_belongs_to_many/buildable.rb'
-    - 'lib/mongoid/association/referenced/has_many.rb'
-    - 'lib/mongoid/association/referenced/has_many/buildable.rb'
-    - 'lib/mongoid/association/referenced/has_one.rb'
-    - 'lib/mongoid/association/referenced/has_one/buildable.rb'
-    - 'lib/mongoid/association/relatable.rb'
-    - 'lib/mongoid/clients/options.rb'
-    - 'lib/mongoid/contextual/mongo.rb'
-    - 'lib/mongoid/contextual/none.rb'
-    - 'lib/mongoid/errors/drop_collection_failure.rb'
-    - 'lib/mongoid/fields/foreign_key.rb'
-    - 'lib/mongoid/fields/standard.rb'
-    - 'lib/mongoid/fields/validators/macro.rb'
-    - 'lib/mongoid/interceptable.rb'
-    - 'lib/mongoid/matcher/all.rb'
-    - 'lib/mongoid/matcher/bits.rb'
-    - 'lib/mongoid/matcher/elem_match.rb'
-    - 'lib/mongoid/matcher/eq_impl.rb'
-    - 'lib/mongoid/matcher/eq_impl_with_regexp.rb'
-    - 'lib/mongoid/matcher/exists.rb'
-    - 'lib/mongoid/matcher/field_operator.rb'
-    - 'lib/mongoid/matcher/in.rb'
-    - 'lib/mongoid/matcher/mod.rb'
-    - 'lib/mongoid/matcher/regex.rb'
-    - 'lib/mongoid/matcher/size.rb'
-    - 'spec/integration/callbacks_models.rb'
-    - 'spec/support/client_registry.rb'
-    - 'spec/support/models/artist.rb'
-    - 'spec/support/models/post.rb'
-
 # Offense count: 121
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:

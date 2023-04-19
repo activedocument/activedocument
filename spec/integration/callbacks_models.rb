@@ -141,11 +141,11 @@ class Architect
   field :after_add_num_buildings, type: Integer
   field :after_remove_num_buildings, type: Integer
 
-  def after_add_callback(obj)
+  def after_add_callback(_obj)
     self.after_add_num_buildings = buildings.length
   end
 
-  def after_remove_callback(obj)
+  def after_remove_callback(_obj)
     self.after_remove_num_buildings = buildings.length
   end
 end

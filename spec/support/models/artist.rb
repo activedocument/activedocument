@@ -56,35 +56,35 @@ class Artist
     2.times { |n| songs.create!(title: n.to_s) }
   end
 
-  def before_add_song(song)
+  def before_add_song(_song)
     @before_add_called = true
   end
 
-  def after_add_label(label)
+  def after_add_label(_label)
     @after_add_called = true
   end
 
-  def before_add_album(album)
+  def before_add_album(_album)
     @before_add_referenced_called = true
   end
 
-  def after_add_album(album)
+  def after_add_album(_album)
     @after_add_referenced_called = true
   end
 
-  def before_remove_song(song)
+  def before_remove_song(_song)
     @before_remove_embedded_called = true
   end
 
-  def after_remove_label(label)
+  def after_remove_label(_label)
     @after_remove_embedded_called = true
   end
 
-  def before_remove_album(album)
+  def before_remove_album(_album)
     @before_remove_referenced_called = true
   end
 
-  def after_remove_album(album)
+  def after_remove_album(_album)
     @after_remove_referenced_called = true
   end
 end

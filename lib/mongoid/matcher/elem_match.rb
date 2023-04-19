@@ -14,14 +14,14 @@ module Mongoid
 
       # Returns whether a value satisfies an $elemMatch expression.
       #
-      # @param [ true | false ] exists Not used.
+      # @param [ true | false ] _exists Not used.
       # @param [ Object | Array<Object> ] value The value to check.
       # @param [ Hash ] expr The $elemMatch condition predicate.
       #
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(exists, value, condition)
+      def matches?(_exists, value, condition)
         unless condition.is_a?(Hash)
           raise Errors::InvalidQuery.new("$elemMatch requires a Hash operand: #{Errors::InvalidQuery.truncate_expr(condition)}")
         end

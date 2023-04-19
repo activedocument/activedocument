@@ -14,7 +14,7 @@ module Mongoid
 
       # Returns whether a value satisfies a $mod expression.
       #
-      # @param [ true | false ] exists Not used.
+      # @param [ true | false ] _exists Not used.
       # @param [ Numeric ] value The value to check.
       # @param [ Array<Numeric> ] condition The $mod condition predicate,
       #   which is a 2-tuple containing the divisor and remainder.
@@ -22,7 +22,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(exists, value, condition)
+      def matches?(_exists, value, condition)
         unless condition.is_a?(Array)
           raise Errors::InvalidQuery.new("Unknown $mod argument #{condition}")
         end

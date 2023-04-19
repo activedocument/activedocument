@@ -203,3 +203,8 @@ Style/SymbolArray:
   Exclude:
     - 'spec/mongoid/criteria/queryable/selector_spec.rb'
     - 'spec/mongoid/criteria/queryable/options_spec.rb'
+
+# See: https://github.com/rubocop/rubocop/issues/11811
+Lint/UnusedMethodArgument:
+  Exclude:
+    - 'lib/mongoid/contextual/none.rb'

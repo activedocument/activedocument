@@ -20,13 +20,13 @@ module Mongoid
       # @example Add the atomic changes.
       # field.add_atomic_changes(doc, "key", {}, [], [])
       #
-      # @param [ Mongoid::Document ] document The document to add to.
-      # @param [ String ] name The name of the field.
+      # @param [ Mongoid::Document ] _document The document to add to.
+      # @param [ String ] _name The name of the field.
       # @param [ String ] key The atomic location of the field.
       # @param [ Hash ] mods The current modifications.
       # @param [ Array ] new The new elements to add.
-      # @param [ Array ] old The old elements getting removed.
-      def add_atomic_changes(document, name, key, mods, new, old)
+      # @param [ Array ] _old The old elements getting removed.
+      def add_atomic_changes(_document, _name, key, mods, new, _old)
         mods[key] = new
       end
 

@@ -12,7 +12,7 @@ module Mongoid
 
       # Returns whether a value satisfies a bitwise expression.
       #
-      # @param [ true | false ] exists Not used.
+      # @param [ true | false ] _exists Not used.
       # @param [ Object ] value The value to check.
       # @param [ Numeric | Array<Numeric> ] condition The expression
       #   predicate as a bitmask or position list.
@@ -20,7 +20,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(exists, value, condition)
+      def matches?(_exists, value, condition)
         case value
         when BSON::Binary
           value = value.data.chars.map { |n| format('%02x', n.ord) }.join.to_i(16)

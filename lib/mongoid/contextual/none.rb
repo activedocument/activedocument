@@ -122,8 +122,8 @@ module Mongoid
       #   context.tally(:name)
       #
       # @param [ String | Symbol ] _field Field to tally.
-      # @param [ Boolean ] :unwind Whether to tally array
-      #   member values individually. Default false.
+      # @param [ Boolean ] :unwind Whether to tally array member
+      #   values individually. Not used in null context.
       # @param [ String | Symbol ] _field Field to tally.
       #
       # @return [ Hash ] An empty Hash.

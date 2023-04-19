@@ -15,15 +15,15 @@ module Mongoid
           # @example Build the document.
           #   Builder.new(meta, attrs).build
           #
-          # @param [ Mongoid::Document ] base The object.
+          # @param [ Mongoid::Document ] _base The object.
           # @param [ Mongoid::Document | Hash ] object The parent hash or document.
-          # @param [ String ] type Not used in this context.
+          # @param [ String ] _type Not used in this context.
           # @param [ Hash ] selected_fields Fields which were retrieved via
           #   #only. If selected_fields are specified, fields not listed in it
           #   will not be accessible in the built document.
           #
           # @return [ Mongoid::Document ] A single document.
-          def build(base, object, type = nil, selected_fields = nil)
+          def build(_base, object, _type = nil, selected_fields = nil)
             return object unless object.is_a?(Hash)
 
             if _loading?

@@ -129,10 +129,10 @@ module Mongoid
       # @example Eval the default proc.
       #   field.evaluate_default_proc(band)
       #
-      # @param [ Mongoid::Document ] doc The document.
+      # @param [ Mongoid::Document ] _doc The document.
       #
       # @return [ Object ] The called proc.
-      def evaluate_default_proc(doc)
+      def evaluate_default_proc(_doc)
         serialize_default(default_val[])
       end
 

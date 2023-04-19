@@ -16,7 +16,7 @@ module Mongoid
 
       # Returns whether a value satisfies an $eq (or similar) expression.
       #
-      # @param [ true | false ] exists Not used.
+      # @param [ true | false ] _exists Not used.
       # @param [ Object ] value The value to check.
       # @param [ Object | Range ] condition The equality condition predicate.
       # @param [ String ] original_operator Operator to use in exception messages.
@@ -24,7 +24,7 @@ module Mongoid
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(exists, value, condition, original_operator)
+      def matches?(_exists, value, condition, original_operator)
         case condition
         when Range
           # Since $ne invokes $eq, the exception message needs to handle

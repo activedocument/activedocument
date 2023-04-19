@@ -198,7 +198,7 @@ module Mongoid
           @default_foreign_key_field ||= "#{inverse}#{FOREIGN_KEY_SUFFIX}"
         end
 
-        def polymorphic_inverses(other)
+        def polymorphic_inverses(_other)
           [as]
         end
 
