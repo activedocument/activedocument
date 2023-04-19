@@ -70,7 +70,7 @@ describe Mongoid::Criteria do
         end
 
         it 'only limits the fields on the correct model' do
-          criteria.each do |band|
+          criteria.each do |_band|
             expect(Person.new.age).to eq(100)
           end
         end
@@ -83,7 +83,7 @@ describe Mongoid::Criteria do
         end
 
         it 'only limits the fields on the correct criteria' do
-          criteria.each do |band|
+          criteria.each do |_band|
             expect(Band.new.active).to be true
           end
         end
@@ -96,7 +96,7 @@ describe Mongoid::Criteria do
         end
 
         it 'only limits the fields on the correct criteria' do
-          criteria.each do |band|
+          criteria.each do |_band|
             Band.all.each do |b|
               expect(b.active).to be true
             end

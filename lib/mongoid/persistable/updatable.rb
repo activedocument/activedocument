@@ -21,7 +21,7 @@ module Mongoid
       #
       # @return [ true | false ] True if save was successful, false if not.
       def update_attribute(name, value)
-        as_writable_attribute!(name, value) do |access|
+        as_writable_attribute!(name, value) do |_access|
           normalized = name.to_s
           process_attribute(normalized, value)
           save(validate: false)

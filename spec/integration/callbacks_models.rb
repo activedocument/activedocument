@@ -10,7 +10,7 @@ class Galaxy
 
   embeds_many :stars
 
-  set_callback(:touch, :before) do |document|
+  set_callback(:touch, :before) do
     self.was_touched = true
   end
 
@@ -34,7 +34,7 @@ class Star
 
   embeds_many :planets
 
-  set_callback(:touch, :before) do |document|
+  set_callback(:touch, :before) do
     self.was_touched_after_parent = true if galaxy.was_touched
   end
 
@@ -56,7 +56,7 @@ class Planet
 
   before_validation :set_age
 
-  set_callback(:touch, :before) do |document|
+  set_callback(:touch, :before) do
     self.was_touched_after_parent = true if star.was_touched_after_parent
   end
 

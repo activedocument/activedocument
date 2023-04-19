@@ -163,7 +163,7 @@ module Mongoid
 
     def client_options
       @client_options ||= begin
-        opts = options.select do |k, v|
+        opts = options.select do |k, _v|
           Mongo::Client::VALID_OPTIONS.include?(k.to_sym)
         end
 

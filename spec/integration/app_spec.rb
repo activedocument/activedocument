@@ -41,7 +41,7 @@ describe 'Mongoid application tests' do
         ) do
 
           # JRuby needs a long timeout
-          start_app(%w[bundle exec ruby app.rb], 4567, 40) do |port|
+          start_app(%w[bundle exec ruby app.rb], 4567, 40) do |_port|
             uri = URI.parse('http://localhost:4567/posts')
             resp = JSON.parse(uri.open.read)
 
@@ -60,7 +60,7 @@ describe 'Mongoid application tests' do
         ) do
 
           # JRuby needs a long timeout
-          start_app(%w[bundle exec rails s], 3000, 50) do |port|
+          start_app(%w[bundle exec rails s], 3000, 50) do |_port|
             uri = URI.parse('http://localhost:3000/posts')
             resp = JSON.parse(uri.open.read)
 
@@ -358,7 +358,7 @@ describe 'Mongoid application tests' do
   def wait_for_port(port, timeout, process)
     deadline = Mongoid::Utils.monotonic_time + timeout
     loop do
-      Socket.tcp('localhost', port, nil, nil, connect_timeout: 0.5) do |socket|
+      Socket.tcp('localhost', port, nil, nil, connect_timeout: 0.5) do |_socket|
         break
       end
     rescue IOError, SystemCallError

@@ -455,7 +455,7 @@ describe 'callbacks integration tests' do
       field :name, type: String
       field :age, type: Integer
 
-      set_callback :save, :before do |doc|
+      set_callback :save, :before do
         %i[name age].each do |attr|
           saved_change_to_attribute_values_before[attr] += [saved_change_to_attribute(attr)]
           attribute_before_last_save_values_before[attr] += [attribute_before_last_save(attr)]
@@ -463,7 +463,7 @@ describe 'callbacks integration tests' do
         end
       end
 
-      set_callback :save, :after do |doc|
+      set_callback :save, :after do
         %i[name age].each do |attr|
           saved_change_to_attribute_values_after[attr] += [saved_change_to_attribute(attr)]
           saved_change_to_attribute_q_values_after[attr] += [saved_change_to_attribute?(attr)]

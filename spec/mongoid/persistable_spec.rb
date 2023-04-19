@@ -254,11 +254,11 @@ describe Mongoid::Persistable do
           it 'resets in-memory changes that did not successfully persist' do
             begin
               document.atomically do |doc|
-                doc.set origin: 'Paris'
+                doc.set(origin: 'Paris')
                 doc.atomically(join_context: true) do |doc2|
                   doc2.inc(member_count: 10)
                 end
-                doc.atomically(join_context: true) do |doc3|
+                doc.atomically(join_context: true) do |_doc3|
                   doc.inc likes: 1
                 end
                 raise PersistableSpecTestException.new('oops')

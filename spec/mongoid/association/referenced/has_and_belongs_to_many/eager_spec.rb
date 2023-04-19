@@ -178,7 +178,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Eager do
       require_no_multi_shard
 
       before do
-        2.times { |i| HabtmmPerson.create! }
+        2.times { HabtmmPerson.create! }
       end
 
       it 'only queries once for the parent documents' do

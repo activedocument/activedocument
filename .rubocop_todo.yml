@@ -6,42 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 51
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Exclude:
-    - 'lib/mongoid/association.rb'
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
-    - 'lib/mongoid/document.rb'
-    - 'lib/mongoid/indexable/validators/options.rb'
-    - 'lib/mongoid/matcher/elem_match.rb'
-    - 'lib/mongoid/persistable/updatable.rb'
-    - 'lib/mongoid/persistence_context.rb'
-    - 'lib/mongoid/traversable.rb'
-    - 'spec/integration/app_spec.rb'
-    - 'spec/integration/callbacks_models.rb'
-    - 'spec/integration/callbacks_spec.rb'
-    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/belongs_to/eager_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many/eager_spec.rb'
-    - 'spec/mongoid/association/referenced/has_and_belongs_to_many_models.rb'
-    - 'spec/mongoid/association/referenced/has_many/enumerable_spec.rb'
-    - 'spec/mongoid/clients_spec.rb'
-    - 'spec/mongoid/criteria/includable_spec.rb'
-    - 'spec/mongoid/criteria/modifiable_spec.rb'
-    - 'spec/mongoid/criteria_projection_spec.rb'
-    - 'spec/mongoid/findable_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/persistable_spec.rb'
-    - 'spec/mongoid/reloadable_spec.rb'
-    - 'spec/mongoid/scopable_spec.rb'
-    - 'spec/mongoid/validatable/uniqueness_spec.rb'
-    - 'spec/support/models/artist.rb'
-    - 'spec/support/models/canvas.rb'
-    - 'spec/support/models/game.rb'
-    - 'spec/support/models/student.rb'
-
 # Offense count: 59
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods, IgnoreNotImplementedMethods.

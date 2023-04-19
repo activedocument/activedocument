@@ -394,7 +394,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
       require_no_multi_shard
 
       before do
-        2.times { |i| HmmTicket.create!(person: nil) }
+        2.times { HmmTicket.create!(person: nil) }
       end
 
       it 'only queries once for the parent documents' do

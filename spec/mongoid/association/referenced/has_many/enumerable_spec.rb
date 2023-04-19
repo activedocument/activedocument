@@ -438,13 +438,13 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       context 'when a block is given' do
         it 'returns true when the predicate is true' do
           expect(
-            enumerable.any? { |doc| true }
+            enumerable.any? { true }
           ).to be true
         end
 
         it 'returns false when the predicate is false' do
           expect(
-            enumerable.any? { |doc| false }
+            enumerable.any? { false }
           ).to be false
         end
       end
@@ -464,7 +464,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
         it 'gives precedence to the pattern' do
           expect(
-            enumerable.any?(Post) { |doc| false }
+            enumerable.any?(Post) { false }
           ).to be true
         end
       end
@@ -508,13 +508,13 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       context 'when a block is given' do
         it 'returns true when the predicate is true' do
           expect(
-            enumerable.any? { |doc| true }
+            enumerable.any? { true }
           ).to be true
         end
 
         it 'returns false when the predicate is false' do
           expect(
-            enumerable.any? { |doc| false }
+            enumerable.any? { false }
           ).to be false
         end
       end
@@ -534,7 +534,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
         it 'gives precedence to the pattern' do
           expect(
-            enumerable.any?(Post) { |doc| false }
+            enumerable.any?(Post) { false }
           ).to be true
         end
       end

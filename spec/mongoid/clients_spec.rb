@@ -215,7 +215,7 @@ describe Mongoid::Clients do
         end
 
         let(:class_collection_name) do
-          Band.with(collection: 'ignore') do |klass|
+          Band.with(collection: 'ignore') do
             Band.with(collection: 'artists', &:collection_name)
           end
         end
@@ -235,7 +235,7 @@ describe Mongoid::Clients do
         end
 
         let(:class_collection_name) do
-          Band.with(collection: 'artists') do |klass|
+          Band.with(collection: 'artists') do
             Band.with(client: :reports, &:collection_name)
           end
         end

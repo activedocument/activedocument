@@ -160,7 +160,7 @@ module Mongoid
             return to_enum unless block_given?
 
             if _loaded?
-              _loaded.each_pair do |id, doc|
+              _loaded.each_pair do |_id, doc|
                 document = _added.delete(doc._id) || doc
                 set_base(document)
                 yield(document)
@@ -174,7 +174,7 @@ module Mongoid
               end
             end
 
-            _added.each_pair do |id, doc|
+            _added.each_pair do |_id, doc|
               yield(doc)
             end
 

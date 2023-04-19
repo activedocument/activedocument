@@ -15,7 +15,7 @@ class Game
 
   validates_format_of :name, without: /\$\$\$/
 
-  set_callback(:initialize, :after) do |document|
+  set_callback(:initialize, :after) do
     write_attribute('name', 'Testing') unless name
   end
 end

@@ -1672,7 +1672,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             expect(crit.options[:read]).to eq({ mode: :primary })
             crit
           end
-          Definition.with(read: { mode: :secondary }) do |klass|
+          Definition.with(read: { mode: :secondary }) do
             word.definitions.create!
           end
         end

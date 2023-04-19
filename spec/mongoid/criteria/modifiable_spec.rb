@@ -133,7 +133,7 @@ describe Mongoid::Criteria::Modifiable do
 
       before do
         Person.create!(title: 'Madam')
-        2.times do |n|
+        2.times do
           Person.create!(
             title: 'Sir',
             name: name,

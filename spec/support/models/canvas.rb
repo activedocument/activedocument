@@ -15,7 +15,7 @@ class Canvas
   accepts_nested_attributes_for :writer
 
   def render
-    shapes.each { |shape| render }
+    shapes.each { |_shape| render }
   end
 
   class Test < Canvas

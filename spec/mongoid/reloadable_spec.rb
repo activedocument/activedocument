@@ -159,7 +159,7 @@ describe Mongoid::Reloadable do
           end
 
           let!(:reloaded) do
-            person.with(collection: 'other') do |person_class|
+            person.with(collection: 'other') do
               person.addresses.first.reload
             end
           end

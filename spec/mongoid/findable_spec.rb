@@ -36,7 +36,7 @@ describe Mongoid::Findable do
     end
 
     it 'iterates through all documents' do
-      Band.each_with_index do |band, index|
+      Band.each_with_index do |_band, index|
         expect(index).to eq(0)
       end
     end

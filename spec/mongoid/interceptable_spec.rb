@@ -18,11 +18,11 @@ describe Mongoid::Interceptable do
 
     attr_reader :before_save_called, :after_save_called
 
-    before_save do |object|
+    before_save do
       @before_save_called = true
     end
 
-    after_save do |object|
+    after_save do
       @after_save_called = true
     end
   end

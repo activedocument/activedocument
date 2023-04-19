@@ -71,7 +71,7 @@ module Mongoid
         #
         # @raise [ Errors::InvalidIndex ] If validation failed.
         def validate_options(klass, spec, options)
-          options.each_pair do |name, value|
+          options.each_pair do |name, _value|
             unless VALID_OPTIONS.include?(name)
               raise Errors::InvalidIndex.new(klass, spec, options)
             end

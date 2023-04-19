@@ -167,7 +167,7 @@ module Mongoid
     # @api private
     def collect_children
       children = []
-      embedded_relations.each_pair do |name, association|
+      embedded_relations.each_pair do |name, _association|
         without_autobuild do
           child = send(name)
           children += Array.wrap(child) if child
@@ -185,7 +185,7 @@ module Mongoid
       children = []
       to_expand = []
       expanded = {}
-      embedded_relations.each_pair do |name, association|
+      embedded_relations.each_pair do |name, _association|
         without_autobuild do
           child = send(name)
           to_expand += Array.wrap(child) if child
@@ -337,7 +337,7 @@ module Mongoid
         subclass.fields = fields.dup
         subclass.pre_processed_defaults = pre_processed_defaults.dup
         subclass.post_processed_defaults = post_processed_defaults.dup
-        subclass._declared_scopes = Hash.new { |hash, key| _declared_scopes[key] }
+        subclass._declared_scopes = Hash.new { |_hash, key| _declared_scopes[key] }
         subclass.discriminator_value = subclass.name
 
         # We need to do this here because the discriminator_value method is

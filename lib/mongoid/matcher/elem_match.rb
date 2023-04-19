@@ -33,7 +33,7 @@ module Mongoid
         else
           # Validate the condition is valid, even though we will never attempt
           # matching it.
-          condition.each do |k, v|
+          condition.each do |k, _v|
             k = k.to_s
             next unless k.start_with?('$')
 

@@ -1210,7 +1210,7 @@ describe Mongoid::Criteria::Includable do
 
         context 'when there are multiple documents' do
           let!(:as) do
-            res = 9.times.map do |i|
+            res = 9.times.map do
               A.create!.tap do |a|
                 a.b = B.create!.tap do |b|
                   b.c = C.create!

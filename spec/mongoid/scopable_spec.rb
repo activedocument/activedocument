@@ -1236,8 +1236,8 @@ describe Mongoid::Scopable do
       let(:c2) { Band.where(active: false) }
 
       it 'restores previous scope' do
-        Band.with_scope(c1) do |crit|
-          Band.with_scope(c2) do |crit2|
+        Band.with_scope(c1) do
+          Band.with_scope(c2) do
 
             expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
               'active' => true,
@@ -1256,8 +1256,8 @@ describe Mongoid::Scopable do
       let(:c1) { Band.where(active: true) }
 
       it 'restores previous scope' do
-        Band.with_scope(c1) do |crit|
-          Band.unscoped do |crit2|
+        Band.with_scope(c1) do
+          Band.unscoped do
             expect(Mongoid::Threaded.current_scope(Band)).to be nil
           end
 

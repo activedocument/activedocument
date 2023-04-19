@@ -164,7 +164,7 @@ module Mongoid
       became[klass.discriminator_key] = klass.discriminator_value
 
       # mark embedded docs as persisted
-      embedded_relations.each_pair do |name, meta|
+      embedded_relations.each_pair do |name, _meta|
         without_autobuild do
           relation = became.__send__(name)
           Array.wrap(relation).each do |r|

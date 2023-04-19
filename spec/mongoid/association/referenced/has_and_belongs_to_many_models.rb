@@ -85,7 +85,7 @@ class HabtmmStudent
 
   has_and_belongs_to_many :schools, class_name: 'HabtmmSchool'
 
-  after_destroy do |doc|
+  after_destroy do
     schools.first.update_attributes!(after_destroy_triggered: true) unless schools.empty?
   end
 end
