@@ -138,13 +138,12 @@ describe Mongoid::Timestamps do
     end
 
     context 'when touch: true' do
-      let(:user) { TimestampsSpec::Touch::User.create! }
-      let(:address) { TimestampsSpec::Touch::Address.create! }
-      let(:account) { TimestampsSpec::Touch::Account.create! }
-      let(:pet) { TimestampsSpec::Touch::Pet.create! }
+      let!(:user) { TimestampsSpec::Touch::User.create! }
+      let!(:address) { TimestampsSpec::Touch::Address.create! }
+      let!(:account) { TimestampsSpec::Touch::Account.create! }
+      let!(:pet) { TimestampsSpec::Touch::Pet.create! }
 
       before do
-        [user, address, account, pet]
         update_time
       end
 
@@ -319,13 +318,12 @@ describe Mongoid::Timestamps do
     end
 
     context 'when touch: false' do
-      let(:user) { TimestampsSpec::NoTouch::User.create! }
-      let(:address) { TimestampsSpec::NoTouch::Address.create! }
-      let(:account) { TimestampsSpec::NoTouch::Account.create! }
-      let(:pet) { TimestampsSpec::NoTouch::Pet.create! }
+      let!(:user) { TimestampsSpec::NoTouch::User.create! }
+      let!(:address) { TimestampsSpec::NoTouch::Address.create! }
+      let!(:account) { TimestampsSpec::NoTouch::Account.create! }
+      let!(:pet) { TimestampsSpec::NoTouch::Pet.create! }
 
       before do
-        [user, address, account, pet]
         update_time
       end
 

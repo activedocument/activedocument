@@ -278,7 +278,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         context 'when iterating over the association a second time' do
 
           before do
-            enumerable.each { |post| post }
+            enumerable.each(&:to_s)
           end
 
           it 'retains the correct length' do
@@ -399,7 +399,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         context 'when iterating over the association a second time' do
 
           before do
-            enumerable.each { |post| post }
+            enumerable.each(&:to_s)
           end
 
           it 'retains the correct length' do
@@ -1384,7 +1384,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       context 'when iterating over the association a second time' do
 
         before do
-          enumerable.each { |post| post }
+          enumerable.each(&:to_s)
         end
 
         it 'retains the correct length' do

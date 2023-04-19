@@ -100,7 +100,7 @@ module Mongoid
                   before { expect(Mongoid::Config.immutable_ids).to be true }
 
                   it 'should raise an exception' do
-                    parent.pet = pet = Pet.new
+                    parent.pet = Pet.new
                     parent.save
 
                     new_id = BSON::ObjectId.new

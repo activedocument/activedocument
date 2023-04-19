@@ -178,6 +178,8 @@ Style/GuardClause:
   Exclude:
     - 'Gemfile'
     - 'gemfiles/**/*'
+    # this exclusion should be inlined
+    - 'lib/mongoid/criteria/queryable/mergeable.rb'
 
 Style/ModuleFunction:
   EnforcedStyle: extend_self

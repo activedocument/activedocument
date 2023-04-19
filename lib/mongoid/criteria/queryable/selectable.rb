@@ -750,7 +750,9 @@ module Mongoid
         #
         # @return [ Selectable ] The cloned selectable.
         def where(*criteria)
-          criteria.inject(clone) do |query, criterion|
+          selectable = clone
+
+          criteria.each do |criterion|
             raise Errors::CriteriaArgumentRequired.new(:where) if criterion.nil?
 
             # We need to save the criterion in an instance variable so
@@ -760,12 +762,14 @@ module Mongoid
             # works out to be fine because first_or_create etc. methods
             # only ever specify one criterion to #where.
             @criterion = criterion
-            if criterion.is_a?(String)
-              js_query(criterion)
-            else
-              expr_query(criterion)
-            end
-          end.reset_strategies!
+            selectable = if criterion.is_a?(String)
+                           js_query(criterion)
+                         else
+                           expr_query(criterion)
+                         end
+          end
+
+          selectable.reset_strategies!
         end
 
         private
@@ -773,10 +777,10 @@ module Mongoid
         # Adds the specified expression to the query.
         #
         # Criterion must be a hash in one of the following forms:
-        # - {field_name: value}
-        # - {'field_name' => value}
-        # - {key_instance: value}
-        # - {'$operator' => operator_value_expression}
+        # - { field_name: value }
+        # - { 'field_name' => value }
+        # - { key_instance: value }
+        # - { '$operator' => operator_value_expression }
         #
         # Field name and operator may be given as either strings or symbols.
         #
