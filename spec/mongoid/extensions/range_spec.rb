@@ -71,7 +71,7 @@ describe Mongoid::Extensions::Range do
 
       context 'kernel can support endless range' do
         it 'returns an alphabetic range' do
-          is_expected.to eq(eval('1..'))
+          is_expected.to eq(1..)
         end
       end
     end
@@ -81,7 +81,7 @@ describe Mongoid::Extensions::Range do
 
       context 'kernel can support endless range' do
         it 'returns an alphabetic range' do
-          is_expected.to eq(eval('1...'))
+          is_expected.to eq(1...)
         end
       end
     end
@@ -101,7 +101,7 @@ describe Mongoid::Extensions::Range do
 
       context 'kernel can support endless range' do
         it 'returns an alphabetic beginning-less' do
-          is_expected.to eq(eval('...3'))
+          is_expected.to eq(...3)
         end
       end
     end
@@ -158,7 +158,7 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given an endless range' do
-      let(:range) { eval('5..') }
+      let(:range) { 5.. }
 
       it 'returns the object hash' do
         is_expected.to eq('min' => 5)
@@ -166,7 +166,7 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given an endless range not inclusive' do
-      let(:range) { eval('5...') }
+      let(:range) { 5... }
 
       it 'returns the object hash' do
         is_expected.to eq('min' => 5, 'exclude_end' => true)
@@ -174,7 +174,7 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given a beginning-less range' do
-      let(:range) { eval('..5') }
+      let(:range) { ..5 }
 
       it 'returns the object hash' do
         is_expected.to eq('max' => 5)
@@ -182,7 +182,7 @@ describe Mongoid::Extensions::Range do
     end
 
     context 'given an endless range not inclusive' do
-      let(:range) { eval('...5') }
+      let(:range) { ...5 }
 
       it 'returns the object hash' do
         is_expected.to eq('max' => 5, 'exclude_end' => true)

@@ -26,23 +26,23 @@ describe 'Range field persistence' do
     end
 
     context 'when endless' do
-      let(:value) { eval('3..') }
-      it { expect(subject).to eq(eval('3..')) }
+      let(:value) { 3.. }
+      it { expect(subject).to eq(3..) }
     end
 
     context 'when endless exclude_end' do
-      let(:value) { eval('3...') }
-      it { expect(subject).to eq(eval('3...')) }
+      let(:value) { 3... }
+      it { expect(subject).to eq(3...) }
     end
 
     context 'when beginning-less' do
-      let(:value) { eval('..3') }
-      it { expect(subject).to eq(eval('..3')) }
+      let(:value) { ..3 }
+      it { expect(subject).to eq(..3) }
     end
 
     context 'when beginning-less exclude_end' do
-      let(:value) { eval('...3') }
-      it { expect(subject).to eq(eval('...3')) }
+      let(:value) { ...3 }
+      it { expect(subject).to eq(...3) }
     end
 
     context 'when Hash<String, Integer>' do
@@ -196,22 +196,22 @@ describe 'Range field persistence' do
     end
 
     context 'when endless' do
-      let(:value) { eval('3..') }
+      let(:value) { 3.. }
       it { expect(subject).to eq('min' => 3) }
     end
 
     context 'when endless exclude_end' do
-      let(:value) { eval('3...') }
+      let(:value) { 3... }
       it { expect(subject).to eq('min' => 3, 'exclude_end' => true) }
     end
 
     context 'when beginning-less' do
-      let(:value) { eval('..3') }
+      let(:value) { ..3 }
       it { expect(subject).to eq('max' => 3) }
     end
 
     context 'when beginning-less exclude_end' do
-      let(:value) { eval('...3') }
+      let(:value) { ...3 }
       it { expect(subject).to eq('max' => 3, 'exclude_end' => true) }
     end
 
