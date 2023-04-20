@@ -1584,15 +1584,6 @@ Rake/Desc:
     - 'lib/mongoid/railties/database.rake'
     - 'lib/mongoid/tasks/database.rake'
 
-# Offense count: 63
-# This cop supports safe autocorrection (--autocorrect).
-Style/EvalWithLocation:
-  Exclude:
-    - 'spec/integration/criteria/range_spec.rb'
-    - 'spec/integration/persistence/range_field_spec.rb'
-    - 'spec/mongoid/criteria/queryable/extensions/range_spec.rb'
-    - 'spec/mongoid/extensions/range_spec.rb'
-
 # Offense count: 5
 Style/MissingRespondToMissing:
   Exclude:
