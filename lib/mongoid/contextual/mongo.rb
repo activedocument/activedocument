@@ -58,7 +58,7 @@ module Mongoid
       #
       # @return [ Integer ] The number of matches.
       def count(options = {}, &block)
-        return super(&block) if block_given?
+        return super(&block) if block
 
         view.count_documents(options)
       end
@@ -138,7 +138,7 @@ module Mongoid
       #
       # @return [ Enumerator ] The enumerator.
       def each(&block)
-        if block_given?
+        if block
           documents_for_iteration.each do |doc|
             yield_document(doc, &block)
           end
@@ -343,7 +343,7 @@ module Mongoid
       #   or the context if a block was given.
       def pluck_each(*fields, &block)
         enum = PluckEnumerator.new(klass, view, fields).each(&block)
-        block_given? ? self : enum
+        block ? self : enum
       end
 
       # Pick the single field values from the database.
@@ -490,7 +490,7 @@ module Mongoid
       #
       # @return [ Mongo ] The context.
       def sort(values = nil, &block)
-        if block_given?
+        if block
           super(&block)
         else
           # update the criteria

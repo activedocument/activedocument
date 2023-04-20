@@ -200,7 +200,7 @@ module Mongoid
       # @return [ true | false ] If the scope reference has changed.
       def scope_value_changed?(document)
         Array.wrap(options[:scope]).any? do |item|
-          document.send('attribute_changed?', item.to_s)
+          document.send(:attribute_changed?, item.to_s)
         end
       end
 
@@ -283,7 +283,7 @@ module Mongoid
       # @return [ true | false ] If we need to validate.
       def validation_required?(document, attribute)
         document.new_record? ||
-          document.send('attribute_changed?', attribute.to_s) ||
+          document.send(:attribute_changed?, attribute.to_s) ||
           scope_value_changed?(document)
       end
 

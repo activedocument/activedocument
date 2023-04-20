@@ -49,7 +49,7 @@ module Mongoid
       #
       # @return [ Enumerator ] The enumerator.
       def each(&block)
-        if block_given?
+        if block
           [].each(&block)
           self
         else
@@ -101,7 +101,7 @@ module Mongoid
       #   if a block was given.
       def pluck_each(*fields, &block)
         enum = pluck(*fields).each(&block)
-        block_given? ? self : enum
+        block ? self : enum
       end
 
       # Pick the field values in null context.

@@ -114,7 +114,7 @@ module Mongoid
       #
       # @return [ Array<Class> ] The model classes whose indexes were successfully removed.
       def remove_indexes(models = ::Mongoid.models)
-        models.map do |model|
+        models.filter_map do |model|
           next if model.embedded?
 
           begin
@@ -124,7 +124,7 @@ module Mongoid
           end
 
           model
-        end.compact
+        end
       end
 
       # Shard collections for models that declare shard keys.
@@ -138,7 +138,7 @@ module Mongoid
       #
       # @return [ Array<Class> ] The sharded models
       def shard_collections(models = ::Mongoid.models)
-        models.map do |model|
+        models.filter_map do |model|
           next if model.shard_config.nil?
 
           if model.embedded? && !model.cyclic?
@@ -195,7 +195,7 @@ module Mongoid
           logger.info("MONGOID: Sharded collection #{model.collection.namespace} for #{model}")
 
           model
-        end.compact
+        end
       end
 
       private

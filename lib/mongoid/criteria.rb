@@ -102,7 +102,7 @@ module Mongoid
     #
     # @see https://ruby-doc.org/core/Enumerable.html#method-i-find
     def find(*args, &block)
-      if block_given?
+      if block
         _enumerable_find(*args, &block)
       else
         _findable_find(*args)

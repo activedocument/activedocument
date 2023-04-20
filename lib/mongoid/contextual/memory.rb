@@ -97,7 +97,7 @@ module Mongoid
       #
       # @return [ Enumerator ] The enumerator.
       def each(&block)
-        if block_given?
+        if block
           documents_for_iteration.each(&block)
           self
         else
@@ -275,7 +275,7 @@ module Mongoid
       #   if a block was given.
       def pluck_each(*fields, &block)
         enum = pluck(*fields).each(&block)
-        block_given? ? self : enum
+        block ? self : enum
       end
 
       # Pick the field values in memory.
@@ -767,7 +767,7 @@ module Mongoid
 
         if curr.is_a?(Array)
           # compact is used for consistency with server behavior.
-          curr.map { |d| retrieve_value_at_path(d, remaining) }.compact
+          curr.filter_map { |d| retrieve_value_at_path(d, remaining) }
         else
           retrieve_value_at_path(curr, remaining)
         end

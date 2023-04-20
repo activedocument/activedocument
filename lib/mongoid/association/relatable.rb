@@ -343,7 +343,7 @@ module Mongoid
       # Gets the model classes with inverse associations of this model. This is used to determine
       # the classes on the other end of polymorphic associations with models.
       def inverse_association_classes
-        Mongoid::Config.models.map { |m| inverse_association(m) }.compact.map(&:inverse_class)
+        Mongoid::Config.models.filter_map { |m| inverse_association(m) }.map(&:inverse_class)
       end
 
       def setup_index!

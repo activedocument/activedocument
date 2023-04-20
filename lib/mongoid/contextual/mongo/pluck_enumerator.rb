@@ -43,7 +43,7 @@ module Mongoid
         # @return [ Enumerator | PluckEnumerator ] The enumerator, or
         #   self if a block was given.
         def each(&block)
-          return to_enum unless block_given?
+          return to_enum unless block
 
           @view.projection(normalized_field_names.index_with(true)).each do |doc|
             yield_result(doc, &block)

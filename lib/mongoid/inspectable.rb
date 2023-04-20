@@ -29,12 +29,12 @@ module Mongoid
     #
     # @return [ String ] An array of pretty printed field values.
     def inspect_fields
-      fields.map do |name, field|
+      fields.filter_map do |name, field|
         unless name == '_id'
           as = field.options[:as]
           "#{name}#{as ? "(#{as})" : nil}: #{@attributes[name].inspect}"
         end
-      end.compact
+      end
     end
 
     # Get an array of inspected dynamic fields for the document.

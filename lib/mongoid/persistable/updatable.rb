@@ -148,7 +148,7 @@ module Mongoid
               # Apply changes in batches. Pop one change from each
               # field-conflict group round-robin until all changes
               # have been applied.
-              while (batched_changes = conflicting_change_groups.map(&:pop).compact.to_h.presence)
+              while (batched_changes = conflicting_change_groups.filter_map(&:pop).to_h.presence)
                 coll.find(selector).update_one(
                   positionally(selector, modifier => batched_changes),
                   session: _session
