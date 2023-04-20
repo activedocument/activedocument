@@ -345,7 +345,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.update!(set_addresses: [new_address])
+          person.update!(overridden_addresses: [new_address])
         end
 
         it 'overwrites the existing addresses' do
@@ -4652,33 +4652,33 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         DNS::Zone.new
       end
 
-      let(:soa_1) do
+      let(:soa1) do
         DNS::Record.new
       end
 
       context 'when replacing the set document' do
 
-        let(:soa_2) do
+        let(:soa2) do
           DNS::Record.new
         end
 
         before do
-          zone.soa = soa_1
+          zone.soa = soa1
         end
 
         it 'properly sets the association metadata' do
-          expect(zone.soa = soa_2).to eq(soa_2)
+          expect(zone.soa = soa2).to eq(soa2)
         end
       end
 
       context 'when deleting the set document' do
 
-        let(:soa_2) do
+        let(:soa2) do
           DNS::Record.new
         end
 
         before do
-          zone.soa = soa_1
+          zone.soa = soa1
         end
 
         it 'properly sets the association metadata' do
@@ -4693,33 +4693,33 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         DNS::Zone.create!
       end
 
-      let(:soa_1) do
+      let(:soa1) do
         DNS::Record.new
       end
 
       context 'when replacing the set document' do
 
-        let(:soa_2) do
+        let(:soa2) do
           DNS::Record.new
         end
 
         before do
-          zone.soa = soa_1
+          zone.soa = soa1
         end
 
         it 'properly sets the association' do
-          expect(zone.soa = soa_2).to eq(soa_2)
+          expect(zone.soa = soa2).to eq(soa2)
         end
       end
 
       context 'when deleting the set document' do
 
-        let(:soa_2) do
+        let(:soa2) do
           DNS::Record.new
         end
 
         before do
-          zone.soa = soa_1
+          zone.soa = soa1
         end
 
         it 'properly sets the association' do

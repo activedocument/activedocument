@@ -4569,8 +4569,8 @@ describe Mongoid::Contextual::Mongo do
       config_override :async_query_executor, :global_thread_pool
 
       it 'preloads the documents' do
-        context.load_async
-        context.documents_loader.wait
+        documents_loader = context.load_async
+        documents_loader.wait
 
         expect(context.view).to_not receive(:map)
         expect(context.to_a).to eq([band])
@@ -4582,8 +4582,8 @@ describe Mongoid::Contextual::Mongo do
           .at_least(:once)
           .and_raise(Mongo::Error::OperationFailure)
 
-        context.load_async
-        context.documents_loader.wait
+        documents_loader = context.load_async
+        documents_loader.wait
 
         expect do
           context.to_a
@@ -4595,8 +4595,8 @@ describe Mongoid::Contextual::Mongo do
       config_override :async_query_executor, :immediate
 
       it 'preloads the documents' do
-        context.load_async
-        context.documents_loader.wait
+        documents_loader = context.load_async
+        documents_loader.wait
 
         expect(context.view).to_not receive(:map)
         expect(context.to_a).to eq([band])
@@ -4608,8 +4608,8 @@ describe Mongoid::Contextual::Mongo do
           .at_least(:once)
           .and_raise(Mongo::Error::OperationFailure)
 
-        context.load_async
-        context.documents_loader.wait
+        documents_loader = context.load_async
+        documents_loader.wait
 
         expect do
           context.to_a

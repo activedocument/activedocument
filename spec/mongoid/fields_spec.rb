@@ -1395,7 +1395,7 @@ describe Mongoid::Fields do
   context 'when a setter accesses a field with a default' do
 
     let(:person) do
-      Person.new(set_on_map_with_default: 'testing')
+      Person.new(overridden_map_with_default: 'testing')
     end
 
     it 'sets the default value pre process' do

@@ -13,8 +13,7 @@ module Mongoid
       #
       # @return [ String ] The path.
       def self.source_root
-        @_mongoid_source_root ||=
-          File.expand_path("../#{base_name}/#{generator_name}/templates", __FILE__)
+        @source_root ||= File.expand_path("../#{base_name}/#{generator_name}/templates", __FILE__)
       end
     end
   end

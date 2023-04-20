@@ -1597,10 +1597,10 @@ describe Mongoid::Attributes do
     end
 
     context 'when attribute is an Array' do
-      let(:person) { Person.new aliases: [:alias_1] }
+      let(:person) { Person.new aliases: [:alias1] }
 
       it 'can set an Array Value' do
-        expect(person.aliases).to eq([:alias_1])
+        expect(person.aliases).to eq([:alias1])
       end
 
       it 'writes nil when trying to set a value of invalid type - hash' do

@@ -6,8 +6,8 @@ module InterceptableSpec
       @calls = []
     end
 
-    def record_call(cls, cb)
-      @calls << [cls, cb]
+    def record_call(klass, callback)
+      @calls << [klass, callback]
     end
 
     attr_reader :calls

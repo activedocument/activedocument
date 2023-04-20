@@ -671,7 +671,7 @@ module Mongoid
       # @param [ Object ] b The first object.
       #
       # @return [ Integer ] The comparison value.
-      def compare(a, b)
+      def compare(a, b) # rubocop:disable Naming/MethodParameterName
         if a.nil?
           b.nil? ? 0 : 1
         elsif b.nil?

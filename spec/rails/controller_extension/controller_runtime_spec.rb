@@ -29,7 +29,7 @@ describe 'Mongoid::Railties::ControllerRuntime' do
     include controller_runtime::ControllerExtension
   end
 
-  def set_metric(value)
+  def set_metric(value) # rubocop:disable Naming/AccessorMethodName
     Thread.current['Mongoid.controller_runtime'] = value
   end
 

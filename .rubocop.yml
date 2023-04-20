@@ -74,6 +74,17 @@ Lint/SuppressedException:
   Exclude:
     - 'spec/**/*'
 
+Naming/AccessorMethodName:
+  Exclude:
+    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'lib/mongoid/atomic/modifiers.rb'
+    - 'lib/mongoid/clients/options.rb'
+    - 'lib/mongoid/criteria/options.rb'
+    - 'lib/mongoid/encryptable.rb'
+    - 'lib/mongoid/fields/encrypted.rb'
+    - 'lib/mongoid/persistence_context.rb'
+    - 'lib/mongoid/timestamps/timeless.rb'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'
@@ -183,6 +194,15 @@ Metrics/BlockLength:
   Exclude:
     - '**/Rakefile'
     - '**/*.rake'
+
+Naming/PredicateName:
+  AllowedMethods:
+    - is_a?
+    - has_and_belongs_to_many
+    - has_many
+    - has_one
+    - has_attribute?
+    - has_attribute_before_type_cast?
 
 RSpec/NotToNot:
   EnforcedStyle: to_not
