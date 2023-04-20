@@ -134,6 +134,16 @@ module Mongoid
           read_raw_attribute(getter)
         end
       end
+
+      # Check if the method can be handled by method_missing.
+      #
+      # @param [ Symbol | String ] name The name of the method.
+      # @param [ true | false ] _include_private Whether to include private methods.
+      #
+      # @return [ true | false ] True if method can be handled, false otherwise.
+      def respond_to_missing?(name, _include_private = false)
+        attributes.key?(name.to_s.reader)
+      end
     end
   end
 end
