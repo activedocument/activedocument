@@ -214,24 +214,24 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
           Exhibitor.where(:status.ne => 'removed')
         end
 
-        let(:exhibitorPresent) do
+        let(:exhibitor_present) do
           Exhibitor.create!(status: 'present')
         end
 
-        let(:exhibitorRemoved) do
+        let(:exhibitor_removed) do
           Exhibitor.create!(status: 'removed')
         end
 
-        let(:exhibitionIncludesExhibitors) do
+        let(:exhibition_includes_exhibitors) do
           Exhibition.includes(:exhibitors).first
         end
 
         before do
           Exhibitor.default_scope -> { criteria }
           exhibition = Exhibition.create!
-          exhibition.exhibitors << exhibitorPresent
-          exhibition.exhibitors << exhibitorRemoved
-          exhibitionIncludesExhibitors
+          exhibition.exhibitors << exhibitor_present
+          exhibition.exhibitors << exhibitor_removed
+          exhibition_includes_exhibitors
         end
 
         after do
@@ -240,7 +240,7 @@ describe Mongoid::Association::Referenced::HasMany::Eager do
 
         it 'does not send another query when the children are accessed' do
           expect_query(0) do
-            expect(exhibitionIncludesExhibitors.exhibitors).to eq([exhibitorPresent])
+            expect(exhibition_includes_exhibitors.exhibitors).to eq([exhibitor_present])
           end
         end
       end

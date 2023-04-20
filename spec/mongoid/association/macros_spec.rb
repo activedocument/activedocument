@@ -204,7 +204,7 @@ describe Mongoid::Association::Macros do
       end
 
       it 'returns Mongoid::Criteria::Queryable::Key' do
-        expect(association.order).to be_kind_of(Mongoid::Criteria::Queryable::Key)
+        expect(association.order).to be_a(Mongoid::Criteria::Queryable::Key)
       end
     end
 
@@ -794,7 +794,7 @@ describe Mongoid::Association::Macros do
       end
 
       it 'returns Mongoid::Criteria::Queryable::Key' do
-        expect(association.order).to be_kind_of(Mongoid::Criteria::Queryable::Key)
+        expect(association.order).to be_a(Mongoid::Criteria::Queryable::Key)
       end
     end
 
@@ -881,7 +881,7 @@ describe Mongoid::Association::Macros do
         end
 
         it 'returns Mongoid::Criteria::Queryable::Key' do
-          expect(association.order).to be_kind_of(Mongoid::Criteria::Queryable::Key)
+          expect(association.order).to be_a(Mongoid::Criteria::Queryable::Key)
         end
       end
 
@@ -1003,7 +1003,7 @@ describe Mongoid::Association::Macros do
     end
 
     it 'returns a bson document of relations' do
-      expect(klass.allocate.relations).to be_a_kind_of(BSON::Document)
+      expect(klass.allocate.relations).to be_a(BSON::Document)
     end
 
     it 'has keys that are the relation name' do
@@ -1021,7 +1021,7 @@ describe Mongoid::Association::Macros do
     it 'has values that are association' do
       expect(
         klass.allocate.relations.values.first
-      ).to be_a_kind_of(Mongoid::Association::Embedded::EmbedsOne)
+      ).to be_a(Mongoid::Association::Embedded::EmbedsOne)
     end
   end
 

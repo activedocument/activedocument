@@ -76,7 +76,7 @@ describe Mongoid::Persistable::Creatable do
       end
 
       it 'returns the document' do
-        expect(person).to be_a_kind_of(Person)
+        expect(person).to be_a(Person)
       end
 
       context 'when creating an embedded document' do

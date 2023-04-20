@@ -42,15 +42,19 @@ describe Mongoid::Clients::Factory do
               analytics: { hosts: SpecConfig.instance.addresses, database: database_id }
             }
           end
+
           let(:cluster_addresses) do
             cluster.addresses.map(&:to_s)
           end
+
           let(:client) do
             described_class.create(:analytics)
           end
+
           let(:cluster) do
             client.cluster
           end
+
           let(:cluster_addresses) do
             cluster.addresses.map(&:to_s)
           end
@@ -121,12 +125,15 @@ describe Mongoid::Clients::Factory do
               analytics: { hosts: ['127.0.0.1'], database: database_id }
             }
           end
+
           let(:client) do
             described_class.create(:analytics)
           end
+
           let(:default) do
             described_class.create(:default)
           end
+
           let(:cluster) do
             client.cluster
           end
@@ -143,12 +150,8 @@ describe Mongoid::Clients::Factory do
             expect(client).to be_a(Mongo::Client)
           end
 
-          it "sets the cluster's seed ports to 27017" do
-            expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
-          end
-
           it 'sets ips with no ports to 27017' do
-            expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
+            expect(cluster.addresses.first.to_s).to be_in(%w[127.0.0.1:27017 localhost:27017])
           end
         end
 
@@ -163,9 +166,11 @@ describe Mongoid::Clients::Factory do
                 analytics: { uri: 'mongodb://127.0.0.1:27017/mongoid_test' }
               }
             end
+
             let(:client) do
               described_class.create(:analytics)
             end
+
             let(:cluster) do
               client.cluster
             end
@@ -183,7 +188,7 @@ describe Mongoid::Clients::Factory do
             end
 
             it "sets the cluster's seeds" do
-              expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
+              expect(cluster.addresses.first.to_s).to be_in(%w[127.0.0.1:27017 localhost:27017])
             end
 
             it 'sets the database' do
@@ -289,12 +294,15 @@ describe Mongoid::Clients::Factory do
       let(:config) do
         { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
       end
+
       let(:client) do
         described_class.create
       end
+
       let(:cluster) do
         client.cluster
       end
+
       let(:cluster_addresses) do
         cluster.addresses.map(&:to_s)
       end
@@ -375,12 +383,15 @@ describe Mongoid::Clients::Factory do
         }
       }
     end
+
     let(:client) do
       described_class.default
     end
+
     let(:cluster) do
       client.cluster
     end
+
     let(:cluster_addresses) do
       cluster.addresses.map(&:to_s)
     end

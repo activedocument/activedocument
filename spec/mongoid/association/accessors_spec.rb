@@ -683,7 +683,7 @@ describe Mongoid::Association::Accessors do
 
         shared_examples 'allows access to field of projected association' do
           it 'creates an accessor for the embedded document' do
-            expect(persisted_person.phone_numbers.first).to be_a_kind_of(Phone)
+            expect(persisted_person.phone_numbers.first).to be_a(Phone)
           end
 
           it 'creates an accessor for the projected field on the embedded document' do

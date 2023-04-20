@@ -748,7 +748,7 @@ describe Mongoid::Persistable::Savable do
       end
 
       it 'properly persists the one-to-one type' do
-        expect(from_db).to be_a_kind_of(Firefox)
+        expect(from_db).to be_a(Firefox)
       end
 
       it 'properly persists the one-to-one relations' do

@@ -248,7 +248,7 @@ describe Mongoid::Association::Builders do
         person.services.asc(:sid)
       end
 
-      it { is_expected.to be_a_kind_of(Service) }
+      it { is_expected.to be_a(Service) }
       it { is_expected.to_not be_persisted }
     end
   end

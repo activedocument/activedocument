@@ -37,7 +37,7 @@ describe Mongoid::Extensions::DateTime do
     end
 
     it 'converts to a datetime' do
-      expect(date_time).to be_kind_of(DateTime)
+      expect(date_time).to be_a(DateTime)
     end
 
     it 'does not change the time' do

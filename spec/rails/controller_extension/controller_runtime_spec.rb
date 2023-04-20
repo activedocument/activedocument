@@ -7,6 +7,28 @@ describe 'Mongoid::Railties::ControllerRuntime' do
   controller_runtime = Mongoid::Railties::ControllerRuntime
   collector = controller_runtime::Collector
 
+  reference_controller_class = Class.new do
+    def process_action(*_)
+      @process_action = true
+    end
+
+    def cleanup_view_runtime(*_)
+      @cleanup_view_runtime.call
+    end
+
+    def append_info_to_payload(*_)
+      @append_info_to_payload = true
+    end
+
+    def self.log_process_action(*_)
+      @log_process_action.call
+    end
+  end
+
+  controller_class = Class.new reference_controller_class do
+    include controller_runtime::ControllerExtension
+  end
+
   def set_metric(value)
     Thread.current['Mongoid.controller_runtime'] = value
   end
@@ -14,6 +36,8 @@ describe 'Mongoid::Railties::ControllerRuntime' do
   def clear_metric!
     set_metric 0
   end
+
+  let(:controller) { controller_class.new }
 
   describe 'Collector' do
 
@@ -44,32 +68,7 @@ describe 'Mongoid::Railties::ControllerRuntime' do
       expect(collector.reset_runtime).to eq(42)
       expect(collector.runtime).to eq(0)
     end
-
   end
-
-  reference_controller_class = Class.new do
-    def process_action *_
-      @process_action = true
-    end
-
-    def cleanup_view_runtime *_
-      @cleanup_view_runtime.call
-    end
-
-    def append_info_to_payload *_
-      @append_info_to_payload = true
-    end
-
-    def self.log_process_action *_
-      @log_process_action.call
-    end
-  end
-
-  controller_class = Class.new reference_controller_class do
-    include controller_runtime::ControllerExtension
-  end
-
-  let(:controller) { controller_class.new }
 
   it 'resets the metric before each action' do
     set_metric 42
@@ -108,5 +107,4 @@ describe 'Mongoid::Railties::ControllerRuntime' do
     expect(controller_class.instance_variable_get(:@log_process_action)).to be(true)
     expect(messages).to eq(['MongoDB: 42.1ms'])
   end
-
 end

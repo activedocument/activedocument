@@ -106,6 +106,15 @@ Style/CaseEquality:
     - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
     - 'spec/**/*'
 
+RSpec/ExampleLength:
+  Max: 50
+
+RSpec/MultipleExpectations:
+  Max: 20
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 50
+
 # --------------------------------------------------
 # These cops are disabled by default, but should be periodically
 # checked and cleaned up.

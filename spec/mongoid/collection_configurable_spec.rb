@@ -44,7 +44,7 @@ describe Mongoid::CollectionConfigurable do
     Object.send(:remove_const, :CollectionConfigurableInvalidOptions)
   end
 
-  after(:each) do
+  after do
     [
       CollectionConfigurableValidOptions,
       CollectionConfigurableUnknownOptions
@@ -54,17 +54,18 @@ describe Mongoid::CollectionConfigurable do
   end
 
   context 'when collection does not exist' do
+
     context 'with valid options' do
       let(:subject) do
         CollectionConfigurableValidOptions
       end
 
-      before(:each) do
-        subject.create_collection
-      end
-
       let(:coll_options) do
         subject.collection.database.list_collections(filter: { name: subject.collection_name.to_s }).first
+      end
+
+      before do
+        subject.create_collection
       end
 
       it 'creates the collection' do

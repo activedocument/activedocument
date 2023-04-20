@@ -62,11 +62,11 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
       end
 
       it 'returns an array of documents' do
-        expect(documents).to be_a_kind_of(Array)
+        expect(documents).to be_a(Array)
       end
 
       it 'creates the correct type of documents' do
-        expect(documents[0]).to be_a_kind_of(Address)
+        expect(documents[0]).to be_a(Address)
       end
 
       it 'sets the object on the documents' do
@@ -89,12 +89,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Buildable do
       end
 
       it 'returns an array of documents' do
-        expect(documents).to be_a_kind_of(Array)
+        expect(documents).to be_a(Array)
       end
 
       it 'creates the correct type of document' do
-        expect(documents[0]).to be_a_kind_of(Circle)
-        expect(documents[1]).to be_a_kind_of(Square)
+        expect(documents[0]).to be_a(Circle)
+        expect(documents[1]).to be_a(Square)
       end
 
       it 'sets the object on the document' do
