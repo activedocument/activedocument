@@ -742,7 +742,7 @@ describe Mongoid::Clients::Sessions do
 
           before do
             subject.transaction do
-              subject.update_attributes!(name: 'Austin Powers')
+              subject.update!(name: 'Austin Powers')
             end
           end
 
@@ -871,7 +871,7 @@ describe Mongoid::Clients::Sessions do
 
           before do
             subject.transaction do
-              subject.update_attributes!(name: 'Austin Powers')
+              subject.update!(name: 'Austin Powers')
               raise Mongoid::Errors::Rollback
             end
           end
@@ -942,7 +942,7 @@ describe Mongoid::Clients::Sessions do
           end
 
           before do
-            subject.update_attributes!(name: 'Jason Bourne')
+            subject.update!(name: 'Jason Bourne')
           end
 
           it_behaves_like 'commit callbacks are called'

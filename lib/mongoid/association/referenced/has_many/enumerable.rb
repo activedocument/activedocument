@@ -285,7 +285,7 @@ module Mongoid
           def include?(doc)
             return super unless _unloaded
 
-            _unloaded.where(_id: doc._id).exists? || _added.key?(doc._id)
+            _unloaded.exists?(_id: doc._id) || _added.key?(doc._id)
           end
 
           # Inspection will just inspect the entries for nice array-style

@@ -516,7 +516,7 @@ describe Mongoid::Touchable do
 
         it "updates the parent's updated at" do
           expect do
-            agent.update_attributes!(number: '2')
+            agent.update!(number: '2')
           end.to change { agency.updated_at }
         end
       end

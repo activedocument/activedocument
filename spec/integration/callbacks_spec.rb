@@ -166,7 +166,7 @@ describe 'callbacks integration tests' do
 
         context 'set as a document instance' do
           before do
-            instance.update_attributes!(stars: [Star.new])
+            instance.update!(stars: [Star.new])
           end
 
           include_examples 'persists the attribute value'
@@ -174,7 +174,7 @@ describe 'callbacks integration tests' do
 
         context 'set as attributes on parent' do
           before do
-            instance.update_attributes!(stars: [{}])
+            instance.update!(stars: [{}])
           end
 
           include_examples 'persists the attribute value'
@@ -194,7 +194,7 @@ describe 'callbacks integration tests' do
 
         context 'set as a document instance' do
           before do
-            instance.update_attributes!(stars: [Star.new(planets: [Planet.new])])
+            instance.update!(stars: [Star.new(planets: [Planet.new])])
           end
 
           include_examples 'persists the attribute value'
@@ -202,7 +202,7 @@ describe 'callbacks integration tests' do
 
         context 'set as attributes on parent' do
           before do
-            instance.update_attributes!(stars: [planets: [{}]])
+            instance.update!(stars: [planets: [{}]])
           end
 
           include_examples 'persists the attribute value'
@@ -228,7 +228,7 @@ describe 'callbacks integration tests' do
 
         context 'set as a document instance' do
           before do
-            instance.update_attributes!(president: President.new)
+            instance.update!(president: President.new)
           end
 
           include_examples 'persists the attribute value'
@@ -236,7 +236,7 @@ describe 'callbacks integration tests' do
 
         context 'set as attributes on parent' do
           before do
-            instance.update_attributes!(president: { name: 'Abraham Lincoln' })
+            instance.update!(president: { name: 'Abraham Lincoln' })
           end
 
           include_examples 'persists the attribute value'
@@ -256,7 +256,7 @@ describe 'callbacks integration tests' do
 
         context 'set as a document instance' do
           before do
-            instance.update_attributes!(president: President.new(first_spouse: FirstSpouse.new))
+            instance.update!(president: President.new(first_spouse: FirstSpouse.new))
           end
 
           include_examples 'persists the attribute value'
@@ -264,7 +264,7 @@ describe 'callbacks integration tests' do
 
         context 'set as attributes on parent' do
           before do
-            instance.update_attributes!(president: { first_spouse: { name: 'Mary Todd Lincoln' } })
+            instance.update!(president: { first_spouse: { name: 'Mary Todd Lincoln' } })
           end
 
           include_examples 'persists the attribute value'

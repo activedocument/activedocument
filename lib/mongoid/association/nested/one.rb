@@ -113,7 +113,7 @@ module Mongoid
         #
         # @return [ true | false ] If the document should be replaced.
         def replace?
-          !existing && !destroyable? && !attributes.blank?
+          !existing && !destroyable? && attributes.present?
         end
 
         # Should the document be updated?

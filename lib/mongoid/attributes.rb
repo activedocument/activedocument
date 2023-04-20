@@ -30,7 +30,7 @@ module Mongoid
     # @return [ true | false ] True if present, false if not.
     def attribute_present?(name)
       attribute = read_raw_attribute(name)
-      !attribute.blank? || attribute == false
+      attribute.present? || attribute == false
     rescue Mongoid::Errors::AttributeNotLoaded
       false
     end

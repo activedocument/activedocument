@@ -187,13 +187,13 @@ describe Mongoid::Attributes::Readonly do
       context 'when updating via update_attributes' do
 
         it 'does not update the first field' do
-          person.update_attributes!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
           person.save!
           expect(person.reload.title).to eq('sir')
         end
 
         it 'does not update the second field' do
-          person.update_attributes!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
           person.save!
           expect(person.reload.aliased_timestamp).to eq(Time.at(42))
         end
@@ -202,13 +202,13 @@ describe Mongoid::Attributes::Readonly do
       context 'when updating via update_attributes!' do
 
         it 'does not update the first field' do
-          person.update_attributes!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
           person.save!
           expect(person.reload.title).to eq('sir')
         end
 
         it 'does not update the second field' do
-          person.update_attributes!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
           person.save!
           expect(person.reload.aliased_timestamp).to eq(Time.at(42))
         end

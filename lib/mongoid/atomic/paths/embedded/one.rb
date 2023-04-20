@@ -33,7 +33,7 @@ module Mongoid
           # @return [ String ] The position of the document.
           def position
             pos = parent.atomic_position
-            "#{pos}#{'.' unless pos.blank?}#{document._association.store_as}"
+            "#{pos}#{'.' if pos.present?}#{document._association.store_as}"
           end
         end
       end

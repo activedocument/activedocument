@@ -718,7 +718,7 @@ describe Mongoid::Validatable::UniquenessValidator do
             end
 
             it 'should set an error for associated object not being unique' do
-              item.update_attributes(folder_id: personal_folder.id)
+              item.update(folder_id: personal_folder.id)
               expect(item.errors.messages[:name].first).to eq('has already been taken')
             end
           end

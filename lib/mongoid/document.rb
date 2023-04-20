@@ -242,7 +242,7 @@ module Mongoid
         without_autobuild do
           relation = send(name)
           stored = meta.store_as
-          if attributes.key?(stored) || !relation.blank?
+          if attributes.key?(stored) || relation.present?
             if relation.nil?
               attributes.delete(stored)
             else

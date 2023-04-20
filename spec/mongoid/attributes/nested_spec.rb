@@ -1245,11 +1245,11 @@ describe Mongoid::Attributes::Nested do
                 end
 
                 it 'updates the first existing document' do
-                  expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                  expect(person.addresses.pluck('street')).to include('Maybachufer')
                 end
 
                 it 'updates the second existing document' do
-                  expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                  expect(person.addresses.pluck('street')).to include('Alexander Platz')
                 end
 
                 it 'does not add new documents' do
@@ -1268,11 +1268,11 @@ describe Mongoid::Attributes::Nested do
                 end
 
                 it 'updates the first existing document' do
-                  expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                  expect(person.addresses.pluck('street')).to include('Maybachufer')
                 end
 
                 it 'updates the second existing document' do
-                  expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                  expect(person.addresses.pluck('street')).to include('Alexander Platz')
                 end
 
                 it 'does not add new documents' do
@@ -1292,11 +1292,11 @@ describe Mongoid::Attributes::Nested do
               end
 
               it 'updates the first existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                expect(person.addresses.pluck('street')).to include('Maybachufer')
               end
 
               it 'updates the second existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                expect(person.addresses.pluck('street')).to include('Alexander Platz')
               end
 
               it 'does not add new documents' do
@@ -1315,11 +1315,11 @@ describe Mongoid::Attributes::Nested do
               end
 
               it 'updates the first existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                expect(person.addresses.pluck('street')).to include('Maybachufer')
               end
 
               it 'updates the second existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                expect(person.addresses.pluck('street')).to include('Alexander Platz')
               end
 
               it 'does not add new documents' do
@@ -1338,11 +1338,11 @@ describe Mongoid::Attributes::Nested do
               end
 
               it 'updates the first existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Maybachufer')
+                expect(person.addresses.pluck('street')).to include('Maybachufer')
               end
 
               it 'updates the second existing document' do
-                expect(person.addresses.collect { |a| a['street'] }).to include('Alexander Platz')
+                expect(person.addresses.pluck('street')).to include('Alexander Platz')
               end
 
               it 'does not add new documents' do
@@ -1390,7 +1390,7 @@ describe Mongoid::Attributes::Nested do
                   end
 
                   before do
-                    band.update_attributes(attributes)
+                    band.update(attributes)
                   end
 
                   it 'does not remove the child document' do
@@ -2396,7 +2396,7 @@ describe Mongoid::Attributes::Nested do
 
               before do
                 pizza.topping = Topping.create!(name: 'cheese')
-                pizza.update_attributes!(topping_attributes: { name: 'onions' })
+                pizza.update!(topping_attributes: { name: 'onions' })
               end
 
               it 'persists the attribute changes' do
@@ -4342,7 +4342,7 @@ describe Mongoid::Attributes::Nested do
         end
 
         before do
-          node.update_attributes!(attributes)
+          node.update!(attributes)
         end
 
         it 'adds the new embedded document' do
@@ -4370,7 +4370,7 @@ describe Mongoid::Attributes::Nested do
       end
 
       before do
-        person.update_attributes!(attributes)
+        person.update!(attributes)
       end
 
       it 'removes the document from the parent' do
@@ -4421,7 +4421,7 @@ describe Mongoid::Attributes::Nested do
       end
 
       before do
-        address.update_attributes!(attributes)
+        address.update!(attributes)
         address.reload
       end
 
@@ -4464,7 +4464,7 @@ describe Mongoid::Attributes::Nested do
           end
 
           before do
-            person_one.update_attributes!(attributes)
+            person_one.update!(attributes)
           end
 
           it 'deletes the document from the relation' do
@@ -4514,7 +4514,7 @@ describe Mongoid::Attributes::Nested do
             end
 
             before do
-              band.update_attributes!(attributes)
+              band.update!(attributes)
             end
 
             it 'removes the child from the relation' do
@@ -4547,7 +4547,7 @@ describe Mongoid::Attributes::Nested do
             end
 
             before do
-              person.update_attributes!(attributes)
+              person.update!(attributes)
             end
 
             let(:address) do
@@ -4587,7 +4587,7 @@ describe Mongoid::Attributes::Nested do
             end
 
             before do
-              person.update_attributes!(attributes)
+              person.update!(attributes)
               person.reload
             end
 
@@ -4618,7 +4618,7 @@ describe Mongoid::Attributes::Nested do
           end
 
           before do
-            person.update_attributes!(attributes)
+            person.update!(attributes)
           end
 
           let(:address) do
@@ -4667,7 +4667,7 @@ describe Mongoid::Attributes::Nested do
           end
 
           before do
-            person.update_attributes!(attributes)
+            person.update!(attributes)
           end
 
           it 'updates the first level embedded document' do
@@ -4707,7 +4707,7 @@ describe Mongoid::Attributes::Nested do
             end
 
             before do
-              person.update_attributes!(attributes)
+              person.update!(attributes)
             end
 
             it 'updates the first level embedded document' do
@@ -4743,7 +4743,7 @@ describe Mongoid::Attributes::Nested do
               end
 
               before do
-                person.update_attributes!(attributes)
+                person.update!(attributes)
               end
 
               it 'updates the nested embedded document' do
@@ -4768,7 +4768,7 @@ describe Mongoid::Attributes::Nested do
         end
 
         before do
-          user.update_attributes!(params)
+          user.update!(params)
         end
 
         around do |example|
@@ -4808,7 +4808,7 @@ describe Mongoid::Attributes::Nested do
         context 'when updating invalid attributes' do
 
           let!(:update) do
-            node.update_attributes({
+            node.update({
               servers_attributes: { '0' => { '_id' => server.id, 'name' => '' } }
             })
           end
@@ -4888,7 +4888,7 @@ describe Mongoid::Attributes::Nested do
         end
 
         before do
-          league.update_attributes!(params)
+          league.update!(params)
         end
 
         it 'sets the nested attributes' do
@@ -4906,7 +4906,7 @@ describe Mongoid::Attributes::Nested do
           end
 
           before do
-            league.update_attributes!(new_params)
+            league.update!(new_params)
           end
 
           it 'sets the nested attributes' do
@@ -4972,19 +4972,19 @@ describe Mongoid::Attributes::Nested do
     let(:two_levels_params) { { post_attributes: { comments_attributes: [{ body: 'test' }] } } }
 
     it 'creates a 1st-depth child model' do
-      author.update_attributes(one_level_params)
+      author.update(one_level_params)
       expect(author.post.persisted?).to be true
     end
 
     it 'creates a 1st-depth child model, and a 2nd-depth child model' do
-      author.update_attributes(two_levels_params)
+      author.update(two_levels_params)
       expect(author.post.comments.count).to eq 1
     end
 
     context 'the 1st-depth child model already exists' do
       it 'creates a 2nd-depth child model' do
         author.create_post(title: 'test')
-        author.update_attributes(two_levels_params)
+        author.update(two_levels_params)
         expect(author.post.comments.count).to eq 1
       end
     end

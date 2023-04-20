@@ -36,7 +36,7 @@ module Mongoid
           end
 
           def set_relation(doc, element)
-            doc.__build__(@association.name, element, @association) unless doc.blank?
+            doc.__build__(@association.name, element, @association) if doc.present?
           end
 
           def group_by_key

@@ -6,8 +6,7 @@ module Mongoid
 
     shared_context 'with encryption' do
       let(:mongocryptd_port) do
-        if ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'] &&
-           !ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'].empty?
+        if ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'].present?
           ENV['MONGO_RUBY_DRIVER_MONGOCRYPTD_PORT'].to_i
         else
           27020

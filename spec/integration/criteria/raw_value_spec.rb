@@ -12,9 +12,9 @@ describe 'Queries with Mongoid::RawValue criteria' do
   end
 
   let!(:band1) { Band.create!(name: '1', likes: 0, rating: 0.9, sales: BigDecimal('90'), decibels: 20..80, founded: today, updated: now_utc) }
-  let!(:band2) { Band.create!(name: '2', likes: 1, rating: 1.0, sales: BigDecimal('100'), decibels: 30..90, founded: today, updated: now_utc + 1.days) }
-  let!(:band3) { Band.create!(name: '3', likes: 1, rating: 2.2, sales: BigDecimal('220'), decibels: 40..100, founded: today + 1.days, updated: now_utc + 2.days) }
-  let!(:band4) { Band.create!(name: '3', likes: 2, rating: 3.1, sales: BigDecimal('310'), decibels: 50..120, founded: today + 1.days, updated: now_utc + 3.days) }
+  let!(:band2) { Band.create!(name: '2', likes: 1, rating: 1.0, sales: BigDecimal('100'), decibels: 30..90, founded: today, updated: now_utc + 1.day) }
+  let!(:band3) { Band.create!(name: '3', likes: 1, rating: 2.2, sales: BigDecimal('220'), decibels: 40..100, founded: today + 1.day, updated: now_utc + 2.days) }
+  let!(:band4) { Band.create!(name: '3', likes: 2, rating: 3.1, sales: BigDecimal('310'), decibels: 50..120, founded: today + 1.day, updated: now_utc + 3.days) }
   let!(:band5) { Band.create!(name: '4', likes: 3, rating: 3.1, sales: BigDecimal('310'), decibels: 60..150, founded: today + 2.days, updated: now_utc + 3.days, labels: labels) }
 
   let!(:band6) do

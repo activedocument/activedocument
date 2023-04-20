@@ -73,7 +73,7 @@ module Mongoid
             context 'when the document has been persisted' do
               let(:object) { parent.favorites.create }
               let!(:original_id) { object._id }
-              let(:id_is_unchanged) { parent.favorites.where(_id: original_id).exists? }
+              let(:id_is_unchanged) { parent.favorites.exists?(_id: original_id) }
 
               it_behaves_like 'a persisted document'
 

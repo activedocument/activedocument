@@ -65,7 +65,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:as) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:as) do
 
           it 'returns nil' do
             expect(association.as).to be_nil
@@ -142,7 +142,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:autobuild) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:autobuild) do
 
           it 'returns false' do
             expect(association.autobuilding?).to be(false)
@@ -219,7 +219,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:autosave) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:autosave) do
 
           it 'returns false' do
             expect(association.autosave?).to be(false)
@@ -267,7 +267,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:dependent) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:dependent) do
 
           it 'returns nil' do
             expect(association.dependent).to be_nil
@@ -319,7 +319,7 @@ describe Mongoid::Association::Options do
           end
 
           context 'when the association does not store the foreign key', if: association_class::VALID_OPTIONS.include?(:foreign_key) &&
-                                                                             !STORES_FOREIGN_KEY.include?(association_class) do
+                                                                             STORES_FOREIGN_KEY.exclude?(association_class) do
 
             context 'when :foreign_key option is not specified' do
 
@@ -334,7 +334,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:foreign_key) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:foreign_key) do
 
           it 'returns nil' do
             expect(association.dependent).to be_nil
@@ -382,7 +382,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:primary_key) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:primary_key) do
 
           it 'returns nil' do
             expect(association.primary_key).to be_nil
@@ -430,7 +430,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:after_add) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:after_add) do
 
           it 'returns nil' do
             expect(association.get_callbacks(:after_add)).to be_empty
@@ -478,7 +478,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:after_remove) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:after_remove) do
 
           it 'returns nil' do
             expect(association.get_callbacks(:after_remove)).to be_empty
@@ -526,7 +526,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:before_add) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:before_add) do
 
           it 'returns nil' do
             expect(association.get_callbacks(:before_add)).to be_empty
@@ -574,7 +574,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:before_remove) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:before_remove) do
 
           it 'returns nil' do
             expect(association.get_callbacks(:before_remove)).to be_empty
@@ -651,7 +651,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:index) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:index) do
 
           it 'returns false' do
             expect(association.indexed?).to be(false)
@@ -699,7 +699,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:order) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:order) do
 
           it 'returns nil' do
             expect(association.order).to be_nil
@@ -776,7 +776,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:polymorphic) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:polymorphic) do
 
           it 'returns false' do
             expect(association.polymorphic?).to be(false)
@@ -853,7 +853,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:cascade_callbacks) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:cascade_callbacks) do
 
           it 'returns false' do
             expect(association.cascading_callbacks?).to be(false)
@@ -930,7 +930,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:cyclic) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:cyclic) do
 
           it 'returns false' do
             expect(association.cyclic?).to be(false)
@@ -978,7 +978,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:store_as) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:store_as) do
 
           it 'returns nil' do
             expect(association.store_as).to be_nil
@@ -1026,7 +1026,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:class_name) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:class_name) do
 
           it 'returns the name deduced from the association name' do
             expect(association.class_name).to eq(ActiveSupport::Inflector.classify(:name))
@@ -1101,7 +1101,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:counter_cache) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:counter_cache) do
 
           it 'returns false' do
             expect(association.counter_cached?).to be(false)
@@ -1186,7 +1186,7 @@ describe Mongoid::Association::Options do
 
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:extend) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:extend) do
 
           it 'should support the option' do
             raise('All association types should support this option')
@@ -1219,7 +1219,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:inverse_of) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:inverse_of) do
 
           it 'returns nil' do
             expect(association.inverse_of).to be_nil
@@ -1294,7 +1294,7 @@ describe Mongoid::Association::Options do
           end
         end
 
-        context 'when the option is not supported by the association type', if: !association_class::VALID_OPTIONS.include?(:validate) do
+        context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:validate) do
 
           it 'returns false' do
             expect(association.send(:validate?)).to be(false)

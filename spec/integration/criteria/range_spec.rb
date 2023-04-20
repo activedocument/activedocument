@@ -12,7 +12,7 @@ describe 'Queries with Range criteria' do
   end
 
   let!(:band1) { Band.create!(likes: 0, rating: 0.9, founded: today, updated_at: now_utc) }
-  let!(:band2) { Band.create!(likes: 1, rating: 1.0, founded: today + 1.day, updated_at: now_utc + 1.days) }
+  let!(:band2) { Band.create!(likes: 1, rating: 1.0, founded: today + 1.day, updated_at: now_utc + 1.day) }
   let!(:band3) { Band.create!(likes: 2, rating: 2.9, founded: today + 2.days, updated_at: now_utc + 2.days) }
   let!(:band4) { Band.create!(likes: 3, rating: 3.0, founded: today + 3.days, updated_at: now_utc + 3.days) }
   let!(:band5) { Band.create!(likes: 4, rating: 3.1, founded: today + 4.days, updated_at: now_utc + 4.days, labels: labels) }

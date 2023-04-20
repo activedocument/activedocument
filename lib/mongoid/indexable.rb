@@ -73,7 +73,7 @@ module Mongoid
       #
       # @return [ true ] If the operation succeeded.
       def add_indexes
-        if hereditary? && !index_keys.include?(discriminator_key.to_sym => 1)
+        if hereditary? && index_keys.exclude?(discriminator_key.to_sym => 1)
           index({ discriminator_key.to_sym => 1 }, unique: false)
         end
         true

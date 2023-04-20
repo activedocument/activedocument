@@ -533,8 +533,8 @@ module Mongoid
     # @return [ true | false ] If type selection should be added.
     def type_selectable?
       klass.hereditary? &&
-        !selector.keys.include?(discriminator_key) &&
-        !selector.keys.include?(discriminator_key.to_sym)
+        selector.keys.exclude?(discriminator_key) &&
+        selector.keys.exclude?(discriminator_key.to_sym)
     end
 
     # Get the selector for type selection.

@@ -345,7 +345,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.update_attributes!(set_addresses: [new_address])
+          person.update!(set_addresses: [new_address])
         end
 
         it 'overwrites the existing addresses' do
@@ -572,7 +572,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
         before do
           attributes['addresses'][0]['city'] = 'Berlin'
-          person.update_attributes!(attributes)
+          person.update!(attributes)
         end
 
         it 'sets the new attributes' do
@@ -608,7 +608,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         before do
           attributes['city'] = 'Berlin'
           attributes['locations'][0]['name'] = 'Home'
-          person.addresses.first.update_attributes!(attributes)
+          person.addresses.first.update!(attributes)
         end
 
         it 'sets the new attributes on the address' do
@@ -1852,7 +1852,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          book.update_attributes!({ 'pages' => nil })
+          book.update!({ 'pages' => nil })
         rescue StandardError
         end
 
@@ -3270,7 +3270,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
         context 'when updating with a hash' do
 
           before do
-            address.update_attributes!(locations: [{ name: 'home' }])
+            address.update!(locations: [{ name: 'home' }])
           end
 
           it 'updates the attributes' do
@@ -3670,7 +3670,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     before do
-      person.update_attributes!(person.attributes)
+      person.update!(person.attributes)
     end
 
     it 'does not duplicate the embedded documents' do
@@ -3739,7 +3739,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     context 'when updating attributes' do
 
       before do
-        from_db.update_attributes(name: '')
+        from_db.update(name: '')
       end
 
       it 'does not lose the parent reference' do
@@ -4153,7 +4153,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
       end
 
       before do
-        from_db.update_attributes!(
+        from_db.update!(
           addresses: [
             { locations: [{ name: 'work' }] }
           ]
@@ -4216,7 +4216,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
 
     before do
-      person.update_attributes!(
+      person.update!(
         appointments: [appointment_one.as_document, appointment_two.as_document],
         symptoms: [symptom_one.as_document, symptom_two.as_document]
       )

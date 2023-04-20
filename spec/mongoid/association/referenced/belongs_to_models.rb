@@ -7,5 +7,5 @@ end
 
 class BTMComment
   include Mongoid::Document
-  belongs_to :article, class_name: 'BTMArticle', required: false
+  belongs_to :article, class_name: 'BTMArticle', optional: true
 end

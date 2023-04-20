@@ -3196,10 +3196,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     before do
-      person.update_attributes!(
+      person.update!(
         houses: [wife_house, exwife_house, girlfriend_house]
       )
-      person.update_attributes!(house_ids: [girlfriend_house.id])
+      person.update!(house_ids: [girlfriend_house.id])
     end
 
     context 'when reloading' do

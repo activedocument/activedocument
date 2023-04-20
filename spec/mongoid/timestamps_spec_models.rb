@@ -22,14 +22,14 @@ module TimestampsSpec
       include Mongoid::Document
       include Mongoid::Timestamps
 
-      belongs_to :user, required: false, touch: true, class_name: 'TimestampsSpec::Touch::User'
+      belongs_to :user, required: false, touch: true, class_name: 'TimestampsSpec::Touch::User' # rubocop:disable Rails/BelongsTo
     end
 
     class Pet
       include Mongoid::Document
       include Mongoid::Timestamps
 
-      belongs_to :user, required: false, touch: true, class_name: 'TimestampsSpec::Touch::User'
+      belongs_to :user, optional: true, touch: true, class_name: 'TimestampsSpec::Touch::User'
     end
   end
 
@@ -54,14 +54,14 @@ module TimestampsSpec
       include Mongoid::Document
       include Mongoid::Timestamps
 
-      belongs_to :user, required: false, touch: false, class_name: 'TimestampsSpec::NoTouch::User'
+      belongs_to :user, required: false, touch: false, class_name: 'TimestampsSpec::NoTouch::User' # rubocop:disable Rails/BelongsTo
     end
 
     class Pet
       include Mongoid::Document
       include Mongoid::Timestamps
 
-      belongs_to :user, required: false, touch: false, class_name: 'TimestampsSpec::NoTouch::User'
+      belongs_to :user, optional: true, touch: false, class_name: 'TimestampsSpec::NoTouch::User'
     end
   end
 end
