@@ -4,6 +4,12 @@ require 'spec_helper'
 
 describe Mongoid::Association::Depending do
 
+  around do |example|
+    relations_before = Person.relations
+    example.run
+    Person.relations = relations_before
+  end
+
   describe '.included' do
 
     context 'when a destroy dependent is defined' do
@@ -52,7 +58,7 @@ describe Mongoid::Association::Depending do
             define_classes
 
             u = DependentUser.create!
-            expect { u.destroy! }.not_to raise_error
+            expect { u.destroy! }.to_not raise_error
           end
 
           it 'adds the dependent' do
@@ -121,7 +127,7 @@ describe Mongoid::Association::Depending do
             define_classes
 
             c = DependentCollegeUser.create!
-            expect { c.destroy! }.not_to raise_error
+            expect { c.destroy! }.to_not raise_error
           end
         end
 
@@ -226,7 +232,7 @@ describe Mongoid::Association::Depending do
             dep = Dep.create!(double_assoc: one)
             one.destroy!
 
-            expect { Dep.find(dep.id) }.not_to raise_error
+            expect { Dep.find(dep.id) }.to_not raise_error
             expect(dep.double_assoc).to be_nil
           end
 
@@ -255,12 +261,6 @@ describe Mongoid::Association::Depending do
         end
       end
     end
-  end
-
-  around(:each) do |example|
-    relations_before = Person.relations
-    example.run
-    Person.relations = relations_before
   end
 
   describe '#apply_destroy_dependencies!' do
@@ -303,7 +303,7 @@ describe Mongoid::Association::Depending do
       it 'does not raise an error' do
         expect do
           klass.new.apply_destroy_dependencies!
-        end.not_to raise_error
+        end.to_not raise_error
       end
     end
 
@@ -354,7 +354,7 @@ describe Mongoid::Association::Depending do
     context 'when cascading removals' do
 
       shared_examples 'destroys dependents if parent is destroyed but does not if parent is deleted' do
-        context '#destroy' do
+        describe '#destroy' do
           before do
             parent.destroy
           end
@@ -366,7 +366,7 @@ describe Mongoid::Association::Depending do
           end
         end
 
-        context '#delete' do
+        describe '#delete' do
           before do
             parent.delete
           end
@@ -406,7 +406,7 @@ describe Mongoid::Association::Depending do
       context 'when strategy is nullify' do
 
         shared_examples 'removes references if parent is destroyed but does not if parent is deleted' do
-          context '#destroy' do
+          describe '#destroy' do
             before do
               parent.destroy
             end
@@ -416,7 +416,7 @@ describe Mongoid::Association::Depending do
             end
           end
 
-          context '#delete' do
+          describe '#delete' do
             before do
               parent.delete
             end
@@ -494,7 +494,7 @@ describe Mongoid::Association::Depending do
             Preference.find(preference.id)
           end
 
-          context '#destroy' do
+          describe '#destroy' do
             before do
               person.destroy
             end
@@ -508,7 +508,7 @@ describe Mongoid::Association::Depending do
             end
           end
 
-          context '#delete' do
+          describe '#delete' do
             before do
               person.delete
             end
@@ -541,13 +541,13 @@ describe Mongoid::Association::Depending do
       end
 
       shared_examples 'raises an error with #destroy and deletes the parent with #delete' do
-        context '#destroy' do
+        describe '#destroy' do
           it 'raises DeleteRestriction error' do
             expect { person.destroy }.to raise_error(Mongoid::Errors::DeleteRestriction)
           end
         end
 
-        context '#delete' do
+        describe '#delete' do
           it 'deletes the parent' do
             person.delete
             expect(person).to be_destroyed
@@ -705,8 +705,8 @@ describe Mongoid::Association::Depending do
           context 'when the documents are in memory' do
 
             before do
-              expect(post_one).to receive(:delete).never
-              expect(post_two).to receive(:delete).never
+              expect(post_one).to_not receive(:delete)
+              expect(post_two).to_not receive(:delete)
               person.destroy
             end
 
@@ -751,17 +751,15 @@ describe Mongoid::Association::Depending do
       let!(:association) do
         Person.has_many :destroyable_posts, class_name: 'Post', dependent: :destroy
       end
-
-      after do
-        Person.dependents.delete(association)
-      end
-
       let(:person) do
         Person.new
       end
-
       let(:post) do
         Post.new
+      end
+
+      after do
+        Person.dependents.delete(association)
       end
 
       context 'when the documents exist' do
@@ -779,10 +777,10 @@ describe Mongoid::Association::Depending do
       context 'when no documents exist' do
 
         before do
-          expect(post).to receive(:destroy).never
+          expect(post).to_not receive(:destroy)
         end
 
-        it 'it does not destroy the association target' do
+        it 'does not destroy the association target' do
           person.destroy
         end
       end
@@ -793,17 +791,15 @@ describe Mongoid::Association::Depending do
       let!(:association) do
         Person.has_many :nullifyable_posts, class_name: 'Post', dependent: :nullify
       end
-
-      after do
-        Person.dependents.delete(association)
-      end
-
       let(:person) do
         Person.new
       end
-
       let(:posts_relation) do
         person.posts
+      end
+
+      after do
+        Person.dependents.delete(association)
       end
 
       before do
@@ -838,8 +834,8 @@ describe Mongoid::Association::Depending do
 
         before do
           person.restrictable_posts << post
-          expect(post).to receive(:delete).never
-          expect(post).to receive(:destroy).never
+          expect(post).to_not receive(:delete)
+          expect(post).to_not receive(:destroy)
         end
 
         it 'raises an exception and leaves the related one intact' do
@@ -850,8 +846,8 @@ describe Mongoid::Association::Depending do
       context 'when there are no related objects' do
 
         before do
-          expect(post).to receive(:delete).never
-          expect(post).to receive(:destroy).never
+          expect(post).to_not receive(:delete)
+          expect(post).to_not receive(:destroy)
         end
 
         it 'deletes the object and leaves the other one intact' do
@@ -898,8 +894,8 @@ describe Mongoid::Association::Depending do
         context 'when there are no related objects' do
 
           before do
-            expect(post).to receive(:delete).never
-            expect(post).to receive(:destroy).never
+            expect(post).to_not receive(:delete)
+            expect(post).to_not receive(:destroy)
           end
 
           it 'deletes the object and leaves the other one intact' do
@@ -929,14 +925,13 @@ describe Mongoid::Association::Depending do
         let!(:association) do
           Person.has_and_belongs_to_many :houses, dependent: :restrict_with_error
         end
+        let(:person) do
+          Person.new houses: [House.new]
+        end
 
         after do
           Person.dependents.delete(association)
           Person.has_and_belongs_to_many :houses, validate: false
-        end
-
-        let(:person) do
-          Person.new houses: [House.new]
         end
 
         it 'returns false' do

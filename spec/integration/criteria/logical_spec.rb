@@ -63,7 +63,7 @@ describe 'Criteria logical operations' do
       context 'when field has a serializer' do
         let!(:doc) { Dokument.create! }
 
-        it 'works' do
+        it 'sets the $or selector' do
           scope = Dokument.or(:created_at.lte => DateTime.now).sort(id: 1)
           # input was converted from DateTime to Time
           expect(scope.criteria.selector['$or'].first['created_at']['$lte']).to be_a(Time)

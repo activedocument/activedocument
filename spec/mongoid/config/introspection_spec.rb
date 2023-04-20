@@ -10,9 +10,9 @@ describe Mongoid::Config::Introspection do
     end
   end
 
-  context '#options' do
-    let(:options) { Mongoid::Config::Introspection.options }
-    let(:all_options) { Mongoid::Config::Introspection.options(include_deprecated: true) }
+  describe '#options' do
+    let(:options) { described_class.options }
+    let(:all_options) { described_class.options(include_deprecated: true) }
     let(:deprecated_options) { all_options.select(&:deprecated?) }
 
     # NOTE: the "with deprecated options" context tests a configuration option
@@ -25,7 +25,7 @@ describe Mongoid::Config::Introspection do
     context 'with deprecated options' do
       let(:option_name) { 'background_indexing' }
 
-      it 'should exclude deprecated options by default' do
+      it 'excludes deprecated options by default' do
         skip 'no options are deprecated'
         option = options.detect { |opt| opt.name == option_name }
         expect(option).to be_nil
@@ -34,7 +34,7 @@ describe Mongoid::Config::Introspection do
       it 'deprecated options should be included when requested' do
         skip 'no options are deprecated'
         option = all_options.detect { |opt| opt.name == option_name }
-        expect(option).not_to be_nil
+        expect(option).to_not be_nil
       end
     end
 
@@ -43,13 +43,13 @@ describe Mongoid::Config::Introspection do
         let(:option) { all_options.detect { |opt| opt.name == name.to_s } }
         let(:live_option) { options.detect { |opt| opt.name == name.to_s } }
 
-        it 'should be parsed by the introspection scraper' do
-          expect(option).not_to be_nil
+        it 'is parsed by the introspection scraper' do
+          expect(option).to_not be_nil
           expect(option.default).to eq default_value.inspect.gsub(/\A"(.+)"\z/, '\'\1\'')
-          expect(option.comment.strip).not_to be_empty
+          expect(option.comment.strip).to_not be_empty
         end
 
-        it 'should be excluded by default if it is deprecated' do
+        it 'is excluded by default if it is deprecated' do
           if option.deprecated?
             expect(live_option).to be_nil
           else
@@ -62,21 +62,21 @@ describe Mongoid::Config::Introspection do
 
   describe Mongoid::Config::Introspection::Option do
     let(:option) do
-      Mongoid::Config::Introspection::Option.new(
+      described_class.new(
         'name', 'default', "   # line 1\n    # line 2\n"
       )
     end
 
-    context '.from_captures' do
+    describe '.from_captures' do
       it "populates the option's fields" do
-        option = Mongoid::Config::Introspection::Option.from_captures([nil, '# comment', 'name', 'default'])
+        option = described_class.from_captures([nil, '# comment', 'name', 'default'])
         expect(option.name).to eq 'name'
         expect(option.default).to eq 'default'
         expect(option.comment).to eq '# comment'
       end
     end
 
-    context '#initialize' do
+    describe '#initialize' do
       it 'unindents the given comment' do
         expect(option.name).to eq 'name'
         expect(option.default).to eq 'default'
@@ -84,7 +84,7 @@ describe Mongoid::Config::Introspection do
       end
     end
 
-    context '#indented_comment' do
+    describe '#indented_comment' do
       it 'has defaults' do
         expect(option.indented_comment).to eq "# line 1\n  # line 2"
       end
@@ -99,15 +99,15 @@ describe Mongoid::Config::Introspection do
       end
     end
 
-    context '#deprecated?' do
+    describe '#deprecated?' do
       let(:deprecated_option) do
-        Mongoid::Config::Introspection::Option.new(
+        described_class.new(
           'name', 'default', "# this\n# is (Deprecated), yo\n"
         )
       end
 
       it 'is not deprecated by default' do
-        expect(option.deprecated?).not_to be true
+        expect(option.deprecated?).to_not be true
       end
 
       it 'is deprecated when the comment includes "(Deprecated)"' do

@@ -249,7 +249,7 @@ describe 'has_one associations' do
 
         post.comment = comment1
         post.reload
-        expect(post.comment).to eq(nil)
+        expect(post.comment).to be_nil
       end
     end
   end

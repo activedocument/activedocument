@@ -194,7 +194,7 @@ describe 'StringifiedSymbol fields' do
 
     describe 'When the embedded field is not unique' do
 
-      it 'should be invalid' do
+      it 'is invalid' do
         order = Order.new
         order.purchased_items.build(item_id: :foo)
         order.purchased_items.build(item_id: :foo)

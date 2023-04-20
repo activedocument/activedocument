@@ -8,16 +8,16 @@ describe Mongoid::Atomic::Paths::Embedded::One do
     Person.new
   end
 
+  let(:one) do
+    described_class.new(name)
+  end
+
   let(:name) do
     Name.new(first_name: 'Syd')
   end
 
   before do
     person.name = name
-  end
-
-  let(:one) do
-    described_class.new(name)
   end
 
   describe '#delete_modifier' do
@@ -56,6 +56,10 @@ describe Mongoid::Atomic::Paths::Embedded::One do
         Phone.new(number: '404-555-1212')
       end
 
+      let(:one) do
+        described_class.new(country_code)
+      end
+
       let(:country_code) do
         CountryCode.new(code: 1)
       end
@@ -63,10 +67,6 @@ describe Mongoid::Atomic::Paths::Embedded::One do
       before do
         phone.country_code = country_code
         person.phone_numbers << phone
-      end
-
-      let(:one) do
-        described_class.new(country_code)
       end
 
       it 'returns the nested path to the relation' do
@@ -90,6 +90,10 @@ describe Mongoid::Atomic::Paths::Embedded::One do
         Phone.new(number: '404-555-1212')
       end
 
+      let(:one) do
+        described_class.new(country_code)
+      end
+
       let(:country_code) do
         CountryCode.new(code: 1)
       end
@@ -98,10 +102,6 @@ describe Mongoid::Atomic::Paths::Embedded::One do
         phone.country_code = country_code
         person.phone_numbers << phone
         phone.new_record = false
-      end
-
-      let(:one) do
-        described_class.new(country_code)
       end
 
       it 'returns the nested position to the relation' do

@@ -163,11 +163,13 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
 
       context 'when the option is true' do
         let(:options) { { touch: true } }
+
         it_behaves_like ':touch is in the options'
       end
 
       context 'when the option is false' do
         let(:options) { { touch: false } }
+
         it_behaves_like ':touch is in the options'
       end
     end
@@ -319,7 +321,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverses).to eq(nil)
+            expect(association.inverses).to be_nil
           end
 
           context 'when class_name is given and is a plain string' do
@@ -507,7 +509,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn do
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverse).to eq(nil)
+            expect(association.inverse).to be_nil
           end
         end
       end

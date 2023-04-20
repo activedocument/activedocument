@@ -30,19 +30,19 @@ describe Mongoid::Contextual::Aggregable::None do
 
   describe '#avg' do
     it 'returns nil' do
-      expect(context.avg(:likes)).to eq(nil)
+      expect(context.avg(:likes)).to be_nil
     end
   end
 
   describe '#min and #max' do
     it 'returns nil' do
-      expect(context.min).to eq(nil)
-      expect(context.max).to eq(nil)
+      expect(context.min).to be_nil
+      expect(context.max).to be_nil
     end
 
     it 'returns nil when arg given' do
-      expect(context.min(:likes)).to eq(nil)
-      expect(context.max(:likes)).to eq(nil)
+      expect(context.min(:likes)).to be_nil
+      expect(context.max(:likes)).to be_nil
     end
   end
 end

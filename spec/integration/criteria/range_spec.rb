@@ -252,6 +252,7 @@ describe 'Queries with Range criteria' do
       it 'returns all objects under the value' do
         expect(Band.where('labels.age': ..16).to_a).to eq [band5]
       end
+
       it 'does not return the objects above the value' do
         expect(Band.where('labels.age': ...12).to_a).to eq []
       end

@@ -334,7 +334,7 @@ describe Mongoid::Criteria do
 
       shared_examples 'does not unproject _id' do
         it 'does not unproject _id' do
-          expect(criteria.options[:fields]).to be nil
+          expect(criteria.options[:fields]).to be_nil
         end
 
         it 'returns id anyway' do

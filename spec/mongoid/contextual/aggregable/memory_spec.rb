@@ -19,7 +19,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       it do
-        is_expected.to eq('count' => 0, 'avg' => nil, 'max' => nil, 'min' => nil, 'sum' => 0)
+        expect(subject).to eq('count' => 0, 'avg' => nil, 'max' => nil, 'min' => nil, 'sum' => 0)
       end
     end
 
@@ -39,7 +39,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       it do
-        is_expected.to eq('count' => 0, 'avg' => 750.0, 'max' => 1000, 'min' => 500, 'sum' => 1500)
+        expect(subject).to eq('count' => 0, 'avg' => 750.0, 'max' => 1000, 'min' => 500, 'sum' => 1500)
       end
     end
   end
@@ -182,7 +182,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
       end
 
       it 'database returns avg as nil' do
-        expect(Band.all.avg(:mojo)).to eq(nil)
+        expect(Band.all.avg(:mojo)).to be_nil
       end
     end
   end
@@ -277,9 +277,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
     context 'when provided a block' do
 
       let(:max) do
-        context.max do |a, b|
-          a.likes <=> b.likes
-        end
+        context.max_by(&:likes)
       end
 
       it 'returns the document with the max value for the field' do
@@ -378,9 +376,7 @@ describe Mongoid::Contextual::Aggregable::Memory do
     context 'when provided a block' do
 
       let(:min) do
-        context.min do |a, b|
-          a.likes <=> b.likes
-        end
+        context.min_by(&:likes)
       end
 
       it 'returns the document with the min value for the field' do

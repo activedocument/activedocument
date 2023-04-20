@@ -119,7 +119,7 @@ describe Mongoid::Persistable::Updatable do
 
     context 'when dynamic attributes are not enabled' do
 
-      it 'raises exception for an unknown attribute ' do
+      it 'raises exception for an unknown attribute' do
         account = Account.create!(name: 'Foobar')
 
         expect do
@@ -239,14 +239,13 @@ describe Mongoid::Persistable::Updatable do
       let!(:product) do
         Product.create!(description: 'The bomb')
       end
+      let(:attributes) do
+        product.attributes['description']
+      end
 
       before do
         I18n.locale = :de
         product.update_attribute(:description, 'Die Bombe')
-      end
-
-      let(:attributes) do
-        product.attributes['description']
       end
 
       it 'persists the en locale' do
@@ -536,6 +535,9 @@ describe Mongoid::Persistable::Updatable do
         let(:person) do
           Person.create!
         end
+        let(:from_db) do
+          Person.find(person.id)
+        end
 
         let(:game) do
           Game.create!(person: person)
@@ -544,10 +546,6 @@ describe Mongoid::Persistable::Updatable do
         before do
           person.send(method, ssn: '444-44-4444')
           game.person.send(method, ssn: '555-66-7777')
-        end
-
-        let(:from_db) do
-          Person.find(person.id)
         end
 
         it 'saves the attributes' do
@@ -746,7 +744,7 @@ describe Mongoid::Persistable::Updatable do
       expect(person).to receive(:update).with(attributes).and_call_original
       expect do
         person.update!(attributes)
-      end.not_to raise_error
+      end.to_not raise_error
     end
   end
 end

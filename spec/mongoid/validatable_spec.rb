@@ -117,14 +117,13 @@ describe Mongoid::Validatable do
       let!(:pizza) do
         Pizza.new(name: 'chicago')
       end
+      let(:from_db) do
+        Pizza.first
+      end
 
       before do
         pizza.build_topping(name: 'cheese')
         pizza.save!
-      end
-
-      let(:from_db) do
-        Pizza.first
       end
 
       it 'loads the required association from the db' do

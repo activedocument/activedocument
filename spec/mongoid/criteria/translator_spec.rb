@@ -105,7 +105,7 @@ describe Mongoid::Criteria::Translator do
     end
 
     context 'when the value is numeric' do
-      it 'should pass the value through unchanged' do
+      it 'passes the value through unchanged' do
         expect(described_class.to_direction(1)).to eq(1)
         expect(described_class.to_direction(-1)).to eq(-1)
         expect(described_class.to_direction(Math::PI)).to eq(Math::PI)
@@ -113,7 +113,7 @@ describe Mongoid::Criteria::Translator do
     end
 
     context 'when the value is a hash' do
-      it 'should pass the value through unchanged' do
+      it 'passes the value through unchanged' do
         expect(described_class.to_direction({})).to eq({})
         expect(described_class.to_direction(scope: { '$meta' => 'textScore' }))
           .to eq(scope: { '$meta' => 'textScore' })
@@ -122,7 +122,7 @@ describe Mongoid::Criteria::Translator do
     end
 
     context 'when the value is an unrecognized type' do
-      it 'should raise ArgumentError' do
+      it 'raises ArgumentError' do
         expect { described_class.to_direction([]) }.to raise_error(ArgumentError)
         expect { described_class.to_direction(/a/) }.to raise_error(ArgumentError)
         expect { described_class.to_direction(Object.new) }.to raise_error(ArgumentError)

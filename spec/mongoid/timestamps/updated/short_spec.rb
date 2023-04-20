@@ -73,7 +73,7 @@ describe Mongoid::Timestamps::Updated::Short do
     end
 
     it 'does not run the update callbacks' do
-      expect(agent).to receive(:updated_at=).never
+      expect(agent).to_not receive(:updated_at=)
       agent.save!
     end
   end

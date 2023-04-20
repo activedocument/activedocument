@@ -59,7 +59,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
         end
 
         before do
-          expect(association).to receive(:criteria).never
+          expect(association).to_not receive(:criteria)
           person.game = game
         end
 
@@ -1135,7 +1135,7 @@ describe Mongoid::Association::Referenced::HasOne::Proxy do
       end
 
       it 'clearing the child raises no error' do
-        expect { clear_child }.not_to raise_error
+        expect { clear_child }.to_not raise_error
       end
     end
   end

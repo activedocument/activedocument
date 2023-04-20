@@ -35,8 +35,8 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       context 'when the document is bindable with default pk' do
 
         before do
-          expect(person).to receive(:save).never
-          expect(game).to receive(:save).never
+          expect(person).to_not receive(:save)
+          expect(game).to_not receive(:save)
           binding.bind_one
         end
 
@@ -54,8 +54,8 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
         before do
           Game.belongs_to :person, index: true, validate: true, primary_key: :username
 
-          expect(person).to receive(:save).never
-          expect(game).to receive(:save).never
+          expect(person).to_not receive(:save)
+          expect(game).to_not receive(:save)
           binding.bind_one
         end
 
@@ -63,12 +63,12 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
           Game.belongs_to :person, index: true, validate: true
         end
 
-        it 'sets the inverse relation' do
-          expect(person.game).to eq(game)
-        end
-
         let(:person) do
           Person.new(username: 'arthurnn')
+        end
+
+        it 'sets the inverse relation' do
+          expect(person.game).to eq(game)
         end
 
         it 'sets the fk with username field' do
@@ -83,7 +83,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
         end
 
         it 'does nothing' do
-          expect(game).to receive(:person=).with(person).never
+          expect(game).to_not receive(:person=).with(person)
           expect(game).to receive(:person=).with(nil).once
           binding.bind_one
         end
@@ -99,8 +99,8 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       context 'when the document is bindable' do
 
         before do
-          expect(person).to receive(:save).never
-          expect(post).to receive(:save).never
+          expect(person).to_not receive(:save)
+          expect(post).to_not receive(:save)
           binding.bind_one
         end
 
@@ -120,7 +120,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
         end
 
         it 'does nothing' do
-          expect(post).to receive(:person=).never
+          expect(post).to_not receive(:person=)
           binding.bind_one
         end
       end
@@ -139,8 +139,8 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
 
         before do
           binding.bind_one
-          expect(person).to receive(:delete).never
-          expect(game).to receive(:delete).never
+          expect(person).to_not receive(:delete)
+          expect(game).to_not receive(:delete)
           binding.unbind_one
         end
 
@@ -156,7 +156,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       context 'when the document is not unbindable' do
 
         it 'does nothing' do
-          expect(game).to receive(:person=).never
+          expect(game).to_not receive(:person=)
           binding.unbind_one
         end
       end
@@ -172,8 +172,8 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
 
         before do
           binding.bind_one
-          expect(person).to receive(:delete).never
-          expect(post).to receive(:delete).never
+          expect(person).to_not receive(:delete)
+          expect(post).to_not receive(:delete)
           binding.unbind_one
         end
 
@@ -189,7 +189,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Binding do
       context 'when the document is not unbindable' do
 
         it 'does nothing' do
-          expect(post).to receive(:person=).never
+          expect(post).to_not receive(:person=)
           binding.unbind_one
         end
       end

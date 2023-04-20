@@ -11,6 +11,9 @@ describe Mongoid::Criteria::Scopable do
       let(:scope) do
         Band.skip(20)
       end
+      let(:scoped) do
+        Band.all.tap(&:apply_default_scope)
+      end
 
       before do
         Band.default_scope -> { scope }
@@ -18,10 +21,6 @@ describe Mongoid::Criteria::Scopable do
 
       after do
         Band.default_scoping = nil
-      end
-
-      let(:scoped) do
-        Band.all.tap(&:apply_default_scope)
       end
 
       it 'merges in the options' do
@@ -38,6 +37,9 @@ describe Mongoid::Criteria::Scopable do
       let(:scope) do
         Band.where(name: 'Depeche Mode')
       end
+      let(:scoped) do
+        Band.all.tap(&:apply_default_scope)
+      end
 
       before do
         Band.default_scope -> { scope }
@@ -45,10 +47,6 @@ describe Mongoid::Criteria::Scopable do
 
       after do
         Band.default_scoping = nil
-      end
-
-      let(:scoped) do
-        Band.all.tap(&:apply_default_scope)
       end
 
       it 'merges in the options' do
@@ -360,6 +358,9 @@ describe Mongoid::Criteria::Scopable do
       let(:criteria) do
         Band.where(name: 'Depeche Mode')
       end
+      let(:scoped) do
+        empty.scoped
+      end
 
       before do
         Band.default_scope -> { criteria }
@@ -367,10 +368,6 @@ describe Mongoid::Criteria::Scopable do
 
       after do
         Band.default_scoping = nil
-      end
-
-      let(:scoped) do
-        empty.scoped
       end
 
       it 'allows the default scope to be added' do
@@ -519,7 +516,7 @@ describe Mongoid::Criteria::Scopable do
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['foo']).to eq(true)
+        expect(result.selector['foo']).to be(true)
         expect(result.selector['hello']).to eq('world')
       end
     end

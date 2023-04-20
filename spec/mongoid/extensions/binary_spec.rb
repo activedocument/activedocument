@@ -7,7 +7,7 @@ describe BSON::Binary do
   describe '#mongoize' do
 
     let(:binary) do
-      BSON::Binary.new('testing', :md5)
+      described_class.new('testing', :md5)
     end
 
     it 'returns the binary' do
@@ -19,11 +19,11 @@ describe BSON::Binary do
     describe ".#{method}" do
 
       let(:binary) do
-        BSON::Binary.new('testing')
+        described_class.new('testing')
       end
 
       let(:evaluated) do
-        BSON::Binary.send(method, value)
+        described_class.send(method, value)
       end
 
       context 'when mongoizing a BSON::Binary' do
@@ -49,7 +49,7 @@ describe BSON::Binary do
         let(:value) { nil }
 
         it 'returns nil' do
-          expect(evaluated).to eq(nil)
+          expect(evaluated).to be_nil
         end
       end
 
@@ -67,11 +67,11 @@ describe BSON::Binary do
   describe '.evolve' do
 
     let(:binary) do
-      BSON::Binary.new('testing', :md5)
+      described_class.new('testing', :md5)
     end
 
     let(:evolved) do
-      BSON::Binary.evolve(binary)
+      described_class.evolve(binary)
     end
 
     it 'returns the binary' do
@@ -82,11 +82,11 @@ describe BSON::Binary do
   describe '.mongoize' do
 
     let(:binary) do
-      BSON::Binary.new('testing', :md5)
+      described_class.new('testing', :md5)
     end
 
     let(:mongoized) do
-      BSON::Binary.mongoize(binary)
+      described_class.mongoize(binary)
     end
 
     it 'returns the binary' do

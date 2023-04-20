@@ -144,7 +144,7 @@ RSpec.configure do |config|
   end
 
   # Drop all collections and clear the identity map before each spec.
-  config.before(:each) do
+  config.before do
     cluster = Mongoid.default_client.cluster
     Mongoid.default_client.reconnect unless cluster.connected?
     Mongoid.default_client.collections.each(&:delete_many)
@@ -159,7 +159,7 @@ RSpec.configure do |config|
   end
 
   if SpecConfig.instance.ci? && %w[1 true yes].exclude?(ENV['INTERACTIVE']&.downcase)
-    config.around(:each) do |example|
+    config.around do |example|
       timeout_lib.timeout(30) { example.run }
     end
   end

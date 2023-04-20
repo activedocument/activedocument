@@ -56,7 +56,7 @@ describe Mongoid::Fields do
         end
       end
 
-      it "should have alias method #\{field}_t" do
+      it 'has alias method {field}_t' do
         expect(product.method(:name_t)).to eq product.method(:name_translations)
       end
     end
@@ -169,7 +169,7 @@ describe Mongoid::Fields do
         end
       end
 
-      it "should have alias method #\{field}_t=" do
+      it 'has alias method {field}_t=' do
         expect(product.method(:name_t=)).to eq product.method(:name_translations=)
       end
     end
@@ -301,7 +301,7 @@ describe Mongoid::Fields do
   describe '#field' do
 
     before(:all) do
-      Mongoid::Fields.option :custom do |model, field, value|
+      described_class.option :custom do |model, field, value|
       end
     end
 
@@ -1245,7 +1245,7 @@ describe Mongoid::Fields do
       end
 
       before do
-        Mongoid::Fields.option :option, &handler
+        described_class.option :option, &handler
       end
 
       context 'when option is provided' do
@@ -1267,7 +1267,7 @@ describe Mongoid::Fields do
       context 'when option is not provided' do
 
         it 'does not call the handler' do
-          expect(handler).to receive(:call).never
+          expect(handler).to_not receive(:call)
           User.field :custom, overwrite: true
         end
       end
@@ -1342,6 +1342,9 @@ describe Mongoid::Fields do
     let!(:original) do
       Person.field(:id_test, type: BSON::ObjectId, label: 'id')
     end
+    let(:new_field) do
+      Person.fields['id_test']
+    end
 
     let!(:altered) do
       Person.replace_field('id_test', String)
@@ -1349,10 +1352,6 @@ describe Mongoid::Fields do
 
     after do
       Person.fields.delete('id_test')
-    end
-
-    let(:new_field) do
-      Person.fields['id_test']
     end
 
     it 'sets the new type on the field' do
@@ -1653,86 +1652,103 @@ describe Mongoid::Fields do
 
       context 'non-aliased field name' do
         let(:key) { 't' }
+
         it { is_expected.to eq 't' }
       end
 
       context 'aliased field name' do
         let(:key) { 'test' }
+
         it { is_expected.to eq 't' }
       end
 
       context 'non-aliased embeds one relation' do
         let(:key) { 'pass' }
+
         it { is_expected.to eq 'pass' }
       end
 
       context 'aliased embeds one relation' do
         let(:key) { 'passport' }
+
         it { is_expected.to eq 'pass' }
       end
 
       context 'non-aliased embeds many relation' do
         let(:key) { 'mobile_phones' }
+
         it { is_expected.to eq 'mobile_phones' }
       end
 
       context 'aliased embeds many relation' do
         let(:key) { 'phones' }
+
         it { is_expected.to eq 'mobile_phones' }
       end
 
       context 'non-aliased embeds one field' do
         let(:key) { 'pass.exp' }
+
         it { is_expected.to eq 'pass.exp' }
       end
 
       context 'aliased embeds one field' do
         let(:key) { 'passport.expiration_date' }
+
         it { is_expected.to eq 'pass.exp' }
       end
 
       context 'non-aliased embeds many field' do
         let(:key) { 'mobile_phones.landline' }
+
         it { is_expected.to eq 'mobile_phones.landline' }
       end
 
       context 'aliased embeds many field' do
         let(:key) { 'phones.extension' }
+
         it { is_expected.to eq 'mobile_phones.ext' }
       end
 
       context 'aliased multi-level embedded document' do
         let(:key) { 'phones.extension' }
+
         it { is_expected.to eq 'mobile_phones.ext' }
       end
 
       context 'non-aliased multi-level embedded document' do
         let(:key) { 'phones.extension' }
+
         it { is_expected.to eq 'mobile_phones.ext' }
       end
 
       context 'aliased multi-level embedded document field' do
         let(:key) { 'mobile_phones.country_code.code' }
+
         it { is_expected.to eq 'mobile_phones.country_code.code' }
       end
 
       context 'non-aliased multi-level embedded document field' do
         let(:key) { 'phones.country_code.iso_alpha2_code' }
+
         it { is_expected.to eq 'mobile_phones.country_code.iso' }
       end
 
       context 'when field is unknown' do
         let(:key) { 'shenanigans' }
+
         it { is_expected.to eq 'shenanigans' }
       end
 
       context 'when embedded field is unknown' do
         let(:key) { 'phones.bamboozle' }
+
         it { is_expected.to eq 'mobile_phones.bamboozle' }
       end
 
       context 'when multi-level embedded field is unknown' do
         let(:key) { 'phones.bamboozle.brouhaha' }
+
         it { is_expected.to eq 'mobile_phones.bamboozle.brouhaha' }
       end
     end
@@ -1742,107 +1758,128 @@ describe Mongoid::Fields do
 
       context 'non-aliased field name' do
         let(:key) { 't' }
+
         it { is_expected.to eq 't' }
       end
 
       context 'aliased field name' do
         let(:key) { 'test' }
+
         it { is_expected.to eq 't' }
       end
 
       context 'non-aliased embeds one relation' do
         let(:key) { 'pass' }
+
         it { is_expected.to eq 'pass' }
       end
 
       context 'aliased embeds one relation' do
         let(:key) { 'passport' }
+
         it { is_expected.to eq 'pass' }
       end
 
       context 'non-aliased embeds many relation' do
         let(:key) { 'mobile_phones' }
+
         it { is_expected.to eq 'mobile_phones' }
       end
 
       context 'aliased embeds many relation' do
         let(:key) { 'phones' }
+
         it { is_expected.to eq 'mobile_phones' }
       end
 
       context 'non-aliased embeds one field' do
         let(:key) { 'pass.exp' }
+
         it { is_expected.to eq 'pass.exp' }
       end
 
       context 'aliased embeds one field' do
         let(:key) { 'passport.expiration_date' }
+
         it { is_expected.to eq 'passport.expiration_date' }
       end
 
       context 'non-aliased embeds many field' do
         let(:key) { 'mobile_phones.landline' }
+
         it { is_expected.to eq 'mobile_phones.landline' }
       end
 
       context 'aliased embeds many field' do
         let(:key) { 'phones.extension' }
+
         it { is_expected.to eq 'phones.extension' }
       end
 
       context 'aliased multi-level embedded document' do
         let(:key) { 'phones.extension' }
+
         it { is_expected.to eq 'phones.extension' }
       end
 
       context 'non-aliased multi-level embedded document' do
         let(:key) { 'phones.extension' }
+
         it { is_expected.to eq 'phones.extension' }
       end
 
       context 'aliased multi-level embedded document field' do
         let(:key) { 'mobile_phones.country_code.code' }
+
         it { is_expected.to eq 'mobile_phones.country_code.code' }
       end
 
       context 'non-aliased multi-level embedded document field' do
         let(:key) { 'phones.country_code.iso_alpha2_code' }
+
         it { is_expected.to eq 'phones.country_code.iso_alpha2_code' }
       end
 
       context 'when field is unknown' do
         let(:key) { 'shenanigans' }
+
         it { is_expected.to eq 'shenanigans' }
       end
 
       context 'when embedded field is unknown' do
         let(:key) { 'phones.bamboozle' }
+
         it { is_expected.to eq 'phones.bamboozle' }
       end
 
       context 'when multi-level embedded field is unknown' do
         let(:key) { 'phones.bamboozle.brouhaha' }
+
         it { is_expected.to eq 'phones.bamboozle.brouhaha' }
       end
     end
 
     context 'given nil' do
       subject { Person.database_field_name(nil) }
-      it { is_expected.to eq nil }
+
+      it { is_expected.to be_nil }
     end
 
     context 'given an empty String' do
       subject { Person.database_field_name('') }
-      it { is_expected.to eq nil }
+
+      it { is_expected.to be_nil }
     end
 
     context 'given a String' do
       subject { Person.database_field_name(key.to_s) }
+
       it_behaves_like 'database_field_name'
     end
 
     context 'given a Symbol' do
       subject { Person.database_field_name(key.to_sym) }
+
       it_behaves_like 'database_field_name'
     end
 
@@ -1877,6 +1914,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing a field' do
       let(:field_name) { 'employer_id' }
+
       it 'returns the correct field name' do
         expect(field).to eq(field_name)
       end
@@ -1884,6 +1922,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing a localized field' do
       let(:field_name) { 'desc' }
+
       it 'returns the correct field name' do
         expect(field).to eq(field_name)
       end
@@ -1891,6 +1930,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing a translation field' do
       let(:field_name) { 'desc_translations' }
+
       it 'returns the correct field name' do
         expect(field).to eq('desc')
       end
@@ -1898,6 +1938,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing an existing translation field' do
       let(:field_name) { 'localized_translations' }
+
       it 'returns the correct field name' do
         expect(field).to eq(field_name)
       end
@@ -1905,6 +1946,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing an existing translation field with a _translations' do
       let(:field_name) { 'localized_translations_translations' }
+
       it 'returns the correct field name' do
         expect(field).to eq('localized_translations')
       end
@@ -1912,6 +1954,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing dotted translation field' do
       let(:field_name) { 'passport.name_translations.asd' }
+
       it 'returns the correct field name' do
         expect(field).to eq('pass.name.asd')
       end
@@ -1919,6 +1962,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing dotted translation field as a symbol' do
       let(:field_name) { :'passport.name_translations.asd' }
+
       it 'returns the correct field name' do
         expect(field).to eq('pass.name.asd')
       end
@@ -1926,6 +1970,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing dotted existing translation field' do
       let(:field_name) { 'passport.localized_translations.asd' }
+
       it 'returns the correct field name' do
         expect(field).to eq('pass.localized_translations.asd')
       end
@@ -1933,6 +1978,7 @@ describe Mongoid::Fields do
 
     context 'when cleansing aliased dotted translation field' do
       let(:field_name) { 'pass.name_translations.asd' }
+
       it 'returns the correct field name' do
         expect(field).to eq('pass.name.asd')
       end
@@ -1972,7 +2018,7 @@ describe Mongoid::Fields do
       end
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do
@@ -1992,7 +2038,7 @@ describe Mongoid::Fields do
       end
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do
@@ -2012,7 +2058,7 @@ describe Mongoid::Fields do
       end
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do
@@ -2028,7 +2074,7 @@ describe Mongoid::Fields do
       end
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do
@@ -2048,7 +2094,7 @@ describe Mongoid::Fields do
       let(:from_db) { Product.first }
 
       it 'assigns the value' do
-        expect(product.title).to eq(nil)
+        expect(product.title).to be_nil
       end
 
       it 'populates the translations hash' do

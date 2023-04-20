@@ -11,7 +11,7 @@ describe Time do
       context 'when the time is not in utc' do
 
         let(:time) do
-          Time.new(2010, 1, 1, 14, 0, 0, '+02:00')
+          described_class.new(2010, 1, 1, 14, 0, 0, '+02:00')
         end
 
         let(:evolved) do
@@ -19,7 +19,7 @@ describe Time do
         end
 
         let(:expected) do
-          Time.new(2010, 1, 1, 12, 0, 0, '+00:00')
+          described_class.new(2010, 1, 1, 12, 0, 0, '+00:00')
         end
 
         it 'returns the same time' do
@@ -39,7 +39,7 @@ describe Time do
       context 'when the time is already utc' do
 
         let(:time) do
-          Time.new(2010, 1, 1, 12, 0, 0).utc
+          described_class.new(2010, 1, 1, 12, 0, 0).utc
         end
 
         let(:evolved) do
@@ -47,7 +47,7 @@ describe Time do
         end
 
         let(:expected) do
-          Time.new(2010, 1, 1, 12, 0, 0).utc
+          described_class.new(2010, 1, 1, 12, 0, 0).utc
         end
 
         it 'returns the same time' do
@@ -65,7 +65,7 @@ describe Time do
       context 'when the array is composed of times' do
 
         let(:time) do
-          Time.new(2010, 1, 1, 12, 0, 0)
+          described_class.new(2010, 1, 1, 12, 0, 0)
         end
 
         let(:evolved) do
@@ -73,7 +73,7 @@ describe Time do
         end
 
         let(:expected) do
-          Time.new(2010, 1, 1, 12, 0, 0).utc
+          described_class.new(2010, 1, 1, 12, 0, 0).utc
         end
 
         it 'returns the array with evolved times' do
@@ -88,7 +88,7 @@ describe Time do
       context 'when the array is composed of strings' do
 
         let(:time) do
-          Time.parse('1st Jan 2010 12:00:00+01:00')
+          described_class.parse('1st Jan 2010 12:00:00+01:00')
         end
 
         let(:evolved) do
@@ -115,7 +115,7 @@ describe Time do
         end
 
         let(:expected) do
-          Time.at(integer).utc
+          described_class.at(integer).utc
         end
 
         it 'returns the integers as times' do
@@ -138,7 +138,7 @@ describe Time do
         end
 
         let(:expected) do
-          Time.at(float).utc
+          described_class.at(float).utc
         end
 
         it 'returns the floats as times' do
@@ -156,11 +156,11 @@ describe Time do
       context 'when the range are times' do
 
         let(:min) do
-          Time.new(2010, 1, 1, 12, 0, 0)
+          described_class.new(2010, 1, 1, 12, 0, 0)
         end
 
         let(:max) do
-          Time.new(2010, 1, 3, 12, 0, 0)
+          described_class.new(2010, 1, 3, 12, 0, 0)
         end
 
         let(:evolved) do
@@ -168,11 +168,11 @@ describe Time do
         end
 
         let(:expected_min) do
-          Time.new(2010, 1, 1, 12, 0, 0).utc
+          described_class.new(2010, 1, 1, 12, 0, 0).utc
         end
 
         let(:expected_max) do
-          Time.new(2010, 1, 3, 12, 0, 0).utc
+          described_class.new(2010, 1, 3, 12, 0, 0).utc
         end
 
         it 'returns a selection of times' do
@@ -189,11 +189,11 @@ describe Time do
       context 'when the range are strings' do
 
         let(:min) do
-          Time.new(2010, 1, 1, 12, 0, 0)
+          described_class.new(2010, 1, 1, 12, 0, 0)
         end
 
         let(:max) do
-          Time.new(2010, 1, 3, 12, 0, 0)
+          described_class.new(2010, 1, 3, 12, 0, 0)
         end
 
         let(:evolved) do
@@ -226,11 +226,11 @@ describe Time do
         end
 
         let(:expected_min) do
-          Time.at(min).utc
+          described_class.at(min).utc
         end
 
         let(:expected_max) do
-          Time.at(max).utc
+          described_class.at(max).utc
         end
 
         it 'returns a selection of times' do
@@ -259,11 +259,11 @@ describe Time do
         end
 
         let(:expected_min) do
-          Time.at(min).utc
+          described_class.at(min).utc
         end
 
         let(:expected_max) do
-          Time.at(max).utc
+          described_class.at(max).utc
         end
 
         it 'returns a selection of times' do
@@ -281,7 +281,7 @@ describe Time do
     context 'when provided a string' do
 
       let(:time) do
-        Time.parse('1st Jan 2010 12:00:00+01:00')
+        described_class.parse('1st Jan 2010 12:00:00+01:00')
       end
 
       let(:evolved) do
@@ -308,7 +308,7 @@ describe Time do
       end
 
       let(:expected) do
-        Time.at(float)
+        described_class.at(float)
       end
 
       it 'returns the float as a time' do
@@ -331,7 +331,7 @@ describe Time do
       end
 
       let(:expected) do
-        Time.at(integer)
+        described_class.at(integer)
       end
 
       it 'returns the integer as a time' do
@@ -370,21 +370,21 @@ describe Time do
 
     context 'beginning of day' do
       let(:time) do
-        Time.new(2010, 1, 1, 0, 0, 1).freeze
+        described_class.new(2010, 1, 1, 0, 0, 1).freeze
       end
 
       it 'returns midnight utc' do
-        expect(evolved).to eq(Time.utc(2010, 1, 1, 0, 0, 0))
+        expect(evolved).to eq(described_class.utc(2010, 1, 1, 0, 0, 0))
       end
     end
 
     context 'end of day' do
       let(:time) do
-        Time.new(2010, 1, 1, 23, 59, 59).freeze
+        described_class.new(2010, 1, 1, 23, 59, 59).freeze
       end
 
       it 'returns midnight utc' do
-        expect(evolved).to eq(Time.utc(2010, 1, 1, 0, 0, 0))
+        expect(evolved).to eq(described_class.utc(2010, 1, 1, 0, 0, 0))
       end
     end
   end
@@ -392,7 +392,7 @@ describe Time do
   describe '#__evolve_time__' do
 
     let(:time) do
-      Time.new(2010, 1, 1, 12, 0, 0).freeze
+      described_class.new(2010, 1, 1, 12, 0, 0).freeze
     end
 
     let(:evolved) do
@@ -400,7 +400,7 @@ describe Time do
     end
 
     it 'returns self as utc' do
-      expect(evolved).to eq(Time.new(2010, 1, 1, 12, 0, 0).utc)
+      expect(evolved).to eq(described_class.new(2010, 1, 1, 12, 0, 0).utc)
     end
   end
 end

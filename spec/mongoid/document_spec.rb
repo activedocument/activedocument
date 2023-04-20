@@ -41,13 +41,13 @@ describe Mongoid::Document do
 
     let(:new_model) do
       new_klass.tap do
-        new_klass.send(:include, Mongoid::Document)
+        new_klass.send(:include, described_class)
       end
     end
 
     let(:twice_a_new_model) do
       new_klass.tap do
-        2.times { new_klass.send(:include, Mongoid::Document) }
+        2.times { new_klass.send(:include, described_class) }
       end
     end
 
@@ -114,7 +114,7 @@ describe Mongoid::Document do
         descendant
       end
 
-      it "should clear descendants' cache" do
+      it "clears descendants' cache" do
         expect(Person._types).to include(descendant.discriminator_value)
       end
     end
@@ -424,7 +424,7 @@ describe Mongoid::Document do
 
         it 'passes the options through to the super method' do
           expect(person.as_json(options)['title']).to eq('Sir')
-          expect(person.as_json(options).keys).not_to include('age')
+          expect(person.as_json(options).keys).to_not include('age')
         end
       end
     end
@@ -486,7 +486,7 @@ describe Mongoid::Document do
         expect(person.as_document).to have_key(:mobile_phones)
       end
 
-      it 'should not include the key of association' do
+      it 'does not include the key of association' do
         expect(person.as_document).to_not have_key('phones')
       end
     end
@@ -658,7 +658,7 @@ describe Mongoid::Document do
           end
 
           it 'no mutation occurs during assignment' do
-            expect { assign_hash }.not_to raise_error
+            expect { assign_hash }.to_not raise_error
           end
         end
       end
@@ -768,7 +768,7 @@ describe Mongoid::Document do
       end
 
       it 'allows the creation' do
-        Object.const_set 'Anonymous', model
+        Object.const_set :Anonymous, model
       end
     end
   end
@@ -1208,16 +1208,16 @@ describe Mongoid::Document do
 
       it 'successfully dumps the document' do
         expect do
-          Marshal.dump(agency)
-          Marshal.dump(agent)
-        end.not_to raise_error
+          described_class.dump(agency)
+          described_class.dump(agent)
+        end.to_not raise_error
       end
     end
 
     describe Marshal, '.load' do
 
       it 'successfully loads the document' do
-        expect(Marshal.load(Marshal.dump(agency))).to eq(agency)
+        expect(described_class.load(described_class.dump(agency))).to eq(agency)
       end
     end
   end

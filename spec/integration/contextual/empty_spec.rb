@@ -4,19 +4,19 @@ require 'spec_helper'
 
 describe 'Contextual classes when dealing with empty result set' do
   shared_examples 'behave as expected' do
-    context '#exists?' do
+    describe '#exists?' do
       it 'is false' do
         expect(context.exists?).to be false
       end
     end
 
-    context '#count' do
+    describe '#count' do
       it 'is 0' do
         expect(context.count).to eq(0)
       end
     end
 
-    context '#length' do
+    describe '#length' do
       it 'is 0' do
         expect(context.length).to eq(0)
       end
@@ -24,13 +24,13 @@ describe 'Contextual classes when dealing with empty result set' do
 
     # #estimated_count only exists for Mongo
 
-    context '#distinct' do
+    describe '#distinct' do
       it 'is empty array' do
         expect(context.distinct(:foo)).to eq([])
       end
     end
 
-    context '#each' do
+    describe '#each' do
       context 'with block' do
         it 'does not invoke the block' do
           called = false
@@ -52,7 +52,7 @@ describe 'Contextual classes when dealing with empty result set' do
       end
     end
 
-    context '#map' do
+    describe '#map' do
       context 'with block' do
         it 'does not invoke the block' do
           called = false
@@ -72,27 +72,27 @@ describe 'Contextual classes when dealing with empty result set' do
       end
     end
 
-    context '#first' do
+    describe '#first' do
       it 'is nil' do
-        expect(context.first).to be nil
+        expect(context.first).to be_nil
       end
     end
 
-    context '#find_first' do
+    describe '#find_first' do
       it 'is nil' do
-        expect(context.find_first).to be nil
+        expect(context.find_first).to be_nil
       end
     end
 
-    context '#one' do
+    describe '#one' do
       it 'is nil' do
-        expect(context.one).to be nil
+        expect(context.one).to be_nil
       end
     end
 
-    context '#last' do
+    describe '#last' do
       it 'is nil' do
-        expect(context.last).to be nil
+        expect(context.last).to be_nil
       end
     end
   end

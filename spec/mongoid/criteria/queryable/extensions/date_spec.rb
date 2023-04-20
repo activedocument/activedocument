@@ -7,7 +7,7 @@ describe Date do
   describe '#__evolve_date__' do
 
     let(:date) do
-      Date.new(2010, 1, 1)
+      described_class.new(2010, 1, 1)
     end
 
     let(:evolved) do
@@ -29,7 +29,7 @@ describe Date do
       include_context 'setting ActiveSupport time zone'
 
       let(:date) do
-        Date.new(2010, 1, 1)
+        described_class.new(2010, 1, 1)
       end
 
       let(:expected_time) do
@@ -56,7 +56,7 @@ describe Date do
     context 'when provided a date' do
 
       let(:date) do
-        Date.new(2010, 1, 1)
+        described_class.new(2010, 1, 1)
       end
 
       let(:evolved) do
@@ -77,7 +77,7 @@ describe Date do
       context 'when the array is composed of dates' do
 
         let(:date) do
-          Date.new(2010, 1, 1)
+          described_class.new(2010, 1, 1)
         end
 
         let(:evolved) do
@@ -96,7 +96,7 @@ describe Date do
       context 'when the array is composed of strings' do
 
         let(:date) do
-          Date.parse('1st Jan 2010')
+          described_class.parse('1st Jan 2010')
         end
 
         let(:evolved) do
@@ -160,11 +160,11 @@ describe Date do
       context 'when the range are dates' do
 
         let(:min) do
-          Date.new(2010, 1, 1)
+          described_class.new(2010, 1, 1)
         end
 
         let(:max) do
-          Date.new(2010, 1, 3)
+          described_class.new(2010, 1, 3)
         end
 
         let(:evolved) do
@@ -189,11 +189,11 @@ describe Date do
       context 'when the range are strings' do
 
         let(:min) do
-          Date.new(2010, 1, 1)
+          described_class.new(2010, 1, 1)
         end
 
         let(:max) do
-          Date.new(2010, 1, 3)
+          described_class.new(2010, 1, 3)
         end
 
         let(:evolved) do
@@ -277,7 +277,7 @@ describe Date do
     context 'when provided a string' do
 
       let(:date) do
-        Date.parse('1st Jan 2010')
+        described_class.parse('1st Jan 2010')
       end
 
       let(:evolved) do

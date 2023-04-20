@@ -71,7 +71,7 @@ describe Mongoid::Persistable::Creatable do
         Person.create(title: 'Sensei')
       end
 
-      it 'it saves the document' do
+      it 'saves the document' do
         expect(person).to be_persisted
       end
 
@@ -95,6 +95,9 @@ describe Mongoid::Persistable::Creatable do
         let(:user) do
           User.create
         end
+        let(:document) do
+          user.collection.find(_id: user.id).first
+        end
 
         before(:all) do
           User.embeds_many(
@@ -110,15 +113,11 @@ describe Mongoid::Persistable::Creatable do
           user.addresses.create!(city: 'nantes')
         end
 
-        let(:document) do
-          user.collection.find(_id: user.id).first
-        end
-
-        it 'should not persist in address key on User document' do
+        it 'does not persist in address key on User document' do
           expect(document.keys).to_not include('addresses')
         end
 
-        it 'should persist on user_addesses key on User document' do
+        it 'persists on user_addesses key on User document' do
           expect(document.keys).to include('user_adresses')
         end
       end
@@ -293,15 +292,14 @@ describe Mongoid::Persistable::Creatable do
       let!(:canvas) do
         Canvas.create(name: 'canvas')
       end
+      let(:from_db) do
+        Canvas.find(canvas.id)
+      end
 
       before do
         canvas.create_palette
         canvas.palette.tools << Pencil.new
         canvas.palette.tools << Eraser.new
-      end
-
-      let(:from_db) do
-        Canvas.find(canvas.id)
       end
 
       it 'properly saves the subclasses' do
@@ -396,7 +394,7 @@ describe Mongoid::Persistable::Creatable do
         end
       end
 
-      context '#find_or_initialize_by' do
+      describe '#find_or_initialize_by' do
         context 'when using the default discriminator key' do
           before do
             container.vehicles.find_or_initialize_by({ driver_id: driver.id }, Car)
@@ -439,7 +437,7 @@ describe Mongoid::Persistable::Creatable do
         end
       end
 
-      context '#find_or_create_by' do
+      describe '#find_or_create_by' do
 
         before do
           container.vehicles.find_or_create_by({ driver_id: driver.id }, Car)
@@ -499,7 +497,7 @@ describe Mongoid::Persistable::Creatable do
         end
       end
 
-      context '#find_or_create_by!' do
+      describe '#find_or_create_by!' do
 
         before do
           container.vehicles.find_or_create_by!({ driver_id: driver.id }, Car)

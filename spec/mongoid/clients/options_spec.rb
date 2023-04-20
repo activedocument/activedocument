@@ -117,11 +117,11 @@ describe Mongoid::Clients::Options, retry: 3 do
 
           it 'creates a new cluster' do
             expect(connections_before).to be < (connections_during)
-            expect(cluster_before).not_to be(cluster_during)
+            expect(cluster_before).to_not be(cluster_during)
           end
 
           it 'disconnects the new cluster when the block exits' do
-            expect(cluster_after).not_to be(cluster_during)
+            expect(cluster_after).to_not be(cluster_during)
 
             expect(cluster_during.connected?).to be false
             expect(cluster_before.connected?).to be true
@@ -157,6 +157,9 @@ describe Mongoid::Clients::Options, retry: 3 do
               analytics: { uri: "mongodb://#{SpecConfig.instance.addresses.first}/analytics-db?connectTimeoutMS=3000" }
             }
           end
+          let(:persistence_context) do
+            Minim.with(client: :analytics, &:persistence_context)
+          end
 
           before do
             Mongoid::Config.send(:clients=, config)
@@ -164,10 +167,6 @@ describe Mongoid::Clients::Options, retry: 3 do
 
           after do
             persistence_context.client.close
-          end
-
-          let(:persistence_context) do
-            Minim.with(client: :analytics, &:persistence_context)
           end
 
           it 'uses the database specified in the uri' do
@@ -347,13 +346,12 @@ describe Mongoid::Clients::Options, retry: 3 do
             }
           }
         end
+        let(:persistence_context) do
+          test_model.with(client: :analytics, &:persistence_context)
+        end
 
         before do
           Mongoid::Config.send(:clients=, config)
-        end
-
-        let(:persistence_context) do
-          test_model.with(client: :analytics, &:persistence_context)
         end
 
         it 'uses the database specified in the uri' do
@@ -408,7 +406,7 @@ describe Mongoid::Clients::Options, retry: 3 do
 
           it 'creates a new cluster' do
             expect(connections_during).to be > connections_before
-            expect(cluster_during).not_to be(cluster_before)
+            expect(cluster_during).to_not be(cluster_before)
           end
 
           # Here connections_after should be equal to connections_before,

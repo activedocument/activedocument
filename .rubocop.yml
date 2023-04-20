@@ -175,6 +175,9 @@ Metrics/BlockLength:
     - '**/Rakefile'
     - '**/*.rake'
 
+RSpec/NotToNot:
+  EnforcedStyle: to_not
+
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 

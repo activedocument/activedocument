@@ -73,7 +73,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
           end
 
           it 'returns nil' do
-            expect(document).to eq(nil)
+            expect(document).to be_nil
           end
         end
       end
@@ -85,7 +85,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
         end
 
         before do
-          expect(Person).not_to receive(:where)
+          expect(Person).to_not receive(:where)
         end
 
         it 'returns nil' do
@@ -143,7 +143,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Buildable do
       end
 
       before do
-        expect_any_instance_of(Mongoid::Criteria).not_to receive(:where)
+        expect_any_instance_of(Mongoid::Criteria).to_not receive(:where)
       end
 
       it 'returns the object' do

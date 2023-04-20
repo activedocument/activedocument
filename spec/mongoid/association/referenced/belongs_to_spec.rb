@@ -103,7 +103,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -117,7 +117,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -174,7 +174,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up counter cache callbacks' do
-          expect(Mongoid::Association::Referenced::CounterCache).not_to receive(:define_callbacks!)
+          expect(Mongoid::Association::Referenced::CounterCache).to_not receive(:define_callbacks!)
           association.setup!
         end
       end
@@ -188,7 +188,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up counter cache callbacks' do
-          expect(Mongoid::Association::Referenced::CounterCache).not_to receive(:define_callbacks!)
+          expect(Mongoid::Association::Referenced::CounterCache).to_not receive(:define_callbacks!)
           association.setup!
         end
       end
@@ -232,7 +232,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           it 'does not set up a field for the inverse type' do
-            expect(belonging_class.fields.keys).not_to include(association.inverse_type)
+            expect(belonging_class.fields.keys).to_not include(association.inverse_type)
           end
         end
       end
@@ -244,7 +244,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up a field for the inverse type' do
-          expect(belonging_class.fields.keys).not_to include(association.inverse_type)
+          expect(belonging_class.fields.keys).to_not include(association.inverse_type)
         end
       end
     end
@@ -357,7 +357,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
       context 'when the dependent option is not provided' do
 
         it 'does not set up the dependency' do
-          expect(Mongoid::Association::Depending).not_to receive(:define_dependency!)
+          expect(Mongoid::Association::Depending).to_not receive(:define_dependency!)
           association.setup!
         end
       end
@@ -465,7 +465,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up touch' do
-          expect(Mongoid::Touchable).not_to receive(:define_touchable!).with(association)
+          expect(Mongoid::Touchable).to_not receive(:define_touchable!).with(association)
           association.setup!
         end
       end
@@ -479,7 +479,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up touch' do
-          expect(Mongoid::Touchable).not_to receive(:define_touchable!).with(association)
+          expect(Mongoid::Touchable).to_not receive(:define_touchable!).with(association)
           association.setup!
         end
       end
@@ -516,7 +516,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up validation' do
-          expect(belonging_class).not_to receive(:validates_associated)
+          expect(belonging_class).to_not receive(:validates_associated)
           association.setup!
         end
       end
@@ -530,7 +530,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up the validation because it uses the validation default (false)' do
-          expect(belonging_class).not_to receive(:validates_associated)
+          expect(belonging_class).to_not receive(:validates_associated)
           association.setup!
         end
       end
@@ -600,7 +600,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           it 'does not set up the presence of validation' do
-            expect(belonging_class).not_to receive(:validates)
+            expect(belonging_class).to_not receive(:validates)
             association.setup!
           end
 
@@ -614,7 +614,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).not_to receive(:validates)
+              expect(belonging_class).to_not receive(:validates)
               association.setup!
             end
           end
@@ -629,7 +629,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).not_to receive(:validates)
+              expect(belonging_class).to_not receive(:validates)
               association.setup!
             end
           end
@@ -651,7 +651,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).not_to receive(:validates)
+              expect(belonging_class).to_not receive(:validates)
               association.setup!
             end
           end
@@ -728,7 +728,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
           end
 
           it 'does not set up the presence of validation' do
-            expect(belonging_class).not_to receive(:validates)
+            expect(belonging_class).to_not receive(:validates)
             association.setup!
           end
 
@@ -742,7 +742,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).not_to receive(:validates)
+              expect(belonging_class).to_not receive(:validates)
               association.setup!
             end
           end
@@ -757,7 +757,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).not_to receive(:validates)
+              expect(belonging_class).to_not receive(:validates)
               association.setup!
             end
           end
@@ -766,7 +766,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         context 'when the required option is not provided' do
 
           it 'uses the default and does not set up the presence of validation' do
-            expect(belonging_class).not_to receive(:validates)
+            expect(belonging_class).to_not receive(:validates)
             association.setup!
           end
 
@@ -779,7 +779,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).not_to receive(:validates)
+              expect(belonging_class).to_not receive(:validates)
               association.setup!
             end
           end
@@ -1277,7 +1277,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverses).to eq(nil)
+            expect(association.inverses).to be_nil
           end
         end
       end
@@ -1429,7 +1429,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverse).to eq(nil)
+            expect(association.inverse).to be_nil
           end
         end
       end

@@ -211,6 +211,13 @@ describe Mongoid::Interceptable do
         book.save!
         book
       end
+      let(:expected_messages) do
+        book.reload.pages.reduce([]) do |messages, p|
+          messages + p.notes.reduce([]) do |msgs, n|
+            msgs << n.message
+          end
+        end
+      end
 
       let(:new_message) do
         'Note C'
@@ -221,14 +228,6 @@ describe Mongoid::Interceptable do
           page.notes.destroy_all
           page.notes.new(message: new_message)
           page.save!
-        end
-      end
-
-      let(:expected_messages) do
-        book.reload.pages.reduce([]) do |messages, p|
-          messages + p.notes.reduce([]) do |msgs, n|
-            msgs << n.message
-          end
         end
       end
 
@@ -243,29 +242,36 @@ describe Mongoid::Interceptable do
     let(:weapon) do
       Player.new(frags: 5).weapons.build
     end
+    let(:implant) do
+      Player.new(frags: 5).implants.build
+    end
+    let(:powerup) do
+      Player.new(frags: 5).build_powerup
+    end
+    let(:augmentation) do
+      Player.new(frags: 5).build_augmentation
+    end
+
+    let(:augmentation) do
+      Player.new(frags: 5).build_augmentation
+    end
+    let(:powerup) do
+      Player.new(frags: 5).build_powerup
+    end
+    let(:implant) do
+      Player.new(frags: 5).implants.build
+    end
 
     it 'runs after document build (references_many)' do
       expect(weapon.name).to eq('Holy Hand Grenade (5)')
-    end
-
-    let(:implant) do
-      Player.new(frags: 5).implants.build
     end
 
     it 'runs after document build (embeds_many)' do
       expect(implant.name).to eq('Cochlear Implant (5)')
     end
 
-    let(:powerup) do
-      Player.new(frags: 5).build_powerup
-    end
-
     it 'runs after document build (references_one)' do
       expect(powerup.name).to eq('Quad Damage (5)')
-    end
-
-    let(:augmentation) do
-      Player.new(frags: 5).build_augmentation
     end
 
     it 'runs after document build (embeds_one)' do
@@ -466,7 +472,7 @@ describe Mongoid::Interceptable do
     end
 
     it 'does not run the before callbacks' do
-      expect(object.before_save_called).to be nil
+      expect(object.before_save_called).to be_nil
     end
   end
 
@@ -485,7 +491,7 @@ describe Mongoid::Interceptable do
     end
 
     it 'does not run the after callbacks' do
-      expect(object.after_save_called).to be nil
+      expect(object.after_save_called).to be_nil
     end
   end
 
@@ -524,6 +530,13 @@ describe Mongoid::Interceptable do
           let(:band) do
             Band.new
           end
+          let(:attributes) do
+            {
+              records_attributes: {
+                '0' => { '_id' => record.id, '_destroy' => true }
+              }
+            }
+          end
 
           let!(:record) do
             band.records.build
@@ -541,14 +554,6 @@ describe Mongoid::Interceptable do
             # descendants, regardless of whether they have a particular callback defined.
             Band.reset_callbacks(:rearrange)
           rescue StandardError
-          end
-
-          let(:attributes) do
-            {
-              records_attributes: {
-                '0' => { '_id' => record.id, '_destroy' => true }
-              }
-            }
           end
 
           it 'does not cascade to the child' do
@@ -601,7 +606,7 @@ describe Mongoid::Interceptable do
       end
 
       it "doesn't cascade the initialize" do
-        expect_any_instance_of(Service).to receive(:after_initialize_called=).never
+        expect_any_instance_of(Service).to_not receive(:after_initialize_called=)
         expect(Person.find(person.id)).to eq(person)
       end
     end
@@ -1326,6 +1331,9 @@ describe Mongoid::Interceptable do
             let(:band) do
               Band.new(name: 'Moderat')
             end
+            let(:reloaded) do
+              band.reload.records.first
+            end
 
             let!(:record) do
               band.records.build(name: 'Moderat')
@@ -1337,10 +1345,6 @@ describe Mongoid::Interceptable do
 
             before do
               band.save!
-            end
-
-            let(:reloaded) do
-              band.reload.records.first
             end
 
             it 'executes the callback' do
@@ -1357,6 +1361,9 @@ describe Mongoid::Interceptable do
             let(:band) do
               Band.create!(name: 'Moderat')
             end
+            let(:reloaded) do
+              band.reload.records.first
+            end
 
             let!(:record) do
               band.records.build(name: 'Moderat')
@@ -1368,10 +1375,6 @@ describe Mongoid::Interceptable do
 
             before do
               band.save!
-            end
-
-            let(:reloaded) do
-              band.reload.records.first
             end
 
             it 'executes the callback' do
@@ -1389,6 +1392,9 @@ describe Mongoid::Interceptable do
           let(:band) do
             Band.create!(name: 'Moderat')
           end
+          let(:reloaded) do
+            band.reload.records.first
+          end
 
           let!(:record) do
             band.records.create!(name: 'Moderat')
@@ -1400,10 +1406,6 @@ describe Mongoid::Interceptable do
 
           before do
             band.save!
-          end
-
-          let(:reloaded) do
-            band.reload.records.first
           end
 
           it 'executes the callback' do
@@ -1664,17 +1666,17 @@ describe Mongoid::Interceptable do
 
       it 'is a new record' do
         expect(person).to be_a_new_record
-        expect { person.save }.not_to change { person.new_record? }
+        expect { person.save }.to_not change(person, :new_record?)
       end
 
       it 'is left dirty' do
         expect(person).to be_changed
-        expect { person.save }.not_to change { person.changed? }
+        expect { person.save }.to_not change(person, :changed?)
       end
 
       it 'child documents are left dirty' do
         expect(address).to be_changed
-        expect { person.save }.not_to change { address.changed? }
+        expect { person.save }.to_not change(address, :changed?)
       end
     end
 
@@ -1697,17 +1699,17 @@ describe Mongoid::Interceptable do
 
       it 'is a not a new record' do
         expect(person).to_not be_a_new_record
-        expect { person.save }.not_to change { person.new_record? }
+        expect { person.save }.to_not change(person, :new_record?)
       end
 
       it 'is left dirty' do
         expect(person).to be_changed
-        expect { person.save }.not_to change { person.changed? }
+        expect { person.save }.to_not change(person, :changed?)
       end
 
       it 'child documents are left dirty' do
         expect(address).to be_changed
-        expect { person.save }.not_to change { address.changed? }
+        expect { person.save }.to_not change(address, :changed?)
       end
     end
   end
@@ -2114,6 +2116,9 @@ describe Mongoid::Interceptable do
             player.implants.create!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).implants.first
+        end
 
         let(:unpersisted) { player.implants.first }
 
@@ -2127,10 +2132,6 @@ describe Mongoid::Interceptable do
           Player.find(player.id).implants.first.unset(:after_default_player)
         end
 
-        let(:from_db) do
-          Player.find(player.id).implants.first
-        end
-
         include_examples 'accesses the correct parent'
       end
 
@@ -2138,15 +2139,14 @@ describe Mongoid::Interceptable do
         let!(:player) do
           Player.create!.tap(&:create_augmentation)
         end
+        let(:from_db) do
+          Player.find(player.id).augmentation
+        end
 
         let(:unpersisted) { player.augmentation }
 
         before do
           Player.find(player.id).augmentation.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).augmentation
         end
 
         include_examples 'accesses the correct parent'
@@ -2158,15 +2158,14 @@ describe Mongoid::Interceptable do
             player.weapons.create!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).weapons.first
+        end
 
         let(:unpersisted) { player.weapons.first }
 
         before do
           Player.find(player.id).weapons.first.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).weapons.first
         end
 
         include_examples 'accesses the correct parent'
@@ -2179,15 +2178,14 @@ describe Mongoid::Interceptable do
             player.save!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).powerup
+        end
 
         let(:unpersisted) { player.powerup }
 
         before do
           Player.find(player.id).powerup.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).powerup
         end
 
         include_examples 'accesses the correct parent'
@@ -2199,15 +2197,14 @@ describe Mongoid::Interceptable do
             player.shields.create!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).shields.first
+        end
 
         let(:unpersisted) { player.shields.first }
 
         before do
           Player.find(player.id).shields.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).shields.first
         end
 
         include_examples 'accesses the correct parent'
@@ -2223,15 +2220,14 @@ describe Mongoid::Interceptable do
             player.implants.first.save!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).implants.first
+        end
 
         let(:unpersisted) { player.implants.first }
 
         before do
           Player.find(player.id).implants.first.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).implants.first
         end
 
         include_examples 'accesses the correct parent'
@@ -2244,15 +2240,14 @@ describe Mongoid::Interceptable do
             player.save!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).augmentation
+        end
 
         let(:unpersisted) { player.augmentation }
 
         before do
           Player.find(player.id).augmentation.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).augmentation
         end
 
         include_examples 'accesses the correct parent'
@@ -2265,15 +2260,14 @@ describe Mongoid::Interceptable do
             player.weapons.first.save!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).weapons.first
+        end
 
         let(:unpersisted) { player.weapons.first }
 
         before do
           Player.find(player.id).weapons.first.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).weapons.first
         end
 
         include_examples 'accesses the correct parent'
@@ -2286,15 +2280,14 @@ describe Mongoid::Interceptable do
             player.powerup.save!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).powerup
+        end
 
         let(:unpersisted) { player.powerup }
 
         before do
           Player.find(player.id).powerup.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).powerup
         end
 
         include_examples 'accesses the correct parent'
@@ -2307,15 +2300,14 @@ describe Mongoid::Interceptable do
             player.shields.first.save!
           end
         end
+        let(:from_db) do
+          Player.find(player.id).shields.first
+        end
 
         let(:unpersisted) { player.shields.first }
 
         before do
           Player.find(player.id).shields.unset(:after_default_player)
-        end
-
-        let(:from_db) do
-          Player.find(player.id).shields.first
         end
 
         include_examples 'accesses the correct parent'

@@ -309,7 +309,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         expect(enumerable._loaded?).to be true
       end
 
-      it 'it does not call #exists? on the unloaded scope' do
+      it 'does not call #exists? on the unloaded scope' do
         expect(enumerable._unloaded).to_not receive(:exists?)
         expect(enumerable.empty?).to be false
       end
@@ -329,7 +329,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         expect(enumerable._loaded?).to be false
       end
 
-      it 'it calls #exists? on the unloaded scope' do
+      it 'calls #exists? on the unloaded scope' do
         expect(enumerable._unloaded).to receive(:exists?)
         expect(enumerable.empty?).to be true
       end
@@ -344,7 +344,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
           expect(enumerable._loaded?).to be false
         end
 
-        it 'it does not call #exists? on the unloaded scope' do
+        it 'does not call #exists? on the unloaded scope' do
           expect(enumerable._unloaded).to_not receive(:exists?)
           expect(enumerable.empty?).to be false
         end
@@ -430,7 +430,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         expect(enumerable._loaded?).to be true
       end
 
-      it 'it does not call #exists? on the unloaded scope' do
+      it 'does not call #exists? on the unloaded scope' do
         expect(enumerable._unloaded).to_not receive(:exists?)
         expect(enumerable.any?).to be true
       end
@@ -484,7 +484,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
         expect(enumerable._loaded?).to be false
       end
 
-      it 'it calls #exists? on the unloaded scope' do
+      it 'calls #exists? on the unloaded scope' do
         expect(enumerable._unloaded).to receive(:exists?)
         expect(enumerable.any?).to be false
       end
@@ -499,7 +499,7 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
           expect(enumerable._loaded?).to be false
         end
 
-        it 'it does not call #exists? on the unloaded scope' do
+        it 'does not call #exists? on the unloaded scope' do
           expect(enumerable._unloaded).to_not receive(:exists?)
           expect(enumerable.any?).to be true
         end

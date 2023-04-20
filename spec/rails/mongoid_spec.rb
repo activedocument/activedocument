@@ -13,7 +13,7 @@ describe 'Rails::Mongoid' do
     )
   end
 
-  around :each do |example|
+  around do |example|
     FeatureSandbox.quarantine do
       require 'rails/mongoid'
       $LOAD_PATH.push(model_root)

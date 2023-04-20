@@ -130,7 +130,7 @@ describe 'Mongoid application tests' do
         # https://jira.mongodb.org/browse/MONGOID-4885
         comment_text = File.read('app/models/comment.rb')
         expect(comment_text).to match(/belongs_to :post/)
-        expect(comment_text).not_to match(/embedded_in :post/)
+        expect(comment_text).to_not match(/embedded_in :post/)
       end
     end
 
@@ -149,7 +149,7 @@ describe 'Mongoid application tests' do
         Mongoid::Config::Introspection.options(include_deprecated: true).each do |opt|
           if opt.deprecated?
             # deprecated options should not be included
-            expect(config_text).not_to include "# #{opt.name}:"
+            expect(config_text).to_not include "# #{opt.name}:"
           else
             block = "    #{opt.indented_comment(indent: 4)}\n" \
                     "    # #{opt.name}: #{opt.default}\n"
@@ -219,7 +219,7 @@ describe 'Mongoid application tests' do
                 index = client['posts'].indexes.detect do |idx|
                   idx['key'] == { 'subject' => 1 }
                 end
-                expect(index).to be nil
+                expect(index).to be_nil
 
                 check_call(%w[bundle exec rake db:mongoid:create_indexes -t],
                            cwd: APP_PATH,

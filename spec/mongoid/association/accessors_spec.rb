@@ -905,7 +905,7 @@ describe Mongoid::Association::Accessors do
       it 'successfully removes the embedded document' do
         definitions
 
-        expect(embedding.accessor_embedded).not_to be_nil
+        expect(embedding.accessor_embedded).to_not be_nil
 
         embedding.accessor_embedded = nil
         embedding.save!

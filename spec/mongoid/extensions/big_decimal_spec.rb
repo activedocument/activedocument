@@ -462,7 +462,7 @@ describe Mongoid::Extensions::BigDecimal do
     describe '#numeric?' do
 
       it 'returns true' do
-        expect(big_decimal.numeric?).to eq(true)
+        expect(big_decimal.numeric?).to be(true)
       end
     end
   end
@@ -483,7 +483,7 @@ describe Mongoid::Extensions::BigDecimal do
         end
 
         it 'raises an error' do
-          expect(demongoized).to eq(nil)
+          expect(demongoized).to be_nil
         end
       end
 
@@ -901,7 +901,7 @@ describe Mongoid::Extensions::BigDecimal do
     describe '#numeric?' do
 
       it 'returns true' do
-        expect(big_decimal.numeric?).to eq(true)
+        expect(big_decimal.numeric?).to be(true)
       end
     end
   end

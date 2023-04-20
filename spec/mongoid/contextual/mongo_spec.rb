@@ -687,6 +687,8 @@ describe Mongoid::Contextual::Mongo do
 
   describe '#tally' do
     let(:fans1) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
+    let(:criteria) { Band.where(origin: 'tally') }
+    let(:unwind) { false }
     let(:fans2) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
     let(:fans3) { [Fanatic.new(age: 1), Fanatic.new(age: 3)] }
 
@@ -706,9 +708,6 @@ describe Mongoid::Contextual::Mongo do
       Band.create!(origin: 'tally2', fanatics: fans2, genres: [1, 2])
       Band.create!(origin: 'tally2', fanatics: fans3, genres: [1, 3])
     end
-
-    let(:criteria) { Band.where(origin: 'tally') }
-    let(:unwind) { false }
 
     shared_examples_for 'scalar value examples' do
 
@@ -839,9 +838,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it 'tallies the correct type' do
-            expect(tally.keys.map(&:class).sort do |a, b|
-              a.to_s <=> b.to_s
-            end).to eq([BSON::Decimal128, BSON::Regexp::Raw])
+            expect(tally.keys.map(&:class).sort_by(&:to_s)).to eq([BSON::Decimal128, BSON::Regexp::Raw])
           end
         end
 
@@ -854,9 +851,7 @@ describe Mongoid::Contextual::Mongo do
           end
 
           it 'tallies the correct type' do
-            expect(tally.keys.map(&:class).sort do |a, b|
-              a.to_s <=> b.to_s
-            end).to eq([BigDecimal, BSON::Regexp::Raw])
+            expect(tally.keys.map(&:class).sort_by(&:to_s)).to eq([BigDecimal, BSON::Regexp::Raw])
           end
         end
       end
@@ -1384,7 +1379,7 @@ describe Mongoid::Contextual::Mongo do
       end
 
       it 'does not make any additional database queries' do
-        expect(game_association).to receive(:eager_load).never
+        expect(game_association).to_not receive(:eager_load)
         context.send(:eager_load, [])
       end
     end
@@ -2188,6 +2183,9 @@ describe Mongoid::Contextual::Mongo do
             let(:context) do
               described_class.new(criteria)
             end
+            let(:docs) do
+              context.send(method, limit)
+            end
 
             let(:criteria) do
               Band.all
@@ -2195,10 +2193,6 @@ describe Mongoid::Contextual::Mongo do
 
             before do
               context.first(before_limit)
-            end
-
-            let(:docs) do
-              context.send(method, limit)
             end
 
             context 'when getting all of the documents before' do
@@ -2282,6 +2276,9 @@ describe Mongoid::Contextual::Mongo do
         let(:context) do
           described_class.new(criteria)
         end
+        let(:docs) do
+          context.last(limit)
+        end
 
         let(:criteria) do
           Band.all
@@ -2289,10 +2286,6 @@ describe Mongoid::Contextual::Mongo do
 
         before do
           context.first(before_limit)
-        end
-
-        let(:docs) do
-          context.last(limit)
         end
 
         context 'when getting one from the beginning and one from the end' do
@@ -2531,6 +2524,9 @@ describe Mongoid::Contextual::Mongo do
           let(:context) do
             described_class.new(criteria)
           end
+          let(:docs) do
+            context.last(limit)
+          end
 
           let(:criteria) do
             Band.all
@@ -2538,10 +2534,6 @@ describe Mongoid::Contextual::Mongo do
 
           before do
             context.last(before_limit)
-          end
-
-          let(:docs) do
-            context.last(limit)
           end
 
           context 'when getting all of the documents before' do
@@ -2625,6 +2617,9 @@ describe Mongoid::Contextual::Mongo do
       let(:context) do
         described_class.new(criteria)
       end
+      let(:docs) do
+        context.first(limit)
+      end
 
       let(:criteria) do
         Band.all
@@ -2632,10 +2627,6 @@ describe Mongoid::Contextual::Mongo do
 
       before do
         context.last(before_limit)
-      end
-
-      let(:docs) do
-        context.first(limit)
       end
 
       context 'when getting one from the beginning and one from the end' do
@@ -4581,7 +4572,7 @@ describe Mongoid::Contextual::Mongo do
         context.load_async
         context.documents_loader.wait
 
-        expect(context.view).not_to receive(:map)
+        expect(context.view).to_not receive(:map)
         expect(context.to_a).to eq([band])
       end
 
@@ -4607,7 +4598,7 @@ describe Mongoid::Contextual::Mongo do
         context.load_async
         context.documents_loader.wait
 
-        expect(context.view).not_to receive(:map)
+        expect(context.view).to_not receive(:map)
         expect(context.to_a).to eq([band])
       end
 

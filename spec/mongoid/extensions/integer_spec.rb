@@ -37,7 +37,7 @@ describe Mongoid::Extensions::Integer do
 
           context 'when the value is small' do
 
-            it 'it returns the integer' do
+            it 'returns the integer' do
               expect(Integer.send(method, 3)).to eq(3)
             end
           end
@@ -129,7 +129,7 @@ describe Mongoid::Extensions::Integer do
   describe '#numeric?' do
 
     it 'returns true' do
-      expect(number.numeric?).to eq(true)
+      expect(number.numeric?).to be(true)
     end
   end
 end

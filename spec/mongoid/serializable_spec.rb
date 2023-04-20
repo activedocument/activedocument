@@ -230,13 +230,12 @@ describe Mongoid::Serializable do
       let(:date) do
         Date.new(1970, 1, 1)
       end
+      let(:attributes) do
+        person.serializable_hash
+      end
 
       before do
         person.dob = date
-      end
-
-      let(:attributes) do
-        person.serializable_hash
       end
 
       it 'converts the objects to the defined type' do
@@ -249,13 +248,12 @@ describe Mongoid::Serializable do
       let(:attributes) do
         { 'title' => 'President', 'security_code' => '1234' }
       end
+      let(:field_names) do
+        person.fields.keys.map(&:to_s) - ['_type']
+      end
 
       before do
         person.write_attributes(attributes)
-      end
-
-      let(:field_names) do
-        person.fields.keys.map(&:to_s) - ['_type']
       end
 
       it 'serializes assigned attributes' do
@@ -856,6 +854,13 @@ describe Mongoid::Serializable do
     let(:account) do
       Account.new
     end
+    let(:person) do
+      Person.new
+    end
+
+    let(:person) do
+      Person.new
+    end
 
     context 'when including root in json via Mongoid' do
       config_override :include_root_in_json, false
@@ -893,12 +898,8 @@ describe Mongoid::Serializable do
       end
 
       it 'uses the mongoid configuration' do
-        expect(JSON.parse(account.to_json)).not_to have_key('account')
+        expect(JSON.parse(account.to_json)).to_not have_key('account')
       end
-    end
-
-    let(:person) do
-      Person.new
     end
 
     context 'when serializing a relation directly' do

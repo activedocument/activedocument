@@ -861,7 +861,7 @@ describe Mongoid::Changeable do
 
         before do
           person.changed_attributes['aliases'] = aliases
-          expect(aliases).to receive(:clone).never
+          expect(aliases).to_not receive(:clone)
           person.aliases_will_change!
         end
 
@@ -910,7 +910,7 @@ describe Mongoid::Changeable do
       end
 
       it 'returns an array of changed field names' do
-        expect(person.changed).not_to include('title')
+        expect(person.changed).to_not include('title')
       end
 
     end
@@ -1194,7 +1194,7 @@ describe Mongoid::Changeable do
         person.user_accounts << user_account
       end
 
-      it 'should not add to the changes or changed_attributes hash' do
+      it 'does not add to the changes or changed_attributes hash' do
         expect(person.changes).to eq({})
         expect(person.changed_attributes).to eq({})
       end
@@ -1214,7 +1214,7 @@ describe Mongoid::Changeable do
         person.user_account_ids << user_account._id
       end
 
-      it 'should add to the changes or changed_attributes hash' do
+      it 'adds to the changes or changed_attributes hash' do
         expect(person.changes).to eq({ 'user_account_ids' => [nil, [user_account._id]] })
         expect(person.changed_attributes).to eq({ 'user_account_ids' => nil })
       end
@@ -1234,7 +1234,7 @@ describe Mongoid::Changeable do
         person.user_accounts = []
       end
 
-      it 'should not add to the changes or changed_attributes hash' do
+      it 'does not add to the changes or changed_attributes hash' do
         expect(person.changes).to eq({})
         expect(person.changed_attributes).to eq({})
       end
@@ -1254,7 +1254,7 @@ describe Mongoid::Changeable do
         person.user_account_ids = []
       end
 
-      it 'should not add to the changes or changed_attributes hash' do
+      it 'does not add to the changes or changed_attributes hash' do
         expect(person.changes).to eq({ 'user_account_ids' => [[user_account._id], []] })
         expect(person.changed_attributes).to eq({ 'user_account_ids' => [user_account._id] })
       end
@@ -1362,6 +1362,7 @@ describe Mongoid::Changeable do
 
         context 'when the document is embedded multiple levels' do
           let(:location) { address.locations.create(name: 'Home') }
+
           before { location.name = 'Work' }
 
           it 'returns the proper hash with locations' do
@@ -1523,7 +1524,7 @@ describe Mongoid::Changeable do
         end
 
         it 'resets to the default value' do
-          expect(person.pets).to eq(false)
+          expect(person.pets).to be(false)
         end
       end
 
@@ -1538,7 +1539,7 @@ describe Mongoid::Changeable do
         end
 
         it 'resets to the default value' do
-          expect(person.pets).to eq(false)
+          expect(person.pets).to be(false)
         end
 
         it 'flags the document dirty' do
@@ -1638,7 +1639,7 @@ describe Mongoid::Changeable do
     context 'when the document has not been saved' do
 
       it 'returns no changes' do
-        expect(person.title_previous_change).to eq(nil)
+        expect(person.title_previous_change).to be_nil
       end
     end
   end
@@ -1714,13 +1715,13 @@ describe Mongoid::Changeable do
       end
 
       it 'detects the changes' do
-        expect(person.saved_change_to_attribute?(:title)).to be_truthy
-        expect(person.saved_change_to_attribute?(:title, from: 'Grand Poobah')).to be_truthy
-        expect(person.saved_change_to_attribute?(:title, to: 'Captain Obvious')).to be_truthy
-        expect(person.saved_change_to_attribute?(:title, from: 'Grand Poobah', to: 'Captain Obvious')).to be_truthy
-        expect(person.saved_change_to_title?(from: 'Grand Poobah', to: 'Captain Obvious')).to be_truthy
-        expect(person.saved_change_to_attribute?(:age)).to be_falsey
-        expect(person.saved_change_to_age?).to be_falsey
+        expect(person).to be_saved_change_to_attribute(:title)
+        expect(person).to be_saved_change_to_attribute(:title, from: 'Grand Poobah')
+        expect(person).to be_saved_change_to_attribute(:title, to: 'Captain Obvious')
+        expect(person).to be_saved_change_to_attribute(:title, from: 'Grand Poobah', to: 'Captain Obvious')
+        expect(person).to be_saved_change_to_title(from: 'Grand Poobah', to: 'Captain Obvious')
+        expect(person).to_not be_saved_change_to_attribute(:age)
+        expect(person).to_not be_saved_change_to_age
       end
     end
 
@@ -1730,8 +1731,8 @@ describe Mongoid::Changeable do
       end
 
       it 'returns changes for the previous save' do
-        expect(person.saved_change_to_attribute?(:title)).to be_falsey
-        expect(person.saved_change_to_title?).to be_falsey
+        expect(person).to_not be_saved_change_to_attribute(:title)
+        expect(person).to_not be_saved_change_to_title
       end
     end
   end
@@ -1746,10 +1747,10 @@ describe Mongoid::Changeable do
     end
 
     it 'correctly detects changes' do
-      expect(person.will_save_change_to_attribute?(:title)).to eq(true)
-      expect(person.will_save_change_to_title?).to eq(true)
-      expect(person.will_save_change_to_attribute?(:score)).to eq(false)
-      expect(person.will_save_change_to_score?).to eq(false)
+      expect(person.will_save_change_to_attribute?(:title)).to be(true)
+      expect(person.will_save_change_to_title?).to be(true)
+      expect(person.will_save_change_to_attribute?(:score)).to be(false)
+      expect(person.will_save_change_to_score?).to be(false)
     end
 
   end

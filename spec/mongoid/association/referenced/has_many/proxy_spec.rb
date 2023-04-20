@@ -1551,12 +1551,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         let!(:movie) do
           Movie.create!
         end
+        let(:expected_result) { false }
 
         it 'returns false' do
           expect(movie.ratings.any?).to be false
         end
 
-        let(:expected_result) { false }
         include_examples 'does not query database when association is loaded'
       end
 
@@ -1640,12 +1640,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       let!(:rating) do
         movie.ratings.create!(value: 1)
       end
+      let(:expected_result) { true }
 
       it 'returns true' do
         expect(movie.ratings.any?).to be true
       end
 
-      let(:expected_result) { true }
       include_examples 'does not query database when association is loaded'
     end
 
@@ -2089,6 +2089,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           let!(:drug) do
             person.drugs.create!
           end
+          let(:deleted) do
+            person.drugs.delete(drug)
+          end
 
           before do
             Mongoid::Threaded.begin_execution(:assign)
@@ -2096,10 +2099,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
           after do
             Mongoid::Threaded.exit_execution(:assign)
-          end
-
-          let(:deleted) do
-            person.drugs.delete(drug)
           end
 
           it 'does not cascade' do
@@ -2497,7 +2496,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       it 'does not change the in memory size' do
         expect do
           person.posts.find(post_id)
-        end.not_to change { person.posts.to_a.size }
+        end.to_not change { person.posts.to_a.size }
       end
     end
 
@@ -3142,6 +3141,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     let(:person) do
       Person.create!
     end
+    let(:max) do
+      person.posts.max_by(&:rating)
+    end
 
     let(:post_one) do
       Post.create!(rating: 5)
@@ -3153,12 +3155,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
     before do
       person.posts.push(post_one, post_two)
-    end
-
-    let(:max) do
-      person.posts.max do |a, b|
-        a.rating <=> b.rating
-      end
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -3171,6 +3167,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     let(:person) do
       Person.create!
     end
+    let(:max) do
+      person.posts.max_by(&:rating)
+    end
 
     let(:post_one) do
       Post.create!(rating: 5)
@@ -3182,10 +3181,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
     before do
       person.posts.push(post_one, post_two)
-    end
-
-    let(:max) do
-      person.posts.max_by(&:rating)
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -3272,6 +3267,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     let(:person) do
       Person.create!
     end
+    let(:min) do
+      person.posts.min_by(&:rating)
+    end
 
     let(:post_one) do
       Post.create!(rating: 5)
@@ -3283,12 +3281,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
     before do
       person.posts.push(post_one, post_two)
-    end
-
-    let(:min) do
-      person.posts.min do |a, b|
-        a.rating <=> b.rating
-      end
     end
 
     it 'returns the min value of the supplied field' do
@@ -3301,6 +3293,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     let(:person) do
       Person.create!
     end
+    let(:min) do
+      person.posts.min_by(&:rating)
+    end
 
     let(:post_one) do
       Post.create!(rating: 5)
@@ -3312,10 +3307,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
     before do
       person.posts.push(post_one, post_two)
-    end
-
-    let(:min) do
-      person.posts.min_by(&:rating)
     end
 
     it 'returns the min value of the supplied field' do
@@ -3460,7 +3451,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
     end
 
-    Mongoid::Association::Referenced::HasMany::Proxy.public_instance_methods.each do |method|
+    described_class.public_instance_methods.each do |method|
 
       context "when checking #{method}" do
 
@@ -3735,11 +3726,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         artist.albums << album
       end
 
-      it 'it executes method callbacks' do
+      it 'executes method callbacks' do
         expect(artist.before_add_referenced_called).to be true
       end
 
-      it 'it executes proc callbacks' do
+      it 'executes proc callbacks' do
         expect(album.before_add_called).to be true
       end
 
@@ -3800,7 +3791,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         artist.albums << album
         album.save!
         artist.save!
-        expect(artist).not_to receive(:after_add_album)
+        expect(artist).to_not receive(:after_add_album)
       end
 
       let(:reloaded_album) do
@@ -3808,7 +3799,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       it 'does not execute the callback when the association is accessed' do
-        expect(reloaded_album.artist.after_add_referenced_called).to be(nil)
+        expect(reloaded_album.artist.after_add_referenced_called).to be_nil
       end
     end
   end

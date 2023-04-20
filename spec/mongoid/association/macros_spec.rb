@@ -123,6 +123,10 @@ describe Mongoid::Association::Macros do
 
     context 'when defining the relation' do
 
+      before do
+        klass.embeds_many(:addresses)
+      end
+
       context 'when the relation name is invalid' do
 
         let(:relation) do
@@ -134,10 +138,6 @@ describe Mongoid::Association::Macros do
             relation
           end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
-      end
-
-      before do
-        klass.embeds_many(:addresses)
       end
 
       it 'adds the association to the klass' do
@@ -228,6 +228,10 @@ describe Mongoid::Association::Macros do
 
     context 'when defining the relation' do
 
+      before do
+        klass.embeds_one(:name)
+      end
+
       context 'when the relation name is invalid' do
 
         let(:relation) do
@@ -239,10 +243,6 @@ describe Mongoid::Association::Macros do
             relation
           end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
-      end
-
-      before do
-        klass.embeds_one(:name)
       end
 
       it 'adds the association to the klass' do
@@ -641,6 +641,10 @@ describe Mongoid::Association::Macros do
 
     context 'when defining the relation' do
 
+      before do
+        klass.belongs_to(:person)
+      end
+
       context 'when the relation name is invalid' do
 
         let(:relation) do
@@ -652,10 +656,6 @@ describe Mongoid::Association::Macros do
             relation
           end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
-      end
-
-      before do
-        klass.belongs_to(:person)
       end
 
       it 'adds the association to the klass' do
@@ -713,6 +713,10 @@ describe Mongoid::Association::Macros do
 
     context 'when defining the relation' do
 
+      before do
+        klass.has_many(:posts)
+      end
+
       context 'when the relation name is invalid' do
 
         let(:relation) do
@@ -724,10 +728,6 @@ describe Mongoid::Association::Macros do
             relation
           end.to raise_exception(Mongoid::Errors::InvalidRelation)
         end
-      end
-
-      before do
-        klass.has_many(:posts)
       end
 
       it 'adds the association to the klass' do
@@ -818,6 +818,10 @@ describe Mongoid::Association::Macros do
 
     context 'when defining the relation' do
 
+      before do
+        klass.has_and_belongs_to_many(:preferences)
+      end
+
       context 'when the relation name is invalid' do
 
         let(:relation) do
@@ -838,10 +842,6 @@ describe Mongoid::Association::Macros do
             klass.has_and_belongs_to_many(:fields, sandwich: true)
           end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
-      end
-
-      before do
-        klass.has_and_belongs_to_many(:preferences)
       end
 
       it 'adds the association to the klass' do
@@ -910,6 +910,10 @@ describe Mongoid::Association::Macros do
 
     context 'when defining the relation' do
 
+      before do
+        klass.has_one(:game)
+      end
+
       context 'when the relation name is invalid' do
 
         let(:relation) do
@@ -930,10 +934,6 @@ describe Mongoid::Association::Macros do
             klass.has_one(:game, sandwich: true)
           end.to raise_exception(Mongoid::Errors::InvalidRelationOption)
         end
-      end
-
-      before do
-        klass.has_one(:game)
       end
 
       it 'adds the association to the klass' do

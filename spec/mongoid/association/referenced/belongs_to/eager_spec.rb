@@ -135,11 +135,11 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
         before { eager }
 
         it 'does not set anything on the parent' do
-          expect(eager.ivar(:person)).to be nil
+          expect(eager.ivar(:person)).to be_nil
         end
 
         it 'has a nil association' do
-          expect(eager.person).to be nil
+          expect(eager.person).to be_nil
         end
       end
     end
@@ -202,11 +202,11 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
           before { eager }
 
           it 'does not set anything on the parent' do
-            expect(eager.map { |e| e.ivar(:ratable) }).to all(be nil)
+            expect(eager.map { |e| e.ivar(:ratable) }).to all(be_nil)
           end
 
           it 'has a nil association' do
-            expect(eager.map(&:ratable)).to all(be nil)
+            expect(eager.map(&:ratable)).to all(be_nil)
           end
         end
       end
@@ -267,11 +267,11 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
           before { eager }
 
           it 'does not set anything on the parent' do
-            expect(eager.map { |e| e.ivar(:reviewable) }).to all(be nil)
+            expect(eager.map { |e| e.ivar(:reviewable) }).to all(be_nil)
           end
 
           it 'has a nil association' do
-            expect(eager.map(&:reviewable)).to all(be nil)
+            expect(eager.map(&:reviewable)).to all(be_nil)
           end
         end
       end
@@ -314,15 +314,15 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
           end
 
           expect_no_queries do
-            expect(eager.map(&:reviewable).compact).to eq([reviewable])
+            expect(eager.filter_map(&:reviewable)).to eq([reviewable])
           end
 
           expect_no_queries do
-            expect(eager.map(&:reviewer).compact).to eq([reviewer])
+            expect(eager.filter_map(&:reviewer)).to eq([reviewer])
           end
 
           expect_no_queries do
-            expect(eager.map(&:template).compact).to eq([template])
+            expect(eager.filter_map(&:template)).to eq([template])
           end
         end
       end
@@ -381,7 +381,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
 
     context 'when setting the foreign key id directly' do
 
-      it 'works' do
+      it 'assigns the foreign key' do
         id = BSON::ObjectId.new
         game = Game.new(person_id: id)
         expect(game.person_id).to eql(id)
@@ -401,7 +401,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Eager do
         found_ticket = false
         expect_query(1) do
           HmmTicket.all.includes(:person).each do |ticket|
-            expect(ticket.person).to eq nil
+            expect(ticket.person).to be_nil
             found_ticket = true
           end
         end

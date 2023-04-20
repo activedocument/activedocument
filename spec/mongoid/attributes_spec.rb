@@ -323,7 +323,7 @@ describe Mongoid::Attributes do
           end
 
           it 'returns nil' do
-            expect(from_db[:undefined_field]).to be nil
+            expect(from_db[:undefined_field]).to be_nil
           end
         end
       end
@@ -409,6 +409,10 @@ describe Mongoid::Attributes do
 
   describe '#[]=' do
 
+    let(:person) do
+      Person.new
+    end
+
     context 'when the document has a custom attribute type' do
 
       let(:bar) do
@@ -421,10 +425,6 @@ describe Mongoid::Attributes do
       it 'sets the demongoized version of the attribute' do
         expect(bar.reload.lat_lng).to be_a(LatLng)
       end
-    end
-
-    let(:person) do
-      Person.new
     end
 
     context 'when setting the attribute to nil' do
@@ -453,7 +453,7 @@ describe Mongoid::Attributes do
       end
 
       it 'returns the set value' do
-        expect(terms).to eq(true)
+        expect(terms).to be(true)
       end
     end
 
@@ -1050,7 +1050,7 @@ describe Mongoid::Attributes do
         Person.new
       end
 
-      before(:each) do
+      before do
         person.write_attribute(:t, 'aliased field to test')
       end
 
@@ -1120,7 +1120,7 @@ describe Mongoid::Attributes do
         end
 
         it 'returns nil' do
-          expect(from_db.read_attribute(:undefined_field)).to be nil
+          expect(from_db.read_attribute(:undefined_field)).to be_nil
         end
       end
     end
@@ -1214,6 +1214,7 @@ describe Mongoid::Attributes do
     context 'when the attribute is not on only list' do
 
       before { Person.create! }
+
       let(:person) do
         Person.only(:id).first
       end
@@ -1531,7 +1532,7 @@ describe Mongoid::Attributes do
         Person.new(age: '42')
       end
 
-      it 'should store the attribute before type cast' do
+      it 'stores the attribute before type cast' do
         expect(person.age_before_type_cast).to eq('42')
       end
     end
@@ -1568,7 +1569,7 @@ describe Mongoid::Attributes do
         Person.new
       end
 
-      before(:each) do
+      before do
         person.write_attribute(:test, 'aliased field to test')
       end
 
@@ -1974,7 +1975,7 @@ describe Mongoid::Attributes do
 
       it 'id and _id are not the same' do
         expect(shirt.id).to eq(id)
-        expect(shirt._id).not_to eq(id)
+        expect(shirt._id).to_not eq(id)
       end
     end
 
@@ -1985,7 +1986,7 @@ describe Mongoid::Attributes do
 
       it 'updates id but not_id' do
         expect(shirt.id).to eq(id)
-        expect(shirt._id).not_to eq(id)
+        expect(shirt._id).to_not eq(id)
       end
     end
 
@@ -1996,7 +1997,7 @@ describe Mongoid::Attributes do
 
       it 'sets id and not _id' do
         expect(shirt.id).to eq(id)
-        expect(shirt._id).not_to eq(id)
+        expect(shirt._id).to_not eq(id)
       end
     end
 
@@ -2301,6 +2302,7 @@ describe Mongoid::Attributes do
 
       context 'when doing assignments' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.pages = [NestedPage.new]
         end
@@ -2316,6 +2318,7 @@ describe Mongoid::Attributes do
 
       context 'when replacing assignments' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.pages = [NestedPage.new(number: 1)]
           doc.pages = [NestedPage.new(number: 2)]
@@ -2332,6 +2335,7 @@ describe Mongoid::Attributes do
 
       context 'when setting to nil' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.pages = [NestedPage.new(number: 1)]
           doc.pages = nil
@@ -2349,6 +2353,7 @@ describe Mongoid::Attributes do
       context 'when setting to nil and back' do
         let(:doc) { NestedBook.create! }
         let(:page) { NestedPage.new }
+
         before do
           doc.pages = [page]
           doc.pages = nil
@@ -2366,6 +2371,7 @@ describe Mongoid::Attributes do
 
       context 'when pushing' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.pages << NestedPage.new
         end
@@ -2382,6 +2388,7 @@ describe Mongoid::Attributes do
       %i[shift pop].each do |meth|
         context "when performing #{meth}" do
           let(:doc) { NestedBook.create! }
+
           before do
             doc.pages << NestedPage.new
             doc.pages << NestedPage.new
@@ -2402,6 +2409,7 @@ describe Mongoid::Attributes do
 
       context 'when concatting' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.pages << NestedPage.new
           doc.pages.push(NestedPage.new, NestedPage.new)
@@ -2419,6 +2427,7 @@ describe Mongoid::Attributes do
       %i[build create].each do |meth|
         context "when preforming #{meth}" do
           let(:doc) { NestedBook.create! }
+
           before do
             doc.pages.send(meth)
           end
@@ -2436,6 +2445,7 @@ describe Mongoid::Attributes do
 
       context 'when clearing' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.pages << NestedPage.new
           doc.pages << NestedPage.new
@@ -2456,6 +2466,7 @@ describe Mongoid::Attributes do
       %i[delete_all destroy_all remove_all].each do |meth|
         context "when performing: #{meth}" do
           let(:doc) { NestedBook.create! }
+
           before do
             doc.pages << NestedPage.new
             doc.pages << NestedPage.new
@@ -2477,6 +2488,7 @@ describe Mongoid::Attributes do
       context 'when deleting' do
         let(:doc) { NestedBook.create! }
         let(:page) { NestedPage.new }
+
         before do
           doc.pages << page
           doc.pages << NestedPage.new
@@ -2497,6 +2509,7 @@ describe Mongoid::Attributes do
       context 'when doing delete_one' do
         let(:doc) { NestedBook.create! }
         let(:page) { NestedPage.new }
+
         before do
           doc.pages << page
           doc.pages << NestedPage.new
@@ -2512,6 +2525,7 @@ describe Mongoid::Attributes do
 
       context 'when assigning an array of hashes' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.pages = [{}]
         end
@@ -2527,6 +2541,7 @@ describe Mongoid::Attributes do
 
       context 'when assigning twice' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.pages = [{ number: 1 }]
           doc.pages = [{}]
@@ -2564,6 +2579,7 @@ describe Mongoid::Attributes do
 
       context 'when doing assignments' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.cover = NestedCover.new(attrs)
         end
@@ -2579,6 +2595,7 @@ describe Mongoid::Attributes do
 
       context 'when replacing assignments' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.cover = NestedCover.new('title' => 'Title1')
           doc.cover = NestedCover.new(attrs)
@@ -2595,6 +2612,7 @@ describe Mongoid::Attributes do
 
       context 'when setting to nil' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.cover = NestedCover.new(attrs)
           doc.cover = nil
@@ -2611,6 +2629,7 @@ describe Mongoid::Attributes do
 
       context 'when setting to nil and back' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.cover = NestedCover.new(attrs)
           doc.cover = nil
@@ -2629,6 +2648,7 @@ describe Mongoid::Attributes do
       %i[build create].each do |meth|
         context "when preforming #{meth}" do
           let(:doc) { NestedBook.create! }
+
           before do
             doc.send("#{meth}_cover", attrs)
           end
@@ -2646,6 +2666,7 @@ describe Mongoid::Attributes do
 
       context 'when assigning a hash' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.cover = attrs
         end
@@ -2661,6 +2682,7 @@ describe Mongoid::Attributes do
 
       context 'when assigning twice' do
         let(:doc) { NestedBook.create! }
+
         before do
           doc.cover = { 'title' => '1984' }
           doc.cover = attrs

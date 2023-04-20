@@ -340,7 +340,7 @@ describe Mongoid::Clients::Sessions do
     context 'when transactions are not supported' do
       require_topology :single
 
-      it 'it raises a transactions not supported error' do
+      it 'raises a transactions not supported error' do
         expect do
           Person.transaction do
             Person.create!
@@ -521,7 +521,7 @@ describe Mongoid::Clients::Sessions do
             end
 
             it 'does not execute any operations' do
-              expect(person.reload.username).not_to eq('Emily')
+              expect(person.reload.username).to_not eq('Emily')
               expect(Post.count).to be(0)
               expect(update_events).to be_empty
             end
@@ -545,7 +545,7 @@ describe Mongoid::Clients::Sessions do
             end
 
             it 'does not execute any operations' do
-              expect(person.reload.username).not_to eq('Emily')
+              expect(person.reload.username).to_not eq('Emily')
               expect(Post.count).to be(0)
               expect(update_events).to be_empty
             end
@@ -579,7 +579,7 @@ describe Mongoid::Clients::Sessions do
     context 'when transactions are not supported' do
       require_topology :single
 
-      it 'it raises a transactions not supported error' do
+      it 'raises a transactions not supported error' do
         expect do
           Person.transaction do
             Person.create!

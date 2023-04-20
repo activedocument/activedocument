@@ -58,7 +58,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
         end
 
         it 'does nothing' do
-          expect(name).to receive(:namable=).with(person).never
+          expect(name).to_not receive(:namable=).with(person)
           expect(name).to receive(:namable=).with(nil).once
           binding.bind_one
         end
@@ -95,7 +95,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
           end
 
           it 'does not overwrite the existing association' do
-            expect(address).to receive(:_association=).never
+            expect(address).to_not receive(:_association=)
             binding.bind_one
           end
         end
@@ -108,7 +108,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
         end
 
         it 'does nothing' do
-          expect(address).to receive(:addressable=).never
+          expect(address).to_not receive(:addressable=)
           binding.bind_one
         end
       end
@@ -138,7 +138,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
       context 'when the document is not unbindable' do
 
         it 'does nothing' do
-          expect(name).to receive(:namable=).never
+          expect(name).to_not receive(:namable=)
           binding.unbind_one
         end
       end
@@ -165,7 +165,7 @@ describe Mongoid::Association::Embedded::EmbeddedIn::Binding do
       context 'when the document is not unbindable' do
 
         it 'does nothing' do
-          expect(address).to receive(:addressable=).never
+          expect(address).to_not receive(:addressable=)
           binding.unbind_one
         end
       end

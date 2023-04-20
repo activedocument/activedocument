@@ -238,6 +238,8 @@ describe Mongoid::Association::Builders do
 
     context 'with criteria applied' do
 
+      subject { services.build }
+
       let(:person) do
         Person.new
       end
@@ -246,10 +248,8 @@ describe Mongoid::Association::Builders do
         person.services.asc(:sid)
       end
 
-      subject { services.build }
-
       it { is_expected.to be_a_kind_of(Service) }
-      it { is_expected.not_to be_persisted }
+      it { is_expected.to_not be_persisted }
     end
   end
 end

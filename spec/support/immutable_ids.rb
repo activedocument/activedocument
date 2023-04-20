@@ -5,7 +5,7 @@ module Mongoid
     def immutable_id_examples_as(name)
       shared_examples_for name do
         shared_examples 'a persisted document' do
-          it 'should disallow _id to be updated' do
+          it 'disallows _id to be updated' do
             expect { invoke_operation! }
               .to raise_error(Mongoid::Errors::ImmutableAttribute)
           end
@@ -14,19 +14,19 @@ module Mongoid
             before { Mongoid::Config.immutable_ids = false }
             after { Mongoid::Config.immutable_ids = true }
 
-            it 'should ignore the change and issue a warning' do
+            it 'ignores the change and issue a warning' do
               expect(Mongoid::Warnings).to receive(:warn_mutable_ids)
-              expect { invoke_operation! }.not_to raise_error
-              expect(id_is_unchanged).not_to be legacy_behavior_expects_id_to_change
+              expect { invoke_operation! }.to_not raise_error
+              expect(id_is_unchanged).to_not be legacy_behavior_expects_id_to_change
             end
           end
 
           context 'when id is set to the existing value' do
             let(:new_id_value) { object._id }
 
-            it 'should allow the update to proceed' do
+            it 'allows the update to proceed' do
               expect { invoke_operation! }
-                .not_to raise_error
+                .to_not raise_error
             end
           end
         end
@@ -40,7 +40,7 @@ module Mongoid
             context 'when the document is new' do
               let(:object) { Person.new }
 
-              it 'should allow _id to be updated' do
+              it 'allows _id to be updated' do
                 invoke_operation!
                 expect(object.new_record?).to be false
                 expect(object.reload._id).to be == new_id_value
@@ -63,7 +63,7 @@ module Mongoid
             context 'when the document is new' do
               let(:object) { parent.favorites.new }
 
-              it 'should allow _id to be updated' do
+              it 'allows _id to be updated' do
                 invoke_operation!
                 expect(object.new_record?).to be false
                 expect(parent.reload.favorites.first._id).to be == new_id_value
@@ -82,7 +82,7 @@ module Mongoid
                   before { Mongoid::Config.immutable_ids = false }
                   after { Mongoid::Config.immutable_ids = true }
 
-                  it 'should ignore the change' do
+                  it 'ignores the change' do
                     expect(Mongoid::Warnings).to receive(:warn_mutable_ids)
 
                     parent.pet = pet = Pet.new
@@ -91,7 +91,7 @@ module Mongoid
                     original_id = pet._id
                     new_id = BSON::ObjectId.new
 
-                    expect { parent.update(pet: { _id: new_id }) }.not_to raise_error
+                    expect { parent.update(pet: { _id: new_id }) }.to_not raise_error
                     expect(parent.reload.pet._id.to_s).to be == original_id.to_s
                   end
                 end
@@ -99,7 +99,7 @@ module Mongoid
                 context 'when immutable_ids is true' do
                   before { expect(Mongoid::Config.immutable_ids).to be true }
 
-                  it 'should raise an exception' do
+                  it 'raises an exception' do
                     parent.pet = Pet.new
                     parent.save
 

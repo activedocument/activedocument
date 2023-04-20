@@ -523,11 +523,11 @@ describe Mongoid::Factory do
       end
 
       it 'runs the initialize callbacks' do
-        expect(person.title).to be nil
+        expect(person.title).to be_nil
       end
 
       it 'runs the find callbacks' do
-        expect(person.ssn).to be nil
+        expect(person.ssn).to be_nil
       end
     end
   end

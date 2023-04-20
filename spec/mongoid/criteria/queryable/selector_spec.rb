@@ -248,6 +248,9 @@ describe Mongoid::Criteria::Queryable::Selector do
     let(:value) do
       [1, 2, 3]
     end
+    let(:cloned) do
+      selector.__deep_copy__
+    end
 
     let(:selection) do
       { '$in' => value }
@@ -259,10 +262,6 @@ describe Mongoid::Criteria::Queryable::Selector do
 
     before do
       selector[:field] = selection
-    end
-
-    let(:cloned) do
-      selector.__deep_copy__
     end
 
     it 'returns an equal copy' do

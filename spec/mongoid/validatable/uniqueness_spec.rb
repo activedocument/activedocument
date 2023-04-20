@@ -514,7 +514,7 @@ describe Mongoid::Validatable::UniquenessValidator do
                 end
 
                 it 'does not touch the database' do
-                  expect(Dictionary).to receive(:where).never
+                  expect(Dictionary).to_not receive(:where)
                   from_db.valid?
                 end
               end
@@ -703,6 +703,9 @@ describe Mongoid::Validatable::UniquenessValidator do
             let(:personal_folder) do
               Folder.create!(name: 'Personal')
             end
+            let(:item) do
+              public_folder.folder_items.last
+            end
 
             let(:public_folder) do
               Folder.create!(name: 'Public')
@@ -713,11 +716,7 @@ describe Mongoid::Validatable::UniquenessValidator do
               public_folder.folder_items << FolderItem.new(name: 'non-unique')
             end
 
-            let(:item) do
-              public_folder.folder_items.last
-            end
-
-            it 'should set an error for associated object not being unique' do
+            it 'sets an error for associated object not being unique' do
               item.update(folder_id: personal_folder.id)
               expect(item.errors.messages[:name].first).to eq('has already been taken')
             end
@@ -846,7 +845,7 @@ describe Mongoid::Validatable::UniquenessValidator do
               Dictionary.create!(name: 'French-English', year: 950)
               expect do
                 Dictionary.create!(name: 'French-English', year: 1950)
-              end.not_to raise_error
+              end.to_not raise_error
             end
           end
 
@@ -857,7 +856,7 @@ describe Mongoid::Validatable::UniquenessValidator do
               Dictionary.create!(name: 'French-English', year: 1950)
               expect do
                 Dictionary.create!(name: 'French-English', year: 950)
-              end.not_to raise_error
+              end.to_not raise_error
             end
           end
         end
@@ -2485,7 +2484,7 @@ describe Mongoid::Validatable::UniquenessValidator do
       SpanishActor.new(name: 'Antonio Banderas')
     end
 
-    it 'should be invalid' do
+    it 'is invalid' do
       subclass_document_with_duplicated_name.tap do |d|
         expect(d).to be_invalid
         expect(d.errors[:name]).to eq(['has already been taken'])

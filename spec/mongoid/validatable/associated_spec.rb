@@ -75,7 +75,7 @@ describe Mongoid::Validatable::AssociatedValidator do
         end
 
         it 'does not run validation on them' do
-          expect(description).to receive(:valid?).never
+          expect(description).to_not receive(:valid?)
           expect(user).to be_valid
         end
 

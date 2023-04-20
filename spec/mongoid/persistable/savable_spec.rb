@@ -101,7 +101,7 @@ describe Mongoid::Persistable::Savable do
 
           it 'only makes one call to the database' do
             allow(Kangaroo.collection).to receive(:insert).once
-            expect_any_instance_of(Mongo::Collection::View).to receive(:update_one).never
+            expect_any_instance_of(Mongo::Collection::View).to_not receive(:update_one)
             kangaroo.build_baby
             kangaroo.save
           end
@@ -294,7 +294,7 @@ describe Mongoid::Persistable::Savable do
           expect(truck.crates[0].toys[0].name).to eq 'Teddy bear'
           expect(truck.crates[1].volume).to eq 0.8
           expect(truck.crates[1].toys.size).to eq 0
-          expect { truck.save! }.not_to raise_error
+          expect { truck.save! }.to_not raise_error
 
           truck_found = Truck.find(truck.id)
           expect(truck_found.crates.size).to eq 2
@@ -384,7 +384,7 @@ describe Mongoid::Persistable::Savable do
 
           truck.seats.build
 
-          expect { truck.save! }.not_to raise_error
+          expect { truck.save! }.to_not raise_error
 
           truck_found = Truck.find(truck.id)
           expect(truck_found.seats.size).to eq 2
@@ -400,7 +400,7 @@ describe Mongoid::Persistable::Savable do
             truck.seats.first.armrests.build
             truck.seats.build
 
-            expect { truck.save! }.not_to raise_error
+            expect { truck.save! }.to_not raise_error
 
             truck_found = Truck.find(truck.id)
             expect(truck_found.seats.size).to eq 2
@@ -696,7 +696,7 @@ describe Mongoid::Persistable::Savable do
       it 'persists with no exceptions thrown' do
         expect do
           user.save!
-        end.not_to raise_error
+        end.to_not raise_error
       end
     end
 
@@ -715,7 +715,7 @@ describe Mongoid::Persistable::Savable do
       it 'persists with no exceptions thrown' do
         expect do
           user.save!
-        end.not_to raise_error
+        end.to_not raise_error
       end
     end
 

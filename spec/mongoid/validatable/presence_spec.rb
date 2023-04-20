@@ -468,6 +468,9 @@ describe Mongoid::Validatable::PresenceValidator do
     let(:updated_products) do
       %w[Laptop Tablet Smartphone Desktop]
     end
+    let(:reloaded) do
+      Manufacturer.find(manufacturer.id)
+    end
 
     let(:manufacturer) do
       Manufacturer.create!(products: %w[Laptop Tablet])
@@ -476,10 +479,6 @@ describe Mongoid::Validatable::PresenceValidator do
     before do
       manufacturer.products = updated_products
       manufacturer.save!
-    end
-
-    let(:reloaded) do
-      Manufacturer.find(manufacturer.id)
     end
 
     it 'persists the changes' do

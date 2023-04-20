@@ -137,11 +137,13 @@ describe Mongoid::Persistable::Minable do
 
     context 'as itself' do
       let(:min_method) { :set_min }
+
       it_behaves_like 'a min-able interface'
     end
 
     context 'as #clamp_upper_bound' do
       let(:min_method) { :clamp_upper_bound }
+
       it_behaves_like 'a min-able interface'
     end
   end

@@ -44,7 +44,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Binding do
       end
 
       it 'does nothing' do
-        expect(person).to receive(:name=).never
+        expect(person).to_not receive(:name=)
         binding.bind_one
       end
     end
@@ -71,7 +71,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Binding do
     context 'when the document is not unbindable' do
 
       it 'does nothing' do
-        expect(person).to receive(:name=).never
+        expect(person).to_not receive(:name=)
         binding.unbind_one
       end
     end

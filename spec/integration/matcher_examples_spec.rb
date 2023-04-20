@@ -92,7 +92,7 @@ describe 'Matcher' do
         end
 
         it 'does not find' do
-          expect(not_found_circuit).to be nil
+          expect(not_found_circuit).to be_nil
         end
       end
 
@@ -110,7 +110,7 @@ describe 'Matcher' do
         end
 
         it 'does not find' do
-          expect(not_found_bus).to be nil
+          expect(not_found_bus).to be_nil
         end
       end
     end
@@ -125,7 +125,7 @@ describe 'Matcher' do
 
         context 'not matching condition' do
           it 'does not find' do
-            expect(actual_object_not_matching_condition).to be nil
+            expect(actual_object_not_matching_condition).to be_nil
           end
         end
       end
@@ -673,7 +673,7 @@ describe 'Matcher' do
           end
 
           it 'does not find' do
-            expect(found_band).to be nil
+            expect(found_band).to be_nil
           end
         end
       end
@@ -692,7 +692,7 @@ describe 'Matcher' do
         end
 
         it 'correctly does not find' do
-          expect(no_record).to eq(nil)
+          expect(no_record).to be_nil
         end
       end
     end
@@ -706,7 +706,7 @@ describe 'Matcher' do
         end
 
         it 'does not find' do
-          expect(band.records.where(producers: { '$elemMatch': { foo: 'bar' } }).first).to be nil
+          expect(band.records.where(producers: { '$elemMatch': { foo: 'bar' } }).first).to be_nil
         end
 
         context 'primitive value query' do
@@ -748,7 +748,7 @@ describe 'Matcher' do
         end
 
         it 'does not find' do
-          expect(band.records.where(producers: { '$elemMatch': { foo: 'bar' } }).first).to be nil
+          expect(band.records.where(producers: { '$elemMatch': { foo: 'bar' } }).first).to be_nil
         end
       end
     end

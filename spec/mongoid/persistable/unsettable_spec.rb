@@ -184,7 +184,7 @@ describe Mongoid::Persistable::Unsettable do
         it 'persists the changes' do
           expect(person).to be_readonly
           person.unset(:title)
-          expect(person.title).to be nil
+          expect(person.title).to be_nil
         end
       end
 

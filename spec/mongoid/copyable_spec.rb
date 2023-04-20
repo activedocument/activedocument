@@ -82,7 +82,7 @@ describe Mongoid::Copyable do
           end
 
           it 'contains legacy attributes that are nil' do
-            expect(cloned.attributes.key?('this_legacy_field_is_nil')).to eq(true)
+            expect(cloned.attributes.key?('this_legacy_field_is_nil')).to be(true)
           end
 
           it 'copies the known attributes' do
@@ -99,7 +99,7 @@ describe Mongoid::Copyable do
           let(:cls) { CopyableSpec::Reg }
 
           before do
-            expect(cls).not_to include(Mongoid::Attributes::Dynamic)
+            expect(cls).to_not include(Mongoid::Attributes::Dynamic)
           end
 
           include_examples 'behaves as expected'
@@ -128,7 +128,7 @@ describe Mongoid::Copyable do
               t.build_store_as_dup_test2(name: 'there')
               t.save!
               copy = t.send(method)
-              expect(copy.object_id).not_to eq(t.object_id)
+              expect(copy.object_id).to_not eq(t.object_id)
               expect(copy.store_as_dup_test2.name).to eq(t.store_as_dup_test2.name)
             end
           end
@@ -140,16 +140,16 @@ describe Mongoid::Copyable do
               t.store_as_dup_test4s << StoreAsDupTest4.new
               t.save!
               copy = t.send(method)
-              expect(copy.object_id).not_to eq(t.object_id)
-              expect(copy.store_as_dup_test4s).not_to be_empty
-              expect(copy.store_as_dup_test4s.first.object_id).not_to eq(t.store_as_dup_test4s.first.object_id)
+              expect(copy.object_id).to_not eq(t.object_id)
+              expect(copy.store_as_dup_test4s).to_not be_empty
+              expect(copy.store_as_dup_test4s.first.object_id).to_not eq(t.store_as_dup_test4s.first.object_id)
             end
           end
         end
       end
 
       context 'nested embeds_many' do
-        it 'works' do
+        it 'clones the nested fields' do
           a = CopyableSpec::A.new
           a.locations << CopyableSpec::Location.new
           a.locations.first.buildings << CopyableSpec::Building.new
@@ -660,12 +660,12 @@ describe Mongoid::Copyable do
           before do
             # When embedded class is the root in hierarchy, their
             # discriminator value is not explicitly stored.
-            expect(child_cls.discriminator_mapping[child_cls.name]).to be nil
+            expect(child_cls.discriminator_mapping[child_cls.name]).to be_nil
           end
 
-          it 'works' do
+          it 'instantiates a new object' do
             expect(copy.class).to be original.class
-            expect(copy.object_id).not_to eq(original.object_id)
+            expect(copy.object_id).to_not eq(original.object_id)
           end
         end
 
@@ -677,12 +677,12 @@ describe Mongoid::Copyable do
           before do
             # When embedded class is a leaf in hierarchy, their
             # discriminator value is explicitly stored.
-            expect(child_cls.discriminator_mapping[child_cls.name]).not_to be nil
+            expect(child_cls.discriminator_mapping[child_cls.name]).to_not be_nil
           end
 
-          it 'works' do
+          it 'instantiates a new object' do
             expect(copy.class).to be original.class
-            expect(copy.object_id).not_to eq(original.object_id)
+            expect(copy.object_id).to_not eq(original.object_id)
           end
         end
       end

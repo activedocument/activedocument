@@ -416,6 +416,9 @@ describe Mongoid::Criteria do
       let(:band) do
         Band.new
       end
+      let(:clone) do
+        criteria.send(method)
+      end
 
       let(:criteria) do
         Band.where(name: 'Depeche Mode').asc(:name).includes(:records).read(mode: :secondary)
@@ -424,10 +427,6 @@ describe Mongoid::Criteria do
       before do
         criteria.documents = [band]
         criteria.context
-      end
-
-      let(:clone) do
-        criteria.send(method)
       end
 
       it 'contains an equal selector' do
@@ -1305,9 +1304,7 @@ describe Mongoid::Criteria do
       context 'when provided a block' do
 
         let(:max) do
-          criteria.max do |a, b|
-            a.likes <=> b.likes
-          end
+          criteria.max_by(&:likes)
         end
 
         it 'returns the document with the max value for the field' do
@@ -1506,9 +1503,7 @@ describe Mongoid::Criteria do
       context 'when provided a block' do
 
         let(:min) do
-          criteria.min do |a, b|
-            a.likes <=> b.likes
-          end
+          criteria.min_by(&:likes)
         end
 
         it 'returns the document with the min value for the field' do
@@ -2035,7 +2030,7 @@ describe Mongoid::Criteria do
       let(:plucked) { Band.where(_id: band.id).pluck('label.qwerty') }
 
       it 'returns nil' do
-        expect(plucked.first).to eq(nil)
+        expect(plucked.first).to be_nil
       end
     end
 
@@ -2455,7 +2450,7 @@ describe Mongoid::Criteria do
       let!(:pluck_each) { Band.where(_id: band.id).pluck_each('label.qwerty') { |v| plucked << v } }
 
       it 'returns nil' do
-        expect(plucked.first).to eq(nil)
+        expect(plucked.first).to be_nil
       end
     end
   end
@@ -2911,13 +2906,13 @@ describe Mongoid::Criteria do
           it 'cannot find values when querying using a BigDecimal value' do
             Mongoid.map_big_decimal_to_decimal128 = true
             from_db = Band.where(sales: sales).first
-            expect(from_db).to eq(nil)
+            expect(from_db).to be_nil
           end
 
           it 'cannot find values when querying using a string value' do
             Mongoid.map_big_decimal_to_decimal128 = true
             from_db = Band.where(sales: sales.to_s).first
-            expect(from_db).to eq(nil)
+            expect(from_db).to be_nil
           end
 
           context 'after converting value' do
@@ -3368,7 +3363,7 @@ describe Mongoid::Criteria do
         expect(criteria.minor).to be_empty
         expect do
           criteria.older_than(age: 25)
-        end.not_to raise_error
+        end.to_not raise_error
       end
     end
 
@@ -3397,7 +3392,7 @@ describe Mongoid::Criteria do
     context 'when the method does not exist' do
 
       before do
-        expect(criteria).to receive(:entries).never
+        expect(criteria).to_not receive(:entries)
       end
 
       it 'raises an error' do

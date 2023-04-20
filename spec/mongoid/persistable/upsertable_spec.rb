@@ -61,7 +61,7 @@ describe Mongoid::Persistable::Upsertable do
             expect(Band.count).to eq(1)
 
             existing.reload
-            expect(existing.views).to be nil
+            expect(existing.views).to be_nil
             expect(existing.name).to eq('Tool')
           end
         end
@@ -83,16 +83,19 @@ describe Mongoid::Persistable::Upsertable do
 
           context 'when not passing any options' do
             let(:options) { {} }
+
             it_behaves_like 'retains the existing fields'
           end
 
           context 'when passing replace: false' do
             let(:options) { { replace: false } }
+
             it_behaves_like 'retains the existing fields'
           end
 
           context 'when passing replace: true' do
             let(:options) { { replace: true } }
+
             it_behaves_like 'replaces the existing fields'
           end
         end
@@ -153,7 +156,7 @@ describe Mongoid::Persistable::Upsertable do
       let!(:new_document) { Band.new(name: 'Panic! at the Disco') }
 
       context 'with `replace: true`' do
-        it 'should raise an ArgumentError' do
+        it 'raises an ArgumentError' do
           existing_document.name = 'John and John'
           expect do
             existing_document.upsert(replace: true, set_on_insert: { member_count: 1 })

@@ -42,20 +42,21 @@ describe Mongoid::Criteria::Queryable::Mergeable do
   end
 
   describe '#_mongoid_expand_keys' do
-    it 'expands simple keys' do
-      expect(query.send(:_mongoid_expand_keys, { a: 1 })).to eq({ 'a' => 1 })
+    let(:expanded) do
+      query.send(:_mongoid_expand_keys, condition)
     end
-
+    let(:lt) do
+      Mongoid::Criteria::Queryable::Key.new('age', :__override__, '$lt')
+    end
+    let(:gtp) do
+      Mongoid::Criteria::Queryable::Key.new('age', :__override__, '$gt')
+    end
     let(:gt) do
       Mongoid::Criteria::Queryable::Key.new('age', :__override__, '$gt')
     end
 
-    let(:gtp) do
-      Mongoid::Criteria::Queryable::Key.new('age', :__override__, '$gt')
-    end
-
-    let(:lt) do
-      Mongoid::Criteria::Queryable::Key.new('age', :__override__, '$lt')
+    it 'expands simple keys' do
+      expect(query.send(:_mongoid_expand_keys, { a: 1 })).to eq({ 'a' => 1 })
     end
 
     it 'expands Key instances' do
@@ -109,10 +110,6 @@ describe Mongoid::Criteria::Queryable::Mergeable do
 
     it 'Ruby does not allow same symbol operator with different values' do
       expect({ gt => 42, gtp => 50 }).to eq({ gtp => 50 })
-    end
-
-    let(:expanded) do
-      query.send(:_mongoid_expand_keys, condition)
     end
 
     context 'field name => value' do

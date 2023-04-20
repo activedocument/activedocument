@@ -11,7 +11,7 @@ describe Mongoid::RawValue do
       let(:raw_value) { 'Hello World!' }
 
       it 'returns the value' do
-        is_expected.to eq 'Hello World!'
+        expect(subject).to eq 'Hello World!'
       end
     end
 
@@ -19,7 +19,7 @@ describe Mongoid::RawValue do
       let(:raw_value) { 42 }
 
       it 'returns the value' do
-        is_expected.to eq 42
+        expect(subject).to eq 42
       end
     end
   end
@@ -31,7 +31,7 @@ describe Mongoid::RawValue do
       let(:raw_value) { 'Hello World!' }
 
       it 'returns the value' do
-        is_expected.to eq 'Hello World!'
+        expect(subject).to eq 'Hello World!'
       end
     end
 
@@ -39,7 +39,7 @@ describe Mongoid::RawValue do
       let(:raw_value) { 42 }
 
       it 'returns the value' do
-        is_expected.to eq 42
+        expect(subject).to eq 42
       end
     end
   end
@@ -51,7 +51,7 @@ describe Mongoid::RawValue do
       let(:raw_value) { 'Hello World!' }
 
       it 'returns the inspection' do
-        is_expected.to eq 'RawValue: "Hello World!"'
+        expect(subject).to eq 'RawValue: "Hello World!"'
       end
     end
 
@@ -59,7 +59,7 @@ describe Mongoid::RawValue do
       let(:raw_value) { 42 }
 
       it 'returns the inspection' do
-        is_expected.to eq 'RawValue: 42'
+        expect(subject).to eq 'RawValue: 42'
       end
     end
   end

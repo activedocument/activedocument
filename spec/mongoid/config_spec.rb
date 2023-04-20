@@ -82,7 +82,7 @@ describe Mongoid::Config do
   context 'when the belongs_to_required_by_default option is not set in the config' do
 
     before do
-      Mongoid::Config.reset
+      described_class.reset
       Mongoid.configure do |config|
         config.load_configuration(clients: CONFIG[:clients])
       end
@@ -119,7 +119,7 @@ describe Mongoid::Config do
       end
 
       before do
-        Mongoid::Config.reset
+        described_class.reset
         Mongoid.configure do |config|
           config.load_configuration(conf)
         end
@@ -151,7 +151,7 @@ describe Mongoid::Config do
   context 'when the app_name is not set in the config' do
 
     before do
-      Mongoid::Config.reset
+      described_class.reset
       Mongoid.configure do |config|
         config.load_configuration(CONFIG)
       end
@@ -165,23 +165,23 @@ describe Mongoid::Config do
   context 'when discriminator_key override' do
     context 'is not set in the config' do
       it 'has the value _type by default' do
-        Mongoid::Config.reset
+        described_class.reset
         configuration = CONFIG.merge(options: {})
 
         Mongoid.configure { |config| config.load_configuration(configuration) }
 
-        expect(Mongoid::Config.discriminator_key).to eq('_type')
+        expect(described_class.discriminator_key).to eq('_type')
       end
     end
 
     context 'is set in the config' do
       it 'sets the value' do
-        Mongoid::Config.reset
+        described_class.reset
         configuration = CONFIG.merge(options: { discriminator_key: 'test' })
 
         Mongoid.configure { |config| config.load_configuration(configuration) }
 
-        expect(Mongoid::Config.discriminator_key).to eq('test')
+        expect(described_class.discriminator_key).to eq('test')
       end
 
       it 'is set globally' do
@@ -194,7 +194,7 @@ describe Mongoid::Config do
     let(:option) { :async_query_executor }
 
     before do
-      Mongoid::Config.reset
+      described_class.reset
       Mongoid.configure do |config|
         config.load_configuration(conf)
       end
@@ -204,7 +204,7 @@ describe Mongoid::Config do
 
       let(:conf) { CONFIG }
 
-      it 'it is set to its default' do
+      it 'is set to its default' do
         expect(Mongoid.send(option)).to eq(:immediate)
       end
     end
@@ -236,7 +236,7 @@ describe Mongoid::Config do
     let(:option) { :global_executor_concurrency }
 
     before do
-      Mongoid::Config.reset
+      described_class.reset
       Mongoid.configure do |config|
         config.load_configuration(conf)
       end
@@ -246,8 +246,8 @@ describe Mongoid::Config do
 
       let(:conf) { CONFIG }
 
-      it 'it is set to its default' do
-        expect(Mongoid.send(option)).to eq(nil)
+      it 'is set to its default' do
+        expect(Mongoid.send(option)).to be_nil
       end
     end
 
@@ -266,7 +266,7 @@ describe Mongoid::Config do
   shared_examples 'a config option' do
 
     before do
-      Mongoid::Config.reset
+      described_class.reset
       Mongoid.configure do |config|
         config.load_configuration(conf)
       end
@@ -298,7 +298,7 @@ describe Mongoid::Config do
 
       let(:conf) { CONFIG }
 
-      it 'it is set to its default' do
+      it 'is set to its default' do
         expect(Mongoid.send(option)).to eq(default)
       end
     end
@@ -371,7 +371,7 @@ describe Mongoid::Config do
 
         it 'keeps the Mongoid logger level the same as the Rails logger' do
           expect(Mongoid.logger.level).to eq(Rails.logger.level)
-          expect(Mongoid.logger.level).not_to eq(Mongoid::Config.log_level)
+          expect(Mongoid.logger.level).to_not eq(described_class.log_level)
         end
 
         it "sets the Mongo driver logger level to Mongoid's logger level" do
@@ -430,11 +430,11 @@ describe Mongoid::Config do
       end
 
       it 'sets the Mongo.broken_view_options option' do
-        expect(Mongo.broken_view_options).to eq(false)
+        expect(Mongo.broken_view_options).to be(false)
       end
 
       it 'does not override the unset Mongo.validate_update_replace option' do
-        expect(Mongo.validate_update_replace).to eq(false)
+        expect(Mongo.validate_update_replace).to be(false)
       end
     end
 
@@ -536,12 +536,11 @@ describe Mongoid::Config do
       let(:file) do
         File.join(File.dirname(__FILE__), '..', 'config', 'mongoid_with_schema_map_uuid.yml')
       end
+      let(:client) { Mongoid.default_client }
 
       before do
         described_class.load!(file, :test)
       end
-
-      let(:client) { Mongoid.default_client }
 
       it 'passes uuid to driver' do
         expect(Mongo::Client).to receive(:new).with(
@@ -678,30 +677,30 @@ describe Mongoid::Config do
 
   describe '.log_level=' do
     around do |example|
-      saved_log_level = Mongoid::Config.log_level
+      saved_log_level = described_class.log_level
       begin
         example.run
       ensure
-        Mongoid::Config.log_level = saved_log_level
+        described_class.log_level = saved_log_level
       end
     end
 
     it 'accepts a string' do
-      Mongoid::Config.log_level = 'info'
-      expect(Mongoid::Config.log_level).to eq(1)
+      described_class.log_level = 'info'
+      expect(described_class.log_level).to eq(1)
 
       # set twice to ensure value changes from default, whatever the default is
-      Mongoid::Config.log_level = 'warn'
-      expect(Mongoid::Config.log_level).to eq(2)
+      described_class.log_level = 'warn'
+      expect(described_class.log_level).to eq(2)
     end
 
     it 'accepts an integer' do
-      Mongoid::Config.log_level = 1
-      expect(Mongoid::Config.log_level).to eq(1)
+      described_class.log_level = 1
+      expect(described_class.log_level).to eq(1)
 
       # set twice to ensure value changes from default, whatever the default is
-      Mongoid::Config.log_level = 2
-      expect(Mongoid::Config.log_level).to eq(2)
+      described_class.log_level = 2
+      expect(described_class.log_level).to eq(2)
     end
   end
 
@@ -778,7 +777,7 @@ describe Mongoid::Config do
       expect(Band.count).to eq(0)
     end
 
-    context '#truncate and #purge' do
+    describe '#truncate and #purge' do
       before do
         House.create!(name: '1', model: 'Big')
         expect(House.count).to eq(1)
@@ -790,7 +789,7 @@ describe Mongoid::Config do
         expect(House.count).to eq(1)
       end
 
-      context '#purge' do
+      describe '#purge' do
         it 'respects persistence context overrides' do
           House.create!(name: '2', model: 'Tiny')
           expect(House.count).to eq(1)
@@ -799,7 +798,7 @@ describe Mongoid::Config do
         end
       end
 
-      context '#truncate' do
+      describe '#truncate' do
         it '#truncate! respects persistence context overrides' do
           House.create!(name: '2', model: 'Tiny')
           expect(House.count).to eq(1)

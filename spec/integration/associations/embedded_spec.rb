@@ -262,6 +262,7 @@ describe 'embedded associations' do
 
   context 'when summing properties on an embedded child' do
     let(:user) { EmmUser.new }
+
     before do
       user.orders.build(amount: 200)
       expect(user.orders.sum(:amount)).to eq(200)

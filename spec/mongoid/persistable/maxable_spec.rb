@@ -137,11 +137,13 @@ describe Mongoid::Persistable::Maxable do
 
     context 'as itself' do
       let(:max_method) { :set_max }
+
       it_behaves_like 'a max-able interface'
     end
 
     context 'as #clamp_lower_bound' do
       let(:max_method) { :clamp_lower_bound }
+
       it_behaves_like 'a max-able interface'
     end
   end

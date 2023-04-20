@@ -5,6 +5,8 @@ require 'spec_helper'
 describe 'distinct on aliased fields' do
 
   let(:client) { Person.collection.client }
+  let(:event) { subscriber.single_command_started_event('distinct') }
+  let(:command) { event.command }
 
   let(:subscriber) do
     EventSubscriber.new
@@ -17,12 +19,6 @@ describe 'distinct on aliased fields' do
   after do
     client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
   end
-
-  let(:event) do
-    subscriber.single_command_started_event('distinct')
-  end
-
-  let(:command) { event.command }
 
   context 'top level field' do
     let(:query) do
@@ -52,6 +48,8 @@ end
 describe 'pluck on aliased fields' do
 
   let(:client) { Person.collection.client }
+  let(:event) { subscriber.single_command_started_event('find') }
+  let(:command) { event.command }
 
   let(:subscriber) do
     EventSubscriber.new
@@ -64,12 +62,6 @@ describe 'pluck on aliased fields' do
   after do
     client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
   end
-
-  let(:event) do
-    subscriber.single_command_started_event('find')
-  end
-
-  let(:command) { event.command }
 
   context 'top level field' do
     let(:query) do

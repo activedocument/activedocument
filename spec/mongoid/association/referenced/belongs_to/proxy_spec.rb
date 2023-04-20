@@ -294,6 +294,12 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
           let(:person) do
             Person.new
           end
+          let(:other_people_count) do
+            Person.with(collection: 'other-people', &:count)
+          end
+          let(:other_posts_count) do
+            Post.with(collection: 'other-posts', &:count)
+          end
 
           let(:post) do
             Post.new
@@ -307,14 +313,6 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
                 post.save!
               end
             end
-          end
-
-          let(:other_people_count) do
-            Person.with(collection: 'other-people', &:count)
-          end
-
-          let(:other_posts_count) do
-            Post.with(collection: 'other-posts', &:count)
           end
 
           it 'applies the persistence options when saving the child' do
@@ -407,7 +405,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
             EyeBowl.new
           end
 
-          it 'should assign as expected' do
+          it 'assigns as expected' do
             eye.suspended_in = eye_bowl
             expect(eye.suspended_in._target).to eq(eye_bowl)
           end
@@ -491,7 +489,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
       context 'when relation is has_one' do
 
-        around(:each) do |example|
+        around do |example|
           original_account_dependents = Account.dependents
           Account.dependents = []
           example.run
@@ -542,7 +540,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
       context 'when relation is has_many' do
 
-        around(:each) do |example|
+        around do |example|
           original_drug_dependents = Drug.dependents
           Drug.dependents = []
           example.run
@@ -597,7 +595,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
       context 'when relation is has_one' do
 
-        around(:each) do |example|
+        around do |example|
           original_account_dependents = Account.dependents
           Account.dependents = []
           example.run
@@ -637,7 +635,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
       context 'when relation is has_many' do
 
-        around(:each) do |example|
+        around do |example|
           original_drug_dependents = Drug.dependents
           Drug.dependents = []
           example.run
@@ -692,7 +690,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
       context 'when relation is has_one' do
 
-        around(:each) do |example|
+        around do |example|
           original_account_dependents = Account.dependents
           Account.dependents = []
           example.run
@@ -731,7 +729,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
 
       context 'when relation is has_many' do
 
-        around(:each) do |example|
+        around do |example|
           original_drug_dependents = Drug.dependents
           Drug.dependents = []
           example.run
@@ -1363,7 +1361,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
     it 'handles keyword args' do
       expect do
         game.person.set_personal_data(ssn: '123', age: 25)
-      end.not_to raise_error
+      end.to_not raise_error
     end
   end
 

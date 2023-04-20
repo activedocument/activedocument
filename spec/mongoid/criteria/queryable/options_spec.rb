@@ -9,6 +9,9 @@ describe Mongoid::Criteria::Queryable::Options do
     let(:sort) do
       [%i[name asc]]
     end
+    let(:cloned) do
+      options.__deep_copy__
+    end
 
     let(:options) do
       described_class.new
@@ -16,10 +19,6 @@ describe Mongoid::Criteria::Queryable::Options do
 
     before do
       options[:sort] = sort
-    end
-
-    let(:cloned) do
-      options.__deep_copy__
     end
 
     it 'returns an equal copy' do
