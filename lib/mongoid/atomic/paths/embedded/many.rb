@@ -34,7 +34,7 @@ module Mongoid
           def position
             pos = parent.atomic_position
             locator = document.new_record? ? '' : ".#{document._index}"
-            "#{pos}#{'.' unless pos.blank?}#{document._association.store_as}#{locator}"
+            "#{pos}#{'.' if pos.present?}#{document._association.store_as}#{locator}"
           end
 
           class << self
@@ -52,7 +52,7 @@ module Mongoid
             # @return [ String ] The position string.
             def position_without_document(parent, association)
               pos = parent.atomic_position
-              "#{pos}#{'.' unless pos.blank?}#{association.store_as}"
+              "#{pos}#{'.' if pos.present?}#{association.store_as}"
             end
           end
         end

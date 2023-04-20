@@ -118,7 +118,7 @@ module Mongoid
       # @param [ Document ] doc The object to set the association on
       # @param [ Document | Array ] element to set into the parent
       def set_relation(doc, element)
-        doc.set_relation(@association.name, element) unless doc.blank?
+        doc.set_relation(@association.name, element) if doc.present?
       end
 
       private

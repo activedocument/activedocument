@@ -26,7 +26,7 @@ module Mongoid
       # @param [ Object ] value The current value of the field.
       def validate_each(document, attribute, value)
         field = document.fields[document.database_field_name(attribute)]
-        if field.try(:localized?) && !value.blank?
+        if field.try(:localized?) && value.present?
           value.each_pair do |loc, val|
             next unless not_present?(val)
 

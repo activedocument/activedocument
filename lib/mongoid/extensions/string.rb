@@ -26,7 +26,7 @@ module Mongoid
       #
       # @return [ String | BSON::ObjectId | nil ] The mongoized string.
       def __mongoize_object_id__
-        convert_to_object_id unless blank?
+        convert_to_object_id if present?
       end
 
       # Mongoize the string for storage.

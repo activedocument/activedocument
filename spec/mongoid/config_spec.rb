@@ -746,9 +746,9 @@ describe Mongoid::Config do
 
     it 'does not drop indexes' do
       User.create_indexes
-      expect(User.collection.indexes.map { |i| i['name'] }).to eq %w[_id_ name_1]
+      expect(User.collection.indexes.pluck('name')).to eq %w[_id_ name_1]
       Mongoid.truncate!
-      expect(User.collection.indexes.map { |i| i['name'] }).to eq %w[_id_ name_1]
+      expect(User.collection.indexes.pluck('name')).to eq %w[_id_ name_1]
     end
   end
 

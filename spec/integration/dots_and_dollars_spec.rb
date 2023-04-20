@@ -146,7 +146,7 @@ describe 'Dots and Dollars' do
       context 'on dotted fields' do
         it 'raises an error' do
           expect do
-            user.update_attributes!('first.last': 'Nissim.Shweky')
+            user.update!('first.last': 'Nissim.Shweky')
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -154,7 +154,7 @@ describe 'Dots and Dollars' do
       context 'on dollared fields' do
         it 'raises an error' do
           expect do
-            user.update_attributes!('$_amount': 1)
+            user.update!('$_amount': 1)
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end
@@ -162,7 +162,7 @@ describe 'Dots and Dollars' do
       context 'on dotted and dollared fields' do
         it 'raises an error' do
           expect do
-            user.update_attributes!('$a.b': false)
+            user.update!('$a.b': false)
           end.to raise_error(Mongoid::Errors::InvalidDotDollarAssignment)
         end
       end

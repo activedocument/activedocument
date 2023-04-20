@@ -117,7 +117,7 @@ describe 'Syncable Association' do
       context 'check for existing Agent, then Persisted' do
 
         before do
-          account.agents.where(_id: agent.id).exists?
+          account.agents.exists?(_id: agent.id)
         end
 
         it 'is able to :save' do

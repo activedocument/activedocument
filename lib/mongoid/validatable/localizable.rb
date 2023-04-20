@@ -16,7 +16,7 @@ module Mongoid
       # @param [ Object ] value The attribute value.
       def validate_each(document, attribute, value)
         field = document.fields[document.database_field_name(attribute)]
-        if field.try(:localized?) && !value.blank?
+        if field.try(:localized?) && value.present?
           value.each_value do |val|
             super(document, attribute, val)
           end

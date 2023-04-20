@@ -207,7 +207,7 @@ module Mongoid
       #
       # @return [ String ] The name of the inverse setter.
       def inverse_setter(other = nil)
-        @inverse_setter ||= "#{inverses(other).first}=" unless inverses(other).blank?
+        @inverse_setter ||= "#{inverses(other).first}=" if inverses(other).present?
       end
 
       # The name of the foreign key setter method.

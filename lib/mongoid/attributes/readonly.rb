@@ -22,7 +22,7 @@ module Mongoid
       # @return [ true | false ] If the document is new, or if the field is not
       #   readonly.
       def attribute_writable?(name)
-        new_record? || (!readonly_attributes.include?(name) && _loaded?(name))
+        new_record? || (readonly_attributes.exclude?(name) && _loaded?(name))
       end
 
       private

@@ -1888,7 +1888,7 @@ describe Mongoid::Changeable do
     end
 
     before do
-      person.update_attributes!(preference_ids: [preference.id])
+      person.update!(preference_ids: [preference.id])
     end
 
     it 'records the foreign key dirty changes' do

@@ -228,7 +228,7 @@ describe 'Mongoid::Tasks::Database' do
       end
 
       let(:names) do
-        indexes[User].map { |index| index['name'] }
+        indexes[User].pluck('name')
       end
 
       it 'should have single index returned' do

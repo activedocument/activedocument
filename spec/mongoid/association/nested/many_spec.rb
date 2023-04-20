@@ -158,7 +158,7 @@ describe Mongoid::Association::Nested::Many do
     end
 
     it 'sorts the attributes' do
-      expect(builder.attributes.map { |e| e[0] }).to eq(%w[1 2 4])
+      expect(builder.attributes.pluck(0)).to eq(%w[1 2 4])
     end
   end
 

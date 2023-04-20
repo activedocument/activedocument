@@ -167,6 +167,11 @@ Lint/MissingSuper:
     - 'lib/mongoid/criteria/queryable/pipeline.rb'
     - 'lib/mongoid/criteria/queryable/smash.rb'
 
+Metrics/BlockLength:
+  Exclude:
+    - '**/Rakefile'
+    - '**/*.rake'
+
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 

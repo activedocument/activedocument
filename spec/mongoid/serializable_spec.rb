@@ -596,12 +596,8 @@ describe Mongoid::Serializable do
                 end
 
                 it 'includes the specific relations' do
-                  expect(relation_hash[0]['locations'].map do |location|
-                    location['name']
-                  end).to include 'Home'
-                  expect(relation_hash[1]['locations'].map do |location|
-                    location['name']
-                  end).to include 'Hotel'
+                  expect(relation_hash[0]['locations'].pluck('name')).to include 'Home'
+                  expect(relation_hash[1]['locations'].pluck('name')).to include 'Hotel'
                 end
               end
             end

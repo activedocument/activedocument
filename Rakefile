@@ -22,13 +22,18 @@ require 'mongoid/version'
 task default: :spec
 
 desc 'Generate all documentation'
-task docs: 'docs:yard'
+task docs: %i[docs:yard docs:sphinx]
 
 namespace :docs do
-  desc 'Generate yard documention'
-  task :yard do
+  desc 'Generate YARD documentation'
+  task :yard do # rubocop:disable Rails/RakeEnvironment
     out = File.join('yard-docs', Mongoid::VERSION)
     FileUtils.rm_rf(out)
     system "yardoc -o #{out} --title mongoid-#{Mongoid::VERSION}"
+  end
+
+  desc 'Generate Sphinx documentation'
+  task :sphinx do # rubocop:disable Rails/RakeEnvironment
+    # TODO: generate sphinx docs
   end
 end

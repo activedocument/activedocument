@@ -141,7 +141,7 @@ module Mongoid
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
 
-          matches.collect(&:name) unless matches.blank?
+          matches.collect(&:name) if matches.present?
         end
       end
     end

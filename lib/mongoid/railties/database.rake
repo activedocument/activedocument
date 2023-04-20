@@ -7,12 +7,12 @@ namespace :db do
 
   unless Rake::Task.task_defined?('db:drop')
     desc 'Drops all the collections for the database for the current Rails.env'
-    task drop: 'mongoid:drop'
+    task drop: :'mongoid:drop'
   end
 
   unless Rake::Task.task_defined?('db:purge')
     desc 'Drop all collections except the system collections'
-    task purge: 'mongoid:purge'
+    task purge: :'mongoid:purge'
   end
 
   unless Rake::Task.task_defined?('db:seed')
@@ -25,68 +25,73 @@ namespace :db do
   end
 
   unless Rake::Task.task_defined?('db:setup')
-    desc 'Create the database, and initialize with the seed data'
-    task setup: ['db:create', 'mongoid:create_collections', 'mongoid:create_indexes', 'db:seed']
+    desc 'Create the database and populate with seed data'
+    task setup: %i[db:create mongoid:create_collections mongoid:create_indexes db:seed]
   end
 
   unless Rake::Task.task_defined?('db:reset')
     desc 'Delete data and loads the seeds'
-    task reset: ['db:drop', 'db:seed']
+    task reset: %i[db:drop db:seed]
   end
 
   unless Rake::Task.task_defined?('db:create')
-    task create: :environment do
+    desc 'Mongoid does not use db:create. Collections are created automatically at runtime'
+    task :create do # rubocop:disable Rails/RakeEnvironment
       # noop
     end
   end
 
   unless Rake::Task.task_defined?('db:migrate')
-    task migrate: :environment do
+    desc 'Mongoid does not use db:migrate'
+    task :migrate do # rubocop:disable Rails/RakeEnvironment
       # noop
     end
   end
 
   unless Rake::Task.task_defined?('db:schema:load')
     namespace :schema do
-      task :load do
+      desc 'Mongoid does not use db:schema:load'
+      task :load do # rubocop:disable Rails/RakeEnvironment
         # noop
       end
     end
   end
 
   unless Rake::Task.task_defined?('db:test:prepare')
+    desc 'Prepare for test run'
     namespace :test do
-      task prepare: ['mongoid:create_collections', 'mongoid:create_indexes']
+      task prepare: %i[mongoid:create_collections mongoid:create_indexes]
     end
   end
 
   unless Rake::Task.task_defined?('db:create_collections')
     desc 'Create collections specified in Mongoid models'
-    task create_collections: 'mongoid:create_collections'
+    task create_collections: :'mongoid:create_collections'
   end
 
   unless Rake::Task.task_defined?('db:create_indexes')
     desc 'Create indexes specified in Mongoid models'
-    task create_indexes: 'mongoid:create_indexes'
+    task create_indexes: :'mongoid:create_indexes'
   end
 
   unless Rake::Task.task_defined?('db:remove_indexes')
     desc 'Remove indexes specified in Mongoid models'
-    task remove_indexes: 'mongoid:remove_indexes'
+    task remove_indexes: :'mongoid:remove_indexes'
   end
 
   unless Rake::Task.task_defined?('db:shard_collections')
     desc 'Shard collections with shard keys specified in Mongoid models'
-    task shard_collections: 'mongoid:shard_collections'
+    task shard_collections: :'mongoid:shard_collections'
   end
 
   namespace :encryption do
     desc 'Create encryption key'
-    task create_data_key: 'mongoid:encryption:create_data_key'
+    task create_data_key: :'mongoid:encryption:create_data_key'
   end
 
   namespace :mongoid do
-    task :load_models do
+    desc 'Load Mongoid models into memory'
+    task load_models: :environment do
       Rails.application.eager_load! if defined?(Rails)
     end
   end

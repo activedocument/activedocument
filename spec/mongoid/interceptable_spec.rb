@@ -553,7 +553,7 @@ describe Mongoid::Interceptable do
 
           it 'does not cascade to the child' do
             Band.accepts_nested_attributes_for :records, allow_destroy: true
-            expect(band.update_attributes!(attributes)).to be true
+            expect(band.update!(attributes)).to be true
           end
         end
       end

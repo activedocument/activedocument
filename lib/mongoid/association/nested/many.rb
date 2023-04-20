@@ -158,7 +158,7 @@ module Mongoid
           if association.embedded?
             doc.assign_attributes(attrs)
           else
-            doc.update_attributes(attrs)
+            doc.update(attrs)
           end
         end
 
@@ -176,7 +176,7 @@ module Mongoid
           first = existing.first
           converted = first ? convert_id(first.class, id) : id
 
-          if existing.where(_id: converted).exists?
+          if existing.exists?(_id: converted)
             # document exists in association
             doc = existing.find(converted)
             if destroyable?(attrs)

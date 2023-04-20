@@ -55,7 +55,7 @@ module Mongoid
       #
       # @return [ true | false ] True if validation passed.
       def update!(attributes = {})
-        result = update_attributes(attributes)
+        result = update(attributes)
         unless result
           fail_due_to_validation! unless errors.empty?
           fail_due_to_callback!(:update_attributes!)

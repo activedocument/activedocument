@@ -2287,7 +2287,7 @@ describe Mongoid::Attributes do
         let(:doc) { NestedBook.create! }
 
         before do
-          doc.update_attributes({ pages_attributes: [{}] })
+          doc.update({ pages_attributes: [{}] })
         end
 
         it 'updates the attributes' do
@@ -2550,7 +2550,7 @@ describe Mongoid::Attributes do
         let(:doc) { NestedBook.create! }
 
         before do
-          doc.update_attributes({ cover_attributes: attrs })
+          doc.update({ cover_attributes: attrs })
         end
 
         it 'updates the attributes' do

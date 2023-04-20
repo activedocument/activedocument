@@ -158,7 +158,7 @@ RSpec.configure do |config|
     timeout_lib = Timeout
   end
 
-  if SpecConfig.instance.ci? && !%w[1 true yes].include?(ENV['INTERACTIVE']&.downcase)
+  if SpecConfig.instance.ci? && %w[1 true yes].exclude?(ENV['INTERACTIVE']&.downcase)
     config.around(:each) do |example|
       timeout_lib.timeout(30) { example.run }
     end
