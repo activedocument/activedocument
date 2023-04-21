@@ -186,10 +186,12 @@ describe 'Mongoid application tests' do
 
       APP_PATH = File.join(File.dirname(__FILE__), '../../test-apps/rails-api')
 
+      autoloaders = %w[classic zeitwerk]
+
       %w[development production].each do |rails_env|
         context "in #{rails_env}" do
 
-          %w[classic zeitwerk].each do |autoloader|
+          autoloaders.each do |autoloader|
             context "with #{autoloader} autoloader" do
 
               let(:env) do

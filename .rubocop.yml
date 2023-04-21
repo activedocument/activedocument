@@ -142,6 +142,14 @@ Layout/EmptyLinesAroundModuleBody:
 Style/IfUnlessModifier:
   Enabled: false
 
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
+    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
+    - 'spec/mongoid/attributes_spec.rb'
+    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
+    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
+
 # --------------------------------------------------
 # These cops are intentionally disabled due to incompatibility.
 

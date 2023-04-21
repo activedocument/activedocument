@@ -20,13 +20,13 @@ module Mongoid
 
     # Sets the parent document.
     #
-    # @param [ Mongoid::Document ] p The parent document to set.
+    # @param [ Mongoid::Document ] value The parent document to set.
     #
     # @returns [ Mongoid::Document ] The parent document.
     #
     # @api private
-    def _parent=(p)
-      @__parent = p
+    def _parent=(value)
+      @__parent = value
     end
 
     # Module used for prepending to the various discriminator_*= methods

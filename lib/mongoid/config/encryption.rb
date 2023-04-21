@@ -65,6 +65,11 @@ module Mongoid
         ActiveSupport::TimeWithZone => 'date'
       }.freeze
 
+      # The base encryption properties for embedded relations.
+      #
+      # @api private
+      RELATION_PROPERTIES_BASE = { 'bsonType' => 'object' }.freeze
+
       # Generate the encryptMetadata object for the provided model.
       #
       # @param [ Mongoid::Document ] model The model to generate the metadata for.
@@ -157,7 +162,7 @@ module Mongoid
           ).merge(
             properties_for(relation.relation_class, visited)
           ).tap do |properties|
-            props[name] = { 'bsonType' => 'object' }.merge(properties) unless properties.empty?
+            props[name] = RELATION_PROPERTIES_BASE.merge(properties) unless properties.empty?
           end
         end
       end
