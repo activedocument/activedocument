@@ -26,6 +26,7 @@ jobs:
       ${{matrix.gemfile || 'Gemfile'}}
       mongodb-${{matrix.mongodb || '6.0'}}
       ${{matrix.topology || 'server'}}
+      ${{matrix.fle && 'fle=' || ''}}${{matrix.fle || ''}}
       ${{matrix.os || 'ubuntu-20.04'}}"
     env:
       CI: true
@@ -55,7 +56,7 @@ jobs:
           - ruby: ruby-3.1
             gemfile: gemfiles/rails_6.1.gemfile
             mongodb: '5.0'
-            topology: server
+            topology: sharded_cluster
           - ruby: ruby-3.0
             gemfile: gemfiles/rails_6.1.gemfile
             mongodb: '4.4'
@@ -63,7 +64,7 @@ jobs:
           - ruby: ruby-3.0
             gemfile: gemfiles/rails_6.0.gemfile
             mongodb: '4.4'
-            topology: server
+            topology: replica_set
           - ruby: ruby-2.7
             gemfile: gemfiles/rails_6.0.gemfile
             mongodb: '4.4'
@@ -78,7 +79,7 @@ jobs:
           - ruby: ruby-3.0
             gemfile: gemfiles/driver_stable.gemfile
             mongodb: '5.0'
-            topology: replica_set
+            topology: sharded_cluster
           - ruby: ruby-2.7
             gemfile: gemfiles/driver_min.gemfile
             mongodb: '4.4'
@@ -105,11 +106,27 @@ jobs:
             mongodb: '5.0'
             topology: server
 
+          # Field-Level Encryption
+          # TODO: support LIBMONGOCRYPT via path
+          - ruby: ruby-3.2
+            gemfile: gemfiles/rails_7.0.gemfile
+            mongodb: '6.0'
+            topology: sharded_cluster
+            fle: helper
+          - ruby: ruby-3.1
+            gemfile: gemfiles/rails_6.1.gemfile
+            mongodb: '6.0'
+            topology: replica_set
+            fle: helper
+          - ruby: ruby-2.7
+            gemfile: gemfiles/rails_6.0.gemfile
+            mongodb: '6.0'
+            topology: server
+            fle: helper
+
     steps:
     - name: repo checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
+      uses: actions/checkout@v3
     - id: start-mongodb
       name: start mongodb
       uses: mongodb-labs/drivers-evergreen-tools@master
@@ -120,6 +137,7 @@ jobs:
       uses: ruby/setup-ruby@v1
       env:
         BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
+        FLE: "${{matrix.fle || ''}}"
       with:
         ruby-version: "${{matrix.ruby}}"
         bundler: 2
@@ -127,10 +145,12 @@ jobs:
       run: bundle install --jobs 4 --retry 3
       env:
         BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
+        FLE: "${{matrix.fle || ''}}"
     - name: test
       timeout-minutes: 60
       continue-on-error: "${{matrix.experimental || false}}"
       run: bundle exec rake spec
       env:
         BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
+        FLE: "${{matrix.fle || ''}}"
         MONGODB_URI: "${{steps.start-mongodb.outputs.cluster-uri}}"
