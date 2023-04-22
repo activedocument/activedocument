@@ -96,8 +96,8 @@ module Mongoid
         opts[:auto_encryption_options].dup.tap do |auto_encryption_options|
           if auto_encryption_options.key?(:schema_map)
             default_logger.warn(
-              'The :schema_map is configured in the :auto_encryption_options for the client;' +
-              ' encryption setting in Mongoid documents will be ignored.'
+              'The :schema_map is configured in the :auto_encryption_options for the client; ' \
+              'encryption setting in Mongoid documents will be ignored.'
             )
           else
             auto_encryption_options[:schema_map] = Mongoid.config.encryption_schema_map(database)

@@ -280,12 +280,12 @@ describe Mongoid::Clients::Factory do
             }
           end
 
-          it "returns a client" do
+          it 'returns a client' do
             expect(client).to be_a(Mongo::Client)
           end
 
           it 'sets schema_map for the client' do
-            expect(client.options[:auto_encryption_options][:schema_map]).not_to be_nil
+            expect(client.options[:auto_encryption_options][:schema_map]).to_not be_nil
           end
         end
 
@@ -309,7 +309,7 @@ describe Mongoid::Clients::Factory do
             }
           end
 
-          it "returns a client" do
+          it 'returns a client' do
             expect(client).to be_a(Mongo::Client)
           end
 

@@ -1570,17 +1570,17 @@ describe Mongoid::Contextual::Mongo do
       described_class.new(criteria)
     end
 
-    it "returns the criteria explain path" do
+    it 'returns the criteria explain path' do
       explain = context.explain
       expect(explain).to_not be_empty
-      expect(explain.keys).to include("queryPlanner", "executionStats", "serverInfo")
+      expect(explain.keys).to include('queryPlanner', 'executionStats', 'serverInfo')
     end
 
-    it "respects options passed to explain" do
+    it 'respects options passed to explain' do
       explain = context.explain(verbosity: :query_planner)
       expect(explain).to_not be_empty
-      expect(explain.keys).to include("queryPlanner", "serverInfo")
-      expect(explain.keys).not_to include("executionStats")
+      expect(explain.keys).to include('queryPlanner', 'serverInfo')
+      expect(explain.keys).to_not include('executionStats')
     end
   end
 
