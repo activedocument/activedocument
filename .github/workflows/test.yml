@@ -26,6 +26,7 @@ jobs:
       ${{matrix.gemfile || 'Gemfile'}}
       mongodb-${{matrix.mongodb || '6.0'}}
       ${{matrix.topology || 'server'}}
+      ${{matrix.fle && 'FLE' || ''}}
       ${{matrix.os || 'ubuntu-20.04'}}"
     env:
       CI: true
@@ -55,7 +56,7 @@ jobs:
           - ruby: ruby-3.1
             gemfile: gemfiles/rails_6.1.gemfile
             mongodb: '5.0'
-            topology: server
+            topology: sharded_cluster
           - ruby: ruby-3.0
             gemfile: gemfiles/rails_6.1.gemfile
             mongodb: '4.4'
@@ -63,7 +64,7 @@ jobs:
           - ruby: ruby-3.0
             gemfile: gemfiles/rails_6.0.gemfile
             mongodb: '4.4'
-            topology: server
+            topology: replica_set
           - ruby: ruby-2.7
             gemfile: gemfiles/rails_6.0.gemfile
             mongodb: '4.4'
@@ -78,7 +79,7 @@ jobs:
           - ruby: ruby-3.0
             gemfile: gemfiles/driver_stable.gemfile
             mongodb: '5.0'
-            topology: replica_set
+            topology: sharded_cluster
           - ruby: ruby-2.7
             gemfile: gemfiles/driver_min.gemfile
             mongodb: '4.4'
@@ -104,6 +105,23 @@ jobs:
             gemfile: gemfiles/rails_6.0.gemfile
             mongodb: '5.0'
             topology: server
+
+          # Field-Level Encryption
+          - ruby: ruby-3.2
+            gemfile: gemfiles/rails_7.0.gemfile
+            mongodb: '6.0'
+            topology: sharded_cluster
+            fle: true
+          - ruby: ruby-3.1
+            gemfile: gemfiles/rails_6.1.gemfile
+            mongodb: '6.0'
+            topology: replica_set
+            fle: true
+          - ruby: ruby-2.7
+            gemfile: gemfiles/rails_6.0.gemfile
+            mongodb: '6.0'
+            topology: server
+            fle: true
 
     steps:
     - name: repo checkout
@@ -134,3 +152,4 @@ jobs:
       env:
         BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
         MONGODB_URI: "${{steps.start-mongodb.outputs.cluster-uri}}"
+        FLE: "${{matrix.fle || false}}"
