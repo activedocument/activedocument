@@ -3262,6 +3262,40 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
   end
 
+  describe '#respond_to_missing?' do
+    let!(:person) { Person.create! }
+
+    let!(:post_one) do
+      person.posts.create!(title: 'First', content: 'Posting')
+    end
+
+    let!(:post_two) do
+      person.posts.create!(title: 'Second', content: 'Testing')
+    end
+
+    let(:posts) { person.posts }
+
+    context 'when target or criteria respond to the method' do
+      it 'returns true when target responds to the method' do
+        expect(posts.respond_to?(:count)).to be true
+      end
+
+      it 'returns true when criteria responds to the method' do
+        expect(posts.respond_to?(:where)).to be true
+      end
+
+      it 'returns true when criteria class method is defined' do
+        expect(posts.respond_to?(:posting)).to be true
+      end
+    end
+
+    context 'when neither target nor criteria respond to the method' do
+      it 'returns false' do
+        expect(posts.respond_to?(:non_existent_method)).to be false
+      end
+    end
+  end
+
   describe '#min' do
 
     let(:person) do
