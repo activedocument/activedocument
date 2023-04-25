@@ -2798,31 +2798,31 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     context 'when target responds to the method' do
       it 'returns true' do
-        expect(addresses.respond_to_missing?(:length)).to be true
+        expect(addresses.respond_to?(:length)).to be true
       end
     end
 
     context 'when criteria responds to the method' do
       it 'returns true' do
-        expect(addresses.respond_to_missing?(:california)).to be true
+        expect(addresses.respond_to?(:california)).to be true
       end
     end
 
     context 'when neither target nor criteria respond to the method' do
       it 'returns false' do
-        expect(addresses.respond_to_missing?(:nonexistent_method)).to be false
+        expect(addresses.respond_to?(:nonexistent_method)).to be false
       end
     end
 
     context 'when chaining criteria and checking if addresses responds to method' do
-      let(:addresses) { proxy.california.where(:street.in => ['Market']) }
+      let(:addresses) { person.addresses.california.where(:street.in => ['Market']) }
 
       it 'returns true for existing criteria method' do
-        expect(addresses.respond_to_missing?(:any_of)).to be true
+        expect(addresses.respond_to?(:any_of)).to be true
       end
 
       it 'returns false for non-existing criteria method' do
-        expect(addresses.respond_to_missing?(:nonexistent_method)).to be false
+        expect(addresses.respond_to?(:nonexistent_method)).to be false
       end
     end
   end
