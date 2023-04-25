@@ -2798,6 +2798,41 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
     end
   end
 
+  describe '#respond_to_missing?' do
+    let!(:person) { Person.create! }
+    let(:addresses) { person.addresses }
+
+    context 'when target responds to the method' do
+      it 'returns true' do
+        expect(addresses.respond_to_missing?(:length)).to be true
+      end
+    end
+
+    context 'when criteria responds to the method' do
+      it 'returns true' do
+        expect(addresses.respond_to_missing?(:california)).to be true
+      end
+    end
+
+    context 'when neither target nor criteria respond to the method' do
+      it 'returns false' do
+        expect(addresses.respond_to_missing?(:nonexistent_method)).to be false
+      end
+    end
+
+    context 'when chaining criteria and checking if addresses responds to method' do
+      let(:addresses) { proxy.california.where(:street.in => ['Market']) }
+
+      it 'returns true for existing criteria method' do
+        expect(addresses.respond_to_missing?(:any_of)).to be true
+      end
+
+      it 'returns false for non-existing criteria method' do
+        expect(addresses.respond_to_missing?(:nonexistent_method)).to be false
+      end
+    end
+  end
+
   describe '#min' do
 
     let(:person) do
