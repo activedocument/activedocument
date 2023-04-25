@@ -127,7 +127,7 @@ describe 'Polymorphic Associations' do
       end
 
       it 'successfully defines the touch method' do
-        expect { define_classes }.not_to raise_error
+        expect { define_classes }.to_not raise_error
       end
     end
 
@@ -155,7 +155,7 @@ describe 'Polymorphic Associations' do
       end
 
       it 'successfully defines the touch method' do
-        expect { define_classes }.not_to raise_error
+        expect { define_classes }.to_not raise_error
       end
     end
   end

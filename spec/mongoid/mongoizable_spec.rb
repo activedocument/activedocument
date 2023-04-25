@@ -117,7 +117,7 @@ describe 'mongoize/demongoize/evolve methods' do
 
   describe Array do
     let(:invalid_value) { 1 }
-    let(:klass) { Array }
+    let(:klass) { described_class }
     let(:field_name) { :array_field }
 
     include_examples 'handles unmongoizable values'

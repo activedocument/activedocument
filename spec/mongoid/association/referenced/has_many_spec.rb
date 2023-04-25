@@ -102,7 +102,7 @@ describe Mongoid::Association::Referenced::HasMany do
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup_instance_methods!
         end
       end
@@ -116,7 +116,7 @@ describe Mongoid::Association::Referenced::HasMany do
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -151,7 +151,7 @@ describe Mongoid::Association::Referenced::HasMany do
       end
 
       it 'does not set up validation' do
-        expect(has_many_class).not_to receive(:validates_associated)
+        expect(has_many_class).to_not receive(:validates_associated)
         association.setup_instance_methods!
       end
     end
@@ -305,7 +305,7 @@ describe Mongoid::Association::Referenced::HasMany do
       context 'when the dependent option is not provided' do
 
         it 'does not set up the dependency' do
-          expect(Mongoid::Association::Depending).not_to receive(:define_dependency!)
+          expect(Mongoid::Association::Depending).to_not receive(:define_dependency!)
           association.setup!
         end
       end
@@ -1250,6 +1250,8 @@ describe Mongoid::Association::Referenced::HasMany do
 
   context 'when adding an object to the association' do
     let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+    let!(:school) { HmmSchool.create! }
+    let!(:student) { HmmStudent.create! }
 
     let(:update_time) do
       Timecop.freeze(Time.at(Time.now.to_i) + 2)
@@ -1258,9 +1260,6 @@ describe Mongoid::Association::Referenced::HasMany do
     after do
       Timecop.return
     end
-
-    let!(:school) { HmmSchool.create! }
-    let!(:student) { HmmStudent.create! }
 
     before do
       update_time

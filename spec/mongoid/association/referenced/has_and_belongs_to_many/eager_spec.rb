@@ -41,7 +41,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Eager do
     end
 
     before do
-      Person.create!(houses: 3.times.map { House.create! })
+      Person.create!(houses: Array.new(3) { House.create! })
     end
 
     context 'when including the has_and_belongs_to_many association' do

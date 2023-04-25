@@ -9,7 +9,7 @@ describe Mongoid do
     context 'when no block supplied' do
 
       it 'returns the config singleton' do
-        expect(Mongoid.configure).to eq(Mongoid::Config)
+        expect(described_class.configure).to eq(Mongoid::Config)
       end
     end
 
@@ -19,39 +19,39 @@ describe Mongoid do
       context 'with arity 0' do
 
         before do
-          Mongoid.configure do
+          described_class.configure do
             config.preload_models = true
           end
         end
 
         it 'sets the values on the config instance' do
-          expect(Mongoid.preload_models).to be true
+          expect(described_class.preload_models).to be true
         end
       end
 
       context 'with arity 1' do
 
         before do
-          Mongoid.configure do |config|
+          described_class.configure do |config|
             config.preload_models = true
           end
         end
 
         it 'sets the values on the config instance' do
-          expect(Mongoid.preload_models).to be true
+          expect(described_class.preload_models).to be true
         end
       end
 
       context 'with arity 2' do
 
         before do
-          Mongoid.configure do |config, _other|
+          described_class.configure do |config, _other|
             config.preload_models = true
           end
         end
 
         it 'sets the values on the config instance' do
-          expect(Mongoid.preload_models).to be true
+          expect(described_class.preload_models).to be true
         end
       end
     end
@@ -60,7 +60,7 @@ describe Mongoid do
   describe '.default_client' do
 
     it 'returns the default client' do
-      expect(Mongoid.default_client).to eq(Mongoid::Clients.default)
+      expect(described_class.default_client).to eq(Mongoid::Clients.default)
     end
   end
 
@@ -78,21 +78,21 @@ describe Mongoid do
       clients.each do |client|
         expect(client.cluster).to receive(:disconnect!).and_call_original
       end
-      Mongoid.disconnect_clients
+      described_class.disconnect_clients
     end
   end
 
   describe '.client' do
 
     it 'returns the named client' do
-      expect(Mongoid.client(:default)).to eq(Mongoid::Clients.default)
+      expect(described_class.client(:default)).to eq(Mongoid::Clients.default)
     end
   end
 
   describe '.models' do
 
     it 'returns the list of known models' do
-      expect(Mongoid.models).to include(Band)
+      expect(described_class.models).to include(Band)
     end
   end
 end

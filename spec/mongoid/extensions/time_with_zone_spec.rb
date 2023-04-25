@@ -340,16 +340,14 @@ describe Mongoid::Extensions::TimeWithZone do
     let(:time) do
       ActiveSupport::TimeZone['Magadan'].at(1543331265.123457)
     end
+    let(:mongoized) do
+      time.__mongoize_time__
+    end
+    let(:expected_time) { time.in_time_zone }
 
     before do
       expect(time).to be_a(ActiveSupport::TimeWithZone)
     end
-
-    let(:mongoized) do
-      time.__mongoize_time__
-    end
-
-    let(:expected_time) { time.in_time_zone }
 
     context 'when setting ActiveSupport time zone' do
       include_context 'setting ActiveSupport time zone'

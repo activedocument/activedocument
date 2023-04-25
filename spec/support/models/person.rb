@@ -161,7 +161,7 @@ class Person
     self.employer_id = emp.id
   end
 
-  def set_addresses=(addresses)
+  def overridden_addresses=(addresses)
     self.addresses = addresses
   end
 
@@ -211,7 +211,7 @@ class Person
     end
   end
 
-  def set_on_map_with_default=(value)
+  def overridden_map_with_default=(value)
     map_with_default['key'] = value
   end
 

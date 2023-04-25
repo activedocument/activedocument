@@ -196,7 +196,7 @@ module Mongoid
       #   may be set to.
       #
       # @return [ nil ] Nil.
-      def set_min(fields)
+      def set_min(fields) # rubocop:disable Naming/AccessorMethodName
         view.update_many('$min' => collect_operations(fields))
       end
       alias_method :clamp_upper_bound, :set_min
@@ -219,7 +219,7 @@ module Mongoid
       #   may be set to.
       #
       # @return [ nil ] Nil.
-      def set_max(fields)
+      def set_max(fields) # rubocop:disable Naming/AccessorMethodName
         view.update_many('$max' => collect_operations(fields))
       end
       alias_method :clamp_lower_bound, :set_max

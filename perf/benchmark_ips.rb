@@ -25,7 +25,6 @@ def person_post_id
   @person_post_id ||= person_post.id
 end
 
-
 def preference
   @preference ||= person.preferences.last
 end

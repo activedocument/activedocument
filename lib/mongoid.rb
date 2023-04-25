@@ -74,7 +74,7 @@ module Mongoid
   #
   # @return [ Config ] The configuration object.
   def configure(&block)
-    return Config unless block_given?
+    return Config unless block
 
     block.arity == 0 ? Config.instance_exec(&block) : yield(Config)
   end

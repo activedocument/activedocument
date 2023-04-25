@@ -25,8 +25,8 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
     context 'when the document is bindable' do
 
       before do
-        expect(person).to receive(:save).never
-        expect(game).to receive(:save).never
+        expect(person).to_not receive(:save)
+        expect(game).to_not receive(:save)
         binding.bind_one
       end
 
@@ -46,7 +46,7 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
       end
 
       it 'does nothing' do
-        expect(person).to receive(:game=).never
+        expect(person).to_not receive(:game=)
         binding.bind_one
       end
     end
@@ -62,8 +62,8 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
 
       before do
         binding.bind_one
-        expect(person).to receive(:delete).never
-        expect(game).to receive(:delete).never
+        expect(person).to_not receive(:delete)
+        expect(game).to_not receive(:delete)
         binding.unbind_one
       end
 
@@ -79,7 +79,7 @@ describe Mongoid::Association::Referenced::HasOne::Binding do
     context 'when the document is not unbindable' do
 
       it 'does nothing' do
-        expect(person).to receive(:game=).never
+        expect(person).to_not receive(:game=)
         binding.unbind_one
       end
     end

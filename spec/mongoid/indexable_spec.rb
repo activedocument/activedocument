@@ -57,16 +57,15 @@ describe Mongoid::Indexable do
           index({ name: 1 }, { sparse: true })
         end
       end
-
-      before do
-        klass.create_indexes
-        klass.remove_indexes
-      end
-
       let(:indexes) do
         klass.with(database: 'mongoid_optional') do |klass|
           klass.collection.indexes
         end
+      end
+
+      before do
+        klass.create_indexes
+        klass.remove_indexes
       end
 
       it 'creates the indexes' do
@@ -93,7 +92,7 @@ describe Mongoid::Indexable do
 
       it 'creates the indexes' do
         index = klass.collection.indexes.get(_type: 1)
-        expect(index[:unique]).to eq(true)
+        expect(index[:unique]).to be(true)
       end
     end
 
@@ -106,6 +105,9 @@ describe Mongoid::Indexable do
           index({ name: 1 }, { collation: { locale: 'en_US', strength: 2 } })
         end
       end
+      let(:indexes) do
+        klass.collection.indexes
+      end
 
       before do
         klass.create_indexes
@@ -113,10 +115,6 @@ describe Mongoid::Indexable do
 
       after do
         klass.remove_indexes
-      end
-
-      let(:indexes) do
-        klass.collection.indexes
       end
 
       it 'creates the indexes' do
@@ -138,13 +136,12 @@ describe Mongoid::Indexable do
           end
         end
       end
+      let(:spec) do
+        klass.index_specification(_type: 1)
+      end
 
       before do
         klass.add_indexes
-      end
-
-      let(:spec) do
-        klass.index_specification(_type: 1)
       end
 
       it 'adds the _type index' do
@@ -163,13 +160,12 @@ describe Mongoid::Indexable do
             end
           end
         end
+        let(:spec) do
+          klass.index_specification(dkey: 1)
+        end
 
         before do
           klass.add_indexes
-        end
-
-        let(:spec) do
-          klass.index_specification(dkey: 1)
         end
 
         it 'adds the _type index' do
@@ -626,15 +622,9 @@ describe Mongoid::Indexable do
             ]
           }
         end
-
-        before do
-          klass.index({ authentication_token: 1 }, partial_filter_expression: partial_filter_expression)
-        end
-
         let(:options) do
           klass.index_specification(a: 1).options
         end
-
         let(:expected) do
           {
             '$and': [
@@ -642,6 +632,10 @@ describe Mongoid::Indexable do
               { a: { '$type' => 16 } }
             ]
           }
+        end
+
+        before do
+          klass.index({ authentication_token: 1 }, partial_filter_expression: partial_filter_expression)
         end
 
         it 'resolves alias on $and option' do
@@ -656,20 +650,18 @@ describe Mongoid::Indexable do
             'addresses.house' => { '$exists' => true }
           }
         end
-
-        before do
-          klass.index({ authentication_token: 1 }, partial_filter_expression: partial_filter_expression)
-        end
-
         let(:options) do
           klass.index_specification(a: 1).options
         end
-
         let(:expected) do
           {
             username: { '$eq' => 'authentication_token' },
             'adrs.h': { '$exists' => true }
           }
+        end
+
+        before do
+          klass.index({ authentication_token: 1 }, partial_filter_expression: partial_filter_expression)
         end
 
         it 'preserves other operators' do
@@ -688,15 +680,9 @@ describe Mongoid::Indexable do
             ]
           }
         end
-
-        before do
-          klass.index({ authentication_token: 1 }, partial_filter_expression: partial_filter_expression)
-        end
-
         let(:options) do
           klass.index_specification(a: 1).options
         end
-
         let(:expected) do
           {
             username: { '$eq' => 'authentication_token' },
@@ -706,6 +692,10 @@ describe Mongoid::Indexable do
               { a: { '$type' => 16 } }
             ]
           }
+        end
+
+        before do
+          klass.index({ authentication_token: 1 }, partial_filter_expression: partial_filter_expression)
         end
 
         it 'resolves aliases on $ operators' do
@@ -729,15 +719,9 @@ describe Mongoid::Indexable do
             }
           }
         end
-
-        before do
-          klass.index({ authentication_token: 1 }, partial_filter_expression: partial_filter_expression)
-        end
-
         let(:options) do
           klass.index_specification(a: 1).options
         end
-
         let(:expected) do
           {
             '$foo': {
@@ -752,6 +736,10 @@ describe Mongoid::Indexable do
               }]
             }
           }
+        end
+
+        before do
+          klass.index({ authentication_token: 1 }, partial_filter_expression: partial_filter_expression)
         end
 
         it 'resolves aliases recursively only on $ operators' do

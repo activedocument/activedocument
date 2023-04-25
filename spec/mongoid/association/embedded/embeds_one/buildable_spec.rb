@@ -51,7 +51,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
       end
 
       it 'creates the correct type of document' do
-        expect(document).to be_a_kind_of(Name)
+        expect(document).to be_a(Name)
       end
 
       it 'sets the object on the document' do
@@ -70,7 +70,7 @@ describe Mongoid::Association::Embedded::EmbedsOne::Buildable do
       end
 
       it 'creates the correct type of document' do
-        expect(document).to be_a_kind_of(PdfWriter)
+        expect(document).to be_a(PdfWriter)
       end
 
       it 'sets the object on the document' do

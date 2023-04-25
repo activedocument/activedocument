@@ -1040,7 +1040,7 @@ describe Mongoid::Association::Options do
               }
             end
 
-            it 'should support the option' do
+            it 'supports the option' do
               raise('All association types should support this option')
             end
           end
@@ -1188,7 +1188,7 @@ describe Mongoid::Association::Options do
 
         context 'when the option is not supported by the association type', if: association_class::VALID_OPTIONS.exclude?(:extend) do
 
-          it 'should support the option' do
+          it 'supports the option' do
             raise('All association types should support this option')
           end
         end
@@ -1233,7 +1233,7 @@ describe Mongoid::Association::Options do
               }
             end
 
-            it 'should support the option' do
+            it 'supports the option' do
               raise('All association types should support this option')
             end
           end
@@ -1308,7 +1308,7 @@ describe Mongoid::Association::Options do
               }
             end
 
-            it 'should support the option' do
+            it 'supports the option' do
               raise('All association types should support this option')
             end
           end

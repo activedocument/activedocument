@@ -280,11 +280,11 @@ describe Mongoid::Criteria::Includable do
           end
 
           let!(:bs) do
-            2.times.map { B.create!(d: d_two) }
+            Array.new(2) { B.create!(d: d_two) }
           end
 
           let!(:cs) do
-            2.times.map { C.create!(d: d_two) }
+            Array.new(2) { C.create!(d: d_two) }
           end
 
           let!(:results) do
@@ -1210,7 +1210,7 @@ describe Mongoid::Criteria::Includable do
 
         context 'when there are multiple documents' do
           let!(:as) do
-            res = 9.times.map do
+            res = Array.new(9) do
               A.create!.tap do |a|
                 a.b = B.create!.tap do |b|
                   b.c = C.create!
@@ -1294,11 +1294,11 @@ describe Mongoid::Criteria::Includable do
       end
 
       let!(:user_comments) do
-        2.times.map { IncComment.create! }
+        Array.new(2) { IncComment.create! }
       end
 
       let!(:post_comments) do
-        2.times.map { IncComment.create! }
+        Array.new(2) { IncComment.create! }
       end
 
       context 'when including the same class twice' do

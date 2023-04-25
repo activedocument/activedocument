@@ -266,7 +266,7 @@ describe Mongoid::Threaded do
     it 'removes the given class from the without_default_scope stack' do
       described_class.exit_without_default_scope(klass)
 
-      expect(described_class.stack(:without_default_scope)).not_to include(klass)
+      expect(described_class.stack(:without_default_scope)).to_not include(klass)
     end
   end
 

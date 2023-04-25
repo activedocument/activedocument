@@ -59,6 +59,8 @@ describe Mongoid::Config::Environment do
   end
 
   describe '#load_yaml' do
+    subject { described_class.load_yaml(path, environment) }
+
     let(:path) { 'mongoid.yml' }
     let(:environment) {}
 
@@ -66,8 +68,6 @@ describe Mongoid::Config::Environment do
       require 'support/rails_mock'
       Rails.env = 'test'
     end
-
-    subject { described_class.load_yaml(path, environment) }
 
     context 'when file not found' do
       let(:path) { 'not/a/valid/path' }
@@ -115,7 +115,7 @@ describe Mongoid::Config::Environment do
 
       context 'when environment not specified' do
         it 'uses the rails environment' do
-          is_expected.to eq('clients' => ['test'])
+          expect(subject).to eq('clients' => ['test'])
         end
       end
 
@@ -123,7 +123,7 @@ describe Mongoid::Config::Environment do
         let(:environment) { 'development' }
 
         it 'uses the specified environment' do
-          is_expected.to eq('clients' => ['dev'])
+          expect(subject).to eq('clients' => ['dev'])
         end
       end
 

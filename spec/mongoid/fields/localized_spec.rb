@@ -233,7 +233,7 @@ describe Mongoid::Fields::Localized do
       end
 
       it 'allows booleans to be returned' do
-        expect(value).to eq(false)
+        expect(value).to be(false)
       end
     end
 
@@ -466,7 +466,7 @@ describe Mongoid::Fields::Localized do
           end
 
           it 'returns the boolean value from the set locale' do
-            expect(value).to eq(false)
+            expect(value).to be(false)
           end
         end
 
@@ -481,7 +481,7 @@ describe Mongoid::Fields::Localized do
           end
 
           it 'returns the boolean value from the set locale' do
-            expect(value).to eq(true)
+            expect(value).to be(true)
           end
         end
 
@@ -506,7 +506,7 @@ describe Mongoid::Fields::Localized do
               end
 
               it 'returns the boolean value from the set locale' do
-                expect(value).to eq(false)
+                expect(value).to be(false)
               end
             end
 
@@ -526,7 +526,7 @@ describe Mongoid::Fields::Localized do
               end
 
               it 'returns the boolean value from the set locale' do
-                expect(value).to eq(true)
+                expect(value).to be(true)
               end
             end
           end

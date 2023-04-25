@@ -36,7 +36,7 @@ module Mongoid
 
       # Returns the matcher module for a given operator.
       #
-      # @param [ String ] op The operator name.
+      # @param [ String ] operator The operator name.
       #
       # @return [ Module ] The matcher module.
       #
@@ -44,10 +44,10 @@ module Mongoid
       #   Raised if the given operator is unknown.
       #
       # @api private
-      def get(op)
-        MAP.fetch(op)
+      def get(operator)
+        MAP.fetch(operator)
       rescue KeyError
-        raise Errors::InvalidFieldOperator.new(op)
+        raise Errors::InvalidFieldOperator.new(operator)
       end
 
       # Used for evaluating $lt, $lte, $gt, $gte comparison operators.

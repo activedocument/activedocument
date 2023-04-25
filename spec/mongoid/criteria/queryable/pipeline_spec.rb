@@ -9,6 +9,9 @@ describe Mongoid::Criteria::Queryable::Pipeline do
     let(:project) do
       { '$project' => { 'name' => 1 } }
     end
+    let(:copied) do
+      pipeline.__deep_copy__
+    end
 
     let(:pipeline) do
       described_class.new
@@ -16,10 +19,6 @@ describe Mongoid::Criteria::Queryable::Pipeline do
 
     before do
       pipeline.push(project)
-    end
-
-    let(:copied) do
-      pipeline.__deep_copy__
     end
 
     it 'clones all the objects in the pipeline' do

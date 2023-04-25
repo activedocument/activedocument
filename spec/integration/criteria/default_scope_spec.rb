@@ -30,7 +30,7 @@ describe 'Criteria and default scope' do
         expect(base.selector).to eq({ 'active' => true })
       end
 
-      context '.or' do
+      describe '.or' do
         let(:criteria) do
           base.or(timed: true)
         end
@@ -45,7 +45,7 @@ describe 'Criteria and default scope' do
         end
       end
 
-      context '.any_of' do
+      describe '.any_of' do
         let(:criteria) do
           base.any_of(timed: true)
         end
@@ -59,7 +59,7 @@ describe 'Criteria and default scope' do
     context 'logical operator called on the class' do
       let(:base) { Appointment }
 
-      context '.or' do
+      describe '.or' do
         let(:criteria) do
           base.or(timed: true)
         end

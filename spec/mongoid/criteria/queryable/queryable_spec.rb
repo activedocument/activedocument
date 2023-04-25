@@ -109,7 +109,7 @@ describe Mongoid::Query do
     end
 
     it 'returns a query' do
-      expect(cloned).to be_a(Mongoid::Query)
+      expect(cloned).to be_a(described_class)
     end
 
     it 'returns a new instance' do

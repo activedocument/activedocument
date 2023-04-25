@@ -17,7 +17,7 @@ describe Mongoid::Attributes::Projector do
           end
 
           let(:projector) do
-            Mongoid::Attributes::Projector.new(projection)
+            described_class.new(projection)
           end
 
           spec.fetch('queries').each do |query_spec|

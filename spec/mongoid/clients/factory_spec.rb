@@ -43,12 +43,8 @@ describe Mongoid::Clients::Factory do
             }
           end
 
-          before do
-            Mongoid::Config.send(:clients=, config)
-          end
-
-          after do
-            client.close
+          let(:cluster_addresses) do
+            cluster.addresses.map(&:to_s)
           end
 
           let(:client) do
@@ -59,6 +55,18 @@ describe Mongoid::Clients::Factory do
             client.cluster
           end
 
+          let(:cluster_addresses) do
+            cluster.addresses.map(&:to_s)
+          end
+
+          before do
+            Mongoid::Config.send(:clients=, config)
+          end
+
+          after do
+            client.close
+          end
+
           it 'returns a client' do
             expect(client).to be_a(Mongo::Client)
           end
@@ -66,13 +74,9 @@ describe Mongoid::Clients::Factory do
           context 'on driver versions that do not report spurious EOF errors' do
 
             it 'does not produce driver warnings' do
-              expect(Mongo::Logger.logger).not_to receive(:warn)
+              expect(Mongo::Logger.logger).to_not receive(:warn)
               client
             end
-          end
-
-          let(:cluster_addresses) do
-            cluster.addresses.map(&:to_s)
           end
 
           it_behaves_like 'includes seed address'
@@ -122,14 +126,6 @@ describe Mongoid::Clients::Factory do
             }
           end
 
-          before do
-            Mongoid::Config.send(:clients=, config)
-          end
-
-          after do
-            client.close
-          end
-
           let(:client) do
             described_class.create(:analytics)
           end
@@ -142,16 +138,20 @@ describe Mongoid::Clients::Factory do
             client.cluster
           end
 
+          before do
+            Mongoid::Config.send(:clients=, config)
+          end
+
+          after do
+            client.close
+          end
+
           it 'returns a client' do
             expect(client).to be_a(Mongo::Client)
           end
 
-          it "sets the cluster's seed ports to 27017" do
-            expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
-          end
-
           it 'sets ips with no ports to 27017' do
-            expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
+            expect(cluster.addresses.first.to_s).to be_in(%w[127.0.0.1:27017 localhost:27017])
           end
         end
 
@@ -167,14 +167,6 @@ describe Mongoid::Clients::Factory do
               }
             end
 
-            before do
-              Mongoid::Config.send(:clients=, config)
-            end
-
-            after do
-              client.close
-            end
-
             let(:client) do
               described_class.create(:analytics)
             end
@@ -183,12 +175,20 @@ describe Mongoid::Clients::Factory do
               client.cluster
             end
 
+            before do
+              Mongoid::Config.send(:clients=, config)
+            end
+
+            after do
+              client.close
+            end
+
             it 'returns a client' do
               expect(client).to be_a(Mongo::Client)
             end
 
             it "sets the cluster's seeds" do
-              expect(%w[127.0.0.1:27017 localhost:27017]).to include(cluster.addresses.first.to_s)
+              expect(cluster.addresses.first.to_s).to be_in(%w[127.0.0.1:27017 localhost:27017])
             end
 
             it 'sets the database' do
@@ -205,6 +205,15 @@ describe Mongoid::Clients::Factory do
                 analytics: { uri: 'mongodb://127.0.0.1:1234,127.0.0.1:5678/mongoid_test?serverSelectionTimeoutMS=1000' }
               }
             end
+            let(:client) do
+              described_class.create(:analytics)
+            end
+            let(:cluster) do
+              client.cluster
+            end
+            let(:seeds) do
+              cluster.addresses.map(&:to_s)
+            end
 
             before do
               Mongoid::Config.send(:clients=, config)
@@ -212,18 +221,6 @@ describe Mongoid::Clients::Factory do
 
             after do
               client.close
-            end
-
-            let(:client) do
-              described_class.create(:analytics)
-            end
-
-            let(:cluster) do
-              client.cluster
-            end
-
-            let(:seeds) do
-              cluster.addresses.map(&:to_s)
             end
 
             it 'returns a client' do
@@ -252,23 +249,6 @@ describe Mongoid::Clients::Factory do
         restore_config_clients
         include_context 'with encryption'
 
-        let(:config) do
-          {
-            default: { hosts: SpecConfig.instance.addresses, database: database_id },
-            encrypted: {
-              hosts: SpecConfig.instance.addresses,
-              database: database_id,
-              options: {
-                auto_encryption_options: {
-                  kms_providers: kms_providers,
-                  key_vault_namespace: key_vault_namespace,
-                  extra_options: extra_options
-                }
-              }
-            }
-          }
-        end
-
         before do
           Mongoid::Config.send(:clients=, config)
           key_vault_client[key_vault_collection].drop
@@ -282,12 +262,60 @@ describe Mongoid::Clients::Factory do
           described_class.create(:encrypted)
         end
 
-        it 'returns a client' do
-          expect(client).to be_a(Mongo::Client)
+        context 'when no key vault client is provided' do
+          let(:config) do
+            {
+              default: { hosts: SpecConfig.instance.addresses, database: database_id },
+              encrypted: {
+                hosts: SpecConfig.instance.addresses,
+                database: database_id,
+                options: {
+                  auto_encryption_options: {
+                    kms_providers: kms_providers,
+                    key_vault_namespace: key_vault_namespace,
+                    extra_options: extra_options
+                  }
+                }
+              }
+            }
+          end
+
+          it 'returns a client' do
+            expect(client).to be_a(Mongo::Client)
+          end
+
+          it 'sets schema_map for the client' do
+            expect(client.options[:auto_encryption_options][:schema_map]).to_not be_nil
+          end
         end
 
-        it 'sets schema_map for the client' do
-          expect(client.options[:auto_encryption_options][:schema_map]).not_to be_nil
+        context 'when a key vault client is provided' do
+          let(:config) do
+            {
+              default: { hosts: SpecConfig.instance.addresses, database: database_id },
+              key_vault: { hosts: SpecConfig.instance.addresses, database: database_id },
+              encrypted: {
+                hosts: SpecConfig.instance.addresses,
+                database: database_id,
+                options: {
+                  auto_encryption_options: {
+                    key_vault_client: :key_vault,
+                    kms_providers: kms_providers,
+                    key_vault_namespace: key_vault_namespace,
+                    extra_options: extra_options
+                  }
+                }
+              }
+            }
+          end
+
+          it 'returns a client' do
+            expect(client).to be_a(Mongo::Client)
+          end
+
+          it 'sets key_vault_client option for the client' do
+            expect(client.options[:auto_encryption_options][:key_vault_client]).to eq(Mongoid::Clients.with_name(:key_vault))
+          end
         end
       end
     end
@@ -297,14 +325,6 @@ describe Mongoid::Clients::Factory do
 
       let(:config) do
         { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
-      end
-
-      before do
-        Mongoid::Config.send(:clients=, config)
-      end
-
-      after do
-        client.close
       end
 
       let(:client) do
@@ -317,6 +337,14 @@ describe Mongoid::Clients::Factory do
 
       let(:cluster_addresses) do
         cluster.addresses.map(&:to_s)
+      end
+
+      before do
+        Mongoid::Config.send(:clients=, config)
+      end
+
+      after do
+        client.close
       end
 
       it 'returns the default client' do
@@ -336,7 +364,7 @@ describe Mongoid::Clients::Factory do
       end
 
       it 'raises NoClientsConfig error' do
-        expect { Mongoid::Clients::Factory.create(config) }.to raise_error(Mongoid::Errors::NoClientsConfig)
+        expect { described_class.create(config) }.to raise_error(Mongoid::Errors::NoClientsConfig)
       end
     end
   end
@@ -347,6 +375,15 @@ describe Mongoid::Clients::Factory do
     let(:config) do
       { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
     end
+    let(:client) do
+      described_class.default
+    end
+    let(:cluster) do
+      client.cluster
+    end
+    let(:cluster_addresses) do
+      cluster.addresses.map(&:to_s)
+    end
 
     before do
       Mongoid::Config.send(:clients=, config)
@@ -354,18 +391,6 @@ describe Mongoid::Clients::Factory do
 
     after do
       client.close
-    end
-
-    let(:client) do
-      described_class.default
-    end
-
-    let(:cluster) do
-      client.cluster
-    end
-
-    let(:cluster_addresses) do
-      cluster.addresses.map(&:to_s)
     end
 
     it 'returns the default client' do
@@ -391,14 +416,6 @@ describe Mongoid::Clients::Factory do
       }
     end
 
-    before do
-      Mongoid::Config.send(:clients=, config)
-    end
-
-    after do
-      client.close
-    end
-
     let(:client) do
       described_class.default
     end
@@ -409,6 +426,14 @@ describe Mongoid::Clients::Factory do
 
     let(:cluster_addresses) do
       cluster.addresses.map(&:to_s)
+    end
+
+    before do
+      Mongoid::Config.send(:clients=, config)
+    end
+
+    after do
+      client.close
     end
 
     it 'returns the default client' do
@@ -456,14 +481,14 @@ describe Mongoid::Clients::Factory do
 
     %i[good_one good_two].each do |env|
       it 'does not log a warning if none' do
-        expect(described_class.send(:default_logger)).not_to receive(:warn)
+        expect(described_class.send(:default_logger)).to_not receive(:warn)
         described_class.create(env).close
       end
     end
 
     %i[bad_one bad_two].each do |env|
       it 'logs a warning if some' do
-        expect(described_class.send(:default_logger)).not_to receive(:warn)
+        expect(described_class.send(:default_logger)).to_not receive(:warn)
         described_class.create(env).close
       end
     end

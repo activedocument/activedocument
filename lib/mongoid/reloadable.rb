@@ -18,7 +18,7 @@ module Mongoid
     def reload
       if @atomic_selector
         # Clear atomic_selector cache for sharded clusters. MONGOID-5076
-        remove_instance_variable('@atomic_selector')
+        remove_instance_variable(:@atomic_selector)
       end
 
       reloaded = _reload

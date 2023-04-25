@@ -48,7 +48,7 @@ describe Mongoid::Association::Embedded::EmbedsMany::Binding do
     context 'when the document is not bindable' do
 
       it 'does nothing' do
-        expect(person.addresses).to receive(:<<).never
+        expect(person.addresses).to_not receive(:<<)
         binding.bind_one(address)
       end
     end

@@ -71,7 +71,7 @@ describe Object do
 
       context 'when the values do not intersect' do
 
-        it 'returns an empty array ' do
+        it 'returns an empty array' do
           expect(5.__intersect__([6, 7])).to be_empty
         end
       end

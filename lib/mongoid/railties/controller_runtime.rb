@@ -64,11 +64,11 @@ module Mongoid
 
         # Call when event completed. Updates the runtime value.
         #
-        # @param [ Mongo::Event::Base ] e The monitoring event.
+        # @param [ Mongo::Event::Base ] event The monitoring event.
         #
         # @return [ Integer ] The current runtime value.
-        def _completed(e)
-          Collector.runtime += e.duration * 1000
+        def _completed(event)
+          Collector.runtime += event.duration * 1000
         end
         alias_method :succeeded, :_completed
         alias_method :failed, :_completed

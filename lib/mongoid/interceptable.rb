@@ -30,6 +30,11 @@ module Mongoid
       before_validation
     ].freeze
 
+    # Callback methods which apply defaults to models.
+    #
+    # @api private
+    APPLY_DEFAULTS = %i[apply_defaults apply_post_processed_defaults].freeze
+
     included do
       extend ActiveModel::Callbacks
       include ActiveModel::Validations::Callbacks
@@ -189,7 +194,7 @@ module Mongoid
     # @api private
     def run_pending_callbacks
       pending_callbacks.each do |cb|
-        if %i[apply_defaults apply_post_processed_defaults].include?(cb)
+        if APPLY_DEFAULTS.include?(cb)
           send(cb)
         else
           run_callbacks(cb, with_children: false)

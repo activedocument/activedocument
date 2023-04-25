@@ -105,7 +105,7 @@ describe Mongoid::Contextual::None do
 
   describe '#pick' do
     it 'returns an empty array' do
-      expect(context.pick(:id)).to eq(nil)
+      expect(context.pick(:id)).to be_nil
     end
   end
 

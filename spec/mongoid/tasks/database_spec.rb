@@ -57,13 +57,12 @@ describe 'Mongoid::Tasks::Database' do
       allow(log).to receive(:info)
     end
   end
+  let(:models) do
+    [User, Account, Address, Draft]
+  end
 
   before do
     allow(Mongoid::Tasks::Database).to receive(:logger).and_return(logger)
-  end
-
-  let(:models) do
-    [User, Account, Address, Draft]
   end
 
   describe '.create_collections' do
@@ -117,7 +116,7 @@ describe 'Mongoid::Tasks::Database' do
         end
 
         it 'does nothing, but logging' do
-          expect(DatabaseSpec::Comment).to receive(:create_collection).never
+          expect(DatabaseSpec::Comment).to_not receive(:create_collection)
           Mongoid::Tasks::Database.create_collections(models)
         end
       end
@@ -165,7 +164,7 @@ describe 'Mongoid::Tasks::Database' do
       end
 
       it 'does nothing' do
-        expect(klass).to receive(:create_indexes).never
+        expect(klass).to_not receive(:create_indexes)
         indexes
       end
     end
@@ -189,7 +188,7 @@ describe 'Mongoid::Tasks::Database' do
       end
 
       it 'does nothing, but logging' do
-        expect(klass).to receive(:create_indexes).never
+        expect(klass).to_not receive(:create_indexes)
         indexes
       end
     end
@@ -209,7 +208,7 @@ describe 'Mongoid::Tasks::Database' do
 
   describe '.undefined_indexes' do
 
-    before(:each) do
+    before do
       Mongoid::Tasks::Database.create_indexes(models)
     end
 
@@ -223,7 +222,7 @@ describe 'Mongoid::Tasks::Database' do
 
     context 'with extra index on model collection' do
 
-      before(:each) do
+      before do
         User.collection.indexes.create_one(account_expires: 1)
       end
 
@@ -231,7 +230,7 @@ describe 'Mongoid::Tasks::Database' do
         indexes[User].pluck('name')
       end
 
-      it 'should have single index returned' do
+      it 'has single index returned' do
         expect(names).to eq(['account_expires_1'])
       end
     end
@@ -242,15 +241,14 @@ describe 'Mongoid::Tasks::Database' do
     let(:indexes) do
       User.collection.indexes
     end
+    let(:removed_indexes) do
+      Mongoid::Tasks::Database.undefined_indexes(models)
+    end
 
-    before(:each) do
+    before do
       Mongoid::Tasks::Database.create_indexes(models)
       indexes.create_one(account_expires: 1)
       Mongoid::Tasks::Database.remove_undefined_indexes(models)
-    end
-
-    let(:removed_indexes) do
-      Mongoid::Tasks::Database.undefined_indexes(models)
     end
 
     it 'returns the removed indexes' do
@@ -272,7 +270,7 @@ describe 'Mongoid::Tasks::Database' do
       end
 
       it 'does not delete the text index' do
-        expect(indexes.find { |i| i['name'] == 'origin_text' }).not_to be_nil
+        expect(indexes.find { |i| i['name'] == 'origin_text' }).to_not be_nil
       end
     end
   end
@@ -287,7 +285,7 @@ describe 'Mongoid::Tasks::Database' do
       klass.collection.indexes
     end
 
-    before :each do
+    before do
       Mongoid::Tasks::Database.create_indexes(models)
       Mongoid::Tasks::Database.remove_indexes(models)
     end

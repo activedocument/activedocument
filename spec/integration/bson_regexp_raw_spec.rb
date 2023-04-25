@@ -5,7 +5,7 @@ require 'spec_helper'
 describe BSON::Regexp::Raw do
   context 'fully qualified name' do
     it 'can be created' do
-      regexp = BSON::Regexp::Raw.new('foo')
+      regexp = described_class.new('foo')
       expect(regexp.pattern).to eq('foo')
     end
   end

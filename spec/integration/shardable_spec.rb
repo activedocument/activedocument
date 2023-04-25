@@ -114,7 +114,7 @@ describe 'Sharding helpers' do
       let(:model_cls) { SmNotSharded }
 
       before do
-        expect(model_cls.shard_config).to be nil
+        expect(model_cls.shard_config).to be_nil
       end
 
       it 'returns empty array' do
@@ -125,7 +125,7 @@ describe 'Sharding helpers' do
         shard_collections
 
         stats = model_cls.collection.database.command(collStats: model_cls.collection.name).first
-        expect(stats[:sharded]).to eq false
+        expect(stats[:sharded]).to be false
       end
     end
   end

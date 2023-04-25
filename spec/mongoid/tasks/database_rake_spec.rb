@@ -68,7 +68,7 @@ describe 'db:drop' do
     expect(task.prerequisites).to include('mongoid:drop')
   end
 
-  it 'works' do
+  it 'runs successfully' do
     task.invoke
   end
 end
@@ -81,7 +81,7 @@ describe 'db:purge' do
     expect(task.prerequisites).to include('mongoid:purge')
   end
 
-  it 'works' do
+  it 'runs successfully' do
     task.invoke
   end
 end
@@ -94,7 +94,7 @@ describe 'db:seed' do
     expect(task.prerequisites).to include('environment')
   end
 
-  it 'works' do
+  it 'runs successfully' do
     task.invoke
   end
 end
@@ -121,7 +121,7 @@ describe 'db:setup' do
 
   it_behaves_like 'create_indexes'
 
-  it 'works' do
+  it 'runs successfully' do
     expect(Mongoid::Tasks::Database).to receive(:create_indexes)
     expect(Mongoid::Tasks::Database).to receive(:create_collections)
     task.invoke
@@ -140,7 +140,7 @@ describe 'db:reset' do
     expect(task.prerequisites).to include('db:seed')
   end
 
-  it 'works' do
+  it 'runs successfully' do
     task.invoke
   end
 end
@@ -149,7 +149,7 @@ describe 'db:create' do
   include_context 'rake task'
   include_context 'rails rake task'
 
-  it 'works' do
+  it 'runs successfully' do
     task.invoke
   end
 end
@@ -158,7 +158,7 @@ describe 'db:migrate' do
   include_context 'rake task'
   include_context 'rails rake task'
 
-  it 'works' do
+  it 'runs successfully' do
     task.invoke
   end
 end
@@ -177,7 +177,7 @@ describe 'db:test:prepare' do
     expect(task.prerequisites).to include('mongoid:create_collections')
   end
 
-  it 'works' do
+  it 'runs successfully' do
     expect(Mongoid::Tasks::Database).to receive(:create_indexes)
     expect(Mongoid::Tasks::Database).to receive(:create_collections)
     task.invoke
@@ -291,14 +291,14 @@ end
 describe 'db:mongoid:drop' do
   include_context 'rake task'
 
-  it 'works' do
+  it 'runs successfully' do
     task.invoke
   end
 
   context 'when using rails task' do
     include_context 'rails rake task'
 
-    it 'works' do
+    it 'runs successfully' do
       task.invoke
     end
   end

@@ -412,7 +412,7 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     it 'returns a hash' do
-      expect(execution_results).to be_a_kind_of Hash
+      expect(execution_results).to be_a Hash
     end
   end
 
@@ -435,7 +435,7 @@ describe Mongoid::Contextual::MapReduce do
     end
 
     it 'returns a string' do
-      expect(inspection).to be_a_kind_of String
+      expect(inspection).to be_a String
     end
 
     it 'includes the criteria selector' do

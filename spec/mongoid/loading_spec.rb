@@ -30,13 +30,13 @@ describe Mongoid::Loadable do
         end
       end
 
-      it "should return Rails' \"app/models\" paths" do
+      it "returns Rails' app/models paths" do
         expect(Mongoid.model_paths).to eq %w[app/models]
       end
     end
 
     context 'when Rails is not defined' do
-      it "should return Mongoid's default model paths" do
+      it "returns Mongoid's default model paths" do
         expect(Mongoid.model_paths).to eq %w[./app/models ./lib/models]
       end
     end
@@ -44,14 +44,14 @@ describe Mongoid::Loadable do
     context 'when explicitly set' do
       before { Mongoid.model_paths = %w[/infra/models] }
 
-      it 'should return the given value' do
+      it 'returns the given value' do
         expect(Mongoid.model_paths).to eq %w[/infra/models]
       end
     end
   end
 
   describe '#load_models' do
-    around :each do |example|
+    around do |example|
       FeatureSandbox.quarantine do
         Mongoid.model_paths = nil
         example.run
@@ -59,7 +59,7 @@ describe Mongoid::Loadable do
     end
 
     context 'when using default paths' do
-      around(:each) do |example|
+      around do |example|
         $LOAD_PATH.push app_models_root, lib_models_root
 
         Dir.chdir(model_root) do
@@ -68,7 +68,7 @@ describe Mongoid::Loadable do
         end
       end
 
-      it 'should find models in the default paths' do
+      it 'finds models in the default paths' do
         expect(defined?(AppModelsMessage)).to eq 'constant'
         expect(defined?(LibModelsMessage)).to eq 'constant'
         expect(defined?(SandboxMessage)).to be_nil
@@ -82,7 +82,7 @@ describe Mongoid::Loadable do
         Mongoid.load_models
       end
 
-      it 'should find models in the specified paths' do
+      it 'finds models in the specified paths' do
         expect(defined?(AppModelsMessage)).to eq 'constant'
         expect(defined?(LibModelsMessage)).to be_nil
         expect(defined?(SandboxMessage)).to be_nil
@@ -95,7 +95,7 @@ describe Mongoid::Loadable do
         Mongoid.load_models([model_root])
       end
 
-      it 'should find models in the specified paths' do
+      it 'finds models in the specified paths' do
         expect(defined?(AppModelsMessage)).to eq 'constant'
         expect(defined?(LibModelsMessage)).to eq 'constant'
         expect(defined?(SandboxMessage)).to eq 'constant'

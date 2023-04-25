@@ -40,7 +40,7 @@ describe 'i18n fallbacks' do
         I18n.locale = :en
         product.description = 'Marvelous!'
         I18n.locale = :ru
-        expect(product.description).to eq nil
+        expect(product.description).to be_nil
       end
     end
   end

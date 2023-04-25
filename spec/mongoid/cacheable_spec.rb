@@ -91,7 +91,7 @@ describe Mongoid::Cacheable do
         Artist.create!
       end
 
-      it 'should have the id key name' do
+      it 'has the id key name' do
         expect(artist.cache_key).to eq("artists/#{artist.id}")
       end
     end

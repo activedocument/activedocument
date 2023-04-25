@@ -276,7 +276,7 @@ describe Mongoid::Scopable do
       context 'when the class is not embedded' do
 
         it 'returns a criteria with embedded set to nil' do
-          expect(Band.queryable.embedded).to be(nil)
+          expect(Band.queryable.embedded).to be_nil
         end
       end
 
@@ -1258,7 +1258,7 @@ describe Mongoid::Scopable do
       it 'restores previous scope' do
         Band.with_scope(c1) do
           Band.unscoped do
-            expect(Mongoid::Threaded.current_scope(Band)).to be nil
+            expect(Mongoid::Threaded.current_scope(Band)).to be_nil
           end
 
           expect(Mongoid::Threaded.current_scope(Band).selector).to eq({
@@ -1286,7 +1286,7 @@ describe Mongoid::Scopable do
 
     it "does not affect other models' default scopes within the given block" do
       Appointment.without_default_scope do
-        expect(Audio.all.selector).not_to be_empty
+        expect(Audio.all.selector).to_not be_empty
       end
     end
   end

@@ -192,7 +192,7 @@ describe Mongoid::Association::Referenced::CounterCache do
 
   describe '#update_counters' do
 
-    context 'when was 3 ' do
+    context 'when was 3' do
 
       let(:person) do
         Person.create! do |person|

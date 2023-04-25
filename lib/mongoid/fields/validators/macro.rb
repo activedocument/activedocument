@@ -87,7 +87,7 @@ module Mongoid
         #
         # @api private
         def validate_name_uniqueness(klass, name, options)
-          return unless !options[:overwrite] && klass.fields.keys.include?(name.to_s)
+          return unless !options[:overwrite] && klass.fields.key?(name.to_s)
 
           raise Errors::InvalidField.new(klass, name, name) if Mongoid.duplicate_fields_exception
 

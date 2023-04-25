@@ -1798,7 +1798,7 @@ describe Mongoid::Contextual::Memory do
       end
 
       it 'returns nil' do
-        expect(plucked.first).to eq(nil)
+        expect(plucked.first).to be_nil
       end
     end
 
@@ -2084,6 +2084,11 @@ describe Mongoid::Contextual::Memory do
         with_default_i18n_configs
 
         let(:d1) { Dictionary.new(description: 'en1') }
+        let(:criteria) do
+          Dictionary.all.tap do |crit|
+            crit.documents = [d1, d2, d3, d4]
+          end
+        end
         let(:d2) { Dictionary.new(description: 'en1') }
         let(:d3) { Dictionary.new(description: 'en1') }
         let(:d4) { Dictionary.new(description: 'en2') }
@@ -2100,12 +2105,6 @@ describe Mongoid::Contextual::Memory do
           d3.description = 'de2'
           d4.description = 'de3'
           I18n.locale = :en
-        end
-
-        let(:criteria) do
-          Dictionary.all.tap do |crit|
-            crit.documents = [d1, d2, d3, d4]
-          end
         end
 
         context 'when getting the demongoized field' do
@@ -2177,6 +2176,11 @@ describe Mongoid::Contextual::Memory do
       with_default_i18n_configs
 
       let(:person1) { Person.create!(addresses: [address1a, address1b]) }
+      let(:criteria) do
+        Person.all.tap do |crit|
+          crit.documents = [person1, person2]
+        end
+      end
       let(:person2) { Person.create!(addresses: [address2a, address2b]) }
 
       let(:address1a) { Address.new(name: 'en1') }
@@ -2198,12 +2202,6 @@ describe Mongoid::Contextual::Memory do
         person1
         person2
         I18n.locale = :en
-      end
-
-      let(:criteria) do
-        Person.all.tap do |crit|
-          crit.documents = [person1, person2]
-        end
       end
 
       context 'when getting the demongoized field' do

@@ -160,7 +160,7 @@ module Mongoid
         #
         # @return [ true | false ] Whether the document can be bound.
         def bindable?(doc)
-          forced_nil_inverse? || (!!inverse && doc.fields.keys.include?(foreign_key))
+          forced_nil_inverse? || (!!inverse && doc.fields.key?(foreign_key))
         end
 
         # The nested builder object.

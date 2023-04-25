@@ -114,7 +114,7 @@ module Mongoid
         def aggregate_by(field, method)
           return nil unless any?
 
-          map { |doc| doc.public_send(field) }.compact.public_send(method)
+          filter_map { |doc| doc.public_send(field) }.public_send(method)
         end
       end
     end

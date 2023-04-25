@@ -79,7 +79,7 @@ describe Mongoid::Clients do
           Band.store_in client: 'another'
         end
 
-        it 'should merge the options together' do
+        it 'merges the options together' do
           expect(Band.storage_options[:collection]).to eq('artists')
           expect(Band.storage_options[:client]).to eq('another')
         end
@@ -558,6 +558,12 @@ describe Mongoid::Clients do
       let(:file) do
         File.join(File.dirname(__FILE__), '..', 'config', 'mongoid.yml')
       end
+      let!(:band) do
+        Band.new
+      end
+      let!(:mongo_client) do
+        band.mongo_client
+      end
 
       before do
         described_class.clear
@@ -567,14 +573,6 @@ describe Mongoid::Clients do
 
       after do
         mongo_client.close
-      end
-
-      let!(:band) do
-        Band.new
-      end
-
-      let!(:mongo_client) do
-        band.mongo_client
       end
 
       it 'returns the default client' do
@@ -676,16 +674,15 @@ describe Mongoid::Clients do
       let(:file) do
         File.join(File.dirname(__FILE__), '..', 'config', 'mongoid.yml')
       end
+      let!(:mongo_client) do
+        Band.mongo_client
+      end
 
       before do
         Band.reset_storage_options!
         described_class.clear
         Mongoid.load!(file, :test)
         Mongoid.clients[:default][:database] = database_id
-      end
-
-      let!(:mongo_client) do
-        Band.mongo_client
       end
 
       it 'returns the default client' do
@@ -889,6 +886,23 @@ describe Mongoid::Clients do
         let!(:band) do
           Band.with(database: database_id_alt, &:create!)
         end
+        let(:from_db) do
+          Band.with(database: database_id_alt) do |klass|
+            klass.find(band.id)
+          end
+        end
+        let(:count) do
+          Band.with(database: database_id_alt, &:count)
+        end
+
+        let(:count) do
+          Band.with(database: database_id_alt, &:count)
+        end
+        let(:from_db) do
+          Band.with(database: database_id_alt) do |klass|
+            klass.find(band.id)
+          end
+        end
 
         it 'does not persist to the default database' do
           expect do
@@ -896,18 +910,8 @@ describe Mongoid::Clients do
           end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
         end
 
-        let(:from_db) do
-          Band.with(database: database_id_alt) do |klass|
-            klass.find(band.id)
-          end
-        end
-
         it 'persists to the specified database' do
           expect(from_db).to eq(band)
-        end
-
-        let(:count) do
-          Band.with(database: database_id_alt, &:count)
         end
 
         it 'persists the correct number of documents' do
@@ -923,6 +927,23 @@ describe Mongoid::Clients do
         let!(:band) do
           Band.with(collection: 'artists', &:create!)
         end
+        let(:from_db) do
+          Band.with(collection: 'artists') do |klass|
+            klass.find(band.id)
+          end
+        end
+        let(:count) do
+          Band.with(collection: 'artists', &:count)
+        end
+
+        let(:count) do
+          Band.with(collection: 'artists', &:count)
+        end
+        let(:from_db) do
+          Band.with(collection: 'artists') do |klass|
+            klass.find(band.id)
+          end
+        end
 
         it 'does not persist to the default database' do
           expect do
@@ -930,18 +951,8 @@ describe Mongoid::Clients do
           end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
         end
 
-        let(:from_db) do
-          Band.with(collection: 'artists') do |klass|
-            klass.find(band.id)
-          end
-        end
-
         it 'persists to the specified database' do
           expect(from_db).to eq(band)
-        end
-
-        let(:count) do
-          Band.with(collection: 'artists', &:count)
         end
 
         it 'persists the correct number of documents' do
@@ -1112,11 +1123,11 @@ describe Mongoid::Clients do
       end
 
       after do
-        Mongoid::Clients.clients.delete(:secondary)
+        described_class.clients.delete(:secondary)
       end
 
       it 'does not close the client' do
-        expect(secondary_client).not_to receive(:close)
+        expect(secondary_client).to_not receive(:close)
 
         Band.with(client: :default, &:mongo_client)
 

@@ -41,7 +41,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
       end
 
       it 'passes the binding options through to the inverse' do
-        expect(person).to receive(:save).never
+        expect(person).to_not receive(:save)
       end
 
       it 'syncs the base' do
@@ -62,7 +62,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
       end
 
       it 'does not save the parent on bind' do
-        expect(person).to receive(:save).never
+        expect(person).to_not receive(:save)
         binding.bind_one(preference_two)
       end
     end
@@ -70,7 +70,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
     context 'when the document is not bindable' do
 
       it 'does nothing' do
-        expect(person.preferences).to receive(:<<).never
+        expect(person.preferences).to_not receive(:<<)
         binding.bind_one(preference)
       end
     end
@@ -86,8 +86,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
 
       before do
         binding.bind_one(target.first)
-        expect(person).to receive(:delete).never
-        expect(preference).to receive(:delete).never
+        expect(person).to_not receive(:delete)
+        expect(preference).to_not receive(:delete)
         binding.unbind_one(target.first)
       end
 
@@ -115,10 +115,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
       end
 
       it 'never performs a persistence operation' do
-        expect(person).to receive(:delete).never
-        expect(person).to receive(:save).never
-        expect(preference).to receive(:delete).never
-        expect(preference).to receive(:save).never
+        expect(person).to_not receive(:delete)
+        expect(person).to_not receive(:save)
+        expect(preference).to_not receive(:delete)
+        expect(preference).to_not receive(:save)
         binding.unbind_one(target.first)
       end
     end
@@ -126,7 +126,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Binding do
     context 'when the documents are not unbindable' do
 
       it 'does nothing' do
-        expect(person).to receive(:preferences=).never
+        expect(person).to_not receive(:preferences=)
         binding.unbind_one(target.first)
       end
     end

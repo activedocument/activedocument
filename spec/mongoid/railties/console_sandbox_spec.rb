@@ -11,7 +11,7 @@ describe 'console_sandbox' do
       it 'does not raise' do
         expect do
           check_if_transactions_might_be_available!(Mongoid.default_client)
-        end.not_to raise_error
+        end.to_not raise_error
       end
     end
 

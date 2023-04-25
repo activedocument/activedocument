@@ -38,7 +38,15 @@ module Mongoid
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
 
-      attr_reader :documents_loader
+      # Run an explain on the criteria.
+      #
+      # @example Explain the criteria.
+      #   Band.where(name: "Depeche Mode").explain
+      #
+      # @param [ Hash ] options customizable options (See Mongo::Collection::View::Explainable)
+      #
+      # @return [ Hash ] The explain result.
+      def_delegator :view, :explain
 
       # Get the number of documents matching the query.
       #
@@ -58,7 +66,7 @@ module Mongoid
       #
       # @return [ Integer ] The number of matches.
       def count(options = {}, &block)
-        return super(&block) if block_given?
+        return super(&block) if block
 
         view.count_documents(options)
       end
@@ -138,7 +146,7 @@ module Mongoid
       #
       # @return [ Enumerator ] The enumerator.
       def each(&block)
-        if block_given?
+        if block
           documents_for_iteration.each do |doc|
             yield_document(doc, &block)
           end
@@ -176,16 +184,6 @@ module Mongoid
         when Hash then Mongo.new(criteria.where(id_or_conditions)).exists?
         else Mongo.new(criteria.where(_id: id_or_conditions)).exists?
         end
-      end
-
-      # Run an explain on the criteria.
-      #
-      # @example Explain the criteria.
-      #   Band.where(name: "Depeche Mode").explain
-      #
-      # @return [ Hash ] The explain result.
-      def explain
-        view.explain
       end
 
       # Execute the find and modify command, used for MongoDB's
@@ -343,7 +341,7 @@ module Mongoid
       #   or the context if a block was given.
       def pluck_each(*fields, &block)
         enum = PluckEnumerator.new(klass, view, fields).each(&block)
-        block_given? ? self : enum
+        block ? self : enum
       end
 
       # Pick the single field values from the database.
@@ -490,7 +488,7 @@ module Mongoid
       #
       # @return [ Mongo ] The context.
       def sort(values = nil, &block)
-        if block_given?
+        if block
           super(&block)
         else
           # update the criteria
@@ -771,12 +769,25 @@ module Mongoid
       # immediately on the caller's thread, or can be scheduled for an
       # asynchronous execution.
       #
+      # @return [ Mongoid::Contextual::Mongo::DocumentsLoader ] The memoized
+      #   documents loader.
+      #
       # @api private
       def load_async
-        @documents_loader ||= DocumentsLoader.new(view, klass, criteria)
+        documents_loader
       end
 
       private
+
+      # Returns a memoized documents loader.
+      #
+      # @return [ Mongoid::Contextual::Mongo::DocumentsLoader ] The memoized
+      #   documents loader.
+      #
+      # @api private
+      def documents_loader
+        @documents_loader ||= DocumentsLoader.new(view, klass, criteria)
+      end
 
       # Update the documents for the provided method.
       #
@@ -956,6 +967,7 @@ module Mongoid
         raise Errors::DocumentNotFound.new(klass, nil, nil)
       end
 
+      # rubocop:disable Naming/MethodParameterName
       def retrieve_nth(n)
         retrieve_nth_with_limit(n, 1).first
       end
@@ -979,6 +991,7 @@ module Mongoid
         raw_docs = v.to_a.reverse
         process_raw_docs(raw_docs, limit)
       end
+      # rubocop:enable Naming/MethodParameterName
     end
   end
 end

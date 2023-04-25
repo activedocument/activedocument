@@ -322,7 +322,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       end
 
       it 'returns nil' do
-        expect(max).to be(nil)
+        expect(max).to be_nil
       end
     end
 
@@ -377,9 +377,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'when provided a block' do
 
         let(:max) do
-          context.max do |a, b|
-            a.likes <=> b.likes
-          end
+          context.max_by(&:likes)
         end
 
         it 'returns the document with the max value for the field' do
@@ -442,9 +440,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'when provided a block' do
 
         let(:min) do
-          context.min do |a, b|
-            a.likes <=> b.likes
-          end
+          context.min_by(&:likes)
         end
 
         it 'returns the document with the min value for the field' do
@@ -518,16 +514,17 @@ describe Mongoid::Contextual::Aggregable::Mongo do
   end
 
   describe '#pipeline' do
+    subject(:stages) { pipeline.map { |s| s.keys.first } }
+
     let(:context) { Mongoid::Contextual::Mongo.new(criteria) }
     let(:pipeline) { context.send(:pipeline, :likes) }
-    subject(:stages) { pipeline.map { |s| s.keys.first } }
 
     context 'with sort' do
 
       context 'without limit or skip' do
         let(:criteria) { Band.desc(:name) }
 
-        it 'should omit the $sort stage' do
+        it 'omits the $sort stage' do
           expect(stages).to eq %w[$match $group]
         end
       end
@@ -535,7 +532,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'with limit' do
         let(:criteria) { Band.desc(:name).limit(1) }
 
-        it 'should include the $sort stage' do
+        it 'includes the $sort stage' do
           expect(stages).to eq %w[$match $sort $limit $group]
         end
       end
@@ -543,7 +540,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'with skip' do
         let(:criteria) { Band.desc(:name).skip(1) }
 
-        it 'should include the $sort stage' do
+        it 'includes the $sort stage' do
           expect(stages).to eq %w[$match $sort $skip $group]
         end
       end
@@ -551,7 +548,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'with skip and skip' do
         let(:criteria) { Band.desc(:name).limit(1).skip(1) }
 
-        it 'should include the $sort stage' do
+        it 'includes the $sort stage' do
           expect(stages).to eq %w[$match $sort $skip $limit $group]
         end
       end
@@ -562,7 +559,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'without limit or skip' do
         let(:criteria) { Band.all }
 
-        it 'should omit the $sort stage' do
+        it 'omits the $sort stage' do
           expect(stages).to eq %w[$match $group]
         end
       end
@@ -570,7 +567,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'with limit' do
         let(:criteria) { Band.limit(1) }
 
-        it 'should include the $sort stage' do
+        it 'includes the $sort stage' do
           expect(stages).to eq %w[$match $limit $group]
         end
       end
@@ -578,7 +575,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'with skip' do
         let(:criteria) { Band.skip(1) }
 
-        it 'should include the $sort stage' do
+        it 'includes the $sort stage' do
           expect(stages).to eq %w[$match $skip $group]
         end
       end
@@ -586,7 +583,7 @@ describe Mongoid::Contextual::Aggregable::Mongo do
       context 'with skip and skip' do
         let(:criteria) { Band.limit(1).skip(1) }
 
-        it 'should include the $sort stage' do
+        it 'includes the $sort stage' do
           expect(stages).to eq %w[$match $skip $limit $group]
         end
       end

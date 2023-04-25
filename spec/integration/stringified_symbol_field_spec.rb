@@ -8,6 +8,49 @@ describe 'StringifiedSymbol fields' do
     Order.destroy_all
   end
 
+  before do
+    client.subscribe(Mongo::Monitoring::COMMAND, subscriber)
+  end
+
+  before do
+    subscriber.clear_events!
+  end
+
+  after do
+    client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
+  end
+
+  let!(:document1) do
+    Order.create!(saved_status: :test)
+  end
+
+  let!(:document2) do
+    Order.where(query).first
+  end
+
+  # Using command monitoring to test that StringifiedSymbol sends a string and returns a symbol
+  let(:client) { Order.collection.client }
+
+  let(:subscriber) do
+    EventSubscriber.new
+  end
+
+  let(:find_events) do
+    subscriber.started_events.select { |event| event.command_name.to_s == 'find' }
+  end
+
+  let(:insert_events) do
+    subscriber.started_events.select { |event| event.command_name.to_s == 'insert' }
+  end
+
+  let(:update_events) do
+    subscriber.started_events.select { |event| event.command_name.to_s == 'update' }
+  end
+
+  let(:query) do
+    { 'saved_status' => { '$eq' => 'test' } }
+  end
+
   context 'when querying the database' do
 
     let!(:document) do
@@ -31,49 +74,6 @@ describe 'StringifiedSymbol fields' do
       doc = Order.where(symbol_query).first
       expect(doc.saved_status).to eq(:test)
     end
-  end
-
-  # Using command monitoring to test that StringifiedSymbol sends a string and returns a symbol
-  let(:client) { Order.collection.client }
-
-  before do
-    client.subscribe(Mongo::Monitoring::COMMAND, subscriber)
-  end
-
-  after do
-    client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
-  end
-
-  let(:subscriber) do
-    EventSubscriber.new
-  end
-
-  let(:find_events) do
-    subscriber.started_events.select { |event| event.command_name.to_s == 'find' }
-  end
-
-  let(:insert_events) do
-    subscriber.started_events.select { |event| event.command_name.to_s == 'insert' }
-  end
-
-  let(:update_events) do
-    subscriber.started_events.select { |event| event.command_name.to_s == 'update' }
-  end
-
-  before do
-    subscriber.clear_events!
-  end
-
-  let(:query) do
-    { 'saved_status' => { '$eq' => 'test' } }
-  end
-
-  let!(:document1) do
-    Order.create!(saved_status: :test)
-  end
-
-  let!(:document2) do
-    Order.where(query).first
   end
 
   context 'when inserting document' do
@@ -192,9 +192,9 @@ describe 'StringifiedSymbol fields' do
 
   context 'when StringifiedSymbol is embedded' do
 
-    describe 'When the embedded field is not unique' do
+    describe 'when the embedded field is not unique' do
 
-      it 'should be invalid' do
+      it 'is invalid' do
         order = Order.new
         order.purchased_items.build(item_id: :foo)
         order.purchased_items.build(item_id: :foo)

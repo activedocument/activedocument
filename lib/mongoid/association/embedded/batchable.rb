@@ -272,7 +272,7 @@ module Mongoid
         # @api private
         def clear_atomic_path_cache
           self.path = nil
-          _base.instance_variable_set('@atomic_paths', nil)
+          _base.instance_variable_set(:@atomic_paths, nil)
         end
 
         # Set the atomic path.

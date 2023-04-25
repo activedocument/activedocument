@@ -315,7 +315,7 @@ describe Mongoid::Persistable::Destroyable do
     context 'when no validation callback returns false' do
 
       it 'returns true' do
-        expect(person.destroy!).to eq(true)
+        expect(person.destroy!).to be(true)
       end
     end
 

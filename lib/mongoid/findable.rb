@@ -167,7 +167,7 @@ module Mongoid
     #   the +raise_not_found_error+ Mongoid configuration option is truthy.
     def find(*args, &block)
       empty_or_proc = args.empty? || (args.length == 1 && args.first.is_a?(Proc))
-      if block_given? && empty_or_proc
+      if block && empty_or_proc
         with_default_scope.find(*args, &block)
       else
         with_default_scope.find(*args)

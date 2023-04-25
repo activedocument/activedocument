@@ -18,7 +18,7 @@ module Mongoid
       #   set, with corresponding minimum values.
       #
       # @return [ Mongoid::Document ] The document.
-      def set_max(fields)
+      def set_max(fields) # rubocop:disable Naming/AccessorMethodName
         prepare_atomic_operation do |ops|
           process_atomic_operations(fields) do |field, value|
             current_value = attributes[field]

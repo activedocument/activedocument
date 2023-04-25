@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 describe 'Range field persistence' do
-  let!(:person) { Person.create!(field => value).reload }
   subject { person.send(field) }
+
+  let!(:person) { Person.create!(field => value).reload }
   let(:now_utc) { Time.now }
   let(:later_utc) { now_utc + 10.minutes }
   let(:now_in_zone) { now_utc.in_time_zone('Asia/Tokyo') }
@@ -15,6 +16,7 @@ describe 'Range field persistence' do
 
     context 'when Integer' do
       let(:value) { 1..3 }
+
       it do
         expect(subject).to eq(1..3)
       end
@@ -22,46 +24,55 @@ describe 'Range field persistence' do
 
     context 'when Integer exclude_end' do
       let(:value) { 1...3 }
+
       it { expect(subject).to eq(1...3) }
     end
 
     context 'when endless' do
       let(:value) { 3.. }
+
       it { expect(subject).to eq(3..) }
     end
 
     context 'when endless exclude_end' do
       let(:value) { 3... }
+
       it { expect(subject).to eq(3...) }
     end
 
     context 'when beginning-less' do
       let(:value) { ..3 }
+
       it { expect(subject).to eq(..3) }
     end
 
     context 'when beginning-less exclude_end' do
       let(:value) { ...3 }
+
       it { expect(subject).to eq(...3) }
     end
 
     context 'when Hash<String, Integer>' do
       let(:value) { { 'min' => 1, 'max' => 3 } }
+
       it { expect(subject).to eq(1..3) }
     end
 
     context 'when Hash<String, Integer> exclude_end' do
       let(:value) { { 'min' => 1, 'max' => 3, 'exclude_end' => true } }
+
       it { expect(subject).to eq(1...3) }
     end
 
     context 'when Hash<Symbol, Integer>' do
       let(:value) { { min: 1, max: 3 } }
+
       it { expect(subject).to eq(1..3) }
     end
 
     context 'when Hash<Symbol, Integer> exclude_end' do
       let(:value) { { min: 1, max: 3, exclude_end: true } }
+
       it { expect(subject).to eq(1...3) }
     end
 
@@ -70,7 +81,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Range
-        expect(subject.exclude_end?).to eq false
+        expect(subject.exclude_end?).to be false
         expect(subject.first).to be_within(0.01.seconds).of(now_utc)
         expect(subject.last).to be_within(0.01.seconds).of(later_utc)
         expect(subject.first.class).to eq Time
@@ -83,7 +94,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Range
-        expect(subject.exclude_end?).to eq true
+        expect(subject.exclude_end?).to be true
         expect(subject.first).to be_within(0.01.seconds).of(now_utc)
         expect(subject.last).to be_within(0.01.seconds).of(later_utc)
         expect(subject.first.class).to eq Time
@@ -96,7 +107,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Range
-        expect(subject.exclude_end?).to eq false
+        expect(subject.exclude_end?).to be false
         expect(subject.first).to be_within(0.01.seconds).of(now_utc)
         expect(subject.last).to be_within(0.01.seconds).of(later_utc)
         expect(subject.first.class).to eq Time
@@ -109,7 +120,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Range
-        expect(subject.exclude_end?).to eq true
+        expect(subject.exclude_end?).to be true
         expect(subject.first).to be_within(0.01.seconds).of(now_utc)
         expect(subject.last).to be_within(0.01.seconds).of(later_utc)
         expect(subject.first.class).to eq Time
@@ -122,7 +133,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Range
-        expect(subject.exclude_end?).to eq false
+        expect(subject.exclude_end?).to be false
         expect(subject.first).to be_within(0.01.seconds).of(now_utc)
         expect(subject.last).to be_within(0.01.seconds).of(later_utc)
         expect(subject.first.class).to eq Time
@@ -135,7 +146,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Range
-        expect(subject.exclude_end?).to eq true
+        expect(subject.exclude_end?).to be true
         expect(subject.first).to be_within(0.01.seconds).of(now_utc)
         expect(subject.last).to be_within(0.01.seconds).of(later_utc)
         expect(subject.first.class).to eq Time
@@ -148,7 +159,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Range
-        expect(subject.exclude_end?).to eq false
+        expect(subject.exclude_end?).to be false
         expect(subject.first).to be_within(0.01.seconds).of(now_utc)
         expect(subject.last).to be_within(0.01.seconds).of(later_utc)
         expect(subject.first.class).to eq Time
@@ -161,7 +172,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Range
-        expect(subject.exclude_end?).to eq true
+        expect(subject.exclude_end?).to be true
         expect(subject.first).to be_within(0.01.seconds).of(now_utc)
         expect(subject.last).to be_within(0.01.seconds).of(later_utc)
         expect(subject.first.class).to eq Time
@@ -175,6 +186,7 @@ describe 'Range field persistence' do
 
     context 'when Integer' do
       let(:value) { 1..3 }
+
       it do
         expect(subject).to eq('max' => 3, 'min' => 1)
       end
@@ -182,56 +194,67 @@ describe 'Range field persistence' do
 
     context 'when Integer exclude_end' do
       let(:value) { 1...3 }
+
       it { expect(subject).to eq('max' => 3, 'min' => 1, 'exclude_end' => true) }
     end
 
     context 'when descending' do
       let(:value) { 3..1 }
+
       it { expect(subject).to eq('max' => 1, 'min' => 3) }
     end
 
     context 'when descending exclude_end' do
       let(:value) { 3...1 }
+
       it { expect(subject).to eq('max' => 1, 'min' => 3, 'exclude_end' => true) }
     end
 
     context 'when endless' do
       let(:value) { 3.. }
+
       it { expect(subject).to eq('min' => 3) }
     end
 
     context 'when endless exclude_end' do
       let(:value) { 3... }
+
       it { expect(subject).to eq('min' => 3, 'exclude_end' => true) }
     end
 
     context 'when beginning-less' do
       let(:value) { ..3 }
+
       it { expect(subject).to eq('max' => 3) }
     end
 
     context 'when beginning-less exclude_end' do
       let(:value) { ...3 }
+
       it { expect(subject).to eq('max' => 3, 'exclude_end' => true) }
     end
 
     context 'when Hash<String, Integer>' do
       let(:value) { { 'min' => 1, 'max' => 3 } }
+
       it { expect(subject).to eq('max' => 3, 'min' => 1) }
     end
 
     context 'when Hash<String, Integer> exclude_end' do
       let(:value) { { 'min' => 1, 'max' => 3, 'exclude_end' => true } }
+
       it { expect(subject).to eq('max' => 3, 'min' => 1, 'exclude_end' => true) }
     end
 
     context 'when Hash<Symbol, Integer>' do
       let(:value) { { min: 1, max: 3 } }
+
       it { expect(subject).to eq('max' => 3, 'min' => 1) }
     end
 
     context 'when Hash<Symbol, Integer> exclude_end' do
       let(:value) { { min: 1, max: 3, exclude_end: true } }
+
       it { expect(subject).to eq('max' => 3, 'min' => 1, 'exclude_end' => true) }
     end
 
@@ -240,7 +263,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Hash
-        expect(subject['exclude_end']).to eq nil
+        expect(subject['exclude_end']).to be_nil
         expect(subject['min']).to be_within(0.01.seconds).of(now_utc)
         expect(subject['max']).to be_within(0.01.seconds).of(later_utc)
         expect(subject['min'].class).to eq Time
@@ -253,7 +276,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Hash
-        expect(subject['exclude_end']).to eq true
+        expect(subject['exclude_end']).to be true
         expect(subject['min']).to be_within(0.01.seconds).of(now_utc)
         expect(subject['max']).to be_within(0.01.seconds).of(later_utc)
         expect(subject['min'].class).to eq Time
@@ -266,7 +289,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Hash
-        expect(subject['exclude_end']).to eq nil
+        expect(subject['exclude_end']).to be_nil
         expect(subject['min']).to be_within(0.01.seconds).of(now_utc)
         expect(subject['max']).to be_within(0.01.seconds).of(later_utc)
         expect(subject['min'].class).to eq Time
@@ -279,7 +302,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Hash
-        expect(subject['exclude_end']).to eq true
+        expect(subject['exclude_end']).to be true
         expect(subject['min']).to be_within(0.01.seconds).of(now_utc)
         expect(subject['max']).to be_within(0.01.seconds).of(later_utc)
         expect(subject['min'].class).to eq Time
@@ -292,7 +315,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Hash
-        expect(subject['exclude_end']).to eq nil
+        expect(subject['exclude_end']).to be_nil
         expect(subject['min']).to be_within(0.01.seconds).of(now_utc)
         expect(subject['max']).to be_within(0.01.seconds).of(later_utc)
         expect(subject['min'].class).to eq Time
@@ -305,7 +328,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Hash
-        expect(subject['exclude_end']).to eq true
+        expect(subject['exclude_end']).to be true
         expect(subject['min']).to be_within(0.01.seconds).of(now_utc)
         expect(subject['max']).to be_within(0.01.seconds).of(later_utc)
         expect(subject['min'].class).to eq Time
@@ -318,7 +341,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Hash
-        expect(subject['exclude_end']).to eq nil
+        expect(subject['exclude_end']).to be_nil
         expect(subject['min']).to be_within(0.01.seconds).of(now_utc)
         expect(subject['max']).to be_within(0.01.seconds).of(later_utc)
         expect(subject['min'].class).to eq Time
@@ -331,7 +354,7 @@ describe 'Range field persistence' do
 
       it do
         expect(subject).to be_a Hash
-        expect(subject['exclude_end']).to eq true
+        expect(subject['exclude_end']).to be true
         expect(subject['min']).to be_within(0.01.seconds).of(now_utc)
         expect(subject['max']).to be_within(0.01.seconds).of(later_utc)
         expect(subject['min'].class).to eq Time

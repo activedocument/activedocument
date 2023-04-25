@@ -8,7 +8,7 @@ describe 'belongs_to associations' do
     let(:college) { HomCollege.create! }
     let(:child) { HomAccreditation::Child.new(hom_college: college) }
 
-    it 'works' do
+    it 'is valid' do
       expect(child).to be_valid
     end
   end

@@ -17,7 +17,7 @@ module Mongoid
         if number > 0
           expect_any_instance_of(connection_class).to receive(:command_started).exactly(number).times.and_call_original
         else
-          expect_any_instance_of(connection_class).not_to receive(:command_started)
+          expect_any_instance_of(connection_class).to_not receive(:command_started)
         end
         rv = yield
       end

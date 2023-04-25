@@ -49,9 +49,9 @@ module Mongoid
 
       names = field_names(options)
 
-      method_names = Array.wrap(options[:methods]).map do |name|
+      method_names = Array.wrap(options[:methods]).filter_map do |name|
         name.to_s if respond_to?(name)
-      end.compact
+      end
 
       (names + method_names).each do |name|
         without_autobuild do

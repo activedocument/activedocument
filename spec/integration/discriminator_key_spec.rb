@@ -76,7 +76,7 @@ describe '#discriminator_key' do
       end
 
       it 'does not have the new global value as a field' do
-        expect(defined?(child.test)).to be nil
+        expect(defined?(child.test)).to be_nil
       end
     end
 
@@ -107,7 +107,7 @@ describe '#discriminator_key' do
       end
 
       it 'does not have the default value as a field' do
-        expect(defined?(child._type)).to be nil
+        expect(defined?(child._type)).to be_nil
       end
     end
   end
@@ -168,7 +168,7 @@ describe '#discriminator_key' do
       end
 
       it 'does not have the default value as a field' do
-        expect(defined?(child._type)).to be nil
+        expect(defined?(child._type)).to be_nil
       end
     end
   end
@@ -270,7 +270,7 @@ describe '#discriminator_key' do
       end
 
       it 'does not have the default discriminator key: Rectangle' do
-        expect(defined?(rectangle._type)).to be nil
+        expect(defined?(rectangle._type)).to be_nil
       end
 
       it 'has the new discriminator key: Circle' do
@@ -278,7 +278,7 @@ describe '#discriminator_key' do
       end
 
       it 'does not have the default discriminator key: Circle' do
-        expect(defined?(circle._type)).to be nil
+        expect(defined?(circle._type)).to be_nil
       end
     end
 
@@ -376,7 +376,7 @@ describe '#discriminator_key' do
       end
 
       it 'does not have the default discriminator key: Rectangle' do
-        expect(defined?(rectangle._type)).to be nil
+        expect(defined?(rectangle._type)).to be_nil
       end
 
       it 'has the new discriminator key: Circle' do
@@ -384,7 +384,7 @@ describe '#discriminator_key' do
       end
 
       it 'does not have the default discriminator key: Circle' do
-        expect(defined?(circle._type)).to be nil
+        expect(defined?(circle._type)).to be_nil
       end
     end
   end

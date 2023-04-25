@@ -7,21 +7,18 @@ describe Mongoid::Atomic::Paths::Embedded::Many do
   let(:person) do
     Person.new
   end
-
+  let(:many) do
+    described_class.new(address)
+  end
   let(:address) do
     Address.new(street: 'Strassmannstr.')
   end
-
   let(:phone) do
     Phone.new(number: '+33123456789')
   end
 
   before do
     person.addresses << address
-  end
-
-  let(:many) do
-    described_class.new(address)
   end
 
   describe '#delete_modifier' do
@@ -59,13 +56,12 @@ describe Mongoid::Atomic::Paths::Embedded::Many do
       let(:location) do
         Location.new(name: 'home')
       end
+      let(:many) do
+        described_class.new(location)
+      end
 
       before do
         address.locations << location
-      end
-
-      let(:many) do
-        described_class.new(location)
       end
 
       it 'returns the nested path to the relation' do
@@ -86,6 +82,7 @@ describe Mongoid::Atomic::Paths::Embedded::Many do
         before do
           person.phones << phone
         end
+
         it 'return the name of the store_as in relation' do
           expect(many.position).to eq('mobile_phones')
         end
@@ -101,15 +98,14 @@ describe Mongoid::Atomic::Paths::Embedded::Many do
       let(:location) do
         Location.new(name: 'home')
       end
+      let(:many) do
+        described_class.new(location)
+      end
 
       before do
         address.locations << location
         address.new_record = false
         location.new_record = false
-      end
-
-      let(:many) do
-        described_class.new(location)
       end
 
       it 'returns the nested position to the relation' do

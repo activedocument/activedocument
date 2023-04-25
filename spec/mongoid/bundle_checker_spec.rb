@@ -7,7 +7,7 @@ RSpec.describe Mongoid::BundleChecker do
 
   context 'when mongoid gem is not present' do
     it 'does not raise an error' do
-      expect { check_mongoid }.not_to raise_error
+      expect { check_mongoid }.to_not raise_error
     end
   end
 

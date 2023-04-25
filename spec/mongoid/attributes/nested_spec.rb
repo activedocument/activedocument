@@ -31,7 +31,7 @@ describe Mongoid::Attributes::Nested do
       end
 
       it 'does not autosave if the association is embedded' do
-        expect(person).not_to respond_to(:autosave_documents_for_favorites)
+        expect(person).to_not respond_to(:autosave_documents_for_favorites)
       end
 
       it 'autosaves if the association is not embedded' do
@@ -127,7 +127,7 @@ describe Mongoid::Attributes::Nested do
             posteable_type: 'Sandwich',
             posteable_attributes: { name: 'Grilled Cheese' }
           )
-        end.not_to raise_error
+        end.to_not raise_error
       end
     end
 
@@ -242,6 +242,10 @@ describe Mongoid::Attributes::Nested do
 
       context 'when the relation is an embeds one' do
 
+        let(:person) do
+          Person.new
+        end
+
         context 'when the parent document is persisted' do
 
           let(:person) do
@@ -284,10 +288,6 @@ describe Mongoid::Attributes::Nested do
               end
             end
           end
-        end
-
-        let(:person) do
-          Person.new
         end
 
         context 'when a reject proc is specified' do
@@ -1034,6 +1034,16 @@ describe Mongoid::Attributes::Nested do
 
       context 'when the relation is an embeds many' do
 
+        let(:address_two) do
+          Address.new(street: 'Kurfeurstendamm')
+        end
+        let(:address_one) do
+          Address.new(street: 'Unter den Linden')
+        end
+        let(:person) do
+          Person.new
+        end
+
         context 'when the parent document is persisted' do
 
           let(:person) do
@@ -1080,18 +1090,6 @@ describe Mongoid::Attributes::Nested do
               end
             end
           end
-        end
-
-        let(:person) do
-          Person.new
-        end
-
-        let(:address_one) do
-          Address.new(street: 'Unter den Linden')
-        end
-
-        let(:address_two) do
-          Address.new(street: 'Kurfeurstendamm')
         end
 
         context 'when a limit is specified' do
@@ -4545,17 +4543,15 @@ describe Mongoid::Attributes::Nested do
                 }
               }
             end
-
-            before do
-              person.update!(attributes)
-            end
-
             let(:address) do
               person.addresses.first
             end
-
             let(:location) do
               address.locations.first
+            end
+
+            before do
+              person.update!(attributes)
             end
 
             it 'adds the new first level embedded document' do
@@ -4616,17 +4612,15 @@ describe Mongoid::Attributes::Nested do
               }
             }
           end
-
-          before do
-            person.update!(attributes)
-          end
-
           let(:address) do
             person.addresses.first
           end
-
           let(:code) do
             address.code
+          end
+
+          before do
+            person.update!(attributes)
           end
 
           it 'adds the new first level embedded document' do
@@ -4762,7 +4756,9 @@ describe Mongoid::Attributes::Nested do
         let(:user) do
           User.create!
         end
-
+        let(:post) do
+          user.posts.first
+        end
         let(:params) do
           { posts_attributes: { '0' => { title: 'Testing' } } }
         end
@@ -4776,10 +4772,6 @@ describe Mongoid::Attributes::Nested do
           User.has_many :posts, foreign_key: :author_id, validate: false, autosave: true
           example.run
           user.relations = original_relations
-        end
-
-        let(:post) do
-          user.posts.first
         end
 
         it 'adds the new document to the relation' do
@@ -4937,7 +4929,7 @@ describe Mongoid::Attributes::Nested do
     end
 
     it 'is able to access the parent in the after_destroy callback' do
-      expect(school.after_destroy_triggered).to eq(true)
+      expect(school.after_destroy_triggered).to be(true)
     end
   end
 
@@ -4962,7 +4954,7 @@ describe Mongoid::Attributes::Nested do
     end
 
     it 'is able to access the parent in the after_destroy callback' do
-      expect(school.reload.after_destroy_triggered).to eq(true)
+      expect(school.reload.after_destroy_triggered).to be(true)
     end
   end
 

@@ -17,7 +17,7 @@ describe Mongoid::Document do
       it 'does not freeze the specified data' do
         registry
 
-        expect(data).not_to be_frozen
+        expect(data).to_not be_frozen
       end
 
       it 'persists' do
@@ -61,14 +61,14 @@ describe Mongoid::Document do
       end
 
       it 'assigns nil' do
-        expect(registry.data).to be nil
+        expect(registry.data).to be_nil
       end
 
       it 'persists' do
         registry.save!
 
         registry_found = Registry.find(registry.id)
-        expect(registry_found.data).to be nil
+        expect(registry_found.data).to be_nil
       end
     end
 
@@ -82,14 +82,14 @@ describe Mongoid::Document do
       end
 
       it 'assigns nil' do
-        expect(registry.data).to be nil
+        expect(registry.data).to be_nil
       end
 
       it 'persists' do
         registry.save!
 
         registry_found = Registry.find(registry.id)
-        expect(registry_found.data).to be nil
+        expect(registry_found.data).to be_nil
       end
     end
   end
@@ -107,7 +107,7 @@ describe Mongoid::Document do
       it 'does not freeze the specified data' do
         registry
 
-        expect(obj_id).not_to be_frozen
+        expect(obj_id).to_not be_frozen
       end
 
       it 'persists' do
@@ -149,14 +149,14 @@ describe Mongoid::Document do
       end
 
       it 'assigns nil' do
-        expect(registry.obj_id).to be nil
+        expect(registry.obj_id).to be_nil
       end
 
       it 'persists' do
         registry.save!
 
         registry_found = Registry.find(registry.id)
-        expect(registry_found.obj_id).to be nil
+        expect(registry_found.obj_id).to be_nil
       end
     end
 

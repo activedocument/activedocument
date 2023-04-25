@@ -33,7 +33,7 @@ describe Mongoid::Extensions::Set do
 
     context 'when passing a set' do
 
-      it 'returns a set ' do
+      it 'returns a set' do
         expect(Set.demongoize(Set.new(['test']))).to eq(['test'].to_set)
       end
     end

@@ -74,6 +74,17 @@ Lint/SuppressedException:
   Exclude:
     - 'spec/**/*'
 
+Naming/AccessorMethodName:
+  Exclude:
+    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'lib/mongoid/atomic/modifiers.rb'
+    - 'lib/mongoid/clients/options.rb'
+    - 'lib/mongoid/criteria/options.rb'
+    - 'lib/mongoid/encryptable.rb'
+    - 'lib/mongoid/fields/encrypted.rb'
+    - 'lib/mongoid/persistence_context.rb'
+    - 'lib/mongoid/timestamps/timeless.rb'
+
 RSpec/AroundBlock:
   Exclude:
     - 'spec/support/constraints.rb'
@@ -106,6 +117,15 @@ Style/CaseEquality:
     - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
     - 'spec/**/*'
 
+RSpec/ExampleLength:
+  Max: 50
+
+RSpec/MultipleExpectations:
+  Max: 20
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 50
+
 # --------------------------------------------------
 # These cops are disabled by default, but should be periodically
 # checked and cleaned up.
@@ -121,6 +141,14 @@ Layout/EmptyLinesAroundModuleBody:
 
 Style/IfUnlessModifier:
   Enabled: false
+
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
+    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
+    - 'spec/mongoid/attributes_spec.rb'
+    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
+    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
 
 # --------------------------------------------------
 # These cops are intentionally disabled due to incompatibility.
@@ -167,10 +195,25 @@ Lint/MissingSuper:
     - 'lib/mongoid/criteria/queryable/pipeline.rb'
     - 'lib/mongoid/criteria/queryable/smash.rb'
 
+Lint/UnusedMethodArgument:
+  AllowUnusedKeywordArguments: true
+
 Metrics/BlockLength:
   Exclude:
     - '**/Rakefile'
     - '**/*.rake'
+
+Naming/PredicateName:
+  AllowedMethods:
+    - is_a?
+    - has_and_belongs_to_many
+    - has_many
+    - has_one
+    - has_attribute?
+    - has_attribute_before_type_cast?
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method
@@ -208,8 +251,3 @@ Style/SymbolArray:
   Exclude:
     - 'spec/mongoid/criteria/queryable/selector_spec.rb'
     - 'spec/mongoid/criteria/queryable/options_spec.rb'
-
-# See: https://github.com/rubocop/rubocop/issues/11811
-Lint/UnusedMethodArgument:
-  Exclude:
-    - 'lib/mongoid/contextual/none.rb'

@@ -6,7 +6,7 @@ require_relative '../has_and_belongs_to_many_models'
 describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
   config_override :raise_not_found_error, true
 
-  around(:each) do |example|
+  around do |example|
     original_preferences_association = Person.relations['preferences']
     Person.has_and_belongs_to_many :preferences, autosave: true
     example.run
@@ -50,7 +50,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it 'does not persist the child document' do
-            expect(preference).to receive(:save).never
+            expect(preference).to_not receive(:save)
             article.preferences.send(method, preference)
           end
         end
@@ -2752,6 +2752,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     let(:person) do
       Person.create!
     end
+    let(:max) do
+      person.preferences.max_by(&:ranking)
+    end
 
     let(:preference_one) do
       Preference.create!(ranking: 5)
@@ -2763,12 +2766,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
     before do
       person.preferences.push(preference_one, preference_two)
-    end
-
-    let(:max) do
-      person.preferences.max do |a, b|
-        a.ranking <=> b.ranking
-      end
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -2782,6 +2779,10 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       Person.create!
     end
 
+    let(:max) do
+      person.preferences.max_by(&:ranking)
+    end
+
     let(:preference_one) do
       Preference.create!(ranking: 5)
     end
@@ -2792,10 +2793,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
     before do
       person.preferences.push(preference_one, preference_two)
-    end
-
-    let(:max) do
-      person.preferences.max_by(&:ranking)
     end
 
     it 'returns the document with the max value of the supplied field' do
@@ -2908,6 +2905,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     let(:person) do
       Person.create!
     end
+    let(:min) do
+      person.preferences.min_by(&:ranking)
+    end
 
     let(:preference_one) do
       Preference.create!(ranking: 5)
@@ -2919,12 +2919,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
     before do
       person.preferences.push(preference_one, preference_two)
-    end
-
-    let(:min) do
-      person.preferences.min do |a, b|
-        a.ranking <=> b.ranking
-      end
     end
 
     it 'returns the min value of the supplied field' do
@@ -2937,6 +2931,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     let(:person) do
       Person.create!
     end
+    let(:min) do
+      person.preferences.min_by(&:ranking)
+    end
 
     let(:preference_one) do
       Preference.create!(ranking: 5)
@@ -2948,10 +2945,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
 
     before do
       person.preferences.push(preference_one, preference_two)
-    end
-
-    let(:min) do
-      person.preferences.min_by(&:ranking)
     end
 
     it 'returns the min value of the supplied field' do
@@ -3037,7 +3030,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
     end
 
-    Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy.public_instance_methods.sort.each do |method|
+    described_class.public_instance_methods.sort.each do |method|
 
       context "when checking Proxy##{method}" do
 
@@ -3421,7 +3414,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     it 'does not delete the target from the database' do
       expect do
         preference.reload
-      end.not_to raise_error
+      end.to_not raise_error
     end
   end
 
@@ -3551,15 +3544,14 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       let(:preference_three) do
         Preference.create!(name: 'three')
       end
+      let(:reloaded) do
+        Person.find(person.id)
+      end
 
       before do
         person.preference_ids =
           [preference_two.id, preference_one.id, preference_three.id]
         person.save!
-      end
-
-      let(:reloaded) do
-        Person.find(person.id)
       end
 
       it 'also persists the change in id order' do
@@ -3574,6 +3566,9 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       let(:preference_three) do
         Preference.create!(name: 'three')
       end
+      let(:reloaded) do
+        Person.find(person.id)
+      end
 
       before do
         person.preference_ids =
@@ -3582,10 +3577,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         person.preference_ids =
           [preference_three.id, preference_two.id]
         person.save!
-      end
-
-      let(:reloaded) do
-        Person.find(person.id)
       end
 
       it 'also persists the change in id order' do
@@ -3758,7 +3749,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
     end
 
-    it 'should assign relation from both sides' do
+    it 'assigns relation from both sides' do
       p1 = Project.create! name: 'Foo'
       p2 = Project.create! name: 'Bar'
       d1 = Distributor.create! name: 'Rock'
@@ -3778,7 +3769,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
     let!(:signature) { contract.signatures.create! }
 
     it 'is nil' do
-      expect(signature.favorite_signature).to be nil
+      expect(signature.favorite_signature).to be_nil
     end
   end
 

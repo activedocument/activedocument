@@ -37,14 +37,14 @@ describe Mongoid::Attributes::Dynamic do
         context 'reading via read_attribute' do
           it 'returns nil' do
             bar = Bar.new
-            expect(bar.read_attribute(:foo)).to be nil
+            expect(bar.read_attribute(:foo)).to be_nil
           end
         end
 
         context 'reading via []' do
           it 'returns nil' do
             bar = Bar.new
-            expect(bar[:foo]).to be nil
+            expect(bar[:foo]).to be_nil
           end
         end
       end

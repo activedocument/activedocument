@@ -495,7 +495,7 @@ module Mongoid
       def create_dirty_previously_changed?(name, meth)
         generated_methods.module_eval do
           re_define_method("#{meth}_previously_changed?") do
-            previous_changes.keys.include?(name)
+            previous_changes.key?(name)
           end
         end
       end

@@ -1048,11 +1048,13 @@ describe Mongoid::Contextual::Atomic do
 
     context 'as itself' do
       let(:min_method) { :set_min }
+
       include_examples 'min-able comparisons'
     end
 
     context 'as #clamp_upper_bound' do
       let(:min_method) { :clamp_upper_bound }
+
       include_examples 'min-able comparisons'
     end
   end
@@ -1121,11 +1123,13 @@ describe Mongoid::Contextual::Atomic do
 
     context 'as itself' do
       let(:max_method) { :set_max }
+
       include_examples 'max-able comparisons'
     end
 
     context 'as #clamp_lower_bound' do
       let(:max_method) { :clamp_lower_bound }
+
       include_examples 'max-able comparisons'
     end
   end

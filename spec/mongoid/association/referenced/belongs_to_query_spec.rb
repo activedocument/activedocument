@@ -51,7 +51,7 @@ describe Mongoid::Association::Referenced::BelongsTo do
     end
 
     it 'does not try to load the inverse for an association that explicitly prevents it' do
-      expect { pet.previous_owner.name }.not_to raise_error
+      expect { pet.previous_owner.name }.to_not raise_error
     end
   end
 end

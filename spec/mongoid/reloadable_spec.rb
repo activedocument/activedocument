@@ -121,11 +121,11 @@ describe Mongoid::Reloadable do
         let(:agent) { Agent.new(id: previous.id) }
 
         it 'loads the existing document' do
-          expect(agent.title).to be nil
+          expect(agent.title).to be_nil
 
           expect do
             agent.reload
-          end.not_to raise_error
+          end.to_not raise_error
 
           expect(agent.title).to eq('007')
         end
@@ -554,10 +554,10 @@ describe Mongoid::Reloadable do
 
           band.reload
 
-          expect(band.name).to be nil
-          expect(band.id).not_to be nil
+          expect(band.name).to be_nil
+          expect(band.id).to_not be_nil
           # _id changes
-          expect(band.id).not_to eq(original_id)
+          expect(band.id).to_not eq(original_id)
         end
       end
     end
@@ -596,7 +596,7 @@ describe Mongoid::Reloadable do
 
         it 'resets previous changes' do
           expect(person.title_previously_was).to be_nil
-          expect(person).not_to be_previously_persisted
+          expect(person).to_not be_previously_persisted
         end
       end
 
@@ -610,7 +610,7 @@ describe Mongoid::Reloadable do
         end
 
         it 'resets previous changes' do
-          expect(person).not_to be_previously_new_record
+          expect(person).to_not be_previously_new_record
         end
       end
     end

@@ -100,7 +100,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       end
 
       it 'does not set up validation' do
-        expect(embeds_many_class).not_to receive(:validates_associated)
+        expect(embeds_many_class).to_not receive(:validates_associated)
         association.setup!
       end
     end
@@ -898,7 +898,7 @@ describe Mongoid::Association::Embedded::EmbedsMany do
       let(:inverse_assoc) { hatch._association.inverse_association }
 
       it 'does not find the inverse' do
-        expect(inverse_assoc).to be nil
+        expect(inverse_assoc).to be_nil
       end
     end
 

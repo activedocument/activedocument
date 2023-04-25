@@ -787,7 +787,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
           })
         end
 
-        context 'when used with the $box operator ($geoWithin query) ' do
+        context 'when used with the $box operator ($geoWithin query)' do
           let(:selection) do
             query.geo_spatial(:location.within_box => [[1, 10], [2, 10]])
           end
@@ -1881,7 +1881,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
       end
 
       it 'returns the cloned selectable' do
-        expect(selection).to be_a(Mongoid::Criteria::Queryable::Selectable)
+        expect(selection).to be_a(described_class)
       end
 
       context 'when providing text search options' do

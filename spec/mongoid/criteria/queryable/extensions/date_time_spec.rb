@@ -9,7 +9,7 @@ describe DateTime do
     context 'when the date time is not utc' do
 
       let(:date) do
-        DateTime.new(2010, 1, 1, 12, 0, 0, '+01:00')
+        described_class.new(2010, 1, 1, 12, 0, 0, '+01:00')
       end
 
       let(:evolved) do
@@ -32,7 +32,7 @@ describe DateTime do
     context 'when the date time is already in utc' do
 
       let(:date) do
-        DateTime.new(2010, 1, 1, 12, 0, 0).utc
+        described_class.new(2010, 1, 1, 12, 0, 0).utc
       end
 
       let(:evolved) do
@@ -54,7 +54,7 @@ describe DateTime do
 
     context 'when the date time has millisecond precision' do
       let(:date) do
-        DateTime.parse('2012-10-22T04:05:06.942')
+        described_class.parse('2012-10-22T04:05:06.942')
       end
 
       let(:evolved) do
@@ -76,7 +76,7 @@ describe DateTime do
     context 'when provided a date time' do
 
       let(:date) do
-        DateTime.new(2010, 1, 1, 12, 0, 0, '+01:00')
+        described_class.new(2010, 1, 1, 12, 0, 0, '+01:00')
       end
 
       let(:evolved) do
@@ -98,7 +98,7 @@ describe DateTime do
 
     context 'when provided a date time with millisecond precision' do
       let(:date) do
-        DateTime.parse('2012-10-22T04:05:06.942')
+        described_class.parse('2012-10-22T04:05:06.942')
       end
 
       let(:evolved) do
@@ -119,7 +119,7 @@ describe DateTime do
       context 'when the array is composed of date times' do
 
         let(:date) do
-          DateTime.new(2010, 1, 1, 12, 0, 0, '+01:00')
+          described_class.new(2010, 1, 1, 12, 0, 0, '+01:00')
         end
 
         let(:evolved) do
@@ -214,11 +214,11 @@ describe DateTime do
       context 'when the range are dates' do
 
         let(:min) do
-          DateTime.new(2010, 1, 1, 12, 0, 0, '+01:00')
+          described_class.new(2010, 1, 1, 12, 0, 0, '+01:00')
         end
 
         let(:max) do
-          DateTime.new(2010, 1, 3, 12, 0, 0, '+01:00')
+          described_class.new(2010, 1, 3, 12, 0, 0, '+01:00')
         end
 
         let(:evolved) do

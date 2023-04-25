@@ -33,11 +33,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
   describe '#relation_complements' do
 
-    let(:expected_complements) do
-      [
-        Mongoid::Association::Referenced::HasAndBelongsToMany
-      ]
-    end
+    let(:expected_complements) { [described_class] }
 
     it 'returns the relation complements' do
       expect(association.relation_complements).to eq(expected_complements)
@@ -92,7 +88,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -106,7 +102,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
         end
 
         it 'does not set up autosave' do
-          expect(Mongoid::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
+          expect(Mongoid::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
           association.setup!
         end
       end
@@ -141,7 +137,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       end
 
       it 'does not set up validation' do
-        expect(has_many_left_class).not_to receive(:validates_associated)
+        expect(has_many_left_class).to_not receive(:validates_associated)
         association.setup!
       end
     end
@@ -306,7 +302,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
       context 'when the dependent option is not provided' do
 
         it 'does not set up the dependency' do
-          expect(Mongoid::Association::Depending).not_to receive(:define_dependency!)
+          expect(Mongoid::Association::Depending).to_not receive(:define_dependency!)
           association.setup!
         end
       end
@@ -1065,6 +1061,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
     context 'when using a model that uses the class_name option' do
       let(:inverse_foreign_key) { HabtmmSchool.relations[:students].inverse_foreign_key }
+
       it 'gets the correct inverse foreign key' do
         expect(inverse_foreign_key).to eq('school_ids')
       end
@@ -1080,6 +1077,8 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
 
   context 'when adding an object to the association' do
     let!(:start_time) { Timecop.freeze(Time.at(Time.now.to_i)) }
+    let!(:school) { HabtmmSchool.create! }
+    let!(:student) { HabtmmStudent.create! }
 
     let(:update_time) do
       Timecop.freeze(Time.at(Time.now.to_i) + 2)
@@ -1088,9 +1087,6 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany do
     after do
       Timecop.return
     end
-
-    let!(:school) { HabtmmSchool.create! }
-    let!(:student) { HabtmmStudent.create! }
 
     before do
       update_time

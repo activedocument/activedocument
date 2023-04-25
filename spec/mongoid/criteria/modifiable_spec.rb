@@ -715,7 +715,7 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           it 'does not create a document with the query operators' do
-            expect(document.attributes.keys).not_to include('genres')
+            expect(document.attributes.keys).to_not include('genres')
           end
         end
 
@@ -765,7 +765,7 @@ describe Mongoid::Criteria::Modifiable do
           end
 
           it 'does not create a document with the query operators' do
-            expect(document.attributes.keys).not_to include('producers')
+            expect(document.attributes.keys).to_not include('producers')
           end
 
           it 'applies the attribute to the new embedded document' do
@@ -1801,7 +1801,7 @@ describe Mongoid::Criteria::Modifiable do
 
             it 'creates a new document' do
               person
-              expect(found_person.id).not_to eq(person.id)
+              expect(found_person.id).to_not eq(person.id)
               expect(found_person.id > person.id).to be true
             end
           end

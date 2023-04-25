@@ -48,7 +48,7 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
     context 'when the document is not bindable' do
 
       it 'does nothing' do
-        expect(person.posts).to receive(:<<).never
+        expect(person.posts).to_not receive(:<<)
         binding.bind_one(post)
       end
     end
@@ -64,8 +64,8 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
 
       before do
         binding.bind_one(target.first)
-        expect(person).to receive(:delete).never
-        expect(post).to receive(:delete).never
+        expect(person).to_not receive(:delete)
+        expect(post).to_not receive(:delete)
         binding.unbind_one(target.first)
       end
 
@@ -81,7 +81,7 @@ describe Mongoid::Association::Referenced::HasMany::Binding do
     context 'when the documents are not unbindable' do
 
       it 'does nothing' do
-        expect(person).to receive(:posts=).never
+        expect(person).to_not receive(:posts=)
         binding.unbind_one(target.first)
       end
     end

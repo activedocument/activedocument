@@ -6,8 +6,8 @@ module InterceptableSpec
       @calls = []
     end
 
-    def record_call(cls, cb)
-      @calls << [cls, cb]
+    def record_call(klass, callback)
+      @calls << [klass, callback]
     end
 
     attr_reader :calls
@@ -17,10 +17,9 @@ module InterceptableSpec
     extend ActiveSupport::Concern
 
     included do
-      %i[
-        validation save create update
-      ].each do |what|
-        %i[before after].each do |whn|
+      whens = %i[before after]
+      %i[validation save create update].each do |what|
+        whens.each do |whn|
           send("#{whn}_#{what}", "#{whn}_#{what}_stub".to_sym)
           define_method("#{whn}_#{what}_stub") do
             callback_registry&.record_call(self.class, "#{whn}_#{what}".to_sym)

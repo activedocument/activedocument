@@ -38,7 +38,7 @@ describe Mongoid::Extensions::Float do
 
           context 'when the value is small' do
 
-            it 'it returns the float' do
+            it 'returns the float' do
               expect(Float.send(method, 3)).to eq(3)
             end
 
@@ -134,7 +134,7 @@ describe Mongoid::Extensions::Float do
   describe '#numeric?' do
 
     it 'returns true' do
-      expect(number.numeric?).to eq(true)
+      expect(number.numeric?).to be(true)
     end
   end
 end

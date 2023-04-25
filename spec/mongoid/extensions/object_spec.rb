@@ -275,7 +275,7 @@ describe Mongoid::Extensions::Object do
   describe '#numeric?' do
 
     it 'returns false' do
-      expect(object.numeric?).to eq(false)
+      expect(object.numeric?).to be(false)
     end
   end
 

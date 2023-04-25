@@ -12,6 +12,9 @@ module Mongoid
 
       extend self
 
+      # @api private
+      DOLLAR_REGEX_OPTIONS = %w[$regex $options].freeze
+
       # Returns whether a value satisfies a condition.
       #
       # @param [ true | false ] exists Whether the value exists.
@@ -26,7 +29,7 @@ module Mongoid
           condition.all? do |k, cond_v|
             k = k.to_s
             if k.start_with?('$')
-              if %w[$regex $options].include?(k)
+              if DOLLAR_REGEX_OPTIONS.include?(k)
                 unless condition.key?('$regex')
                   raise Errors::InvalidQuery.new("$regex is required if $options is given: #{Errors::InvalidQuery.truncate_expr(condition)}")
                 end

@@ -39,27 +39,27 @@ describe Mongoid::Errors::MongoidError do
   describe '#compose_message' do
 
     it 'sets ivar problem' do
-      expect(error.problem).to be
+      expect(error.problem).to_not be_nil
     end
 
     it 'sets ivar summary' do
-      expect(error.summary).to be
+      expect(error.summary).to_not be_nil
     end
 
     it 'sets ivar resolution' do
-      expect(error.resolution).to be
+      expect(error.resolution).to_not be_nil
     end
 
     it 'sets ivar problem_title' do
-      expect(error.instance_variable_get(:@problem_title)).to be
+      expect(error.instance_variable_get(:@problem_title)).to_not be_nil
     end
 
     it 'sets ivar summary_title' do
-      expect(error.instance_variable_get(:@summary_title)).to be
+      expect(error.instance_variable_get(:@summary_title)).to_not be_nil
     end
 
     it 'sets ivar resolution_title' do
-      expect(error.instance_variable_get(:@resolution_title)).to be
+      expect(error.instance_variable_get(:@resolution_title)).to_not be_nil
     end
   end
 

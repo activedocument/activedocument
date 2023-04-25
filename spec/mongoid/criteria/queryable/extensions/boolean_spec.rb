@@ -11,14 +11,14 @@ describe Mongoid::Boolean do
       context 'when provided true' do
 
         it 'returns true' do
-          expect(described_class.evolve(true)).to eq(true)
+          expect(described_class.evolve(true)).to be(true)
         end
       end
 
       context 'when provided false' do
 
         it 'returns false' do
-          expect(described_class.evolve(false)).to eq(false)
+          expect(described_class.evolve(false)).to be(false)
         end
       end
     end
@@ -28,84 +28,84 @@ describe Mongoid::Boolean do
       context 'when provided true' do
 
         it 'returns true' do
-          expect(described_class.evolve('true')).to eq(true)
+          expect(described_class.evolve('true')).to be(true)
         end
       end
 
       context 'when provided t' do
 
         it 'returns true' do
-          expect(described_class.evolve('t')).to eq(true)
+          expect(described_class.evolve('t')).to be(true)
         end
       end
 
       context 'when provided 1' do
 
         it 'returns true' do
-          expect(described_class.evolve('1')).to eq(true)
+          expect(described_class.evolve('1')).to be(true)
         end
       end
 
       context 'when provided 1.0' do
 
         it 'returns true' do
-          expect(described_class.evolve('1.0')).to eq(true)
+          expect(described_class.evolve('1.0')).to be(true)
         end
       end
 
       context 'when provided yes' do
 
         it 'returns true' do
-          expect(described_class.evolve('yes')).to eq(true)
+          expect(described_class.evolve('yes')).to be(true)
         end
       end
 
       context 'when provided y' do
 
         it 'returns true' do
-          expect(described_class.evolve('y')).to eq(true)
+          expect(described_class.evolve('y')).to be(true)
         end
       end
 
       context 'when provided false' do
 
         it 'returns false' do
-          expect(described_class.evolve('false')).to eq(false)
+          expect(described_class.evolve('false')).to be(false)
         end
       end
 
       context 'when provided f' do
 
         it 'returns false' do
-          expect(described_class.evolve('f')).to eq(false)
+          expect(described_class.evolve('f')).to be(false)
         end
       end
 
       context 'when provided 0' do
 
         it 'returns false' do
-          expect(described_class.evolve('0')).to eq(false)
+          expect(described_class.evolve('0')).to be(false)
         end
       end
 
       context 'when provided 0.0' do
 
         it 'returns false' do
-          expect(described_class.evolve('0.0')).to eq(false)
+          expect(described_class.evolve('0.0')).to be(false)
         end
       end
 
       context 'when provided no' do
 
         it 'returns false' do
-          expect(described_class.evolve('no')).to eq(false)
+          expect(described_class.evolve('no')).to be(false)
         end
       end
 
       context 'when provided n' do
 
         it 'returns false' do
-          expect(described_class.evolve('n')).to eq(false)
+          expect(described_class.evolve('n')).to be(false)
         end
       end
     end

@@ -76,7 +76,7 @@ module Mongoid
 
         field = database_field_name(field)
 
-        write_attribute(:updated_at, now) if respond_to?('updated_at=')
+        write_attribute(:updated_at, now) if respond_to?(:updated_at=)
         write_attribute(field, now) if field
 
         touches = _extract_touches_from_atomic_sets(field) || {}

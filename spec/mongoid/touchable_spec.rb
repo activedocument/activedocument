@@ -21,7 +21,7 @@ describe Mongoid::Touchable do
 
         updatable.touch
         updated_at = updatable.updated_at
-        expect(updated_at).not_to be_nil
+        expect(updated_at).to_not be_nil
 
         updatable.touch
         expect(updatable.updated_at).to be > updated_at
@@ -29,7 +29,7 @@ describe Mongoid::Touchable do
 
       it 'does not leave model in changed state' do
         updatable.touch
-        expect(updatable).not_to be_changed
+        expect(updatable).to_not be_changed
       end
     end
 
@@ -517,7 +517,7 @@ describe Mongoid::Touchable do
         it "updates the parent's updated at" do
           expect do
             agent.update!(number: '2')
-          end.to change { agency.updated_at }
+          end.to change(agency, :updated_at)
         end
       end
 
@@ -559,7 +559,7 @@ describe Mongoid::Touchable do
 
         it 'does not persist other attribute changes' do
           expect(band.name).to eq('Nocebo')
-          expect(band.reload.name).not_to eq('Nocebo')
+          expect(band.reload.name).to_not eq('Nocebo')
         end
       end
 
@@ -571,7 +571,7 @@ describe Mongoid::Touchable do
 
         it 'does not persist other attribute changes' do
           expect(band.name).to eq('Nocebo')
-          expect(band.reload.name).not_to eq('Nocebo')
+          expect(band.reload.name).to_not eq('Nocebo')
         end
       end
     end
@@ -606,7 +606,7 @@ describe Mongoid::Touchable do
         end
 
         it 'the parent is not nil' do
-          expect(floor.building).to_not be nil
+          expect(floor.building).to_not be_nil
         end
 
         it "updates the parent's timestamp" do
@@ -643,7 +643,7 @@ describe Mongoid::Touchable do
         end
 
         it 'the parent is not nil' do
-          expect(floor.building).to_not be nil
+          expect(floor.building).to_not be_nil
         end
 
         it "updates the child's timestamp" do
@@ -1376,8 +1376,8 @@ describe Mongoid::Touchable do
 
     it 'calls touch callbacks on parent' do
       parent.touch
-      expect(parent.before_touch_called).to eq(true)
-      expect(parent.after_touch_called).to eq(true)
+      expect(parent.before_touch_called).to be(true)
+      expect(parent.after_touch_called).to be(true)
     end
 
     context 'when touch is calles on a child' do
@@ -1386,13 +1386,13 @@ describe Mongoid::Touchable do
       end
 
       it 'calls touch callbacks on parent' do
-        expect(parent.before_touch_called).to eq(true)
-        expect(parent.after_touch_called).to eq(true)
+        expect(parent.before_touch_called).to be(true)
+        expect(parent.after_touch_called).to be(true)
       end
 
       it 'calls touch callbacks on child' do
-        expect(child.before_touch_called).to eq(true)
-        expect(child.after_touch_called).to eq(true)
+        expect(child.before_touch_called).to be(true)
+        expect(child.after_touch_called).to be(true)
       end
     end
   end

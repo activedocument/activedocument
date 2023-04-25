@@ -243,7 +243,7 @@ describe 'Dots and Dollars' do
       it 'has the fields populated correctly' do
         expect(from_db.attributes['first.last']).to eq('Neil.Shweky')
         expect(from_db.attributes['$_amount']).to eq(0)
-        expect(from_db.attributes['$a.b']).to eq(true)
+        expect(from_db.attributes['$a.b']).to be(true)
       end
     end
   end
@@ -257,7 +257,7 @@ describe 'Dots and Dollars' do
       end
 
       it 'does not work' do
-        expect(queried).to be nil
+        expect(queried).to be_nil
       end
     end
 

@@ -146,7 +146,7 @@ module Mongoid
     private
 
     def set_options!(opts)
-      @options ||= opts.each.reduce({}) do |options, (key, value)|
+      @options ||= opts.each.reduce({}) do |options, (key, value)| # rubocop:disable Naming/MemoizedInstanceVariableName
         unless VALID_OPTIONS.include?(key.to_sym)
           raise Errors::InvalidPersistenceOption.new(key.to_sym, VALID_OPTIONS)
         end

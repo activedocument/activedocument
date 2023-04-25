@@ -155,12 +155,12 @@ describe Mongoid::Persistable::Settable do
           Phone.new(number: '666-666-6666')
         end
 
-        it 'should persist changes of embeds_one field' do
+        it 'persists changes of embeds_one field' do
           person.set(pet: pet)
           expect(person.reload.pet).to eq(pet)
         end
 
-        it 'should persist changes of embeds_many fields' do
+        it 'persists changes of embeds_many fields' do
           person.set({ phone_numbers: [home_phone, office_phone].map(&:as_document) })
           expect(person.reload.phone_numbers).to eq([home_phone, office_phone])
         end
@@ -224,7 +224,7 @@ describe Mongoid::Persistable::Settable do
       Account.create!(name: 'Foobar')
     end
 
-    it 'raises exception for an unknown attribute ' do
+    it 'raises exception for an unknown attribute' do
       expect do
         account.set(somethingnew: 'somethingnew')
       end.to raise_error(Mongoid::Errors::UnknownAttribute)
@@ -574,7 +574,7 @@ describe Mongoid::Persistable::Settable do
           agent.set(number: '008')
         end.to raise_error(Mongoid::Errors::AttributeNotLoaded, /Attempted to access attribute 'number' on Agent which was not loaded/)
 
-        expect(agent.reload.read_attribute(:number)).to be nil
+        expect(agent.reload.read_attribute(:number)).to be_nil
       end
     end
   end

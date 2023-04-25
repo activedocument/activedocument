@@ -35,7 +35,7 @@ describe Symbol do
     end
 
     it 'sets the transform block' do
-      expect(fubar.block).to be
+      expect(fubar.block).to_not be_nil
     end
   end
 

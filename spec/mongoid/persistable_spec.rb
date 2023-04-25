@@ -274,7 +274,7 @@ describe Mongoid::Persistable do
       end
     end
 
-    context 'when providing no block ' do
+    context 'when providing no block' do
 
       it 'returns true' do
         expect(document.atomically).to be true
