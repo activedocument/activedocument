@@ -2797,13 +2797,13 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     context 'when calling existing method' do
       it 'does not raise an error' do
-        expect { person.addresses.method(:length) }.not_to raise_error
+        expect { person.addresses.method(:length) }.to_not raise_error
       end
     end
 
     context 'when calling criteria method without arguments' do
       it 'does not raise an error' do
-        expect { person.addresses.method(:california) }.not_to raise_error
+        expect { person.addresses.method(:california) }.to_not raise_error
       end
     end
 
@@ -2815,9 +2815,9 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
     context 'when chaining criteria' do
       let(:addresses) { person.addresses.california.where(:street.in => ['Market']) }
-  
+
       it 'does not raise an error for existing method' do
-        expect { addresses.method(:any_of) }.not_to raise_error
+        expect { addresses.method(:any_of) }.to_not raise_error
       end
 
       it 'raises a NameError for nonexistent method' do

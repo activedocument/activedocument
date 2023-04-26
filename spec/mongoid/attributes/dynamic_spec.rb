@@ -149,4 +149,32 @@ describe Mongoid::Attributes::Dynamic do
 
     it_behaves_like 'dynamic field'
   end
+
+  describe '#respond_to_missing?' do
+    let(:attr_name) { 'dynamic_attr' }
+
+    context 'when attribute exists' do
+      let(:bar) { Bar.new(attr_name => 'value') }
+
+      it 'responds to reader method' do
+        expect { bar.method(attr_name) }.to_not raise_error
+      end
+
+      it 'responds to writer method' do
+        expect { bar.method("#{attr_name}=") }.to_not raise_error
+      end
+    end
+
+    context 'when attribute does not exist' do
+      let(:bar) { Bar.new }
+
+      it 'does not respond to reader method' do
+        expect { bar.method(attr_name) }.to raise_error(NameError)
+      end
+
+      it 'does not respond to writer method' do
+        expect { bar.method("#{attr_name}=") }.to raise_error(NameError)
+      end
+    end
+  end
 end
