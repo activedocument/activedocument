@@ -2120,15 +2120,15 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
       described_class.new(Post.where(person_id: person.id))
     end
 
-    context 'when method is present in entries' do
+    context 'when can respond' do
       it 'returns true' do
-        expect(enumerable.respond_to?(:size)).to be true
+        expect { instance.method(:size) }.to_not raise_error
       end
     end
 
-    context 'when method is not present in entries' do
+    context 'when cant respond' do
       it 'returns false' do
-        expect(enumerable.respond_to?(:non_existent_method)).to be false
+        expect { instance.method(:nonexistent_method) }.to raise_error(NameError)
       end
     end
   end

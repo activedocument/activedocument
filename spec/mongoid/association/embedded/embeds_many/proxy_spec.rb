@@ -2794,35 +2794,34 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
 
   describe '#respond_to_missing?' do
     let!(:person) { Person.create! }
-    let(:addresses) { person.addresses }
 
-    context 'when target responds to the method' do
-      it 'returns true' do
-        expect(addresses.respond_to?(:length)).to be true
+    context 'when calling existing method' do
+      it 'does not raise an error' do
+        expect { person.addresses.method(:length) }.not_to raise_error
       end
     end
 
-    context 'when criteria responds to the method' do
-      it 'returns true' do
-        expect(addresses.respond_to?(:california)).to be true
+    context 'when calling criteria method without arguments' do
+      it 'does not raise an error' do
+        expect { person.addresses.method(:california) }.not_to raise_error
       end
     end
 
-    context 'when neither target nor criteria respond to the method' do
-      it 'returns false' do
-        expect(addresses.respond_to?(:nonexistent_method)).to be false
+    context 'when calling a nonexistent method' do
+      it 'raises a NameError' do
+        expect { person.addresses.method(:nonexistent_method) }.to raise_error(NameError)
       end
     end
 
-    context 'when chaining criteria and checking if addresses responds to method' do
+    context 'when chaining criteria' do
       let(:addresses) { person.addresses.california.where(:street.in => ['Market']) }
-
-      it 'returns true for existing criteria method' do
-        expect(addresses.respond_to?(:any_of)).to be true
+  
+      it 'does not raise an error for existing method' do
+        expect { addresses.method(:any_of) }.not_to raise_error
       end
 
-      it 'returns false for non-existing criteria method' do
-        expect(addresses.respond_to?(:nonexistent_method)).to be false
+      it 'raises a NameError for nonexistent method' do
+        expect { addresses.method(:nonexistent_method) }.to raise_error(NameError)
       end
     end
   end
