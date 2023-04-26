@@ -2110,6 +2110,29 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
     end
   end
 
+  describe '#respond_to_missing?' do
+
+    let!(:person) do
+      Person.new
+    end
+
+    let(:enumerable) do
+      described_class.new(Post.where(person_id: person.id))
+    end
+
+    context 'when can respond' do
+      it 'returns true' do
+        expect(enumerable.respond_to?(:size)).to be true
+      end
+    end
+
+    context 'when cant respond' do
+      it 'returns false' do
+        expect(enumerable.respond_to?(:nonexistent_method)).to be false
+      end
+    end
+  end
+
   describe 'setting the same parent object on enumerated children objects' do
 
     let(:person) do

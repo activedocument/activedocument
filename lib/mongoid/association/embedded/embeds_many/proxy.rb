@@ -453,6 +453,16 @@ module Mongoid
             end
           end
 
+          # Check if the method can be handled by method_missing.
+          #
+          # @param [ Symbol | String ] name The name of the method.
+          # @param [ true | false ] _include_private Whether to include private methods.
+          #
+          # @return [ true | false ] True if method can be handled, false otherwise.
+          def respond_to_missing?(name, _include_private = false)
+            _target.respond_to?(name) || criteria.respond_to?(name)
+          end
+
           # Are we able to persist this association?
           #
           # @example Can we persist the association?

@@ -502,14 +502,24 @@ module Mongoid
     # @return [ Object ] The result of the method call.
     ruby2_keywords def method_missing(name, *args, &block)
       if klass.respond_to?(name)
-        klass.send(:with_scope, self) do
-          klass.send(name, *args, &block)
+        klass.public_send(:with_scope, self) do
+          klass.public_send(name, *args, &block)
         end
       elsif CHECK.respond_to?(name)
-        entries.send(name, *args, &block)
+        entries.public_send(name, *args, &block)
       else
         super
       end
+    end
+
+    # Check if the method can be handled by method_missing.
+    #
+    # @param [ Symbol | String ] name The name of the method.
+    # @param [ true | false ] _include_private Whether to include private methods.
+    #
+    # @return [ true | false ] True if method can be handled, false otherwise.
+    def respond_to_missing?(name, _include_private = false)
+      klass.respond_to?(name) || CHECK.respond_to?(name)
     end
 
     # For models where inheritance is at play we need to add the type

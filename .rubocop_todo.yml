@@ -810,15 +810,6 @@ Rails/TimeZoneAssignment:
     - 'spec/support/macros.rb'
     - 'spec/support/shared/time.rb'
 
-# Offense count: 5
-Style/MissingRespondToMissing:
-  Exclude:
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/attributes/dynamic.rb'
-    - 'lib/mongoid/criteria.rb'
-
 # Offense count: 6
 Style/MultilineBlockChain:
   Exclude:
