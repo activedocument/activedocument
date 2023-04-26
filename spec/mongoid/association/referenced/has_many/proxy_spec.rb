@@ -3276,22 +3276,22 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     let(:posts) { person.posts }
 
     context 'when target or criteria respond to the method' do
-      it 'returns true when target responds to the method' do
-        expect(posts.respond_to?(:count)).to be true
+      it 'returns a method object when target responds to the method' do
+        expect { posts.method(:count) }.to_not raise_error
       end
 
-      it 'returns true when criteria responds to the method' do
-        expect(posts.respond_to?(:where)).to be true
+      it 'returns a method object when criteria responds to the method' do
+        expect { posts.method(:where) }.to_not raise_error
       end
 
-      it 'returns true when criteria class method is defined' do
-        expect(posts.respond_to?(:posting)).to be true
+      it 'returns a method object when criteria class method is defined' do
+        expect { posts.method(:posting) }.to_not raise_error
       end
     end
 
     context 'when neither target nor criteria respond to the method' do
-      it 'returns false' do
-        expect(posts.respond_to?(:non_existent_method)).to be false
+      it 'raises a NameError' do
+        expect { posts.method(:non_existent_method) }.to raise_error(NameError)
       end
     end
   end
