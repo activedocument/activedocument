@@ -3403,6 +3403,38 @@ describe Mongoid::Criteria do
     end
   end
 
+  describe '#respond_to_missing?' do
+
+    let(:criteria) do
+      Person.all
+    end
+
+    context 'when the method exists on the class' do
+      it 'returns true' do
+        expect(criteria.respond_to?(:minor)).to be true
+        expect(criteria.respond_to?(:older_than)).to be true
+      end
+    end
+
+    context 'when the method exists on the criteria' do
+      it 'returns false' do
+        expect(criteria.respond_to?(:to_criteria)).to be true
+      end
+    end
+
+    context 'when the method exists on array' do
+      it 'returns true' do
+        expect(criteria.respond_to?(:at)).to be true
+      end
+    end
+
+    context 'when the method does not exist' do
+      it 'returns false' do
+        expect(criteria.respond_to?(:to_hash)).to be false
+      end
+    end
+  end
+
   describe '#uniq' do
 
     let!(:band_one) do

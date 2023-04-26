@@ -2122,13 +2122,13 @@ describe Mongoid::Association::Referenced::HasMany::Enumerable do
 
     context 'when can respond' do
       it 'returns true' do
-        expect { enumerable.method(:size) }.to_not raise_error
+        expect(enumerable.respond_to?(:size)).to be true
       end
     end
 
     context 'when cant respond' do
       it 'returns false' do
-        expect { enumerable.method(:nonexistent_method) }.to raise_error(NameError)
+        expect(enumerable.respond_to?(:nonexistent_method)).to be false
       end
     end
   end

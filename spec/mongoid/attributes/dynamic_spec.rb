@@ -157,11 +157,11 @@ describe Mongoid::Attributes::Dynamic do
       let(:bar) { Bar.new(attr_name => 'value') }
 
       it 'responds to reader method' do
-        expect { bar.method(attr_name) }.to_not raise_error
+        expect(bar.respond_to?(attr_name)).to be true
       end
 
       it 'responds to writer method' do
-        expect { bar.method("#{attr_name}=") }.to_not raise_error
+        expect(bar.respond_to?("#{attr_name}=")).to be true
       end
     end
 
@@ -169,11 +169,11 @@ describe Mongoid::Attributes::Dynamic do
       let(:bar) { Bar.new }
 
       it 'does not respond to reader method' do
-        expect { bar.method(attr_name) }.to raise_error(NameError)
+        expect(bar.respond_to?(attr_name)).to be false
       end
 
       it 'does not respond to writer method' do
-        expect { bar.method("#{attr_name}=") }.to raise_error(NameError)
+        expect(bar.respond_to?("#{attr_name}=")).to be false
       end
     end
   end
