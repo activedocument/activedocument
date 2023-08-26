@@ -19,8 +19,8 @@ module Mongoid
         def merge!(other)
           other.each_pair do |key, value|
             if value.is_a?(Hash) && self[key.to_s].is_a?(Hash)
-              value = self[key.to_s].merge(value) do |k, old_val, new_val|
-                case k
+              value = self[key.to_s].merge(value) do |inner_key, old_val, new_val|
+                case inner_key.to_s
                 when '$in'
                   new_val & old_val
                 when '$nin'

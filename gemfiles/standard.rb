@@ -16,7 +16,8 @@ def standard_dependencies
   end
 
   group :test do
-    gem 'rspec', '~> 3.10'
+    gem 'rspec', '~> 3.12'
+    gem 'activejob'
     gem 'timecop'
     gem 'rspec-retry'
     gem 'benchmark-ips'

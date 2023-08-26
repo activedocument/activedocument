@@ -2,6 +2,26 @@
 
 require 'spec_helper'
 
+module RefHasManySpec
+  module OverrideInitialize
+    class Parent
+      include Mongoid::Document
+      has_many :children, inverse_of: :parent
+    end
+
+    class Child
+      include Mongoid::Document
+      belongs_to :parent
+      field :name, type: String
+
+      def initialize(*args)
+        super
+        self.name ||= 'default'
+      end
+    end
+  end
+end
+
 describe Mongoid::Association::Referenced::HasMany::Proxy do
   config_override :raise_not_found_error, true
 
@@ -15,19 +35,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     Person.has_many :drugs, validate: false
   end
 
-  %i[<< push].each do |method|
-
+  %i[ << push ].each do |method|
     describe "##{method}" do
-
       context 'when providing the base class in child constructor' do
+        let(:person) { Person.create! }
 
-        let(:person) do
-          Person.create!
-        end
-
-        let!(:post) do
-          person.posts.send(method, Post.new(person: person))
-        end
+        before { person.posts.send(method, Post.new(person: person)) }
 
         it 'only adds the association once' do
           expect(person.posts.size).to eq(1)
@@ -39,22 +52,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the associations are not polymorphic' do
-
         context 'when the parent is a new record' do
-
-          let(:person) do
-            Person.new
-          end
+          let(:person) { Person.new }
 
           context 'when the child is new' do
-
-            let(:post) do
-              Post.new
-            end
-
-            let!(:added) do
-              person.posts.send(method, post)
-            end
+            let(:post) { Post.new }
+            let!(:added) { person.posts.send(method, post) }
 
             it 'sets the foreign key on the association' do
               expect(post.person_id).to eq(person.id)
@@ -82,10 +85,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           context 'when the child is persisted' do
-
-            let(:post) do
-              Post.create!
-            end
+            let(:post) { Post.create! }
 
             before do
               person.posts.send(method, post)
@@ -112,7 +112,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             end
 
             context 'when subsequently saving the parent' do
-
               before do
                 person.save!
                 post.save!
@@ -126,11 +125,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when appending in a parent create block' do
-
-          let!(:post) do
-            Post.create!(title: 'testing')
-          end
-
+          let!(:post) { Post.create!(title: 'testing') }
           let!(:person) do
             Person.create! do |doc|
               doc.posts << post
@@ -138,7 +133,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           it 'adds the documents to the association' do
-            expect(person.posts).to eq([post])
+            expect(person.posts).to eq([ post ])
           end
 
           it 'sets the foreign key on the inverse association' do
@@ -154,19 +149,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           it 'persists the link' do
-            expect(person.reload.posts).to eq([post])
+            expect(person.reload.posts).to eq([ post ])
           end
         end
 
         context 'when the parent is not a new record' do
-
-          let(:person) do
-            Person.create!
-          end
-
-          let(:post) do
-            Post.new
-          end
+          let(:person) { Person.create! }
+          let(:post) { Post.new }
 
           before do
             person.posts.send(method, post)
@@ -202,14 +191,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           context 'when the related item has embedded associations' do
-
-            let!(:user) do
-              User.create!
-            end
+            let!(:user) { User.create! }
 
             before do
-              p = Post.create!(roles: [Role.create!])
-              user.posts = [p]
+              p = Post.create!(roles: [ Role.create! ])
+              user.posts = [ p ]
               user.save!
             end
 
@@ -220,7 +206,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           context 'when saving another post' do
-
             before do
               person.posts.send(method, Post.new)
             end
@@ -231,10 +216,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           context 'when documents already exist on the association' do
-
-            let(:post_two) do
-              Post.new(title: 'Test')
-            end
+            let(:post_two) { Post.new(title: 'Test') }
 
             before do
               person.posts.send(method, post_two)
@@ -276,57 +258,35 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when.adding to the association' do
-
-        let(:person) do
-          Person.create!
-        end
+        let(:person) { Person.create! }
 
         context 'when the operation succeeds' do
-
-          let(:post) do
-            Post.new
-          end
+          let(:post) { Post.new }
 
           before do
             person.posts.send(method, post)
           end
 
           it 'adds the document to the association' do
-            expect(person.posts).to eq([post])
+            expect(person.posts).to eq([ post ])
           end
         end
 
         context 'when the operation fails' do
-
-          let!(:existing) do
-            Post.create!
-          end
-
-          let(:post) do
-            Post.new do |doc|
-              doc._id = existing.id
-            end
-          end
+          let!(:existing) { Post.create! }
+          let(:post) { Post.new { |doc| doc._id = existing.id } }
 
           it 'raises an error' do
-            expect do
-              person.posts.send(method, post)
-            end.to raise_error(Mongo::Error::OperationFailure)
+            expect { person.posts.send(method, post) }
+              .to raise_error(Mongo::Error::OperationFailure)
           end
         end
       end
 
       context 'when the associations are polymorphic' do
-
         context 'when the parent is a new record' do
-
-          let(:movie) do
-            Movie.new
-          end
-
-          let(:rating) do
-            Rating.new
-          end
+          let(:movie) { Movie.new }
+          let(:rating) { Rating.new }
 
           before do
             movie.ratings.send(method, rating)
@@ -350,14 +310,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the parent is not a new record' do
-
-          let(:movie) do
-            Movie.create!
-          end
-
-          let(:rating) do
-            Rating.new
-          end
+          let(:movie) { Movie.create! }
+          let(:rating) { Rating.new }
 
           before do
             movie.ratings.send(method, rating)
@@ -384,25 +338,17 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#=' do
-
     context 'when the association is not polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:person) do
-          Person.new
-        end
-
-        let(:post) do
-          Post.new
-        end
+        let(:person) { Person.new }
+        let(:post) { Post.new }
 
         before do
-          person.posts = [post]
+          person.posts = [ post ]
         end
 
         it 'sets the target of the association' do
-          expect(person.posts._target).to eq([post])
+          expect(person.posts._target).to eq([ post ])
         end
 
         it 'sets the foreign key on the association' do
@@ -414,26 +360,20 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         it 'does not save the target' do
-          expect(post).to_not be_persisted
+          expect(post).not_to be_persisted
         end
       end
 
       context 'when the parent is not a new record' do
-
-        let(:person) do
-          Person.create!
-        end
-
-        let(:post) do
-          Post.new
-        end
+        let(:person) { Person.create! }
+        let(:post) { Post.new }
 
         before do
-          person.posts = [post]
+          person.posts = [ post ]
         end
 
         it 'sets the target of the association' do
-          expect(person.posts._target).to eq([post])
+          expect(person.posts._target).to eq([ post ])
         end
 
         it 'sets the foreign key of the association' do
@@ -449,52 +389,43 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when replacing the association with the same documents' do
-
           context 'when using the same in memory instance' do
-
             before do
-              person.posts = [post]
+              person.posts = [ post ]
             end
 
             it 'keeps the association intact' do
-              expect(person.posts).to eq([post])
+              expect(person.posts).to eq([ post ])
             end
 
             it 'does not delete the association' do
-              expect(person.reload.posts).to eq([post])
+              expect(person.reload.posts).to eq([ post ])
             end
           end
 
           context 'when using a new instance' do
-
-            let(:from_db) do
-              Person.find(person.id)
-            end
+            let(:from_db) { Person.find(person.id) }
 
             before do
-              from_db.posts = [post]
+              from_db.posts = [ post ]
             end
 
             it 'keeps the association intact' do
-              expect(from_db.posts).to eq([post])
+              expect(from_db.posts).to eq([ post ])
             end
 
             it 'does not delete the association' do
-              expect(from_db.reload.posts).to eq([post])
+              expect(from_db.reload.posts).to eq([ post ])
             end
           end
         end
 
         context 'when replacing the with a combination of old and new docs' do
-
-          let(:new_post) do
-            Post.create!(title: 'new post')
-          end
+          let(:new_post) { Post.create!(title: 'new post') }
 
           context 'when using the same in memory instance' do
-
             before do
-              person.posts = [post, new_post]
+              person.posts = [ post, new_post ]
             end
 
             it 'keeps the association intact' do
@@ -510,67 +441,57 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
             end
 
             it 'does not delete the association' do
-              expect(person.reload.posts).to eq([post, new_post])
+              expect(person.reload.posts).to eq([ post, new_post ])
             end
           end
 
           context 'when using a new instance' do
-
-            let(:from_db) do
-              Person.find(person.id)
-            end
+            let(:from_db) { Person.find(person.id) }
 
             before do
-              from_db.posts = [post, new_post]
+              from_db.posts = [ post, new_post ]
             end
 
             it 'keeps the association intact' do
-              expect(from_db.posts).to eq([post, new_post])
+              expect(from_db.posts).to eq([ post, new_post ])
             end
 
             it 'does not delete the association' do
-              expect(from_db.reload.posts).to eq([post, new_post])
+              expect(from_db.reload.posts).to eq([ post, new_post ])
             end
           end
         end
 
         context 'when replacing the with a combination of only new docs' do
-
-          let(:new_post) do
-            Post.create!(title: 'new post')
-          end
+          let(:new_post) { Post.create!(title: 'new post') }
 
           context 'when using the same in memory instance' do
-
             before do
-              person.posts = [new_post]
+              person.posts = [ new_post ]
             end
 
             it 'keeps the association intact' do
-              expect(person.posts).to eq([new_post])
+              expect(person.posts).to eq([ new_post ])
             end
 
             it 'does not delete the association' do
-              expect(person.reload.posts).to eq([new_post])
+              expect(person.reload.posts).to eq([ new_post ])
             end
           end
 
           context 'when using a new instance' do
-
-            let(:from_db) do
-              Person.find(person.id)
-            end
+            let(:from_db) { Person.find(person.id) }
 
             before do
-              from_db.posts = [new_post]
+              from_db.posts = [ new_post ]
             end
 
             it 'keeps the association intact' do
-              expect(from_db.posts).to eq([new_post])
+              expect(from_db.posts).to eq([ new_post ])
             end
 
             it 'does not delete the association' do
-              expect(from_db.reload.posts).to eq([new_post])
+              expect(from_db.reload.posts).to eq([ new_post ])
             end
           end
         end
@@ -578,23 +499,16 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:movie) do
-          Movie.new
-        end
-
-        let(:rating) do
-          Rating.new
-        end
+        let(:movie) { Movie.new }
+        let(:rating) { Rating.new }
 
         before do
-          movie.ratings = [rating]
+          movie.ratings = [ rating ]
         end
 
         it 'sets the target of the association' do
-          expect(movie.ratings._target).to eq([rating])
+          expect(movie.ratings._target).to eq([ rating ])
         end
 
         it 'sets the foreign key on the association' do
@@ -606,26 +520,20 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         it 'does not save the target' do
-          expect(rating).to_not be_persisted
+          expect(rating).not_to be_persisted
         end
       end
 
       context 'when the parent is not a new record' do
-
-        let(:movie) do
-          Movie.create!
-        end
-
-        let(:rating) do
-          Rating.new
-        end
+        let(:movie) { Movie.create! }
+        let(:rating) { Rating.new }
 
         before do
-          movie.ratings = [rating]
+          movie.ratings = [ rating ]
         end
 
         it 'sets the target of the association' do
-          expect(movie.ratings._target).to eq([rating])
+          expect(movie.ratings._target).to eq([ rating ])
         end
 
         it 'sets the foreign key of the association' do
@@ -644,19 +552,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#= []' do
-
     context 'when the parent is persisted' do
-
-      let(:posts) do
-        [Post.create!(title: '1'), Post.create!(title: '2')]
-      end
-
-      let(:person) do
-        Person.create!(posts: posts)
-      end
+      let(:posts) { [ Post.create!(title: '1'), Post.create!(title: '2') ] }
+      let(:person) { Person.create!(posts: posts) }
 
       context 'when the parent has multiple children' do
-
         before do
           person.posts = []
         end
@@ -673,21 +573,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#= nil' do
-
     context 'when the association is not polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:person) do
-          Person.new
-        end
-
-        let(:post) do
-          Post.new
-        end
+        let(:person) { Person.new }
+        let(:post) { Post.new }
 
         before do
-          person.posts = [post]
+          person.posts = [ post ]
           person.posts = nil
         end
 
@@ -705,19 +597,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the parent is not a new record' do
-
-        let(:person) do
-          Person.create!
-        end
+        let(:person) { Person.create! }
 
         context 'when dependent is destructive' do
-
-          let(:post) do
-            Post.new
-          end
+          let(:post) { Post.new }
 
           before do
-            person.posts = [post]
+            person.posts = [ post ]
             person.posts = nil
           end
 
@@ -739,13 +625,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when dependent is not destructive' do
-
-          let(:drug) do
-            Drug.new(name: 'Oxycodone')
-          end
+          let(:drug) { Drug.new(name: 'Oxycodone') }
 
           before do
-            person.drugs = [drug]
+            person.drugs = [ drug ]
             person.drugs = nil
           end
 
@@ -762,26 +645,19 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
           end
 
           it 'nullifies the association' do
-            expect(drug).to_not be_destroyed
+            expect(drug).not_to be_destroyed
           end
         end
       end
     end
 
     context 'when the association is polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:movie) do
-          Movie.new
-        end
-
-        let(:rating) do
-          Rating.new
-        end
+        let(:movie) { Movie.new }
+        let(:rating) { Rating.new }
 
         before do
-          movie.ratings = [rating]
+          movie.ratings = [ rating ]
           movie.ratings = nil
         end
 
@@ -799,17 +675,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the parent is not a new record' do
-
-        let(:movie) do
-          Movie.create!
-        end
-
-        let(:rating) do
-          Rating.new
-        end
+        let(:movie) { Movie.create! }
+        let(:rating) { Rating.new }
 
         before do
-          movie.ratings = [rating]
+          movie.ratings = [ rating ]
           movie.ratings = nil
         end
 
@@ -826,68 +696,53 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when dependent is nullify' do
-
           it 'does not delete the target from the database' do
-            expect(rating).to_not be_destroyed
+            expect(rating).not_to be_destroyed
           end
         end
       end
     end
   end
 
-  describe "#\{name}_ids=" do
+  describe '#\{name}_ids=' do
+    let(:person) { Person.new }
+    let(:post_one) { Post.create! }
 
-    let(:person) do
-      Person.new
-    end
-
-    let(:post_one) do
-      Post.create!
-    end
-
-    let(:post_two) do
-      Post.create!
-    end
+    let(:post_two) { Post.create! }
 
     before do
-      person.post_ids = [post_one.id, post_two.id]
+      person.post_ids = [ post_one.id, post_two.id ]
     end
 
     it 'calls setter with documents find by given ids' do
-      expect(person.posts).to eq([post_one, post_two])
+      expect(person.posts).to eq([ post_one, post_two ])
     end
   end
 
-  describe "#\{name}_ids" do
-
-    let(:posts) do
-      [Post.create!, Post.create!]
-    end
-
-    let(:person) do
-      Person.create!(posts: posts)
-    end
+  describe '#\{name}_ids' do
+    let(:posts) { [ Post.create!, Post.create! ] }
+    let(:person) { Person.create!(posts: posts) }
 
     it 'returns ids of documents that are in the association' do
       expect(person.post_ids).to eq(posts.map(&:id))
     end
   end
 
-  %i[build new].each do |method|
-
+  %i[ build new ].each do |method|
     describe "##{method}" do
+      context 'when model has #initialize' do
+        let(:parent) { RefHasManySpec::OverrideInitialize::Parent.create }
+        let(:child)  { parent.children.send(method) }
+
+        it 'calls #initialize' do
+          expect(child.name).to be == 'default'
+        end
+      end
 
       context 'when the association is not polymorphic' do
-
         context 'when the parent is a new record' do
-
-          let(:person) do
-            Person.new(title: 'sir')
-          end
-
-          let!(:post) do
-            person.posts.send(method, title: '$$$')
-          end
+          let(:person) { Person.new(title: 'sir') }
+          let!(:post) { person.posts.send(method, title: '$$$') }
 
           it 'sets the foreign key on the association' do
             expect(post.person_id).to eq(person.id)
@@ -919,14 +774,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the parent is not a new record' do
-
-          let(:person) do
-            Person.create!
-          end
-
-          let!(:post) do
-            person.posts.send(method, text: 'Testing')
-          end
+          let(:person) { Person.create! }
+          let!(:post) { person.posts.send(method, text: 'Testing') }
 
           it 'sets the foreign key on the association' do
             expect(post.person_id).to eq(person.id)
@@ -951,16 +800,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the association is polymorphic' do
-
         context 'when the parent is a subclass' do
-
-          let(:video_game) do
-            VideoGame.create!
-          end
-
-          let(:rating) do
-            video_game.ratings.build
-          end
+          let(:video_game) { VideoGame.create! }
+          let(:rating) { video_game.ratings.build }
 
           it 'sets the parent on the child' do
             expect(rating.ratable).to eq(video_game)
@@ -972,14 +814,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the parent is a new record' do
-
-          let(:movie) do
-            Movie.new
-          end
-
-          let!(:rating) do
-            movie.ratings.send(method, value: 3)
-          end
+          let(:movie) { Movie.new }
+          let!(:rating) { movie.ratings.send(method, value: 3) }
 
           it 'sets the foreign key on the association' do
             expect(rating.ratable_id).to eq(movie.id)
@@ -1007,14 +843,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the parent is not a new record' do
-
-          let(:movie) do
-            Movie.create!
-          end
-
-          let!(:rating) do
-            movie.ratings.send(method, value: 4)
-          end
+          let(:movie) { Movie.create! }
+          let!(:rating) { movie.ratings.send(method, value: 4) }
 
           it 'sets the foreign key on the association' do
             expect(rating.ratable_id).to eq(movie.id)
@@ -1041,24 +871,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#clear' do
-
     context 'when the association is not polymorphic' do
-
       context 'when the parent has been persisted' do
-
-        let!(:person) do
-          Person.create!
-        end
+        let!(:person) { Person.create! }
 
         context 'when the children are persisted' do
-
-          let!(:post) do
-            person.posts.create!(title: 'Testing')
-          end
-
-          let!(:association) do
-            person.posts.clear
-          end
+          let!(:post) { person.posts.create!(title: 'Testing') }
+          let!(:association) { person.posts.clear }
 
           it 'clears out the association' do
             expect(person.posts).to be_empty
@@ -1078,12 +897,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the children are not persisted' do
-
-          let!(:post) do
+          before do
             person.posts.build(title: 'Testing')
-          end
-
-          let!(:association) do
             person.posts.clear
           end
 
@@ -1094,16 +909,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the parent is not persisted' do
+        let(:person) { Person.new }
 
-        let(:person) do
-          Person.new
-        end
-
-        let!(:post) do
+        before do
           person.posts.build(title: 'Testing')
-        end
-
-        let!(:association) do
           person.posts.clear
         end
 
@@ -1114,29 +923,19 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is polymorphic' do
-
       context 'when the parent has been persisted' do
-
-        let!(:movie) do
-          Movie.create!
-        end
+        let!(:movie) { Movie.create! }
 
         context 'when the children are persisted' do
-
-          let!(:rating) do
-            movie.ratings.create!(value: 1)
-          end
-
-          let!(:association) do
-            movie.ratings.clear
-          end
+          let!(:rating) { movie.ratings.create!(value: 1) }
+          let!(:association) { movie.ratings.clear }
 
           it 'clears out the association' do
             expect(movie.ratings).to be_empty
           end
 
           it 'handles the proper dependent strategy' do
-            expect(rating).to_not be_destroyed
+            expect(rating).not_to be_destroyed
           end
 
           it 'deletes the documents from the db' do
@@ -1149,12 +948,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the children are not persisted' do
-
-          let!(:rating) do
+          before do
             movie.ratings.build(value: 3)
-          end
-
-          let!(:association) do
             movie.ratings.clear
           end
 
@@ -1165,16 +960,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the parent is not persisted' do
+        let(:movie) { Movie.new }
 
-        let(:movie) do
-          Movie.new
-        end
-
-        let!(:rating) do
+        before do
           movie.ratings.build(value: 2)
-        end
-
-        let!(:association) do
           movie.ratings.clear
         end
 
@@ -1186,21 +975,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#concat' do
-
     context 'when the associations are not polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:person) do
-          Person.new
-        end
-
-        let(:post) do
-          Post.new
-        end
+        let(:person) { Person.new }
+        let(:post) { Post.new }
 
         before do
-          person.posts.push(post)
+          person.posts.push post
         end
 
         it 'sets the foreign key on the association' do
@@ -1225,19 +1006,15 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when appending in a parent create block' do
-
-        let!(:post) do
-          Post.create!(title: 'testing')
-        end
-
+        let!(:post) { Post.create!(title: 'testing') }
         let!(:person) do
           Person.create! do |doc|
-            doc.posts.push(post)
+            doc.posts.push post
           end
         end
 
         it 'adds the documents to the association' do
-          expect(person.posts).to eq([post])
+          expect(person.posts).to eq([ post ])
         end
 
         it 'sets the foreign key on the inverse association' do
@@ -1253,26 +1030,18 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         it 'persists the link' do
-          expect(person.reload.posts).to eq([post])
+          expect(person.reload.posts).to eq([ post ])
         end
       end
 
       context 'when the parent is not a new record' do
+        let(:person) { Person.create! }
+        let(:post) { Post.new }
 
-        let(:person) do
-          Person.create!
-        end
-
-        let(:post) do
-          Post.new
-        end
-
-        let(:post_three) do
-          Post.new
-        end
+        let(:post_three) { Post.new }
 
         before do
-          person.posts.push(post, post_three)
+          person.posts.push post, post_three
         end
 
         it 'sets the foreign key on the association' do
@@ -1296,13 +1065,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when documents already exist on the association' do
-
-          let(:post_two) do
-            Post.new(title: 'Test')
-          end
+          let(:post_two) { Post.new(title: 'Test') }
 
           before do
-            person.posts.push(post_two)
+            person.posts.push post_two
           end
 
           it 'sets the foreign key on the association' do
@@ -1338,19 +1104,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   context 'when the associations are polymorphic' do
-
     context 'when the parent is a new record' do
-
-      let(:movie) do
-        Movie.new
-      end
-
-      let(:rating) do
-        Rating.new
-      end
+      let(:movie) { Movie.new }
+      let(:rating) { Rating.new }
 
       before do
-        movie.ratings.push(rating)
+        movie.ratings.push rating
       end
 
       it 'sets the foreign key on the association' do
@@ -1371,17 +1130,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the parent is not a new record' do
-
-      let(:movie) do
-        Movie.create!
-      end
-
-      let(:rating) do
-        Rating.new
-      end
+      let(:movie) { Movie.create! }
+      let(:rating) { Rating.new }
 
       before do
-        movie.ratings.push(rating)
+        movie.ratings.push rating
       end
 
       it 'sets the foreign key on the association' do
@@ -1403,16 +1156,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#count' do
-
-    let(:movie) do
-      Movie.create!
-    end
+    let(:movie) { Movie.create! }
 
     context 'when documents have been persisted' do
-
-      let!(:rating) do
-        movie.ratings.create!(value: 1)
-      end
+      before { movie.ratings.create!(value: 1) }
 
       it 'returns the number of persisted documents' do
         expect(movie.ratings.count).to eq(1)
@@ -1425,10 +1172,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when documents have not been persisted' do
-
-      let!(:rating) do
-        movie.ratings.build(value: 1)
-      end
+      before { movie.ratings.build(value: 1) }
 
       it 'returns 0' do
         expect(movie.ratings.count).to eq(0)
@@ -1440,7 +1184,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when mixed persisted and unpersisted documents' do
-
       before do
         movie.ratings.create(value: 1)
         movie.ratings.build(value: 2)
@@ -1457,16 +1200,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when no document is added' do
-
       it 'returns false' do
         expect(movie.ratings.any?).to be false
       end
     end
 
     context 'when new documents exist in the database' do
-
       context 'when the documents are part of the association' do
-
         before do
           Rating.create!(ratable: movie)
         end
@@ -1477,7 +1217,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the documents are not part of the association' do
-
         before do
           Rating.create!
         end
@@ -1490,67 +1229,41 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#any?' do
-
     shared_examples 'does not query database when association is loaded' do
-
-      let(:fresh_movie) { Movie.find(movie.id) }
+      let!(:fresh_movie) { Movie.find(movie.id) }
 
       context 'when association is not loaded' do
         it 'queries database on each call' do
-          fresh_movie
-
-          expect_query(1) do
-            expect(fresh_movie.ratings.any?).to be expected_result
-          end
-
-          expect_query(1) do
-            expect(fresh_movie.ratings.any?).to be expected_result
-          end
+          expect_query(1) { expect(fresh_movie.ratings.any?).to be expected_result }
+          expect_query(1) { expect(fresh_movie.ratings.any?).to be expected_result }
         end
 
         context 'when using a block' do
+          def fresh_movie_ratings?
+            fresh_movie.ratings.any? { false }
+          end
+
           it 'queries database on first call only' do
-            fresh_movie
-
-            expect_query(1) do
-              expect(fresh_movie.ratings.any? { false }).to be false
-            end
-
-            expect_no_queries do
-              expect(fresh_movie.ratings.any? { false }).to be false
-            end
+            expect_query(1) { expect(fresh_movie_ratings?).to be false }
+            expect_no_queries { expect(fresh_movie_ratings?).to be false }
           end
         end
       end
 
       context 'when association is loaded' do
         it 'does not query database' do
-          fresh_movie
-
-          expect_query(1) do
-            expect(fresh_movie.ratings.any?).to be expected_result
-          end
-
+          expect_query(1) { expect(fresh_movie.ratings.any?).to be expected_result }
           fresh_movie.ratings.to_a
-
-          expect_no_queries do
-            expect(fresh_movie.ratings.any?).to be expected_result
-          end
+          expect_no_queries { expect(fresh_movie.ratings.any?).to be expected_result }
         end
       end
     end
 
-    let(:movie) do
-      Movie.create!
-    end
+    let(:movie) { Movie.create! }
 
     context 'when nothing exists on the association' do
-
       context 'when no document is added' do
-
-        let!(:movie) do
-          Movie.create!
-        end
+        let!(:movie) { Movie.create! }
         let(:expected_result) { false }
 
         it 'returns false' do
@@ -1561,14 +1274,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the document is destroyed' do
-
         before do
           Rating.create!
         end
 
-        let!(:movie) do
-          Movie.create!
-        end
+        let!(:movie) { Movie.create! }
 
         it 'returns false' do
           movie.destroy
@@ -1578,10 +1288,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when appending to a association and _loaded/_unloaded are empty' do
-
-      let!(:movie) do
-        Movie.create!
-      end
+      let!(:movie) { Movie.create! }
 
       before do
         movie.ratings << Rating.new
@@ -1593,54 +1300,50 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
       context 'when association is not loaded' do
         before do
-          expect(movie.ratings._loaded?).to be false
+          movie.ratings._loaded?.should be false
         end
 
         it 'does not query the database because it knows about the added models' do
           expect_no_queries do
-            expect(movie.ratings.any?).to be true
+            movie.ratings.any?.should be true
           end
         end
       end
 
       context 'when association is loaded' do
         it 'does not query database' do
-          expect_no_queries do
-            expect(movie.ratings.any?).to be true
-          end
-
+          expect_no_queries { expect(movie.ratings.any?).to be true }
           movie.ratings.to_a
-
-          expect_no_queries do
-            expect(movie.ratings.any?).to be true
-          end
+          expect_no_queries { expect(movie.ratings.any?).to be true }
         end
       end
     end
 
-    context 'when appending to a association in a transaction' do
+    context 'when appending to an association in a transaction' do
       require_transaction_support
 
-      let!(:movie) do
-        Movie.create!
+      let!(:movie) { Movie.create! }
+
+      def with_transaction_via(model, &block)
+        model.with_session do |session|
+          session.with_transaction(&block)
+        end
       end
 
       it 'returns true' do
-        movie.with_session do |session|
-          session.with_transaction do
-            expect { movie.ratings << Rating.new }.to_not raise_error
-            expect(movie.ratings.any?).to be true
-          end
+        with_transaction_via(movie) do
+          expect { movie.ratings << Rating.new }.not_to raise_error
+          expect(movie.ratings.any?).to be true
         end
       end
     end
 
     context 'when documents have been persisted' do
+      let(:expected_result) { true }
 
-      let!(:rating) do
+      before do
         movie.ratings.create!(value: 1)
       end
-      let(:expected_result) { true }
 
       it 'returns true' do
         expect(movie.ratings.any?).to be true
@@ -1650,8 +1353,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when documents have not been persisted' do
-
-      let!(:rating) do
+      before do
         movie.ratings.build(value: 1)
       end
 
@@ -1672,16 +1374,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#create' do
-
     context 'when providing multiple attributes' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let!(:posts) do
-        person.posts.create!([{ text: 'Test1' }, { text: 'Test2' }])
-      end
+      let(:person) { Person.create! }
+      let!(:posts) { person.posts.create!([ { text: 'Test1' }, { text: 'Test2' } ]) }
 
       it 'creates multiple documents' do
         expect(posts.size).to eq(2)
@@ -1701,16 +1396,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is not polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:person) do
-          Person.new
-        end
-
-        let(:post) do
-          person.posts.create!(text: 'Testing')
-        end
+        let(:person) { Person.new }
+        let(:post) { person.posts.create!(text: 'Testing') }
 
         it 'raises an unsaved document error' do
           expect { post }.to raise_error(Mongoid::Errors::UnsavedDocument)
@@ -1718,48 +1406,28 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when.creating the document' do
-
         context 'when the operation is successful' do
-
-          let(:person) do
-            Person.create!
-          end
-
-          let!(:post) do
-            person.posts.create!(text: 'Testing')
-          end
+          let(:person) { Person.create! }
+          let!(:post) { person.posts.create!(text: 'Testing') }
 
           it 'creates the document' do
-            expect(person.posts).to eq([post])
+            expect(person.posts).to eq([ post ])
           end
         end
 
         context 'when the operation fails' do
-
-          let(:person) do
-            Person.create!
-          end
-
-          let!(:existing) do
-            Post.create!
-          end
+          let(:person) { Person.create! }
+          let!(:existing) { Post.create! }
 
           it 'raises an error' do
-            expect do
-              person.posts.create! do |doc|
-                doc._id = existing.id
-              end
-            end.to raise_error(Mongo::Error::OperationFailure)
+            expect { person.posts.create! { |doc| doc._id = existing.id } }
+              .to raise_error(Mongo::Error::OperationFailure)
           end
         end
       end
 
       context 'when the parent is not a new record' do
-
-        let(:person) do
-          Person.create!
-        end
-
+        let(:person) { Person.create! }
         let!(:post) do
           person.posts.create!(text: 'Testing') do |post|
             post.content = 'The Content'
@@ -1779,7 +1447,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         it 'saves the target' do
-          expect(post).to_not be_a_new_record
+          expect(post).not_to be_a_new_record
         end
 
         it 'calls the passed block' do
@@ -1792,13 +1460,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when passing a new object' do
+        let!(:odd) { Odd.create!(name: 'one') }
 
-        let!(:odd) do
-          Odd.create!(name: 'one')
-        end
-
-        let!(:even) do
-          odd.evens.create!(name: 'two', odds: [Odd.new(name: 'three')])
+        before do
+          odd.evens.create!(name: 'two', odds: [ Odd.new(name: 'three') ])
         end
 
         it 'only push one even to the list' do
@@ -1820,16 +1485,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:movie) do
-          Movie.new
-        end
-
-        let(:rating) do
-          movie.ratings.create!(value: 1)
-        end
+        let(:movie) { Movie.new }
+        let(:rating) { movie.ratings.create!(value: 1) }
 
         it 'raises an unsaved document error' do
           expect { rating }.to raise_error(Mongoid::Errors::UnsavedDocument)
@@ -1837,14 +1495,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the parent is not a new record' do
-
-        let(:movie) do
-          Movie.create!
-        end
-
-        let!(:rating) do
-          movie.ratings.create!(value: 3)
-        end
+        let(:movie) { Movie.create! }
+        let!(:rating) { movie.ratings.create!(value: 3) }
 
         it 'sets the foreign key on the association' do
           expect(rating.ratable_id).to eq(movie.id)
@@ -1859,7 +1511,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         it 'saves the target' do
-          expect(rating).to_not be_new_record
+          expect(rating).not_to be_new_record
         end
 
         it 'adds the document to the target' do
@@ -1869,14 +1521,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when using a different primary_key' do
-
-      let(:person) do
-        Person.create!(username: 'arthurnn')
-      end
-
-      let(:drug) do
-        person.drugs.create!
-      end
+      let(:person) { Person.create!(username: 'arthurnn') }
+      let(:drug) { person.drugs.create! }
 
       it 'saves pk value on fk field' do
         expect(drug.person_id).to eq('arthurnn')
@@ -1885,16 +1531,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#create!' do
-
     context 'when providing multiple attributes' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let!(:posts) do
-        person.posts.create!([{ text: 'Test1' }, { text: 'Test2' }])
-      end
+      let(:person) { Person.create! }
+      let!(:posts) { person.posts.create!([ { text: 'Test1' }, { text: 'Test2' } ]) }
 
       it 'creates multiple documents' do
         expect(posts.size).to eq(2)
@@ -1914,16 +1553,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is not polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:person) do
-          Person.new
-        end
-
-        let(:post) do
-          person.posts.create!(title: 'Testing')
-        end
+        let(:person) { Person.new }
+        let(:post) { person.posts.create!(title: 'Testing') }
 
         it 'raises an unsaved document error' do
           expect { post }.to raise_error(Mongoid::Errors::UnsavedDocument)
@@ -1931,14 +1563,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the parent is not a new record' do
-
-        let(:person) do
-          Person.create!
-        end
-
-        let!(:post) do
-          person.posts.create!(title: 'Testing')
-        end
+        let(:person) { Person.create! }
+        let!(:post) { person.posts.create!(title: 'Testing') }
 
         it 'sets the foreign key on the association' do
           expect(post.person_id).to eq(person.id)
@@ -1953,7 +1579,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         it 'saves the target' do
-          expect(post).to_not be_a_new_record
+          expect(post).not_to be_a_new_record
         end
 
         it 'adds the document to the target' do
@@ -1961,27 +1587,18 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when validation fails' do
-
           it 'raises an error' do
-            expect do
-              person.posts.create!(title: '$$$')
-            end.to raise_error(Mongoid::Errors::Validations)
+            expect { person.posts.create!(title: '$$$') }
+              .to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
     end
 
     context 'when the association is polymorphic' do
-
       context 'when the parent is a new record' do
-
-        let(:movie) do
-          Movie.new
-        end
-
-        let(:rating) do
-          movie.ratings.create!(value: 1)
-        end
+        let(:movie) { Movie.new }
+        let(:rating) { movie.ratings.create!(value: 1) }
 
         it 'raises an unsaved document error' do
           expect { rating }.to raise_error(Mongoid::Errors::UnsavedDocument)
@@ -1989,14 +1606,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the parent is not a new record' do
-
-        let(:movie) do
-          Movie.create!
-        end
-
-        let!(:rating) do
-          movie.ratings.create!(value: 4)
-        end
+        let(:movie) { Movie.create! }
+        let!(:rating) { movie.ratings.create!(value: 4) }
 
         it 'sets the foreign key on the association' do
           expect(rating.ratable_id).to eq(movie.id)
@@ -2011,7 +1622,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         it 'saves the target' do
-          expect(rating).to_not be_new_record
+          expect(rating).not_to be_new_record
         end
 
         it 'adds the document to the target' do
@@ -2019,11 +1630,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when validation fails' do
-
           it 'raises an error' do
-            expect do
-              movie.ratings.create!(value: 1000)
-            end.to raise_error(Mongoid::Errors::Validations)
+            expect { movie.ratings.create!(value: 1000) }
+              .to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -2031,42 +1640,24 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#criteria' do
-
-    let(:base) do
-      Movie.new
-    end
+    let(:base) { Movie.new }
 
     context 'when the association is polymorphic' do
-
-      let(:association) do
-        Movie.relations['ratings']
-      end
-
-      let(:criteria) do
-        association.criteria(base)
-      end
+      let(:association) { Movie.relations['ratings'] }
+      let(:criteria) { association.criteria(base) }
 
       it 'includes the type in the criteria' do
-        expect(criteria.selector).to eq({
-          'ratable_id' => base.id,
-          'ratable_type' => 'Movie'
-        })
+        expect(criteria.selector).to eq(
+          { 'ratable_id' => base.id, 'ratable_type' => 'Movie' }
+        )
       end
     end
 
     context 'when the association is not polymorphic' do
+      let(:association) { Person.relations['posts'] }
+      let(:base) { Person.new }
 
-      let(:association) do
-        Person.relations['posts']
-      end
-
-      let(:base) do
-        Person.new
-      end
-
-      let(:criteria) do
-        association.criteria(base)
-      end
+      let(:criteria) { association.criteria(base) }
 
       it 'does not include the type in the criteria' do
         expect(criteria.selector).to eq({ 'person_id' => base.id })
@@ -2074,169 +1665,124 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
   end
 
-  describe '#delete' do
+  %i[ delete delete_one ].each do |method|
+    describe "##{method}" do
+      let!(:person) { Person.create!(username: 'arthurnn') }
 
-    let!(:person) do
-      Person.create!(username: 'arthurnn')
-    end
+      context 'when the document is found' do
+        context 'when no dependent option is set' do
+          context 'when we are assigning attributes' do
+            let!(:drug) { person.drugs.create! }
+            let(:deleted) { person.drugs.send(method, drug) }
 
-    context 'when the document is found' do
+            before do
+              Mongoid::Threaded.begin_execution(:assign)
+            end
 
-      context 'when no dependent option is set' do
+            after do
+              Mongoid::Threaded.exit_execution(:assign)
+            end
 
-        context 'when we are assigning attributes' do
-
-          let!(:drug) do
-            person.drugs.create!
-          end
-          let(:deleted) do
-            person.drugs.delete(drug)
-          end
-
-          before do
-            Mongoid::Threaded.begin_execution(:assign)
-          end
-
-          after do
-            Mongoid::Threaded.exit_execution(:assign)
+            it 'does not cascade' do
+              expect(deleted.changes.keys).to eq([ 'person_id' ])
+            end
           end
 
-          it 'does not cascade' do
-            expect(deleted.changes.keys).to eq(['person_id'])
-          end
-        end
+          context 'when the document is loaded' do
+            let!(:drug) { person.drugs.create! }
+            let!(:deleted) { person.drugs.send(method, drug) }
 
-        context 'when the document is loaded' do
+            it 'returns the document' do
+              expect(deleted).to eq(drug)
+            end
 
-          let!(:drug) do
-            person.drugs.create!
-          end
+            it 'deletes the foreign key' do
+              expect(drug.person_id).to be_nil
+            end
 
-          let!(:deleted) do
-            person.drugs.delete(drug)
-          end
-
-          it 'returns the document' do
-            expect(deleted).to eq(drug)
+            it 'removes the document from the association' do
+              expect(person.drugs).not_to include(drug)
+            end
           end
 
-          it 'deletes the foreign key' do
-            expect(drug.person_id).to be_nil
-          end
+          context 'when the document is not loaded' do
+            let!(:drug) { Drug.create!(person_id: person.username) }
+            let!(:deleted) { person.drugs.send(method, drug) }
 
-          it 'removes the document from the association' do
-            expect(person.drugs).to_not include(drug)
-          end
-        end
+            it 'returns the document' do
+              expect(deleted).to eq(drug)
+            end
 
-        context 'when the document is not loaded' do
+            it 'deletes the foreign key' do
+              expect(drug.person_id).to be_nil
+            end
 
-          let!(:drug) do
-            Drug.create!(person_id: person.username)
-          end
-
-          let!(:deleted) do
-            person.drugs.delete(drug)
-          end
-
-          it 'returns the document' do
-            expect(deleted).to eq(drug)
-          end
-
-          it 'deletes the foreign key' do
-            expect(drug.person_id).to be_nil
-          end
-
-          it 'removes the document from the association' do
-            expect(person.drugs).to_not include(drug)
-          end
-        end
-      end
-
-      context 'when dependent is delete' do
-
-        context 'when the document is loaded' do
-
-          let!(:post) do
-            person.posts.create!(title: 'test')
-          end
-
-          let!(:deleted) do
-            person.posts.delete(post)
-          end
-
-          it 'returns the document' do
-            expect(deleted).to eq(post)
-          end
-
-          it 'deletes the document' do
-            expect(post).to be_destroyed
-          end
-
-          it 'removes the document from the association' do
-            expect(person.posts).to_not include(post)
+            it 'removes the document from the association' do
+              expect(person.drugs).not_to include(drug)
+            end
           end
         end
 
-        context 'when the document is not loaded' do
+        context 'when dependent is delete' do
+          context 'when the document is loaded' do
+            let!(:post) { person.posts.create!(title: 'test') }
+            let!(:deleted) { person.posts.send(method, post) }
 
-          let!(:post) do
-            Post.create!(title: 'foo', person_id: person.id)
+            it 'returns the document' do
+              expect(deleted).to eq(post)
+            end
+
+            it 'deletes the document' do
+              expect(post).to be_destroyed
+            end
+
+            it 'removes the document from the association' do
+              expect(person.posts).not_to include(post)
+            end
           end
 
-          let!(:deleted) do
-            person.posts.delete(post)
-          end
+          context 'when the document is not loaded' do
+            let!(:post) { Post.create!(title: 'foo', person_id: person.id) }
+            let!(:deleted) { person.posts.send(method, post) }
 
-          it 'returns the document' do
-            expect(deleted).to eq(post)
-          end
+            it 'returns the document' do
+              expect(deleted).to eq(post)
+            end
 
-          it 'deletes the document' do
-            expect(post).to be_destroyed
-          end
+            it 'deletes the document' do
+              expect(post).to be_destroyed
+            end
 
-          it 'removes the document from the association' do
-            expect(person.posts).to_not include(post)
+            it 'removes the document from the association' do
+              expect(person.posts).not_to include(post)
+            end
           end
         end
       end
-    end
 
-    context 'when the document is not found' do
+      context 'when the document is not found' do
+        let!(:post) { Post.create!(title: 'foo') }
+        let!(:deleted) { person.posts.send(method, post) }
 
-      let!(:post) do
-        Post.create!(title: 'foo')
-      end
+        it 'returns nil' do
+          expect(deleted).to be_nil
+        end
 
-      let!(:deleted) do
-        person.posts.delete(post)
-      end
-
-      it 'returns nil' do
-        expect(deleted).to be_nil
-      end
-
-      it 'does not delete the document' do
-        expect(post).to be_persisted
+        it 'does not delete the document' do
+          expect(post).to be_persisted
+        end
       end
     end
   end
 
-  %i[delete_all destroy_all].each do |method|
-
+  %i[ delete_all destroy_all ].each do |method|
     describe "##{method}" do
-
       context 'when the association is not polymorphic' do
-
         context 'when conditions are provided' do
-
-          let(:person) do
-            Person.create!(username: 'durran')
-          end
-
-          let!(:post1) { person.posts.create!(title: 'Testing') }
+          let(:person) { Person.create!(username: 'durran') }
           let!(:post2) { person.posts.create!(title: 'Test') }
+
+          before { person.posts.create!(title: 'Testing') }
 
           it 'removes the correct posts' do
             person.posts.send(method, { title: 'Testing' })
@@ -2255,15 +1801,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
           it 'sets the association locally' do
             person.posts.send(method, { title: 'Testing' })
-            expect(person.posts).to eq([post2])
+            expect(person.posts).to eq([ post2 ])
           end
         end
 
         context 'when conditions are not provided' do
-
-          let(:person) do
-            Person.create!
-          end
+          let(:person) { Person.create! }
 
           before do
             person.posts.create!(title: 'Testing')
@@ -2292,15 +1835,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the association is polymorphic' do
-
         context 'when conditions are provided' do
-
-          let(:movie) do
-            Movie.create!(title: 'Bladerunner')
-          end
-
-          let!(:rating1) { movie.ratings.create!(value: 1) }
+          let(:movie) { Movie.create!(title: 'Bladerunner') }
           let!(:rating2) { movie.ratings.create!(value: 2) }
+
+          before { movie.ratings.create!(value: 1) }
 
           it 'removes the correct ratings' do
             movie.ratings.send(method, { value: 1 })
@@ -2318,15 +1857,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
           it 'sets the association locally' do
             movie.ratings.send(method, { value: 1 })
-            expect(movie.ratings).to eq([rating2])
+            expect(movie.ratings).to eq([ rating2 ])
           end
         end
 
         context 'when conditions are not provided' do
-
-          let(:movie) do
-            Movie.create!(title: 'Bladerunner')
-          end
+          let(:movie) { Movie.create!(title: 'Bladerunner') }
 
           before do
             movie.ratings.create!(value: 1)
@@ -2357,20 +1893,15 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '.embedded?' do
-
     it 'returns false' do
-      expect(described_class).to_not be_embedded
+      expect(described_class).not_to be_embedded
     end
   end
 
   describe '#exists?' do
-
-    let!(:person) do
-      Person.create!
-    end
+    let!(:person) { Person.create! }
 
     context 'when documents exist in the database' do
-
       before do
         person.posts.create!
       end
@@ -2381,33 +1912,21 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
       context 'when association is not loaded' do
         it 'queries database on each call' do
-          expect_query(1) do
-            expect(person.posts.exists?).to be true
-          end
-
-          expect_query(1) do
-            expect(person.posts.exists?).to be true
-          end
+          expect_query(1) { expect(person.posts.exists?).to be true }
+          expect_query(1) { expect(person.posts.exists?).to be true }
         end
       end
 
       context 'when association is loaded' do
         it 'queries database on each call' do
-          expect_query(1) do
-            expect(person.posts.exists?).to be true
-          end
-
+          expect_query(1) { expect(person.posts.exists?).to be true }
           person.posts.to_a
-
-          expect_query(1) do
-            expect(person.posts.exists?).to be true
-          end
+          expect_query(1) { expect(person.posts.exists?).to be true }
         end
       end
     end
 
     context 'when documents exist in application but not in database' do
-
       before do
         person.posts.build
       end
@@ -2418,109 +1937,67 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
 
       context 'when association is not loaded' do
         it 'queries database on each call' do
-          expect_query(1) do
-            expect(person.posts.exists?).to be false
-          end
-
-          expect_query(1) do
-            expect(person.posts.exists?).to be false
-          end
+          expect_query(1) { expect(person.posts.exists?).to be false }
+          expect_query(1) { expect(person.posts.exists?).to be false }
         end
       end
 
       context 'when association is loaded' do
         it 'queries database on each call' do
-          expect_query(1) do
-            expect(person.posts.exists?).to be false
-          end
-
+          expect_query(1) { expect(person.posts.exists?).to be false }
           person.posts.to_a
-
-          expect_query(1) do
-            expect(person.posts.exists?).to be false
-          end
+          expect_query(1) { expect(person.posts.exists?).to be false }
         end
       end
     end
 
     context 'when no documents exist' do
-
       it 'returns false' do
         expect(person.posts.exists?).to be false
       end
 
       context 'when association is not loaded' do
         it 'queries database on each call' do
-          expect_query(1) do
-            expect(person.posts.exists?).to be false
-          end
-
-          expect_query(1) do
-            expect(person.posts.exists?).to be false
-          end
+          expect_query(1) { expect(person.posts.exists?).to be false }
+          expect_query(1) { expect(person.posts.exists?).to be false }
         end
       end
 
       context 'when association is loaded' do
         it 'queries database on each call' do
-          expect_query(1) do
-            expect(person.posts.exists?).to be false
-          end
+          expect_query(1) { expect(person.posts.exists?).to be false }
 
           person.posts.to_a
 
-          expect_query(1) do
-            expect(person.posts.exists?).to be false
-          end
+          expect_query(1) { expect(person.posts.exists?).to be false }
         end
       end
     end
   end
 
   describe '#find' do
-
     context 'when iterating after the find' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let(:post_id) do
-        person.posts.first.id
-      end
+      let(:person) { Person.create! }
+      let(:post_id) { person.posts.first.id }
 
       before do
         5.times { person.posts.create! }
       end
 
       it 'does not change the in memory size' do
-        expect do
-          person.posts.find(post_id)
-        end.to_not change { person.posts.to_a.size }
+        expect { person.posts.find(post_id) }
+          .not_to(change { person.posts.to_a.size })
       end
     end
 
     context 'when the association is not polymorphic' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let!(:post_one) do
-        person.posts.create!(title: 'Test')
-      end
-
-      let!(:post_two) do
-        person.posts.create!(title: 'OMG I has associations')
-      end
+      let(:person) { Person.create! }
+      let!(:post_one) { person.posts.create!(title: 'Test') }
+      let!(:post_two) { person.posts.create!(title: 'OMG I has associations') }
 
       context 'when providing an id' do
-
         context 'when the id matches' do
-
-          let(:post) do
-            person.posts.find(post_one.id)
-          end
+          let(:post) { person.posts.find(post_one.id) }
 
           it 'returns the matching document' do
             expect(post).to eq(post_one)
@@ -2528,36 +2005,30 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the id matches but is not scoped to the association' do
-
-          let(:post) do
-            Post.create!(title: 'Unscoped')
-          end
+          let(:post) { Post.create!(title: 'Unscoped') }
 
           it 'raises an error' do
-            expect do
-              person.posts.find(post.id)
-            end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+            expect { person.posts.find(post.id) }
+              .to raise_error(Mongoid::Errors::DocumentNotFound,
+                              /Document\(s\) not found for class Post with id\(s\)/)
           end
         end
 
         context 'when the id does not match' do
-
           context 'when config set to raise error' do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect do
-                person.posts.find(BSON::ObjectId.new)
-              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+              expect { person.posts.find(BSON::ObjectId.new) }
+                .to raise_error(Mongoid::Errors::DocumentNotFound,
+                                /Document\(s\) not found for class Post with id\(s\)/)
             end
           end
 
           context 'when config set not to raise error' do
             config_override :raise_not_found_error, false
 
-            let(:post) do
-              person.posts.find(BSON::ObjectId.new)
-            end
+            let(:post) { person.posts.find(BSON::ObjectId.new) }
 
             it 'returns nil' do
               expect(post).to be_nil
@@ -2567,36 +2038,29 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when providing an array of ids' do
-
         context 'when the ids match' do
-
-          let(:posts) do
-            person.posts.find([post_one.id, post_two.id])
-          end
+          let(:posts) { person.posts.find([ post_one.id, post_two.id ]) }
 
           it 'returns the matching documents' do
-            expect(posts).to eq([post_one, post_two])
+            expect(posts).to eq([ post_one, post_two ])
           end
         end
 
         context 'when the ids do not match' do
-
           context 'when config set to raise error' do
             config_override :raise_not_found_error, true
 
             it 'raises an error' do
-              expect do
-                person.posts.find([BSON::ObjectId.new])
-              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
+              expect { person.posts.find([ BSON::ObjectId.new ]) }
+                .to raise_error(Mongoid::Errors::DocumentNotFound,
+                                /Document\(s\) not found for class Post with id\(s\)/)
             end
           end
 
           context 'when config set not to raise error' do
             config_override :raise_not_found_error, false
 
-            let(:posts) do
-              person.posts.find([BSON::ObjectId.new])
-            end
+            let(:posts) { person.posts.find([ BSON::ObjectId.new ]) }
 
             it 'returns an empty array' do
               expect(posts).to be_empty
@@ -2607,26 +2071,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is polymorphic' do
-
-      let(:movie) do
-        Movie.create!
-      end
-
-      let!(:rating_one) do
-        movie.ratings.create!(value: 1)
-      end
-
-      let!(:rating_two) do
-        movie.ratings.create!(value: 5)
-      end
+      let(:movie) { Movie.create! }
+      let!(:rating_one) { movie.ratings.create!(value: 1) }
+      let!(:rating_two) { movie.ratings.create!(value: 5) }
 
       context 'when providing an id' do
-
         context 'when the id matches' do
-
-          let(:rating) do
-            movie.ratings.find(rating_one.id)
-          end
+          let(:rating) { movie.ratings.find(rating_one.id) }
 
           it 'returns the matching document' do
             expect(rating).to eq(rating_one)
@@ -2634,23 +2085,24 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the id does not match' do
-
           context 'when config set to raise error' do
             config_override :raise_not_found_error, true
 
+            let(:expected_error) { Mongoid::Errors::DocumentNotFound }
+            let(:expected_message) do
+              /Document\(s\) not found for class Rating with id\(s\)/
+            end
+
             it 'raises an error' do
-              expect do
-                movie.ratings.find(BSON::ObjectId.new)
-              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Rating with id\(s\)/)
+              expect { movie.ratings.find(BSON::ObjectId.new) }
+                .to raise_error(expected_error, expected_message)
             end
           end
 
           context 'when config set not to raise error' do
             config_override :raise_not_found_error, false
 
-            let(:rating) do
-              movie.ratings.find(BSON::ObjectId.new)
-            end
+            let(:rating) { movie.ratings.find(BSON::ObjectId.new) }
 
             it 'returns nil' do
               expect(rating).to be_nil
@@ -2660,12 +2112,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when providing an array of ids' do
-
         context 'when the ids match' do
-
-          let(:ratings) do
-            movie.ratings.find([rating_one.id, rating_two.id])
-          end
+          let(:ratings) { movie.ratings.find([ rating_one.id, rating_two.id ]) }
 
           it 'returns the first matching document' do
             expect(ratings).to include(rating_one)
@@ -2681,23 +2129,24 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when the ids do not match' do
-
           context 'when config set to raise error' do
             config_override :raise_not_found_error, true
 
+            let(:expected_error) { Mongoid::Errors::DocumentNotFound }
+            let(:expected_message) do
+              /Document\(s\) not found for class Rating with id\(s\)/
+            end
+
             it 'raises an error' do
-              expect do
-                movie.ratings.find([BSON::ObjectId.new])
-              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Rating with id\(s\)/)
+              expect { movie.ratings.find([ BSON::ObjectId.new ]) }
+                .to raise_error(expected_error, expected_message)
             end
           end
 
           context 'when config set not to raise error' do
             config_override :raise_not_found_error, false
 
-            let(:ratings) do
-              movie.ratings.find([BSON::ObjectId.new])
-            end
+            let(:ratings) { movie.ratings.find([ BSON::ObjectId.new ]) }
 
             it 'returns an empty array' do
               expect(ratings).to be_empty
@@ -2708,22 +2157,16 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'with block' do
-      let!(:author) do
-        Person.create!(title: 'Person')
-      end
+      let(:titles) { [ 'post one', 'post two' ] }
+      let!(:author) { Person.create!(title: 'Person') }
+      let!(:post_one) { author.posts.create!(title: titles[0]) }
 
-      let!(:post_one) do
-        author.posts.create!(title: 'post one')
-      end
-
-      let!(:post_two) do
-        author.posts.create!(title: 'post two')
-      end
+      before { author.posts.create!(title: titles[1]) }
 
       it 'finds one' do
         expect(
           author.posts.find do |post|
-            post.title == 'post one'
+            post.title == titles[0]
           end
         ).to be_a(Post)
       end
@@ -2731,7 +2174,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       it 'returns first match of multiple' do
         expect(
           author.posts.find do |post|
-            ['post one', 'post two'].include?(post.title)
+            titles.include?(post.title)
           end
         ).to eq(post_one)
       end
@@ -2739,7 +2182,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       it 'returns nil when not found' do
         expect(
           author.posts.find do |post|
-            post.title == 'non exiting one'
+            post.title == 'non existing one'
           end
         ).to be_nil
       end
@@ -2747,22 +2190,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#find_or_create_by' do
-
     context 'when the association is not polymorphic' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let!(:post) do
-        person.posts.create!(title: 'Testing')
-      end
+      let(:person) { Person.create! }
+      let!(:post) { person.posts.create!(title: 'Testing') }
 
       context 'when the document exists' do
-
-        let(:found) do
-          person.posts.find_or_create_by(title: 'Testing')
-        end
+        let(:found) { person.posts.find_or_create_by(title: 'Testing') }
 
         it 'returns the document' do
           expect(found).to eq(post)
@@ -2774,9 +2207,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the document does not exist' do
-
         context 'when there is no criteria attached' do
-
           let(:found) do
             person.posts.find_or_create_by(title: 'Test') do |post|
               post.content = 'The Content'
@@ -2801,10 +2232,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when a criteria is attached' do
-
-          let(:found) do
-            person.posts.recent.find_or_create_by(title: 'Test')
-          end
+          let(:found) { person.posts.recent.find_or_create_by(title: 'Test') }
 
           it 'sets the new document attributes' do
             expect(found.title).to eq('Test')
@@ -2822,20 +2250,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is polymorphic' do
-
-      let(:movie) do
-        Movie.create!
-      end
-
-      let!(:rating) do
-        movie.ratings.create!(value: 1)
-      end
+      let(:movie) { Movie.create! }
+      let!(:rating) { movie.ratings.create!(value: 1) }
 
       context 'when the document exists' do
-
-        let(:found) do
-          movie.ratings.find_or_create_by(value: 1)
-        end
+        let(:found) { movie.ratings.find_or_create_by(value: 1) }
 
         it 'returns the document' do
           expect(found).to eq(rating)
@@ -2847,10 +2266,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the document does not exist' do
-
-        let(:found) do
-          movie.ratings.find_or_create_by(value: 3)
-        end
+        let(:found) { movie.ratings.find_or_create_by(value: 3) }
 
         it 'sets the new document attributes' do
           expect(found.value).to eq(3)
@@ -2868,22 +2284,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#find_or_create_by!' do
-
     context 'when the association is not polymorphic' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let!(:post) do
-        person.posts.create!(title: 'Testing')
-      end
+      let(:person) { Person.create! }
+      let!(:post) { person.posts.create!(title: 'Testing') }
 
       context 'when the document exists' do
-
-        let(:found) do
-          person.posts.find_or_create_by!(title: 'Testing')
-        end
+        let(:found) { person.posts.find_or_create_by!(title: 'Testing') }
 
         it 'returns the document' do
           expect(found).to eq(post)
@@ -2895,9 +2301,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the document does not exist' do
-
         context 'when there is no criteria attached' do
-
           let(:found) do
             person.posts.find_or_create_by!(title: 'Test') do |post|
               post.content = 'The Content'
@@ -2922,10 +2326,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when a criteria is attached' do
-
-          let(:found) do
-            person.posts.recent.find_or_create_by!(title: 'Test')
-          end
+          let(:found) { person.posts.recent.find_or_create_by!(title: 'Test') }
 
           it 'sets the new document attributes' do
             expect(found.title).to eq('Test')
@@ -2943,20 +2344,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is polymorphic' do
-
-      let(:movie) do
-        Movie.create!
-      end
-
-      let!(:rating) do
-        movie.ratings.create!(value: 1)
-      end
+      let(:movie) { Movie.create! }
+      let!(:rating) { movie.ratings.create!(value: 1) }
 
       context 'when the document exists' do
-
-        let(:found) do
-          movie.ratings.find_or_create_by!(value: 1)
-        end
+        let(:found) { movie.ratings.find_or_create_by!(value: 1) }
 
         it 'returns the document' do
           expect(found).to eq(rating)
@@ -2968,10 +2360,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the document does not exist' do
-
-        let(:found) do
-          movie.ratings.find_or_create_by!(value: 3)
-        end
+        let(:found) { movie.ratings.find_or_create_by!(value: 3) }
 
         it 'sets the new document attributes' do
           expect(found.value).to eq(3)
@@ -2986,11 +2375,9 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         context 'when validation fails' do
-
           it 'raises an error' do
-            expect do
-              movie.comments.find_or_create_by!(title: '')
-            end.to raise_error(Mongoid::Errors::Validations)
+            expect { movie.comments.find_or_create_by!(title: '') }
+              .to raise_error(Mongoid::Errors::Validations)
           end
         end
       end
@@ -2998,22 +2385,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#find_or_initialize_by' do
-
     context 'when the association is not polymorphic' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let!(:post) do
-        person.posts.create!(title: 'Testing')
-      end
+      let(:person) { Person.create! }
+      let!(:post) { person.posts.create!(title: 'Testing') }
 
       context 'when the document exists' do
-
-        let(:found) do
-          person.posts.find_or_initialize_by(title: 'Testing')
-        end
+        let(:found) { person.posts.find_or_initialize_by(title: 'Testing') }
 
         it 'returns the document' do
           expect(found).to eq(post)
@@ -3021,7 +2398,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the document does not exist' do
-
         let(:found) do
           person.posts.find_or_initialize_by(title: 'Test') do |post|
             post.content = 'The Content'
@@ -3033,7 +2409,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         end
 
         it 'returns a non persisted document' do
-          expect(found).to_not be_persisted
+          expect(found).not_to be_persisted
         end
 
         it 'calls the passed block' do
@@ -3043,20 +2419,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is polymorphic' do
-
-      let(:movie) do
-        Movie.create!
-      end
-
-      let!(:rating) do
-        movie.ratings.create!(value: 1)
-      end
+      let(:movie) { Movie.create! }
+      let!(:rating) { movie.ratings.create!(value: 1) }
 
       context 'when the document exists' do
-
-        let(:found) do
-          movie.ratings.find_or_initialize_by(value: 1)
-        end
+        let(:found) { movie.ratings.find_or_initialize_by(value: 1) }
 
         it 'returns the document' do
           expect(found).to eq(rating)
@@ -3064,42 +2431,31 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when the document does not exist' do
-
-        let(:found) do
-          movie.ratings.find_or_initialize_by(value: 3)
-        end
+        let(:found) { movie.ratings.find_or_initialize_by(value: 3) }
 
         it 'sets the new document attributes' do
           expect(found.value).to eq(3)
         end
 
         it 'returns a non persisted document' do
-          expect(found).to_not be_persisted
+          expect(found).not_to be_persisted
         end
       end
     end
   end
 
   describe '#initialize' do
-
     context 'when an illegal mixed association exists' do
-
-      let(:post) do
-        Post.new
-      end
+      let(:post) { Post.new }
 
       it 'raises an error' do
-        expect do
-          post.videos
-        end.to raise_error(Mongoid::Errors::MixedRelations)
+        expect { post.videos }
+          .to raise_error(Mongoid::Errors::MixedRelations)
       end
     end
 
     context 'when a cyclic association exists' do
-
-      let(:post) do
-        Post.new
-      end
+      let(:post) { Post.new }
 
       it 'does not raise an error' do
         expect(post.roles).to be_empty
@@ -3108,23 +2464,14 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#last' do
+    let(:person) { Person.create! }
 
-    let(:person) do
-      Person.create!
-    end
-
-    let!(:persisted_post) do
-      person.posts.create!
-    end
+    before { person.posts.create! }
 
     context 'when a new document is added' do
-
-      let!(:new_post) do
-        person.posts.new
-      end
+      let!(:new_post) { person.posts.new }
 
       context 'when the target is subsequently loaded' do
-
         before do
           person.posts.entries
         end
@@ -3137,21 +2484,17 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#max' do
+    let(:person) { Person.create! }
+    let(:post_one) { Post.create!(rating: 5) }
+    let(:post_two) { Post.create!(rating: 10) }
 
-    let(:person) do
-      Person.create!
-    end
+    # rubocop:disable Performance/CompareWithBlock
     let(:max) do
-      person.posts.max_by(&:rating)
+      person.posts.max do |a, b|
+        a.rating <=> b.rating
+      end
     end
-
-    let(:post_one) do
-      Post.create!(rating: 5)
-    end
-
-    let(:post_two) do
-      Post.create!(rating: 10)
-    end
+    # rubocop:enable Performance/CompareWithBlock
 
     before do
       person.posts.push(post_one, post_two)
@@ -3163,21 +2506,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#max_by' do
-
-    let(:person) do
-      Person.create!
-    end
-    let(:max) do
-      person.posts.max_by(&:rating)
-    end
-
-    let(:post_one) do
-      Post.create!(rating: 5)
-    end
-
-    let(:post_two) do
-      Post.create!(rating: 10)
-    end
+    let(:person) { Person.create! }
+    let(:post_one) { Post.create!(rating: 5) }
+    let(:post_two) { Post.create!(rating: 10) }
+    let(:max) { person.posts.max_by(&:rating) }
 
     before do
       person.posts.push(post_one, post_two)
@@ -3189,70 +2521,50 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#method_missing' do
+    let!(:person) { Person.create! }
+    let!(:post_one) { person.posts.create!(title: 'First', content: 'Posting') }
 
-    let!(:person) do
-      Person.create!
-    end
-
-    let!(:post_one) do
-      person.posts.create!(title: 'First', content: 'Posting')
-    end
-
-    let!(:post_two) do
+    before do
       person.posts.create!(title: 'Second', content: 'Testing')
     end
 
     context 'when providing a single criteria' do
-
-      let(:posts) do
-        person.posts.where(title: 'First')
-      end
+      let(:posts) { person.posts.where(title: 'First') }
 
       it 'applies the criteria to the documents' do
-        expect(posts).to eq([post_one])
+        expect(posts).to eq([ post_one ])
       end
 
       context 'when providing a collation' do
+        min_server_version '3.4'
 
-        let(:posts) do
-          person.posts.where(title: 'FIRST').collation(locale: 'en_US', strength: 2)
-        end
+        let(:posts) { person.posts.where(title: 'FIRST').collation(locale: 'en_US', strength: 2) }
 
         it 'applies the collation option to the query' do
-          expect(posts).to eq([post_one])
+          expect(posts).to eq([ post_one ])
         end
       end
     end
 
     context 'when providing a criteria class method' do
-
-      let(:posts) do
-        person.posts.posting
-      end
+      let(:posts) { person.posts.posting }
 
       it 'applies the criteria to the documents' do
-        expect(posts).to eq([post_one])
+        expect(posts).to eq([ post_one ])
       end
     end
 
     context 'when chaining criteria' do
-
-      let(:posts) do
-        person.posts.posting.where(:title.in => ['First'])
-      end
+      let(:posts) { person.posts.posting.where(:title.in => [ 'First' ]) }
 
       it 'applies the criteria to the documents' do
-        expect(posts).to eq([post_one])
+        expect(posts).to eq([ post_one ])
       end
     end
 
     context 'when delegating methods' do
-
       describe '#distinct' do
-
-        let(:values) do
-          person.posts.distinct(:title)
-        end
+        let(:values) { person.posts.distinct(:title) }
 
         it 'returns the distinct values for the fields' do
           expect(values).to include('First')
@@ -3262,56 +2574,18 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
   end
 
-  describe '#respond_to_missing?' do
-    let!(:person) { Person.create! }
-
-    let!(:post_one) do
-      person.posts.create!(title: 'First', content: 'Posting')
-    end
-
-    let!(:post_two) do
-      person.posts.create!(title: 'Second', content: 'Testing')
-    end
-
-    let(:posts) { person.posts }
-
-    context 'when target or criteria respond to the method' do
-      it 'returns true for target method' do
-        expect(posts.respond_to?(:count)).to be true
-      end
-
-      it 'returns true for criteria method' do
-        expect(posts.respond_to?(:where)).to be true
-      end
-
-      it 'returns true for criteria class method' do
-        expect(posts.respond_to?(:posting)).to be true
-      end
-    end
-
-    context 'when neither target nor criteria respond to the method' do
-      it 'returns false' do
-        expect(posts.respond_to?(:non_existent_method)).to be false
-      end
-    end
-  end
-
   describe '#min' do
+    let(:person) { Person.create! }
+    let(:post_one) { Post.create!(rating: 5) }
+    let(:post_two) { Post.create!(rating: 10) }
 
-    let(:person) do
-      Person.create!
-    end
+    # rubocop:disable Performance/CompareWithBlock
     let(:min) do
-      person.posts.min_by(&:rating)
+      person.posts.min do |a, b|
+        a.rating <=> b.rating
+      end
     end
-
-    let(:post_one) do
-      Post.create!(rating: 5)
-    end
-
-    let(:post_two) do
-      Post.create!(rating: 10)
-    end
+    # rubocop:enable Performance/CompareWithBlock
 
     before do
       person.posts.push(post_one, post_two)
@@ -3323,21 +2597,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#min_by' do
+    let(:person) { Person.create! }
+    let(:post_one) { Post.create!(rating: 5) }
 
-    let(:person) do
-      Person.create!
-    end
-    let(:min) do
-      person.posts.min_by(&:rating)
-    end
-
-    let(:post_one) do
-      Post.create!(rating: 5)
-    end
-
-    let(:post_two) do
-      Post.create!(rating: 10)
-    end
+    let(:post_two) { Post.create!(rating: 10) }
+    let(:min) { person.posts.min_by(&:rating) }
 
     before do
       person.posts.push(post_one, post_two)
@@ -3349,26 +2613,13 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#nullify_all' do
-
     context 'when the inverse has not been loaded' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let!(:post_one) do
-        person.posts.create!(title: 'One')
-      end
-
-      let!(:post_two) do
-        person.posts.create!(title: 'Two')
-      end
-
-      let(:from_db) do
-        Person.first
-      end
+      let(:person) { Person.create! }
+      let(:from_db) { Person.first }
 
       before do
+        person.posts.create!(title: 'One')
+        person.posts.create!(title: 'Two')
         from_db.posts.nullify_all
       end
 
@@ -3388,31 +2639,22 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association is not polymorphic' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      let!(:post_one) do
-        person.posts.create!(title: 'One')
-      end
-
-      let!(:post_two) do
-        person.posts.create!(title: 'Two')
-      end
+      let(:person) { Person.create! }
+      let!(:post_one) { person.posts.create!(title: 'One') }
+      let!(:post_two) { person.posts.create!(title: 'Two') }
 
       before do
         person.posts.nullify_all
       end
 
       it 'removes all the foreign keys from the target' do
-        [post_one, post_two].each do |post|
+        [ post_one, post_two ].each do |post|
           expect(post.person_id).to be_nil
         end
       end
 
       it 'removes all the references from the target' do
-        [post_one, post_two].each do |post|
+        [ post_one, post_two ].each do |post|
           expect(post.person).to be_nil
         end
       end
@@ -3422,43 +2664,33 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when adding a nullified document back to the association' do
-
         before do
           person.posts.push(post_one)
         end
 
         it 'persists the association' do
-          expect(person.posts(true)).to eq([post_one])
+          expect(person.posts(true)).to eq([ post_one ])
         end
       end
     end
 
     context 'when the association is polymorphic' do
-
-      let(:movie) do
-        Movie.create!(title: 'Oldboy')
-      end
-
-      let!(:rating_one) do
-        movie.ratings.create!(value: 10)
-      end
-
-      let!(:rating_two) do
-        movie.ratings.create!(value: 9)
-      end
+      let(:movie) { Movie.create!(title: 'Oldboy') }
+      let!(:rating_one) { movie.ratings.create!(value: 10) }
+      let!(:rating_two) { movie.ratings.create!(value: 9) }
 
       before do
         movie.ratings.nullify_all
       end
 
       it 'removes all the foreign keys from the target' do
-        [rating_one, rating_two].each do |rating|
+        [ rating_one, rating_two ].each do |rating|
           expect(rating.ratable_id).to be_nil
         end
       end
 
       it 'removes all the references from the target' do
-        [rating_one, rating_two].each do |rating|
+        [ rating_one, rating_two ].each do |rating|
           expect(rating.ratable).to be_nil
         end
       end
@@ -3466,19 +2698,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#respond_to?' do
-
-    let(:person) do
-      Person.new
-    end
-
-    let(:posts) do
-      person.posts
-    end
+    let(:person) { Person.new }
+    let(:posts) { person.posts }
 
     Array.public_instance_methods.each do |method|
-
       context "when checking #{method}" do
-
         it 'returns true' do
           expect(posts.respond_to?(method)).to be true
         end
@@ -3486,9 +2710,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     described_class.public_instance_methods.each do |method|
-
       context "when checking #{method}" do
-
         it 'returns true' do
           expect(posts.respond_to?(method)).to be true
         end
@@ -3496,9 +2718,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     Post.scopes.each_key do |method|
-
       context "when checking #{method}" do
-
         it 'returns true' do
           expect(posts.respond_to?(method)).to be true
         end
@@ -3507,14 +2727,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#scoped' do
-
-    let(:person) do
-      Person.new
-    end
-
-    let(:scoped) do
-      person.posts.scoped
-    end
+    let(:person) { Person.new }
+    let(:scoped) { person.posts.scoped }
 
     it 'returns the association criteria' do
       expect(scoped).to be_a(Mongoid::Criteria)
@@ -3525,17 +2739,12 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
   end
 
-  %i[size length].each do |method|
-
+  %i[ size length ].each do |method|
     describe "##{method}" do
-
-      let(:movie) do
-        Movie.create!
-      end
+      let(:movie) { Movie.create! }
 
       context 'when documents have been persisted' do
-
-        let!(:rating) do
+        before do
           movie.ratings.create!(value: 1)
         end
 
@@ -3545,7 +2754,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when documents have not been persisted' do
-
         before do
           movie.ratings.build(value: 1)
           movie.ratings.create!(value: 2)
@@ -3559,50 +2767,27 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   describe '#unscoped' do
-
     context 'when the association has no default scope' do
+      before { Post.create!(title: 'unattributed') }
 
-      let!(:person) do
-        Person.create!
-      end
-
-      let!(:post_one) do
-        person.posts.create!(title: 'first')
-      end
-
-      let!(:post_two) do
-        Post.create!(title: 'second')
-      end
-
-      let(:unscoped) do
-        person.posts.unscoped
-      end
+      let!(:person) { Person.create! }
+      let!(:post_one) { person.posts.create!(title: 'first') }
+      let(:unscoped) { person.posts.unscoped }
 
       it 'returns only the associated documents' do
-        expect(unscoped).to eq([post_one])
+        expect(unscoped).to eq([ post_one ])
       end
     end
 
     context 'when the association has a default scope' do
+      before { Acolyte.create!(name: 'unaffiliated') }
 
-      let!(:church) do
-        Church.create!
-      end
-
-      let!(:acolyte_one) do
-        church.acolytes.create!(name: 'first')
-      end
-
-      let!(:acolyte_two) do
-        Acolyte.create!(name: 'second')
-      end
-
-      let(:unscoped) do
-        church.acolytes.unscoped
-      end
+      let!(:church) { Church.create! }
+      let!(:acolyte_one) { church.acolytes.create!(name: 'first') }
+      let(:unscoped) { church.acolytes.unscoped }
 
       it 'only returns associated documents' do
-        expect(unscoped).to eq([acolyte_one])
+        expect(unscoped).to eq([ acolyte_one ])
       end
 
       it 'removes the default scoping options' do
@@ -3612,22 +2797,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   context 'when the association has an order defined' do
+    let(:person) { Person.create! }
+    let(:post_one) { OrderedPost.create!(rating: 10, title: '1') }
 
-    let(:person) do
-      Person.create!
-    end
-
-    let(:post_one) do
-      OrderedPost.create!(rating: 10, title: '1')
-    end
-
-    let(:post_two) do
-      OrderedPost.create!(rating: 20, title: '2')
-    end
-
-    let(:post_three) do
-      OrderedPost.create!(rating: 20, title: '3')
-    end
+    let(:post_two) { OrderedPost.create!(rating: 20, title: '2') }
+    let(:post_three) { OrderedPost.create!(rating: 20, title: '3') }
 
     before do
       person.ordered_posts.nullify_all
@@ -3635,46 +2809,33 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     it 'order documents' do
-      expect(person.ordered_posts(true)).to eq(
-        [post_two, post_three, post_one]
-      )
+      expect(person.ordered_posts(true))
+        .to eq [ post_two, post_three, post_one ]
     end
 
     it 'chaining order criteria' do
-      expect(person.ordered_posts.order_by(:title.desc).to_a).to eq(
-        [post_three, post_two, post_one]
-      )
+      expect(person.ordered_posts.order_by(:title.desc).to_a)
+        .to eq [ post_three, post_two, post_one ]
     end
   end
 
   context 'when reloading the association' do
+    let!(:person) { Person.create! }
+    let!(:post_one) { Post.create!(title: 'one') }
 
-    let!(:person) do
-      Person.create!
-    end
-
-    let!(:post_one) do
-      Post.create!(title: 'one')
-    end
-
-    let!(:post_two) do
-      Post.create!(title: 'two')
-    end
+    let!(:post_two) { Post.create!(title: 'two') }
 
     before do
       person.posts << post_one
     end
 
     context 'when the association references the same documents' do
-
       before do
         Post.collection.find({ _id: post_one.id })
             .update_one({ '$set' => { title: 'reloaded' } })
       end
 
-      let(:reloaded) do
-        person.posts(true)
-      end
+      let(:reloaded) { person.posts(true) }
 
       it 'reloads the document from the database' do
         expect(reloaded.first.title).to eq('reloaded')
@@ -3682,14 +2843,11 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when the association references different documents' do
-
       before do
         person.posts << post_two
       end
 
-      let(:reloaded) do
-        person.posts(true)
-      end
+      let(:reloaded) { person.posts(true) }
 
       it 'reloads the first document from the database' do
         expect(reloaded).to include(post_one)
@@ -3702,7 +2860,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   context 'when the parent is using integer ids' do
-
     let(:jar) do
       Jar.create! do |doc|
         doc._id = 1
@@ -3715,47 +2872,25 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   context 'when adding a document' do
-
-    let(:person) do
-      Person.new
-    end
-
-    let(:post_one) do
-      Post.new
-    end
-
-    let(:first_add) do
-      person.posts.push(post_one)
-    end
+    let(:person) { Person.new }
+    let(:post_one) { Post.new }
+    let(:first_add) { person.posts.push(post_one) }
 
     context 'when chaining a second add' do
-
-      let(:post_two) do
-        Post.new
-      end
-
-      let(:result) do
-        first_add.push(post_two)
-      end
+      let(:post_two) { Post.new }
+      let(:result) { first_add.push(post_two) }
 
       it 'adds both documents' do
-        expect(result).to eq([post_one, post_two])
+        expect(result).to eq([ post_one, post_two ])
       end
     end
   end
 
   context 'when pushing with a before_add callback' do
-
-    let(:artist) do
-      Artist.new
-    end
-
-    let(:album) do
-      Album.new
-    end
+    let(:artist) { Artist.new }
+    let(:album) { Album.new }
 
     context 'when execution raises no errors' do
-
       before do
         artist.albums << album
       end
@@ -3769,35 +2904,25 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       it 'adds the document to the association' do
-        expect(artist.albums).to eq([album])
+        expect(artist.albums).to eq([ album ])
       end
     end
 
     context 'when execution raises errors' do
-
       before do
-        expect(artist).to receive(:before_add_album).and_raise
-        begin
-          artist.albums << album
-        rescue StandardError
-        end
+        allow(artist).to receive(:before_add_album).and_raise
       end
 
       it 'does not add the document to the association' do
+        expect { artist.albums << album }.to raise_error(StandardError)
         expect(artist.albums).to be_empty
       end
     end
   end
 
   context 'when pushing with an after_add callback' do
-
-    let(:artist) do
-      Artist.new
-    end
-
-    let(:album) do
-      Album.new
-    end
+    let(:artist) { Artist.new }
+    let(:album) { Album.new }
 
     it 'executes the callback' do
       artist.albums << album
@@ -3805,57 +2930,48 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when execution raises errors' do
-
       before do
-        expect(artist).to receive(:after_add_album).and_raise
-        begin
-          artist.albums << album
-        rescue StandardError
-        end
+        allow(artist).to receive(:after_add_album).and_raise
       end
 
       it 'adds the document to the association' do
-        expect(artist.albums).to eq([album])
+        expect { artist.albums << album }.to raise_error(StandardError)
+        expect(artist.albums).to eq([ album ])
       end
     end
 
     context 'when the association already exists' do
-
       before do
         artist.albums << album
         album.save!
         artist.save!
-        expect(artist).to_not receive(:after_add_album)
       end
 
       let(:reloaded_album) do
-        Album.where(artist_id: artist.id).first
+        Album.where(artist_id: artist.id).first.tap do |a|
+          allow(a.artist).to receive(:after_add_album)
+        end
       end
 
+      let(:reloaded_album_artist) { reloaded_album.artist }
+
       it 'does not execute the callback when the association is accessed' do
-        expect(reloaded_album.artist.after_add_referenced_called).to be_nil
+        expect(reloaded_album_artist.after_add_referenced_called).to be_nil
+        expect(reloaded_album_artist).not_to have_received(:after_add_album)
       end
     end
   end
 
   context 'when #delete or #clear with before_remove callback' do
-
-    let(:artist) do
-      Artist.new
-    end
-
-    let(:album) do
-      Album.new
-    end
+    let(:artist) { Artist.new }
+    let(:album) { Album.new }
 
     before do
       artist.albums << album
     end
 
     context 'when executing raises no errors' do
-
       describe '#delete' do
-
         before do
           artist.albums.delete album
         end
@@ -3870,7 +2986,6 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       describe '#clear' do
-
         before do
           artist.albums.clear
         end
@@ -3885,32 +3000,21 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
       end
 
       context 'when execution raises errors' do
-
         before do
-          expect(artist).to receive(:before_remove_album).and_raise
+          allow(artist).to receive(:before_remove_album).and_raise
         end
 
         describe '#delete' do
-
-          before do
-            artist.albums.delete(album)
-          rescue StandardError
-          end
-
           it 'does not remove the document from the association' do
-            expect(artist.albums).to eq([album])
+            expect { artist.albums.delete(album) }.to raise_error(StandardError)
+            expect(artist.albums).to eq([ album ])
           end
         end
 
         describe '#clear' do
-
-          before do
-            artist.albums.clear
-          rescue StandardError
-          end
-
           it 'does not clear the association' do
-            expect(artist.albums).to eq([album])
+            expect { artist.albums.clear }.to raise_error(StandardError)
+            expect(artist.albums).to eq([ album ])
           end
         end
       end
@@ -3918,71 +3022,44 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   context 'when #delete or #clear with after_remove callback' do
-
-    let(:artist) do
-      Artist.new
-    end
-
-    let(:album) do
-      Album.new
-    end
+    let(:artist) { Artist.new }
+    let(:album) { Album.new }
 
     before do
       artist.albums << album
     end
 
     context 'without errors' do
-
       describe '#delete' do
-
-        before do
-          artist.albums.delete album
-        end
-
         it 'executes the callback' do
+          expect { artist.albums.delete album }.not_to raise_error
           expect(artist.after_remove_referenced_called).to be true
         end
       end
 
       describe '#clear' do
-
-        before do
-          artist.albums.clear
-        end
-
         it 'executes the callback' do
-          artist.albums.clear
+          expect { artist.albums.clear }.not_to raise_error
           expect(artist.after_remove_referenced_called).to be true
         end
       end
     end
 
     context 'when errors are raised' do
-
       before do
-        expect(artist).to receive(:after_remove_album).and_raise
+        allow(artist).to receive(:after_remove_album).and_raise
       end
 
       describe '#delete' do
-
-        before do
-          artist.albums.delete(album)
-        rescue StandardError
-        end
-
         it 'removes the documents from the association' do
+          expect { artist.albums.delete(album) }.to raise_error(StandardError)
           expect(artist.albums).to be_empty
         end
       end
 
       describe '#clear' do
-
-        before do
-          artist.albums.clear
-        rescue StandardError
-        end
-
         it 'removes the documents from the association' do
+          expect { artist.albums.clear }.to raise_error(StandardError)
           expect(artist.albums).to be_empty
         end
       end
@@ -3990,59 +3067,37 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   context 'when executing a criteria call on an ordered association' do
+    let(:person) { Person.create! }
+    let!(:post_one) { person.ordered_posts.create!(rating: 1) }
 
-    let(:person) do
-      Person.create!
-    end
-
-    let!(:post_one) do
-      person.ordered_posts.create!(rating: 1)
-    end
-
-    let!(:post_two) do
-      person.ordered_posts.create!(rating: 5)
-    end
-
-    let(:criteria) do
-      person.ordered_posts.only(:_id, :rating)
-    end
+    let!(:post_two) { person.ordered_posts.create!(rating: 5) }
+    let(:criteria) { person.ordered_posts.only(:_id, :rating) }
 
     it 'does not drop the ordering' do
-      expect(criteria).to eq([post_two, post_one])
+      expect(criteria).to eq([ post_two, post_one ])
     end
   end
 
   context 'when accessing a scope named open' do
-
-    let(:person) do
-      Person.create!
-    end
-
-    let!(:post) do
-      person.posts.create!(title: 'open')
-    end
+    let(:person) { Person.create! }
+    let!(:post) { person.posts.create!(title: 'open') }
 
     it 'returns the appropriate documents' do
-      expect(person.posts.open).to eq([post])
+      expect(person.posts.open).to eq([ post ])
     end
   end
 
   context 'when accessing a association named parent' do
-
-    let!(:parent) do
-      Odd.create!(name: 'odd parent')
-    end
-
+    let!(:parent) { Odd.create!(name: 'odd parent') }
     let(:child) do
-      Even.create!(parent_id: parent.id, name: 'original even child')
+      Even
+        .create!(parent_id: parent.id, name: 'original even child')
+        .tap(&:parent) # preload the parent association
     end
+
+    let(:new_child_name) { 'updated even child' }
 
     it 'updates the child after accessing the parent' do
-      # Access parent association on the child to make sure it is loaded
-      child.parent
-
-      new_child_name = 'updated even child'
-
       child.name = new_child_name
       child.save!
 
@@ -4052,18 +3107,10 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   context 'when a document has referenced and embedded associations' do
+    let(:agent) { Agent.new }
+    let(:basic) { Basic.new }
 
-    let(:agent) do
-      Agent.new
-    end
-
-    let(:basic) do
-      Basic.new
-    end
-
-    let(:address) do
-      Address.new
-    end
+    let(:address) { Address.new }
 
     before do
       agent.basics << basic
@@ -4076,14 +3123,8 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
   end
 
   context 'when the two models use the same name to refer to the association' do
-
-    let(:agent) do
-      Agent.new
-    end
-
-    let(:band) do
-      Band.new
-    end
+    let(:agent) { Agent.new }
+    let(:band) { Band.new }
 
     before do
       agent.same_name = band
@@ -4093,32 +3134,37 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     end
 
     it 'constructs the correct criteria' do
-      expect(band.same_name).to eq([agent])
+      expect(band.same_name).to eq [ agent ]
     end
   end
 
-  context 'when removing a document with counter_cache on' do
+  context 'when updating a document with counter_cache on' do
     let(:post) { Post.create! }
-    let(:person1) { Person.create! }
-    let(:person2) { Person.create! }
+    let(:arthur) { Person.create! }
+    let(:betty) { Person.create! }
 
-    before do
-      post.update_attribute(:person, person1)
-      expect(person1.posts_count).to eq 1
-
-      person2
-      post.update_attribute(:person, person2)
-      person1.reload
-      expect(person1.posts_count).to eq 0
-      expect(person2.posts_count).to eq 1
-
-      post.update_attribute(:person, nil)
-      person1.reload
-      person2.reload
+    context 'when setting an attribution' do
+      it 'sets the counter correctly' do
+        post.update_attribute(:person, arthur)
+        expect(arthur.reload.posts_count).to eq 1
+      end
     end
 
-    it 'the count field is updated' do
-      expect(person2.posts_count).to eq 0
+    context 'when changing an attribution' do
+      it 'sets the counter correctly' do
+        post.update_attribute(:person, arthur)
+        post.update_attribute(:person, betty)
+        expect(arthur.reload.posts_count).to eq 0
+        expect(betty.reload.posts_count).to eq 1
+      end
+    end
+
+    context 'when removing an attribution' do
+      it 'sets the counter correctly' do
+        post.update_attribute(:person, arthur)
+        post.update_attribute(:person, nil)
+        expect(arthur.reload.posts_count).to eq 0
+      end
     end
   end
 
@@ -4134,17 +3180,14 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
     before do
       Agent.create!
       Basic.create!
+      agent.basic_ids.push basic.id
     end
 
     let!(:agent) { Agent.first }
     let!(:basic) { Basic.first }
 
-    before do
-      agent.basic_ids.push(basic.id)
-    end
-
     it 'works on the first attempt' do
-      expect(agent.basic_ids).to eq([basic.id])
+      expect(agent.basic_ids).to eq [ basic.id ]
     end
   end
 end

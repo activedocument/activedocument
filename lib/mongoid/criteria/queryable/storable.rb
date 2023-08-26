@@ -47,7 +47,7 @@ module Mongoid
             if value.is_a?(Hash) && selector[field].is_a?(Hash) &&
                value.keys.all? do |key|
                  key_s = key.to_s
-                 key_s.start_with?('$') && !selector[field].key?(key_s)
+                 key_s.start_with?('$') && !selector[field].keys.map(&:to_s).include?(key_s)
                end
               # Multiple operators can be combined on the same field by
               # adding them to the existing hash.
@@ -81,7 +81,7 @@ module Mongoid
         #
         #     {'$or' => [{'hello' => 'world'}]}
         #
-        # ... and operator is '$or' and op_expr is `[{'test' => 123'}]`,
+        # ... and operator is '$or' and op_expr is +[{'test' => 123'}]+,
         # the resulting selector will be:
         #
         #     {'$or' => [{'hello' => 'world'}, {'test' => 123}]}
@@ -155,7 +155,7 @@ module Mongoid
         #
         #     {'foo' => 'bar', '$or' => [{'hello' => 'world'}]}
         #
-        # ... and operator is '$or' and op_expr is `{'test' => 123'}`,
+        # ... and operator is '$or' and op_expr is +{'test' => 123'}+,
         # the resulting selector will be:
         #
         #     {'foo' => 'bar', '$or' => [{'hello' => 'world'}, {'test' => 123}]}

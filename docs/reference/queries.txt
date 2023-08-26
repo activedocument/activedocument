@@ -2377,22 +2377,14 @@ document inserts, updates, and deletion.
 Query Cache
 ===========
 
-The Ruby MongoDB driver provide query caching functionality. When enabled, the
+The Ruby MongoDB driver provides query caching functionality. When enabled, the
 query cache saves the results of previously executed find and aggregation
 queries and reuses them in the future instead of performing the queries again,
 thus increasing application performance and reducing database load.
 
-The query cache has historically been provided by Mongoid but as of driver
-version 2.14.0, the query cache implementation has been moved into the driver.
-When Mongoid is used with driver version 2.14.0 or later, Mongoid delegates
-all work to the driver's query cache implementation.
-
 Please review the `driver query cache documentation
 <https://mongodb.com/docs/ruby-driver/current/reference/query-cache/>`_
 for details about the driver's query cache behavior.
-
-The rest of this section assumes that driver 2.14.0 or later is being used and
-Mongoid delegates to the driver's query cache.
 
 
 Enabling Query Cache

@@ -16,6 +16,68 @@ module Mongoid
         class Proxy < Association::Many
           include Batchable
 
+          # Class-level methods for the Proxy class.
+          module ClassMethods
+
+            # Returns the eager loader for this association.
+            #
+            # @param [ Array<Mongoid::Association> ] associations The
+            #   associations to be eager loaded
+            # @param [ Array<Mongoid::Document> ] docs The parent documents
+            #   that possess the given associations, which ought to be
+            #   populated by the eager-loaded documents.
+            #
+            # @return [ Mongoid::Association::Embedded::Eager ]
+            def eager_loader(associations, docs)
+              Eager.new(associations, docs)
+            end
+
+            # Returns true if the association is an embedded one. In this case
+            # always true.
+            #
+            # @example Is the association embedded?
+            #   Association::Embedded::EmbedsMany.embedded?
+            #
+            # @return [ true ] true.
+            def embedded?
+              true
+            end
+
+            # Returns the suffix of the foreign key field, either "_id" or "_ids".
+            #
+            # @example Get the suffix for the foreign key.
+            #   Association::Embedded::EmbedsMany.foreign_key_suffix
+            #
+            # @return [ nil ] nil.
+            def foreign_key_suffix
+              nil
+            end
+          end
+
+          extend ClassMethods
+
+          # Instantiate a new embeds_many association.
+          #
+          # @example Create the new association.
+          #   Many.new(person, addresses, association)
+          #
+          # @param [ Mongoid::Document ] base The document this association hangs off of.
+          # @param [ Array<Mongoid::Document> ] target The child documents of the association.
+          # @param [ Mongoid::Association::Relatable ] association The association metadata.
+          #
+          # @return [ Many ] The proxy.
+          def initialize(base, target, association)
+            super do
+              _target.each_with_index do |doc, index|
+                integrate(doc)
+                doc._index = index
+              end
+              update_attributes_hash
+              @_unscoped = _target.dup
+              @_target = scope(_target)
+            end
+          end
+
           # Appends a document or array of documents to the association. Will set
           # the parent and update the index in the process.
           #
@@ -28,12 +90,14 @@ module Mongoid
           # @param [ Mongoid::Document... ] *args Any number of documents.
           def <<(*args)
             docs = args.flatten
+            return unless docs.any?
             return concat(docs) if docs.size > 1
 
             if (doc = docs.first)
               append(doc)
               doc.save if persistable? && !_assigning?
             end
+
             self
           end
 
@@ -161,6 +225,23 @@ module Mongoid
             end
           end
 
+          # Mongoid::Extensions::Array defines Array#delete_one, so we need
+          # to make sure that method behaves reasonably on proxies, too.
+          alias_method :delete_one, :delete
+
+          # Removes a single document from the collection *in memory only*.
+          # It will *not* persist the change.
+          #
+          # @param [ Document ] document The document to delete.
+          #
+          # @api private
+          def _remove(document)
+            _target.delete_one(document)
+            _unscoped.delete_one(document)
+            update_attributes_hash
+            reindex
+          end
+
           # Delete all the documents in the association without running callbacks.
           #
           # @example Delete all documents from the association.
@@ -183,18 +264,14 @@ module Mongoid
           #     doc.state == "GA"
           #   end
           #
-          # @return [ Many | Enumerator ] The association or an enumerator if no
-          #   block was provided.
+          # @return [ EmbedsMany::Proxy | Enumerator ] The proxy or an
+          #   enumerator if no block was provided.
           def delete_if
-            if block_given?
-              dup_target = _target.dup
-              dup_target.each do |doc|
-                delete(doc) if yield(doc)
-              end
-              self
-            else
-              super
-            end
+            return super unless block_given?
+
+            _target.dup.each { |doc| delete(doc) if yield doc }
+
+            self
           end
 
           # Destroy all the documents in the association whilst running callbacks.
@@ -256,37 +333,13 @@ module Mongoid
             criteria.find(...)
           end
 
-          # Instantiate a new embeds_many association.
-          #
-          # @example Create the new association.
-          #   Many.new(person, addresses, association)
-          #
-          # @param [ Mongoid::Document ] base The document this association hangs off of.
-          # @param [ Array<Mongoid::Document> ] target The child documents of the association.
-          # @param [ Mongoid::Association::Relatable ] association The association metadata.
-          #
-          # @return [ Many ] The proxy.
-          def initialize(base, target, association)
-            init(base, target, association) do
-              _target.each_with_index do |doc, index|
-                integrate(doc)
-                doc._index = index
-              end
-              update_attributes_hash
-              @_unscoped = _target.dup
-              @_target = scope(_target)
-            end
-          end
-
           # Get all the documents in the association that are loaded into memory.
           #
           # @example Get the in memory documents.
           #   relation.in_memory
           #
           # @return [ Array<Mongoid::Document> ] The documents in memory.
-          def in_memory
-            _target
-          end
+          alias_method :in_memory, :_target
 
           # Pop documents off the association. This can be a single document or
           # multiples, and will automatically persist the changes.
@@ -300,17 +353,12 @@ module Mongoid
           # @param [ Integer ] count The number of documents to pop, or 1 if not
           #   provided.
           #
-          # @return [ Mongoid::Document | Array<Mongoid::Document> ] The popped document(s).
+          # @return [ Mongoid::Document | Array<Mongoid::Document> | nil ] The popped document(s).
           def pop(count = nil)
-            if count
-              if (docs = _target[_target.size - count, _target.size])
-                docs.each { |doc| delete(doc) }
-              end
-            else
-              delete(_target[-1])
-            end.tap do
-              update_attributes_hash
-            end
+            return [] if count&.zero?
+
+            docs = _target.last(count || 1).each { |doc| delete(doc) }
+            (count.nil? || docs.empty?) ? docs.first : docs
           end
 
           # Shift documents off the association. This can be a single document or
@@ -325,17 +373,12 @@ module Mongoid
           # @param [ Integer ] count The number of documents to shift, or 1 if not
           #   provided.
           #
-          # @return [ Mongoid::Document | Array<Mongoid::Document> ] The shifted document(s).
+          # @return [ Mongoid::Document | Array<Mongoid::Document> | nil ] The shifted document(s).
           def shift(count = nil)
-            if count
-              if !_target.empty? && (docs = _target[0, count])
-                docs.each { |doc| delete(doc) }
-              end
-            else
-              delete(_target[0])
-            end.tap do
-              update_attributes_hash
-            end
+            return [] if count&.zero?
+
+            docs = _target.first(count || 1).each { |doc| delete(doc) }
+            (count.nil? || docs.empty?) ? docs.first : docs
           end
 
           # Substitutes the supplied target documents for the existing documents
@@ -369,8 +412,15 @@ module Mongoid
 
           private
 
+          # The internal unscoped documents.
+          #
+          # @param [ Array<Mongoid::Document> ] docs The documents.
+          #
+          # @return [ Array<Mongoid::Document> ] The unscoped docs.
+          attr_accessor :_unscoped
+
           def object_already_related?(document)
-            _target.any? { |existing| existing._id && existing === document }
+            _target.any? { |existing| existing._id && existing == document }
           end
 
           # Appends the document to the target array, updating the index on the
@@ -406,21 +456,6 @@ module Mongoid
           # @return [ Mongoid::Criteria ] A new criteria.
           def criteria
             _association.criteria(_base, _target)
-          end
-
-          # Deletes one document from the target and unscoped.
-          #
-          # @api private
-          #
-          # @example Delete one document.
-          #   relation.delete_one(doc)
-          #
-          # @param [ Mongoid::Document ] document The document to delete.
-          def delete_one(document)
-            _target.delete_one(document)
-            _unscoped.delete_one(document)
-            update_attributes_hash
-            reindex
           end
 
           # Integrate the document into the association. will set its metadata and
@@ -521,26 +556,6 @@ module Mongoid
             removed
           end
 
-          # Get the internal unscoped documents.
-          #
-          # @example Get the unscoped documents.
-          #   relation._unscoped
-          #
-          # @return [ Array<Mongoid::Document> ] The unscoped documents.
-          def _unscoped
-            @_unscoped ||= []
-          end
-
-          # Set the internal unscoped documents.
-          #
-          # @example Set the unscoped documents.
-          #   relation._unscoped = docs
-          #
-          # @param [ Array<Mongoid::Document> ] docs The documents.
-          #
-          # @return [ Array<Mongoid::Document> ] The unscoped docs.
-          attr_writer :_unscoped
-
           # Returns a list of attributes hashes for each document.
           #
           # @return [ Array<Hash> ] The list of attributes hashes
@@ -556,42 +571,6 @@ module Mongoid
               _base.attributes.delete(_association.store_as)
             else
               _base.attributes.merge!(_association.store_as => _target.map(&:attributes))
-            end
-          end
-
-          class << self
-            # Returns the eager loader for this association.
-            #
-            # @param [ Array<Mongoid::Association> ] associations The
-            #   associations to be eager loaded
-            # @param [ Array<Mongoid::Document> ] docs The parent documents
-            #   that possess the given associations, which ought to be
-            #   populated by the eager-loaded documents.
-            #
-            # @return [ Mongoid::Association::Embedded::Eager ]
-            def eager_loader(associations, docs)
-              Eager.new(associations, docs)
-            end
-
-            # Returns true if the association is an embedded one. In this case
-            # always true.
-            #
-            # @example Is the association embedded?
-            #   Association::Embedded::EmbedsMany.embedded?
-            #
-            # @return [ true ] true.
-            def embedded?
-              true
-            end
-
-            # Returns the suffix of the foreign key field, either "_id" or "_ids".
-            #
-            # @example Get the suffix for the foreign key.
-            #   Association::Embedded::EmbedsMany.foreign_key_suffix
-            #
-            # @return [ nil ] nil.
-            def foreign_key_suffix
-              nil
             end
           end
         end

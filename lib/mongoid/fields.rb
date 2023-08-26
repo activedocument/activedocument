@@ -807,16 +807,17 @@ module Mongoid
       #
       # @return [ Class ] The type of the field.
       #
-      # @raises [ Mongoid::Errors::InvalidFieldType ] if given an invalid field
+      # @raise [ Mongoid::Errors::InvalidFieldType ] if given an invalid field
       #   type.
       #
       # @api private
       def retrieve_and_validate_type(name, type)
         type_mapping = TYPE_MAPPINGS[type]
         result = type_mapping || unmapped_type(type)
+
         if !result.is_a?(Class)
           raise Errors::InvalidFieldType.new(self, name, type)
-        elsif INVALID_BSON_CLASSES.include?(result)
+        elsif unsupported_type?(result)
           warn_message = "Using #{result} as the field type is not supported. "
           warn_message += if result == BSON::Decimal128
                             'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+.'
@@ -843,6 +844,19 @@ module Mongoid
         else
           type || Object
         end
+      end
+
+      # Queries whether or not the given type is permitted as a declared field
+      # type.
+      #
+      # @param [ Class ] type The type to query
+      #
+      # @return [ true | false ] whether or not the type is supported
+      #
+      # @api private
+      def unsupported_type?(type)
+        return !Mongoid::Config.allow_bson5_decimal128? if type == BSON::Decimal128
+        INVALID_BSON_CLASSES.include?(type)
       end
     end
   end

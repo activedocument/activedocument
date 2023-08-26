@@ -9,36 +9,91 @@ module Mongoid
   module Traversable
     extend ActiveSupport::Concern
 
-    # Returns the parent document.
+    # Class-level methods for the Traversable behavior.
+    module ClassMethods
+
+      # Determines if the document is a subclass of another document.
+      #
+      # @example Check if the document is a subclass.
+      #   Square.hereditary?
+      #
+      # @return [ true | false ] True if hereditary, false if not.
+      def hereditary?
+        !!(superclass < Mongoid::Document)
+      end
+
+      # When inheriting, we want to copy the fields from the parent class and
+      # set the on the child to start, mimicking the behavior of the old
+      # class_inheritable_accessor that was deprecated in Rails edge.
+      #
+      # @example Inherit from this class.
+      #   Person.inherited(Doctor)
+      #
+      # @param [ Class ] subclass The inheriting class.
+      #
+      # rubocop:disable Metrics/AbcSize
+      def inherited(subclass)
+        super
+        @_type = nil
+        subclass.aliased_fields = aliased_fields.dup
+        subclass.localized_fields = localized_fields.dup
+        subclass.fields = fields.dup
+        subclass.pre_processed_defaults = pre_processed_defaults.dup
+        subclass.post_processed_defaults = post_processed_defaults.dup
+        subclass._declared_scopes = Hash.new { |_hash, key| _declared_scopes[key] }
+        subclass.discriminator_value = subclass.name
+
+        # We need to do this here because the discriminator_value method is
+        # overridden in the subclass above.
+        subclass.include DiscriminatorRetrieval
+
+        # We only need the _type field if inheritance is in play, but need to
+        # add to the root class as well for backwards compatibility.
+        return if fields.key?(discriminator_key)
+
+        default_proc = -> { self.class.discriminator_value }
+        field(discriminator_key, default: default_proc, type: String)
+      end
+      # rubocop:enable Metrics/AbcSize
+    end
+
+    # `_parent` is intentionally not implemented via attr_accessor because
+    # of the need to use a double underscore for the instance variable.
+    # Associations automatically create backing variables prefixed with a
+    # single underscore, which would conflict with this accessor if a model
+    # were to declare a `parent` association.
+
+    # Retrieves the parent document of this document.
     #
-    # @returns [ Mongoid::Document ] The parent document.
+    # @return [ Mongoid::Document | nil ] the parent document
     #
     # @api private
     def _parent
-      @__parent ||= nil
+      @__parent || nil
     end
 
-    # Sets the parent document.
+    # Sets the parent document of this document.
     #
-    # @param [ Mongoid::Document ] value The parent document to set.
+    # @param [ Mongoid::Document | nil ] document the document to set as
+    #   the parent document.
     #
     # @returns [ Mongoid::Document ] The parent document.
     #
     # @api private
-    def _parent=(value)
-      @__parent = value
+    def _parent=(document)
+      @__parent = document
     end
 
     # Module used for prepending to the various discriminator_*= methods
     #
     # @api private
     module DiscriminatorAssignment
-
       # Sets the discriminator key.
       #
       # @param [ String ] value The discriminator key to set.
       #
       # @api private
+      # rubocop:disable Metrics/AbcSize
       def discriminator_key=(value)
         raise Errors::InvalidDiscriminatorKeyTarget.new(self, superclass) if hereditary?
 
@@ -66,6 +121,7 @@ module Mongoid
         default_proc = -> { self.class.discriminator_value }
         field(discriminator_key, default: default_proc, type: String)
       end
+      # rubocop:enable Metrics/AbcSize
 
       # Returns the discriminator key.
       #
@@ -89,7 +145,6 @@ module Mongoid
     #
     # @api private
     module DiscriminatorRetrieval
-
       # Get the name on the reading side if the discriminator_value is nil
       def discriminator_value
         @discriminator_value || name
@@ -139,11 +194,20 @@ module Mongoid
 
     # Get all child +Documents+ to this +Document+
     #
-    # @return [ Array<Mongoid::Document> ] All child documents in the hierarchy.
+    # @return [ Array<Document> ] All child documents in the hierarchy.
     #
     # @api private
-    def _children
-      @__children ||= collect_children
+    def _children(reset: false)
+      # See discussion above for the `_parent` method, as to why the variable
+      # here needs to have two underscores.
+      #
+      # rubocop:disable Naming/MemoizedInstanceVariableName
+      if reset
+        @__children = nil
+      else
+        @__children ||= collect_children
+      end
+      # rubocop:enable Naming/MemoizedInstanceVariableName
     end
 
     # Get all descendant +Documents+ of this +Document+ recursively.
@@ -153,44 +217,48 @@ module Mongoid
     # always be preferred, since they are optimized calls... This operation
     # can get expensive in domains with large hierarchies.
     #
-    # @return [ Array<Mongoid::Document> ] All descendant documents in the hierarchy.
+    # @return [ Array<Document> ] All descendant documents in the hierarchy.
     #
     # @api private
-    def _descendants
-      @__descendants ||= collect_descendants
+    def _descendants(reset: false)
+      # See discussion above for the `_parent` method, as to why the variable
+      # here needs to have two underscores.
+      #
+      # rubocop:disable Naming/MemoizedInstanceVariableName
+      if reset
+        @__descendants = nil
+      else
+        @__descendants ||= collect_descendants
+      end
+      # rubocop:enable Naming/MemoizedInstanceVariableName
     end
 
     # Collect all the children of this document.
     #
-    # @return [ Array<Mongoid::Document> ] The children.
+    # @return [ Array<Document> ] The children.
     #
     # @api private
     def collect_children
-      children = []
-      embedded_relations.each_pair do |name, _association|
-        without_autobuild do
-          child = send(name)
-          children += Array.wrap(child) if child
+      [].tap do |children|
+        embedded_relations.each_pair do |name, _association|
+          without_autobuild do
+            child = send(name)
+            children.concat(Array.wrap(child)) if child
+          end
         end
       end
-      children
     end
 
     # Collect all the descendants of this document.
     #
-    # @return [ Array<Mongoid::Document> ] The descendants.
+    # @return [ Array<Document> ] The descendants.
     #
     # @api private
     def collect_descendants
       children = []
-      to_expand = []
+      to_expand = _children
       expanded = {}
-      embedded_relations.each_pair do |name, _association|
-        without_autobuild do
-          child = send(name)
-          to_expand += Array.wrap(child) if child
-        end
-      end
+
       until to_expand.empty?
         expanding = to_expand
         to_expand = []
@@ -205,12 +273,13 @@ module Mongoid
           to_expand += child._children
         end
       end
+
       children
     end
 
     # Marks all descendants as being persisted.
     #
-    # @return [ Array<Mongoid::Document> ] The flagged descendants.
+    # @return [ Array<Document> ] The flagged descendants.
     def flag_descendants_persisted
       _descendants.each do |child|
         child.new_record = false
@@ -233,9 +302,9 @@ module Mongoid
     # @example Set the parent document.
     #   document.parentize(parent)
     #
-    # @param [ Mongoid::Document ] document The parent document.
+    # @param [ Document ] document The parent document.
     #
-    # @return [ Mongoid::Document ] The parent document.
+    # @return [ Document ] The parent document.
     def parentize(document)
       self._parent = document
     end
@@ -248,7 +317,7 @@ module Mongoid
     # @example Remove the child.
     #   document.remove_child(child)
     #
-    # @param [ Mongoid::Document ] child The child (embedded) document to remove.
+    # @param [ Document ] child The child (embedded) document to remove.
     def remove_child(child)
       name = child.association_name
       if child.embedded_one?
@@ -256,14 +325,14 @@ module Mongoid
         remove_ivar(name)
       else
         relation = send(name)
-        relation.send(:delete_one, child)
+        relation._remove(child)
       end
     end
 
     # After descendants are persisted we can call this to move all their
     # changes and flag them as persisted in one call.
     #
-    # @return [ Array<Mongoid::Document> ] The descendants.
+    # @return [ Array<Document> ] The descendants.
     def reset_persisted_descendants
       _descendants.each do |child|
         child.move_changes
@@ -280,8 +349,8 @@ module Mongoid
     # @api private
     def _reset_memoized_descendants!
       _parent&._reset_memoized_descendants!
-      @__children = nil
-      @__descendants = nil
+      _children reset: true
+      _descendants reset: true
     end
 
     # Return the root document in the object graph. If the current document
@@ -290,12 +359,10 @@ module Mongoid
     # @example Get the root document in the hierarchy.
     #   document._root
     #
-    # @return [ Mongoid::Document ] The root document in the hierarchy.
+    # @return [ Document ] The root document in the hierarchy.
     def _root
       object = self
-      while object._parent
-        object = object._parent
-      end
+      object = object._parent while object._parent
       object
     end
 
@@ -307,52 +374,6 @@ module Mongoid
     # @return [ true | false ] If the document is the root.
     def _root?
       _parent ? false : true
-    end
-
-    module ClassMethods
-
-      # Determines if the document is a subclass of another document.
-      #
-      # @example Check if the document is a subclass.
-      #   Square.hereditary?
-      #
-      # @return [ true | false ] True if hereditary, false if not.
-      def hereditary?
-        !!(superclass < Mongoid::Document)
-      end
-
-      # When inheriting, we want to copy the fields from the parent class and
-      # set the on the child to start, mimicking the behavior of the old
-      # class_inheritable_accessor that was deprecated in Rails edge.
-      #
-      # @example Inherit from this class.
-      #   Person.inherited(Doctor)
-      #
-      # @param [ Class ] subclass The inheriting class.
-      def inherited(subclass)
-        super
-        @_type = nil
-        subclass.aliased_fields = aliased_fields.dup
-        subclass.localized_fields = localized_fields.dup
-        subclass.fields = fields.dup
-        subclass.pre_processed_defaults = pre_processed_defaults.dup
-        subclass.post_processed_defaults = post_processed_defaults.dup
-        subclass._declared_scopes = Hash.new { |_hash, key| _declared_scopes[key] }
-        subclass.discriminator_value = subclass.name
-
-        # We need to do this here because the discriminator_value method is
-        # overridden in the subclass above.
-        class << subclass
-          include DiscriminatorRetrieval
-        end
-
-        # We only need the _type field if inheritance is in play, but need to
-        # add to the root class as well for backwards compatibility.
-        return if fields.key?(discriminator_key)
-
-        default_proc = -> { self.class.discriminator_value }
-        field(discriminator_key, default: default_proc, type: String)
-      end
     end
   end
 end

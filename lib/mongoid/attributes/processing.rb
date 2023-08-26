@@ -52,16 +52,42 @@ module Mongoid
                   end
 
         if relations.key?(aliased)
-          pending_relations[name] = value
+          set_pending_relation(name, aliased, value)
           return true
         end
 
         if nested_attributes.key?(aliased)
-          pending_nested[name] = value
+          set_pending_nested(name, aliased, value)
           return true
         end
 
         false
+      end
+
+      # Set value of the pending relation.
+      #
+      # @param [ Symbol ] name The name of the relation.
+      # @param [ Symbol ] aliased The aliased name of the relation.
+      # @param [ Object ] value The value of the relation.
+      def set_pending_relation(name, aliased, value)
+        if stored_as_associations.include?(name)
+          pending_relations[aliased] = value
+        else
+          pending_relations[name] = value
+        end
+      end
+
+      # Set value of the pending nested attribute.
+      #
+      # @param [ Symbol ] name The name of the nested attribute.
+      # @param [ Symbol ] aliased The aliased name of the nested attribute.
+      # @param [ Object ] value The value of the nested attribute.
+      def set_pending_nested(name, aliased, value)
+        if stored_as_associations.include?(name)
+          pending_nested[aliased] = value
+        else
+          pending_nested[name] = value
+        end
       end
 
       # Get all the pending associations that need to be set.

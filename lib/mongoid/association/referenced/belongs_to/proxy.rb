@@ -25,7 +25,7 @@ module Mongoid
           #   association.
           # @param [ Mongoid::Association::Relatable ] association The association object.
           def initialize(base, target, association)
-            init(base, target, association) do
+            super do
               characterize_one(_target)
               bind_one
             end

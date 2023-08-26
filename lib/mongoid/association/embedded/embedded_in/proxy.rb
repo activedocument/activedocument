@@ -24,7 +24,7 @@ module Mongoid
           #
           # @return [ In ] The proxy.
           def initialize(base, target, association)
-            init(base, target, association) do
+            super do
               characterize_one(_target)
               bind_one
             end
@@ -71,9 +71,7 @@ module Mongoid
           #
           # @param [ Mongoid::Document ] document The document to set the association metadata on.
           def characterize_one(document)
-            return if _base._association
-
-            _base._association = _association.inverse_association(document)
+            _base._association ||= _association.inverse_association(document)
           end
 
           # Are we able to persist this association?

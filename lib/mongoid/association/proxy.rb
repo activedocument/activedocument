@@ -10,13 +10,28 @@ module Mongoid
     class Proxy
       extend Forwardable
 
-      UNFORWARDABLE_METHODS = /\A(?:__.*|send|object_id|equal\?|respond_to\?|respond_to_missing\?|tap|public_send|extend_proxy|extend_proxies)\z/.freeze
+      # Specific methods to prevent from being undefined.
+      #
+      # @api private
+      KEEP_METHODS = %i[
+        send
+        object_id
+        equal?
+        respond_to?
+        respond_to_missing?
+        tap
+        public_send
+        extend_proxy
+        extend_proxies
+      ].freeze
 
       alias_method :extend_proxy, :extend
 
       # We undefine most methods to get them sent through to the target.
       instance_methods.each do |method|
-        undef_method(method) unless UNFORWARDABLE_METHODS.match?(method)
+        next if method.to_s.start_with?('__') || KEEP_METHODS.include?(method)
+
+        undef_method(method)
       end
 
       include Threaded::Lifecycle
@@ -42,11 +57,7 @@ module Mongoid
       def_delegators :binding, :bind_one, :unbind_one
       def_delegator :_base, :collection_name
 
-      # Convenience for setting the target and the association metadata properties since
-      # all proxies will need to do this.
-      #
-      # @example Initialize the proxy.
-      #   proxy.init(person, name, association)
+      # Sets the target and the association metadata properties.
       #
       # @param [ Mongoid::Document ] base The base document on the proxy.
       # @param [ Mongoid::Document | Array<Mongoid::Document> ] target The target of the proxy.

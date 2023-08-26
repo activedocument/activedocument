@@ -32,6 +32,10 @@ module Mongoid
     # The key for storing documents modified inside transactions.
     MODIFIED_DOCUMENTS_KEY = '[mongoid]:modified-documents'
 
+    # The key storing the default value for whether or not callbacks are
+    # executed on documents.
+    EXECUTE_CALLBACKS = '[mongoid]:execute-callbacks'
+
     extend self
 
     # Begin entry into a named thread local stack.
@@ -232,10 +236,7 @@ module Mongoid
     # @return [ Mongoid::Criteria ] The scope.
     def set_current_scope(scope, klass)
       if scope.nil?
-        if Thread.current[CURRENT_SCOPE_KEY]
-          Thread.current[CURRENT_SCOPE_KEY].delete(klass)
-          Thread.current[CURRENT_SCOPE_KEY] = nil if Thread.current[CURRENT_SCOPE_KEY].empty?
-        end
+        unset_current_scope(klass)
       else
         Thread.current[CURRENT_SCOPE_KEY] ||= {}
         Thread.current[CURRENT_SCOPE_KEY][klass] = scope
@@ -330,7 +331,7 @@ module Mongoid
     # @param [ Mongo::Session ] session The session to save.
     # @param [ Mongo::Client | nil ] client The client to cache the session for.
     def set_session(session, client: nil)
-      sessions[client.object_id] = session
+      sessions[client] = session
     end
 
     # Get the cached session for this thread for a client.
@@ -342,7 +343,7 @@ module Mongoid
     #
     # @return [ Mongo::Session | nil ] The session cached on this thread or nil.
     def get_session(client: nil)
-      sessions[client.object_id]
+      sessions[client]
     end
 
     # Clear the cached session for this thread for a client.
@@ -354,7 +355,7 @@ module Mongoid
     #
     # @return [ nil ]
     def clear_session(client: nil)
-      sessions.delete(client.object_id)&.end_session
+      sessions.delete(client)&.end_session
     end
 
     # Store a reference to the document that was modified inside a transaction
@@ -382,13 +383,37 @@ module Mongoid
       modified_documents[session].clear
     end
 
+    # Queries whether document callbacks should be executed by default for the
+    # current thread. Unless otherwise indicated (by #execute_callbacks=), this
+    # will return true.
+    #
+    # @return [ true | false ] Whether or not document callbacks should be
+    #   executed by default.
+    def execute_callbacks?
+      if Thread.current.key?(EXECUTE_CALLBACKS)
+        Thread.current[EXECUTE_CALLBACKS]
+      else
+        true
+      end
+    end
+
+    # Indicates whether document callbacks should be invoked by default for
+    # the current thread. Individual documents may further override the
+    # callback behavior, but this will be used for the default behavior.
+    #
+    # @param flag [ true | false ] Whether or not document callbacks should be
+    #   executed by default.
+    def execute_callbacks=(flag)
+      Thread.current[EXECUTE_CALLBACKS] = flag
+    end
+
     # Returns the thread store of sessions.
     #
     # @return [ Hash<Integer, Set> ] The sessions indexed by client object ID.
     #
     # @api private
     def sessions
-      Thread.current[SESSIONS_KEY] ||= {}
+      Thread.current[SESSIONS_KEY] ||= {}.compare_by_identity
     end
 
     # Returns the thread store of modified documents.
@@ -401,6 +426,19 @@ module Mongoid
       Thread.current[MODIFIED_DOCUMENTS_KEY] ||= Hash.new do |h, k|
         h[k] = Set.new
       end
+    end
+
+    private
+
+    # Removes the given klass from the current scope, and tidies the current
+    # scope list.
+    #
+    # @param klass [ Class ] the class to remove from the current scope.
+    def unset_current_scope(klass)
+      return unless Thread.current[CURRENT_SCOPE_KEY]
+
+      Thread.current[CURRENT_SCOPE_KEY].delete(klass)
+      Thread.current[CURRENT_SCOPE_KEY] = nil if Thread.current[CURRENT_SCOPE_KEY].empty?
     end
   end
 end

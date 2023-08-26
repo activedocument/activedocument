@@ -52,7 +52,7 @@ module Mongoid
         # If a document has hash fields, as_attributes would keep those fields
         # as Hash instances which do not offer indifferent access.
         # Convert to BSON::Document to get indifferent access on hash fields.
-        document = BSON::Document.new(document.send(:as_attributes))
+        document = document.send(:as_attributes)
       end
 
       current = [document]
@@ -62,14 +62,22 @@ module Mongoid
         current.each do |doc|
           case doc
           when Hash
-            new << doc[field] if doc.key?(field)
+            actual_key = find_exact_key(doc, field)
+            if !actual_key.nil?
+              new << doc[actual_key]
+            end
           when Array
             if (index = field.to_i).to_s == field && (doc.length > index)
               new << doc[index]
             end
 
             doc.each do |subdoc|
-              new << subdoc[field] if subdoc.is_a?(Hash) && subdoc.key?(field)
+              if Hash === subdoc
+                actual_key = find_exact_key(subdoc, field)
+                if !actual_key.nil?
+                  new << subdoc[actual_key]
+                end
+              end
             end
           end
         end
@@ -78,6 +86,20 @@ module Mongoid
       end
 
       current
+    end
+
+    # Indifferent string or symbol key lookup, returning the exact key.
+    #
+    # @param [ Hash ] hash The input hash.
+    # @param [ String | Symbol ] key The key to perform indifferent lookups with.
+    #
+    # @return [ String | Symbol | nil ] The exact key (with the correct type) that exists in the hash, or nil if the key does not exist.
+    def find_exact_key(hash, key)
+      key_s = key.to_s
+      return key_s if hash.key?(key_s)
+
+      key_sym = key.to_sym
+      hash.key?(key_sym) ? key_sym : nil
     end
   end
 end

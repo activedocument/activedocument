@@ -14,8 +14,54 @@ module Mongoid
         class Proxy < Association::Many
           extend Forwardable
 
+          # Class-level methods for HasMany::Proxy
+          module ClassMethods
+
+            # Get the eager loader object for this type of association.
+            #
+            # @example Get the eager loader object
+            #
+            # @param [ Association ] association The association object.
+            # @param [ Array<Document> ] docs The array of documents.
+            #
+            # @return [ Mongoid::Association::Referenced::HasMany::Eager ]
+            #   The eager loader.
+            def eager_loader(association, docs)
+              Eager.new(association, docs)
+            end
+
+            # Returns true if the association is an embedded one. In this case
+            # always false.
+            #
+            # @example Is this association embedded?
+            #   Referenced::Many.embedded?
+            #
+            # @return [ false ] Always false.
+            def embedded?
+              false
+            end
+          end
+
+          extend ClassMethods
+
           def_delegator :criteria, :count
           def_delegators :_target, :first, :in_memory, :last, :reset, :uniq
+
+          # Instantiate a new references_many association. Will set the foreign key
+          # and the base on the inverse object.
+          #
+          # @example Create the new association.
+          #   Referenced::Many.new(base, target, association)
+          #
+          # @param [ Mongoid::Document ] base The document this association hangs off of.
+          # @param [ Array<Mongoid::Document> ] target The target of the association.
+          # @param [ Mongoid::Association::Relatable ] association The association metadata.
+          def initialize(base, target, association)
+            enum = HasMany::Enumerable.new(target, base, association)
+            super(base, enum, association) do
+              raise_mixed if klass.embedded? && !klass.cyclic?
+            end
+          end
 
           # Appends a document or array of documents to the association. Will set
           # the parent and update the index in the process.
@@ -63,6 +109,7 @@ module Mongoid
               append(doc)
               save_or_delay(doc, docs, inserts) if persistable?
             end
+
             persist_delayed(docs, inserts)
             self
           end
@@ -101,16 +148,21 @@ module Mongoid
           # @return [ Mongoid::Document ] The matching document.
           def delete(document)
             execute_callbacks_around(:remove, document) do
-              _target.delete(document) do |doc|
+              result = _target.delete(document) do |doc|
                 if doc
                   unbind_one(doc)
                   cascade!(doc) unless _assigning?
                 end
-              end.tap do
-                reset_unloaded
               end
+
+              reset_unloaded
+              result
             end
           end
+
+          # Mongoid::Extensions::Array defines Array#delete_one, so we need
+          # to make sure that method behaves reasonably on proxies, too.
+          alias delete_one delete
 
           # Deletes all related documents from the database given the supplied
           # conditions.
@@ -220,22 +272,6 @@ module Mongoid
             matching
           end
 
-          # Instantiate a new references_many association. Will set the foreign key
-          # and the base on the inverse object.
-          #
-          # @example Create the new association.
-          #   Referenced::Many.new(base, target, association)
-          #
-          # @param [ Mongoid::Document ] base The document this association hangs off of.
-          # @param [ Array<Mongoid::Document> ] target The target of the association.
-          # @param [ Mongoid::Association::Relatable ] association The association metadata.
-          def initialize(base, target, association)
-            enum = HasMany::Enumerable.new(target, base, association)
-            init(base, enum, association) do
-              raise_mixed if klass.embedded? && !klass.cyclic?
-            end
-          end
-
           # Removes all associations between the base document and the target
           # documents by deleting the foreign keys and the references, orphaning
           # the target documents in the process.
@@ -260,25 +296,24 @@ module Mongoid
           #
           # @return [ Many ] The association emptied.
           def purge
-            if _association.destructive?
-              after_remove_error = nil
-              criteria.delete_all
-              many = _target.clear do |doc|
-                execute_callback :before_remove, doc
-                unbind_one(doc)
-                doc.destroyed = true
-                begin
-                  execute_callback :after_remove, doc
-                rescue StandardError => e
-                  after_remove_error = e
-                end
-              end
-              raise after_remove_error if after_remove_error
+            return nullify unless _association.destructive?
 
-              many
-            else
-              nullify
+            after_remove_error = nil
+            criteria.delete_all
+            many = _target.clear do |doc|
+              execute_callback :before_remove, doc
+              unbind_one(doc)
+              doc.destroyed = true
+              begin
+                execute_callback :after_remove, doc
+              rescue StandardError => e
+                after_remove_error = e
+              end
             end
+
+            raise after_remove_error if after_remove_error
+
+            many
           end
 
           alias_method :clear, :purge
@@ -514,17 +549,28 @@ module Mongoid
           # @param [ Array<Object> ] ids The ids.
           def remove_not_in(ids)
             removed = criteria.not_in(_id: ids)
-            if _association.destructive?
-              removed.delete_all
-            else
-              removed.update_all(foreign_key => nil)
-            end
+
+            update_or_delete_all(removed)
+
             in_memory.each do |doc|
               next if ids.include?(doc._id)
 
               unbind_one(doc)
               _target.delete(doc)
               doc.destroyed = true if _association.destructive?
+            end
+          end
+
+          # If the association is destructive, the matching documents will
+          # be removed. Otherwise, their foreign keys will be set to nil.
+          #
+          # @param [ Mongoid::Criteria ] removed The criteria for the documents to
+          #   remove.
+          def update_or_delete_all(removed)
+            if _association.destructive?
+              removed.delete_all
+            else
+              removed.update_all(foreign_key => nil)
             end
           end
 
@@ -545,33 +591,6 @@ module Mongoid
               inserts.push(doc.send(:as_attributes))
             else
               doc.save
-            end
-          end
-
-          class << self
-
-            # Get the Eager object for this type of association.
-            #
-            # @example Get the eager loader object
-            #
-            # @param [ Association ] association The association object.
-            # @param [ Array<Document> ] docs The array of documents.
-            #
-            # @return [ Mongoid::Association::Referenced::HasMany::Eager ]
-            #   The eager loader.
-            def eager_loader(association, docs)
-              Eager.new(association, docs)
-            end
-
-            # Returns true if the association is an embedded one. In this case
-            # always false.
-            #
-            # @example Is this association embedded?
-            #   Referenced::Many.embedded?
-            #
-            # @return [ false ] Always false.
-            def embedded?
-              false
             end
           end
         end

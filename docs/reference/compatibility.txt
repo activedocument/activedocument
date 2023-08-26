@@ -32,7 +32,7 @@ specified Mongoid versions.
    :class: compatibility-large no-padding
 
    * - Mongoid
-     - Driver 2.18
+     - Driver 2.19-2.18
      - Driver 2.17-2.10
      - Driver 2.9-2.7
 
@@ -83,7 +83,7 @@ is deprecated.
      - |checkmark|
      - |checkmark|
      - D
-     -
+     - D
      -
      -
      -
@@ -97,13 +97,13 @@ is deprecated.
      - |checkmark|
      - |checkmark|
      - |checkmark|
-     - D
+     - |checkmark|
+     -
      -
      -
      -
      -
      - |checkmark|
-     - D
      -
 
    * - 8.0
@@ -250,6 +250,7 @@ and will be removed in a next version.
    :class: compatibility-large no-padding
 
    * - Mongoid
+     - MongoDB 7.0
      - MongoDB 6.0
      - MongoDB 5.0
      - MongoDB 4.4
@@ -262,6 +263,7 @@ and will be removed in a next version.
      - MongoDB 2.6
 
    * - 9.0
+     - |checkmark|
      - |checkmark|
      - |checkmark|
      - D
@@ -304,12 +306,15 @@ and will be removed in a next version.
      - |checkmark|
      - |checkmark|
      - |checkmark|
+     - |checkmark|
      - D
      - D
      - D
      - D
 
    * - 6.4 thru 7.3
+     -
+     -
      -
      - |checkmark|
      - |checkmark|
@@ -353,7 +358,7 @@ are supported by Mongoid.
      - |checkmark|
      - |checkmark|
      - |checkmark|
-     - D [#rails-5-ruby-3.0]_
+     - |checkmark| [#rails-5-ruby-3.0]_
      -
 
    * - 8.0

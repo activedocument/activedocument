@@ -29,6 +29,7 @@ describe Mongoid::Config::Encryption do
                 },
                 'blood_type' => {
                   'encrypt' => {
+                    'keyId' => '/blood_type_key_name',
                     'bsonType' => 'string',
                     'algorithm' => 'AEAD_AES_256_CBC_HMAC_SHA_512-Random'
                   }
@@ -80,7 +81,7 @@ describe Mongoid::Config::Encryption do
 
           let(:expected_schema_map) do
             {
-              'mongoid_test.crypt_cars' => {
+              'vehicles.crypt_cars' => {
                 'bsonType' => 'object',
                 'encryptMetadata' => {
                   'keyId' => [BSON::Binary.new(Base64.decode64('grolrnFVSSW9Gq04Q87R9Q=='), :uuid)],
