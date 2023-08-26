@@ -240,7 +240,7 @@ module Mongoid
       end
     end
 
-    # a singleton object to represent an optional `to` or `from` value
+    # A singleton object to represent an optional `to` or `from` value
     # that was not explicitly provided to #attribute_changed?
     ATTRIBUTE_UNCHANGED = Anything.new
 
@@ -256,12 +256,10 @@ module Mongoid
     # @return [ true | false ] Whether the attribute has changed.
     def attribute_changed?(attr, from: ATTRIBUTE_UNCHANGED, to: ATTRIBUTE_UNCHANGED)
       attr = database_field_name(attr)
-      return false !changed_attributes.key?(attr) ||
-                   changed_attributes[attr] == attributes[attr] ||
-                   from != changed_attributes[attr] ||
-                   to != attributes[attr]
-
-      true
+      changed_attributes.key?(attr) &&
+        changed_attributes[attr] != attributes[attr] &&
+        from == changed_attributes[attr] &&
+        to == attributes[attr]
     end
 
     # Get whether or not the field has a different value from the default.
