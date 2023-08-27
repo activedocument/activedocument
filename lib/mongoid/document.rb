@@ -449,7 +449,7 @@ module Mongoid
       #
       # @return [ Array<Class> ] All subclasses of the current document.
       def _types
-        @_type ||= (descendants + [self]).uniq.map(&:discriminator_value)
+        @_types ||= (descendants + [self]).uniq.map(&:discriminator_value)
       end
 
       # Clear the @_type cache. This is generally called when changing the discriminator
