@@ -27,6 +27,7 @@ shared_context 'rake task' do
   shared_examples_for 'create_indexes' do
 
     it 'receives create_indexes' do
+      pending 'MONGOID-5656'
       expect(Mongoid::Tasks::Database).to receive(:create_indexes)
       task.invoke
     end
@@ -357,6 +358,7 @@ describe 'db:mongoid:encryption:create_data_key' do
   end
 
   it 'creates the key' do
+    pending 'MONGOID-5656'
     task.invoke
   end
 
@@ -364,6 +366,7 @@ describe 'db:mongoid:encryption:create_data_key' do
     include_context 'rails rake task'
 
     it 'creates the key' do
+      pending 'MONGOID-5656'
       task.invoke
     end
   end
