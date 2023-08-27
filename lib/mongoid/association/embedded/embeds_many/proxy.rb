@@ -358,7 +358,7 @@ module Mongoid
             return [] if count&.zero?
 
             docs = _target.last(count || 1).each { |doc| delete(doc) }
-            (count.nil? || docs.empty?) ? docs.first : docs
+            count.nil? || docs.empty? ? docs.first : docs
           end
 
           # Shift documents off the association. This can be a single document or
@@ -378,7 +378,7 @@ module Mongoid
             return [] if count&.zero?
 
             docs = _target.first(count || 1).each { |doc| delete(doc) }
-            (count.nil? || docs.empty?) ? docs.first : docs
+            count.nil? || docs.empty? ? docs.first : docs
           end
 
           # Substitutes the supplied target documents for the existing documents

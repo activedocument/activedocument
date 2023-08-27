@@ -75,7 +75,7 @@ describe Mongoid::Criteria::Queryable::Selector do
     context 'when selector contains a $nin symbol' do
 
       let(:initial) do
-        { :$nin => %w['foo'] }
+        { :$nin => %w[foo] }
       end
 
       before do
@@ -92,7 +92,7 @@ describe Mongoid::Criteria::Queryable::Selector do
           selector.merge!(other)
         end
 
-        it "combines the two $nin queries into one" do
+        it 'combines the two $nin queries into one' do
           expect(selector).to eq({
             'field' => { :$nin => %w[foo bar] }
           })
@@ -165,7 +165,7 @@ describe Mongoid::Criteria::Queryable::Selector do
           selector.merge!(other)
         end
 
-        it "intersects the $in values" do
+        it 'intersects the $in values' do
           expect(selector).to eq({
             'field' => { :$in => [1] }
           })
@@ -182,7 +182,7 @@ describe Mongoid::Criteria::Queryable::Selector do
           selector.merge!(other)
         end
 
-        it "intersects the $in values" do
+        it 'intersects the $in values' do
           expect(selector).to eq({
             'field' => { :$in => [] }
           })

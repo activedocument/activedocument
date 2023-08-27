@@ -7,7 +7,7 @@ namespace :db do
     namespace :encryption do
 
       desc 'Create encryption key'
-      task create_data_key: [ :environment ] do
+      task create_data_key: [:environment] do
         options = {}
 
         parser = OptionParser.new do |opts|

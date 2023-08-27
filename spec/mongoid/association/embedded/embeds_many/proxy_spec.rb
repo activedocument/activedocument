@@ -1862,12 +1862,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
   end
 
   %i[delete delete_one].each do |method|
-    describe "\##{method}" do
-      let(:address_one) { Address.new(street: "first") }
-      let(:address_two) { Address.new(street: "second") }
+    describe "##{method}" do
+      let(:address_one) { Address.new(street: 'first') }
+      let(:address_two) { Address.new(street: 'second') }
 
       before do
-        person.addresses << [ address_one, address_two ]
+        person.addresses << [address_one, address_two]
       end
 
       shared_examples_for 'deleting from the collection' do
@@ -1877,12 +1877,12 @@ describe Mongoid::Association::Embedded::EmbedsMany::Proxy do
           end
 
           it 'deletes the document' do
-            expect(person.addresses).to eq([ address_two ])
-            expect(person.reload.addresses).to eq([ address_two ]) if person.persisted?
+            expect(person.addresses).to eq([address_two])
+            expect(person.reload.addresses).to eq([address_two]) if person.persisted?
           end
 
           it 'deletes the document from the unscoped' do
-            expect(person.addresses.send(:_unscoped)).to eq([ address_two ])
+            expect(person.addresses.send(:_unscoped)).to eq([address_two])
           end
 
           it 'reindexes the relation' do

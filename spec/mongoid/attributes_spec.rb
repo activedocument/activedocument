@@ -2736,7 +2736,7 @@ describe Mongoid::Attributes do
     end
 
     it 'saves successfully' do
-      expect(person.save!).to eq(true)
+      expect(person.save!).to be(true)
     end
 
     context 'when persisted' do

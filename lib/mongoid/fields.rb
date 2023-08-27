@@ -856,6 +856,7 @@ module Mongoid
       # @api private
       def unsupported_type?(type)
         return !Mongoid::Config.allow_bson5_decimal128? if type == BSON::Decimal128
+
         INVALID_BSON_CLASSES.include?(type)
       end
     end

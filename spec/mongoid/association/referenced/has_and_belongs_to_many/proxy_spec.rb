@@ -2098,13 +2098,13 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
   end
 
   %i[delete delete_one].each do |method|
-    describe "\##{method}" do
+    describe "##{method}" do
       let(:person) { Person.create! }
       let(:preference_one) { Preference.create!(name: 'Testing') }
       let(:preference_two) { Preference.create!(name: 'Test') }
 
       before do
-        person.preferences << [ preference_one, preference_two ]
+        person.preferences << [preference_one, preference_two]
       end
 
       context 'when the document exists' do
@@ -2113,7 +2113,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it 'removes the document from the relation' do
-          expect(person.preferences).to eq([ preference_two ])
+          expect(person.preferences).to eq([preference_two])
         end
 
         it 'returns the document' do
@@ -2121,7 +2121,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it 'removes the document key from the foreign key' do
-          expect(person.preference_ids).to eq([ preference_two.id ])
+          expect(person.preference_ids).to eq([preference_two.id])
         end
 
         it 'removes the inverse reference' do
@@ -2140,11 +2140,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           end
 
           it 'nullifies the deleted preference' do
-            expect(person.preferences).to eq([ preference_two ])
+            expect(person.preferences).to eq([preference_two])
           end
 
           it 'retains the ids for one preference' do
-            expect(person.preference_ids).to eq([ preference_two.id ])
+            expect(person.preference_ids).to eq([preference_two.id])
           end
         end
       end
@@ -2159,11 +2159,11 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         it 'does not modify the relation' do
-          expect(person.preferences).to eq([ preference_one, preference_two ])
+          expect(person.preferences).to eq([preference_one, preference_two])
         end
 
         it 'does not modify the keys' do
-          expect(person.preference_ids).to eq([ preference_one.id, preference_two.id ])
+          expect(person.preference_ids).to eq([preference_one.id, preference_two.id])
         end
       end
 
@@ -2172,7 +2172,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           let(:event) { Event.create! }
 
           before do
-            person.administrated_events << [ event ]
+            person.administrated_events << [event]
           end
 
           it 'deletes the document' do
@@ -2210,7 +2210,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
         end
 
         context 'when deleting with reloading' do
-          context "when deleting from the front side" do
+          context 'when deleting from the front side' do
             let(:reloaded) { tag_one.reload }
             let!(:deleted) { reloaded.related.send(method, tag_two) }
 
@@ -2273,14 +2273,14 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
             end
           end
 
-          context "when errors are raised" do
+          context 'when errors are raised' do
             before do
               expect(post).to receive(:before_remove_tag).and_raise
-              begin; post.tags.send(method, tag); rescue; end
+              begin; post.tags.send(method, tag); rescue StandardError; end
             end
 
             it 'does not remove the document from the relation' do
-              expect(post.tags).to eq([ tag ])
+              expect(post.tags).to eq([tag])
             end
           end
         end
@@ -2303,7 +2303,7 @@ describe Mongoid::Association::Referenced::HasAndBelongsToMany::Proxy do
           context 'when errors are raised' do
             before do
               expect(post).to receive(:after_remove_tag).and_raise
-              begin; post.tags.send(method, tag); rescue; end
+              begin; post.tags.send(method, tag); rescue StandardError; end
             end
 
             it 'removes the document from the relation' do

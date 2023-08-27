@@ -333,10 +333,10 @@ describe Mongoid::Reloadable do
       let(:contractor2) { Contractor.new(name: 'c') }
 
       let(:building) do
-        Building.create!(name: 'a', contractors: [ contractor1 ])
+        Building.create!(name: 'a', contractors: [contractor1])
       end
 
-      let(:more_contractors) { building.contractors + [ contractor2 ] }
+      let(:more_contractors) { building.contractors + [contractor2] }
 
       let(:modified_building) do
         building.tap do
@@ -347,7 +347,7 @@ describe Mongoid::Reloadable do
       let(:reloaded_building) { modified_building.reload }
 
       it 'resets delayed_atomic_sets' do
-        expect(modified_building.delayed_atomic_sets).not_to be_empty
+        expect(modified_building.delayed_atomic_sets).to_not be_empty
         expect(reloaded_building.delayed_atomic_sets).to be_empty
       end
     end

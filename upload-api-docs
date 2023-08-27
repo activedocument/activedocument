@@ -18,9 +18,9 @@ require 'yard'
 class FileUploader
   def initialize(options)
     Aws.config.update({
-                        region: options[:region],
-                        credentials: Aws::Credentials.new(options[:access_key], options[:secret_key])
-                      })
+      region: options[:region],
+      credentials: Aws::Credentials.new(options[:access_key], options[:secret_key])
+    })
     Aws.use_bundled_cert!
     @s3 = Aws::S3::Client.new
     @bucket = options[:bucket]
@@ -87,16 +87,16 @@ class Options
       end
     end.parse!
     %i[bucket region].each do |opt|
-      raise OptionParser::MissingArgument, "Option --#{opt} is required" unless @options[opt]
+      raise OptionParser::MissingArgument.new("Option --#{opt} is required") unless @options[opt]
     end
   end
 
   def parse_env_options!
     @options[:access_key] = ENV.fetch('DOCS_AWS_ACCESS_KEY_ID') do
-      raise ArgumentError, 'Please provide aws access key via DOCS_AWS_ACCESS_KEY_ID env variable'
+      raise ArgumentError.new('Please provide aws access key via DOCS_AWS_ACCESS_KEY_ID env variable')
     end
     @options[:secret_key] = ENV.fetch('DOCS_AWS_SECRET_ACCESS_KEY') do
-      raise ArgumentError, 'Please provide aws secret key via DOCS_AWS_SECRET_ACCESS_KEY env variable'
+      raise ArgumentError.new('Please provide aws secret key via DOCS_AWS_SECRET_ACCESS_KEY env variable')
     end
   end
 end

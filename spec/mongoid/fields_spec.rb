@@ -562,14 +562,14 @@ describe Mongoid::Fields do
     context 'when the field is declared as BSON::Decimal128' do
       let(:document) { Mop.create!(decimal128_field: BSON::Decimal128.new(Math::PI.to_s)).reload }
 
-      shared_context 'BSON::Decimal128 is BigDecimal' do
-        it 'should return a BigDecimal' do
+      shared_examples 'BSON::Decimal128 is BigDecimal' do
+        it 'returns a BigDecimal' do
           expect(document.decimal128_field).to be_a BigDecimal
         end
       end
 
-      shared_context 'BSON::Decimal128 is BSON::Decimal128' do
-        it 'should return a BSON::Decimal128' do
+      shared_examples 'BSON::Decimal128 is BSON::Decimal128' do
+        it 'returns a BSON::Decimal128' do
           expect(document.decimal128_field).to be_a BSON::Decimal128
         end
       end

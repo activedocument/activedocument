@@ -63,7 +63,7 @@ module Mongoid
           case doc
           when Hash
             actual_key = find_exact_key(doc, field)
-            if !actual_key.nil?
+            unless actual_key.nil?
               new << doc[actual_key]
             end
           when Array
@@ -72,11 +72,11 @@ module Mongoid
             end
 
             doc.each do |subdoc|
-              if Hash === subdoc
-                actual_key = find_exact_key(subdoc, field)
-                if !actual_key.nil?
-                  new << subdoc[actual_key]
-                end
+              next unless subdoc.is_a?(Hash)
+
+              actual_key = find_exact_key(subdoc, field)
+              unless actual_key.nil?
+                new << subdoc[actual_key]
               end
             end
           end

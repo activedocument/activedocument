@@ -92,8 +92,8 @@ describe 'Encryption' do
     unencrypted_client
       .use(Crypt::Car.storage_options[:database])[Crypt::Car.collection.name]
       .find(_id: car.id).first.tap do |doc|
-        expect(doc[:vin]).to be_a(BSON::Binary)
-        expect(doc[:vin].type).to eq(:ciphertext)
+      expect(doc[:vin]).to be_a(BSON::Binary)
+      expect(doc[:vin].type).to eq(:ciphertext)
     end
   end
 end

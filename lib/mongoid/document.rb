@@ -190,7 +190,7 @@ module Mongoid
         run_callbacks(:initialize) unless _initialize_callbacks.empty?
       else
         yield self if block_given?
-        self.pending_callbacks += %i[ apply_defaults find initialize ]
+        self.pending_callbacks += %i[apply_defaults find initialize]
       end
     end
 
@@ -280,8 +280,9 @@ module Mongoid
     # @param name [ String | Symbol ] the name of the relation to add
     # @param meta [ Mongoid::Assocation::Relatable ] the relation object
     def add_attributes_for_relation(name, meta)
-      relation, stored = send(name), meta.store_as
-      return unless attributes.key?(stored) || !relation.blank?
+      relation = send(name)
+      stored = meta.store_as
+      return unless attributes.key?(stored) || relation.present?
 
       if relation.nil?
         attributes.delete(stored)
@@ -299,7 +300,7 @@ module Mongoid
     def mongoid_document_check!(klass)
       return if klass.include?(Mongoid::Document)
 
-      raise ArgumentError, 'A class which includes Mongoid::Document is expected'
+      raise ArgumentError.new('A class which includes Mongoid::Document is expected')
     end
 
     # Constructs a hash representing the internal state of this object,
@@ -364,8 +365,8 @@ module Mongoid
       # @param [ true | false ] execute_callbacks Whether callbacks should be
       #   suppressed or not.
       def with_callbacks(execute_callbacks)
-        saved, Threaded.execute_callbacks =
-          Threaded.execute_callbacks?, execute_callbacks
+        saved = Threaded.execute_callbacks?
+        Threaded.execute_callbacks = execute_callbacks
         yield
       ensure
         Threaded.execute_callbacks = saved

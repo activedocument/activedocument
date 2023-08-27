@@ -558,7 +558,7 @@ describe 'callbacks integration tests' do
   context 'nested embedded documents' do
     config_override :prevent_multiple_calls_of_embedded_callbacks, true
 
-    let(:logger) { Array.new }
+    let(:logger) { [] }
 
     let(:root) do
       Root.new(
@@ -570,7 +570,7 @@ describe 'callbacks integration tests' do
       )
     end
 
-    before(:each) do
+    before do
       root.logger = logger
       root.embedded_once.first.logger = logger
       root.embedded_once.first.embedded_twice.first.logger = logger

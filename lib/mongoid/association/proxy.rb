@@ -62,7 +62,7 @@ module Mongoid
       # @param [ Mongoid::Document ] base The base document on the proxy.
       # @param [ Mongoid::Document | Array<Mongoid::Document> ] target The target of the proxy.
       # @param [ Mongoid::Association::Relatable ] association The association metadata.
-      def init(base, target, association)
+      def initialize(base, target, association)
         @_base = base
         @_target = target
         @_association = association
