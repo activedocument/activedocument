@@ -801,15 +801,6 @@ Rails/TimeZone:
     - 'spec/support/models/post.rb'
 
 # Offense count: 5
-# Configuration parameters: Include.
-# Include: spec/**/*.rb, test/**/*.rb
-Rails/TimeZoneAssignment:
-  Exclude:
-    - 'spec/integration/criteria/raw_value_spec.rb'
-    - 'spec/support/macros.rb'
-    - 'spec/support/shared/time.rb'
-
-# Offense count: 5
 Style/MultilineBlockChain:
   Exclude:
     - 'lib/mongoid/association/eager.rb'

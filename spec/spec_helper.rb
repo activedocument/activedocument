@@ -163,4 +163,8 @@ RSpec.configure do |config|
       timeout_lib.timeout(30) { example.run }
     end
   end
+
+  config.around do |example|
+    Time.use_zone('UTC') { example.run }
+  end
 end

@@ -104,10 +104,7 @@ module Mongoid
 
     def time_zone_override(time_zone)
       around do |example|
-        old_time_zone = Time.zone
-        Time.zone = time_zone
-        example.run
-        Time.zone = old_time_zone
+        Time.use_zone(time_zone) { example.run }
       end
     end
 
