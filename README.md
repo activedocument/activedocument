@@ -11,6 +11,10 @@ Mongoid is the Ruby Object Document Mapper (ODM) for MongoDB.
 
 This fork of Mongoid is **not** endorsed by or affiliated with MongoDB Inc. 👍
 
+## 📣 Open Call for Community Steering Committee
+
+If you would like to help with governance and/or maintenance of this project, please [raise an issue](https://github.com/tablecheck/mongoid-ultra/issues/new).
+
 ## Installation
 
 Replace `gem 'mongoid'` in your application's Gemfile with:
@@ -133,7 +137,7 @@ The email should be encrypted with the following PGP public key:
 
 We appreciate your help to disclose security issues responsibly.
 
-## Maintainership
+## Project Governance
 
 Mongoid Ultra is shepherded by the team at TableCheck. TableCheck have been avid Mongoid users since 2013,
 contributing over 150 PRs to Mongoid and MongoDB Ruby projects. TableCheck uses Mongoid to power millions of
