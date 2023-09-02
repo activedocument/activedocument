@@ -2,6 +2,7 @@
 
 require 'active_model/attribute_methods'
 require 'mongoid/attributes/dynamic'
+require 'mongoid/attributes/embedded'
 require 'mongoid/attributes/nested'
 require 'mongoid/attributes/processing'
 require 'mongoid/attributes/projector'
@@ -294,7 +295,7 @@ module Mongoid
         if fields.key?(normalized)
           attributes[normalized]
         else
-          attributes.__nested__(normalized)
+          Embedded.traverse(attributes, normalized)
         end
       else
         attributes[normalized]
