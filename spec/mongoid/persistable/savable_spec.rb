@@ -294,7 +294,7 @@ describe Mongoid::Persistable::Savable do
           expect(truck.crates[0].toys[0].name).to eq 'Teddy bear'
           expect(truck.crates[1].volume).to eq 0.8
           expect(truck.crates[1].toys.size).to eq 0
-          expect { truck.save! }.to_not raise_error
+          expect { truck.save! }.not_to raise_error
 
           truck_found = Truck.find(truck.id)
           expect(truck_found.crates.size).to eq 2

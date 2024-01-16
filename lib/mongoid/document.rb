@@ -418,6 +418,7 @@ module Mongoid
 
         doc._handle_callbacks_after_instantiation(execute_callbacks, &block)
 
+        doc.remember_storage_options!
         doc
       end
 

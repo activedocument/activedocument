@@ -302,7 +302,7 @@ describe 'Mongoid application tests' do
     gemfile_lines << "gem 'mongoid', path: '#{File.expand_path(BASE)}'\n"
     if rails_version
       gemfile_lines.delete_if do |line|
-        line =~ /rails/
+        line =~ /gem ['"]rails['"]/
       end
       gemfile_lines << if rails_version == 'master'
                          "gem 'rails', git: 'https://github.com/rails/rails'\n"

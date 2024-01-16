@@ -294,14 +294,24 @@ module Mongoid
           # @example Are there persisted documents?
           #   person.posts.exists?
           #
-          # @param [ Hash | Object | false ] id_or_conditions an _id to
-          #   search for, a hash of conditions, nil or false.
+          # @param [ :none | nil | false | Hash | Object ] id_or_conditions
+          #   When :none (the default), returns true if any persisted
+          #   documents exist in the association. When nil or false, this
+          #   will always return false. When a Hash is given, this queries
+          #   the documents in the association for those that match the given
+          #   conditions, and returns true if any match which have been
+          #   persisted. Any other argument is interpreted as an id, and
+          #   queries for the existence of persisted documents in the
+          #   association with a matching _id.
           #
-          # @return [ true | false ] True is persisted documents exist, false if not.
+          # @return [ true | false ] True if persisted documents exist, false if not.
           def exists?(id_or_conditions = :none)
-            return _target.any?(&:persisted?) if id_or_conditions == :none
-
-            criteria.exists?(id_or_conditions)
+            case id_or_conditions
+            when :none then _target.any?(&:persisted?)
+            when nil, false then false
+            when Hash then where(id_or_conditions).any?(&:persisted?)
+            else where(_id: id_or_conditions).any?(&:persisted?)
+            end
           end
 
           # Finds a document in this association through several different

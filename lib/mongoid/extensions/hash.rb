@@ -31,75 +31,20 @@ module Mongoid
       end
 
       # Consolidate the key/values in the hash under an atomic $set.
+      # DEPRECATED. This was never intended to be a public API and
+      # the functionality will no longer be exposed once this method
+      # is eventually removed.
       #
       # @example Consolidate the hash.
       #   { name: "Placebo" }.__consolidate__
       #
       # @return [ Hash ] A new consolidated hash.
-      def __consolidate__(klass)
-        each_pair.with_object({}) do |(key, value), consolidated|
-          if key.start_with?('$')
-            value = value.each_with_object({}) do |(key2, value2), hash|
-              key2 = klass.database_field_name(key2)
-              hash[key2] = key == '$rename' ? value2.to_s : mongoize_for(key, klass, key2, value2)
-            end
-            consolidated[key] ||= {}
-            consolidated[key].update(value)
-          else
-            consolidated['$set'] ||= {}
-            consolidated['$set'].update(key => mongoize_for(key, klass, key, value))
-          end
-        end
-      end
-
-      # Checks whether conditions given in this hash are known to be
-      # unsatisfiable, i.e., querying with this hash will always return no
-      # documents.
       #
-      # This method only handles condition shapes that Mongoid itself uses when
-      # it builds association queries. It does not guarantee that a false
-      # return value means the condition can produce a non-empty document set -
-      # only that if the return value is true, the condition always produces
-      # an empty document set.
-      #
-      # @example Unsatisfiable conditions
-      #   {'_id' => {'$in' => []}}._mongoid_unsatisfiable_criteria?
-      #   # => true
-      #
-      # @example Conditions which could be satisfiable
-      #   {'_id' => '123'}._mongoid_unsatisfiable_criteria?
-      #   # => false
-      #
-      # @example Conditions which are unsatisfiable that this method does not handle
-      #   {'foo' => {'$in' => []}}._mongoid_unsatisfiable_criteria?
-      #   # => false
-      #
-      # @return [ true | false ] Whether hash contains known unsatisfiable
-      #   conditions.
-      # @api private
-      def _mongoid_unsatisfiable_criteria?
-        unsatisfiable_criteria = { '_id' => { '$in' => [] } }
-        return true if self == unsatisfiable_criteria
-        return false unless length == 1 && keys == %w[$and]
-
-        value = values.first
-        value.is_a?(Array) && value.any? do |sub_v|
-          sub_v.is_a?(Hash) && sub_v._mongoid_unsatisfiable_criteria?
-        end
-      end
-
-      # Checks whether conditions given in this hash are known to be
-      # unsatisfiable, i.e., querying with this hash will always return no
-      # documents.
-      #
-      # This method is deprecated. Mongoid now uses
-      # +_mongoid_unsatisfiable_criteria?+ internally; this method is retained
-      # for backwards compatibility only.
-      #
-      # @return [ true | false ] Whether hash contains known unsatisfiable
-      #   conditions.
       # @deprecated
-      alias_method :blank_criteria?, :_mongoid_unsatisfiable_criteria?
+      def __consolidate__(klass)
+        Mongoid::AtomicUpdatePreparer.prepare(self, klass)
+      end
+      Mongoid.deprecate(self, :__consolidate__)
 
       # Deletes an id value from the hash.
       #
@@ -107,9 +52,11 @@ module Mongoid
       #   {}.delete_id
       #
       # @return [ Object ] The deleted value, or nil.
+      # @deprecated
       def delete_id
         delete('_id') || delete(:_id) || delete('id') || delete(:id)
       end
+      Mongoid.deprecate(self, :delete_id)
 
       # Get the id attribute from this hash, whether it's prefixed with an
       # underscore or is a symbol.
@@ -118,9 +65,11 @@ module Mongoid
       #   { :_id => 1 }.extract_id
       #
       # @return [ Object ] The value of the id.
+      # @deprecated
       def extract_id
         self['_id'] || self[:_id] || self['id'] || self[:id]
       end
+      Mongoid.deprecate(self, :extract_id)
 
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
@@ -151,41 +100,13 @@ module Mongoid
       #   { klass: Band, where: { name: "Depeche Mode" }.to_criteria
       #
       # @return [ Mongoid::Criteria ] The criteria.
+      # @deprecated
       def to_criteria
-        criteria = Criteria.new(delete(:klass) || delete('klass'))
-        each_pair do |method, args|
-          criteria = criteria.__send__(method, args)
-        end
-        criteria
+        Criteria.from_hash(self)
       end
+      Mongoid.deprecate(self, :to_criteria)
 
       private
-
-      # Mongoize for the klass, key and value.
-      #
-      # @api private
-      #
-      # @example Mongoize for the klass, field and value.
-      #   {}.mongoize_for("$push", Band, "name", "test")
-      #
-      # @param [ String ] operator The operator.
-      # @param [ Class ] klass The model class.
-      # @param [ String | Symbol ] key The field key.
-      # @param [ Object ] value The value to mongoize.
-      #
-      # @return [ Object ] The mongoized value.
-      def mongoize_for(operator, klass, key, value)
-        field = klass.fields[key.to_s]
-        if field
-          val = field.mongoize(value)
-          if Mongoid::Persistable::LIST_OPERATIONS.include?(operator) && field.resizable? && !value.is_a?(Array)
-            val = val.first
-          end
-          val
-        else
-          value
-        end
-      end
 
       module ClassMethods
 
@@ -223,7 +144,5 @@ module Mongoid
   end
 end
 
-Hash.include Mongoid::Extensions::Hash
+Hash.include(Mongoid::Extensions::Hash)
 Hash.extend(Mongoid::Extensions::Hash::ClassMethods)
-
-Mongoid.deprecate(Hash, :blank_criteria)

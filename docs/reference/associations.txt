@@ -693,7 +693,7 @@ Querying Loaded Associations
 ````````````````````````````
 
 Mongoid query methods can be used on embedded associations of documents which
-are already loaded in the application. This mechanism is referred to as
+are already loaded in the application. This mechanism is called
 "embedded matching" and it is implemented entirely in Mongoid--the queries
 are NOT sent to the server.
 
@@ -707,8 +707,8 @@ The following operators are supported:
 - :manual:`$type </reference/operator/query/type/>`
 - :manual:`$regex </reference/operator/query/regex/>` (``$options`` field
   is only supported when the ``$regex`` argument is a string)
-- :manual:`$comment </reference/operator/query/comment/>`
 - :manual:`Bitwise operators </reference/operator/query-bitwise/>`
+- :manual:`$comment </reference/operator/query/comment/>`
 
 For example, using the model definitions just given, we could query
 tours on a loaded band:
@@ -723,7 +723,7 @@ Embedded Matching vs Server Behavior
 
 Mongoid's embedded matching aims to support the same functionality and
 semantics as native queries on the latest MongoDB server version.
-The following limitations are known:
+Note the following known limitations:
 
 - Embedded matching is not implemented for :ref:`text search <text-search>`,
   :manual:`geospatial query operators </reference/operator/query-geospatial/>`,
