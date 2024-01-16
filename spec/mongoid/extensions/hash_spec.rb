@@ -162,7 +162,7 @@ describe Mongoid::Extensions::Hash do
     end
   end
 
-  describe ".demongoize" do
+  describe '.demongoize' do
 
     let(:hash) do
       { field: 1 }

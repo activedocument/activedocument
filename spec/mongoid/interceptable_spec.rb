@@ -1924,8 +1924,8 @@ describe Mongoid::Interceptable do
         end
       end
 
-      context "create" do
-        context "with around callbacks" do
+      context 'create' do
+        context 'with around callbacks' do
           config_override :around_callbacks_for_embeds, true
 
           let(:expected) do
@@ -1967,7 +1967,7 @@ describe Mongoid::Interceptable do
           end
         end
 
-        context "without around callbacks" do
+        context 'without around callbacks' do
           config_override :around_callbacks_for_embeds, false
 
           let(:expected) do
@@ -2006,8 +2006,8 @@ describe Mongoid::Interceptable do
         end
       end
 
-      context "update" do
-        context "with around callbacks" do
+      context 'update' do
+        context 'with around callbacks' do
           config_override :around_callbacks_for_embeds, true
 
           let(:expected) do
@@ -2056,7 +2056,7 @@ describe Mongoid::Interceptable do
           end
         end
 
-        context "without around callbacks" do
+        context 'without around callbacks' do
           config_override :around_callbacks_for_embeds, false
 
           let(:expected) do
@@ -2093,7 +2093,7 @@ describe Mongoid::Interceptable do
 
             parent.callback_registry = registry
             parent.child.callback_registry = registry
-            parent.name = "name"
+            parent.name = 'name'
             parent.child.age = 10
 
             parent.save!
@@ -2178,7 +2178,7 @@ describe Mongoid::Interceptable do
         end
       end
 
-      context "with around callbacks" do
+      context 'with around callbacks' do
         config_override :around_callbacks_for_embeds, true
 
         let(:expected) do
@@ -2237,7 +2237,7 @@ describe Mongoid::Interceptable do
         end
       end
 
-      context "without around callbacks" do
+      context 'without around callbacks' do
         config_override :around_callbacks_for_embeds, false
 
         let(:expected) do
@@ -2563,10 +2563,10 @@ describe Mongoid::Interceptable do
     end
   end
 
-  context "when around callbacks for embedded are disabled" do
+  context 'when around callbacks for embedded are disabled' do
     config_override :around_callbacks_for_embeds, false
 
-    context "when around callback is defined" do
+    context 'when around callback is defined' do
       let(:registry) { InterceptableSpec::CallbackRegistry.new }
 
       let(:parent) do
@@ -2580,7 +2580,7 @@ describe Mongoid::Interceptable do
         expect(Mongoid.logger).to receive(:warn).with(/To enable around callbacks for embedded documents/).twice.and_call_original
       end
 
-      it "logs a warning" do
+      it 'logs a warning' do
         parent.save!
       end
     end

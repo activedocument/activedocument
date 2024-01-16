@@ -48,7 +48,7 @@ module Mongoid
     #
     # @return [ true | false ]
     def truthy_string?(string)
-      %w[ 1 yes true on ].include?(string.strip.downcase)
+      %w[1 yes true on].include?(string.strip.downcase)
     end
   end
 end

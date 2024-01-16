@@ -10,7 +10,7 @@ shared_context 'rake task' do
   let(:task_file) { 'mongoid/tasks/database' }
 
   let(:logger) do
-    Logger.new(STDOUT, level: :error, formatter: ->(_sev, _dt, _prog, msg) { msg })
+    Logger.new($stdout, level: :error, formatter: ->(_sev, _dt, _prog, msg) { msg })
   end
 
   before do
@@ -31,7 +31,7 @@ shared_context 'rake task' do
   end
 
   shared_examples_for 'create_search_indexes' do
-    [ nil, *%w( 1 true yes on ) ].each do |truthy|
+    [nil, '1', 'true', 'yes', 'on'].each do |truthy|
       context "when WAIT_FOR_SEARCH_INDEXES is #{truthy.inspect}" do
         local_env 'WAIT_FOR_SEARCH_INDEXES' => truthy
 
@@ -44,7 +44,7 @@ shared_context 'rake task' do
       end
     end
 
-    %w( 0 false no off bogus ).each do |falsey|
+    %w[0 false no off bogus].each do |falsey|
       context "when WAIT_FOR_SEARCH_INDEXES is #{falsey.inspect}" do
         local_env 'WAIT_FOR_SEARCH_INDEXES' => falsey
 

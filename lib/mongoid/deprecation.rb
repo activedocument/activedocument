@@ -7,7 +7,7 @@ module Mongoid
 
     def initialize
       # Per change policy, deprecations will be removed in the next major version.
-      deprecation_horizon = "#{Mongoid::VERSION.split('.').first.to_i + 1}.0".freeze
+      deprecation_horizon = "#{Mongoid::VERSION.split('.').first.to_i + 1}.0"
       gem_name = 'Mongoid'
       super(deprecation_horizon, gem_name)
     end

@@ -106,8 +106,6 @@ module Mongoid
       end
       Mongoid.deprecate(self, :to_criteria)
 
-      private
-
       module ClassMethods
 
         # Turn the object from the ruby type we deal with to a Mongo friendly

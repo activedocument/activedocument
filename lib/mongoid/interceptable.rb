@@ -50,7 +50,7 @@ module Mongoid
 
       define_callbacks :commit, :rollback,
                        only: :after,
-                       scope: [:kind, :name]
+                       scope: %i[kind name]
 
       attr_accessor :before_callback_halted
     end
@@ -202,6 +202,7 @@ module Mongoid
       children = (children || cascadable_children(kind))
       callback_list = _mongoid_run_child_before_callbacks(kind, children: children)
       return false if callback_list == false
+
       value = block&.call
       callback_list.each do |_next_sequence, env|
         env.value &&= value
@@ -227,10 +228,11 @@ module Mongoid
         next_sequence = compile_callbacks(chain)
         unless next_sequence.final?
           Mongoid.logger.warn("Around callbacks are disabled for embedded documents. Skipping around callbacks for #{child.class.name}.")
-          Mongoid.logger.warn("To enable around callbacks for embedded documents, set Mongoid::Config.around_callbacks_for_embeds to true.")
+          Mongoid.logger.warn('To enable around callbacks for embedded documents, set Mongoid::Config.around_callbacks_for_embeds to true.')
         end
         next_sequence.invoke_before(env)
         return false if env.halted
+
         env.value = !env.halted
         callback_list << [next_sequence, env]
         if (grandchildren = child.send(:cascadable_children, kind))

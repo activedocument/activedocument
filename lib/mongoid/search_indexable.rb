@@ -146,7 +146,10 @@ module Mongoid
       # @param [ Hash ] defn The search index definition.
       def search_index(name_or_defn, defn = nil)
         name = name_or_defn
-        name, defn = nil, name if name.is_a?(Hash)
+        if name.is_a?(Hash)
+          defn = name
+          name = nil
+        end
 
         spec = { definition: defn }.tap { |s| s[:name] = name.to_s if name }
         search_index_specs.push(spec)

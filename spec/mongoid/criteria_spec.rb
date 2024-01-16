@@ -1425,10 +1425,11 @@ describe Mongoid::Criteria do
   end
 
   describe '#merge!' do
+    subject(:merged) { criteria.merge!(other) }
+
     let(:band) { Band.new }
     let(:criteria) { Band.scoped.where(name: 'Depeche Mode').asc(:name) }
     let(:association) { Band.relations['records'] }
-    subject(:merged) { criteria.merge!(other) }
 
     context 'when merging a Criteria' do
       let(:other) do
@@ -1459,7 +1460,7 @@ describe Mongoid::Criteria do
     context 'when merging a Hash' do
       let(:other) do
         Band.includes(:records).tap do |crit|
-          crit.documents = [ band ]
+          crit.documents = [band]
         end
       end
 
@@ -1472,7 +1473,7 @@ describe Mongoid::Criteria do
       end
 
       it 'merges the documents' do
-        expect(merged.documents).to eq([ band ])
+        expect(merged.documents).to eq([band])
       end
 
       it 'merges the scoping options' do
@@ -3639,7 +3640,7 @@ describe Mongoid::Criteria do
       end
 
       it 'returns a criteria' do
-        expect(criteria).to be_a(Mongoid::Criteria)
+        expect(criteria).to be_a(described_class)
       end
 
       it 'sets the klass' do
@@ -3657,7 +3658,7 @@ describe Mongoid::Criteria do
       end
 
       it 'returns a criteria' do
-        expect(criteria).to be_a(Mongoid::Criteria)
+        expect(criteria).to be_a(described_class)
       end
 
       it 'has klass nil' do

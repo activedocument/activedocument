@@ -157,6 +157,7 @@ module Mongoid
       def remove_search_indexes(models = ::Mongoid.models)
         models.each do |model|
           next if model.embedded?
+
           model.remove_search_indexes
         end
       end

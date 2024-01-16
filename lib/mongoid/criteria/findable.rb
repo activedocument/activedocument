@@ -173,7 +173,7 @@ module Mongoid
       #
       # @return [ true | false ] Whether the arguments are a list.
       def multi_args?(args)
-        args.size > 1 || !args.first.is_a?(Hash) && args.first.resizable?
+        args.size > 1 || (!args.first.is_a?(Hash) && args.first.resizable?)
       end
 
       # Convenience method of raising an invalid options error.

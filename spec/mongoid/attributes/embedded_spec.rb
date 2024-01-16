@@ -66,7 +66,7 @@ describe Mongoid::Attributes::Embedded do
 
     context 'when attributes is an array' do
       let(:attributes) do
-        [ { 'name' => 'Fred' }, { 'name' => 'Daphne' }, { 'name' => 'Velma' }, { 'name' => 'Shaggy' } ]
+        [{ 'name' => 'Fred' }, { 'name' => 'Daphne' }, { 'name' => 'Velma' }, { 'name' => 'Shaggy' }]
       end
       let(:path) { '2.name' }
 
@@ -75,7 +75,7 @@ describe Mongoid::Attributes::Embedded do
       end
 
       context 'when the member does not exist' do
-        let(:attributes) { [ { 'name' => 'Fred' }, { 'name' => 'Daphne' } ] }
+        let(:attributes) { [{ 'name' => 'Fred' }, { 'name' => 'Daphne' }] }
 
         it 'returns nil' do
           expect(embedded).to be_nil

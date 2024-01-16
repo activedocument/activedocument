@@ -18,7 +18,7 @@ end
 
 namespace :generate do
   desc 'Generates a mongoid.yml from the template'
-  task :config do
+  task config: :environment do
     require 'mongoid'
     require 'erb'
 

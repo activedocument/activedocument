@@ -10,7 +10,7 @@ describe Mongoid::Errors::MongoidError do
 
   before do
     { 'message_title' => 'message', 'summary_title' => 'summary', 'resolution_title' => 'resolution' }.each do |key, name|
-      expect(::I18n).to receive(:translate).with("mongoid.errors.messages.#{key}", **{}).and_return(name)
+      expect(I18n).to receive(:translate).with("mongoid.errors.messages.#{key}", **{}).and_return(name)
     end
 
     %w[message summary resolution].each do |name|

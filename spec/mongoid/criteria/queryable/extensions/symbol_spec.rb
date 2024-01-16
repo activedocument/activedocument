@@ -11,7 +11,7 @@ describe Symbol do
     end
 
     after do
-      Symbol.undef_method(:fubar)
+      described_class.undef_method(:fubar)
     end
 
     let(:fubar) do

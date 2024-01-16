@@ -46,7 +46,7 @@ require 'support/macros'
 require 'support/constraints'
 require 'support/crypt'
 
-use_ssl = %w[ ssl 1 true ].include?(ENV['SSL'])
+use_ssl = %w[ssl 1 true].include?(ENV['SSL'])
 ssl_options = { ssl: use_ssl }.freeze
 
 # Give MongoDB servers time to start up in CI environments

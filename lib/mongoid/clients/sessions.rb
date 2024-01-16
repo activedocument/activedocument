@@ -17,7 +17,7 @@ module Mongoid
 
         # Actions that can be used to trigger transactional callbacks.
         # @api private
-        CALLBACK_ACTIONS = [:create, :destroy, :update]
+        CALLBACK_ACTIONS = %i[create destroy update].freeze
 
         # Execute a block within the context of a session.
         #
@@ -116,7 +116,7 @@ module Mongoid
 
         # Shortcut for +after_commit :hook, on: [ :create, :update ]+
         def after_save_commit(*args, &block)
-          set_options_for_callbacks!(args, on: [ :create, :update ])
+          set_options_for_callbacks!(args, on: %i[create update])
           set_callback(:commit, :after, *args, &block)
         end
 
@@ -197,14 +197,14 @@ module Mongoid
           options = args.extract_options!
           args << options
 
-          if options[:on]
-            fire_on = Array(options[:on])
-            assert_valid_transaction_action(fire_on)
-            options[:if] = [
-              -> { transaction_include_any_action?(fire_on) },
-              *options[:if]
-            ]
-          end
+          return unless options[:on]
+
+          fire_on = Array(options[:on])
+          assert_valid_transaction_action(fire_on)
+          options[:if] = [
+            -> { transaction_include_any_action?(fire_on) },
+            *options[:if]
+          ]
         end
 
         # Asserts that the given actions are valid for after_commit
@@ -213,9 +213,9 @@ module Mongoid
         # @param [ Array<Symbol> ] actions Actions to be checked.
         # @raise [ ArgumentError ] If any of the actions is not valid.
         def assert_valid_transaction_action(actions)
-          if (actions - CALLBACK_ACTIONS).any?
-            raise ArgumentError, ":on conditions for after_commit and after_rollback callbacks have to be one of #{CALLBACK_ACTIONS}"
-          end
+          return unless (actions - CALLBACK_ACTIONS).any?
+
+          raise ArgumentError.new(":on conditions for after_commit and after_rollback callbacks have to be one of #{CALLBACK_ACTIONS}")
         end
 
         def transaction_include_any_action?(actions)

@@ -54,7 +54,7 @@ describe Mongoid::Document do
       end
 
       it 'can be reloaded without specifying the context' do
-        expect { person.reload }.not_to raise_error
+        expect { person.reload }.to_not raise_error
         expect(person.collection_name).to be == :extra_people
       end
 

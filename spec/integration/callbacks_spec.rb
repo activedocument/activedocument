@@ -599,7 +599,7 @@ describe 'callbacks integration tests' do
 
     # https://jira.mongodb.org/browse/MONGOID-5658
     it 'does not raise SystemStackError' do
-      expect { book.save! }.not_to raise_error(SystemStackError)
+      expect { book.save! }.to_not raise_error(SystemStackError)
     end
   end
 end

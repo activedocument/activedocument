@@ -497,6 +497,8 @@ describe Mongoid::Fields::ForeignKey do
   end
 
   describe '#mongoize' do
+    subject(:mongoized) { field.mongoize(object) }
+
     let(:field) do
       described_class.new(
         :vals,
@@ -508,7 +510,6 @@ describe Mongoid::Fields::ForeignKey do
       )
     end
     let(:association) { Game.relations['person'] }
-    subject(:mongoized) { field.mongoize(object) }
 
     context 'type is Array' do
       let(:type) { Array }
@@ -623,7 +624,7 @@ describe Mongoid::Fields::ForeignKey do
             :_id,
             type: BSON::ObjectId,
             pre_processed: true,
-            default: ->{ BSON::ObjectId.new },
+            default: -> { BSON::ObjectId.new },
             overwrite: true
           )
         end
@@ -663,7 +664,7 @@ describe Mongoid::Fields::ForeignKey do
             :_id,
             type: BSON::ObjectId,
             pre_processed: true,
-            default: ->{ BSON::ObjectId.new },
+            default: -> { BSON::ObjectId.new },
             overwrite: true
           )
         end
@@ -775,7 +776,7 @@ describe Mongoid::Fields::ForeignKey do
             :_id,
             type: BSON::ObjectId,
             pre_processed: true,
-            default: ->{ BSON::ObjectId.new },
+            default: -> { BSON::ObjectId.new },
             overwrite: true
           )
         end
@@ -815,7 +816,7 @@ describe Mongoid::Fields::ForeignKey do
             :_id,
             type: BSON::ObjectId,
             pre_processed: true,
-            default: ->{ BSON::ObjectId.new },
+            default: -> { BSON::ObjectId.new },
             overwrite: true
           )
         end

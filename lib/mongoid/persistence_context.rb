@@ -57,9 +57,9 @@ module Mongoid
       if document.is_a?(Class)
         return self if document == (@object.is_a?(Class) ? @object : @object.class)
       elsif document.is_a?(Mongoid::Document)
-        return self if document.class == (@object.is_a?(Class) ? @object : @object.class)
+        return self if document.instance_of?((@object.is_a?(Class) ? @object : @object.class))
       else
-        raise ArgumentError, 'must specify a class or a document instance'
+        raise ArgumentError.new('must specify a class or a document instance')
       end
 
       PersistenceContext.new(document, options.merge(document.storage_options))
@@ -130,8 +130,8 @@ module Mongoid
     #   context.
     def client_name
       @client_name ||= options[:client] ||
-                         Threaded.client_override ||
-                         __evaluate__(storage_options[:client])
+                       Threaded.client_override ||
+                       __evaluate__(storage_options[:client])
     end
 
     # Determine if this persistence context is equal to another.
@@ -206,8 +206,8 @@ module Mongoid
 
     def database_name_option
       @database_name_option ||= options[:database] ||
-                                  Threaded.database_override ||
-                                  storage_options[:database]
+                                Threaded.database_override ||
+                                storage_options[:database]
     end
 
     class << self

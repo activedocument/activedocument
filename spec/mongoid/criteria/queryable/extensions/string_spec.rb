@@ -182,6 +182,7 @@ describe String do
 
   describe '#__expr_part__' do
     subject(:specified) { 'field'.__expr_part__(value) }
+
     let(:value) { 10 }
 
     it 'returns the expression with the value' do
@@ -227,7 +228,7 @@ describe String do
         let(:value) { 'test' }
 
         it 'returns the expression with the value negated' do
-          expect(specified).to eq({ 'field' => { '$ne' => 'test' }})
+          expect(specified).to eq({ 'field' => { '$ne' => 'test' } })
         end
       end
     end

@@ -95,6 +95,7 @@ class TransactionsSpecPersonWithOnDestroy
     after_rollback_counter.inc
   end
 end
+
 class TransactionSpecRaisesBeforeSave
   include Mongoid::Document
   include TransactionsSpecCountable

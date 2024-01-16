@@ -982,7 +982,7 @@ module Mongoid
         # Note that `view.filter` is a BSON::Document, and all keys in a
         # BSON::Document are strings; we don't need to worry about symbol
         # representations of `$where`.
-        hash.keys.each do |key|
+        hash.each_key do |key|
           return false if key == '$where'
           return false if hash[key].is_a?(Hash) && !valid_for_count_documents?(hash[key])
         end

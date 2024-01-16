@@ -257,7 +257,7 @@ module Mongoid
       # @return [ Hash ] The selector for the atomic $unset operation.
       def collect_unset_operations(ops)
         ops.map { |op| op.is_a?(Hash) ? op.keys : op }.flatten
-           .map { |field| [database_field_name(field), true] }.to_h
+           .to_h { |field| [database_field_name(field), true] }
       end
     end
   end

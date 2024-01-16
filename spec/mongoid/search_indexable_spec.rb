@@ -11,9 +11,7 @@ class SearchIndexHelper
     model.collection.create
   end
 
-  def collection
-    model.collection
-  end
+  delegate :collection, to: :model
 
   # Wait for all of the indexes with the given names to be ready; then return
   # the list of index definitions corresponding to those names.
@@ -45,7 +43,7 @@ class SearchIndexHelper
       yield
 
       sleep step
-      raise Timeout::Error, 'wait took too long' if Mongo::Utils.monotonic_time - start > max
+      raise Timeout::Error.new('wait took too long') if Mongo::Utils.monotonic_time - start > max
     end
   end
 
@@ -61,7 +59,6 @@ class SearchIndexHelper
   end
 end
 
-# rubocop:disable RSpec/MultipleMemoizedHelpers
 describe Mongoid::SearchIndexable do
   before do
     skip "#{described_class} requires at Atlas environment (set ATLAS_URI)" if ENV['ATLAS_URI'].nil?
@@ -100,7 +97,7 @@ describe Mongoid::SearchIndexable do
     let(:requested_definitions) { model.search_index_specs.map { |spec| spec[:definition].with_indifferent_access } }
     let(:index_names) { model.create_search_indexes }
     let(:actual_indexes) { helper.wait_for(*index_names) }
-    let(:actual_definitions) { actual_indexes.map { |i| i['latestDefinition'] } }
+    let(:actual_definitions) { actual_indexes.pluck('latestDefinition') }
 
     describe '.create_search_indexes' do
       it 'creates the indexes' do
@@ -111,7 +108,7 @@ describe Mongoid::SearchIndexable do
     describe '.search_indexes' do
       before { actual_indexes } # wait for the indices to be created
 
-      let(:queried_definitions) { model.search_indexes.map { |i| i['latestDefinition'] } }
+      let(:queried_definitions) { model.search_indexes.pluck('latestDefinition') }
 
       it 'queries the available search indexes' do
         expect(queried_definitions).to be == requested_definitions
@@ -135,7 +132,7 @@ describe Mongoid::SearchIndexable do
       before do
         actual_indexes # wait for the indexes to be created
         model.remove_search_indexes
-        helper.wait_for_absense_of(actual_indexes.map { |i| i['name'] })
+        helper.wait_for_absense_of(actual_indexes.pluck('name'))
       end
 
       it 'removes the indexes' do
@@ -144,4 +141,3 @@ describe Mongoid::SearchIndexable do
     end
   end
 end
-# rubocop:enable RSpec/MultipleMemoizedHelpers

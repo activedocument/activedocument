@@ -259,190 +259,190 @@ describe Mongoid::Criteria::Findable do
         end
       end
 
-      context "when providing nested arrays of ids" do
+      context 'when providing nested arrays of ids' do
 
         let!(:band_two) do
-          Band.create!(name: "Tool")
+          Band.create!(name: 'Tool')
         end
 
-        context "when all ids match" do
+        context 'when all ids match' do
 
           let(:found) do
-            Band.find([ [ band.id ], [ [ band_two.id ] ] ])
+            Band.find([[band.id], [[band_two.id]]])
           end
 
-          it "contains the first match" do
+          it 'contains the first match' do
             expect(found).to include(band)
           end
 
-          it "contains the second match" do
+          it 'contains the second match' do
             expect(found).to include(band_two)
           end
 
-          context "when ids are duplicates" do
+          context 'when ids are duplicates' do
 
             let(:found) do
-              Band.find([ [ band.id ], [ [ band.id ] ] ])
+              Band.find([[band.id], [[band.id]]])
             end
 
-            it "contains only the first match" do
+            it 'contains only the first match' do
               expect(found).to eq([band])
             end
           end
         end
 
-        context "when any id does not match" do
+        context 'when any id does not match' do
 
-          context "when raising a not found error" do
+          context 'when raising a not found error' do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find([ [ band.id ], [ [ BSON::ObjectId.new ] ] ])
+              Band.find([[band.id], [[BSON::ObjectId.new]]])
             end
 
-            it "raises an error" do
-              expect {
+            it 'raises an error' do
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
-          context "when raising no error" do
+          context 'when raising no error' do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find([ [ band.id ], [ [ BSON::ObjectId.new ] ] ])
+              Band.find([[band.id], [[BSON::ObjectId.new]]])
             end
 
-            it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+            it 'returns only the matching documents' do
+              expect(found).to eq([band])
             end
           end
         end
       end
 
-      context "when providing a Set of ids" do
+      context 'when providing a Set of ids' do
 
         let!(:band_two) do
-          Band.create!(name: "Tool")
+          Band.create!(name: 'Tool')
         end
 
-        context "when all ids match" do
+        context 'when all ids match' do
           let(:found) do
-            Band.find(Set[ band.id, band_two.id ])
+            Band.find(Set[band.id, band_two.id])
           end
 
-          it "contains the first match" do
+          it 'contains the first match' do
             expect(found).to include(band)
           end
 
-          it "contains the second match" do
+          it 'contains the second match' do
             expect(found).to include(band_two)
           end
         end
 
-        context "when any id does not match" do
+        context 'when any id does not match' do
 
-          context "when raising a not found error" do
+          context 'when raising a not found error' do
             config_override :raise_not_found_error, true
 
             let(:found) do
-              Band.find(Set[ band.id, BSON::ObjectId.new ])
+              Band.find(Set[band.id, BSON::ObjectId.new])
             end
 
-            it "raises an error" do
-              expect {
+            it 'raises an error' do
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
-          context "when raising no error" do
+          context 'when raising no error' do
             config_override :raise_not_found_error, false
 
             let(:found) do
-              Band.find(Set[ band.id, BSON::ObjectId.new ])
+              Band.find(Set[band.id, BSON::ObjectId.new])
             end
 
-            it "returns only the matching documents" do
-              expect(found).to eq([ band ])
+            it 'returns only the matching documents' do
+              expect(found).to eq([band])
             end
           end
         end
       end
 
-      context "when providing a Range of ids" do
+      context 'when providing a Range of ids' do
 
         let!(:band_two) do
-          Band.create!(name: "Tool")
+          Band.create!(name: 'Tool')
         end
 
-        context "when all ids match" do
+        context 'when all ids match' do
           let(:found) do
             Band.find(band.id.to_s..band_two.id.to_s)
           end
 
-          it "contains the first match" do
+          it 'contains the first match' do
             expect(found).to include(band)
           end
 
-          it "contains the second match" do
+          it 'contains the second match' do
             expect(found).to include(band_two)
           end
 
 
-          context "when any id does not match" do
+          context 'when any id does not match' do
 
-            context "when raising a not found error" do
+            context 'when raising a not found error' do
               config_override :raise_not_found_error, true
 
               let(:found) do
                 Band.find(band_two.id.to_s..BSON::ObjectId.new)
               end
 
-              it "does not raise error and returns only the matching documents" do
-                expect(found).to eq([ band_two ])
+              it 'does not raise error and returns only the matching documents' do
+                expect(found).to eq([band_two])
               end
             end
 
-            context "when raising no error" do
+            context 'when raising no error' do
               config_override :raise_not_found_error, false
 
               let(:found) do
                 Band.find(band_two.id.to_s..BSON::ObjectId.new)
               end
 
-              it "returns only the matching documents" do
-                expect(found).to eq([ band_two ])
+              it 'returns only the matching documents' do
+                expect(found).to eq([band_two])
               end
             end
           end
         end
 
-        context "when all ids do not match" do
+        context 'when all ids do not match' do
 
-          context "when raising a not found error" do
+          context 'when raising a not found error' do
             config_override :raise_not_found_error, true
 
             let(:found) do
               Band.find(BSON::ObjectId.new..BSON::ObjectId.new)
             end
 
-            it "raises an error" do
-              expect {
+            it 'raises an error' do
+              expect do
                 found
-              }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
+              end.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Band with id\(s\)/)
             end
           end
 
-          context "when raising no error" do
+          context 'when raising no error' do
             config_override :raise_not_found_error, false
 
             let(:found) do
               Band.find(BSON::ObjectId.new..BSON::ObjectId.new)
             end
 
-            it "returns only the matching documents" do
+            it 'returns only the matching documents' do
               expect(found).to eq([])
             end
           end

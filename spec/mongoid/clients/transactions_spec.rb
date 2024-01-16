@@ -810,7 +810,7 @@ describe Mongoid::Clients::Sessions do
 
             before do
               TransactionsSpecPersonWithOnUpdate.transaction do
-                subject.update_attributes!(name: 'Foma Kiniaev')
+                subject.update!(name: 'Foma Kiniaev')
               end
             end
 
