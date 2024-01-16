@@ -420,7 +420,7 @@ module Mongoid
             field = field.to_s
             name = aliases[field] || field
             serializer = serializers[name]
-            value = serializer ? serializer.evolve(value) : value
+            value = serializer.evolve(value) if serializer
           end
           selection = { operator => value }
           negating? ? { '$not' => selection } : selection

@@ -96,7 +96,7 @@ describe Mongoid::Document do
       end
 
       it 'cannot be reloaded without specifying the context' do
-        expect { person.reload }.to raise_error
+        expect { person.reload }.to raise_error(Mongoid::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
       end
 
       it 'cannot be updated without specifying the context' do

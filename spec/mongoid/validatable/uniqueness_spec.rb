@@ -2486,7 +2486,7 @@ describe Mongoid::Validatable::UniquenessValidator do
 
     it 'is invalid' do
       subclass_document_with_duplicated_name.tap do |d|
-        expect(d).to be_invalid
+        expect(d).to_not be_valid
         expect(d.errors[:name]).to eq(['has already been taken'])
       end
     end

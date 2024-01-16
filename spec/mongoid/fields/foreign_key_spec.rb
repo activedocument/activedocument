@@ -511,7 +511,7 @@ describe Mongoid::Fields::ForeignKey do
     end
     let(:association) { Game.relations['person'] }
 
-    context 'type is Array' do
+    context 'when type is Array' do
       let(:type) { Array }
 
       context 'when the object is a BSON::ObjectId' do
@@ -687,7 +687,7 @@ describe Mongoid::Fields::ForeignKey do
       end
     end
 
-    context 'type is Set' do
+    context 'when type is Set' do
       let(:type) { Set }
 
       context 'when the object is an Array of BSON::ObjectId' do
@@ -707,7 +707,7 @@ describe Mongoid::Fields::ForeignKey do
       end
     end
 
-    context 'type is Object' do
+    context 'when type is Object' do
       let(:type) { Object }
 
       context 'when the object is a BSON::ObjectId' do
@@ -743,7 +743,7 @@ describe Mongoid::Fields::ForeignKey do
       end
 
       context 'when the object is nil' do
-        let(:object) { '' }
+        let(:object) { nil }
 
         it 'returns nil' do
           expect(mongoized).to be_nil

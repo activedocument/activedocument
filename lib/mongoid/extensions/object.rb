@@ -83,7 +83,6 @@ module Mongoid
       end
       Mongoid.deprecate(self, :__to_inc__)
 
-
       # Do or do not, there is no try. -- Yoda.
       #
       # @example Do or do not.

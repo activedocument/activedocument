@@ -25,7 +25,7 @@ module Mongoid
           else
             logger.info("MONGOID: collection options ignored on: #{model}, please define in the root model.")
           end
-        rescue Exception
+        rescue StandardError
           logger.error "error while creating collection for #{model}"
           raise
         end
@@ -250,10 +250,9 @@ module Mongoid
         models.each do |model, names|
           model.wait_for_search_indexes(names) do |status|
             if status.ready?
-              puts
               logger.info("MONGOID: Search indexes on #{model} are READY")
             else
-              print '.'
+              print '.' # rubocop:disable Rails/Output
               $stdout.flush
             end
           end

@@ -94,7 +94,7 @@ module Mongoid
           attrs["#{name}_translations"] = value
         end
       end
-      klass.embedded_relations.each do |_, association|
+      klass.embedded_relations.each_value do |association|
         next unless attrs.present? && attrs[association.key].present?
 
         if association.is_a?(Association::Embedded::EmbedsMany)

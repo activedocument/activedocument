@@ -50,6 +50,16 @@ module Constraints
     end
   end
 
+  def local_env(env = nil)
+    around do |example|
+      saved_env = ENV.to_h
+      ENV.update(env || yield)
+      example.run
+    ensure
+      ENV.replace(saved_env)
+    end
+  end
+
   def require_mri
     before(:all) do
       unless SpecConfig.instance.mri?

@@ -26,8 +26,6 @@ Gem::Specification.new do |s|
   }
 
   s.required_ruby_version = '>= 2.7'
-
-  s.required_ruby_version     = '>= 2.7'
   s.required_rubygems_version = '>= 1.3.6'
 
   # activemodel 7.0.0 cannot be used due to Class#descendants issue

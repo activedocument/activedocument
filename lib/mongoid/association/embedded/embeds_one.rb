@@ -45,7 +45,7 @@ module Mongoid
         #
         # @return [ String ] The field name.
         def store_as
-          @store_as ||= (@options[:store_as].try(:to_s) || name.to_s)
+          @store_as ||= @options[:store_as].try(:to_s) || name.to_s
         end
 
         # The key that is used to get the attributes for the associated object.

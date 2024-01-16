@@ -152,7 +152,7 @@ describe Mongoid::Config::Environment do
                 hosts: [localhost]
                 options:
                   auto_encryption_options:
-                    schema_map: #{schema_map.to_yaml.delete_prefix('---').gsub(/\n/, "\n#{' ' * 100}")}
+                    schema_map: #{schema_map.to_yaml.delete_prefix('---').gsub("\n", "\n#{' ' * 100}")}
         FILE
       end
 

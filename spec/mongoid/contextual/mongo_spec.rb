@@ -3693,22 +3693,21 @@ describe Mongoid::Contextual::Mongo do
               expect(new_order.reload.name).to eq('Smiths')
             end
           end
-        end
 
           context 'when operation is $push' do
 
             before do
               depeche_mode.update_attribute(:genres, ['electronic'])
               new_order.update_attribute(:genres, ['electronic'])
-              context.update_all("$push" => { genres: 'pop' })
+              context.update_all('$push' => { genres: 'pop' })
             end
 
             it 'updates the first matching document' do
-              expect(depeche_mode.reload.genres).to eq(['electronic', 'pop'])
+              expect(depeche_mode.reload.genres).to eq(%w[electronic pop])
             end
 
             it 'updates the last matching document' do
-              expect(new_order.reload.genres).to eq(['electronic', 'pop'])
+              expect(new_order.reload.genres).to eq(%w[electronic pop])
             end
           end
 

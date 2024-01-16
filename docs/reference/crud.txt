@@ -565,7 +565,7 @@ Mongoid models are reverted. For example:
       person.name # => 'Jake'
       raise 'An exception'
     end
-  rescue Exception
+  rescue StandardError
     person.name # => 'Tom'
   end
 

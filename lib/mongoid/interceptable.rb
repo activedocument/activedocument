@@ -176,7 +176,7 @@ module Mongoid
     #
     #  @api private
     def _mongoid_run_child_callbacks_with_around(kind, children: nil, &block)
-      child, *tail = (children || cascadable_children(kind))
+      child, *tail = children || cascadable_children(kind)
       with_children = !Mongoid::Config.prevent_multiple_calls_of_embedded_callbacks
       if child.nil?
         block&.call
@@ -199,12 +199,12 @@ module Mongoid
     #
     # @api private
     def _mongoid_run_child_callbacks_without_around(kind, children: nil, &block)
-      children = (children || cascadable_children(kind))
+      children ||= cascadable_children(kind)
       callback_list = _mongoid_run_child_before_callbacks(kind, children: children)
       return false if callback_list == false
 
       value = block&.call
-      callback_list.each do |_next_sequence, env|
+      callback_list.each do |_next_sequence, env| # rubocop:disable Style/HashEachMethods
         env.value &&= value
       end
       return false if _mongoid_run_child_after_callbacks(callback_list: callback_list) == false

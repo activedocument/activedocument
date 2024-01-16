@@ -46,7 +46,7 @@ module Mongoid
           #
           # @return [ Hash ] The string as a sort option hash.
           def __sort_option__
-            split(/,/).inject({}) do |hash, spec|
+            split(',').inject({}) do |hash, spec|
               hash.tap do |h|
                 field, direction = spec.strip.split(/\s/)
                 h[field.to_sym] = Mongoid::Criteria::Translator.to_direction(direction)

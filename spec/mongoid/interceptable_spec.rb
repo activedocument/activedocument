@@ -2575,12 +2575,10 @@ describe Mongoid::Interceptable do
         end
       end
 
-      before do
+      it 'logs a warning' do
         expect(Mongoid.logger).to receive(:warn).with(/Around callbacks are disabled for embedded documents/).twice.and_call_original
         expect(Mongoid.logger).to receive(:warn).with(/To enable around callbacks for embedded documents/).twice.and_call_original
-      end
 
-      it 'logs a warning' do
         parent.save!
       end
     end

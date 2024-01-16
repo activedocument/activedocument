@@ -650,16 +650,16 @@ module Mongoid
       # @example Compare the two objects.
       #   context.compare(a, b)
       #
-      # @param [ Object ] a The first object.
-      # @param [ Object ] b The second object.
+      # @param [ Object ] value_a The first object.
+      # @param [ Object ] value_b The second object.
       #
       # @return [ Integer ] The comparison value.
-      def compare(a, b)
-        return 0 if a.nil? && b.nil?
-        return 1 if a.nil?
-        return -1 if b.nil?
+      def compare(value_a, value_b)
+        return 0 if value_a.nil? && value_b.nil?
+        return 1 if value_a.nil?
+        return -1 if value_b.nil?
 
-        compare_operand(a) <=> compare_operand(b)
+        compare_operand(value_a) <=> compare_operand(value_b)
       end
 
       # Sort the documents in place.

@@ -390,7 +390,6 @@ describe Mongoid::Criteria::Findable do
             expect(found).to include(band_two)
           end
 
-
           context 'when any id does not match' do
 
             context 'when raising a not found error' do

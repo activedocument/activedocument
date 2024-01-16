@@ -138,8 +138,7 @@ module Mongoid
       #
       # @return [ true | false ] If the field's default is pre-processed.
       def pre_processed?
-        @pre_processed ||=
-          (options[:pre_processed] || (default_val && !default_val.is_a?(::Proc)))
+        @pre_processed ||= options[:pre_processed] || (default_val && !default_val.is_a?(::Proc))
       end
 
       # Get the type of this field - inferred from the class name.

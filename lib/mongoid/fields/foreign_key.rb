@@ -22,8 +22,8 @@ module Mongoid
       # @param [ Array ] new_elements The new elements to add.
       # @param [ Array ] old_elements The old elements getting removed.
       def add_atomic_changes(document, name, key, mods, new_elements, old_elements)
-        old = (old_elements || [])
-        new = (new_elements || [])
+        old = old_elements || []
+        new = new_elements || []
         if new.length > old.length
           if new.first(old.length) == old
             document.atomic_array_add_to_sets[key] = new.drop(old.length)

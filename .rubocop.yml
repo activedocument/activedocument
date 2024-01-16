@@ -18,6 +18,9 @@ Lint/EmptyClass:
   Exclude:
     - 'spec/**/*'
 
+Rails/ShortI18n:
+  Enabled: false
+
 Style/Documentation:
   AllowedConstants: ['ClassMethods']
   Exclude:

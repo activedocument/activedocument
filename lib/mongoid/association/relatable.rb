@@ -409,7 +409,7 @@ module Mongoid
           raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
         end
 
-        [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
+        [name, :"#{name}?", :"#{name}="].each do |n|
           next unless Mongoid.destructive_fields.include?(n)
 
           raise Errors::InvalidRelation.new(@owner_class, n)

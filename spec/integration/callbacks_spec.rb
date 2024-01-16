@@ -584,7 +584,7 @@ describe 'callbacks integration tests' do
   end
 
   context 'cascade callbacks' do
-    ruby_version_gte '3.0'
+    min_ruby_version '3.0'
     require_mri
 
     let(:book) do
