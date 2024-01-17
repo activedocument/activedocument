@@ -1425,51 +1425,68 @@ describe Mongoid::Criteria do
   end
 
   describe '#merge!' do
+    subject(:merged) { criteria.merge!(other) }
 
-    let(:band) do
-      Band.new
-    end
+    let(:band) { Band.new }
+    let(:criteria) { Band.scoped.where(name: 'Depeche Mode').asc(:name) }
+    let(:association) { Band.relations['records'] }
 
-    let(:criteria) do
-      Band.scoped.where(name: 'Depeche Mode').asc(:name)
-    end
+    context 'when merging a Criteria' do
+      let(:other) do
+        { klass: Band, includes: [:records] }
+      end
 
-    let(:mergeable) do
-      Band.includes(:records).tap do |crit|
-        crit.documents = [band]
+      it 'merges the selector' do
+        expect(merged.selector).to eq({ 'name' => 'Depeche Mode' })
+      end
+
+      it 'merges the options' do
+        expect(merged.options).to eq({ sort: { 'name' => 1 } })
+      end
+
+      it 'merges the scoping options' do
+        expect(merged.scoping_options).to eq([nil, nil])
+      end
+
+      it 'merges the inclusions' do
+        expect(merged.inclusions).to eq([association])
+      end
+
+      it 'returns the same criteria' do
+        expect(merged).to equal(criteria)
       end
     end
 
-    let(:association) do
-      Band.relations['records']
-    end
+    context 'when merging a Hash' do
+      let(:other) do
+        Band.includes(:records).tap do |crit|
+          crit.documents = [band]
+        end
+      end
 
-    let(:merged) do
-      criteria.merge!(mergeable)
-    end
+      it 'merges the selector' do
+        expect(merged.selector).to eq({ 'name' => 'Depeche Mode' })
+      end
 
-    it 'merges the selector' do
-      expect(merged.selector).to eq({ 'name' => 'Depeche Mode' })
-    end
+      it 'merges the options' do
+        expect(merged.options).to eq({ sort: { 'name' => 1 } })
+      end
 
-    it 'merges the options' do
-      expect(merged.options).to eq({ sort: { 'name' => 1 } })
-    end
+      it 'merges the documents' do
+        expect(merged.documents).to eq([band])
+      end
 
-    it 'merges the documents' do
-      expect(merged.documents).to eq([band])
-    end
+      it 'merges the scoping options' do
+        expect(merged.scoping_options).to eq([nil, nil])
+      end
 
-    it 'merges the scoping options' do
-      expect(merged.scoping_options).to eq([nil, nil])
-    end
+      it 'merges the inclusions' do
+        expect(merged.inclusions).to eq([association])
+      end
 
-    it 'merges the inclusions' do
-      expect(merged.inclusions).to eq([association])
-    end
-
-    it 'returns the same criteria' do
-      expect(merged).to equal(criteria)
+      it 'returns the same criteria' do
+        expect(merged).to equal(criteria)
+      end
     end
   end
 
@@ -3370,11 +3387,11 @@ describe Mongoid::Criteria do
     context 'when the method exists on the criteria' do
 
       before do
-        expect(criteria).to receive(:to_criteria).and_call_original
+        expect(criteria).to receive(:only).and_call_original
       end
 
       it 'calls the method on the criteria' do
-        expect(criteria.to_criteria).to eq(criteria)
+        expect(criteria.only).to eq(criteria)
       end
     end
 
@@ -3610,6 +3627,46 @@ describe Mongoid::Criteria do
         it 'does not use an $in query' do
           expect(selection).to eq({ dkey: { '$in' => %w[Firefox Browser] } })
         end
+      end
+    end
+  end
+
+  describe '.from_hash' do
+    subject(:criteria) { described_class.from_hash(hash) }
+
+    context 'when klass is specified' do
+      let(:hash) do
+        { klass: Band, where: { name: 'Songs Ohia' } }
+      end
+
+      it 'returns a criteria' do
+        expect(criteria).to be_a(described_class)
+      end
+
+      it 'sets the klass' do
+        expect(criteria.klass).to eq(Band)
+      end
+
+      it 'sets the selector' do
+        expect(criteria.selector).to eq({ 'name' => 'Songs Ohia' })
+      end
+    end
+
+    context 'when klass is missing' do
+      let(:hash) do
+        { where: { name: 'Songs Ohia' } }
+      end
+
+      it 'returns a criteria' do
+        expect(criteria).to be_a(described_class)
+      end
+
+      it 'has klass nil' do
+        expect(criteria.klass).to be_nil
+      end
+
+      it 'sets the selector' do
+        expect(criteria.selector).to eq({ 'name' => 'Songs Ohia' })
       end
     end
   end

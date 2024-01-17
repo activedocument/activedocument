@@ -77,7 +77,7 @@ module Mongoid
       # @example Get the current persistence context.
       #   document.persistence_context
       #
-      # @return [ Mongoid::PersistenceContent ] The current persistence
+      # @return [ Mongoid::PersistenceContext ] The current persistence
       #   context.
       def persistence_context
         if embedded? && !_root?
@@ -85,7 +85,7 @@ module Mongoid
         else
           PersistenceContext.get(self) ||
             PersistenceContext.get(self.class) ||
-            PersistenceContext.new(self.class)
+            PersistenceContext.new(self.class, storage_options)
         end
       end
 
@@ -103,7 +103,9 @@ module Mongoid
         if embedded? && !_root?
           _root.persistence_context?
         else
-          !!(PersistenceContext.get(self) || PersistenceContext.get(self.class))
+          remembered_storage_options&.any? ||
+            PersistenceContext.get(self).present? ||
+            PersistenceContext.get(self.class).present?
         end
       end
 

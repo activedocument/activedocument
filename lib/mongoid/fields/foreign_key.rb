@@ -13,7 +13,7 @@ module Mongoid
       # @example Add the atomic changes.
       #   field.add_atomic_changes(doc, "key", {}, [], [])
       #
-      # @todo: Durran: Refactor, big time.
+      # @todo: Refactor, big time.
       #
       # @param [ Mongoid::Document ] document The document to add to.
       # @param [ String ] name The name of the field.
@@ -22,8 +22,8 @@ module Mongoid
       # @param [ Array ] new_elements The new elements to add.
       # @param [ Array ] old_elements The old elements getting removed.
       def add_atomic_changes(document, name, key, mods, new_elements, old_elements)
-        old = (old_elements || [])
-        new = (new_elements || [])
+        old = old_elements || []
+        new = new_elements || []
         if new.length > old.length
           if new.first(old.length) == old
             document.atomic_array_add_to_sets[key] = new.drop(old.length)
@@ -94,7 +94,7 @@ module Mongoid
       # @return [ Object ] The mongoized object.
       def mongoize(object)
         if type.resizable? || object_id_field?
-          type.__mongoize_fk__(association, object)
+          mongoize_foreign_key(object)
         else
           related_id_field.mongoize(object)
         end
@@ -122,6 +122,28 @@ module Mongoid
       end
 
       private
+
+      # Convert the provided object to a Mongo-friendly foreign key.
+      #
+      # @example Convert the object to a foreign key.
+      #   mongoize_foreign_key(object)
+      #
+      # @param [ Object ] object The object to convert.
+      #
+      # @return [ Object ] The converted object.
+      def mongoize_foreign_key(object)
+        if type == Array || type == Set
+          object = object.to_a if type == Set || object.is_a?(Set)
+
+          if object.resizable?
+            object.blank? ? object : association.convert_to_foreign_key(object)
+          else
+            object.blank? ? [] : association.convert_to_foreign_key(Array(object))
+          end
+        elsif !(object.nil? || object == '')
+          association.convert_to_foreign_key(object)
+        end
+      end
 
       # Evaluate the default proc. In some cases we need to instance exec,
       # in others we don't.

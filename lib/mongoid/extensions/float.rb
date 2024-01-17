@@ -13,7 +13,7 @@ module Mongoid
       #
       # @return [ Time | ActiveSupport::TimeWithZone ] The time.
       def __mongoize_time__
-        ::Time.configured.at(self)
+        ::Time.zone.at(self)
       end
 
       # Is the float a number?

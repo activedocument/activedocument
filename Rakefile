@@ -16,6 +16,18 @@ RSpec::Core::RakeTask.new('spec:progress') do |spec|
   spec.pattern = 'spec/**/*_spec.rb'
 end
 
+namespace :generate do
+  desc 'Generates a mongoid.yml from the template'
+  task config: :environment do
+    require 'mongoid'
+    require 'erb'
+
+    template_path = 'lib/rails/generators/mongoid/config/templates/mongoid.yml'
+    config = ERB.new(File.read(template_path), trim_mode: '-').result(binding)
+    File.write('mongoid.yml', config)
+  end
+end
+
 $LOAD_PATH.unshift File.expand_path('lib', __dir__)
 require 'mongoid/version'
 

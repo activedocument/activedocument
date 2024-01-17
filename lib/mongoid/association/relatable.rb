@@ -80,7 +80,7 @@ module Mongoid
       #
       # @return [ String ] The type setter method.
       def type_setter
-        @type_setter ||= type.__setter__
+        @type_setter ||= "#{type}=" if type
       end
 
       # Whether trying to bind an object using this association should raise
@@ -234,7 +234,7 @@ module Mongoid
       #
       # @return [ String ] The name of the setter.
       def inverse_type_setter
-        @inverse_type_setter ||= inverse_type.__setter__
+        @inverse_type_setter ||= "#{inverse_type}=" if inverse_type
       end
 
       # Get the name of the method to check if the foreign key has changed.
@@ -409,7 +409,7 @@ module Mongoid
           raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
         end
 
-        [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
+        [name, :"#{name}?", :"#{name}="].each do |n|
           next unless Mongoid.destructive_fields.include?(n)
 
           raise Errors::InvalidRelation.new(@owner_class, n)

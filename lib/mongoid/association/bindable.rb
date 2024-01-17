@@ -121,7 +121,7 @@ module Mongoid
       def bind_foreign_key(keyed, id)
         return if keyed.frozen?
 
-        keyed.you_must(_association.foreign_key_setter, id)
+        try_method(keyed, _association.foreign_key_setter, id)
       end
 
       # Set the type of the related document on the foreign type field, used
@@ -135,9 +135,9 @@ module Mongoid
       # @param [ Mongoid::Document ] typed The document that stores the type field.
       # @param [ String ] name The name of the model.
       def bind_polymorphic_type(typed, name)
-        return unless _association.type
+        return unless _association.type && !typed.frozen?
 
-        typed.you_must(_association.type_setter, name)
+        try_method(typed, _association.type_setter, name)
       end
 
       # Set the type of the related document on the foreign type field, used
@@ -151,9 +151,9 @@ module Mongoid
       # @param [ Mongoid::Document ] typed The document that stores the type field.
       # @param [ String ] name The name of the model.
       def bind_polymorphic_inverse_type(typed, name)
-        return unless _association.inverse_type
+        return unless _association.inverse_type && !typed.frozen?
 
-        typed.you_must(_association.inverse_type_setter, name)
+        try_method(typed, _association.inverse_type_setter, name)
       end
 
       # Bind the inverse document to the child document so that the in memory
@@ -167,9 +167,9 @@ module Mongoid
       # @param [ Mongoid::Document ] doc The base document.
       # @param [ Mongoid::Document ] inverse The inverse document.
       def bind_inverse(doc, inverse)
-        return unless doc.respond_to?(_association.inverse_setter)
+        return unless doc.respond_to?(_association.inverse_setter) && !doc.frozen?
 
-        doc.you_must(_association.inverse_setter, inverse)
+        try_method(doc, _association.inverse_setter, inverse)
       end
 
       # Bind the provided document with the base from the parent association.
@@ -222,6 +222,24 @@ module Mongoid
         bind_foreign_key(doc, nil)
         bind_polymorphic_type(doc, nil)
         bind_inverse(doc, nil)
+      end
+
+      # Convenience method to perform +#try+ but return
+      # nil if the method argument is nil.
+      #
+      # @example Call method if it exists.
+      #   object.try_method(:use, "The Force")
+      #
+      # @example Return nil if method argument is nil.
+      #   object.try_method(nil, "The Force") #=> nil
+      #
+      # @param [ String | Symbol ] method_name The method name.
+      # @param [ Object... ] *args The arguments.
+      #
+      # @return [ Object | nil ] The result of the try or nil if the
+      #   method does not exist.
+      def try_method(object, method_name, *args)
+        object.try(method_name, *args) if method_name
       end
     end
   end

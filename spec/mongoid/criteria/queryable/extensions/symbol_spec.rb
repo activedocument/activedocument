@@ -10,6 +10,10 @@ describe Symbol do
       described_class.add_key(:fubar, :union, '$fu', '$bar', &:to_s)
     end
 
+    after do
+      described_class.undef_method(:fubar)
+    end
+
     let(:fubar) do
       :testing.fubar
     end

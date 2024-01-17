@@ -74,9 +74,19 @@ namespace :db do
     task create_indexes: :'mongoid:create_indexes'
   end
 
+  unless Rake::Task.task_defined?('db:create_search_indexes')
+    desc 'Create search indexes specified in Mongoid models'
+    task create_search_indexes: 'mongoid:create_search_indexes'
+  end
+
   unless Rake::Task.task_defined?('db:remove_indexes')
     desc 'Remove indexes specified in Mongoid models'
     task remove_indexes: :'mongoid:remove_indexes'
+  end
+
+  unless Rake::Task.task_defined?('db:remove_search_indexes')
+    desc 'Remove search indexes specified in Mongoid models'
+    task remove_search_indexes: 'mongoid:remove_search_indexes'
   end
 
   unless Rake::Task.task_defined?('db:shard_collections')

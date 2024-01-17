@@ -24,10 +24,10 @@ jobs:
   test:
     name: "${{matrix.ruby}}
       ${{matrix.gemfile || 'Gemfile'}}
-      mongodb-${{matrix.mongodb || '6.0'}}
-      ${{matrix.topology || 'server'}}
-      ${{matrix.fle && 'fle=' || ''}}${{matrix.fle || ''}}
-      ${{matrix.os || 'ubuntu-20.04'}}"
+      db:${{matrix.mongodb || '6.0'}}
+      fle:${{matrix.fle && 'fle=' || ''}}${{matrix.fle || ''}}
+      top:${{matrix.topology || 'server'}}
+      os:${{matrix.os || 'ubuntu-20.04'}}"
     env:
       CI: true
       TESTOPTS: '-v'
@@ -50,23 +50,23 @@ jobs:
 
           # Rails versions
           - ruby: ruby-3.2
-            gemfile: gemfiles/rails_7.0.gemfile
+            gemfile: gemfiles/rails_7.1.gemfile
             mongodb: '6.0'
             topology: replica_set
           - ruby: ruby-3.1
-            gemfile: gemfiles/rails_6.1.gemfile
+            gemfile: gemfiles/rails_7.1.gemfile
             mongodb: '5.0'
             topology: sharded_cluster
           - ruby: ruby-3.0
-            gemfile: gemfiles/rails_6.1.gemfile
+            gemfile: gemfiles/rails_7.0.gemfile
             mongodb: '4.4'
             topology: server
           - ruby: ruby-3.0
-            gemfile: gemfiles/rails_6.0.gemfile
+            gemfile: gemfiles/rails_6.1.gemfile
             mongodb: '4.4'
             topology: replica_set
           - ruby: ruby-2.7
-            gemfile: gemfiles/rails_6.0.gemfile
+            gemfile: gemfiles/rails_6.1.gemfile
             mongodb: '4.4'
             topology: server
 
@@ -98,28 +98,28 @@ jobs:
 
           # JRuby
           - ruby: jruby-9.4
-            gemfile: gemfiles/rails_7.0.gemfile
+            gemfile: gemfiles/rails_7.1.gemfile
             mongodb: '6.0'
             topology: replica_set
           - ruby: jruby-9.4
-            gemfile: gemfiles/rails_6.0.gemfile
+            gemfile: gemfiles/rails_6.1.gemfile
             mongodb: '5.0'
             topology: server
 
           # Field-Level Encryption
           # TODO: support LIBMONGOCRYPT via path
           - ruby: ruby-3.2
-            gemfile: gemfiles/rails_7.0.gemfile
+            gemfile: gemfiles/rails_7.1.gemfile
             mongodb: '6.0'
             topology: sharded_cluster
             fle: helper
           - ruby: ruby-3.1
-            gemfile: gemfiles/rails_6.1.gemfile
+            gemfile: gemfiles/rails_7.0.gemfile
             mongodb: '6.0'
             topology: replica_set
             fle: helper
           - ruby: ruby-2.7
-            gemfile: gemfiles/rails_6.0.gemfile
+            gemfile: gemfiles/rails_6.1.gemfile
             mongodb: '6.0'
             topology: server
             fle: helper

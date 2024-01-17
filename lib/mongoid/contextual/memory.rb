@@ -642,25 +642,24 @@ module Mongoid
         in_place_sort(spec)
       end
 
-      # Compare two values, checking for nil.
+      # Compare two values, handling the cases when
+      # either value is nil.
       #
       # @api private
       #
       # @example Compare the two objects.
       #   context.compare(a, b)
       #
-      # @param [ Object ] a The first object.
-      # @param [ Object ] b The first object.
+      # @param [ Object ] value_a The first object.
+      # @param [ Object ] value_b The second object.
       #
       # @return [ Integer ] The comparison value.
-      def compare(a, b) # rubocop:disable Naming/MethodParameterName
-        if a.nil?
-          b.nil? ? 0 : 1
-        elsif b.nil?
-          -1
-        else
-          a <=> b
-        end
+      def compare(value_a, value_b)
+        return 0 if value_a.nil? && value_b.nil?
+        return 1 if value_a.nil?
+        return -1 if value_b.nil?
+
+        compare_operand(value_a) <=> compare_operand(value_b)
       end
 
       # Sort the documents in place.
@@ -672,10 +671,8 @@ module Mongoid
       def in_place_sort(values)
         documents.sort! do |a, b|
           values.map do |field, direction|
-            a_value = a[field]
-            b_value = b[field]
-            direction * compare(a_value.__sortable__, b_value.__sortable__)
-          end.find { |value| !value.zero? } || 0
+            direction * compare(a[field], b[field])
+          end.detect { |value| !value.zero? } || 0
         end
       end
 
@@ -697,6 +694,23 @@ module Mongoid
 
       def _session
         @criteria.send(:_session)
+      end
+
+      # Get the operand value to be used in comparison.
+      # Adds capability to sort boolean values.
+      #
+      # @example Get the comparison operand.
+      #   compare_operand(true) #=> 1
+      #
+      # @param [ Object ] value The value to be used in comparison.
+      #
+      # @return [ Integer | Object ] The comparison operand.
+      def compare_operand(value)
+        case value
+        when TrueClass then 1
+        when FalseClass then 0
+        else value
+        end
       end
 
       # Retrieve the value for the current document at the given field path.

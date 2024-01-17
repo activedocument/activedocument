@@ -23,7 +23,7 @@ module Mongoid
       # @example Set the updated at time.
       #   person.set_updated_at
       def set_updated_at
-        self.updated_at = Time.configured.now if able_to_set_updated_at? && !updated_at_changed?
+        self.updated_at = Time.current if able_to_set_updated_at? && !updated_at_changed?
 
         clear_timeless_option
       end

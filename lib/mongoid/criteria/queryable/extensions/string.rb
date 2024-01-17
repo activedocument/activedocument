@@ -46,7 +46,7 @@ module Mongoid
           #
           # @return [ Hash ] The string as a sort option hash.
           def __sort_option__
-            split(/,/).inject({}) do |hash, spec|
+            split(',').inject({}) do |hash, spec|
               hash.tap do |h|
                 field, direction = spec.strip.split(/\s/)
                 h[field.to_sym] = Mongoid::Criteria::Translator.to_direction(direction)
@@ -81,7 +81,7 @@ module Mongoid
             # @return [ Hash ] The selection.
             def __expr_part__(key, value, negating = false)
               if negating
-                { key => { "$#{value.regexp? ? 'not' : 'ne'}" => value } }
+                { key => { "$#{__regexp?(value) ? 'not' : 'ne'}" => value } }
               else
                 { key => value }
               end
@@ -98,8 +98,19 @@ module Mongoid
             # @return [ String ] The value as a string.
             def evolve(object)
               __evolve__(object) do |obj|
-                obj.regexp? ? obj : obj.to_s
+                __regexp?(obj) ? obj : obj.to_s
               end
+            end
+
+            private
+
+            # Returns whether the object is Regexp-like.
+            #
+            # @param [ Object ] object The object to evaluate.
+            #
+            # @return [ Boolean ] Whether the object is Regexp-like.
+            def __regexp?(object)
+              object.is_a?(Regexp) || object.is_a?(BSON::Regexp::Raw)
             end
           end
         end

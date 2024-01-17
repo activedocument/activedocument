@@ -46,7 +46,7 @@ module Mongoid
         # @param [ Symbol ] name The field name.
         # @param [ Hash ] _options The provided options.
         def validate_relation(klass, name, _options = {})
-          [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
+          [name, :"#{name}?", :"#{name}="].each do |n|
             if Mongoid.destructive_fields.include?(n)
               raise Errors::InvalidRelation.new(klass, n)
             end
@@ -65,7 +65,7 @@ module Mongoid
         #
         # @api private
         def validate_field_name(klass, name)
-          [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
+          [name, :"#{name}?", :"#{name}="].each do |n|
             if Mongoid.destructive_fields.include?(n)
               raise Errors::InvalidField.new(klass, name, n)
             end

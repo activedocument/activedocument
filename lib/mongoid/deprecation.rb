@@ -5,20 +5,22 @@ module Mongoid
   # Utility class for logging deprecation warnings.
   class Deprecation < ::ActiveSupport::Deprecation
 
-    @gem_name = 'Mongoid'
-
-    # Per change policy, deprecations will be removed in the next major version.
-    @deprecation_horizon = "#{Mongoid::VERSION.split('.').first.to_i + 1}.0".freeze # rubocop:disable Style/RedundantFreeze
+    def initialize
+      # Per change policy, deprecations will be removed in the next major version.
+      deprecation_horizon = "#{Mongoid::VERSION.split('.').first.to_i + 1}.0"
+      gem_name = 'Mongoid'
+      super(deprecation_horizon, gem_name)
+    end
 
     # Overrides default ActiveSupport::Deprecation behavior
     # to use Mongoid's logger.
     #
     # @return [ Array<Proc> ] The deprecation behavior.
     def behavior
-      @behavior ||= Array(lambda do |message, callstack, _deprecation_horizon, _gem_name|
+      @behavior ||= Array(lambda do |*args|
         logger = Mongoid.logger
-        logger.warn(message)
-        logger.debug(callstack.join("\n  ")) if debug
+        logger.warn(args[0])
+        logger.debug(args[1].join("\n  ")) if debug
       end)
     end
   end

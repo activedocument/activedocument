@@ -102,7 +102,7 @@ module Mongoid
         def process_attributes(parent, attrs)
           return if reject?(parent, attrs)
 
-          if (id = attrs.extract_id)
+          if (id = extract_id(attrs))
             update_nested_relation(parent, id, attrs)
           else
             existing.push(Factory.build(@class_name, attrs)) unless destroyable?(attrs)
@@ -154,7 +154,7 @@ module Mongoid
         # @param [ Mongoid::Document ] doc The document to update.
         # @param [ Hash ] attrs The attributes.
         def update_document(doc, attrs)
-          attrs.delete_id
+          delete_id(attrs)
           if association.embedded?
             doc.assign_attributes(attrs)
           else
@@ -176,7 +176,9 @@ module Mongoid
           first = existing.first
           converted = first ? convert_id(first.class, id) : id
 
-          if existing.exists?(_id: converted)
+          # The next line cannot be written as `existing.exists?(_id: converted)`,
+          # otherwise tests will fail.
+          if existing.where(_id: converted).exists? # rubocop:disable Rails/WhereExists
             # document exists in association
             doc = existing.find(converted)
             if destroyable?(attrs)

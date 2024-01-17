@@ -60,11 +60,7 @@ module Mongoid
         ]
 
         result = ERB.new(contents).result
-        data = if RUBY_VERSION < '2.6'
-                 YAML.safe_load(result, permitted_classes, [], true)
-               else
-                 YAML.safe_load(result, permitted_classes: permitted_classes, aliases: true)
-               end
+        data = YAML.safe_load(result, permitted_classes: permitted_classes, aliases: true)
 
         raise Mongoid::Errors::InvalidConfigFile.new(path) unless data.is_a?(Hash)
 

@@ -10,7 +10,7 @@ module Mongoid
     # Delegate the cluster method to the client.
     def_delegators :client, :cluster
 
-    # Delegate the storage options method to the object.
+    # Delegate the storage_options method to the object.
     def_delegators :@object, :storage_options
 
     # The options defining this persistence context.
@@ -43,6 +43,26 @@ module Mongoid
     def initialize(object, opts = {})
       @object = object
       set_options!(opts)
+    end
+
+    # Returns a new persistence context that is consistent with the given
+    # child document, inheriting most appropriate settings.
+    #
+    # @param [ Mongoid::Document | Class ] document the child document
+    #
+    # @return [ PersistenceContext ] the new persistence context
+    #
+    # @api private
+    def for_child(document)
+      if document.is_a?(Class)
+        return self if document == (@object.is_a?(Class) ? @object : @object.class)
+      elsif document.is_a?(Mongoid::Document)
+        return self if document.instance_of?((@object.is_a?(Class) ? @object : @object.class))
+      else
+        raise ArgumentError.new('must specify a class or a document instance')
+      end
+
+      PersistenceContext.new(document, options.merge(document.storage_options))
     end
 
     # Get the collection for this persistence context.
@@ -111,7 +131,7 @@ module Mongoid
     def client_name
       @client_name ||= options[:client] ||
                        Threaded.client_override ||
-                       (storage_options && __evaluate__(storage_options[:client]))
+                       __evaluate__(storage_options[:client])
     end
 
     # Determine if this persistence context is equal to another.
@@ -141,6 +161,18 @@ module Mongoid
     # @api private
     def reusable_client?
       @options.keys == [:client]
+    end
+
+    # The subset of provided options that may be used as storage
+    # options.
+    #
+    # @return [ Hash | nil ] the requested storage options, or nil if
+    #   none were specified.
+    #
+    # @api private
+    def requested_storage_options
+      slice = @options.slice(*Mongoid::Clients::Validators::Storage::VALID_OPTIONS)
+      slice.any? ? slice : nil
     end
 
     private
@@ -175,7 +207,7 @@ module Mongoid
     def database_name_option
       @database_name_option ||= options[:database] ||
                                 Threaded.database_override ||
-                                (storage_options && storage_options[:database])
+                                storage_options[:database]
     end
 
     class << self

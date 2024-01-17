@@ -129,9 +129,11 @@ module Mongoid
           #   obj.regexp?
           #
           # @return [ false ] Always false.
+          # @deprecated
           def regexp?
             false
           end
+          Mongoid.deprecate(self, :regexp?)
 
           module ClassMethods
 

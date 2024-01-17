@@ -4,16 +4,17 @@ require 'mongoid/association/marshalable'
 
 module Mongoid
   module Association
-
     # This class is the superclass for all association proxy objects, and contains
     # common behavior for all of them.
     class Proxy
       extend Forwardable
 
+      alias_method :extend_proxy, :extend
+
       # Specific methods to prevent from being undefined.
       #
       # @api private
-      KEEP_METHODS = %i[
+      KEEPER_METHODS = %i[
         send
         object_id
         equal?
@@ -25,11 +26,9 @@ module Mongoid
         extend_proxies
       ].freeze
 
-      alias_method :extend_proxy, :extend
-
       # We undefine most methods to get them sent through to the target.
       instance_methods.each do |method|
-        next if method.to_s.start_with?('__') || KEEP_METHODS.include?(method)
+        next if method.to_s.start_with?('__') || KEEPER_METHODS.include?(method)
 
         undef_method(method)
       end
@@ -201,7 +200,6 @@ module Mongoid
       end
 
       class << self
-
         # Apply ordering to the criteria if it was defined on the association.
         #
         # @example Apply the ordering.

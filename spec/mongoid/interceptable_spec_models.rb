@@ -20,18 +20,18 @@ module InterceptableSpec
       whens = %i[before after]
       %i[validation save create update].each do |what|
         whens.each do |whn|
-          send("#{whn}_#{what}", "#{whn}_#{what}_stub".to_sym)
+          send("#{whn}_#{what}", :"#{whn}_#{what}_stub")
           define_method("#{whn}_#{what}_stub") do
-            callback_registry&.record_call(self.class, "#{whn}_#{what}".to_sym)
+            callback_registry&.record_call(self.class, :"#{whn}_#{what}")
           end
         end
         next if what == :validation
 
-        send("around_#{what}", "around_#{what}_stub".to_sym)
+        send("around_#{what}", :"around_#{what}_stub")
         define_method("around_#{what}_stub") do |&block|
-          callback_registry&.record_call(self.class, "around_#{what}_open".to_sym)
+          callback_registry&.record_call(self.class, :"around_#{what}_open")
           block.call
-          callback_registry&.record_call(self.class, "around_#{what}_close".to_sym)
+          callback_registry&.record_call(self.class, :"around_#{what}_close")
         end
       end
     end

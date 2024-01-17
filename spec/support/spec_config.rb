@@ -18,7 +18,7 @@ class SpecConfig
       @uri_str = DEFAULT_MONGODB_URI
     end
 
-    @uri = Mongo::URI.new(@uri_str)
+    @uri = Mongo::URI.get(@uri_str)
   end
 
   attr_reader :uri_str, :uri
@@ -53,6 +53,10 @@ class SpecConfig
 
   def ci?
     !!ENV['CI']
+  end
+
+  def atlas?
+    !!ENV['ATLAS_URI']
   end
 
   def rails_version
