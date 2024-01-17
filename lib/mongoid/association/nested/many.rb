@@ -176,7 +176,9 @@ module Mongoid
           first = existing.first
           converted = first ? convert_id(first.class, id) : id
 
-          if existing.exists?(_id: converted)
+          # The next line cannot be written as `existing.exists?(_id: converted)`,
+          # otherwise tests will fail.
+          if existing.where(_id: converted).exists? # rubocop:disable Rails/WhereExists
             # document exists in association
             doc = existing.find(converted)
             if destroyable?(attrs)

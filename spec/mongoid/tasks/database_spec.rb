@@ -226,7 +226,7 @@ describe Mongoid::Tasks::Database do
     context 'when wait is true' do
       it 'invokes both create_search_indexes and wait_for_search_indexes' do
         expect(searchable_model_spy).to receive(:create_search_indexes)
-        expect(described_class).to receive(:wait_for_search_indexes).with(searchable_model_spy => index_names)
+        expect(described_class).to receive(:wait_for_search_indexes).with({ searchable_model_spy => index_names })
 
         described_class.create_search_indexes([searchable_model_spy], wait: true)
       end

@@ -4,7 +4,6 @@ module Mongoid
   module Association
     module Referenced
       class HasAndBelongsToMany
-
         # Transparent proxy for has_and_belongs_to_many associations.
         # An instance of this class is returned when calling
         # the association getter method on the subject document.
@@ -13,10 +12,8 @@ module Mongoid
         # i.e. the array of documents on the opposite-side collection
         # which must be loaded.
         class Proxy < Referenced::HasMany::Proxy
-
           # Class-level methods for HasAndBelongsToMany::Proxy
           module ClassMethods
-
             # Get the eager loader object for this type of association.
             #
             # @example Get the eager loader object
@@ -90,7 +87,6 @@ module Mongoid
             end
             unsynced(_base, foreign_key) and self
           end
-
           alias_method :push, :<<
 
           # Appends an array of documents to the association. Performs a batch

@@ -17,10 +17,10 @@ module Mongoid
     #
     # @return [ Array<Proc> ] The deprecation behavior.
     def behavior
-      @behavior ||= Array(lambda do |message, callstack, _deprecation_horizon, _gem_name|
+      @behavior ||= Array(lambda do |*args|
         logger = Mongoid.logger
-        logger.warn(message)
-        logger.debug(callstack.join("\n  ")) if debug
+        logger.warn(args[0])
+        logger.debug(args[1].join("\n  ")) if debug
       end)
     end
   end

@@ -6,7 +6,6 @@ module Mongoid
   module Association
     module Embedded
       class EmbedsMany
-
         # Transparent proxy for embeds_many associations.
         # An instance of this class is returned when calling the
         # association getter method on the parent document. This
@@ -18,7 +17,6 @@ module Mongoid
 
           # Class-level methods for the Proxy class.
           module ClassMethods
-
             # Returns the eager loader for this association.
             #
             # @param [ Array<Mongoid::Association> ] associations The

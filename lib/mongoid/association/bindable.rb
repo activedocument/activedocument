@@ -135,7 +135,7 @@ module Mongoid
       # @param [ Mongoid::Document ] typed The document that stores the type field.
       # @param [ String ] name The name of the model.
       def bind_polymorphic_type(typed, name)
-        return unless _association.type
+        return unless _association.type && !typed.frozen?
 
         try_method(typed, _association.type_setter, name)
       end
@@ -151,7 +151,7 @@ module Mongoid
       # @param [ Mongoid::Document ] typed The document that stores the type field.
       # @param [ String ] name The name of the model.
       def bind_polymorphic_inverse_type(typed, name)
-        return unless _association.inverse_type
+        return unless _association.inverse_type && !typed.frozen?
 
         try_method(typed, _association.inverse_type_setter, name)
       end
@@ -167,7 +167,7 @@ module Mongoid
       # @param [ Mongoid::Document ] doc The base document.
       # @param [ Mongoid::Document ] inverse The inverse document.
       def bind_inverse(doc, inverse)
-        return unless doc.respond_to?(_association.inverse_setter)
+        return unless doc.respond_to?(_association.inverse_setter) && !doc.frozen?
 
         try_method(doc, _association.inverse_setter, inverse)
       end
