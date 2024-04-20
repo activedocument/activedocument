@@ -47,15 +47,15 @@ describe 'has_and_belongs_to_many associations' do
     let(:page) { HabtmSpec::Page.create! }
 
     let(:image_block) do
-      image_block = page.blocks.build({
+      page.blocks.build({
         _type: 'HabtmSpec::ImageBlock',
-        attachment_ids: [ attachment.id.to_s ],
+        attachment_ids: [attachment.id.to_s],
         attachments_attributes: { '1234' => { file: 'bar.jpg', id: attachment.id.to_s } }
       })
     end
 
     it 'does not raise on save' do
-      expect { image_block.save! }.not_to raise_error
+      expect { image_block.save! }.to_not raise_error
     end
   end
 end

@@ -4,7 +4,25 @@ require 'spec_helper'
 
 describe Mongoid::Clients::Sessions do
   let(:buffer) { StringIO.new }
-  let(:logger) { ::Logger.new(buffer, Logger::DEBUG) }
+  let(:logger) { Logger.new(buffer, Logger::DEBUG) }
+
+  let(:subscriber) do
+    client = Mongoid::Clients.with_name(:other)
+    monitoring = client.send(:monitoring)
+    monitoring.subscribers['Command'].find do |s|
+      s.is_a?(EventSubscriber)
+    end
+  end
+
+  let(:insert_events) do
+    # Driver 2.5 sends command_name as a symbol
+    subscriber.started_events.select { |event| event.command_name.to_s == 'insert' }
+  end
+
+  let(:update_events) do
+    # Driver 2.5 sends command_name as a symbol
+    subscriber.started_events.select { |event| event.command_name.to_s == 'update' }
+  end
 
   around do |example|
     old_logger = Mongoid.logger
@@ -25,24 +43,6 @@ describe Mongoid::Clients::Sessions do
   after(:all) do
     Mongoid::Clients.with_name(:other).close
     Mongoid::Clients.clients.delete(:other)
-  end
-
-  let(:subscriber) do
-    client = Mongoid::Clients.with_name(:other)
-    monitoring = client.send(:monitoring)
-    monitoring.subscribers['Command'].find do |s|
-      s.is_a?(EventSubscriber)
-    end
-  end
-
-  let(:insert_events) do
-    # Driver 2.5 sends command_name as a symbol
-    subscriber.started_events.select { |event| event.command_name.to_s == 'insert' }
-  end
-
-  let(:update_events) do
-    # Driver 2.5 sends command_name as a symbol
-    subscriber.started_events.select { |event| event.command_name.to_s == 'update' }
   end
 
   context 'when a session is used on a model class' do
@@ -241,7 +241,7 @@ describe Mongoid::Clients::Sessions do
           end
 
           it 'does not warn about a different client' do
-            expect(buffer.string).not_to include("used within another client's session")
+            expect(buffer.string).to_not include("used within another client's session")
           end
         end
 

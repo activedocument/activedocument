@@ -81,8 +81,6 @@ module Mongoid
         document.errors.add(attribute, :invalid) unless valid
       end
 
-      private
-
       # Examine the given target object and return an array of
       # documents (possibly empty) that the target represents.
       #
@@ -107,7 +105,7 @@ module Mongoid
       # @return [ Array<Mongoid::Document> ] the in-memory documents
       #   held by the target.
       def get_target_documents_for_has_many(target)
-        [ *target._loaded.values, *target._added.values ]
+        [*target._loaded.values, *target._added.values]
       end
 
       # Returns the target as an array. If the target represents a single

@@ -270,22 +270,22 @@ module Mongoid
         # active. let's see if one of them was started with the model's
         # client...
         session = Threaded.get_session(client: persistence_context.client)
+        return unless session.nil?
 
-        # if not, then we have a case of the programmer trying to use
+        # if the session is nil, then we have a case of the programmer trying to use
         # a model within a transaction, where the model is not itself
         # controlled by that transaction. this is potentially a bug, so
         # let's tell them about it.
-        if session.nil?
-          # This is hacky; we're hijacking Mongoid::Errors::MongoidError in
-          # order to get the spiffy error message translation. If we later
-          # decide to raise an error instead of just writing a message, we can
-          # subclass MongoidError and raise that exception here.
-          message = Errors::MongoidError.new.compose_message(
-            'client_session_mismatch',
-            model: self.class.name
-          )
-          logger.info(message)
-        end
+        #
+        # This is hacky; we're hijacking Mongoid::Errors::MongoidError in
+        # order to get the spiffy error message translation. If we later
+        # decide to raise an error instead of just writing a message, we can
+        # subclass MongoidError and raise that exception here.
+        message = Errors::MongoidError.new.compose_message(
+          'client_session_mismatch',
+          model: self.class.name
+        )
+        logger.info(message)
       end
     end
   end
