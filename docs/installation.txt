@@ -34,7 +34,7 @@ Using Mongoid with a New Rails Application
 
 When creating a new Rails application and wish to use Mongoid for
 data access, give the ``--skip-active-record`` flag to the ``rails new``
-command to avoid depending on and configuring ActiveRecord..
+command to avoid depending on and configuring ActiveRecord.
 
 Using Mongoid with an Existing Rails Application
 ================================================
