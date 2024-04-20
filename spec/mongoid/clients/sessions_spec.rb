@@ -3,19 +3,8 @@
 require 'spec_helper'
 
 describe Mongoid::Clients::Sessions do
-
-  before(:all) do
-    CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
-    CONFIG[:clients][:other][:database] = 'other'
-    Mongoid::Clients.clients.each_value(&:close)
-    Mongoid::Config.send(:clients=, CONFIG[:clients])
-    Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
-  end
-
-  after(:all) do
-    Mongoid::Clients.with_name(:other).close
-    Mongoid::Clients.clients.delete(:other)
-  end
+  let(:buffer) { StringIO.new }
+  let(:logger) { Logger.new(buffer, Logger::DEBUG) }
 
   let(:subscriber) do
     client = Mongoid::Clients.with_name(:other)
@@ -33,6 +22,27 @@ describe Mongoid::Clients::Sessions do
   let(:update_events) do
     # Driver 2.5 sends command_name as a symbol
     subscriber.started_events.select { |event| event.command_name.to_s == 'update' }
+  end
+
+  around do |example|
+    old_logger = Mongoid.logger
+    Mongoid.logger = logger
+    example.run
+  ensure
+    Mongoid.logger = old_logger
+  end
+
+  before(:all) do
+    CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
+    CONFIG[:clients][:other][:database] = 'other'
+    Mongoid::Clients.clients.each_value(&:close)
+    Mongoid::Config.send(:clients=, CONFIG[:clients])
+    Mongoid::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
+  end
+
+  after(:all) do
+    Mongoid::Clients.with_name(:other).close
+    Mongoid::Clients.clients.delete(:other)
   end
 
   context 'when a session is used on a model class' do
@@ -229,6 +239,10 @@ describe Mongoid::Clients::Sessions do
             expect(insert_lsids_sent.uniq.size).to eq(1)
             expect(update_lsids_sent.uniq).to eq(insert_lsids_sent.uniq)
           end
+
+          it 'does not warn about a different client' do
+            expect(buffer.string).to_not include("used within another client's session")
+          end
         end
 
         context 'when the other class uses a different client' do
@@ -256,6 +270,10 @@ describe Mongoid::Clients::Sessions do
             expect(Post.count).to be(1)
             update_lsids_sent = update_events.collect { |event| event.command['lsid'] }
             expect(update_lsids_sent.size).to eq(2)
+          end
+
+          it 'warns about a different client' do
+            expect(buffer.string).to include("used within another client's session")
           end
         end
 
