@@ -30,6 +30,7 @@ class Name
 
   def is_not_jamis
     return unless first_name == 'Jamis' && last_name == 'Buck'
+
     errors.add(:base, :invalid)
   end
 end

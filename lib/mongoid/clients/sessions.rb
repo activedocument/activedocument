@@ -252,6 +252,8 @@ module Mongoid
         end
       end
 
+      private
+
       # If at least one session is active, this ensures that the
       # current model's client is compatible with one of them.
       #
