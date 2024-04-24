@@ -755,7 +755,7 @@ describe Mongoid::Association::Referenced::BelongsTo::Proxy do
               expect(drug).to be_destroyed
             end
 
-            it "doesn't deletes parent" do
+            it "doesn't delete parent" do
               expect(person).to_not be_destroyed
             end
 

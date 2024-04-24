@@ -34,12 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency('mongo', ['>=2.18.0', '<3.0.0'])
   s.add_dependency('concurrent-ruby', ['>= 1.0.5', '< 2.0'])
 
-  # The ruby2_keywords gem normalizes Ruby 2.7's arg delegation.
-  # It can be removed when Ruby 2.7 is removed.
-  # See: https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/#delegation
-  s.add_dependency('ruby2_keywords', '~> 0.0.5')
-
-  s.add_development_dependency('bson', ['>= 4.14.0', '< 5.0.0'])
+  s.add_development_dependency('bson', ['>= 4.14.0', '< 6.0.0'])
 
   s.files        = Dir.glob('lib/**/*') + %w[LICENSE README.md Rakefile]
   s.require_path = 'lib'

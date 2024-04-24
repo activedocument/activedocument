@@ -99,6 +99,7 @@ module Mongoid
         raise Errors::ReadonlyDocument.new(self.class) if readonly? && !Mongoid.legacy_readonly
 
         enforce_immutability_of_id_field!
+        ensure_client_compatibility!
         return false if performing_validations?(options) &&
                         invalid?(options[:context] || :update)
 
