@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AccountAuto
+class AccountAutosave
   include Mongoid::Document
 
   field :_id, type: String, overwrite: true, default: -> { name.try(:parameterize) }
@@ -15,7 +15,7 @@ class AccountAuto
 
   embeds_many :memberships
   belongs_to :creator, class_name: 'User'
-  belongs_to :person, class_name: 'PersonAuto'
+  belongs_to :person, class_name: 'PersonAutosave'
   has_many :alerts, autosave: false
   has_and_belongs_to_many :agents
   has_one :comment, validate: false

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PersonAuto
+class PersonAutosave
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic
   attr_accessor :mode
@@ -109,9 +109,9 @@ class PersonAuto
   has_and_belongs_to_many :houses, validate: false
   has_and_belongs_to_many :ordered_preferences, order: :value.desc, validate: false
 
-  has_many :drugs, class_name: 'DrugAuto', validate: false
+  has_many :drugs, class_name: 'DrugAutosave', validate: false
   # Must not have dependent: :destroy
-  has_one :account, class_name: 'AccountAuto', validate: false
+  has_one :account, class_name: 'AccountAutosave', validate: false
   has_one :cat, dependent: :nullify, validate: false, primary_key: :username
   has_one :book, autobuild: true, validate: false
   has_one :home, dependent: :delete_all, validate: false
@@ -123,8 +123,8 @@ class PersonAuto
     dependent: :nullify,
     validate: false
 
-  belongs_to :mother, class_name: 'PersonAuto'
-  has_many :children, class_name: 'PersonAuto'
+  belongs_to :mother, class_name: 'PersonAutosave'
+  has_many :children, class_name: 'PersonAutosave'
 
   accepts_nested_attributes_for :addresses
   accepts_nested_attributes_for :name, update_only: true

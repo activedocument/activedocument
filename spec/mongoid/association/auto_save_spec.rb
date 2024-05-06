@@ -9,16 +9,16 @@ describe Mongoid::Association::Referenced::AutoSave do
   describe '.auto_save' do
 
     before(:all) do
-      PersonAuto.has_many :drugs, class_name: 'DrugAuto', validate: false, autosave: true
-      PersonAuto.has_one :account, class_name: 'AccountAuto', validate: false, autosave: true
+      PersonAutosave.has_many :drugs, class_name: 'DrugAutosave', validate: false, autosave: true
+      PersonAutosave.has_one :account, class_name: 'AccountAutosave', validate: false, autosave: true
     end
 
     after(:all) do
-      PersonAuto.reset_callbacks(:save)
+      PersonAutosave.reset_callbacks(:save)
     end
 
     let(:person) do
-      PersonAuto.new
+      PersonAutosave.new
     end
 
     context 'when the option is not provided' do
@@ -85,11 +85,11 @@ describe Mongoid::Association::Referenced::AutoSave do
       context 'when the relation has already had the autosave callback added' do
 
         before do
-          PersonAuto.has_many :drugs, class_name: 'DrugAuto', validate: false, autosave: true
+          PersonAutosave.has_many :drugs, class_name: 'DrugAutosave', validate: false, autosave: true
         end
 
         let(:drug) do
-          DrugAuto.new(name: 'Percocet')
+          DrugAutosave.new(name: 'Percocet')
         end
 
         it 'does not add the autosave callback twice' do
@@ -102,7 +102,7 @@ describe Mongoid::Association::Referenced::AutoSave do
       context 'when the relation is a references many' do
 
         let(:drug) do
-          DrugAuto.new(name: 'Percocet')
+          DrugAutosave.new(name: 'Percocet')
         end
 
         context 'when saving a new parent document' do
@@ -110,7 +110,7 @@ describe Mongoid::Association::Referenced::AutoSave do
           context 'when persistence options are not set on the parent' do
 
             before do
-              PersonAuto.has_many :drugs, class_name: 'DrugAuto', validate: false, autosave: true
+              PersonAutosave.has_many :drugs, class_name: 'DrugAutosave', validate: false, autosave: true
             end
 
             before do
@@ -130,8 +130,8 @@ describe Mongoid::Association::Referenced::AutoSave do
             end
 
             after do
-              PersonAuto.with(database: other_database, &:delete_all)
-              DrugAuto.with(database: other_database, &:delete_all)
+              PersonAutosave.with(database: other_database, &:delete_all)
+              DrugAutosave.with(database: other_database, &:delete_all)
             end
 
             before do
@@ -142,7 +142,7 @@ describe Mongoid::Association::Referenced::AutoSave do
             end
 
             it 'saves the relation with the persistence options' do
-              DrugAuto.with(database: other_database) do |drug_class|
+              DrugAutosave.with(database: other_database) do |drug_class|
                 expect(drug_class.count).to eq(1)
               end
             end
@@ -165,7 +165,7 @@ describe Mongoid::Association::Referenced::AutoSave do
         context 'when not updating the document' do
 
           let(:from_db) do
-            PersonAuto.find person.id
+            PersonAutosave.find person.id
           end
 
           before do
@@ -183,7 +183,7 @@ describe Mongoid::Association::Referenced::AutoSave do
       context 'when the relation is a references one' do
 
         let(:account) do
-          AccountAuto.new(name: 'Testing')
+          AccountAutosave.new(name: 'Testing')
         end
 
         context 'when saving a new parent document' do
@@ -237,7 +237,7 @@ describe Mongoid::Association::Referenced::AutoSave do
         context 'when not updating the document' do
 
           let(:from_db) do
-            PersonAuto.find person.id
+            PersonAutosave.find person.id
           end
 
           before do
@@ -291,25 +291,25 @@ describe Mongoid::Association::Referenced::AutoSave do
       context 'when it has two relations with autosaves' do
 
         let!(:person) do
-          PersonAuto.create!(drugs: [percocet], account: account)
+          PersonAutosave.create!(drugs: [percocet], account: account)
         end
 
         let(:from_db) do
-          PersonAuto.find person.id
+          PersonAutosave.find person.id
         end
 
         let(:percocet) do
-          DrugAuto.new(name: 'Percocet')
+          DrugAutosave.new(name: 'Percocet')
         end
 
         let(:account) do
-          AccountAuto.new(name: 'Testing')
+          AccountAutosave.new(name: 'Testing')
         end
 
         context 'when updating one document' do
 
           let(:placebo) do
-            DrugAuto.new(name: 'Placebo')
+            DrugAutosave.new(name: 'Placebo')
           end
 
           before do
