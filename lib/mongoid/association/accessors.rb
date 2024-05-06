@@ -67,7 +67,7 @@ module Mongoid
       #
       # @param [ Symbol ] name The name of the association.
       def reset_relation_criteria(name)
-        return unless instance_variable_defined?("@_#{name}")
+        return unless instance_variable_defined?(:"@_#{name}")
 
         send(name).reset_unloaded
       end
@@ -83,7 +83,7 @@ module Mongoid
       #
       # @return [ Mongoid::Association::Proxy ] The association.
       def set_relation(name, relation)
-        instance_variable_set("@_#{name}", relation)
+        instance_variable_set(:"@_#{name}", relation)
       end
 
       # Adds the existence check for associations.
@@ -129,7 +129,7 @@ module Mongoid
           klass.re_define_method(name) do |reload = false|
             value = get_relation(name, association, nil, reload)
             if value.nil? && association.autobuilding? && !without_autobuild?
-              value = send("build_#{name}")
+              value = send(:"build_#{name}")
             end
             value
           end
@@ -222,7 +222,7 @@ module Mongoid
             attributes, _options = parse_args(*args)
             document = Factory.build(association.relation_class, attributes)
             _building do
-              child = send("#{name}=", document)
+              child = send(:"#{name}=", document)
               child.run_callbacks(:build)
               child
             end
@@ -247,7 +247,7 @@ module Mongoid
             attributes, _options = parse_args(*args)
             document = Factory.build(association.klass, attributes)
             doc = _assigning do
-              send("#{name}=", document)
+              send(:"#{name}=", document)
             end
             doc.save
             save if new_record? && association.stores_foreign_key?

@@ -103,8 +103,8 @@ module Mongoid
             klass.after_update do
               foreign_key = association.foreign_key
 
-              if send("#{foreign_key}_previously_changed?")
-                original, current = send("#{foreign_key}_previous_change")
+              if send(:"#{foreign_key}_previously_changed?")
+                original, current = send(:"#{foreign_key}_previous_change")
 
                 unless original.nil?
                   association.klass.with(persistence_context.for_child(association.klass)) do |k|

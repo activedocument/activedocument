@@ -64,7 +64,7 @@ module Mongoid
     #
     # @return [ true | false ] If the callback can be executed.
     def callback_executable?(kind)
-      respond_to?("_#{kind}_callbacks")
+      respond_to?(:"_#{kind}_callbacks")
     end
 
     # Is the document currently in a state that could potentially require
@@ -401,7 +401,7 @@ module Mongoid
       name = "_run__#{place}__#{kind}__callbacks"
       unless respond_to?(name)
         chain = ActiveSupport::Callbacks::CallbackChain.new(name, {})
-        send("_#{kind}_callbacks").each do |callback|
+        send(:"_#{kind}_callbacks").each do |callback|
           chain.append(callback) if callback.kind == place
         end
         self.class.send :define_method, name do

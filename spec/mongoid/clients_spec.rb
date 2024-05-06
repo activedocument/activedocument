@@ -1195,10 +1195,10 @@ describe Mongoid::Clients do
     end
   end
 
-  context '#disconnect' do
+  describe '#disconnect' do
 
     let(:clients) do
-      Mongoid::Clients.clients.values
+      described_class.clients.values
     end
 
     before do
@@ -1209,18 +1209,18 @@ describe Mongoid::Clients do
       clients.each do |client|
         expect(client).to receive(:close).and_call_original
       end
-      Mongoid::Clients.disconnect
+      described_class.disconnect
     end
 
     it 'returns true' do
-      expect(Mongoid::Clients.disconnect).to eq(true)
+      expect(described_class.disconnect).to be(true)
     end
   end
 
-  context '#reconnect' do
+  describe '#reconnect' do
 
     let(:clients) do
-      Mongoid::Clients.clients.values
+      described_class.clients.values
     end
 
     before do
@@ -1231,11 +1231,11 @@ describe Mongoid::Clients do
       clients.each do |client|
         expect(client).to receive(:reconnect).and_call_original
       end
-      Mongoid::Clients.reconnect
+      described_class.reconnect
     end
 
     it 'returns true' do
-      expect(Mongoid::Clients.reconnect).to eq(true)
+      expect(described_class.reconnect).to be(true)
     end
   end
 end

@@ -2650,7 +2650,7 @@ describe Mongoid::Attributes do
           let(:doc) { NestedBook.create! }
 
           before do
-            doc.send("#{meth}_cover", attrs)
+            doc.send(:"#{meth}_cover", attrs)
           end
 
           it 'updates the attributes' do

@@ -119,13 +119,13 @@ module Mongoid
       # @param [ Symbol ] name The name of the field.
       # @param [ Object ] value The value of the field.
       def process_attribute(name, value)
-        if !respond_to?("#{name}=", true) && (store_as = aliased_fields.invert[name.to_s])
+        if !respond_to?(:"#{name}=", true) && (store_as = aliased_fields.invert[name.to_s])
           name = store_as
         end
-        responds = respond_to?("#{name}=", true)
+        responds = respond_to?(:"#{name}=", true)
         raise Errors::UnknownAttribute.new(self.class, name) unless responds
 
-        send("#{name}=", value)
+        send(:"#{name}=", value)
       end
 
       # Process all the pending nested attributes that needed to wait until
@@ -135,7 +135,7 @@ module Mongoid
       #   document.process_nested
       def process_nested
         pending_nested.each_pair do |name, value|
-          send("#{name}=", value)
+          send(:"#{name}=", value)
         end
       end
 
@@ -160,7 +160,7 @@ module Mongoid
           if value.is_a?(Hash)
             association.nested_builder(value, {}).build(self)
           else
-            send("#{name}=", value)
+            send(:"#{name}=", value)
           end
         end
       end

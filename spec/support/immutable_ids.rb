@@ -43,7 +43,7 @@ module Mongoid
               it 'allows _id to be updated' do
                 invoke_operation!
                 expect(object.new_record?).to be false
-                expect(object.reload._id).to be == new_id_value
+                expect(object.reload._id).to eq new_id_value
               end
             end
 
@@ -66,7 +66,7 @@ module Mongoid
               it 'allows _id to be updated' do
                 invoke_operation!
                 expect(object.new_record?).to be false
-                expect(parent.reload.favorites.first._id).to be == new_id_value
+                expect(parent.reload.favorites.first._id).to eq new_id_value
               end
             end
 
@@ -92,7 +92,7 @@ module Mongoid
                     new_id = BSON::ObjectId.new
 
                     expect { parent.update(pet: { _id: new_id }) }.to_not raise_error
-                    expect(parent.reload.pet._id.to_s).to be == original_id.to_s
+                    expect(parent.reload.pet._id.to_s).to eq original_id.to_s
                   end
                 end
 

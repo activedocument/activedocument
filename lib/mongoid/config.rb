@@ -337,7 +337,7 @@ module Mongoid
       Validators::AsyncQueryExecutor.validate(options)
       options.each_pair do |option, value|
         Validators::Option.validate(option)
-        send("#{option}=", value)
+        send(:"#{option}=", value)
       end
     end
 

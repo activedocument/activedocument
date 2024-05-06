@@ -575,7 +575,7 @@ describe Mongoid::Fields do
       end
 
       it 'is declared as BSON::Decimal128' do
-        expect(Mop.fields['decimal128_field'].type).to be == BSON::Decimal128
+        expect(Mop.fields['decimal128_field'].type).to eq BSON::Decimal128
       end
 
       context 'when BSON version <= 4' do

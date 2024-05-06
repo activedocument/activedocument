@@ -112,7 +112,7 @@ describe Mongoid::Attributes::Dynamic do
 
         it 'cannot be written' do
           expect do
-            bar.send("#{attr_name}=", 'foo bar')
+            bar.send(:"#{attr_name}=", 'foo bar')
             bar.save!
           end.to raise_error(NoMethodError)
         end
@@ -122,7 +122,7 @@ describe Mongoid::Attributes::Dynamic do
         let(:bar) { Bar.new(attr_name => 'foo bar') }
 
         it 'can be written' do
-          bar.send("#{attr_name}=", 'new foo bar')
+          bar.send(:"#{attr_name}=", 'new foo bar')
           bar.save!
 
           bar_found = Bar.find(bar.id)
@@ -161,7 +161,7 @@ describe Mongoid::Attributes::Dynamic do
       end
 
       it 'responds to writer method' do
-        expect(bar.respond_to?("#{attr_name}=")).to be true
+        expect(bar.respond_to?(:"#{attr_name}=")).to be true
       end
     end
 
@@ -173,7 +173,7 @@ describe Mongoid::Attributes::Dynamic do
       end
 
       it 'does not respond to writer method' do
-        expect(bar.respond_to?("#{attr_name}=")).to be false
+        expect(bar.respond_to?(:"#{attr_name}=")).to be false
       end
     end
   end

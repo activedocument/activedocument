@@ -82,7 +82,7 @@ describe Mongoid do
     end
 
     it 'returns true' do
-      expect(Mongoid.disconnect_clients).to eq(true)
+      expect(described_class.disconnect_clients).to be(true)
     end
   end
 
@@ -100,11 +100,11 @@ describe Mongoid do
       clients.each do |client|
         expect(client).to receive(:reconnect).and_call_original
       end
-      Mongoid.reconnect_clients
+      described_class.reconnect_clients
     end
 
     it 'returns true' do
-      expect(Mongoid.reconnect_clients).to eq(true)
+      expect(described_class.reconnect_clients).to be(true)
     end
   end
 

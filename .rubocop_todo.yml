@@ -308,7 +308,37 @@ RSpec/ExpectInHook:
 # Offense count: 24
 # Configuration parameters: Include, CustomTransform, IgnoreMethods, SpecSuffixOnly.
 # Include: **/*_spec*rb*, **/spec/**/*
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
+  Exclude:
+    - 'spec/integration/atomic/modifiers_spec.rb'
+    - 'spec/integration/bson_regexp_raw_spec.rb'
+    - 'spec/integration/document_spec.rb'
+    - 'spec/mongoid/association/auto_save_spec.rb'
+    - 'spec/mongoid/association/counter_cache_spec.rb'
+    - 'spec/mongoid/association/eager_spec.rb'
+    - 'spec/mongoid/clients/transactions_spec.rb'
+    - 'spec/mongoid/criteria/queryable/extensions/boolean_spec.rb'
+    - 'spec/mongoid/criteria/queryable/extensions/numeric_spec.rb'
+    - 'spec/mongoid/criteria/queryable/extensions/regexp_raw_spec.rb'
+    - 'spec/mongoid/criteria/queryable/extensions/time_with_zone_spec.rb'
+    - 'spec/mongoid/criteria/queryable/queryable_spec.rb'
+    - 'spec/mongoid/extensions/binary_spec.rb'
+    - 'spec/mongoid/extensions/boolean_spec.rb'
+    - 'spec/mongoid/extensions/raw_value_spec.rb'
+    - 'spec/mongoid/extensions/stringified_symbol_spec.rb'
+    - 'spec/mongoid/loading_spec.rb'
+    - 'spec/mongoid/validatable/associated_spec.rb'
+    - 'spec/mongoid/validatable/format_spec.rb'
+    - 'spec/mongoid/validatable/length_spec.rb'
+    - 'spec/mongoid/validatable/numericality_spec.rb'
+    - 'spec/mongoid/validatable/presence_spec.rb'
+    - 'spec/mongoid/validatable/uniqueness_spec.rb'
+    - 'spec/mongoid/version_spec.rb'
+
+# Offense count: 24
+# Configuration parameters: Include, CustomTransform, IgnoreMethods, SpecSuffixOnly.
+# Include: **/*_spec*rb*, **/spec/**/*
+RSpec/SpecFilePathSuffix:
   Exclude:
     - 'spec/integration/atomic/modifiers_spec.rb'
     - 'spec/integration/bson_regexp_raw_spec.rb'

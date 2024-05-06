@@ -30,7 +30,7 @@ module Mongoid
     def pretty_print(pretty_printer)
       keys = fields.keys | attributes.keys
       pretty_printer.group(1, "#<#{self.class.name}", '>') do
-        sep = lambda { pretty_printer.text(',') }
+        sep = -> { pretty_printer.text(',') }
         pretty_printer.seplist(keys, sep) do |key|
           pretty_printer.breakable
           field = fields[key]
@@ -39,7 +39,7 @@ module Mongoid
           pretty_printer.text(':')
           pretty_printer.group(1) do
             pretty_printer.breakable
-            if key == "_id"
+            if key == '_id'
               pretty_printer.text(_id.to_s)
             else
               pretty_printer.pp(@attributes[key])
