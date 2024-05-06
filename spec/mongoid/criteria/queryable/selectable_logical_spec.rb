@@ -1664,7 +1664,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               # Date instance is converted to a Time instance in local time,
               # because we are querying on a Time field and dates are interpreted
               # in local time when assigning to Time fields
-              { 'published' => { '$gt' => Time.local(2020, 2, 3) } }
+              { 'published' => { '$gt' => Time.zone.local(2020, 2, 3) } }
             ]
           })
         end
@@ -2531,7 +2531,7 @@ describe Mongoid::Criteria::Queryable::Selectable do
               # Date instance is converted to a Time instance in local time,
               # because we are querying on a Time field and dates are interpreted
               # in local time when assigning to Time fields
-              { 'published' => { '$gt' => Time.local(2020, 2, 3) } }
+              { 'published' => { '$gt' => Time.zone.local(2020, 2, 3) } }
             ]
           })
         end

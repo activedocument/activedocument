@@ -72,7 +72,7 @@ module Mongoid
           return if object.blank?
 
           begin
-            time = object.__mongoize_time__
+            time = object.try(:__mongoize_time__)
           rescue ArgumentError
             return
           end
