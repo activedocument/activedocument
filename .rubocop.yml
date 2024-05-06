@@ -142,9 +142,6 @@ Layout/EmptyLinesAroundClassBody:
 Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 
-Style/IfUnlessModifier:
-  Enabled: false
-
 Performance/CollectionLiteralInLoop:
   Exclude:
     - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
@@ -152,6 +149,9 @@ Performance/CollectionLiteralInLoop:
     - 'spec/mongoid/attributes_spec.rb'
     - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
     - 'spec/mongoid/criteria/queryable/selector_spec.rb'
+
+Style/IfUnlessModifier:
+  Enabled: false
 
 # --------------------------------------------------
 # These cops are intentionally disabled due to incompatibility.
@@ -214,6 +214,9 @@ Naming/PredicateName:
     - has_one
     - has_attribute?
     - has_attribute_before_type_cast?
+
+RSpec/IndexedLet:
+  Enabled: false
 
 RSpec/NotToNot:
   EnforcedStyle: to_not
