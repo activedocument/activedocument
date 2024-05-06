@@ -38,12 +38,12 @@ module Mongoid
             end
           end
 
-          define_method("#{name}=") do |value|
+          define_method(:"#{name}=") do |value|
             settings[name] = value
             options[:on_change]&.call(value)
           end
 
-          define_method("#{name}?") do
+          define_method(:"#{name}?") do
             !!send(name)
           end
         end

@@ -735,7 +735,7 @@ describe Mongoid::Association::Referenced::HasMany::Proxy do
         let(:child)  { parent.children.send(method) }
 
         it 'calls #initialize' do
-          expect(child.name).to be == 'default'
+          expect(child.name).to eq 'default'
         end
       end
 

@@ -18,11 +18,11 @@ module Mongoid
       # @api private
       def warning(id, message)
         singleton_class.class_eval do
-          define_method("warn_#{id}") do
-            return if instance_variable_get("@#{id}")
+          define_method(:"warn_#{id}") do
+            return if instance_variable_get(:"@#{id}")
 
             Mongoid.logger.warn(message)
-            instance_variable_set("@#{id}", true)
+            instance_variable_set(:"@#{id}", true)
           end
         end
       end

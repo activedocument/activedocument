@@ -129,10 +129,10 @@ module Mongoid
     # @return [ Hash ] The association metadata.
     def reload_relations
       relations.each_pair do |name, _meta|
-        next unless instance_variable_defined?("@_#{name}") &&
-                    (_parent.nil? || instance_variable_get("@_#{name}") != _parent)
+        next unless instance_variable_defined?(:"@_#{name}") &&
+                    (_parent.nil? || instance_variable_get(:"@_#{name}") != _parent)
 
-        remove_instance_variable("@_#{name}")
+        remove_instance_variable(:"@_#{name}")
       end
     end
   end

@@ -80,6 +80,32 @@ describe Mongoid do
       end
       described_class.disconnect_clients
     end
+
+    it 'returns true' do
+      expect(described_class.disconnect_clients).to be(true)
+    end
+  end
+
+  describe '.reconnect_clients' do
+
+    let(:clients) do
+      Mongoid::Clients.clients.values
+    end
+
+    before do
+      Band.all.entries
+    end
+
+    it 'reconnects all active clients' do
+      clients.each do |client|
+        expect(client).to receive(:reconnect).and_call_original
+      end
+      described_class.reconnect_clients
+    end
+
+    it 'returns true' do
+      expect(described_class.reconnect_clients).to be(true)
+    end
   end
 
   describe '.client' do

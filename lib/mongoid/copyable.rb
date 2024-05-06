@@ -52,12 +52,12 @@ module Mongoid
         dynamic_attrs.each do |attr_name, value|
           assoc = object.embedded_relations[attr_name]
           if assoc&.one? && value.is_a?(Hash)
-            object.send("#{attr_name}=", clone_with_hash(assoc.klass, value))
+            object.send(:"#{attr_name}=", clone_with_hash(assoc.klass, value))
           elsif assoc&.many? && value.is_a?(Array)
             docs = value.map { |h| clone_with_hash(assoc.klass, h) }
-            object.send("#{attr_name}=", docs)
-          elsif object.respond_to?("#{attr_name}=")
-            object.send("#{attr_name}=", value)
+            object.send(:"#{attr_name}=", docs)
+          elsif object.respond_to?(:"#{attr_name}=")
+            object.send(:"#{attr_name}=", value)
           else
             object.attributes[attr_name] = value
           end

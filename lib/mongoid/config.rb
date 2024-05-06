@@ -337,7 +337,7 @@ module Mongoid
       Validators::AsyncQueryExecutor.validate(options)
       options.each_pair do |option, value|
         Validators::Option.validate(option)
-        send("#{option}=", value)
+        send(:"#{option}=", value)
       end
     end
 
@@ -367,9 +367,13 @@ module Mongoid
     #   config.running_with_passenger?
     #
     # @return [ true | false ] If the app is deployed on Passenger.
+    #
+    # @deprecated
     def running_with_passenger?
       @running_with_passenger ||= defined?(PhusionPassenger)
     end
+
+    Mongoid.deprecate(self, :running_with_passenger?)
 
     private
 

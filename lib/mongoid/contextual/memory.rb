@@ -746,7 +746,7 @@ module Mongoid
                          # If this is a localized field, and there are remaining, get the
                          # _translations hash so that we can get the specified translation in
                          # the remaining
-                         document.send("#{segment}_translations") if field&.localized?
+                         document.send(:"#{segment}_translations") if field&.localized?
                        end
                  meth = klass.aliased_associations[segment] || segment
                  res.nil? ? document.try(meth) : res

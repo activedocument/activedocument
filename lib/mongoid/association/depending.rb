@@ -90,7 +90,7 @@ module Mongoid
       def apply_destroy_dependencies!
         self.class._all_dependents.each do |association|
           if (dependent = association.try(:dependent))
-            send("_dependent_#{dependent}!", association)
+            send(:"_dependent_#{dependent}!", association)
           end
         end
       end

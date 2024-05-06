@@ -22,11 +22,11 @@ module Mongoid
       around do |example|
         existing = Mongoid.send(key)
 
-        Mongoid.send("#{key}=", value)
+        Mongoid.send(:"#{key}=", value)
 
         example.run
 
-        Mongoid.send("#{key}=", existing)
+        Mongoid.send(:"#{key}=", existing)
       end
     end
 
@@ -44,11 +44,11 @@ module Mongoid
       around do |example|
         existing = Mongo.send(key)
 
-        Mongo.send("#{key}=", value)
+        Mongo.send(:"#{key}=", value)
 
         example.run
 
-        Mongo.send("#{key}=", existing)
+        Mongo.send(:"#{key}=", existing)
       end
     end
 
@@ -96,9 +96,9 @@ module Mongoid
       around do |example|
         meth = "#{component}_override"
         old_value = Mongoid::Threaded.send(meth)
-        Mongoid::Threaded.send("#{meth}=", value)
+        Mongoid::Threaded.send(:"#{meth}=", value)
         example.run
-        Mongoid::Threaded.send("#{meth}=", old_value)
+        Mongoid::Threaded.send(:"#{meth}=", old_value)
       end
     end
 

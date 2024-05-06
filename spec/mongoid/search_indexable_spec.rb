@@ -85,7 +85,7 @@ describe Mongoid::SearchIndexable do
 
     context 'when search indexes have been defined' do
       it 'has search index specs' do
-        expect(model.search_index_specs).to be == [
+        expect(model.search_index_specs).to eq [
           { definition: { mappings: { dynamic: false } } },
           { name: 'with_dynamic_mappings', definition: { mappings: { dynamic: true } } }
         ]
@@ -101,7 +101,7 @@ describe Mongoid::SearchIndexable do
 
     describe '.create_search_indexes' do
       it 'creates the indexes' do
-        expect(actual_definitions).to be == requested_definitions
+        expect(actual_definitions).to eq requested_definitions
       end
     end
 
@@ -111,7 +111,7 @@ describe Mongoid::SearchIndexable do
       let(:queried_definitions) { model.search_indexes.pluck('latestDefinition') }
 
       it 'queries the available search indexes' do
-        expect(queried_definitions).to be == requested_definitions
+        expect(queried_definitions).to eq requested_definitions
       end
     end
 

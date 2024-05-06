@@ -33,7 +33,7 @@ module Mongoid
             attributes, _options = parse_args(*args)
             document = Factory.execute_build(association.relation_class, attributes, execute_callbacks: false)
             _building do
-              child = send("#{association.name}=", document)
+              child = send(:"#{association.name}=", document)
               child.run_pending_callbacks
               child.run_callbacks(:build)
               child
@@ -57,7 +57,7 @@ module Mongoid
             attributes, _options = parse_args(*args)
             document = Factory.execute_build(association.relation_class, attributes, execute_callbacks: false)
             doc = _assigning do
-              send("#{association.name}=", document)
+              send(:"#{association.name}=", document)
             end
             doc.run_pending_callbacks
             doc.save

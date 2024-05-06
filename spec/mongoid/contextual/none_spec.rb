@@ -188,7 +188,7 @@ describe Mongoid::Contextual::None do
     describe "##{meth}!" do
       it 'raises an error' do
         expect do
-          context.send("#{meth}!")
+          context.send(:"#{meth}!")
         end.to raise_error(Mongoid::Errors::DocumentNotFound, /Could not find a document of class Band./)
       end
     end

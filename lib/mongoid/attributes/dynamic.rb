@@ -49,7 +49,7 @@ module Mongoid
       # @param [ String ] name The name of the field.
       def define_dynamic_before_type_cast_reader(name)
         class_eval do
-          define_method("#{name}_before_type_cast") do
+          define_method(:"#{name}_before_type_cast") do
             attribute_will_change!(name)
             read_attribute_before_type_cast(name)
           end
@@ -68,7 +68,7 @@ module Mongoid
         return unless name.valid_method_name?
 
         class_eval do
-          define_method("#{name}=") do |value|
+          define_method(:"#{name}=") do |value|
             write_attribute(name, value)
           end
         end
@@ -83,9 +83,9 @@ module Mongoid
       # @param [ Symbol ] name The name of the field.
       # @param [ Object ] value The value of the field.
       def process_attribute(name, value)
-        responds = respond_to?("#{name}=")
+        responds = respond_to?(:"#{name}=")
         if responds
-          send("#{name}=", value)
+          send(:"#{name}=", value)
         else
           write_attribute(name, value)
         end
