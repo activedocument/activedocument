@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Passport
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :number, type: String
   field :country, type: String
@@ -15,7 +15,7 @@ class Passport
 end
 
 class PassportPage
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :num_stamps, type: Integer
   embedded_in :passport

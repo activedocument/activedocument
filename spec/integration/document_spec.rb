@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mongoid::Document do
+describe ActiveDocument::Document do
   context 'when including class uses delegate' do
     let(:patient) do
       DelegatingPatient.new(
@@ -15,7 +15,7 @@ describe Mongoid::Document do
     end
 
     it 'works for class level delegation' do
-      expect(DelegatingPatient.default_client).to be Mongoid.default_client
+      expect(DelegatingPatient.default_client).to be ActiveDocument.default_client
     end
   end
 

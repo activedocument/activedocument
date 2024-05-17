@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Sandwich
-  include Mongoid::Document
+  include ActiveDocument::Document
   has_and_belongs_to_many :meats
 
   field :name, type: String

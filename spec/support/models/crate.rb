@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Crate
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   embedded_in :vehicle
   embeds_many :toys

@@ -11,14 +11,14 @@ Queries
    :class: singlecol
 
 
-Mongoid provides a rich query DSL inspired by ActiveRecord. A trivial query
+ActiveDocument provides a rich query DSL inspired by ActiveRecord. A trivial query
 looks as follows:
 
 .. code-block:: ruby
 
   Band.where(name: "Depeche Mode")
 
-A more complex query utilizing various Mongoid features could be as follows:
+A more complex query utilizing various ActiveDocument features could be as follows:
 
 .. code-block:: ruby
 
@@ -28,7 +28,7 @@ A more complex query utilizing various Mongoid features could be as follows:
     union.
     in(name: [ "Melvins" ])
 
-The query methods return ``Mongoid::Criteria`` objects, which are chainable
+The query methods return ``ActiveDocument::Criteria`` objects, which are chainable
 and lazily evaluated wrappers for MongoDB query language (MQL).
 The queries are executed when their result sets are iterated. For example:
 
@@ -37,7 +37,7 @@ The queries are executed when their result sets are iterated. For example:
   # Construct a Criteria object:
 
   Band.where(name: 'Deftones')
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"name"=>"Deftones"}
   #   options:  {}
   #   class:    Band
@@ -60,21 +60,21 @@ Criteria instance with the new conditions added to the existing conditions:
 .. code-block:: ruby
 
   scope = Band.where(:founded.gte => "1980-01-01")
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01"}}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
   scope.where(:founded.lte => "2020-01-01")
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01", "$lte"=>"2020-01-01"}}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
   scope
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01"}}
   #   options:  {}
   #   class:    Band
@@ -84,7 +84,7 @@ Criteria instance with the new conditions added to the existing conditions:
 Condition Syntax
 ================
 
-Mongoid supports three ways of specifying individual conditions:
+ActiveDocument supports three ways of specifying individual conditions:
 
 1. Field syntax.
 2. MQL syntax.
@@ -99,7 +99,7 @@ The examples in this section use the following model definition:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String
     field :founded, type: Integer
@@ -109,7 +109,7 @@ The examples in this section use the following model definition:
   end
 
   class Manager
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embedded_in :band
 
@@ -125,7 +125,7 @@ symbols or strings, and correspond to field names in MongoDB documents:
 .. code-block:: ruby
 
   Band.where(name: "Depeche Mode")
-  #   => #<Mongoid::Criteria
+  #   => #<ActiveDocument::Criteria
   #   selector: {"name"=>"Depeche Mode"}
   #   options:  {}
   #   class:    Band
@@ -143,7 +143,7 @@ An MQL operator may be specified on any field using the hash syntax:
 .. code-block:: ruby
 
   Band.where(founded: {'$gt' => 1980})
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gt"=>1980}}
   #   options:  {}
   #   class:    Band
@@ -162,7 +162,7 @@ name, as follows:
 .. code-block:: ruby
 
   Band.where(:founded.gt => 1980)
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gt"=>1980}}
   #   options:  {}
   #   class:    Band
@@ -177,13 +177,13 @@ Querying on Defined Fields
 
 In order to query on a field, it is not necessary to add the field to
 :ref:`the model class definition <fields>`. However, if a field is defined in
-the model class, Mongoid will coerce query values to match defined field types
+the model class, ActiveDocument will coerce query values to match defined field types
 when constructing the query:
 
 .. code-block:: ruby
 
   Band.where(name: 2020, founded: "2020")
-  #   => #<Mongoid::Criteria
+  #   => #<ActiveDocument::Criteria
   #   selector: {"name"=>"2020", "founded"=>2020}
   #   options:  {}
   #   class:    Band
@@ -192,14 +192,14 @@ when constructing the query:
 Querying for Raw Values
 -----------------------
 
-If you'd like to bypass Mongoid's query type coercion behavior and query
+If you'd like to bypass ActiveDocument's query type coercion behavior and query
 directly for the raw-typed value in the database, wrap the query value in
-``Mongoid::RawValue`` class. This can be useful when working with legacy data.
+``ActiveDocument::RawValue`` class. This can be useful when working with legacy data.
 
 .. code-block:: ruby
 
-  Band.where(founded: Mongoid::RawValue("2020"))
-  # => #<Mongoid::Criteria
+  Band.where(founded: ActiveDocument::RawValue("2020"))
+  # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>"2020"}
   #   options:  {}
   #   class:    Band
@@ -214,7 +214,7 @@ and :ref:`field aliases <field-aliases>`:
 .. code-block:: ruby
 
   Band.where(name: 'Astral Projection')
-  #   => #<Mongoid::Criteria
+  #   => #<ActiveDocument::Criteria
   #   selector: {"n"=>"Astral Projection"}
   #   options:  {}
   #   class:    Band
@@ -225,7 +225,7 @@ Since ``id`` and ``_id`` fields are aliases, either one can be used for queries:
 .. code-block:: ruby
 
   Band.where(id: '5ebdeddfe1b83265a376a760')
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"_id"=>BSON::ObjectId('5ebdeddfe1b83265a376a760')}
   #   options:  {}
   #   class:    Band
@@ -240,14 +240,14 @@ To match values of fields of embedded documents, use the dot notation:
 .. code-block:: ruby
 
   Band.where('manager.name' => 'Smith')
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"manager.name"=>"Smith"}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
   Band.where(:'manager.name'.ne => 'Smith')
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"manager.name"=>{"$ne"=>"Smith"}}
   #   options:  {}
   #   class:    Band
@@ -264,7 +264,7 @@ To match values of fields of embedded documents, use the dot notation:
 Logical Operations
 ==================
 
-Mongoid supports ``and``, ``or``, ``nor`` and ``not`` logical operations on
+ActiveDocument supports ``and``, ``or``, ``nor`` and ``not`` logical operations on
 ``Criteria`` objects. These methods take one or more hash of conditions
 or another ``Criteria`` object as their arguments, with ``not`` additionally
 having an argument-free version.
@@ -283,10 +283,10 @@ having an argument-free version.
   # argument-less not
   Band.not.where(label: 'Trust in Trance', name: 'Astral Projection')
 
-For backwards compatibility with earlier Mongoid versions, all of the logical
+For backwards compatibility with earlier ActiveDocument versions, all of the logical
 operation methods also accept arrays of parameters, which will be flattened
 to obtain the criteria. Passing arrays to logical operations is deprecated and
-may be removed in a future version of Mongoid.
+may be removed in a future version of ActiveDocument.
 
 The following calls all produce the same query conditions:
 
@@ -311,7 +311,7 @@ The following calls all produce the same query conditions:
   Band.and([Band.where(name: 'SUN Project'), [{member_count: 2}]])
 
   # All produce:
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"name"=>"SUN Project", "member_count"=>2}
   #   options:  {}
   #   class:    Band
@@ -321,10 +321,10 @@ The following calls all produce the same query conditions:
 Operator Combinations
 ---------------------
 
-As of Mongoid 7.1, logical operators (``and``, ``or``, ``nor`` and ``not``)
+As of ActiveDocument 7.1, logical operators (``and``, ``or``, ``nor`` and ``not``)
 have been changed to have the the same semantics as `those of ActiveRecord
 <https://guides.rubyonrails.org/active_record_querying.html>`_.
-To obtain the semantics of ``or`` as it behaved in Mongoid 7.0 and earlier,
+To obtain the semantics of ``or`` as it behaved in ActiveDocument 7.0 and earlier,
 use ``any_of`` which is described below.
 
 When conditions are specified on the same field multiple times, all
@@ -384,8 +384,8 @@ respective fields, in which case the conditions will be combined with ``$and``.
   Band.where(name: /Best/).and(name: 'Astral Projection').selector
   # => {"name"=>/Best/, "$and"=>[{"name"=>"Astral Projection"}]}
 
-As of Mongoid 7.1, specifying multiple criteria on the same field with ``and``
-combines all criteria so specified, whereas in previous versions of Mongoid
+As of ActiveDocument 7.1, specifying multiple criteria on the same field with ``and``
+combines all criteria so specified, whereas in previous versions of ActiveDocument
 conditions on a field sometimes replaced previously specified conditions on
 the same field, depending on which form of ``and`` was used.
 
@@ -478,7 +478,7 @@ added to the criteria.
 .. note::
 
   ``$not`` in MongoDB server cannot be used with a string argument.
-  Mongoid uses ``$ne`` operator to achieve such a negation:
+  ActiveDocument uses ``$ne`` operator to achieve such a negation:
 
   .. code-block:: ruby
 
@@ -493,7 +493,7 @@ added to the criteria.
 Similarly to ``and``, ``not`` will negate individual conditions for simple
 field criteria. For complex conditions and when a field already has a condition
 defined on it, since MongoDB server only supports the ``$not`` operator on
-a per-field basis rather than globally, Mongoid emulates ``$not`` by using
+a per-field basis rather than globally, ActiveDocument emulates ``$not`` by using
 an ``{'$and' => [{'$nor' => ...}]}`` construct:
 
 .. code-block:: ruby
@@ -508,7 +508,7 @@ an ``{'$and' => [{'$nor' => ...}]}`` construct:
 
   # Symbol operator syntax
   Band.not(:name.ne => 'Astral Projection')
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {"$and"=>[{"$nor"=>[{"name"=>{"$ne"=>"Astral Projection"}}]}]}
   #   options:  {}
   #   class:    Band
@@ -522,7 +522,7 @@ caveats/limitations of ``$not`` `stated in the MongoDB server documentation
 Incremental Query Construction
 ==============================
 
-By default, when conditions are added to a query, Mongoid considers each
+By default, when conditions are added to a query, ActiveDocument considers each
 condition complete and independent from any other conditions potentially
 present in the query. For example, calling ``in`` twice adds two separate
 ``$in`` conditions:
@@ -530,7 +530,7 @@ present in the query. For example, calling ``in`` twice adds two separate
 .. code-block:: ruby
 
   Band.in(name: ['a']).in(name: ['b'])
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"name"=>{"$in"=>["a"]}, "$and"=>[{"name"=>{"$in"=>["b"]}}]}
     options:  {}
     class:    Band
@@ -547,7 +547,7 @@ specified *merge strategy*.
 Merge Strategies
 ----------------
 
-Mongoid provides three merge strategies:
+ActiveDocument provides three merge strategies:
 
 - **Override**: the new operator instance replaces any existing conditions on
   the same field using the same operator.
@@ -564,21 +564,21 @@ example operator:
 .. code-block:: ruby
 
   Band.in(name: ['a']).override.in(name: ['b'])
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"name"=>{"$in"=>["b"]}}
     options:  {}
     class:    Band
     embedded: false>
 
   Band.in(name: ['a', 'b']).intersect.in(name: ['b', 'c'])
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"name"=>{"$in"=>["b"]}}
     options:  {}
     class:    Band
     embedded: false>
 
   Band.in(name: ['a']).union.in(name: ['b'])
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"name"=>{"$in"=>["a", "b"]}}
     options:  {}
     class:    Band
@@ -593,7 +593,7 @@ example:
 .. code-block:: ruby
 
   Band.in(name: ['a']).union.ne(name: 'c').in(name: ['b'])
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"name"=>{"$in"=>["a"], "$ne"=>"c"}, "$and"=>[{"name"=>{"$in"=>["b"]}}]}
     options:  {}
     class:    Band
@@ -622,7 +622,7 @@ The following operator methods support merge strategies:
 - ``in``
 - ``nin``
 
-The set of methods may be expanded in future releases of Mongoid. For
+The set of methods may be expanded in future releases of ActiveDocument. For
 future compatibility, only invoke a strategy method when the next method call
 is an operator that supports merge strategies.
 
@@ -634,13 +634,13 @@ is not applied because the second condition is added via ``where``, not via
 .. code-block:: ruby
 
   Band.in(foo: ['a']).union.where(foo: {'$in' => 'b'})
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"foo"=>{"$in"=>["a"]}, "$and"=>[{"foo"=>{"$in"=>"b"}}]}
     options:  {}
     class:    Band
     embedded: false>
 
-This behavior may change in a future release of Mongoid and should not be
+This behavior may change in a future release of ActiveDocument and should not be
 relied upon.
 
 In contrast, it does not matter how the existing query was built when a
@@ -651,7 +651,7 @@ mechanism still applies:
 .. code-block:: ruby
 
   Band.where(foo: {'$in' => ['a']}).union.in(foo: ['b'])
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"foo"=>{"$in"=>["a", "b"]}}
     options:  {}
     class:    Band
@@ -661,32 +661,32 @@ Operator Value Expansion
 ------------------------
 
 Operator methods that support merge strategies all take ``Array`` as their value
-type. Mongoid expands ``Array``-compatible types, such as a ``Range``,
+type. ActiveDocument expands ``Array``-compatible types, such as a ``Range``,
 when they are used with these operator methods:
 
 .. code-block:: ruby
 
   Band.in(year: 1950..1960)
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"year"=>{"$in"=>[1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960]}}
     options:  {}
     class:    Band
     embedded: false>
 
-Additionally, Mongoid has historically wrapped non-``Array`` values in arrays,
+Additionally, ActiveDocument has historically wrapped non-``Array`` values in arrays,
 as the following example demonstrates:
 
 .. code-block:: ruby
 
   Band.in(year: 1950)
-  => #<Mongoid::Criteria
+  => #<ActiveDocument::Criteria
     selector: {"year"=>{"$in"=>[1950]}}
     options:  {}
     class:    Band
     embedded: false>
 
 This wrapping behavior is deprecated and should not be relied on. It may be
-removed in a future release of Mongoid.
+removed in a future release of ActiveDocument.
 
 
 Query Methods
@@ -701,7 +701,7 @@ matches all of the conditions. For example:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :tours, type: Array
   end
@@ -718,13 +718,13 @@ matches all of the conditions. For example:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     embeds_many :tours
   end
 
   class Tour
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :city, type: String
     field :year, type: Integer
     embedded_in :band
@@ -748,7 +748,7 @@ as the following example shows:
 .. code-block:: ruby
 
   class Tag
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     recursively_embeds_many
   end
@@ -769,7 +769,7 @@ as the following example shows:
 Projection
 ==========
 
-Mongoid provides two projection operators: ``only`` and ``without``.
+ActiveDocument provides two projection operators: ``only`` and ``without``.
 
 
 .. _only:
@@ -783,7 +783,7 @@ operation is sometimes called "projection".
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String
     field :label, type: String
@@ -792,7 +792,7 @@ operation is sometimes called "projection".
   end
 
   class Tour
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :city, type: String
     field :year, type: Integer
@@ -803,14 +803,14 @@ operation is sometimes called "projection".
   band = Band.only(:name).first
 
 Attempting to reference attributes which have not been loaded results in
-``Mongoid::Errors::AttributeNotLoaded``.
+``ActiveDocument::Errors::AttributeNotLoaded``.
 
 .. code-block:: ruby
 
   band.label
-  #=> raises Mongoid::Errors::AttributeNotLoaded
+  #=> raises ActiveDocument::Errors::AttributeNotLoaded
 
-Even though Mongoid currently allows writing to attributes that have not
+Even though ActiveDocument currently allows writing to attributes that have not
 been loaded, such writes will not be persisted
 (`MONGOID-4701 <https://jira.mongodb.org/browse/MONGOID-4701>`_) and
 should therefore be avoided.
@@ -856,7 +856,7 @@ loaded with ``only`` for those associations to be loaded. For example:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String
 
@@ -864,7 +864,7 @@ loaded with ``only`` for those associations to be loaded. For example:
   end
 
   class Manager
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     has_and_belongs_to_many :bands
   end
@@ -890,20 +890,20 @@ The opposite of ``only``, ``without`` causes the specified fields to be omitted:
 
   Band.without(:name)
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:fields=>{"name"=>0}}
   #   class:    Band
   #   embedded: false>
 
-Because Mongoid requires the ``_id`` field for various operations, it (as well
+Because ActiveDocument requires the ``_id`` field for various operations, it (as well
 as its ``id`` alias) cannot be omitted via ``without``:
 
 .. code-block:: ruby
 
   Band.without(:name, :id)
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:fields=>{"name"=>0}}
   #   class:    Band
@@ -911,7 +911,7 @@ as its ``id`` alias) cannot be omitted via ``without``:
 
   Band.without(:name, :_id)
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:fields=>{"name"=>0}}
   #   class:    Band
@@ -923,7 +923,7 @@ as its ``id`` alias) cannot be omitted via ``without``:
 Ordering
 ========
 
-Mongoid provides the ``order`` method on ``Criteria`` objects and its alias,
+ActiveDocument provides the ``order`` method on ``Criteria`` objects and its alias,
 ``order_by``, to specify the ordering of documents. These methods take a
 hash indicating which fields to order the documents by, and whether to use
 ascending or descending order for each field.
@@ -931,21 +931,21 @@ ascending or descending order for each field.
 .. code-block:: ruby
 
   Band.order(name: 1)
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:sort=>{"name"=>1}}
   #   class:    Band
   #   embedded: false>
 
   Band.order_by(name: -1, description: 1)
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:sort=>{"name"=>-1, "description"=>1}}
   #   class:    Band
   #   embedded: false>
 
   Band.order_by(name: :desc, description: 'asc')
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:sort=>{"name"=>-1, "description"=>1}}
   #   class:    Band
@@ -983,7 +983,7 @@ Finally, there are ``asc`` and ``desc`` methods that can be used instead of
 .. code-block:: ruby
 
   Band.asc('name').desc('description')
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
     selector: {}
     options:  {:sort=>{"name"=>1, "description"=>-1}}
     class:    Band
@@ -996,7 +996,7 @@ ones (since in Ruby hashes maintain the order of their keys):
 .. code-block:: ruby
 
   Band.order('name desc').order('description asc')
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
     selector: {}
     options:  {:sort=>{"name"=>-1, "description"=>1}}
     class:    Band
@@ -1011,7 +1011,7 @@ the default scope being evaluated first:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String
     field :year, type: Integer
@@ -1020,7 +1020,7 @@ the default scope being evaluated first:
   end
 
   Band.order(year: :desc)
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
     selector: {}
     options:  {:sort=>{"name"=>1, "year"=>-1}}
     class:    Band
@@ -1030,7 +1030,7 @@ the default scope being evaluated first:
 Pagination
 ==========
 
-Mongoid provides the pagination operators ``limit``, ``skip``, and ``batch_size`` on ``Criteria``.
+ActiveDocument provides the pagination operators ``limit``, ``skip``, and ``batch_size`` on ``Criteria``.
 
 .. _limit:
 
@@ -1043,7 +1043,7 @@ Mongoid provides the pagination operators ``limit``, ``skip``, and ``batch_size`
 
   Band.limit(5)
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:limit=>5}
   #   class:    Band
@@ -1063,7 +1063,7 @@ to be combined with :ref:`ordering <ordering>` to ensure consistent results.
 
   Band.skip(10)
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:skip=>10}
   #   class:    Band
@@ -1075,7 +1075,7 @@ to be combined with :ref:`ordering <ordering>` to ensure consistent results.
 --------------
 
 When executing large queries, or when iterating over query results with an enumerator method such as
-``Criteria#each``, Mongoid automatically uses the `MongoDB getMore command
+``Criteria#each``, ActiveDocument automatically uses the `MongoDB getMore command
 <https://mongodb.com/docs/manual/reference/command/getMore/>`_ to load results in batches.
 The default ``batch_size`` is 1000, however you may set it explicitly:
 
@@ -1083,7 +1083,7 @@ The default ``batch_size`` is 1000, however you may set it explicitly:
 
   Band.batch_size(500)
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {}
   #   options:  {:batch_size=>500}
   #   class:    Band
@@ -1093,7 +1093,7 @@ The default ``batch_size`` is 1000, however you may set it explicitly:
 Finding By ``_id``
 ==================
 
-Mongoid provides the ``find`` method on ``Criteria`` objects to find documents
+ActiveDocument provides the ``find`` method on ``Criteria`` objects to find documents
 by their ``_id`` values:
 
 .. code-block:: ruby
@@ -1154,7 +1154,7 @@ examples.
 If any of the ``_id`` values are not found in the database, the behavior of
 ``find`` depends on the value of the ``raise_not_found_error`` configuration
 option. If the option is set to ``true``, ``find`` raises
-``Mongoid::Errors::DocumentNotFound`` if any of the ``_id``\s are not found.
+``ActiveDocument::Errors::DocumentNotFound`` if any of the ``_id``\s are not found.
 If the option is set to ``false`` and ``find`` is given a single ``_id`` to
 find and there is no matching document, ``find`` returns ``nil``. If the
 option is set to ``false`` and ``find`` is given an array of ids to find
@@ -1167,7 +1167,7 @@ found (which could be empty if no documents were found at all).
 Additional Query Methods
 ========================
 
-Mongoid also has some helpful methods on criteria.
+ActiveDocument also has some helpful methods on criteria.
 
 .. list-table::
    :header-rows: 1
@@ -1182,7 +1182,7 @@ Mongoid also has some helpful methods on criteria.
        number of documents in a collection. Note this will always hit
        the database for the count.*
 
-       *As of Mongoid 7.2, the* ``count`` *method uses the*
+       *As of ActiveDocument 7.2, the* ``count`` *method uses the*
        ``count_documents`` *driver helper to obtain the accurate count.
        previously the* ``count`` *driver helper was used which used
        collection metadata and was thus not necessarily accurate (but
@@ -1201,7 +1201,7 @@ Mongoid also has some helpful methods on criteria.
        *Get an approximate number of documents in the collection using the
        collection metadata. The* ``estimated_count`` *method does not accept
        query conditions; if any are given, it will raise*
-       ``Mongoid::Errors::InvalidEstimatedCountCriteria``.
+       ``ActiveDocument::Errors::InvalidEstimatedCountCriteria``.
        *If a model defines a default scope,* ``estimated_count`` *must be
        called on the unscoped model*.
 
@@ -1212,7 +1212,7 @@ Mongoid also has some helpful methods on criteria.
           Band.where(name: "Photek").count
 
           class Contract
-            include Mongoid::Document
+            include ActiveDocument::Document
 
             field :active, type: Boolean
 
@@ -1220,7 +1220,7 @@ Mongoid also has some helpful methods on criteria.
           end
 
           Contract.estimated_count
-          # => raises Mongoid::Errors::InvalidEstimatedCountCriteria
+          # => raises ActiveDocument::Errors::InvalidEstimatedCountCriteria
 
           Contract.unscoped.estimated_count
           # => 0
@@ -1247,7 +1247,7 @@ Mongoid also has some helpful methods on criteria.
 
           # Assuming an aliased field:
           class Manager
-            include Mongoid::Document
+            include ActiveDocument::Document
             embedded_in :band
             field :name, as: :n
           end
@@ -1727,7 +1727,7 @@ Mongoid also has some helpful methods on criteria.
 Eager Loading
 =============
 
-Mongoid provides a facility to eager load documents
+ActiveDocument provides a facility to eager load documents
 from associations to prevent the n+1 issue when
 iterating over documents with association access. Eager loading is supported on
 all associations with the exception of polymorphic ``belongs_to``
@@ -1736,12 +1736,12 @@ associations.
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     has_many :albums
   end
 
   class Album
-    include Mongoid::Document
+    include ActiveDocument::Document
     belongs_to :band
   end
 
@@ -1753,14 +1753,14 @@ associations.
 Regular Expressions
 ===================
 
-MongoDB, and Mongoid, allow querying documents by regular expressions.
+MongoDB, and ActiveDocument, allow querying documents by regular expressions.
 
 Given the following model definitions:
 
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String
     field :description, type: String
@@ -1802,7 +1802,7 @@ intentionally does not define a field called ``deregistered_at``:
 .. code-block:: ruby
 
   class Voter
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :born_on, type: Date
     field :registered_at, type: Time
@@ -1865,7 +1865,7 @@ by a provided name. Just like normal criteria, they are lazy and chainable.
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :country, type: String
     field :genres, type: Array
 
@@ -1881,7 +1881,7 @@ extending functionality.
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :country, type: String
     field :active, type: Boolean, default: true
@@ -1901,13 +1901,13 @@ extending functionality.
   Band.named("Depeche Mode") # Find Depeche Mode.
   Band.active.deutsch # Find active German bands.
 
-By default, Mongoid allows defining a scope that would shadow an existing
+By default, ActiveDocument allows defining a scope that would shadow an existing
 class method, as the following example shows:
 
 .. code-block:: ruby
 
   class Product
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     def self.fresh
       true
@@ -1916,7 +1916,7 @@ class method, as the following example shows:
     scope :fresh, ->{ where(fresh: true) }
   end
 
-To have Mongoid raise an error when a scope would overwrite an existing class
+To have ActiveDocument raise an error when a scope would overwrite an existing class
 method, set the ``scope_overwrite_exception`` :ref:`configuration option
 <configuration-options>` to ``true``.
 
@@ -1931,7 +1931,7 @@ Default scopes are procs that return criteria objects.
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :active, type: Boolean
 
@@ -1948,7 +1948,7 @@ the values given in the default scope, if the values are simple literals:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :active, type: Boolean
     field :num_tours, type: Integer
@@ -1965,7 +1965,7 @@ in the default scope, the value in the default scope takes precedence:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :active, type: Boolean, default: true
 
@@ -1981,7 +1981,7 @@ possible, is not recommended:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :tags, type: Hash
 
@@ -1995,7 +1995,7 @@ possible, is not recommended:
   Band.all.to_a
   # => [ #<Band _id: 632de4ad3282a404bee1877c, tags: {"foo"=>"bar"}> ]
 
-Mongoid 8 allows dotted keys to be used in Mongoid, and when creating a document,
+ActiveDocument 8 allows dotted keys to be used in ActiveDocument, and when creating a document,
 the scope is added as a dotted key in the attributes:
 
 .. code-block:: ruby
@@ -2003,14 +2003,14 @@ the scope is added as a dotted key in the attributes:
   Band.new.attribute
   # => {"_id"=>BSON::ObjectId('632de97d3282a404bee1877d'), "tags.foo"=>"bar"}
 
-Whereas when querying, Mongoid looks for an embedded document:
+Whereas when querying, ActiveDocument looks for an embedded document:
 
 .. code-block:: ruby
 
   Band.create!
   # => Created document: {"_id"=>BSON::ObjectId('632de48f3282a404bee1877b'), "tags.foo"=>"bar"}
   Band.where
-  # => #<Mongoid::Criteria
+  # => #<ActiveDocument::Criteria
          selector: {"tags.foo"=>"bar"}
          options:  {}
          class:    Band
@@ -2024,7 +2024,7 @@ A workaround is to define the default scope as a complex query:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :tags, type: Hash
 
@@ -2037,7 +2037,7 @@ A workaround is to define the default scope as a complex query:
   Band.count
   # => 1
 
-You can tell Mongoid not to apply the default scope by using
+You can tell ActiveDocument not to apply the default scope by using
 ``unscoped``, which can be inline or take a block.
 
 .. code-block:: ruby
@@ -2047,7 +2047,7 @@ You can tell Mongoid not to apply the default scope by using
     Band.where(name: "Depeche Mode")
   end
 
-You can also tell Mongoid to explicitly apply the default scope
+You can also tell ActiveDocument to explicitly apply the default scope
 again later to always ensure it's there.
 
 .. code-block:: ruby
@@ -2062,12 +2062,12 @@ that would affect its visibility within the scoped association.
 .. code-block:: ruby
 
   class Label
-    include Mongoid::Document
+    include ActiveDocument::Document
     embeds_many :bands
   end
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :active, default: true
     embedded_in :label
     default_scope ->{ where(active: true) }
@@ -2088,7 +2088,7 @@ that would affect its visibility within the scoped association.
   .. code-block:: ruby
 
     class Band
-      include Mongoid::Document
+      include ActiveDocument::Document
 
       field :name
       field :active
@@ -2099,7 +2099,7 @@ that would affect its visibility within the scoped association.
 
     Band.where(name: 'Infected Mushroom')
     # =>
-    # #<Mongoid::Criteria
+    # #<ActiveDocument::Criteria
     #   selector: {"active"=>true, "name"=>"Infected Mushroom"}
     #   options:  {}
     #   class:    Band
@@ -2107,7 +2107,7 @@ that would affect its visibility within the scoped association.
 
     Band.where(name: 'Infected Mushroom').or(touring: true)
     # =>
-    # #<Mongoid::Criteria
+    # #<ActiveDocument::Criteria
     #   selector: {"$or"=>[{"active"=>true, "name"=>"Infected Mushroom"}, {"touring"=>true}]}
     #   options:  {}
     #   class:    Band
@@ -2115,7 +2115,7 @@ that would affect its visibility within the scoped association.
 
     Band.or(touring: true)
     # =>
-    # #<Mongoid::Criteria
+    # #<ActiveDocument::Criteria
     #   selector: {"$or"=>[{"active"=>true}, {"touring"=>true}]}
     #   options:  {}
     #   class:    Band
@@ -2136,7 +2136,7 @@ at runtime:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :country, type: String
     field :genres, type: Array
 
@@ -2149,7 +2149,7 @@ at runtime:
 
   criteria
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {"country"=>"England"}
   #   options:  {}
   #   class:    Band
@@ -2158,10 +2158,10 @@ at runtime:
 .. note::
 
   If with_scope calls are nested, when the nested with_scope block completes
-  Mongoid 7 sets the current scope to nil instead of the parent scope.
-  Mongoid 8 will set the current scope to the correct parent scope.
-  To get Mongoid 8 behavior in Mongoid 7.4 and higher, set the
-  ``Mongoid.broken_scoping`` global option to false.
+  ActiveDocument 7 sets the current scope to nil instead of the parent scope.
+  ActiveDocument 8 will set the current scope to the correct parent scope.
+  To get ActiveDocument 8 behavior in ActiveDocument 7.4 and higher, set the
+  ``ActiveDocument.broken_scoping`` global option to false.
 
 
 Class Methods
@@ -2173,7 +2173,7 @@ treated like scopes, and can be chained as well.
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :active, type: Boolean, default: true
 
@@ -2188,7 +2188,7 @@ treated like scopes, and can be chained as well.
 Queries + Persistence
 =====================
 
-Mongoid supports persistence operations off of criteria
+ActiveDocument supports persistence operations off of criteria
 in a light capacity for when you want to expressively perform multi
 document inserts, updates, and deletion.
 
@@ -2390,7 +2390,7 @@ for details about the driver's query cache behavior.
 Enabling Query Cache
 --------------------
 
-The query cache may be enabled by using the driver's namespace or Mongoid's
+The query cache may be enabled by using the driver's namespace or ActiveDocument's
 namespace.
 
 
@@ -2463,7 +2463,7 @@ To use the cached results, call ``all.to_a.first`` on the model class.
 Asynchronous Queries
 ====================
 
-Mongoid allows running database queries asynchronously in the background.
+ActiveDocument allows running database queries asynchronously in the background.
 This can be beneficial when there is a need to get documents from different
 collections.
 

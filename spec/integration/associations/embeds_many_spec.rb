@@ -169,7 +169,7 @@ describe 'embeds_many associations' do
 
       context 'via assignment operator' do
         before do
-          # Mongoid uses the new value of `x` in the $pullAll query,
+          # ActiveDocument uses the new value of `x` in the $pullAll query,
           # which doesn't match the document that is in the database,
           # resulting in the empty array assignment not taking effect.
           canvas.shapes.first.x = 1
@@ -205,7 +205,7 @@ describe 'embeds_many associations' do
   context 'when an anonymous class defines an embeds_many association' do
     let(:klass) do
       Class.new do
-        include Mongoid::Document
+        include ActiveDocument::Document
         embeds_many :addresses
       end
     end

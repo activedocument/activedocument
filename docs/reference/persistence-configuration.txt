@@ -14,20 +14,20 @@ Persistence Configuration
 Document Storage
 ================
 
-Mongoid by default stores documents in a collection that is the pluralized form of the class name.
+ActiveDocument by default stores documents in a collection that is the pluralized form of the class name.
 For the following ``Person`` class, the collection the document would get stored in would be named ``people``.
 
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
+     include ActiveDocument::Document
    end
 
 Model class names cannot end with "s", because it will be considered as the pluralized form of
 the word. For example "Status" would be considered as the plural form of "Statu",
 which will cause a few known problems.
 
-This is a limitation of the ``ActiveSupport::Inflector#classify`` which Mongoid uses to convert
+This is a limitation of the ``ActiveSupport::Inflector#classify`` which ActiveDocument uses to convert
 from filenames and collection names to class names. You can overcome this by specifying a custom
 inflection rule for your model class. For example, the following code will take care of the model
 named ``Status``.
@@ -45,7 +45,7 @@ in from the defaults.
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
+     include ActiveDocument::Document
      store_in collection: "citizens", database: "other", client: "analytics"
    end
 
@@ -54,7 +54,7 @@ The ``store_in`` macro can also take lambdas - a common case for this is multi-t
 .. code-block:: ruby
 
    class Band
-     include Mongoid::Document
+     include ActiveDocument::Document
      store_in database: ->{ Thread.current[:database] }
    end
 
@@ -83,7 +83,7 @@ and have a structure like so:
 Persistence Context Attributes
 ==============================
 
-Mongoid provides ``client_name``, ``database_name`` and ``collection_name``
+ActiveDocument provides ``client_name``, ``database_name`` and ``collection_name``
 methods on model classes to determine the client, database and collection names
 used for persistence:
 
@@ -103,7 +103,7 @@ Custom
 ======
 
 There may be cases where you want to persist documents to different sources from their
-defaults, or with different options from the default. Mongoid provides run-time support
+defaults, or with different options from the default. ActiveDocument provides run-time support
 for this as well as support on a per-model basis.
 
 
@@ -115,16 +115,16 @@ database, or a different client. The following example would store the Band clas
 default into a collection named "artists" in the database named "music", with the client "analytics".
 
 Note that the value supplied to the ``client`` option must be configured under ``clients``
-in your mongoid.yml.
+in your activedocument.yml.
 
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     store_in collection: "artists", database: "music", client: "analytics"
   end
 
-If no ``store_in`` macro would have been provided, Mongoid would store the model in a
+If no ``store_in`` macro would have been provided, ActiveDocument would store the model in a
 collection named "bands" in the default database in the default client.
 
 
@@ -187,7 +187,7 @@ failing subsequent updates:
     band_object.update_attribute(likes: 1000)
   end
 
-As of Mongoid 6.0, the ``with`` method must always be called with a block,
+As of ActiveDocument 6.0, the ``with`` method must always be called with a block,
 and the temporary persistence context exists only for the duration of the block.
 This is because a new client is created under the covers with the options
 passed to ``with``. To ensure that this client is closed and its associated
@@ -199,9 +199,9 @@ Global Override
 ```````````````
 
 If you want to switch the persistence context for all operations at runtime, but don't want
-to be using with all over your code, Mongoid provides the ability to do this as the client
-and database level globally. The methods for this are ``Mongoid.override_client`` and
-``Mongoid.override_database``. A useful case for this are internationalized applications
+to be using with all over your code, ActiveDocument provides the ability to do this as the client
+and database level globally. The methods for this are ``ActiveDocument.override_client`` and
+``ActiveDocument.override_database``. A useful case for this are internationalized applications
 that store information for different locales in different databases or clients, but the
 schema in each remains the same.
 
@@ -215,11 +215,11 @@ schema in each remains the same.
 
     def switch_database
       I18n.locale = params[:locale] || I18n.default_locale
-      Mongoid.override_database("my_db_name_#{I18n.locale}")
+      ActiveDocument.override_database("my_db_name_#{I18n.locale}")
     end
 
     def reset_database
-      Mongoid.override_database(nil)
+      ActiveDocument.override_database(nil)
     end
   end
 

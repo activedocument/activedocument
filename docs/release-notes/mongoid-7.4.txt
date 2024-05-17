@@ -1,5 +1,5 @@
 ***********
-Mongoid 7.4
+ActiveDocument 7.4
 ***********
 
 .. default-domain:: mongodb
@@ -10,41 +10,41 @@ Mongoid 7.4
    :depth: 2
    :class: singlecol
 
-This page describes significant changes and improvements in Mongoid 7.4.
+This page describes significant changes and improvements in ActiveDocument 7.4.
 The complete list of releases is available `on GitHub
 <https://github.com/mongodb/mongoid/releases>`_ and `in JIRA
 <https://jira.mongodb.org/projects/MONGOID?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page>`_;
 please consult GitHub releases for detailed release notes and JIRA for
 the complete list of issues fixed in each release, including bug fixes.
 
-All behavior changes in Mongoid 7.4 must be explicitly requested by changing
+All behavior changes in ActiveDocument 7.4 must be explicitly requested by changing
 the value of configuration options as detailed below. By default,
-Mongoid 7.4 behaves the same as Mongoid 7.3.
+ActiveDocument 7.4 behaves the same as ActiveDocument 7.3.
 
 
 Ruby Version Support
 --------------------
 
-As of version 7.4, Mongoid supports Ruby 2.5+.
+As of version 7.4, ActiveDocument supports Ruby 2.5+.
 Support for Ruby 2.4 and earlier has been dropped.
 
 
 Support for MongoDB 3.4 and Earlier Servers Deprecated
 ------------------------------------------------------
 
-Mongoid 7.4 deprecates support for MongoDB 3.4 and earlier.
-Mongoid 8 will require MongoDB 3.6 or newer.
+ActiveDocument 7.4 deprecates support for MongoDB 3.4 and earlier.
+ActiveDocument 8 will require MongoDB 3.6 or newer.
 
 
 Feature Flags Summary
 ---------------------
 
-To ensure a stable upgrade path from Mongoid 7.3, Mongoid 7.4
+To ensure a stable upgrade path from ActiveDocument 7.3, ActiveDocument 7.4
 introduces feature flags which are further explained in the
 sections below.
 
-To enable all new behavior in Mongoid 7.4, please use the following
-:ref:`configuration options <configuration-options>` in your mongoid.yml file.
+To enable all new behavior in ActiveDocument 7.4, please use the following
+:ref:`configuration options <configuration-options>` in your activedocument.yml file.
 We recommend newly created apps to do this as well.
 
 .. code-block:: yaml
@@ -52,7 +52,7 @@ We recommend newly created apps to do this as well.
   development:
     ...
     options:
-      # Enable all new behavior in Mongoid 7.4
+      # Enable all new behavior in ActiveDocument 7.4
       legacy_triple_equals: false
       object_id_as_json_oid: false
       compare_time_by_ms: true
@@ -67,7 +67,7 @@ We recommend newly created apps to do this as well.
 Change ``===`` Operator To Match Ruby Semantics
 -----------------------------------------------
 
-In Mongoid 7.4, the ``===`` operator on ``Mongoid::Document`` classes and
+In ActiveDocument 7.4, the ``===`` operator on ``ActiveDocument::Document`` classes and
 instances can be configured to behave the same way as it does in Ruby,
 and is equivalent to calling ``is_a?`` on the right hand
 side with the left hand side as the argument:
@@ -79,18 +79,18 @@ side with the left hand side as the argument:
   # equivalent to:
   instance.is_a?(ModelClass)
 
-In order to get this functionality, the ``Mongoid.legacy_triple_equals``
+In order to get this functionality, the ``ActiveDocument.legacy_triple_equals``
 option must be set to false. If it is set to true, which is the default for
-Mongoid 7.4, the ``===`` operator will function as it did in Mongoid 7.3:
+ActiveDocument 7.4, the ``===`` operator will function as it did in ActiveDocument 7.3:
 ``===`` returned ``true`` for some cases when the equivalent Ruby
 ``===`` implementation returned false, as per the examples below.
 
-Mongoid 7.4 with ``Mongoid.legacy_triple_equals`` set to ``false`` behavior:
+ActiveDocument 7.4 with ``ActiveDocument.legacy_triple_equals`` set to ``false`` behavior:
 
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     has_many :members
   end
@@ -99,7 +99,7 @@ Mongoid 7.4 with ``Mongoid.legacy_triple_equals`` set to ``false`` behavior:
   end
 
   class Member
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     belongs_to :band
   end
@@ -122,10 +122,10 @@ Mongoid 7.4 with ``Mongoid.legacy_triple_equals`` set to ``false`` behavior:
   band.members === Array
   # => false
 
-  band.members === Mongoid::Association::Referenced::HasMany::Enumerable
+  band.members === ActiveDocument::Association::Referenced::HasMany::Enumerable
   # => false
 
-Mongoid 7.3 and 7.4 with ``Mongoid.legacy_triple_equals`` set to ``true``
+ActiveDocument 7.3 and 7.4 with ``ActiveDocument.legacy_triple_equals`` set to ``true``
 behavior:
 
 .. code-block:: ruby
@@ -145,11 +145,11 @@ behavior:
   band.members === Array
   # => true
 
-  band.members === Mongoid::Association::Referenced::HasMany::Enumerable
+  band.members === ActiveDocument::Association::Referenced::HasMany::Enumerable
   # => true
 
 The standard invocation of ``===``, that is having the class on the left and
-the instance on the right, works the same in Mongoid 7.4 as it did previously
+the instance on the right, works the same in ActiveDocument 7.4 as it did previously
 and matches the core Ruby behavior:
 
 .. code-block:: ruby
@@ -162,28 +162,28 @@ and matches the core Ruby behavior:
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.legacy_triple_equals`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.legacy_triple_equals`` option will
   change to ``false``.
 
 
 Return String ``_id`` Value (Hexadecimal) from ``BSON::ObjectId#as_json``
 -------------------------------------------------------------------------
 
-Mongoid 7.4 permits configuring the ``BSON::ObjectId#as_json`` method
+ActiveDocument 7.4 permits configuring the ``BSON::ObjectId#as_json`` method
 to return the ``_id`` value as a hexadecimal string instead of the
-``{"$oid" => "..."}`` hash it has returned in Mongoid 7.3 and previous
+``{"$oid" => "..."}`` hash it has returned in ActiveDocument 7.3 and previous
 versions.
 
-When ``Mongoid.object_id_as_json_oid`` is set to ``false``, Mongoid will
+When ``ActiveDocument.object_id_as_json_oid`` is set to ``false``, ActiveDocument will
 delegate to ``bson-ruby`` implementation of ``BSON::ObjectId#as_json``.
 In ``bson-ruby`` 4 the ``BSON::ObjectId#as_json`` method will continue
 to return the hash ``{"$oid" => "..."}`` for backwards compatibility, but
 in ``bson-ruby`` 5 the ``BSON::ObjectId#as_json`` method will return only
 the hexadecimal ObjectId string.
 
-When ``Mongoid.object_id_as_json_oid`` is set to ``true``, Mongoid will
+When ``ActiveDocument.object_id_as_json_oid`` is set to ``true``, ActiveDocument will
 install an implementation of ``BSON::ObjectId#as_json`` which returns
-the hash ``{"$oid" => "..."}`` as it did in Mongoid 7.3 and earlier.
+the hash ``{"$oid" => "..."}`` as it did in ActiveDocument 7.3 and earlier.
 
 The behavior of ``as_json`` is summarized in the following table:
 
@@ -192,7 +192,7 @@ The behavior of ``as_json`` is summarized in the following table:
    :stub-columns: 1
    :class: compatibility-large no-padding
 
-   * - ``Mongoid.object_id_as_json_oid`` value
+   * - ``ActiveDocument.object_id_as_json_oid`` value
      - true
      - false
 
@@ -206,7 +206,7 @@ The behavior of ``as_json`` is summarized in the following table:
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.object_id_as_json_oid`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.object_id_as_json_oid`` option will
   change to ``false``.
 
 
@@ -220,13 +220,13 @@ Associations now support the ``:scope`` argument, yielding
 Compare Times With Millisecond Precision When Embedded Matching
 ---------------------------------------------------------------
 
-Mongoid 7.4 with the ``Mongoid.compare_time_by_ms`` option set to ``true``
+ActiveDocument 7.4 with the ``ActiveDocument.compare_time_by_ms`` option set to ``true``
 will truncate the times to millisecond precision when comparing them while
 performing embedded matching.
 
 Time objects in Ruby have nanosecond precision, whereas MongoDB server
 can only store times with millisecond precision. Set the
-``Mongoid.compare_time_by_ms`` option to ``true`` to truncate times to
+``ActiveDocument.compare_time_by_ms`` option to ``true`` to truncate times to
 millisecond precision when performing queries on already loaded embedded
 associations (this is also called "embedded matching" and is done completely
 in Ruby), to obtain the same query results when performing time comparisons
@@ -235,12 +235,12 @@ regardless of which documents are being queried. Setting this option to
 that are already loaded into memory vs queries on unloaded associations and
 top-level models.
 
-The ``Mongoid.compare_time_by_ms`` option is set to ``false`` by default
-in Mongoid 7.4 for backwards compatibility.
+The ``ActiveDocument.compare_time_by_ms`` option is set to ``false`` by default
+in ActiveDocument 7.4 for backwards compatibility.
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.compare_time_by_ms`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.compare_time_by_ms`` option will
   change to ``true``.
 
 
@@ -261,7 +261,7 @@ an index where it wouldn't before:
 Return ``0`` When Aggregating Empty Result Sets
 -----------------------------------------------
 
-Mongoid 7.4 with the ``Mongoid.broken_aggregables`` option set to ``false``
+ActiveDocument 7.4 with the ``ActiveDocument.broken_aggregables`` option set to ``false``
 will return ``0`` from the ``sum`` method over an empty result set, for example:
 
 .. code-block:: ruby
@@ -269,26 +269,26 @@ will return ``0`` from the ``sum`` method over an empty result set, for example:
   Product.where(impossible_condition: true).sum(:price)
   # => 0
 
-Mongoid 7.3 and Mongoid 7.4 with the ``Mongoid.broken_aggregables`` option
+ActiveDocument 7.3 and ActiveDocument 7.4 with the ``ActiveDocument.broken_aggregables`` option
 set to ``true`` (the default) returns ``nil`` in this case.
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.broken_aggregables`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.broken_aggregables`` option will
   change to ``false``.
 
 
 Correct Update Behavior When Replacing Association
 --------------------------------------------------
 
-Mongoid 7.4 with the ``Mongoid.broken_updates`` option set to ``false``
+ActiveDocument 7.4 with the ``ActiveDocument.broken_updates`` option set to ``false``
 will correctly persist an ``embeds_one`` association target that is set to nil
 and then to a non-nil value, for example:
 
 .. code-block:: ruby
 
   class Canvas
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embeds_one :palette
   end
@@ -297,20 +297,20 @@ and then to a non-nil value, for example:
   canvas.palette = nil
   canvas.palette = palette
 
-In Mongoid 7.3 and earlier, and in 7.4 with the ``Mongoid.broken_aggregables``
+In ActiveDocument 7.3 and earlier, and in 7.4 with the ``ActiveDocument.broken_aggregables``
 option set to ``true`` (the default), ``canvas.palette`` would be ``nil`` when
 we would expect it to be ``palette``.
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.broken_updates`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.broken_updates`` option will
   change to ``false``
 
 
 Correct Logical ``and`` Query Generation
 ----------------------------------------
 
-Mongoid 7.4 with the ``Mongoid.broken_and`` option set to ``false``
+ActiveDocument 7.4 with the ``ActiveDocument.broken_and`` option set to ``false``
 will preserve existing conditions when using ``and`` to add new conditions
 to a query when the same operator is used on the same field multiple times.
 For example, in the following query:
@@ -319,24 +319,24 @@ For example, in the following query:
 
   Band.where(id: 1).and({year: {'$in' => [2020]}}, {year: {'$in' => [2021]}}).where(id: 2)
 
-Mongoid 7.4 with the ``Mongoid.broken_and`` option set to ``false`` will
+ActiveDocument 7.4 with the ``ActiveDocument.broken_and`` option set to ``false`` will
 generate the following criteria:
 
 .. code-block:: ruby
 
-  #<Mongoid::Criteria
+  #<ActiveDocument::Criteria
     selector: {"_id"=>1, "year"=>{"$in"=>[2020]}, "$and"=>[{"year"=>{"$in"=>[2021]}}, {"_id"=>2}]}
     options:  {}
     class:    Band
     embedded: false>
 
-In Mongoid 7.3 and earlier, and in 7.4 with the ``Mongoid.broken_and``
+In ActiveDocument 7.3 and earlier, and in 7.4 with the ``ActiveDocument.broken_and``
 option set to ``true`` (the default), the following criteria would be
 generated instead which omit the {"$in" => [2021]} condition:
 
 .. code-block:: ruby
 
-  <Mongoid::Criteria
+  <ActiveDocument::Criteria
     selector: {"_id"=>1, "year"=>{"$in"=>[2020]}, "$and"=>[{"_id"=>2}]}
     options:  {}
     class:    Band
@@ -344,14 +344,14 @@ generated instead which omit the {"$in" => [2021]} condition:
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.broken_and`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.broken_and`` option will
   change to ``false``.
 
 
 Restore Parent Scope When Exiting ``with_scope`` Block
 ------------------------------------------------------
 
-Mongoid 7.4 with the ``Mongoid.broken_scoping`` option set to ``false``
+ActiveDocument 7.4 with the ``ActiveDocument.broken_scoping`` option set to ``false``
 will restore the parent scope when exiting a ``with_scope`` block.
 For example:
 
@@ -365,7 +365,7 @@ For example:
     # {year: 2020} condition is applied here
   end
 
-In Mongoid 7.3 and earlier, and in 7.4 with the ``Mongoid.broken_scoping``
+In ActiveDocument 7.3 and earlier, and in 7.4 with the ``ActiveDocument.broken_scoping``
 option set to ``true`` (the default), once any ``with_scope`` block finishes,
 all scopes are cleared:
 
@@ -381,7 +381,7 @@ all scopes are cleared:
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.broken_scoping`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.broken_scoping`` option will
   change to ``false``.
 
 
@@ -392,26 +392,26 @@ Respect Field Aliases In Embedded Documents When Using ``distinct`` and ``pluck`
 `````````````````````````````````````````````````````````````````````````````````
 
 When ``distinct`` and ``pluck`` are used with aliased fields in embedded
-documents, the aliases can be expanded if the ``Mongoid.broken_alias_handling``
+documents, the aliases can be expanded if the ``ActiveDocument.broken_alias_handling``
 option is set to ``false``. By default, for backwards compatibility, in
-Mongoid 7.4 this option is set to true, yielding Mongoid 7.3 and earlier
+ActiveDocument 7.4 this option is set to true, yielding ActiveDocument 7.3 and earlier
 behavior. Given the following definitions:
 
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     embeds_many :managers
   end
 
   class Manager
-    include Mongoid::Document
+    include ActiveDocument::Document
     embedded_in :band
 
     field :name, as: :n
   end
 
-Mongoid 7.4 behavior with ``Mongoid.broken_alias_handling`` set to ``false``:
+ActiveDocument 7.4 behavior with ``ActiveDocument.broken_alias_handling`` set to ``false``:
 
 .. code-block:: ruby
 
@@ -419,7 +419,7 @@ Mongoid 7.4 behavior with ``Mongoid.broken_alias_handling`` set to ``false``:
   Band.distinct('managers.name')
   Band.pluck('managers.name')
 
-Mongoid 7.3 and 7.4 with ``Mongoid.broken_alias_handling`` set to ``true`` behavior:
+ActiveDocument 7.3 and 7.4 with ``ActiveDocument.broken_alias_handling`` set to ``true`` behavior:
 
 .. code-block:: ruby
 
@@ -429,25 +429,25 @@ Mongoid 7.3 and 7.4 with ``Mongoid.broken_alias_handling`` set to ``true`` behav
 
 .. note::
 
-  The alias expansion for top-level fields has already been done by Mongoid 7.3.
+  The alias expansion for top-level fields has already been done by ActiveDocument 7.3.
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.broken_alias_handling`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.broken_alias_handling`` option will
   change to ``false``.
 
 
 Demongoize Values Returned from ``pluck`` and ``distinct``
 ``````````````````````````````````````````````````````````
 
-Mongoid 7.4 with the ``Mongoid.legacy_pluck_distinct`` option set to ``false``
+ActiveDocument 7.4 with the ``ActiveDocument.legacy_pluck_distinct`` option set to ``false``
 will demongoize values returned from the ``pluck`` and ``distinct`` methods.
 Given the following definitions:
 
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :sales, type: BigDecimal
   end
@@ -455,7 +455,7 @@ Given the following definitions:
   Band.create!(sales: "1E2")
   Band.create!(sales: "2E2")
 
-Mongoid 7.4 behavior with ``Mongoid.legacy_pluck_distinct`` set to ``false``:
+ActiveDocument 7.4 behavior with ``ActiveDocument.legacy_pluck_distinct`` set to ``false``:
 
 .. code-block:: ruby
 
@@ -465,7 +465,7 @@ Mongoid 7.4 behavior with ``Mongoid.legacy_pluck_distinct`` set to ``false``:
   # => [0.1e3, 0.2e3]
 
 
-In Mongoid 7.3 and earlier, and in 7.4 with the ``Mongoid.legacy_pluck_distinct``
+In ActiveDocument 7.3 and earlier, and in 7.4 with the ``ActiveDocument.legacy_pluck_distinct``
 option set to ``true`` (the default), the value returned from the pluck and
 distinct methods will not be demongoized. For example:
 
@@ -478,13 +478,13 @@ distinct methods will not be demongoized. For example:
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.legacy_pluck_distinct`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.legacy_pluck_distinct`` option will
   change to ``false``.
 
 
 Localized Fields with ``pluck`` and ``distinct``
 ````````````````````````````````````````````````
-Mongoid 7.4 with the ``Mongoid.legacy_pluck_distinct`` option set to ``false``
+ActiveDocument 7.4 with the ``ActiveDocument.legacy_pluck_distinct`` option set to ``false``
 changes the behavior of using ``pluck`` and ``distinct`` with localized fields.
 Now, when retrieving a localized field using these methods, the translation for
 the current locale will be returned. To get the full translations hash the
@@ -493,7 +493,7 @@ the current locale will be returned. To get the full translations hash the
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, localize: true
   end
@@ -504,7 +504,7 @@ the current locale will be returned. To get the full translations hash the
   band.name = 'deutsch-name'
   band.save!
 
-Mongoid 7.4 behavior with ``Mongoid.legacy_pluck_distinct`` set to ``false``:
+ActiveDocument 7.4 behavior with ``ActiveDocument.legacy_pluck_distinct`` set to ``false``:
 
 .. code-block:: ruby
 
@@ -513,7 +513,7 @@ Mongoid 7.4 behavior with ``Mongoid.legacy_pluck_distinct`` set to ``false``:
   Band.pluck(:name_translations)
   # => [{"en"=>"english-name", "de"=>"deutsch-name"}, {"en"=>"english-name", "de"=>"deutsch-name"}]
 
-In Mongoid 7.3 and earlier, and in 7.4 with the ``Mongoid.legacy_pluck_distinct``
+In ActiveDocument 7.3 and earlier, and in 7.4 with the ``ActiveDocument.legacy_pluck_distinct``
 option set to ``true`` (the default), inputting a localized field returns the
 full translations hash. Inputting the ``_translations`` field will return ``nil``.
 For example:
@@ -527,39 +527,39 @@ For example:
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.legacy_pluck_distinct`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.legacy_pluck_distinct`` option will
   change to ``false``.
 
 
 Embedded Fields with ``pluck``
 ``````````````````````````````
-Mongoid 7.4 with the ``Mongoid.legacy_pluck_distinct`` option set to ``false``
+ActiveDocument 7.4 with the ``ActiveDocument.legacy_pluck_distinct`` option set to ``false``
 returns the embedded values themselves, i.e. not inside a hash. Given the
 following definitions:
 
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embeds_one :label
   end
 
   class Label
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embedded_in :band
     field :sales, type: BigDecimal
   end
 
-Mongoid 7.4 behavior with ``Mongoid.legacy_pluck_distinct`` set to ``false``:
+ActiveDocument 7.4 behavior with ``ActiveDocument.legacy_pluck_distinct`` set to ``false``:
 
 .. code-block:: ruby
 
   Band.pluck("label.sales")
   # => [0.1e3]
 
-In Mongoid 7.3 and earlier, and in 7.4 with the ``Mongoid.legacy_pluck_distinct``
+In ActiveDocument 7.3 and earlier, and in 7.4 with the ``ActiveDocument.legacy_pluck_distinct``
 option set to ``true`` (the default), plucking embedded attributes returns them
 inside a hash. For example:
 
@@ -570,13 +570,13 @@ inside a hash. For example:
 
 .. note::
 
-  In Mongoid 8.0, the default value of the ``Mongoid.legacy_pluck_distinct`` option will
+  In ActiveDocument 8.0, the default value of the ``ActiveDocument.legacy_pluck_distinct`` option will
   change to ``false``.
 
 
 ``update_one`` Warnings in ``upsert``
 -------------------------------------
 
-Mongoid 7.4.1 fixes incorrect usage of the driver's ``update_one`` method from
-Mongoid's ``upsert`` method. Mongoid's ``upsert`` actually performs a
-replacing upsert, and Mongoid 7.4.1 and later correctly call ``replace_one``.
+ActiveDocument 7.4.1 fixes incorrect usage of the driver's ``update_one`` method from
+ActiveDocument's ``upsert`` method. ActiveDocument's ``upsert`` actually performs a
+replacing upsert, and ActiveDocument 7.4.1 and later correctly call ``replace_one``.

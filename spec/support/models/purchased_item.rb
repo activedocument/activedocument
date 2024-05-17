@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class PurchasedItem
-  include Mongoid::Document
-  field :item_id, type: Mongoid::StringifiedSymbol
+  include ActiveDocument::Document
+  field :item_id, type: ActiveDocument::StringifiedSymbol
 
   validates_uniqueness_of :item_id
 

@@ -2,7 +2,7 @@
 
 class FolderItem
 
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   belongs_to :folder
   field :name, type: String

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require "benchmark"
-require "mongoid"
+require "active_document"
 require "./perf/models"
 
-Mongoid.connect_to("mongoid_perf_test")
+ActiveDocument.connect_to("mongoid_perf_test")
 Mongo::Logger.logger.level = ::Logger::FATAL
 
-Mongoid.purge!
+ActiveDocument.purge!
 
 puts "Creating indexes..."
 

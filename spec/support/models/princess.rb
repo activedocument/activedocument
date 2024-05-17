@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Princess
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :primary_color
   field :name, type: String
   def color

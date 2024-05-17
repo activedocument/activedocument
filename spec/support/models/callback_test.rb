@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CallbackTest
-  include Mongoid::Document
+  include ActiveDocument::Document
   around_save :execute
 
   def execute

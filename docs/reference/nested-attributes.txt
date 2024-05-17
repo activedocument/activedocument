@@ -27,21 +27,21 @@ To enable this for an association, simply provide the association name to the
 .. code-block:: ruby
 
    class Band
-     include Mongoid::Document
+     include ActiveDocument::Document
      embeds_many :albums
      belongs_to :producer
      accepts_nested_attributes_for :albums, :producer
    end
 
 Note that when you add nested attributes functionality to a referenced
-association, Mongoid will automatically enable autosave for that association.
+association, ActiveDocument will automatically enable autosave for that association.
 
 When an association gains nested attributes behavior, an additional method is
 added to the base model, which should be used to update the attributes with
 the new functionality. This method is the association name plus ``_attributes=``.
 You can use this method directly, or more commonly the name of the method can
 be an attribute in the updates for the base class, in which case
-Mongoid will call the appropriate setter under the covers.
+ActiveDocument will call the appropriate setter under the covers.
 
 .. code-block:: ruby
 
@@ -49,7 +49,7 @@ Mongoid will call the appropriate setter under the covers.
    band.producer_attributes = { name: "Flood" }
    band.attributes = { producer_attributes: { name: "Flood" }}
 
-Note that this will work with any attribute based setter method in Mongoid,
+Note that this will work with any attribute based setter method in ActiveDocument,
 including ``update``, ``update_attributes`` and ``attributes=``, as well as
 ``create`` (and all of their corresponding bang methods). For example, creating
 a new person with associated address records can be done in a single
@@ -94,7 +94,7 @@ will be used to update the record with that id:
    person.update(addresses_attributes: [
       { _id: address._id, city: 'Lisbon' } ])
 
-Note that if there is no record with that id, a ``Mongoid::Errors::DocumentNotFound``
+Note that if there is no record with that id, a ``ActiveDocument::Errors::DocumentNotFound``
 exception will be raised.
 
 
@@ -120,7 +120,7 @@ declaration:
       { _id: address._id, _destroy: true } ])
 
 Note that, as with updates, if there is no record with that id,
-a ``Mongoid::Errors::DocumentNotFound`` exception will be raised.
+a ``ActiveDocument::Errors::DocumentNotFound`` exception will be raised.
 
 
 Combining Operations

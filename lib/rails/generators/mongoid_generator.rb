@@ -3,10 +3,10 @@
 require 'rails/generators/named_base'
 require 'rails/generators/active_model'
 
-module Mongoid
+module ActiveDocument
   module Generators
 
-    # Base generator class for adding Mongoid to Rails applications.
+    # Base generator class for adding ActiveDocument to Rails applications.
     class Base < ::Rails::Generators::NamedBase
 
       # Returns the path to the templates directory.
@@ -25,14 +25,14 @@ module Rails
     # Extension to Rails' GeneratedAttribute class.
     class GeneratedAttribute
 
-      # Returns the Mongoid attribute type value for a given
+      # Returns the ActiveDocument attribute type value for a given
       # input class type.
       #
       # @return [ String ] The type value.
       def type_class
         return 'Time' if type == :datetime
         return 'String' if type == :text
-        return 'Mongoid::Boolean' if type == :boolean
+        return 'ActiveDocument::Boolean' if type == :boolean
 
         type.to_s.camelcase
       end

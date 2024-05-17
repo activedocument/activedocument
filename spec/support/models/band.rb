@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Band
-  include Mongoid::Document
-  include Mongoid::Attributes::Dynamic
+  include ActiveDocument::Document
+  include ActiveDocument::Attributes::Dynamic
 
   field :name, type: String
-  field :active, type: Mongoid::Boolean, default: true
+  field :active, type: ActiveDocument::Boolean, default: true
   field :origin, type: String
   field :genres, type: Array
   field :member_count, type: Integer
@@ -13,7 +13,7 @@ class Band
   field :likes, type: Integer
   field :views, type: Integer
   field :rating, type: Float
-  field :upserted, type: Mongoid::Boolean, default: false
+  field :upserted, type: ActiveDocument::Boolean, default: false
   field :created, type: DateTime
   field :updated, type: Time
   field :sales, type: BigDecimal

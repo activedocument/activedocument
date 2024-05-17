@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DelegatingPatient
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   embeds_one :email
 
@@ -10,6 +10,6 @@ class DelegatingPatient
 
   class << self
     # Class level delegation
-    delegate :default_client, to: ::Mongoid
+    delegate :default_client, to: ::ActiveDocument
   end
 end

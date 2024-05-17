@@ -13,7 +13,7 @@ Map/Reduce
    :class: singlecol
 
 
-Mongoid provides a DSL around MongoDB's map/reduce framework, for performing
+ActiveDocument provides a DSL around MongoDB's map/reduce framework, for performing
 custom map/reduce jobs or simple aggregations.
 
 .. note::
@@ -26,7 +26,7 @@ custom map/reduce jobs or simple aggregations.
 Execution
 ---------
 
-You can tell Mongoid off the class or a criteria to perform a map/reduce
+You can tell ActiveDocument off the class or a criteria to perform a map/reduce
 by calling ``map_reduce`` and providing map and reduce javascript
 functions.
 
@@ -134,6 +134,6 @@ The following code illustrates retrieving the statistics:
 .. note::
 
   Each statistics method invocation re-executes the Map/Reduce pipeline.
-  The results of execution are not stored by Mongoid. Consider using the
+  The results of execution are not stored by ActiveDocument. Consider using the
   ``execute`` method to retrieve the raw results and obtaining the statistics
   from the raw results if multiple statistics are desired.

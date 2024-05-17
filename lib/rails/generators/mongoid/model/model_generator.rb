@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'rails/generators/mongoid_generator'
+require 'rails/generators/active_document_generator'
 
-module Mongoid
+module ActiveDocument
   module Generators
 
-    # Generator class for Mongoid model files.
+    # Generator class for ActiveDocument model files.
     class ModelGenerator < Base
 
-      desc 'Creates a Mongoid model'
+      desc 'Creates a ActiveDocument model'
       argument :attributes, type: :array, default: [], banner: 'field:type field:type'
 
       check_class_collision

@@ -16,20 +16,20 @@ Ruby MongoDB Driver Compatibility
 The following compatibility table specifies the versions of `Ruby driver for
 MongoDB <https://mongodb.com/docs/ruby-driver/current/>`_
 (the ``mongo`` gem) supported by the most recent patch releases of the
-specified Mongoid versions.
+specified ActiveDocument versions.
 
 .. note::
 
-  Older versions of Mongoid within the same minor release may support older
-  driver versions. For example, Mongoid 7.0.5 supports driver versions 2.5 and
-  newer, whereas Mongoid 7.0.6 requires driver version 2.7 or newer.
+  Older versions of ActiveDocument within the same minor release may support older
+  driver versions. For example, ActiveDocument 7.0.5 supports driver versions 2.5 and
+  newer, whereas ActiveDocument 7.0.6 requires driver version 2.7 or newer.
 
 .. list-table::
    :header-rows: 1
    :stub-columns: 1
    :class: compatibility-large no-padding
 
-   * - Mongoid
+   * - ActiveDocument
      - Driver 2.19-2.18
      - Driver 2.17-2.10
      - Driver 2.9-2.7
@@ -54,7 +54,7 @@ Ruby Compatibility
 ==================
 
 The following compatibility table specifies the versions of Ruby interpreters
-supported by Mongoid. "D" in a column means support for that Ruby version
+supported by ActiveDocument. "D" in a column means support for that Ruby version
 is deprecated.
 
 .. list-table::
@@ -62,7 +62,7 @@ is deprecated.
    :stub-columns: 1
    :class: compatibility-large no-padding
 
-   * - Mongoid
+   * - ActiveDocument
      - Ruby 3.2
      - Ruby 3.1
      - Ruby 3.0
@@ -202,11 +202,11 @@ is deprecated.
      -
      - |checkmark|
 
-.. [#mongoid-7.3-ruby-3.0] Mongoid version 7.3.2 or higher is required.
+.. [#mongoid-7.3-ruby-3.0] ActiveDocument version 7.3.2 or higher is required.
 
-.. [#mongoid-7.2-ruby-3.0] Mongoid version 7.2.5 or higher is required.
+.. [#mongoid-7.2-ruby-3.0] ActiveDocument version 7.2.5 or higher is required.
 
-.. [#mongoid-7.1-ruby-3.0] Mongoid version 7.1.10 or higher is required.
+.. [#mongoid-7.1-ruby-3.0] ActiveDocument version 7.1.10 or higher is required.
 
 .. [#ruby-2.4] Ruby version 2.4.1 or higher is required.
 
@@ -217,10 +217,10 @@ MongoDB Server Compatibility
 ============================
 
 The following compatibility table specifies the recommended
-version(s) of Mongoid for use with a specific version of MongoDB server.
+version(s) of ActiveDocument for use with a specific version of MongoDB server.
 
 Note that in order to use features of a particular MongoDB server version,
-both the driver and Mongoid must support that server version.
+both the driver and ActiveDocument must support that server version.
 Please refer to `the driver compatibility page
 <https://mongodb.com/docs/ruby-driver/current/reference/driver-compatibility/>`_
 for driver compatibility matrices.
@@ -233,7 +233,7 @@ and will be removed in a next version.
    :stub-columns: 1
    :class: compatibility-large no-padding
 
-   * - Mongoid
+   * - ActiveDocument
      - MongoDB 7.0
      - MongoDB 6.0
      - MongoDB 5.0
@@ -292,14 +292,14 @@ Rails Compatibility
 ===================
 
 The following compatibility table specifies which versions of Ruby on Rails
-are supported by Mongoid.
+are supported by ActiveDocument.
 
 .. list-table::
    :header-rows: 1
    :stub-columns: 1
    :class: compatibility-large no-padding
 
-   * - Mongoid
+   * - ActiveDocument
      - Rails 7.1
      - Rails 7.0
      - Rails 6.1
@@ -341,7 +341,7 @@ are supported by Mongoid.
 
    * - 7.3
      -
-     - |checkmark| [#rails-7-Mongoid-7.3]_
+     - |checkmark| [#rails-7-ActiveDocument-7.3]_
      - |checkmark|
      - |checkmark|
      - |checkmark| [#rails-5-ruby-3.0]_
@@ -373,14 +373,14 @@ are supported by Mongoid.
 
 .. [#rails-5-ruby-3.0] Using Rails 5.x with Ruby 3 is not supported.
 
-.. [#rails-6] Rails 6.0 requires Mongoid 7.0.5 or later.
+.. [#rails-6] Rails 6.0 requires ActiveDocument 7.0.5 or later.
 
-.. [#rails-6.1] Rails 6.1 requires Mongoid 7.0.12, 7.1.7 or 7.2.1 in the
+.. [#rails-6.1] Rails 6.1 requires ActiveDocument 7.0.12, 7.1.7 or 7.2.1 in the
   respective 7.0, 7.1 and 7.2 stable branches.
 
-.. [#rails-7-Mongoid-7.3] Rails 7.x requires Mongoid 7.3.4 or later.
+.. [#rails-7-ActiveDocument-7.3] Rails 7.x requires ActiveDocument 7.3.4 or later.
 
-.. [#rails-7.1] Rails 7.1 requires Mongoid 8.0.7 or 8.1.3 in the respective
+.. [#rails-7.1] Rails 7.1 requires ActiveDocument 8.0.7 or 8.1.3 in the respective
   8.0 and 8.1 stable branches.
 
 .. include:: /includes/unicode-checkmark.rst
@@ -389,16 +389,16 @@ are supported by Mongoid.
 Rails Frameworks Support
 ------------------------
 
-Ruby on Rails is comprised of a number of frameworks, which Mongoid attempts to
+Ruby on Rails is comprised of a number of frameworks, which ActiveDocument attempts to
 provide compatibility with wherever possible.
 
-Though Mongoid attempts to offer API compatibility with `Active Record <https://guides.rubyonrails.org/active_record_basics.html>`_,
+Though ActiveDocument attempts to offer API compatibility with `Active Record <https://guides.rubyonrails.org/active_record_basics.html>`_,
 libraries that depend directly on Active Record may not work as expected when
-Mongoid is used as a drop-in replacement.
+ActiveDocument is used as a drop-in replacement.
 
 .. note::
 
-  Mongoid can be used alongside Active Record within the same application without issue.
+  ActiveDocument can be used alongside Active Record within the same application without issue.
 
 .. list-table::
    :header-rows: 1
@@ -440,17 +440,17 @@ Mongoid is used as a drop-in replacement.
 
 .. [#rails-actioncable-dependency] There is currently no MongoDB adapter for
    ``ActionCable``, however any existing adapter (such as `Redis <https://guides.rubyonrails.org/action_cable_overview.html#redis-adapter>`_)
-   can be used successfully in conjunction with Mongoid models
+   can be used successfully in conjunction with ActiveDocument models
 
 .. [#rails-activerecord-dependency] Depends directly on ``ActiveRecord``
 
-.. [#rails-activemodel-dependency] ``Mongoid::Document`` includes ``ActiveModel::Model``
+.. [#rails-activemodel-dependency] ``ActiveDocument::Document`` includes ``ActiveModel::Model``
    and leverages ``ActiveModel::Validations`` for validations
 
-.. [#rails-activesupport-dependency] ``Mongoid`` requires ``ActiveSupport`` and
+.. [#rails-activesupport-dependency] ``ActiveDocument`` requires ``ActiveSupport`` and
    uses it extensively, including ``ActiveSupport::TimeWithZone`` for time handling.
 
-.. [#rails-activejob-dependency] Serialization of BSON & Mongoid objects works best
+.. [#rails-activejob-dependency] Serialization of BSON & ActiveDocument objects works best
    if you explicitly send ``BSON::ObjectId``'s as strings, and reconstitute them in the job:
 
    .. code-block:: ruby

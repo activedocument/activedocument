@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :name
   field :last_login, type: DateTime

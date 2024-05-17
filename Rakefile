@@ -17,19 +17,19 @@ RSpec::Core::RakeTask.new('spec:progress') do |spec|
 end
 
 namespace :generate do
-  desc 'Generates a mongoid.yml from the template'
+  desc 'Generates a activedocument.yml from the template'
   task config: :environment do
-    require 'mongoid'
+    require 'active_document'
     require 'erb'
 
-    template_path = 'lib/rails/generators/mongoid/config/templates/mongoid.yml'
+    template_path = 'lib/rails/generators/mongoid/config/templates/activedocument.yml'
     config = ERB.new(File.read(template_path), trim_mode: '-').result(binding)
-    File.write('mongoid.yml', config)
+    File.write('activedocument.yml', config)
   end
 end
 
 $LOAD_PATH.unshift File.expand_path('lib', __dir__)
-require 'mongoid/version'
+require 'active_document/version'
 
 task default: :spec
 
@@ -39,9 +39,9 @@ task docs: %i[docs:yard docs:sphinx]
 namespace :docs do
   desc 'Generate YARD documentation'
   task :yard do # rubocop:disable Rails/RakeEnvironment
-    out = File.join('yard-docs', Mongoid::VERSION)
+    out = File.join('yard-docs', ActiveDocument::VERSION)
     FileUtils.rm_rf(out)
-    system "yardoc -o #{out} --title mongoid-#{Mongoid::VERSION}"
+    system "yardoc -o #{out} --title mongoid-#{ActiveDocument::VERSION}"
   end
 
   desc 'Generate Sphinx documentation'

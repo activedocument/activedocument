@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Question
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :content
   embedded_in :survey
   embeds_many :answers

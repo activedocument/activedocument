@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Mongoid::Atomic::Modifiers do
+describe ActiveDocument::Atomic::Modifiers do
 
   let(:modifiers) do
     described_class.new

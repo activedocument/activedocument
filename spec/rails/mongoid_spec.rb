@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'support/feature_sandbox'
 
-describe 'Rails::Mongoid' do
+describe 'Rails::ActiveDocument' do
   let(:model_root) do
     File.absolute_path(
       File.join(
@@ -15,7 +15,7 @@ describe 'Rails::Mongoid' do
 
   around do |example|
     FeatureSandbox.quarantine do
-      require 'rails/mongoid'
+      require 'rails/active_document'
       $LOAD_PATH.push(model_root)
       example.run
     end
@@ -27,7 +27,7 @@ describe 'Rails::Mongoid' do
     let(:paths) { { 'app/models' => path } }
     let(:path) { double(expanded: [model_root]) }
 
-    before { Rails::Mongoid.preload_models(app) }
+    before { Rails::ActiveDocument.preload_models(app) }
 
     context 'when preload models config is false' do
       config_override :preload_models, false
@@ -44,9 +44,9 @@ describe 'Rails::Mongoid' do
 
       context 'when all models are in the models directory' do
         it 'requires the models' do
-          expect(SandboxMessage.ancestors).to include(Mongoid::Document)
-          expect(SandboxUser.ancestors).to include(Mongoid::Document)
-          expect(SandboxComment.ancestors).to include(Mongoid::Document)
+          expect(SandboxMessage.ancestors).to include(ActiveDocument::Document)
+          expect(SandboxUser.ancestors).to include(ActiveDocument::Document)
+          expect(SandboxComment.ancestors).to include(ActiveDocument::Document)
         end
       end
     end

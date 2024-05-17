@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-Mongoid.configure do
-  target_version = "<%= Mongoid::VERSION[/^\d+.\d+/] %>"
+ActiveDocument.configure do
+  target_version = "<%= ActiveDocument::VERSION[/^\d+.\d+/] %>"
 
-  # Load Mongoid behavior defaults. This automatically sets
+  # Load ActiveDocument behavior defaults. This automatically sets
   # features flags (refer to documentation)
   config.load_defaults target_version
 
-  # It is recommended to use config/mongoid.yml for most Mongoid-related
+  # It is recommended to use config/activedocument.yml for most ActiveDocument-related
   # configuration, whenever possible, but if you prefer, you can set
   # configuration values here, instead:
   #
   #   config.log_level = :debug
   #
-  # Note that the settings in config/mongoid.yml always take precedence,
+  # Note that the settings in config/activedocument.yml always take precedence,
   # whatever else is set here.
 end
 

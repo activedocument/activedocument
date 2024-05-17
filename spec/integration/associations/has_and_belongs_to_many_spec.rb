@@ -4,12 +4,12 @@ require 'spec_helper'
 
 module HabtmSpec
   class Page
-    include Mongoid::Document
+    include ActiveDocument::Document
     embeds_many :blocks, class_name: 'HabtmSpec::Block'
   end
 
   class Block
-    include Mongoid::Document
+    include ActiveDocument::Document
     embedded_in :page, class_name: 'HabtmSpec::Page'
   end
 
@@ -19,7 +19,7 @@ module HabtmSpec
   end
 
   class Attachment
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :file, type: String
   end
 end
@@ -29,7 +29,7 @@ describe 'has_and_belongs_to_many associations' do
   context 'when an anonymous class defines a has_and_belongs_to_many association' do
     let(:klass) do
       Class.new do
-        include Mongoid::Document
+        include ActiveDocument::Document
         has_and_belongs_to_many :movies, inverse_of: nil
       end
     end

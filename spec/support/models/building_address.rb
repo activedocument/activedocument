@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BuildingAddress
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :city, type: String
 
   embedded_in :building

@@ -3,7 +3,7 @@ en:
     messages:
       taken: "has already been taken"
 
-  mongoid:
+  active_document:
     errors:
       messages:
         blank_in_locale:
@@ -15,9 +15,9 @@ en:
         ambiguous_relationship:
           message: "Ambiguous associations %{candidates} defined on %{klass}."
           summary:
-            "When Mongoid attempts to set an inverse document of an association
+            "When ActiveDocument attempts to set an inverse document of an association
             in memory, it needs to know which association it belongs to. When
-            setting %{name}, Mongoid looked on the class %{inverse}
+            setting %{name}, ActiveDocument looked on the class %{inverse}
             for a matching association, but multiples were found that could
             potentially match: %{candidates}."
           resolution: "On the %{name} association on %{inverse} you must add an
@@ -30,7 +30,7 @@ en:
             "You loaded an instance of %{klass} using a query projection method
             such as `.only` or `.without`, then attempted to read or write an
             attribute '%{name}' which was not included in the projection.
-            Mongoid intentionally prevents this to avoid overwriting data."
+            ActiveDocument intentionally prevents this to avoid overwriting data."
           resolution: "Ensure your query projection methods such as `.only` and
             `.without` include field '%{name}' when loading instances of %{klass},
             or remove such projections methods entirely."
@@ -86,7 +86,7 @@ en:
             raised. The search was for the id(s): %{searched} (%{total} total)
             and the following ids were not found: %{missing}."
           resolution: "Search for an id that is in the database or set
-            the Mongoid.raise_not_found_error configuration option to false,
+            the ActiveDocument.raise_not_found_error configuration option to false,
             which will cause nil to be returned instead of raising this error when
             searching for a single id, or only the matched documents when searching
             for multiples."
@@ -96,7 +96,7 @@ en:
             attributes provided must match a document in the database or this error
             will be raised."
           resolution: "Search for attributes that are in the database or set
-            the Mongoid.raise_not_found_error configuration option to false,
+            the ActiveDocument.raise_not_found_error configuration option to false,
             which will cause nil to be returned instead of raising this error."
         document_with_shard_key_not_found:
           message: "Document not found for class %{klass} with id %{missing} and
@@ -106,17 +106,17 @@ en:
             be raised. The search was for the id: %{missing} with
             shard_key: %{shard_key} and it was not found."
           resolution: "Search for an id/shard key that is in the database or set
-            the Mongoid.raise_not_found_error configuration option to false,
+            the ActiveDocument.raise_not_found_error configuration option to false,
             which will cause nil to be returned instead of raising this error."
         drop_collection_failure:
           message: "Cannot drop collection %{collection_name}."
-          summary: "Mongoid tried to drop collection %{collection_name}, but the
+          summary: "ActiveDocument tried to drop collection %{collection_name}, but the
             collection still exists in the database."
           resolution: "Try to drop the collection manually using Ruby driver or
             mongo shell."
         empty_config_file:
           message: "Empty configuration file: %{path}."
-          summary: "Your mongoid.yml configuration file appears to be empty."
+          summary: "Your activedocument.yml configuration file appears to be empty."
           resolution: "Ensure your configuration file contains the correct contents.
             Refer to: https://www.mongodb.com/docs/mongoid/current/reference/configuration/"
         gem_conflict:
@@ -152,8 +152,8 @@ en:
             The valid options are: %{options}."
           resolution: "Pick an allowed option or fix the typo. If you were
             expecting the option to be there, please consult the following page
-            with respect to Mongoid's configuration:\n\n
-            \_\_https://www.mongodb.com/docs/mongoid/current/reference/configuration/#mongoid-configuration-options"
+            with respect to ActiveDocument's configuration:\n\n
+            \_\_https://www.mongodb.com/docs/mongoid/current/reference/configuration/#active_document-configuration-options"
         invalid_auto_encryption_configuration:
           message: "Invalid automatic encryption configuration for client %{client}."
           summary: "Automatic encryption options for client %{client} are
@@ -173,18 +173,18 @@ en:
             \_\_https://www.mongodb.com/docs/ruby-driver/current/reference/client-side-encryption/#auto-encryption-options"
         invalid_config_file:
           message: "Invalid configuration file: %{path}."
-          summary: "Your mongoid.yml configuration file does not contain the
+          summary: "Your activedocument.yml configuration file does not contain the
             correct file structure."
           resolution: "Ensure your configuration file contains the correct contents.
             Refer to: https://www.mongodb.com/docs/mongoid/current/reference/configuration/"
         invalid_config_option:
           message: "Invalid configuration option: %{name}."
           summary: "A invalid configuration option was provided in your
-            mongoid.yml, or a typo is potentially present. The valid configuration
+            activedocument.yml, or a typo is potentially present. The valid configuration
             options are: %{options}."
           resolution: "Remove the invalid option or fix the typo. If you were
             expecting the option to be there, please consult the following page
-            with respect to Mongoid's configuration:\n\n
+            with respect to ActiveDocument's configuration:\n\n
             \_\_http://mongoid.org/en/mongoid/docs/installation.html"
         invalid_dependent_strategy:
           message: "Invalid dependent strategy: %{invalid_strategy}."
@@ -202,7 +202,7 @@ en:
           message: "Cannot set the %{attr} attribute on the %{klass} class."
           summary: "Calling the setters for fields that start with a dollar
             sign ($) or contain a dot/period (.) is prohibited. See the
-            Mongoid documentation on Field Names with Dots/Periods (.) and
+            ActiveDocument documentation on Field Names with Dots/Periods (.) and
             Dollar Signs ($) for more information."
           resolution: "In order to set fields that start with a dollar
             sign ($) or contain a dot/period (.), the aggregation pipeline can
@@ -212,7 +212,7 @@ en:
         invalid_elem_match_operator:
           message: "Invalid $elemMatch operator '%{operator}'."
           summary: "You misspelled an operator or are using an operator that
-            Mongoid does not support."
+            ActiveDocument does not support."
           resolution: "Valid field operators are: %{valid_operators}.
             Ensure you are using one of these operators."
         invalid_estimated_count_criteria:
@@ -229,7 +229,7 @@ en:
         invalid_expression_operator:
           message: "Invalid expression operator '%{operator}'."
           summary: "You misspelled an operator, are using an operator that
-            Mongoid does not support, or are trying to use a field-level
+            ActiveDocument does not support, or are trying to use a field-level
             operator on expression level."
           resolution: "Valid expression operators are: %{valid_operators}.
             Ensure you are using one of these operators."
@@ -242,29 +242,29 @@ en:
             \_\_Object: %{origin}\n
             \_\_File: %{file}\n
             \_\_Line: %{line}"
-          resolution: "Use Mongoid.destructive_fields to see what names are not
+          resolution: "Use ActiveDocument.destructive_fields to see what names are not
             allowed, and don't use these names. These include names that also
             conflict with core Ruby methods on Object, Module, Enumerable, or
-            included gems that inject methods into these or Mongoid internals."
+            included gems that inject methods into these or ActiveDocument internals."
         invalid_field_operator:
           message: "Invalid field operator '%{operator}'."
           summary: "You misspelled an operator, are using an operator that
-            Mongoid does not support, or are trying to use an expression-level
+            ActiveDocument does not support, or are trying to use an expression-level
             operator on field level."
           resolution: "Valid field operators are: %{valid_operators}.
             Ensure you are using one of these operators."
         invalid_field_option:
           message: "Invalid option :%{option} provided for field :%{name}."
-          summary: "Mongoid requires that you only provide valid options on each
+          summary: "ActiveDocument requires that you only provide valid options on each
             field definition in order to prevent unexpected behavior later on."
           resolution: "When defining the field :%{name} on '%{klass}', please provide
             valid options for the field. These are currently: %{valid}. If you
             meant to define a custom field option, please do so first as follows:\n\n
-            \_\_Mongoid::Fields.option :%{option} do |model, field, value|\n
+            \_\_ActiveDocument::Fields.option :%{option} do |model, field, value|\n
             \_\_\_\_# Your logic here...\n
             \_\_end\n
             \_\_class %{klass}\n
-            \_\_\_\_include Mongoid::Document\n
+            \_\_\_\_include ActiveDocument::Document\n
             \_\_\_\_field :%{name}, %{option}: true\n
             \_\_end\n\n
             Refer to:
@@ -285,13 +285,13 @@ en:
             or remove global_executor_concurrency option."
         invalid_includes:
           message: "Invalid includes directive: %{klass}.includes(%{args})"
-          summary: "Eager loading in Mongoid only supports providing arguments
+          summary: "Eager loading in ActiveDocument only supports providing arguments
             to %{klass}.includes that are the names of associations on the %{klass}."
           resolution: "Ensure that each parameter passed to %{klass}.includes is
             a valid name of an association on the %{klass} model. These are: %{relations}."
         invalid_index:
           message: "Invalid index specification on %{klass}: %{spec}, %{options}"
-          summary: "Indexes in Mongoid are defined as a hash of field name and
+          summary: "Indexes in ActiveDocument are defined as a hash of field name and
             direction/2d pairs, with a hash for any additional options."
           resolution: "Ensure that the index conforms to the correct syntax and
             has the correct options.\n\n
@@ -320,20 +320,20 @@ en:
             Valid types are: 1, -1, '2d', '2dsphere', 'geoHaystack (deprecated)', 'text', 'hashed'\n\n
             Example:\n
             \_\_class Band\n
-            \_\_\_\_include Mongoid::Document\n
+            \_\_\_\_include ActiveDocument::Document\n
             \_\_\_\_index({ name: 1, label: -1 }, { sparse: true })\n
             \_\_\_\_index({ location: '2d' }, { background: true })\n
             \_\_end\n\n"
         invalid_options:
           message: "Invalid option :%{invalid} provided to association :%{name}."
-          summary: "Mongoid checks the options that are passed to the association
+          summary: "ActiveDocument checks the options that are passed to the association
             macros to ensure that no ill side effects occur by letting something
             slip by."
           resolution: "Valid options are: %{valid}, make sure these are the ones
             you are using."
         invalid_path:
           message: "Having a root path assigned for %{klass} is invalid."
-          summary: "Mongoid has two different path objects for determining
+          summary: "ActiveDocument has two different path objects for determining
             the location of a document in the database, Root and Embedded.
             This error is raised when an embedded document somehow gets a
             root path assigned."
@@ -357,10 +357,10 @@ en:
             \_\_Object: %{origin}\n
             \_\_File: %{file}\n
             \_\_Line: %{line}"
-          resolution: "Use Mongoid.destructive_fields to see what names are not
+          resolution: "Use ActiveDocument.destructive_fields to see what names are not
             allowed, and don't use these names. These include names that also
             conflict with core Ruby methods on Object, Module, Enumerable, or
-            included gems that inject methods into these or Mongoid internals."
+            included gems that inject methods into these or ActiveDocument internals."
         invalid_relation_option:
           message: "Invalid association option :%{option} for association '%{name}' on class
             %{klass}."
@@ -369,11 +369,11 @@ en:
         invalid_scope:
           message: "Defining a scope of value %{value} on %{klass} is not
             allowed."
-          summary: "Scopes in Mongoid must be procs that wrap criteria objects."
+          summary: "Scopes in ActiveDocument must be procs that wrap criteria objects."
           resolution: "Change the scope to be a proc wrapped criteria.\n\n
             Example:\n
             \_\_class Band\n
-            \_\_\_\_include Mongoid::Document\n
+            \_\_\_\_include ActiveDocument::Document\n
             \_\_\_\_scope :inactive, ->{ where(active: false) }\n
             \_\_end\n\n"
         invalid_session_use:
@@ -399,12 +399,12 @@ en:
             symbols.\n\n
             Example:\n
             \_\_class Band\n
-            \_\_\_\_include Mongoid::Document\n
+            \_\_\_\_include ActiveDocument::Document\n
             \_\_\_\_store_in collection: 'artists', database: 'music'\n
             \_\_end\n\n"
         invalid_time:
           message: "'%{value}' is not a valid Time."
-          summary: "Mongoid tries to serialize the values for Date, DateTime, and
+          summary: "ActiveDocument tries to serialize the values for Date, DateTime, and
             Time into proper UTC times to store in the database. The provided
             value could not be parsed."
           resolution: "Make sure to pass parsable values to the field setter
@@ -416,27 +416,27 @@ en:
           summary: "Transactions cannot be nested. Only one transaction can be used in a thread per client."
           resolution: "Only use one transaction per client at a time; transactions cannot be nested."
         inverse_not_found:
-          message: "When adding a(n) %{klass} to %{base}#%{name}, Mongoid could
+          message: "When adding a(n) %{klass} to %{base}#%{name}, ActiveDocument could
             not determine the inverse foreign key to set. The attempted key was
             '%{inverse}'."
-          summary: "When adding a document to an association, Mongoid attempts
+          summary: "When adding a document to an association, ActiveDocument attempts
             to link the newly added document to the base of the association in
             memory, as well as set the foreign key to link them on the
-            database side. In this case Mongoid could not determine what the
+            database side. In this case ActiveDocument could not determine what the
             inverse foreign key was."
           resolution: "If an inverse is not required, like a belongs_to or
             has_and_belongs_to_many, ensure that :inverse_of => nil is set
             on the association. If the inverse is needed, most likely the
             inverse cannot be figured out from the names of the associations and
-            you will need to explicitly tell Mongoid on the association what
+            you will need to explicitly tell ActiveDocument on the association what
             the inverse is.\n\n
             Example:\n
             \_\_class Car\n
-            \_\_\_\_include Mongoid::Document\n
+            \_\_\_\_include ActiveDocument::Document\n
             \_\_\_\_has_one :engine, class_name: \"Motor\", inverse_of: :machine\n
             \_\_end\n\n
             \_\_class Motor\n
-            \_\_\_\_include Mongoid::Document\n
+            \_\_\_\_include ActiveDocument::Document\n
             \_\_\_\_belongs_to :machine, class_name: \"Car\", inverse_of: :engine\n
             \_\_end"
         invalid_set_polymorphic_relation:
@@ -445,7 +445,7 @@ en:
             %{klass} as %{name}."
           summary: "If the parent class of a polymorphic association has multiple
             definitions for the same association, the values must be set from the
-            parent side and not the child side since Mongoid cannot determine
+            parent side and not the child side since ActiveDocument cannot determine
             from the child side which association to go in."
           resolution: "Set the values from the parent, or redefine the association
             with only a single definition in the parent."
@@ -455,7 +455,7 @@ en:
             %{embedded} is embedded."
           summary: "In order to properly access a(n) %{embedded} from %{root}
             the reference would need to go through the root document of
-            %{embedded}. In a simple case this would require Mongoid to store
+            %{embedded}. In a simple case this would require ActiveDocument to store
             an extra foreign key for the root, in more complex cases where
             %{embedded} is multiple levels deep a key would need to be stored
             for each parent up the hierarchy."
@@ -465,7 +465,7 @@ en:
           message: "Both uri and standard configuration options defined for
             client: '%{name}'."
           summary: "Instead of simply giving uri or standard options a
-            preference order, Mongoid assumes that you have made a mistake in
+            preference order, ActiveDocument assumes that you have made a mistake in
             your configuration and requires that you provide one or the other,
             but not both. The options that were provided were: %{config}."
           resolution: "Provide either only a uri as configuration or only
@@ -473,7 +473,7 @@ en:
         nested_attributes_metadata_not_found:
           message: "Could not find metadata for association '%{name}' on model:
             %{klass}."
-          summary: "When defining nested attributes for an association, Mongoid
+          summary: "When defining nested attributes for an association, ActiveDocument
             needs to access the metadata for the association '%{name}' in order
             if add autosave functionality to it, if applicable. Either no
             association named '%{name}' could be found, or the association had not
@@ -481,18 +481,18 @@ en:
           resolution: "Make sure that there is an association defined named
             '%{name}' on %{klass} or that the association definition comes before
             the accepts_nested_attributes_for macro in the model - order
-            matters so that Mongoid has access to the metadata.\n\n
+            matters so that ActiveDocument has access to the metadata.\n\n
             Example:\n
             \_\_class Band\n
-            \_\_\_\_include Mongoid::Document\n
+            \_\_\_\_include ActiveDocument::Document\n
             \_\_\_\_has_many :albums\n
             \_\_\_\_accepts_nested_attributes_for :albums\n
             \_\_end\n\n"
         no_default_client:
           message: "No default client configuration is defined."
           summary: "The configuration provided settings for: %{keys}, but
-            Mongoid requires a :default to be defined at minimum."
-          resolution: "If configuring via a mongoid.yml, ensure that within
+            ActiveDocument requires a :default to be defined at minimum."
+          resolution: "If configuring via a activedocument.yml, ensure that within
             your :clients section a :default client is defined.\n\n
             Example:\n
             \_\_development:\n
@@ -502,7 +502,7 @@ en:
             \_\_\_\_\_\_\_\_\_\_- localhost:27017\n\n"
         no_documents_found:
           message: "Could not find a document of class %{klass}."
-          summary: "Mongoid attempted to find a document of the class %{klass}
+          summary: "ActiveDocument attempted to find a document of the class %{klass}
             but none exist."
           resolution: "Create a document of class %{klass} or use a finder
             method that does not raise an exception when no documents are
@@ -510,11 +510,11 @@ en:
         no_environment:
           message: "Could not load the configuration since no environment
             was defined."
-          summary: "Mongoid could not determine the environment to use because
+          summary: "ActiveDocument could not determine the environment to use because
             it was not specified in any of the following locations:
             Rails.env, Sinatra::Base.environment,
             ENV[\"RACK_ENV\"], ENV[\"MONGOID_ENV\"]. Without knowing the
-            environment, Mongoid cannot load its configuration."
+            environment, ActiveDocument cannot load its configuration."
           resolution: "Please ensure an environment is set in one of the
             listed locations. The environment must be explicitly set."
         no_map_reduce_output:
@@ -533,7 +533,7 @@ en:
             \_\_reduce:  'collection-name'\n\n"
         no_metadata:
           message: "Metadata not found for document of type %{klass}."
-          summary: "Mongoid sets the metadata of an association on the document
+          summary: "ActiveDocument sets the metadata of an association on the document
             when it is either loaded from within the association, or added to
             one. The presence of the metadata is required in order to
             provide various functionality around associations. Most likely you
@@ -559,22 +559,22 @@ en:
         no_client_config:
           message: "No configuration could be found for a client named
             '%{name}'."
-          summary: "When attempting to create the new client, Mongoid could
+          summary: "When attempting to create the new client, ActiveDocument could
             not find a client configuration for the name: '%{name}'. This is
             necessary in order to know the host, port, and options needed
             to connect."
-          resolution: "Double check your mongoid.yml to make sure under the
+          resolution: "Double check your activedocument.yml to make sure under the
             clients key that a configuration exists for '%{name}'. If you
             have set the configuration programmatically, ensure that '%{name}'
             exists in the configuration hash."
         no_clients_config:
           message: "No clients configuration provided."
-          summary: "Mongoid's configuration requires that you provide details
+          summary: "ActiveDocument's configuration requires that you provide details
             about each client that can be connected to, and requires in
             the clients config at least 1 default client to exist."
-          resolution: "Double check your mongoid.yml to make sure that you
+          resolution: "Double check your activedocument.yml to make sure that you
             have a top-level clients key with at least 1 default client
-            configuration for it. You can regenerate a new mongoid.yml for
+            configuration for it. You can regenerate a new activedocument.yml for
             assistance via `rails g mongoid:config`.\n\n
             Example:\n
             \_\_development:\n
@@ -585,10 +585,10 @@ en:
             \_\_\_\_\_\_\_\_\_\_- localhost:27017\n\n"
         no_client_database:
           message: "No database provided for client configuration: :%{name}."
-          summary: "Each client configuration must provide a database so Mongoid
+          summary: "Each client configuration must provide a database so ActiveDocument
             knows where the default database to persist to. What was provided
             was: %{config}."
-          resolution: "If configuring via a mongoid.yml, ensure that within
+          resolution: "If configuring via a activedocument.yml, ensure that within
             your :%{name} section a :database value for the client's default
             database is defined.\n\n
             Example:\n
@@ -600,10 +600,10 @@ en:
             \_\_\_\_\_\_\_\_\_\_- localhost:27017\n\n"
         no_client_hosts:
           message: "No hosts provided for client configuration: :%{name}."
-          summary: "Each client configuration must provide hosts so Mongoid
+          summary: "Each client configuration must provide hosts so ActiveDocument
             knows where the database server is located. What was provided
             was: %{config}."
-          resolution: "If configuring via a mongoid.yml, ensure that within
+          resolution: "If configuring via a activedocument.yml, ensure that within
             your :%{name} section a :hosts value for the client hosts is
             defined.\n\n
             Example:\n
@@ -630,10 +630,10 @@ en:
             method %{model_name}.%{scope_name}."
           summary: "When defining a scope that conflicts with a method that
             already exists on the model, this error will get raised if
-            Mongoid.scope_overwrite_exception is set to true."
+            ActiveDocument.scope_overwrite_exception is set to true."
           resolution: "Change the name of the scope so it does not conflict
             with the already defined method %{model_name}, or set the
-            configuration option Mongoid.scope_overwrite_exception to false,
+            configuration option ActiveDocument.scope_overwrite_exception to false,
             which is its default. In this case a warning will be logged."
         sessions_not_supported:
           message: "Sessions are not supported by the connected server(s)."
@@ -668,18 +668,18 @@ en:
           message: "Attempted to set a value for '%{name}' which is not
             allowed on the model %{klass}."
           summary: "%{klass}#%{name}= was called but there is no '%{name}'
-            field defined in the model, and Mongoid::Attributes::Dynamic is
+            field defined in the model, and ActiveDocument::Attributes::Dynamic is
             not included. This error is also raised instead of NoMethodError
             if the unknown attribute is passed to any method that accepts an
             attributes hash, such as #attributes=."
           resolution: "Define the field '%{name}' in %{klass}, or include
-            Mongoid::Attributes::Dynamic in %{klass} if you intend to
+            ActiveDocument::Attributes::Dynamic in %{klass} if you intend to
             store values in fields that are not explicitly defined."
         unknown_model:
           message: "Attempted to instantiate an object of the unknown model '%{klass}'."
           summary: "A document with the value '%{value}' at the key '_type' was used to
-            instantiate a model object but Mongoid cannot find this Class."
-          resolution: "The _type field is a reserved one used by Mongoid to determine the
+            instantiate a model object but ActiveDocument cannot find this Class."
+          resolution: "The _type field is a reserved one used by ActiveDocument to determine the
             class for instantiating an object. Please don't save data in this field or ensure
             that any values in this field correspond to valid models."
         unsaved_document:
@@ -693,7 +693,7 @@ en:
         unsupported_javascript:
           message: "Executing Javascript $where selector on an embedded criteria
             is not supported."
-          summary: "Mongoid only supports providing a hash of arguments to
+          summary: "ActiveDocument only supports providing a hash of arguments to
             #where criterion on embedded documents. Since %{klass} is embedded,
             the expression %{javascript} is not allowed."
           resolution: "Please provide a standard hash to #where when the criteria
@@ -706,7 +706,7 @@ en:
         delete_restriction:
           message: "Cannot destroy %{document} because of dependent '%{relation}'."
           summary: "When defining '%{relation}' with a :dependent => :restrict_with_error,
-            Mongoid will raise an error when attempting to destroy the
+            ActiveDocument will raise an error when attempting to destroy the
             %{document} when the child '%{relation}' still has documents in it."
           resolution: "Don't attempt to delete the parent %{document} when
             it has children, or change the dependent option on the association."

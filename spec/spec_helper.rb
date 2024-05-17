@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 autoload :Timecop, 'timecop'
 require 'support/spec_config'
-require 'mongoid'
+require 'active_document'
 
 # require all shared examples
 Dir['./spec/support/shared/*.rb'].sort.each { |file| require file }
@@ -17,23 +17,23 @@ require 'action_controller'
 require 'rspec/retry'
 
 if SpecConfig.instance.client_debug?
-  Mongoid.logger.level = Logger::DEBUG
+  ActiveDocument.logger.level = Logger::DEBUG
   Mongo::Logger.logger.level = Logger::DEBUG
 else
-  Mongoid.logger.level = Logger::INFO
+  ActiveDocument.logger.level = Logger::INFO
   Mongo::Logger.logger.level = Logger::INFO
 end
 
-# When testing locally we use the database named mongoid_test. However when
+# When testing locally we use the database named active_document_test. However when
 # tests are running in parallel in a CI environment we need to use different
 # database names for each process running since we do not have transactions
 # and want a clean slate before each spec run.
 def database_id
-  'mongoid_test'
+  'active_document_test'
 end
 
 def database_id_alt
-  'mongoid_test_alt'
+  'active_document_test_alt'
 end
 
 require 'support/cluster_config'
@@ -91,7 +91,7 @@ CONFIG = {
 }.freeze
 
 # Set the database that the spec suite connects to.
-Mongoid.configure do |config|
+ActiveDocument.configure do |config|
   config.load_configuration(CONFIG)
 end
 
@@ -101,9 +101,9 @@ Dir[File.join(MODELS, '*.rb')].sort.each do |file|
   autoload name.camelize.to_sym, name
 end
 
-module Mongoid
+module ActiveDocument
   class Query
-    include Mongoid::Criteria::Queryable
+    include ActiveDocument::Criteria::Queryable
   end
 end
 
@@ -136,23 +136,23 @@ end
 RSpec.configure do |config|
   config.raise_errors_for_deprecations!
   config.include(Helpers)
-  config.include(Mongoid::Expectations)
+  config.include(ActiveDocument::Expectations)
   config.extend(Constraints)
-  config.extend(Mongoid::Macros)
+  config.extend(ActiveDocument::Macros)
 
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
 
   config.before(:suite) do
-    Mongoid.purge!
+    ActiveDocument.purge!
   end
 
   # Drop all collections and clear the identity map before each spec.
   config.before do
-    cluster = Mongoid.default_client.cluster
-    Mongoid.default_client.reconnect unless cluster.connected?
-    Mongoid.default_client.collections.each(&:delete_many)
+    cluster = ActiveDocument.default_client.cluster
+    ActiveDocument.default_client.reconnect unless cluster.connected?
+    ActiveDocument.default_client.collections.each(&:delete_many)
   end
 
   if SpecConfig.instance.mri? && !SpecConfig.instance.windows?

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Odd
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name
 
   belongs_to :parent, class_name: 'Even', inverse_of: :odds

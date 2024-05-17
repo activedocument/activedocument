@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class Explosion
-  include Mongoid::Document
+  include ActiveDocument::Document
   belongs_to :bomb
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Tag
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :text, type: String
   has_and_belongs_to_many :actors
   has_and_belongs_to_many :articles

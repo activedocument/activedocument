@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Video
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :title, type: String
   field :year, type: Integer
   field :release_dates, type: Set

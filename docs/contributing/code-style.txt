@@ -14,14 +14,14 @@ Code Style
 
 .. warning::
 
-  This section only applies to Mongoid Ultra. MongoDB Mongoid does
+  This section only applies to ActiveDocument Ultra. MongoDB ActiveDocument does
   not follow any code style conventions and does not use a code
   linter such as Rubocop.
 
 Code Style
 ==========
 
-Mongoid Ultra follows the `Ruby Style Guide <https://github.com/rubocop/ruby-style-guide>`_
+ActiveDocument Ultra follows the `Ruby Style Guide <https://github.com/rubocop/ruby-style-guide>`_
 for code documentation. and uses `Rubocop <https://github.com/rubocop/rubocop>`_
 to ensure style conformity and perform code linting.
 
@@ -31,7 +31,7 @@ to ensure style conformity and perform code linting.
 Target Ruby Version
 -------------------
 
-We set Rubocop's ``TargetRubyVersion`` to Mongoid's minimum supported
+We set Rubocop's ``TargetRubyVersion`` to ActiveDocument's minimum supported
 Ruby version. Refer to the `Compatibility <configuration-options>`_ section.
 
 
@@ -55,7 +55,7 @@ as the source of truth. However, we make a few intentional deviations:
 
   .. code-block:: ruby
 
-    module Mongoid
+    module ActiveDocument
       module Things
 
         # Note the space above this line.
@@ -72,7 +72,7 @@ as the source of truth. However, we make a few intentional deviations:
 
   .. code-block:: ruby
 
-    RSpec.describe Mongoid::Things::CardboardBox do
+    RSpec.describe ActiveDocument::Things::CardboardBox do
 
       describe '#transmogrify' do
 

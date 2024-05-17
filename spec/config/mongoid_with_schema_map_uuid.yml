@@ -1,7 +1,7 @@
 test:
   clients:
     default:
-      database: mongoid_test
+      database: active_document_test
       hosts:
         <% SpecConfig.instance.addresses.each do |address| %>
           - <%= address %>

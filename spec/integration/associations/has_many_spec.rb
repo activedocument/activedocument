@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'mongoid/association/referenced/has_many_models'
+require 'active_document/association/referenced/has_many_models'
 
 describe 'has_many associations' do
   context 'destroying parent in transaction with dependent child' do
@@ -58,7 +58,7 @@ describe 'has_many associations' do
               company.destroy!
             end
           end
-        end.to raise_error(Mongoid::Errors::DocumentNotDestroyed)
+        end.to raise_error(ActiveDocument::Errors::DocumentNotDestroyed)
 
         expect(HmmCompany.count).to eq(1)
         expect(HmmAddress.count).to eq(1)
@@ -79,7 +79,7 @@ describe 'has_many associations' do
       it 'raises InverseNotFound' do
         expect do
           parent.seats << HmmBusSeat.new
-        end.to raise_error(Mongoid::Errors::InverseNotFound)
+        end.to raise_error(ActiveDocument::Errors::InverseNotFound)
       end
     end
   end

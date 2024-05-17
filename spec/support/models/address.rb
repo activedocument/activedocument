@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Address
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :_id, type: String, overwrite: true, default: -> { street.try(:parameterize) }
 

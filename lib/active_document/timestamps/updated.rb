@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+require 'active_document/timestamps/updated/short'
+
+module ActiveDocument
+  module Timestamps
+    # This module handles the behavior for setting up document updated at
+    # timestamp.
+    module Updated
+      extend ActiveSupport::Concern
+
+      included do
+        include ActiveDocument::Timestamps::Timeless
+
+        field :updated_at, type: Time
+        set_callback :create, :before, :set_updated_at
+        set_callback :update, :before, :set_updated_at
+      end
+
+      # Update the updated_at field on the Document to the current time.
+      # This is only called on create and on save.
+      #
+      # @example Set the updated at time.
+      #   person.set_updated_at
+      def set_updated_at
+        self.updated_at = Time.current if able_to_set_updated_at? && !updated_at_changed?
+
+        clear_timeless_option
+      end
+
+      # Is the updated timestamp able to be set?
+      #
+      # @example Can the timestamp be set?
+      #   document.able_to_set_updated_at?
+      #
+      # @return [ true | false ] If the timestamp can be set.
+      def able_to_set_updated_at?
+        !frozen? && !timeless? && (new_record? || changed?)
+      end
+    end
+  end
+end

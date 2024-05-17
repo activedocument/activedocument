@@ -1,5 +1,5 @@
 *********
-Mongoid 6
+ActiveDocument 6
 *********
 
 .. default-domain:: mongodb
@@ -10,7 +10,7 @@ Mongoid 6
    :depth: 2
    :class: singlecol
 
-This page describes significant changes and improvements in Mongoid 6 releases.
+This page describes significant changes and improvements in ActiveDocument 6 releases.
 The complete list of releases is available `on GitHub
 <https://github.com/mongodb/mongoid/releases>`_ and `in JIRA
 <https://jira.mongodb.org/projects/MONGOID?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page>`_;
@@ -18,10 +18,10 @@ please consult GitHub releases for detailed release notes and JIRA for
 the complete list of issues fixed in each release, including bug fixes.
 
 
-Upgrading to Mongoid 6
+Upgrading to ActiveDocument 6
 ======================
 
-Mongoid 6 is compatible with Rails 5 and requires Ruby 2.2.2 or higher.
+ActiveDocument 6 is compatible with Rails 5 and requires Ruby 2.2.2 or higher.
 
 Please see the list of behavior changes for version
 `6.0.0.rc0 <https://github.com/mongodb/mongoid/releases/tag/v6.0.0.rc0>`_

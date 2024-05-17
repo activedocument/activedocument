@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Note
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :text, type: String
-  field :saved, type: Mongoid::Boolean, default: false
+  field :saved, type: ActiveDocument::Boolean, default: false
   embedded_in :noteable, polymorphic: true
 
   after_save :update_saved

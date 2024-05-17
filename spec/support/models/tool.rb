@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Tool
-  include Mongoid::Document
+  include ActiveDocument::Document
   embedded_in :palette
   accepts_nested_attributes_for :palette
 end

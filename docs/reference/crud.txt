@@ -14,8 +14,8 @@ CRUD Operations
 Saving Documents
 ================
 
-Mongoid supports all expected CRUD operations for those familiar with other
-Ruby mappers like Active Record or Data Mapper. What distinguishes Mongoid
+ActiveDocument supports all expected CRUD operations for those familiar with other
+Ruby mappers like Active Record or Data Mapper. What distinguishes ActiveDocument
 from other mappers for MongoDB is that the general persistence operations
 perform atomic updates on only the fields that have changed instead of
 writing the entire document to the database each time.
@@ -26,7 +26,7 @@ performed when executing the documented command.
 Standard
 --------
 
-Mongoid's standard persistence methods come in the form of common methods you
+ActiveDocument's standard persistence methods come in the form of common methods you
 would find in other mapping frameworks. The following table shows all standard
 operations with examples.
 
@@ -124,7 +124,7 @@ operations with examples.
           end # => Person instance
 
           class Post
-            include Mongoid::Document
+            include ActiveDocument::Document
 
             validates_uniqueness_of :title
           end
@@ -253,7 +253,7 @@ operations with examples.
 
        *Deletes the document from the database without running callbacks.*
 
-       *If the document is not persisted, Mongoid will attempt to delete from
+       *If the document is not persisted, ActiveDocument will attempt to delete from
        the database any document with the same* ``_id``.
      -
         .. code-block:: ruby
@@ -264,13 +264,13 @@ operations with examples.
           unsaved_person = Person.new(id: person.id)
           unsaved_person.delete
           person.reload
-          # raises Mongoid::Errors::DocumentNotFound because the person was deleted
+          # raises ActiveDocument::Errors::DocumentNotFound because the person was deleted
 
    * - ``Model#destroy``
 
        *Deletes the document from the database while running destroy callbacks.*
 
-       *If the document is not persisted, Mongoid will attempt to delete from
+       *If the document is not persisted, ActiveDocument will attempt to delete from
        the database any document with the same* ``_id``.
      -
         .. code-block:: ruby
@@ -281,7 +281,7 @@ operations with examples.
           unsaved_person = Person.new(id: person.id)
           unsaved_person.destroy
           person.reload
-          # raises Mongoid::Errors::DocumentNotFound because the person was deleted
+          # raises ActiveDocument::Errors::DocumentNotFound because the person was deleted
 
    * - ``Model.delete_all``
 
@@ -300,7 +300,7 @@ operations with examples.
 
           Person.destroy_all
 
-Mongoid provides the following persistence-related attributes:
+ActiveDocument provides the following persistence-related attributes:
 
 .. list-table::
    :header-rows: 1
@@ -344,8 +344,8 @@ Mongoid provides the following persistence-related attributes:
 Atomic
 ------
 
-Mongoid exposes :manual:`MongoDB update operators </reference/operator/update/>`
-as methods on Mongoid documents. When these methods are used, callbacks are
+ActiveDocument exposes :manual:`MongoDB update operators </reference/operator/update/>`
+as methods on ActiveDocument documents. When these methods are used, callbacks are
 not invoked and validations are not performed. The supported update operators
 are:
 
@@ -449,7 +449,7 @@ are:
 
 
     	  class Post
-    	    include Mongoid::Document
+    	    include ActiveDocument::Document
 
     	    field :metadata, type: Hash
     	  end
@@ -463,13 +463,13 @@ are:
 
 
           class Flight
-            include Mongoid::Document
+            include ActiveDocument::Document
 
             embeds_one :plan
           end
 
           class Plan
-            include Mongoid::Document
+            include ActiveDocument::Document
 
             embedded_in :flight
 
@@ -547,13 +547,13 @@ For example:
   end
 
 The context joining behavior can be enabled globally by default by setting
-``join_context`` option in Mongoid configuration. In this case specifying
+``join_context`` option in ActiveDocument configuration. In this case specifying
 ``join_context: false`` on an ``#atomically`` block can be used to
 obtain the independent persistence context behavior.
 
 If an exception is raised in an ``#atomically`` block which has not yet
 persisted its changes to the cluster, any pending attribute changes on
-Mongoid models are reverted. For example:
+ActiveDocument models are reverted. For example:
 
 .. code-block:: ruby
 
@@ -628,10 +628,10 @@ associations would be loaded from the database at the next access.
 If the model has a :ref:`shard key <shard-keys>` defined, the shard key value
 is included in the reloading query.
 
-If the database does not contain a matching document, Mongoid normally raises
-``Mongoid::Errors::DocumentNotFound``. However, if the configuration option
+If the database does not contain a matching document, ActiveDocument normally raises
+``ActiveDocument::Errors::DocumentNotFound``. However, if the configuration option
 ``raise_not_found_error`` is set to ``false``, and the database does not
-contain a matching document, Mongoid replaces the current document with a newly
+contain a matching document, ActiveDocument replaces the current document with a newly
 created document whose attributes are set to default values. Importantly, this
 generally causes the ``_id`` of the document to change, as the following
 example demonstrates:
@@ -641,7 +641,7 @@ example demonstrates:
   band = Band.create!
   # => #<Band _id: 6206d00de1b8324561f179c7, name: "foo", description: nil, likes: nil>
 
-  Mongoid.raise_not_found_error = false
+  ActiveDocument.raise_not_found_error = false
   band.destroy
 
   band.reload
@@ -672,12 +672,12 @@ specified in the document (and the shard key value, if a shard key is defined):
 Accessing Field Values
 ======================
 
-Mongoid provides several ways of accessing field values.
+ActiveDocument provides several ways of accessing field values.
 
 .. note::
 
   All of the access methods described below raise
-  ``Mongoid::Errors::AttributeNotLoaded`` when the field being accessed is
+  ``ActiveDocument::Errors::AttributeNotLoaded`` when the field being accessed is
   :ref:`projected out <projection>`, either by virtue of not being included in
   :ref:`only <only>` or by virtue of being included in
   :ref:`without <without>`. This applies to both reads and writes.
@@ -692,7 +692,7 @@ each declared field:
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :first_name
   end
@@ -719,7 +719,7 @@ write the values directly into the attributes hash:
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     def first_name
       read_attribute(:fn)
@@ -762,7 +762,7 @@ accept either the declared field name or the storage field name for operations:
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :first_name, as: :fn
     field :last_name, as: :ln
@@ -808,7 +808,7 @@ When ``read_attribute`` is used to access a missing field, it returns ``nil``.
 Hash Access
 -----------
 
-Mongoid model instances define the ``[]`` and ``[]=`` methods to provide
+ActiveDocument model instances define the ``[]`` and ``[]=`` methods to provide
 ``Hash`` style access to the attributes. ``[]`` is an alias for
 ``read_attribute`` and ``[]=`` is an alias for ``write_attribute``; see
 the section on :ref:`read_attribute and write_attribute <read-write-attribute>`
@@ -817,7 +817,7 @@ for the detailed description of their behavior.
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :first_name, as: :fn
     field :last_name, as: :ln
@@ -863,7 +863,7 @@ different ways of accomplishing this as well.
 Dirty Tracking
 ==============
 
-Mongoid supports tracking of changed or "dirty" fields with an API that mirrors that of
+ActiveDocument supports tracking of changed or "dirty" fields with an API that mirrors that of
 Active Model. If a defined field has been modified in a model the model will be marked as
 dirty and some additional behavior comes into play.
 
@@ -878,7 +878,7 @@ the database up to the time it is saved. Any persistence operation clears the ch
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :name, type: String
    end
 
@@ -930,9 +930,9 @@ You can reset changes of a field to its previous value by calling the reset meth
 Persistence
 -----------
 
-Mongoid uses dirty tracking as the core of its persistence operations. It looks at the
+ActiveDocument uses dirty tracking as the core of its persistence operations. It looks at the
 changes on a document and atomically updates only what has changed, unlike other frameworks
-that write the entire document on each save. If no changes have been made, Mongoid will
+that write the entire document on each save. If no changes have been made, ActiveDocument will
 not hit the database on a call to ``Model#save``.
 
 
@@ -965,7 +965,7 @@ For example, adding to a set like this does not work:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :tours, type: Set
   end
@@ -985,7 +985,7 @@ back to the model as follows:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :tours, type: Set
   end
@@ -1011,7 +1011,7 @@ Readonly Documents
 ==================
 
 Documents can be marked read-only in two ways, depending on the value of the
-``Mongoid.legacy_readonly`` feature flag:
+``ActiveDocument.legacy_readonly`` feature flag:
 
 If this flag is turned off, a document is marked read-only when the ``#readonly!``
 method is called on that documnet. A read-only document, with this flag turned off,
@@ -1038,7 +1038,7 @@ The read-only status is reset on reloading the document.
 .. code:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :genre, type: String
   end
@@ -1057,7 +1057,7 @@ Another way to make a document read-only is by overriding the readonly? method:
 .. code:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :genre, type: String
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class Exhibition
-  include Mongoid::Document
+  include ActiveDocument::Document
   has_many :exhibitors
 end

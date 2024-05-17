@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Role
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name, type: String
   belongs_to :user
   belongs_to :post

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../mongoid/association/embedded/embeds_many_models'
-require_relative '../../mongoid/association/embedded/embeds_one_models'
+require_relative '../../active_document/association/embedded/embeds_many_models'
+require_relative '../../active_document/association/embedded/embeds_one_models'
 
 describe 'embedded associations' do
   describe 'dirty tracking' do

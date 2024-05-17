@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class WikiPage
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include ActiveDocument::Document
+  include ActiveDocument::Timestamps
 
   field :title, type: String
   field :transient_property, type: String

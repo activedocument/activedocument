@@ -1,32 +1,32 @@
 # frozen_string_literal: true
 
-module Mongoid
+module ActiveDocument
   module Macros
 
-    def use_spec_mongoid_config
+    def use_spec_active_document_config
       around do |example|
-        config_path = File.join(File.dirname(__FILE__), '..', 'config', 'mongoid.yml')
+        config_path = File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
 
-        Mongoid::Clients.clear
-        Mongoid.load!(config_path, :test)
+        ActiveDocument::Clients.clear
+        ActiveDocument.load!(config_path, :test)
 
         begin
           example.run
         ensure
-          Mongoid::Config.reset
+          ActiveDocument::Config.reset
         end
       end
     end
 
     def config_override(key, value)
       around do |example|
-        existing = Mongoid.send(key)
+        existing = ActiveDocument.send(key)
 
-        Mongoid.send(:"#{key}=", value)
+        ActiveDocument.send(:"#{key}=", value)
 
         example.run
 
-        Mongoid.send(:"#{key}=", existing)
+        ActiveDocument.send(:"#{key}=", existing)
       end
     end
 
@@ -65,9 +65,9 @@ module Mongoid
     def restore_config_clients
       around do |example|
         # Duplicate the config because some tests mutate it.
-        old_config = Mongoid::Config.clients.dup
+        old_config = ActiveDocument::Config.clients.dup
         example.run
-        Mongoid::Config.send(:clients=, old_config)
+        ActiveDocument::Config.send(:clients=, old_config)
       end
     end
 
@@ -95,10 +95,10 @@ module Mongoid
     def persistence_context_override(component, value)
       around do |example|
         meth = "#{component}_override"
-        old_value = Mongoid::Threaded.send(meth)
-        Mongoid::Threaded.send(:"#{meth}=", value)
+        old_value = ActiveDocument::Threaded.send(meth)
+        ActiveDocument::Threaded.send(:"#{meth}=", value)
         example.run
-        Mongoid::Threaded.send(:"#{meth}=", old_value)
+        ActiveDocument::Threaded.send(:"#{meth}=", old_value)
       end
     end
 

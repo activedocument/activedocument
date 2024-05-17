@@ -13,7 +13,7 @@ Aggregation Pipeline
    :class: singlecol
 
 
-Mongoid exposes `MongoDB's aggregation pipeline
+ActiveDocument exposes `MongoDB's aggregation pipeline
 <https://www.mongodb.com/docs/manual/core/aggregation-pipeline/>`_,
 which is used to construct flows of operations that process and return results.
 The aggregation pipeline is a superset of the deprecated
@@ -34,20 +34,20 @@ referenced associations at the same time:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     has_many :tours
     has_many :awards
     field :name, type: String
   end
 
   class Tour
-    include Mongoid::Document
+    include ActiveDocument::Document
     belongs_to :band
     field :year, type: Integer
   end
 
   class Award
-    include Mongoid::Document
+    include ActiveDocument::Document
     belongs_to :band
     field :name, type: String
   end
@@ -79,11 +79,11 @@ could do the following:
   bands = Band.find(band_ids.to_a)
 
 Note that the aggregation pipeline, since it is implemented by the Ruby driver
-for MongoDB and not Mongoid, returns raw ``BSON::Document`` objects rather than
-``Mongoid::Document`` model instances. The above example projects only
+for MongoDB and not ActiveDocument, returns raw ``BSON::Document`` objects rather than
+``ActiveDocument::Document`` model instances. The above example projects only
 the ``_id`` field which is then used to load full models. An alternative is
 to not perform such a projection and work with raw fields, which would eliminate
-having to send the list of document ids to Mongoid in the second query
+having to send the list of document ids to ActiveDocument in the second query
 (which could be large).
 
 
@@ -92,7 +92,7 @@ having to send the list of document ids to Mongoid in the second query
 Builder DSL
 ===========
 
-Mongoid provides limited support for constructing the aggregation pipeline
+ActiveDocument provides limited support for constructing the aggregation pipeline
 itself using a high-level DSL. The following aggregation pipeline operators
 are supported:
 
@@ -110,7 +110,7 @@ For example, given the following models:
 .. code-block:: ruby
 
   class Tour
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embeds_many :participants
 
@@ -119,7 +119,7 @@ For example, given the following models:
   end
 
   class Participant
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embedded_in :tour
 
@@ -150,7 +150,7 @@ group
 The ``group`` method adds a `$group aggregation pipeline stage
 <https://mongodb.com/docs/manual/reference/operator/aggregation/group/>`_.
 
-The field expressions support Mongoid symbol-operator syntax:
+The field expressions support ActiveDocument symbol-operator syntax:
 
 .. code-block:: ruby
 

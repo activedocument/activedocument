@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Birthday
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :title
   field :date, type: Date
   embedded_in :owner, inverse_of: :birthdays

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class Record
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name, type: String
   field :producers, type: Array
 
-  field :before_create_called, type: Mongoid::Boolean, default: false
-  field :before_save_called, type: Mongoid::Boolean, default: false
-  field :before_update_called, type: Mongoid::Boolean, default: false
-  field :before_validation_called, type: Mongoid::Boolean, default: false
-  field :before_destroy_called, type: Mongoid::Boolean, default: false
+  field :before_create_called, type: ActiveDocument::Boolean, default: false
+  field :before_save_called, type: ActiveDocument::Boolean, default: false
+  field :before_update_called, type: ActiveDocument::Boolean, default: false
+  field :before_validation_called, type: ActiveDocument::Boolean, default: false
+  field :before_destroy_called, type: ActiveDocument::Boolean, default: false
 
   embedded_in :band
   embeds_many :tracks, cascade_callbacks: true

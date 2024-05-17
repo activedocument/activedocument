@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Thing
-  include Mongoid::Document
+  include ActiveDocument::Document
   before_destroy :dont_do_it
   embedded_in :actor
 

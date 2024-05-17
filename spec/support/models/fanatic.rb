@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Fanatic
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :age, type: Integer
 
   embedded_in :band

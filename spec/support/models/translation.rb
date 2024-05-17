@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Translation
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :language
   embedded_in :name
 end

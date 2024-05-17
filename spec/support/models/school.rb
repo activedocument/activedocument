@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class School
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   has_many :students
 

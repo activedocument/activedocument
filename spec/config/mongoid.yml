@@ -1,13 +1,13 @@
 test:
   clients:
     default:
-      database: mongoid_test
+      database: active_document_test
       hosts:
         <% SpecConfig.instance.addresses.each do |address| %>
           - <%= address %>
         <% end %>
       options:
-        user: "mongoid-user"
+        user: "active_document-user"
         password: "password"
         auth_source: "admin"
         read:
@@ -23,7 +23,7 @@ test:
           - <%= address %>
         <% end %>
       options:
-        user: "mongoid-user"
+        user: "active_document-user"
         password: "password"
         auth_source: "admin"
         server_selection_timeout: 3.14
@@ -41,11 +41,11 @@ test:
   driver_options:
     broken_view_options: false
     # Don't set validate_update_replace here, as it is used to check if the
-    # default driver options are kept in Mongoid.
+    # default driver options are kept in ActiveDocument.
 test_nil:
   clients:
     default:
-      database: mongoid_test
+      database: active_document_test
       hosts:
         <% SpecConfig.instance.addresses.each do |address| %>
           - <%= address %>
@@ -57,7 +57,7 @@ test_nil:
 test_with_max_staleness:
   clients:
     default:
-      database: mongoid_test
+      database: active_document_test
       hosts:
         <% SpecConfig.instance.addresses.each do |address| %>
           - <%= address %>

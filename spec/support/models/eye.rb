@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Eye
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :pupil_dilation, type: Integer
 

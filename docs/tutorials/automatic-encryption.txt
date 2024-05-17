@@ -27,9 +27,9 @@ You can set up CSFLE using the following mechanisms:
   MongoDB driver's encryption library. You must specify the logic for encryption
   with this library throughout your application.
 
-Starting with version 9.0, Mongoid supports CSFLE's Automatic Encryption
+Starting with version 9.0, ActiveDocument supports CSFLE's Automatic Encryption
 feature. This tutorial walks you through the process of setting up and using
-CSFLE in Mongoid.
+CSFLE in ActiveDocument.
 
 .. note::
   This tutorial does not cover all CSLFE features.
@@ -79,7 +79,7 @@ The steps required are as follows:
 5. Click Download.
 
 Once extracted, ensure the full path to the library is configured within your
-``mongoid.yml`` as follows:
+``activedocument.yml`` as follows:
 
 .. code-block:: yaml
 
@@ -142,7 +142,7 @@ Configure Clients
 
 Automatic CSFLE requires some additional configuration for the MongoDB client.
 Assuming that your application has just one ``default`` client, you need to
-add the following to your ``mongoid.yml``:
+add the following to your ``activedocument.yml``:
 
 .. code-block:: yaml
 
@@ -167,7 +167,7 @@ A Data Encryption Key (DEK) is the key you use to encrypt the fields in your
 MongoDB documents. You store your Data Encryption Key in your Key Vault
 collection encrypted with your CMK.
 
-To create a DEK in Mongoid you can use the
+To create a DEK in ActiveDocument you can use the
 ``db:mongoid:encryption:create_data_key`` ``Rake`` task:
 
 .. code-block:: sh
@@ -195,15 +195,15 @@ to dynamically assign a DEK to a field at runtime.
 Configure Encryption Schema
 ===========================
 
-Now we can tell Mongoid what should be encrypted:
+Now we can tell ActiveDocument what should be encrypted:
 
 .. code-block:: ruby
 
   class Patient
-    include Mongoid::Document
-    include Mongoid::Timestamps
+    include ActiveDocument::Document
+    include ActiveDocument::Timestamps
 
-    # Tells Mongoid what DEK should be used to encrypt fields of the document
+    # Tells ActiveDocument what DEK should be used to encrypt fields of the document
     # and its embedded documents.
     encrypt_with key_id: 'KImyywsTQWi1+cFYIHdtlA=='
 
@@ -230,8 +230,8 @@ Now we can tell Mongoid what should be encrypted:
   end
 
   class Insurance
-    include Mongoid::Document
-    include Mongoid::Timestamps
+    include ActiveDocument::Document
+    include ActiveDocument::Timestamps
 
     field :insurer, type: String
 
@@ -248,8 +248,8 @@ Now we can tell Mongoid what should be encrypted:
 
 .. note::
   If you are developing a Rails application, it is recommended to set
-  ``preload_models`` to ``true`` in ``mongoid.yml``. This will ensure that
-  Mongoid loads all models before the application starts, and the encryption
+  ``preload_models`` to ``true`` in ``activedocument.yml``. This will ensure that
+  ActiveDocument loads all models before the application starts, and the encryption
   schema is configured before any data is read or written.
 
 Known Limitations
@@ -257,8 +257,8 @@ Known Limitations
 
 * MongoDB CSFLE has some limitations that are described on the
   :manual:`CSFLE Limitations </core/csfle/reference/limitations/>`
-  page in the Server manual. These limitations also apply to Mongoid.
-* Mongoid does not support encryption of ``embeds_many`` relations.
+  page in the Server manual. These limitations also apply to ActiveDocument.
+* ActiveDocument does not support encryption of ``embeds_many`` relations.
 * If you use ``:key_name_field`` option, the field must be encrypted using
   non-deterministic algorithm. To encrypt your field deterministically, you must
   specify ``:key_id`` option instead.
@@ -340,7 +340,7 @@ Data Encryption Keys can be created using the
 ``db:mongoid:encryption:create_data_key`` ``Rake`` task. By default they are
 stored on the same cluster as the database.
 However, it might be a good idea to store the keys separately. This can be
-done by specifying a key vault client in ``mongoid.yml``:
+done by specifying a key vault client in ``activedocument.yml``:
 
 .. code-block:: yaml
 
@@ -376,8 +376,8 @@ Here is an example of rotating keys using AWS KMS:
 
   # Create a key vault client
   key_vault_client = Mongo::Client.new('mongodb+srv://user:pass@yourcluster.mongodb.net')
-  # Or, if you declared the key value client in mongoid.yml, use it
-  key_vault_client = Mongoid.client(:key_vault)
+  # Or, if you declared the key value client in activedocument.yml, use it
+  key_vault_client = ActiveDocument.client(:key_vault)
 
   # Create the encryption object
   encryption = Mongo::ClientEncryption.new(

@@ -2,7 +2,7 @@
 
 module Publication
   class Encyclopedia
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :title, type: String
 

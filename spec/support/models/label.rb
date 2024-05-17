@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 class Label
-  include Mongoid::Document
-  include Mongoid::Timestamps::Updated::Short
+  include ActiveDocument::Document
+  include ActiveDocument::Timestamps::Updated::Short
 
   field :name, type: String
   field :sales, type: BigDecimal
   field :age, type: Integer
 
-  field :after_create_called, type: Mongoid::Boolean, default: false
-  field :after_save_called, type: Mongoid::Boolean, default: false
-  field :after_update_called, type: Mongoid::Boolean, default: false
-  field :after_validation_called, type: Mongoid::Boolean, default: false
+  field :after_create_called, type: ActiveDocument::Boolean, default: false
+  field :after_save_called, type: ActiveDocument::Boolean, default: false
+  field :after_update_called, type: ActiveDocument::Boolean, default: false
+  field :after_validation_called, type: ActiveDocument::Boolean, default: false
 
   field :before_save_count, type: Integer, default: 0
 

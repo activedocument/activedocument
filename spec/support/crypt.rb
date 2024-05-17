@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Mongoid
+module ActiveDocument
   # This module includes helpers for testing encryption.
   module Crypt
 
@@ -53,7 +53,7 @@ module Mongoid
       end
 
       let(:key_alt_name) do
-        'mongoid_test_key'
+        'active_document_test_key'
       end
 
       let(:client_encryption) do

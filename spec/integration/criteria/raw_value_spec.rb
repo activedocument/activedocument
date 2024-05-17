@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Queries with Mongoid::RawValue criteria' do
+describe 'Queries with ActiveDocument::RawValue criteria' do
   let(:now_utc) { Time.utc(2020, 1, 1, 16, 0, 0, 0) }
   let(:today) { Date.new(2020, 1, 1) }
 
@@ -28,11 +28,11 @@ describe 'Queries with Mongoid::RawValue criteria' do
     Band.find(id)
   end
 
-  context 'Mongoid::RawValue<String> criteria' do
+  context 'ActiveDocument::RawValue<String> criteria' do
 
     context 'Integer field' do
       it 'does not match objects' do
-        expect(Band.where(likes: Mongoid::RawValue('1')).to_a).to eq [band6]
+        expect(Band.where(likes: ActiveDocument::RawValue('1')).to_a).to eq [band6]
       end
 
       it 'matches objects without raw value' do
@@ -42,7 +42,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Float field' do
       it 'does not match objects' do
-        expect(Band.where(rating: Mongoid::RawValue('3.1')).to_a).to eq [band6]
+        expect(Band.where(rating: ActiveDocument::RawValue('3.1')).to_a).to eq [band6]
       end
 
       it 'matches objects with value stored as Float' do
@@ -52,7 +52,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'BigDecimal field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(sales: Mongoid::RawValue('310')).to_a).to eq [band6]
+        expect(Band.where(sales: ActiveDocument::RawValue('310')).to_a).to eq [band6]
       end
 
       it 'matches objects with value stored as Decimal128' do
@@ -62,7 +62,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'String field' do
       it 'matches objects' do
-        expect(Band.where(name: Mongoid::RawValue('3')).to_a).to eq [band3, band4]
+        expect(Band.where(name: ActiveDocument::RawValue('3')).to_a).to eq [band3, band4]
       end
 
       it 'matches objects without raw value' do
@@ -72,7 +72,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Range field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(decibels: Mongoid::RawValue('90')).to_a).to eq [band6]
+        expect(Band.where(decibels: ActiveDocument::RawValue('90')).to_a).to eq [band6]
       end
 
       it 'matches objects without raw value because String cannot be evolved to Range' do
@@ -82,7 +82,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Date field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(founded: Mongoid::RawValue('2020-01-02')).to_a).to eq [band6]
+        expect(Band.where(founded: ActiveDocument::RawValue('2020-01-02')).to_a).to eq [band6]
       end
 
       it 'matches objects without raw value' do
@@ -92,7 +92,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Time field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(updated: Mongoid::RawValue('2020-01-04 16:00:00 UTC')).to_a).to eq [band6]
+        expect(Band.where(updated: ActiveDocument::RawValue('2020-01-04 16:00:00 UTC')).to_a).to eq [band6]
       end
 
       it 'matches objects without raw value' do
@@ -101,11 +101,11 @@ describe 'Queries with Mongoid::RawValue criteria' do
     end
   end
 
-  context 'Mongoid::RawValue<Integer>' do
+  context 'ActiveDocument::RawValue<Integer>' do
 
     context 'Integer field' do
       it 'matches objects with raw value' do
-        expect(Band.where(likes: Mongoid::RawValue(1)).to_a).to eq [band2, band3]
+        expect(Band.where(likes: ActiveDocument::RawValue(1)).to_a).to eq [band2, band3]
       end
 
       it 'matches objects without raw value' do
@@ -115,8 +115,8 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Float field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(rating: Mongoid::RawValue(1)).to_a).to eq [band2]
-        expect(Band.where(rating: Mongoid::RawValue(3)).to_a).to eq []
+        expect(Band.where(rating: ActiveDocument::RawValue(1)).to_a).to eq [band2]
+        expect(Band.where(rating: ActiveDocument::RawValue(3)).to_a).to eq []
       end
 
       it 'matches objects without raw value' do
@@ -127,7 +127,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'BigDecimal field' do
       it 'matches objects with raw value' do
-        expect(Band.where(sales: Mongoid::RawValue(310)).to_a).to eq [band4, band5]
+        expect(Band.where(sales: ActiveDocument::RawValue(310)).to_a).to eq [band4, band5]
       end
 
       it 'matches objects without raw value' do
@@ -137,7 +137,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'String field' do
       it 'matches objects with raw value' do
-        expect(Band.where(name: Mongoid::RawValue(1)).to_a).to eq [band6, band7]
+        expect(Band.where(name: ActiveDocument::RawValue(1)).to_a).to eq [band6, band7]
       end
 
       it 'matches objects without raw value' do
@@ -147,7 +147,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Range field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(decibels: Mongoid::RawValue(90)).to_a).to eq [band7]
+        expect(Band.where(decibels: ActiveDocument::RawValue(90)).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value because Integer cannot be evolved to Range' do
@@ -157,7 +157,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Date field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(founded: Mongoid::RawValue(1577923200)).to_a).to eq [band7]
+        expect(Band.where(founded: ActiveDocument::RawValue(1577923200)).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
@@ -167,7 +167,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Time field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(updated: Mongoid::RawValue(1578153600)).to_a).to eq [band7]
+        expect(Band.where(updated: ActiveDocument::RawValue(1578153600)).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
@@ -176,11 +176,11 @@ describe 'Queries with Mongoid::RawValue criteria' do
     end
   end
 
-  context 'Mongoid::RawValue<Float>' do
+  context 'ActiveDocument::RawValue<Float>' do
 
     context 'Integer field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(likes: Mongoid::RawValue(1.0)).to_a).to eq [band2, band3]
+        expect(Band.where(likes: ActiveDocument::RawValue(1.0)).to_a).to eq [band2, band3]
       end
 
       it 'matches objects without raw value' do
@@ -190,7 +190,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Float field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(rating: Mongoid::RawValue(3.1)).to_a).to eq [band4, band5]
+        expect(Band.where(rating: ActiveDocument::RawValue(3.1)).to_a).to eq [band4, band5]
       end
 
       it 'matches objects without raw value' do
@@ -200,7 +200,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'BigDecimal field' do
       it 'matches objects with raw value' do
-        expect(Band.where(sales: Mongoid::RawValue(310.0)).to_a).to eq [band4, band5]
+        expect(Band.where(sales: ActiveDocument::RawValue(310.0)).to_a).to eq [band4, band5]
       end
 
       it 'matches objects without raw value' do
@@ -210,7 +210,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'String field' do
       it 'matches objects with raw value' do
-        expect(Band.where(name: Mongoid::RawValue(1.0)).to_a).to eq [band6, band7]
+        expect(Band.where(name: ActiveDocument::RawValue(1.0)).to_a).to eq [band6, band7]
       end
 
       it 'matches objects without raw value' do
@@ -220,7 +220,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Range field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(decibels: Mongoid::RawValue(90.0)).to_a).to eq [band7]
+        expect(Band.where(decibels: ActiveDocument::RawValue(90.0)).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value because Float cannot be evolved to Range' do
@@ -230,7 +230,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Date field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(founded: Mongoid::RawValue(1577923200.0)).to_a).to eq [band7]
+        expect(Band.where(founded: ActiveDocument::RawValue(1577923200.0)).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
@@ -240,7 +240,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Time field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(updated: Mongoid::RawValue(1578153600.0)).to_a).to eq [band7]
+        expect(Band.where(updated: ActiveDocument::RawValue(1578153600.0)).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
@@ -249,11 +249,11 @@ describe 'Queries with Mongoid::RawValue criteria' do
     end
   end
 
-  context 'Mongoid::RawValue<BigDecimal>' do
+  context 'ActiveDocument::RawValue<BigDecimal>' do
 
     context 'Integer field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(likes: Mongoid::RawValue(BigDecimal('1'))).to_a).to eq [band2, band3]
+        expect(Band.where(likes: ActiveDocument::RawValue(BigDecimal('1'))).to_a).to eq [band2, band3]
       end
 
       it 'matches objects without raw value' do
@@ -263,11 +263,11 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Float field' do
       it 'does not exact match objects with raw value due to float imprecision' do
-        expect(Band.where(rating: Mongoid::RawValue(BigDecimal('3.1'))).to_a).to eq []
+        expect(Band.where(rating: ActiveDocument::RawValue(BigDecimal('3.1'))).to_a).to eq []
       end
 
       it 'fuzzy matches objects with raw value' do
-        expect(Band.gte(rating: Mongoid::RawValue(BigDecimal('3.099'))).lte(rating: Mongoid::RawValue(BigDecimal('3.101'))).to_a).to eq [band4, band5]
+        expect(Band.gte(rating: ActiveDocument::RawValue(BigDecimal('3.099'))).lte(rating: ActiveDocument::RawValue(BigDecimal('3.101'))).to_a).to eq [band4, band5]
       end
 
       it 'matches objects without raw value' do
@@ -277,7 +277,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'BigDecimal field' do
       it 'matches objects with raw value' do
-        expect(Band.where(sales: Mongoid::RawValue(BigDecimal('310'))).to_a).to eq [band4, band5]
+        expect(Band.where(sales: ActiveDocument::RawValue(BigDecimal('310'))).to_a).to eq [band4, band5]
       end
 
       it 'matches objects without raw value' do
@@ -287,7 +287,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'String field' do
       it 'matches objects with raw value' do
-        expect(Band.where(name: Mongoid::RawValue(BigDecimal('1'))).to_a).to eq [band6, band7]
+        expect(Band.where(name: ActiveDocument::RawValue(BigDecimal('1'))).to_a).to eq [band6, band7]
       end
 
       it 'does not match objects without raw value' do
@@ -297,7 +297,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Range field' do
       it 'matches objects with raw value' do
-        expect(Band.where(decibels: Mongoid::RawValue(BigDecimal('90'))).to_a).to eq [band7]
+        expect(Band.where(decibels: ActiveDocument::RawValue(BigDecimal('90'))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value because BigDecimal cannot be evolved to Range' do
@@ -307,7 +307,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Date field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(founded: Mongoid::RawValue(BigDecimal('1577923200'))).to_a).to eq [band7]
+        expect(Band.where(founded: ActiveDocument::RawValue(BigDecimal('1577923200'))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
@@ -317,7 +317,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Time field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(updated: Mongoid::RawValue(BigDecimal('1578153600'))).to_a).to eq [band7]
+        expect(Band.where(updated: ActiveDocument::RawValue(BigDecimal('1578153600'))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
@@ -326,11 +326,11 @@ describe 'Queries with Mongoid::RawValue criteria' do
     end
   end
 
-  context 'Mongoid::RawValue<Range>' do
+  context 'ActiveDocument::RawValue<Range>' do
 
     context 'Integer field' do
       it 'raises a BSON error with raw value' do
-        expect { Band.where(likes: Mongoid::RawValue(0..2)).to_a }.to raise_error BSON::Error::UnserializableClass
+        expect { Band.where(likes: ActiveDocument::RawValue(0..2)).to_a }.to raise_error BSON::Error::UnserializableClass
       end
 
       it 'matches objects without raw value' do
@@ -340,7 +340,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Float field' do
       it 'raises a BSON error with raw value' do
-        expect { Band.where(rating: Mongoid::RawValue(1..3)).to_a }.to raise_error BSON::Error::UnserializableClass
+        expect { Band.where(rating: ActiveDocument::RawValue(1..3)).to_a }.to raise_error BSON::Error::UnserializableClass
       end
 
       it 'matches objects without raw value' do
@@ -350,7 +350,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'BigDecimal field' do
       it 'raises a BSON error with raw value' do
-        expect { Band.where(sales: Mongoid::RawValue(100..300)).to_a }.to raise_error BSON::Error::UnserializableClass
+        expect { Band.where(sales: ActiveDocument::RawValue(100..300)).to_a }.to raise_error BSON::Error::UnserializableClass
       end
 
       it 'matches objects without raw value' do
@@ -360,7 +360,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'String field' do
       it 'raises a BSON error with raw value' do
-        expect { Band.where(name: Mongoid::RawValue(1..3)).to_a }.to raise_error BSON::Error::UnserializableClass
+        expect { Band.where(name: ActiveDocument::RawValue(1..3)).to_a }.to raise_error BSON::Error::UnserializableClass
       end
 
       it 'matches objects without raw value' do
@@ -370,7 +370,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Range field' do
       it 'raises a BSON error with raw value' do
-        expect { Band.where(decibels: Mongoid::RawValue(30..90)).to_a }.to raise_error BSON::Error::UnserializableClass
+        expect { Band.where(decibels: ActiveDocument::RawValue(30..90)).to_a }.to raise_error BSON::Error::UnserializableClass
       end
 
       it 'matches objects without raw value because Range is evolved into a gte/lte query range' do
@@ -381,7 +381,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Date field' do
       it 'raises a BSON error with raw value' do
-        expect { Band.where(founded: Mongoid::RawValue(1577923199..1577923201)).to_a }.to raise_error BSON::Error::UnserializableClass
+        expect { Band.where(founded: ActiveDocument::RawValue(1577923199..1577923201)).to_a }.to raise_error BSON::Error::UnserializableClass
       end
 
       it 'matches objects without raw value' do
@@ -391,7 +391,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Time field' do
       it 'raises a BSON error with raw value' do
-        expect { Band.where(founded: Mongoid::RawValue(1578153599..1578153600)).to_a }.to raise_error BSON::Error::UnserializableClass
+        expect { Band.where(founded: ActiveDocument::RawValue(1578153599..1578153600)).to_a }.to raise_error BSON::Error::UnserializableClass
       end
 
       it 'matches objects without raw value' do
@@ -400,7 +400,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
     end
   end
 
-  context 'Mongoid::RawValue<Time>' do
+  context 'ActiveDocument::RawValue<Time>' do
     let!(:band7) do
       id = BSON::ObjectId.new
       Band.collection.insert_one(_id: id, name: Time.at(1), likes: Time.at(1), rating: Time.at(3.1), sales: Time.at(310), decibels: Time.at(90))
@@ -409,7 +409,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Integer field' do
       it 'does not match objects with raw value' do
-        expect(Band.where(likes: Mongoid::RawValue(Time.at(1))).to_a).to eq [band7]
+        expect(Band.where(likes: ActiveDocument::RawValue(Time.at(1))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
@@ -419,7 +419,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Float field' do
       it 'matches objects with raw value' do
-        expect(Band.where(rating: Mongoid::RawValue(Time.at(3.1))).to_a).to eq [band7]
+        expect(Band.where(rating: ActiveDocument::RawValue(Time.at(3.1))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do
@@ -429,7 +429,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'BigDecimal field' do
       it 'matches objects with raw value' do
-        expect(Band.where(sales: Mongoid::RawValue(Time.at(310))).to_a).to eq [band7]
+        expect(Band.where(sales: ActiveDocument::RawValue(Time.at(310))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value because Time does not evolve into BigDecimal' do
@@ -439,7 +439,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'String field' do
       it 'matches objects with raw value' do
-        expect(Band.where(name: Mongoid::RawValue(Time.at(1))).to_a).to eq [band7]
+        expect(Band.where(name: ActiveDocument::RawValue(Time.at(1))).to_a).to eq [band7]
       end
 
       it 'does not match objects without raw value' do
@@ -449,7 +449,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Range field' do
       it 'matches objects with raw value' do
-        expect(Band.where(decibels: Mongoid::RawValue(Time.at(90))).to_a).to eq [band7]
+        expect(Band.where(decibels: ActiveDocument::RawValue(Time.at(90))).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value because BigDecimal cannot be evolved to Range' do
@@ -459,11 +459,11 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Date field' do
       it 'matches objects with raw value when exact' do
-        expect(Band.where(founded: Mongoid::RawValue(Time.at(1577923200))).to_a).to eq [band3, band4]
+        expect(Band.where(founded: ActiveDocument::RawValue(Time.at(1577923200))).to_a).to eq [band3, band4]
       end
 
       it 'does not match objects with raw value when non-exact' do
-        expect(Band.where(founded: Mongoid::RawValue(Time.at(1577923199))).to_a).to eq []
+        expect(Band.where(founded: ActiveDocument::RawValue(Time.at(1577923199))).to_a).to eq []
       end
 
       it 'matches objects without raw value when exact' do
@@ -481,7 +481,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Time field' do
       it 'matches objects with raw value' do
-        expect(Band.where(updated: Mongoid::RawValue(Time.at(1578153600))).to_a).to eq [band4, band5]
+        expect(Band.where(updated: ActiveDocument::RawValue(Time.at(1578153600))).to_a).to eq [band4, band5]
       end
 
       it 'matches objects without raw value' do
@@ -490,12 +490,12 @@ describe 'Queries with Mongoid::RawValue criteria' do
     end
   end
 
-  context 'Mongoid::RawValue<Date>' do
+  context 'ActiveDocument::RawValue<Date>' do
     let!(:band7) { Band.create!(updated: Time.at(1577923200)) }
 
     context 'Date field' do
       it 'matches objects with raw value' do
-        expect(Band.where(founded: Mongoid::RawValue(Time.at(1577923200).utc.to_date)).to_a).to eq [band3, band4]
+        expect(Band.where(founded: ActiveDocument::RawValue(Time.at(1577923200).utc.to_date)).to_a).to eq [band3, band4]
       end
 
       it 'matches objects without raw value when non-exact' do
@@ -505,7 +505,7 @@ describe 'Queries with Mongoid::RawValue criteria' do
 
     context 'Time field' do
       it 'matches objects with raw value' do
-        expect(Band.where(updated: Mongoid::RawValue(Time.at(1577923200).utc.to_date)).to_a).to eq [band7]
+        expect(Band.where(updated: ActiveDocument::RawValue(Time.at(1577923200).utc.to_date)).to_a).to eq [band7]
       end
 
       it 'matches objects without raw value' do

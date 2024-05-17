@@ -63,7 +63,7 @@ module FeatureSandbox
         unload_constants(obj, obj.constants(false))
       end
 
-      Mongoid.deregister_model(obj) if obj.is_a?(Mongoid::Document)
+      ActiveDocument.deregister_model(obj) if obj.is_a?(ActiveDocument::Document)
 
       parent.send(:remove_const, name)
     end

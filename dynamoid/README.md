@@ -1346,8 +1346,8 @@ timing (231.28 ms).
 ## Credits
 
 Dynamoid borrows code, structure, and even its name very liberally from
-the truly amazing [Mongoid](https://github.com/mongoid/mongoid). Without
-Mongoid to crib from none of this would have been possible, and I hope
+the truly amazing [ActiveDocument](https://github.com/mongoid/mongoid). Without
+ActiveDocument to crib from none of this would have been possible, and I hope
 they don't mind me reusing their very awesome ideas to make DynamoDB
 just as accessible to the Ruby world as MongoDB.
 

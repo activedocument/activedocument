@@ -294,7 +294,7 @@ describe 'callbacks integration tests' do
     end
 
     class CBIntSpecProfile
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :name, type: String
       shard_key :name
 
@@ -376,7 +376,7 @@ describe 'callbacks integration tests' do
 
     it do
       class PreviouslyWasPerson
-        include Mongoid::Document
+        include ActiveDocument::Document
 
         field :title, type: String
         field :age, type: Integer
@@ -403,7 +403,7 @@ describe 'callbacks integration tests' do
   context 'previously_new_record? in after_save' do
     it do
       class PreviouslyNewRecordPerson
-        include Mongoid::Document
+        include ActiveDocument::Document
 
         field :title, type: String
         field :age, type: Integer
@@ -426,7 +426,7 @@ describe 'callbacks integration tests' do
   context 'previously_persisted? in after_destroy' do
     it do
       class PreviouslyPersistedPerson
-        include Mongoid::Document
+        include ActiveDocument::Document
 
         field :title, type: String
         field :age, type: Integer
@@ -450,7 +450,7 @@ describe 'callbacks integration tests' do
 
   context 'saved_change_to_attribute, attribute_before_last_save, will_save_change_to_attribute' do
     class TestSCTAAndABLSInCallbacks
-      include Mongoid::Document
+      include ActiveDocument::Document
 
       field :name, type: String
       field :age, type: Integer

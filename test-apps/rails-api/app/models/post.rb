@@ -1,6 +1,6 @@
 class Post
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include ActiveDocument::Document
+  include ActiveDocument::Timestamps
   field :subject, type: String
   field :message, type: String
 

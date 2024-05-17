@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Shamelessly stolen from Mongoid!
+# Shamelessly stolen from ActiveDocument!
 module Dynamoid
   module Config
     # Encapsulates logic for setting options.

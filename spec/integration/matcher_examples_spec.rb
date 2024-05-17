@@ -28,7 +28,7 @@ describe 'Matcher' do
         end
       end
 
-      describe 'Mongoid matcher' do
+      describe 'ActiveDocument matcher' do
         let(:found_number) do
           slave.address_numbers.where(number: '123').first
         end
@@ -58,7 +58,7 @@ describe 'Matcher' do
         end
       end
 
-      describe 'Mongoid matcher' do
+      describe 'ActiveDocument matcher' do
         let(:found_number) do
           slave.address_numbers.where(number: /123/).first
         end
@@ -96,7 +96,7 @@ describe 'Matcher' do
         end
       end
 
-      describe 'Mongoid matcher' do
+      describe 'ActiveDocument matcher' do
         let(:found_bus) do
           circuit.buses.where(number: 10..15).first
         end
@@ -458,7 +458,7 @@ describe 'Matcher' do
           it 'is prohibited' do
             expect do
               actual_object_matching_condition
-            end.to raise_error(Mongoid::Errors::InvalidFieldOperator)
+            end.to raise_error(ActiveDocument::Errors::InvalidFieldOperator)
           end
         end
       end
@@ -518,7 +518,7 @@ describe 'Matcher' do
           it 'is prohibited' do
             expect do
               actual_object_matching_condition
-            end.to raise_error(Mongoid::Errors::InvalidFieldOperator)
+            end.to raise_error(ActiveDocument::Errors::InvalidFieldOperator)
           end
         end
       end
@@ -585,7 +585,7 @@ describe 'Matcher' do
           it 'is prohibited' do
             expect do
               actual_object_matching_condition
-            end.to raise_error(Mongoid::Errors::InvalidQuery)
+            end.to raise_error(ActiveDocument::Errors::InvalidQuery)
           end
         end
       end
@@ -609,7 +609,7 @@ describe 'Matcher' do
         end
       end
 
-      describe 'Mongoid matcher' do
+      describe 'ActiveDocument matcher' do
         let(:found_record) do
           band.records.where(producers: 'Ferguson').first
         end
@@ -636,7 +636,7 @@ describe 'Matcher' do
         end
       end
 
-      describe 'Mongoid matcher' do
+      describe 'ActiveDocument matcher' do
         let(:found_record) do
           band.records.where(producers: /Ferg/).first
         end
@@ -678,7 +678,7 @@ describe 'Matcher' do
         end
       end
 
-      describe 'Mongoid matcher' do
+      describe 'ActiveDocument matcher' do
         let(:found_record) do
           band.records.where(producers: 100..200).first
         end
@@ -714,7 +714,7 @@ describe 'Matcher' do
           it 'does not find' do
             expect do
               band.records.where(producers: { '$elemMatch': 'bar' }).first
-            end.to raise_error(Mongoid::Errors::InvalidQuery, /elemMatch requires a Hash operand/)
+            end.to raise_error(ActiveDocument::Errors::InvalidQuery, /elemMatch requires a Hash operand/)
           end
         end
 
@@ -723,7 +723,7 @@ describe 'Matcher' do
           it 'does not find' do
             expect do
               band.records.where(producers: { '$elemMatch': { '$not': 'bar' } }).first
-            end.to raise_error(Mongoid::Errors::InvalidQuery, /\$not argument must be a Hash or a regular expression/)
+            end.to raise_error(ActiveDocument::Errors::InvalidQuery, /\$not argument must be a Hash or a regular expression/)
           end
         end
 

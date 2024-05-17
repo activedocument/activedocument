@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'rails/generators/mongoid_generator'
+require 'rails/generators/active_document_generator'
 
-module Mongoid
+module ActiveDocument
   module Generators
 
-    # Generator class for Mongoid configuration files.
+    # Generator class for ActiveDocument configuration files.
     class ConfigGenerator < Rails::Generators::Base
-      desc 'Creates Mongoid configuration files'
+      desc 'Creates ActiveDocument configuration files'
 
       argument :database_name, type: :string, optional: true
 
@@ -32,12 +32,12 @@ module Mongoid
         parent.underscore
       end
 
-      # Creates a +mongoid.yml+ config file from a template.
+      # Creates a +activedocument.yml+ config file from a template.
       def create_config_file
-        template 'mongoid.yml', File.join('config', 'mongoid.yml')
+        template 'activedocument.yml', File.join('config', 'activedocument.yml')
       end
 
-      # Creates a +mongoid.rb+ initializer file from a template.
+      # Creates a +active_document.rb+ initializer file from a template.
       def create_initializer_file
         template 'mongoid.rb', File.join('config', 'initializers', 'mongoid.rb')
       end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Toy
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   embedded_in :crate
 

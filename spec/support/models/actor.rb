@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Actor
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name
   field :after_custom_count, type: Integer, default: 0
   has_and_belongs_to_many :tags

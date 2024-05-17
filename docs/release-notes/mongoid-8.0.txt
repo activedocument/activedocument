@@ -1,5 +1,5 @@
 ***********
-Mongoid 8.0
+ActiveDocument 8.0
 ***********
 
 .. default-domain:: mongodb
@@ -10,7 +10,7 @@ Mongoid 8.0
    :depth: 2
    :class: singlecol
 
-This page describes significant changes and improvements in Mongoid 8.0.
+This page describes significant changes and improvements in ActiveDocument 8.0.
 The complete list of releases is available `on GitHub
 <https://github.com/mongodb/mongoid/releases>`_ and `in JIRA
 <https://jira.mongodb.org/projects/MONGOID?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page>`_;
@@ -21,27 +21,27 @@ the complete list of issues fixed in each release, including bug fixes.
 Support for MongoDB 3.4 and Earlier Servers Dropped
 ---------------------------------------------------
 
-Mongoid 8 requires MongoDB 3.6 or newer. Earlier server versions are not
+ActiveDocument 8 requires MongoDB 3.6 or newer. Earlier server versions are not
 supported.
 
 
 Support for Ruby 2.5 Dropped
 ----------------------------
 
-Mongoid 8 requires Ruby 2.6 or newer. Earlier Ruby versions are not supported.
+ActiveDocument 8 requires Ruby 2.6 or newer. Earlier Ruby versions are not supported.
 
 
 Support for Rails 5.1 Dropped
 -----------------------------
 
-Mongoid 8 requires Rails 5.2 or newer. Earlier Rails versions are not supported.
+ActiveDocument 8 requires Rails 5.2 or newer. Earlier Rails versions are not supported.
 
 
 Default Option Values Changed
 -----------------------------
 
 **Breaking change:** The following options have had their default values
-changed in Mongoid 8.0:
+changed in ActiveDocument 8.0:
 
 - ``:broken_aggregables`` => ``false``
 - ``:broken_alias_handling`` => ``false``
@@ -62,12 +62,12 @@ the description and effects of each of these options.
 ``Decimal128``-backed ``BigDecimal`` Fields
 -------------------------------------------
 
-Mongoid 8 introduces the ``map_big_decimal_to_decimal128`` feature flag, which
+ActiveDocument 8 introduces the ``map_big_decimal_to_decimal128`` feature flag, which
 allows values assigned to a field of type ``BigDecimal`` to be stored as type
-``String`` in the database for compatibility with Mongoid 7 and earlier. In
-Mongoid 8 by default (with this feature flag turned on), values assigned to
+``String`` in the database for compatibility with ActiveDocument 7 and earlier. In
+ActiveDocument 8 by default (with this feature flag turned on), values assigned to
 fields of type ``BigDecimal`` are stored in the database as type
-``BSON::Decimal128``. In Mongoid 7 and earlier, and in Mongoid 8 with this
+``BSON::Decimal128``. In ActiveDocument 7 and earlier, and in ActiveDocument 8 with this
 feature flag turned off, values assigned to fields of type ``BigDecimal`` are
 stored as Strings. See the section on :ref:`BigDecimal Fields <field-type-big-decimal>`
 for more details.
@@ -76,7 +76,7 @@ for more details.
 Storing/Retrieving/Evolving Uncastable Values
 ---------------------------------------------
 
-**Breaking change:** In Mongoid 8, Mongoid standardizes the storing, retrieving
+**Breaking change:** In ActiveDocument 8, ActiveDocument standardizes the storing, retrieving
 and evolving of "uncastable values." On attempting to read or write an
 uncastable value, a ``nil`` is returned or written instead. When attempting to
 evolve an uncastable value, the inputted value is returned. See the section on
@@ -181,7 +181,7 @@ ActiveRecord:
 Order of Callback Invocation
 ----------------------------
 
-**Breaking change:** Mongoid 8.0 changes the order of _create and _save callback
+**Breaking change:** ActiveDocument 8.0 changes the order of _create and _save callback
 invocation for documents with associations.
 
 Referenced associations (``has_one`` and ``has_many``):
@@ -190,8 +190,8 @@ Referenced associations (``has_one`` and ``has_many``):
    :header-rows: 1
    :widths: 50 50
 
-   * - Mongoid 8.0
-     - Mongoid 7
+   * - ActiveDocument 8.0
+     - ActiveDocument 7
 
    * - | Parent :before_save
      - | Parent :before_save
@@ -259,8 +259,8 @@ Embedded associations (``embeds_one`` and ``embeds_many``):
    :header-rows: 1
    :widths: 50 50
 
-   * - Mongoid 8.0
-     - Mongoid 7
+   * - ActiveDocument 8.0
+     - ActiveDocument 7
 
    * - | Parent :before_save
      - | Child :before_save   
@@ -334,7 +334,7 @@ in ``after_*`` callbacks. This follows ActiveRecord/ActiveModel behavior.
 .. code-block:: ruby
 
   class Cat
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :age, type: Integer
 
@@ -348,7 +348,7 @@ in ``after_*`` callbacks. This follows ActiveRecord/ActiveModel behavior.
   a.age = 2
   a.save!
 
-Mongoid 8.0 output:
+ActiveDocument 8.0 output:
 
 .. code-block:: ruby
 
@@ -356,7 +356,7 @@ Mongoid 8.0 output:
   2
 
 
-Mongoid 7 output:
+ActiveDocument 7 output:
 
 .. code-block:: ruby
 
@@ -370,14 +370,14 @@ while in 8.0 ``attribute_was(:age)`` returns the new value.
 ``*_previously_was``, ``previously_new_record?``, and ``previously_persisted?`` helpers
 ---------------------------------------------------------------------------------------
 
-Mongoid 8.0 introduces ActiveModel-compatible ``*_previously_was`` helpers,
+ActiveDocument 8.0 introduces ActiveModel-compatible ``*_previously_was`` helpers,
 as well as ActiveRecord-compatible ``previously_new_record?`` and
 ``previously_persisted?`` helpers:
 
 .. code-block:: ruby
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String
     field :age, type: Integer
@@ -399,27 +399,27 @@ as well as ActiveRecord-compatible ``previously_new_record?`` and
 Unknown Field Type Symbols/Strings Prohibited
 ---------------------------------------------
 
-**Breaking change:** Mongoid 8 prohibits using symbols and strings as field
+**Breaking change:** ActiveDocument 8 prohibits using symbols and strings as field
 types when these symbols and strings do not map to a known type. Previously
 such usage would create a field of type ``Object``.
 
-Mongoid 8 behavior:
+ActiveDocument 8 behavior:
 
 .. code-block:: ruby
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: :bogus
-    # => raises Mongoid::Errors::InvalidFieldType
+    # => raises ActiveDocument::Errors::InvalidFieldType
   end
 
-Mongoid 7 behavior:
+ActiveDocument 7 behavior:
 
 .. code-block:: ruby
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: :bogus
     # Equivalent to:
@@ -437,14 +437,14 @@ conditions were provided, and the criteria already had an ``$or`` operator,
 the new conditions would be added to the existing ``$or`` as an additional
 branch.
 
-Mongoid 8.0 behavior:
+ActiveDocument 8.0 behavior:
 
 .. code-block:: ruby
 
   Band.any_of({name: 'The Rolling Stones'}, {founded: 1990}).
     any_of({members: 2}, {last_tour: 1995})
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {"$or"=>[{"name"=>"The Rolling Stones"}, {"founded"=>1990}],
   #     "$and"=>[{"$or"=>[{"members"=>2}, {"last_tour"=>1995}]}]}
   #   options:  {}
@@ -453,20 +453,20 @@ Mongoid 8.0 behavior:
 
   Band.any_of({name: 'The Rolling Stones'}, {founded: 1990}).any_of({members: 2})
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {"$or"=>[{"name"=>"The Rolling Stones"}, {"founded"=>1990}], "members"=>2}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
-Mongoid 7 behavior:
+ActiveDocument 7 behavior:
 
 .. code-block:: ruby
 
   Band.any_of({name: 'The Rolling Stones'}, {founded: 1990}).
     any_of({members: 2}, {last_tour: 1995})
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {"$or"=>[{"name"=>"The Rolling Stones"}, {"founded"=>1990},
   #     {"members"=>2}, {"last_tour"=>1995}]}
   #   options:  {}
@@ -475,7 +475,7 @@ Mongoid 7 behavior:
 
   Band.any_of({name: 'The Rolling Stones'}, {founded: 1990}).any_of({members: 2})
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {"$or"=>[{"name"=>"The Rolling Stones"}, {"founded"=>1990}], "members"=>2}
   #   options:  {}
   #   class:    Band
@@ -485,17 +485,17 @@ Mongoid 7 behavior:
 ``#pluck`` on Embedded Criteria Returns ``nil`` Values
 ------------------------------------------------------
 
-Mongoid 8 fixes a bug where calling ``#pluck`` on a Mongoid::Criteria
+ActiveDocument 8 fixes a bug where calling ``#pluck`` on a ActiveDocument::Criteria
 for embedded documents discarded nil values. This behavior was
 inconsistent with both the ``#pluck`` method in ActiveSupport and
 with how ``#pluck`` works when reading documents from the database.
 
-Mongoid 8.0 behavior:
+ActiveDocument 8.0 behavior:
 
 .. code-block:: ruby
 
   class Address
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embedded_in :mall
 
@@ -503,7 +503,7 @@ Mongoid 8.0 behavior:
   end
 
   class Mall
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embeds_many :addresses
   end
@@ -516,7 +516,7 @@ Mongoid 8.0 behavior:
   mall.addresses.all.pluck(:street)
     #=> ['Elm Street', nil]
 
-Mongoid 7 behavior, given the same setup:
+ActiveDocument 7 behavior, given the same setup:
 
 .. code-block:: ruby
 
@@ -524,7 +524,7 @@ Mongoid 7 behavior, given the same setup:
   mall.addresses.all.pluck(:street)
     #=> ['Elm Street']
 
-For clarity, the following behavior is unchanged from Mongoid 7 to Mongoid 8.0:
+For clarity, the following behavior is unchanged from ActiveDocument 7 to ActiveDocument 8.0:
 
 .. code-block:: ruby
 
@@ -537,25 +537,25 @@ For clarity, the following behavior is unchanged from Mongoid 7 to Mongoid 8.0:
     #=> ['Elm Street', nil]
 
 
-Replaced ``Mongoid::Criteria#geo_spacial`` with ``#geo_spatial``
+Replaced ``ActiveDocument::Criteria#geo_spacial`` with ``#geo_spatial``
 ----------------------------------------------------------------
 
-The previously deprecated ``Mongoid::Criteria#geo_spacial`` method has been
-removed in Mongoid 8. It has been replaced one-for-one with ``#geo_spatial``
-which was added in Mongoid 7.2.0.
+The previously deprecated ``ActiveDocument::Criteria#geo_spacial`` method has been
+removed in ActiveDocument 8. It has been replaced one-for-one with ``#geo_spatial``
+which was added in ActiveDocument 7.2.0.
 
 
-Implemented ``.tally`` method on ``Mongoid#Criteria``
+Implemented ``.tally`` method on ``ActiveDocument#Criteria``
 -----------------------------------------------------
 
-Mongoid 8 implements the ``.tally`` method on ``Mongoid#Criteria``. ``tally``
+ActiveDocument 8 implements the ``.tally`` method on ``ActiveDocument#Criteria``. ``tally``
 takes a field name as a parameter and returns a mapping from values to their
 counts. For example, take the following model:
 
 .. code::
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :age
   end
 
@@ -578,17 +578,17 @@ The ``tally`` method accepts the dot notation and field aliases. It also
 allows for tallying localized fields.
 
 
-Implemented ``.pick`` method on ``Mongoid#Criteria``
+Implemented ``.pick`` method on ``ActiveDocument#Criteria``
 -----------------------------------------------------
 
-Mongoid 8 implements the ``.pick`` method on ``Mongoid#Criteria``. ``pick``
+ActiveDocument 8 implements the ``.pick`` method on ``ActiveDocument#Criteria``. ``pick``
 takes one or more field names as a parameter and returns the values for those
 fields from one document. Consider the following model:
 
 .. code::
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :age
   end
 
@@ -623,7 +623,7 @@ When given a block, without ``_id`` arguments, ``find`` delegates to
 .. code::
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
   end
 
@@ -644,7 +644,7 @@ returns ``true``:
 No Longer Persisting Documents with Invalid ``belongs_to`` Associations
 -----------------------------------------------------------------------
 
-In Mongoid 8, if an invalid document is assigned to a ``belongs_to`` association,
+In ActiveDocument 8, if an invalid document is assigned to a ``belongs_to`` association,
 and the base document is saved, if the ``belongs_to`` association had the
 option ``optional: false`` or ``optional`` is unset and the global flag
 ``belongs_to_required_by_default`` is true, neither the document nor the
@@ -654,14 +654,14 @@ models:
 .. code::
 
   class Parent
-    include Mongoid::Document
+    include ActiveDocument::Document
     has_one :child
     field :name
     validates :name, presence: true
   end
 
   class Child
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     belongs_to :parent, autosave: true, validate: false, optional: false
   end
@@ -691,7 +691,7 @@ parent will not be persisted:
   p Parent.first
   # => nil
 
-If you want the functionality of neither document being persisted in Mongoid 7 or 8
+If you want the functionality of neither document being persisted in ActiveDocument 7 or 8
 and earlier, the ``validate: true`` option can be set on the association. If
 you want the functionality of only the Child being persisted, the ``validate:
 false`` option can be set on the association.
@@ -700,19 +700,19 @@ false`` option can be set on the association.
 Update Local HABTM Association Correctly
 ----------------------------------------
 
-In Mongoid 8, when pushing persisted elements to a HABTM association, the
+In ActiveDocument 8, when pushing persisted elements to a HABTM association, the
 association will now update correctly without requiring a reload.
 For example:
 
 .. code::
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
     has_and_belongs_to_many :posts
   end
 
   class Post
-    include Mongoid::Document
+    include ActiveDocument::Document
     has_and_belongs_to_many :users
   end
 
@@ -727,59 +727,59 @@ For example:
   post.users << user2
 
   p post.users.length
-  # => 1 in Mongoid 7, 2 in Mongoid 8
+  # => 1 in ActiveDocument 7, 2 in ActiveDocument 8
 
   p post.reload.users.length
   # => 2
 
 As you can see from this example, after pushing ``user2`` to the users array,
-Mongoid 8 correctly updates the number of elements without requiring a reload.
+ActiveDocument 8 correctly updates the number of elements without requiring a reload.
 
 
 Repaired Storing Strings in BSON::Binary fields
 -----------------------------------------------
 
-**Breaking change:** In Mongoid 8, storing a String in a field of type
+**Breaking change:** In ActiveDocument 8, storing a String in a field of type
 ``BSON::Binary`` will be stored in and returned from the database as a
-``BSON::Binary``. Prior to Mongoid 8 it was stored and returned as a String:
+``BSON::Binary``. Prior to ActiveDocument 8 it was stored and returned as a String:
 
 .. code::
 
   class Registry
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :data, type: BSON::Binary
   end
 
   registry = Registry.create!(data: "data!")
   p registry.data
-  # => Mongoid 7: "data!"
-  # => Mongoid 8: <BSON::Binary:0x2580 type=generic data=0x6461746121...>
+  # => ActiveDocument 7: "data!"
+  # => ActiveDocument 8: <BSON::Binary:0x2580 type=generic data=0x6461746121...>
 
   registry = Registry.find(registry.id)
   p registry.data
-  # => Mongoid 7: "data!"
-  # => Mongoid 8: <BSON::Binary:0x2600 type=generic data=0x6461746121...>
+  # => ActiveDocument 7: "data!"
+  # => ActiveDocument 8: <BSON::Binary:0x2600 type=generic data=0x6461746121...>
 
 
 Removed ``Document#to_a`` Method
 --------------------------------
 
 The previously deprecated ``Document#to_a`` method has been removed in
-Mongoid 8.
+ActiveDocument 8.
 
 
 Removed ``:drop_dups`` Option from Indexes
 ------------------------------------------
 
 The ``:drop_dups`` option has been removed from the ``index`` macro. This option
-was specific to MongoDB server 2.6 and earlier, which Mongoid no longer supports.
+was specific to MongoDB server 2.6 and earlier, which ActiveDocument no longer supports.
 
 
-Removed ``Mongoid::Errors::EagerLoad`` Exception Class
+Removed ``ActiveDocument::Errors::EagerLoad`` Exception Class
 ------------------------------------------------------
 
-The previously deprecated ``Mongoid::Errors::EagerLoad`` exception class
-has been removed in Mongoid 8. It has not been used by Mongoid since
+The previously deprecated ``ActiveDocument::Errors::EagerLoad`` exception class
+has been removed in ActiveDocument 8. It has not been used by ActiveDocument since
 version 7.1.1 when eager loading for polymorphic ``belongs_to`` associations
 was implemented.
 
@@ -787,19 +787,19 @@ was implemented.
 Removed Deprecated Constants
 ----------------------------
 
-Mongoid 8 removes the following deprecated constants that are not expected
-to have been used outside of Mongoid:
+ActiveDocument 8 removes the following deprecated constants that are not expected
+to have been used outside of ActiveDocument:
 
-- ``Mongoid::Extensions::Date::EPOCH``
-- ``Mongoid::Extensions::Time::EPOCH``
-- ``Mongoid::Factory::TYPE``
+- ``ActiveDocument::Extensions::Date::EPOCH``
+- ``ActiveDocument::Extensions::Time::EPOCH``
+- ``ActiveDocument::Factory::TYPE``
 
 
 Removed ``Array#update_values`` and ``Hash#update_values`` methods
 ------------------------------------------------------------------
 
 The previously deprecated ``Array#update_values`` and ``Hash#update_values``
-methods have been removed in Mongoid 8.
+methods have been removed in ActiveDocument 8.
 
 
 Deprecated the ``geoHaystack``, ``geoSearch`` Options
@@ -815,10 +815,10 @@ Support for the ``:id_sort`` option on the ``#first`` and ``#last`` options has
 been dropped. These methods now only except a limit as a positional argument.
 
 
-Mongoid::Criteria Cache Removed
+ActiveDocument::Criteria Cache Removed
 -------------------------------
 
-Support for individually caching criteria objects has been dropped in Mongoid 8.
+Support for individually caching criteria objects has been dropped in ActiveDocument 8.
 
-In order to get caching functionality, enable the Mongoid Query Cache. See the
+In order to get caching functionality, enable the ActiveDocument Query Cache. See the
 section on :ref:`Query Cache <query-cache>` for more details.

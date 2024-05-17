@@ -12,7 +12,7 @@ Sessions
    :depth: 2
    :class: singlecol
 
-You can use sessions with Mongoid in a similar way that you would execute a transaction in ActiveRecord.
+You can use sessions with ActiveDocument in a similar way that you would execute a transaction in ActiveRecord.
 Namely, you can call a method, ``#with_session`` on a model class or on an instance of a model and execute
 some operations in a block. All operations in the block will be executed in the context of single session.
 Please see the MongoDB Ruby driver documentation for what session options are available.

@@ -3,11 +3,11 @@ development:
   clients:
     # Defines the default client. (required)
     default:
-      # Mongoid can connect to a URI accepted by the driver:
+      # ActiveDocument can connect to a URI accepted by the driver:
       # uri: mongodb://user:password@mongodb.domain.com:27017/<%= database_name || app_name %>_development
 
       # Otherwise define the parameters separately.
-      # This defines the name of the default database that Mongoid can connect to.
+      # This defines the name of the default database that ActiveDocument can connect to.
       # (required).
       database: <%= database_name || app_name %>_development
       # Provides the hosts the default client can connect to. Must be an array
@@ -124,9 +124,9 @@ development:
         # Whether to truncate long log lines. (default: true)
         # truncate_logs: true
 
-  # Configure Mongoid-specific options. (optional)
+  # Configure ActiveDocument-specific options. (optional)
   options:
-<%- Mongoid::Config::Introspection.options.each do |opt| -%>
+<%- ActiveDocument::Config::Introspection.options.each do |opt| -%>
     <%= opt.indented_comment(indent: 4) %>
     # <%= opt.name %>: <%= opt.default %>
 

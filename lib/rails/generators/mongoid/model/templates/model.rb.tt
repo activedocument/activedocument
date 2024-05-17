@@ -1,10 +1,10 @@
 <% module_namespacing do -%>
 class <%= class_name %><%= " < #{options[:parent].classify}" if options[:parent] %>
 <% unless options[:parent] -%>
-  include Mongoid::Document
+  include ActiveDocument::Document
 <% end -%>
 <% if options[:timestamps] -%>
-  include Mongoid::Timestamps
+  include ActiveDocument::Timestamps
 <% end -%>
 <% if options[:collection] -%>
   store_in collection: "<%= options[:collection] %>"

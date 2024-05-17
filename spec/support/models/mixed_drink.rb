@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class MixedDrink
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name
 end

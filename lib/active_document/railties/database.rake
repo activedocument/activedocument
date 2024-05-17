@@ -1,0 +1,108 @@
+# frozen_string_literal: true
+
+load 'mongoid/tasks/database.rake'
+load 'mongoid/tasks/encryption.rake'
+
+namespace :db do
+
+  unless Rake::Task.task_defined?('db:drop')
+    desc 'Drops all the collections for the database for the current Rails.env'
+    task drop: :'mongoid:drop'
+  end
+
+  unless Rake::Task.task_defined?('db:purge')
+    desc 'Drop all collections except the system collections'
+    task purge: :'mongoid:purge'
+  end
+
+  unless Rake::Task.task_defined?('db:seed')
+    # if another ORM has defined db:seed, don"t run it twice.
+    desc 'Load the seed data from db/seeds.rb'
+    task seed: :environment do
+      seed_file = Rails.root.join('db/seeds.rb')
+      load(seed_file) if File.exist?(seed_file)
+    end
+  end
+
+  unless Rake::Task.task_defined?('db:setup')
+    desc 'Create the database and populate with seed data'
+    task setup: %i[db:create mongoid:create_collections mongoid:create_indexes db:seed]
+  end
+
+  unless Rake::Task.task_defined?('db:reset')
+    desc 'Delete data and loads the seeds'
+    task reset: %i[db:drop db:seed]
+  end
+
+  unless Rake::Task.task_defined?('db:create')
+    desc 'ActiveDocument does not use db:create. Collections are created automatically at runtime'
+    task :create do # rubocop:disable Rails/RakeEnvironment
+      # noop
+    end
+  end
+
+  unless Rake::Task.task_defined?('db:migrate')
+    desc 'ActiveDocument does not use db:migrate'
+    task :migrate do # rubocop:disable Rails/RakeEnvironment
+      # noop
+    end
+  end
+
+  unless Rake::Task.task_defined?('db:schema:load')
+    namespace :schema do
+      desc 'ActiveDocument does not use db:schema:load'
+      task :load do # rubocop:disable Rails/RakeEnvironment
+        # noop
+      end
+    end
+  end
+
+  unless Rake::Task.task_defined?('db:test:prepare')
+    desc 'Prepare for test run'
+    namespace :test do
+      task prepare: %i[mongoid:create_collections mongoid:create_indexes]
+    end
+  end
+
+  unless Rake::Task.task_defined?('db:create_collections')
+    desc 'Create collections specified in ActiveDocument models'
+    task create_collections: :'mongoid:create_collections'
+  end
+
+  unless Rake::Task.task_defined?('db:create_indexes')
+    desc 'Create indexes specified in ActiveDocument models'
+    task create_indexes: :'mongoid:create_indexes'
+  end
+
+  unless Rake::Task.task_defined?('db:create_search_indexes')
+    desc 'Create search indexes specified in ActiveDocument models'
+    task create_search_indexes: 'mongoid:create_search_indexes'
+  end
+
+  unless Rake::Task.task_defined?('db:remove_indexes')
+    desc 'Remove indexes specified in ActiveDocument models'
+    task remove_indexes: :'mongoid:remove_indexes'
+  end
+
+  unless Rake::Task.task_defined?('db:remove_search_indexes')
+    desc 'Remove search indexes specified in ActiveDocument models'
+    task remove_search_indexes: 'mongoid:remove_search_indexes'
+  end
+
+  unless Rake::Task.task_defined?('db:shard_collections')
+    desc 'Shard collections with shard keys specified in ActiveDocument models'
+    task shard_collections: :'mongoid:shard_collections'
+  end
+
+  namespace :encryption do
+    desc 'Create encryption key'
+    task create_data_key: :'mongoid:encryption:create_data_key'
+  end
+
+  namespace :mongoid do
+    desc 'Load ActiveDocument models into memory'
+    task load_models: :environment do
+      Rails.application.eager_load! if defined?(Rails)
+    end
+  end
+end

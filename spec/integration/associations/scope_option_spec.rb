@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../mongoid/association/referenced/has_and_belongs_to_many_models'
-require_relative '../../mongoid/association/referenced/has_many_models'
-require_relative '../../mongoid/association/referenced/has_one_models'
+require_relative '../../active_document/association/referenced/has_and_belongs_to_many_models'
+require_relative '../../active_document/association/referenced/has_many_models'
+require_relative '../../active_document/association/referenced/has_one_models'
 
 describe 'association :scope option' do
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class Home
-  include Mongoid::Document
+  include ActiveDocument::Document
   belongs_to :person
 end

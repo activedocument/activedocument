@@ -1,5 +1,5 @@
 *****************
-Mongoid Ultra 9.0
+ActiveDocument Ultra 9.0
 *****************
 
 .. default-domain:: mongodb
@@ -10,7 +10,7 @@ Mongoid Ultra 9.0
    :depth: 2
    :class: singlecol
 
-This page describes significant changes and improvements in Mongoid 9.0.
+This page describes significant changes and improvements in ActiveDocument 9.0.
 The complete list of releases is available `on GitHub
 <https://github.com/mongodb/mongoid/releases>`_ and `in JIRA
 <https://jira.mongodb.org/projects/MONGOID?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page>`_;
@@ -20,21 +20,21 @@ the complete list of issues fixed in each release, including bug fixes.
 Support for MongoDB Server, Ruby, JRuby, and Rails Versions Dropped
 -------------------------------------------------------------------
 
-Mongoid 9 drops support for:
+ActiveDocument 9 drops support for:
 - MongoDB Server 3.6 and 4.0
 - Ruby 2.6
 - JRuby 9.3
 - Rails 5.2
 
-Mongoid 9 requires minimum versions as follows:
+ActiveDocument 9 requires minimum versions as follows:
 - MongoDB Server 4.4 or newer
 - Ruby 2.7 or newer
 - JRuby 9.5 or newer
 - Rails 6.0 or newer
 
-In addition, Mongoid 9 deprecates support for the following versions.
+In addition, ActiveDocument 9 deprecates support for the following versions.
 Users are encouraged to upgrade to newer versions after upgrading
-to Mongoid 9.
+to ActiveDocument 9.
 - MongoDB Server 4.4
 - Ruby 2.7
 - Rails 6.0
@@ -43,21 +43,21 @@ Consider using `MongoDB Atlas <https://www.mongodb.com/atlas/database>`_
 to automate your MongoDB server upgrades.
 
 
-Deprecated class ``Mongoid::Errors::InvalidStorageParent`` removed
+Deprecated class ``ActiveDocument::Errors::InvalidStorageParent`` removed
 ------------------------------------------------------------------
 
-The deprecated class ``Mongoid::Errors::InvalidStorageParent`` has been removed.
+The deprecated class ``ActiveDocument::Errors::InvalidStorageParent`` has been removed.
 
 
 ``around_*`` callbacks for embedded documents are now ignored
 -------------------------------------------------------------
 
-Mongoid 8.x and older allows user to define ``around_*`` callbacks for embedded
+ActiveDocument 8.x and older allows user to define ``around_*`` callbacks for embedded
 documents. Starting from 9.0 these callbacks are ignored and will not be executed.
 A warning will be printed to the console if such callbacks are defined.
 
 If you want to restore the old behavior, you can set
-``Mongoid.around_embedded_document_callbacks`` to true in your application.
+``ActiveDocument.around_embedded_document_callbacks`` to true in your application.
 
 .. note::
 
@@ -70,13 +70,13 @@ If you want to restore the old behavior, you can set
 ``for_js`` method is deprecated
 -------------------------------
 
-The ``for_js`` method is deprecated and will be removed in Mongoid 10.0.
+The ``for_js`` method is deprecated and will be removed in ActiveDocument 10.0.
 
 
 Deprecated options removed
 --------------------------
 
-**Breaking change:** The following config options are removed in Mongoid 9.0.
+**Breaking change:** The following config options are removed in ActiveDocument 9.0.
 Please ensure you have removed all references to these from your app.
 If you were using ``config.load_defaults 8.1`` prior to upgrading, you will not
 experience any behavior change. Refer to earlier release notes for the meaning
@@ -104,14 +104,14 @@ Deprecated functionality removed
 
 **Breaking change:** The following deprecated functionality is now removed:
 
-- The ``Mongoid::QueryCache`` module has been removed. Please replace any usages 1-for-1 with ``Mongo::QueryCache``.
-  The method ``Mongoid::QueryCache#clear_cache`` should be replaced with ``Mongo::QueryCache#clear``.
+- The ``ActiveDocument::QueryCache`` module has been removed. Please replace any usages 1-for-1 with ``Mongo::QueryCache``.
+  The method ``ActiveDocument::QueryCache#clear_cache`` should be replaced with ``Mongo::QueryCache#clear``.
   All other methods and submodules are identically named. Refer to the `driver query cache documentation
   <https://mongodb.com/docs/ruby-driver/current/reference/query-cache/>`_ for more details.
 - ``Object#blank_criteria?`` method is removed (was previously deprecated.)
 - ``Document#as_json :compact`` option is removed. Please call ```#compact`` on the
   returned ``Hash`` object instead.
-- The deprecated class ``Mongoid::Errors::InvalidStorageParent`` has been removed.
+- The deprecated class ``ActiveDocument::Errors::InvalidStorageParent`` has been removed.
 - ``Criteria#geo_near`` is removed as MongoDB server versions 4.2
   and later no longer support the ``$geoNear`` command. Please use the
   `$geoNear stage of the aggregation pipeline
@@ -130,22 +130,22 @@ Deprecated functionality removed
 ``touch`` method now clears changed state
 -----------------------------------------
 
-In Mongoid 8.x and older ``touch`` method leaves models in the changed state:
+In ActiveDocument 8.x and older ``touch`` method leaves models in the changed state:
 
 .. code-block:: ruby
 
-   # Mongoid 8.x behaviour
+   # ActiveDocument 8.x behaviour
    band = Band.create!
    band.touch
    band.changed? # => true
    band.changes # => {"updated_at"=>[2023-01-30 13:12:57.477191135 UTC, 2023-01-30 13:13:11.482975646 UTC]}
 
-Starting from 9.0 Mongoid now correctly clears changed state after using ``touch``
+Starting from 9.0 ActiveDocument now correctly clears changed state after using ``touch``
 method.
 
 .. code-block:: ruby
 
-   # Mongoid 9.0 behaviour
+   # ActiveDocument 9.0 behaviour
    band = Band.create!
    band.touch
    band.changed? # => false
@@ -154,8 +154,8 @@ method.
 Sandbox Mode for Rails Console
 ------------------------------
 
-Mongoid now supports Rails console sandbox mode. If the Rails console started
-with ``--sandbox`` flag, Mongoid starts a transaction on the ``:default`` client
+ActiveDocument now supports Rails console sandbox mode. If the Rails console started
+with ``--sandbox`` flag, ActiveDocument starts a transaction on the ``:default`` client
 before opening the console. This transaction won't be committed; therefore, all
 the commands executed in the console using the ``:default`` client won't
 be persisted in the database.
@@ -168,7 +168,7 @@ be persisted in the database.
 New Transactions API
 --------------------
 
-Mongoid 9.0 introduces new transactions API that is inspired by ActiveRecord:
+ActiveDocument 9.0 introduces new transactions API that is inspired by ActiveRecord:
 
 .. code-block:: ruby
 
@@ -187,8 +187,8 @@ Please consult :ref:`transactions documentation <transactions>` for more details
 Embedded Documents Always Use Parent Persistence Context
 --------------------------------------------------------
 
-Mongoid 8.x and older allows user to specify persistence context for an
-embedded document (using ``store_in`` macro). In Mongoid 9.0 these settings are
+ActiveDocument 8.x and older allows user to specify persistence context for an
+embedded document (using ``store_in`` macro). In ActiveDocument 9.0 these settings are
 ignored for embedded documents; an embedded document now always uses the persistence
 context of its parent.
 
@@ -196,19 +196,19 @@ context of its parent.
 Support for Passing Raw Values into Queries
 -------------------------------------------
 
-When performing queries, it is now possible skip Mongoid's type coercion logic
-using the ``Mongoid::RawValue`` wrapper class. This can be useful when legacy
+When performing queries, it is now possible skip ActiveDocument's type coercion logic
+using the ``ActiveDocument::RawValue`` wrapper class. This can be useful when legacy
 data in the database is of a different type than the field definition.
 
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :age, type: Integer
    end
 
    # Query for the string "42", not the integer 42
-   Person.where(age: Mongoid::RawValue("42"))
+   Person.where(age: ActiveDocument::RawValue("42"))
 
 
 Raise AttributeNotLoaded error when accessing fields omitted from query projection
@@ -216,35 +216,35 @@ Raise AttributeNotLoaded error when accessing fields omitted from query projecti
 
 When attempting to access a field on a model instance which was
 excluded with the ``.only`` or ``.without`` query projections methods
-when the instance was loaded, Mongoid will now raise a
-``Mongoid::Errors::AttributeNotLoaded`` error.
+when the instance was loaded, ActiveDocument will now raise a
+``ActiveDocument::Errors::AttributeNotLoaded`` error.
 
 .. code-block:: ruby
 
    Band.only(:name).first.label
-   #=> raises Mongoid::Errors::AttributeNotLoaded
+   #=> raises ActiveDocument::Errors::AttributeNotLoaded
 
    Band.without(:label).first.label = 'Sub Pop Records'
-   #=> raises Mongoid::Errors::AttributeNotLoaded
+   #=> raises ActiveDocument::Errors::AttributeNotLoaded
 
-In earlier Mongoid versions, the same conditions would raise an
+In earlier ActiveDocument versions, the same conditions would raise an
 ``ActiveModel::MissingAttributeError``. Please check your code for
-any Mongoid-specific usages of this class, and change them to
-``Mongoid::Errors::AttributeNotLoaded``. Note additionally that
-``AttributeNotLoaded`` inherits from ``Mongoid::Errors::MongoidError``,
+any ActiveDocument-specific usages of this class, and change them to
+``ActiveDocument::Errors::AttributeNotLoaded``. Note additionally that
+``AttributeNotLoaded`` inherits from ``ActiveDocument::Errors::BaseError``,
 while ``ActiveModel::MissingAttributeError`` does not.
 
 
 Use configured time zone to typecast Date to Time in queries
 -------------------------------------------------------------
 
-When querying for a Time field using a Date value, Mongoid now correctly
+When querying for a Time field using a Date value, ActiveDocument now correctly
 considers ``Time.zone`` to perform type conversion.
 
 .. code-block:: ruby
 
    class Magazine
-     include Mongoid::Document
+     include ActiveDocument::Document
 
      field :published_at, type: Time
    end
@@ -255,11 +255,11 @@ considers ``Time.zone`` to perform type conversion.
    #=> will return all results on or after Sept 26th, 2022
    #   at 0:00 in Asia/Tokyo time zone.
 
-In prior Mongoid versions, the above code would ignore the ``Time.zone``
+In prior ActiveDocument versions, the above code would ignore the ``Time.zone``
 (irrespective of the now-removed ``:use_activesupport_time_zone``
 setting) and always using the system time zone to perform the type conversion.
 
-Note that in prior Mongoid versions, typecasting Date to Time during
+Note that in prior ActiveDocument versions, typecasting Date to Time during
 persistence operations was already correctly using time zone.
 
 
@@ -273,15 +273,15 @@ invoke ``#touch`` on its parent document.
 .. code-block:: ruby
 
    class Address
-     include Mongoid::Document
-     include Mongoid::Timestamps
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps
 
      embedded_in :mall, touch: false
    end
 
    class Mall
-     include Mongoid::Document
-     include Mongoid::Timestamps
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps
 
      embeds_many :addresses
    end
@@ -306,8 +306,8 @@ unless you explicitly set ``touch: false`` on the relation:
 .. code-block:: ruby
 
    class Address
-     include Mongoid::Document
-     include Mongoid::Timestamps
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps
 
      embedded_in :mall, touch: false
    end
@@ -318,31 +318,31 @@ For all other associations, the default remains ``touch: false``.
 Flipped default for ``:replace`` option in ``#upsert``
 ------------------------------------------------------
 
-Mongoid 8.1 added the ``:replace`` option to the ``#upsert`` method. This
+ActiveDocument 8.1 added the ``:replace`` option to the ``#upsert`` method. This
 option was used to specify whether or not the existing document should be
 updated or replaced.
 
-Mongoid 9.0 flips the default of this flag from ``true`` => ``false``.
+ActiveDocument 9.0 flips the default of this flag from ``true`` => ``false``.
 
-This means that, by default, Mongoid 9 will update the existing document and
+This means that, by default, ActiveDocument 9 will update the existing document and
 will not replace it.
 
 
 The immutability of the ``_id`` field is now enforced
 -----------------------------------------------------
 
-Prior to Mongoid 9.0, mutating the ``_id`` field behaved inconsistently
+Prior to ActiveDocument 9.0, mutating the ``_id`` field behaved inconsistently
 depending on whether the document was top-level or embedded, and depending on
 how the update was performed. As of 9.0, changing the ``_id`` field will now
 raise an exception when the document is saved, if the document had been
 previously persisted.
 
-Mongoid 9.0 also introduces a new feature flag, ``immutable_ids``, which
+ActiveDocument 9.0 also introduces a new feature flag, ``immutable_ids``, which
 defaults to ``true``.
 
 .. code-block:: ruby
 
-   Mongoid::Config.immutable_ids = true
+   ActiveDocument::Config.immutable_ids = true
 
 When set to false, the older, inconsistent behavior is restored.
 
@@ -386,7 +386,7 @@ of the ``index`` macro: ``partial_filter_expression``, ``weights``,
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :a, as: :age
      index({ age: 1 }, { partial_filter_expression: { age: { '$gte' => 20 } })
    end
@@ -396,7 +396,7 @@ of the ``index`` macro: ``partial_filter_expression``, ``weights``,
    The expansion of field name aliases in index options such as
    ``partial_filter_expression`` is performed according to the behavior of MongoDB
    server 6.0. Future server versions may change how they interpret these options,
-   and Mongoid's functionality may not support such changes.
+   and ActiveDocument's functionality may not support such changes.
 
 
 BSON 5 and BSON::Decimal128 Fields
@@ -409,7 +409,7 @@ declared as BSON::Decimal128 will return a BigDecimal value by default.
 .. code-block:: ruby
 
    class Model
-     include Mongoid::Document
+     include ActiveDocument::Document
 
      field :decimal_field, type: BSON::Decimal128
    end
@@ -421,13 +421,13 @@ declared as BSON::Decimal128 will return a BigDecimal value by default.
    Model.first.decimal_field.class #=> BigDecimal
 
 If you need literal BSON::Decimal128 values with BSON 5, you may instruct
-Mongoid to allow literal BSON::Decimal128 fields:
+ActiveDocument to allow literal BSON::Decimal128 fields:
 
 .. code-block:: ruby
 
    Model.first.decimal_field.class #=> BigDecimal
 
-   Mongoid.allow_bson5_decimal128 = true
+   ActiveDocument.allow_bson5_decimal128 = true
    Model.first.decimal_field.class #=> BSON::Decimal128
 
 .. note::
@@ -439,14 +439,14 @@ Mongoid to allow literal BSON::Decimal128 fields:
 Search Index Management with MongoDB Atlas
 ------------------------------------------
 
-When connected to MongoDB Atlas, Mongoid now supports creating and removing
-search indexes. You may do so programmatically, via the Mongoid::SearchIndexable
+When connected to MongoDB Atlas, ActiveDocument now supports creating and removing
+search indexes. You may do so programmatically, via the ActiveDocument::SearchIndexable
 API:
 
 .. code-block:: ruby
 
    class SearchablePerson
-     include Mongoid::Document
+     include ActiveDocument::Document
 
      search_index { ... } # define the search index here
    end
@@ -490,7 +490,7 @@ There are also rake tasks available, for convenience:
 time zone, or the standard Ruby ``Time`` class. This allowed you to query
 a time value even if no time zone had been configured.
 
-Mongoid now requires that you set a time zone if you intend to do
+ActiveDocument now requires that you set a time zone if you intend to do
 anything with time values (including using timestamps in your documents).
 Any uses of ``Time.configured`` must be replaced with ``Time.zone``.
 
@@ -533,7 +533,7 @@ Consider the following code:
    record = Model.with(collection: 'other_collection') { Model.first }
    record.update(field: 'value')
 
-Prior to Mongoid 9.0, this could would silently fail to execute the update,
+Prior to ActiveDocument 9.0, this could would silently fail to execute the update,
 because the storage options (here, the specification of an alternate
 collection for the model) would not be remembered by the record. Thus, the
 record would be loaded from "other_collection", but when updated, would attempt
@@ -541,7 +541,7 @@ to look for and update the document in the default collection for Model. To
 make this work, you would have had to specify the collection explicitly for
 every update.
 
-As of Mongoid 9.0, records that are created or loaded under explicit storage
+As of ActiveDocument 9.0, records that are created or loaded under explicit storage
 options, will remember those options (including a named client,
 a different database, or a different collection).
 
@@ -550,9 +550,9 @@ flag:
 
 .. code-block:: ruby
 
-   Mongoid.legacy_persistence_context_behavior = true
+   ActiveDocument.legacy_persistence_context_behavior = true
 
-This flag defaults to false in Mongoid 9.
+This flag defaults to false in ActiveDocument 9.
 
 
 Bug Fixes and Improvements
@@ -570,11 +570,11 @@ This section will be for smaller bug fixes and improvements:
   ``map_big_decimal_to_decimal128`` flag set to true, the conversion will
   return a ``BSON::Decimal128`` and not a ``String``
   `MONGOID-5484 <https://jira.mongodb.org/browse/MONGOID-5484>`_.
-- Created new error ``Mongoid::Errors::InvalidEstimatedCountCriteria`` for
+- Created new error ``ActiveDocument::Errors::InvalidEstimatedCountCriteria`` for
   when calling ``estimated_document_count`` on a document class with a
   default scope
   `MONGOID-4960 <https://jira.mongodb.org/browse/MONGOID-4960>`_.
-- Mongoid now uses primary reads for validations in all cases
+- ActiveDocument now uses primary reads for validations in all cases
   `MONGOID-5150 <https://jira.mongodb.org/browse/MONGOID-5150>`_.
 - Added support for symbol keys in localized field translation hashes
   `MONGOID-5334 <https://jira.mongodb.org/browse/MONGOID-5334>`_.

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Definition
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :description, type: String
   field :p, as: :part, type: String
-  field :regular, type: Mongoid::Boolean
+  field :regular, type: ActiveDocument::Boolean
   field :syn, as: :synonyms, localize: true, type: String
-  field :active, type: Mongoid::Boolean, localize: true, default: true
+  field :active, type: ActiveDocument::Boolean, localize: true, default: true
   embedded_in :word
 end

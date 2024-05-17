@@ -1,0 +1,55 @@
+# frozen_string_literal: true
+
+module ActiveDocument
+  module Matcher
+
+    # In-memory matcher for $elemMatch expression.
+    #
+    # @see https://www.mongodb.com/docs/manual/reference/operator/query/elemMatch/
+    #
+    # @api private
+    module ElemMatch
+
+      extend self
+
+      # Returns whether a value satisfies an $elemMatch expression.
+      #
+      # @param [ true | false ] _exists Not used.
+      # @param [ Object | Array<Object> ] value The value to check.
+      # @param [ Hash ] expr The $elemMatch condition predicate.
+      #
+      # @return [ true | false ] Whether the value matches.
+      #
+      # @api private
+      def matches?(_exists, value, condition)
+        unless condition.is_a?(Hash)
+          raise Errors::InvalidQuery.new("$elemMatch requires a Hash operand: #{Errors::InvalidQuery.truncate_expr(condition)}")
+        end
+
+        if value.is_a?(Array) && !value.empty?
+          value.any? do |v|
+            ElemMatchExpression.matches?(v, condition)
+          end
+        else
+          # Validate the condition is valid, even though we will never attempt
+          # matching it.
+          condition.each_key do |k|
+            k = k.to_s
+            next unless k.start_with?('$')
+
+            begin
+              ExpressionOperator.get(k)
+            rescue ActiveDocument::Errors::InvalidExpressionOperator
+              begin
+                FieldOperator.get(k)
+              rescue ActiveDocument::Errors::InvalidFieldOperator => exc
+                raise ActiveDocument::Errors::InvalidElemMatchOperator.new(exc.operator)
+              end
+            end
+          end
+          false
+        end
+      end
+    end
+  end
+end

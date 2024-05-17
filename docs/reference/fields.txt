@@ -20,11 +20,11 @@ Field Types
 
 MongoDB stores underlying document data using
 `BSON types <https://mongodb.com/docs/manual/reference/bson-types/>`_, and
-Mongoid converts BSON types to Ruby types at runtime in your application.
+ActiveDocument converts BSON types to Ruby types at runtime in your application.
 For example, a field defined with ``type: :float`` will use the Ruby ``Float``
 class in-memory and will persist in the database as the the BSON ``double`` type.
 
-Field type definitions determine how Mongoid behaves when constructing queries
+Field type definitions determine how ActiveDocument behaves when constructing queries
 and retrieving/writing fields from/to the database. Specifically:
 
 1. When assigning values to fields at runtime, the values are converted to the
@@ -39,7 +39,7 @@ and retrieving/writing fields from/to the database. Specifically:
 
 Changing the field definitions in a model class does not alter data already stored in
 MongoDB. To update type or contents of fields of existing documents,
-the field must be re-saved to the database. Note that, due to Mongoid
+the field must be re-saved to the database. Note that, due to ActiveDocument
 tracking which attributes on a model change and only saving the changed ones,
 it may be necessary to explicitly write a field value when changing the
 type of an existing field without changing the stored values.
@@ -51,7 +51,7 @@ on a person by using the ``field`` macro.
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :name, type: String
      field :date_of_birth, type: Date
      field :weight, type: Float
@@ -62,8 +62,8 @@ The valid types for fields are as follows:
 - ``Array``
 - ``BSON::Binary``
 - :ref:`BigDecimal <field-type-big-decimal>`
-- ``Mongoid::Boolean``, which may be specified simply as ``Boolean`` in the
-  scope of a class which included ``Mongoid::Document``.
+- ``ActiveDocument::Boolean``, which may be specified simply as ``Boolean`` in the
+  scope of a class which included ``ActiveDocument::Document``.
 - :ref:`Date <field-type-date>`
 - :ref:`DateTime <field-type-date-time>`
 - ``Float``
@@ -75,15 +75,15 @@ The valid types for fields are as follows:
 - :ref:`Regexp <field-type-regexp>`
 - ``Set``
 - ``String``
-- :ref:`Mongoid::StringifiedSymbol <field-type-stringified-symbol>`,
+- :ref:`ActiveDocument::StringifiedSymbol <field-type-stringified-symbol>`,
   which may be specified simply as ``StringifiedSymbol`` in the scope of a
-  class which included ``Mongoid::Document``.
+  class which included ``ActiveDocument::Document``.
 - :ref:`Symbol <field-type-stringified-symbol>`
 - :ref:`Time <field-type-time>`
 - ``ActiveSupport::TimeWithZone``
 
-Mongoid also recognizes the string ``"Boolean"`` as an alias for the
-``Mongoid::Boolean`` class.
+ActiveDocument also recognizes the string ``"Boolean"`` as an alias for the
+``ActiveDocument::Boolean`` class.
 
 To define custom field types, refer to :ref:`Custom Field Types <custom-field-types>` below.
 
@@ -107,7 +107,7 @@ type. Such fields are untyped:
 .. code-block:: ruby
 
   class Product
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :properties
     # Equivalent to:
@@ -129,7 +129,7 @@ ahead of time:
   product.properties
   # => {:color=>"white", :size=>"large"}
 
-When values are assigned to the field, Mongoid still performs mongoization but
+When values are assigned to the field, ActiveDocument still performs mongoization but
 uses the class of the value rather than the field type for mongoization logic.
 
 .. code-block:: ruby
@@ -139,11 +139,11 @@ uses the class of the value rather than the field type for mongoization logic.
   # The range 0..10, mongoized:
   # => {"min"=>0, "max"=>10}
 
-When reading data from the database, Mongoid does not perform any type
+When reading data from the database, ActiveDocument does not perform any type
 conversions on untyped fields. For this reason, even though it is possible
 to write any BSON-serializable value into an untyped fields, values which
 require special handling on the database reading side will generally not work
-correctly in an untyped field. Among field types supported by Mongoid,
+correctly in an untyped field. Among field types supported by ActiveDocument,
 values of the following types should not be stored in untyped fields:
 
 - ``Date`` (values will be returned as ``Time``)
@@ -158,7 +158,7 @@ Field Type: StringifiedSymbol
 
 The ``StringifiedSymbol`` field type is the recommended field type for storing
 values that should be exposed as symbols to Ruby applications. When using the ``Symbol`` field type,
-Mongoid defaults to storing values as BSON symbols. For more information on the
+ActiveDocument defaults to storing values as BSON symbols. For more information on the
 BSON symbol type, see :ref:`here <field-type-symbol>`.
 However, the BSON symbol type is deprecated and is difficult to work with in programming languages
 without native symbol types, so the ``StringifiedSymbol`` type allows the use of symbols
@@ -170,7 +170,7 @@ An example usage is shown below:
 .. code-block:: ruby
 
   class Post
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :status, type: StringifiedSymbol
   end
@@ -215,7 +215,7 @@ to store Ruby symbols in the database. The ``StringifiedSymbol`` field type
 provides maximum compatibility with other applications and programming languages
 and has the same behavior in all circumstances.
 
-Mongoid also provides the deprecated ``Symbol`` field type for serializing
+ActiveDocument also provides the deprecated ``Symbol`` field type for serializing
 Ruby symbols to BSON symbols. Because the BSON specification deprecated the
 BSON symbol type, the ``bson`` gem will serialize Ruby symbols into BSON strings
 when used on its own. However, in order to maintain backwards compatibility
@@ -224,7 +224,7 @@ symbols as BSON symbols. This is necessary to be able to specify queries for
 documents which contain BSON symbols as fields.
 
 To override the default behavior and configure the ``mongo`` gem (and thereby
-Mongoid as well) to encode symbol values as strings, include the following code
+ActiveDocument as well) to encode symbol values as strings, include the following code
 snippet in your project:
 
 .. code-block:: ruby
@@ -248,7 +248,7 @@ or else the values will not store properly.
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :first_name
      field :url, type: Hash
 
@@ -282,7 +282,7 @@ assignment to a ``Time`` field:
 .. code-block:: ruby
 
   class Voter
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :registered_at, type: Time
   end
@@ -295,7 +295,7 @@ local time, because the application was not configured to use UTC times.
 
 .. note::
 
-  When the database contains a string value for a ``Time`` field, Mongoid
+  When the database contains a string value for a ``Time`` field, ActiveDocument
   parses the string value using ``Time.parse`` which considers values without
   time zones to be in local time.
 
@@ -305,7 +305,7 @@ local time, because the application was not configured to use UTC times.
 Field Type: Date
 ----------------
 
-Mongoid allows assignment of values of several types to ``Date`` fields:
+ActiveDocument allows assignment of values of several types to ``Date`` fields:
 
 - ``Date`` - the provided date is stored as is.
 - ``Time``, ``DateTime``, ``ActiveSupport::TimeWithZone`` - the date component
@@ -313,7 +313,7 @@ Mongoid allows assignment of values of several types to ``Date`` fields:
 - ``String`` - the date specified in the string is used.
 - ``Integer``, ``Float`` - the value is taken to be a UTC timestamp which is
   converted to the :ref:`configured time zone <time-zones>` (note that
-  ``Mongoid.use_utc`` has no effect on this conversion), then the date is
+  ``ActiveDocument.use_utc`` has no effect on this conversion), then the date is
   taken from the resulting time.
 
 In other words, if a date is specified in the value, that date is used without
@@ -327,7 +327,7 @@ objects to ``Date`` objects before assigning the values to fields of type
 
 .. note::
 
-  When the database contains a string value for a ``Date`` field, Mongoid
+  When the database contains a string value for a ``Date`` field, ActiveDocument
   parses the string value using ``Time.parse``, discards the time portion of
   the resulting ``Time`` object and uses the date portion. ``Time.parse``
   considers values without time zones to be in local time.
@@ -339,7 +339,7 @@ Field Type: DateTime
 ---------------------
 
 MongoDB stores all times as UTC timestamps. When assigning a value to a
-``DateTime`` field, or when querying a ``DateTime`` field, Mongoid
+``DateTime`` field, or when querying a ``DateTime`` field, ActiveDocument
 converts the passed in value to a UTC ``Time`` before sending it to the
 MongoDB server.
 
@@ -351,7 +351,7 @@ returned is defined by the :ref:`configured time zone settings <time-zones>`.
 .. code-block:: ruby
 
    class Ticket
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :opened_at, type: DateTime
    end
 
@@ -368,11 +368,11 @@ returned is defined by the :ref:`configured time zone settings <time-zones>`.
     ticket.opened_at
     # => Sun, 18 Feb 2018 07:00:08 -0500
 
-    Mongoid.use_utc = true
+    ActiveDocument.use_utc = true
     ticket.opened_at
     # => Sun, 18 Feb 2018 12:00:08 +0000
 
-Mongoid also supports casting integers and floats to ``DateTime``. When
+ActiveDocument also supports casting integers and floats to ``DateTime``. When
 doing so, the integers/floats are assumed to be Unix timestamps (in UTC):
 
 .. code-block:: ruby
@@ -383,7 +383,7 @@ doing so, the integers/floats are assumed to be Unix timestamps (in UTC):
 
 If a string is used as a ``DateTime`` field value, the behavior depends on
 whether the string includes a time zone. If no time zone is specified,
-the :ref:`default Mongoid time zone <time-zones>` is used:
+the :ref:`default ActiveDocument time zone <time-zones>` is used:
 
 .. code-block:: ruby
 
@@ -402,7 +402,7 @@ If a time zone is specified, it is respected:
 
 .. note::
 
-  When the database contains a string value for a ``DateTime`` field, Mongoid
+  When the database contains a string value for a ``DateTime`` field, ActiveDocument
   parses the string value using ``Time.parse`` which considers values without
   time zones to be in local time.
 
@@ -420,7 +420,7 @@ fork of `Oniguruma regular expression engine <https://github.com/kkos/oniguruma>
 The two regular expression implementations generally provide equivalent
 functionality but have several important syntax differences.
 
-When a field is declared to be of type Regexp, Mongoid converts Ruby regular
+When a field is declared to be of type Regexp, ActiveDocument converts Ruby regular
 expressions to BSON regular expressions and stores the result in MongoDB.
 Retrieving the field from the database produces a ``BSON::Regexp::Raw``
 instance:
@@ -428,7 +428,7 @@ instance:
 .. code-block:: ruby
 
   class Token
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :pattern, type: Regexp
   end
@@ -478,7 +478,7 @@ BigDecimal Fields
 The ``BigDecimal`` field type is used to store numbers with increased precision.
 
 The ``BigDecimal`` field type stores its values in two different ways in the
-database, depending on the value of the ``Mongoid.map_big_decimal_to_decimal128``
+database, depending on the value of the ``ActiveDocument.map_big_decimal_to_decimal128``
 global config option. If this flag is set to false (which is the default),
 the ``BigDecimal`` field will be stored as a string, otherwise it will be stored
 as a ``BSON::Decimal128``.
@@ -492,7 +492,7 @@ a ``BSON::Decimal128``:
   ``-10^6145``, and has a maximum of 34 bits of precision. When attempting to
   store values that don't fit into a ``BSON::Decimal128``, it is recommended to
   have them stored as a string instead of a ``BSON::Decimal128``. You can do
-  that by setting ``Mongoid.map_big_decimal_to_decimal128`` to ``false``. If a
+  that by setting ``ActiveDocument.map_big_decimal_to_decimal128`` to ``false``. If a
   value that does not fit in a ``BSON::Decimal128`` is attempted to be stored
   as one, an error will be raised.
 
@@ -507,7 +507,7 @@ a ``BSON::Decimal128``:
   may result in a loss of precision.
 
 There is an additional caveat when storing a ``BigDecimal`` in a field with no
-type (i.e. a dynamically typed field) and ``Mongoid.map_big_decimal_to_decimal128``
+type (i.e. a dynamically typed field) and ``ActiveDocument.map_big_decimal_to_decimal128``
 is ``false``. In this case, the ``BigDecimal`` is stored as a string, and since a
 dynamic field is being used, querying for that field with a ``BigDecimal`` will
 not find the string for that ``BigDecimal``, since the query is looking for a
@@ -521,20 +521,20 @@ zeroes and signed ``NaN`` values.
 
 Migration to ``decimal128``-backed ``BigDecimal`` Field
 ```````````````````````````````````````````````````````
-In a future major version of Mongoid, the ``Mongoid.map_big_decimal_to_decimal128``
+In a future major version of ActiveDocument, the ``ActiveDocument.map_big_decimal_to_decimal128``
 global config option will be defaulted to ``true``. When this flag is turned on,
 ``BigDecimal`` values in queries will not match to the strings that are already
 stored in the database; they will only match to ``decimal128`` values that are
 in the database. If you have a ``BigDecimal`` field that is backed by strings,
 you have three options:
 
-1. The ``Mongoid.map_big_decimal_to_decimal128`` global config option can be
+1. The ``ActiveDocument.map_big_decimal_to_decimal128`` global config option can be
    set to ``false``, and you can continue storing your ``BigDecimal`` values as
    strings. Note that you are surrendering the advantages of storing ``BigDecimal``
    values as a ``decimal128``, like being able to do queries and aggregations
    based on the numerical value of the field.
 
-2. The ``Mongoid.map_big_decimal_to_decimal128`` global config option can be
+2. The ``ActiveDocument.map_big_decimal_to_decimal128`` global config option can be
    set to ``true``, and you can convert all values for that field from strings to
    ``decimal128`` values in the database. You should do this conversion before
    setting the global config option to true. An example query to accomplish this
@@ -556,7 +556,7 @@ you have three options:
    field to its corresponding ``decimal128`` value. Note that this query only
    works in MongoDB 4.2+.
 
-3. The ``Mongoid.map_big_decimal_to_decimal128`` global config option can be
+3. The ``ActiveDocument.map_big_decimal_to_decimal128`` global config option can be
    set to ``true``, and you can have both strings and ``decimal128`` values for
    that field. This way, only ``decimal128`` values will be inserted into and
    updated to the database going forward. Note that you still don't get the
@@ -567,7 +567,7 @@ you have three options:
 
    .. code-block:: ruby
 
-      Mongoid.map_big_decimal_to_decimal128 = true
+      ActiveDocument.map_big_decimal_to_decimal128 = true
       big_decimal = BigDecimal('2E9')
       Band.in(sales: [big_decimal, big_decimal.to_s]).to_a
 
@@ -578,13 +578,13 @@ you have three options:
 Using Symbols Or Strings Instead Of Classes
 -------------------------------------------
 
-Mongoid permits using symbols or strings instead of classes to specify the
+ActiveDocument permits using symbols or strings instead of classes to specify the
 type of fields, for example:
 
 .. code-block:: ruby
 
   class Order
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :state, type: :integer
     # Equivalent to:
@@ -594,12 +594,12 @@ type of fields, for example:
   end
 
 Only standard field types as listed below can be specified using symbols or
-strings in this manner. Mongoid recognizes the following expansions:
+strings in this manner. ActiveDocument recognizes the following expansions:
 
 - ``:array`` => ``Array``
 - ``:big_decimal`` => ``BigDecimal``
 - ``:binary`` => ``BSON::Binary``
-- ``:boolean`` => ``Mongoid::Boolean``
+- ``:boolean`` => ``ActiveDocument::Boolean``
 - ``:date`` => ``Date``
 - ``:date_time`` => ``DateTime``
 - ``:float`` => ``Float``
@@ -626,7 +626,7 @@ fixed, as in the following example:
 .. code-block:: ruby
 
   class Order
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :state, type: String, default: 'created'
   end
@@ -636,7 +636,7 @@ The default value can also be specified as a ``Proc``:
 .. code-block:: ruby
 
   class Order
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :fulfill_by, type: Time, default: ->{ Time.now + 3.days }
   end
@@ -672,7 +672,7 @@ being operated on:
     end
   }
 
-When defining a default value as a ``Proc``, Mongoid will apply the default
+When defining a default value as a ``Proc``, ActiveDocument will apply the default
 after all other attributes are set and associations are initialized.
 To have the default be applied before the other attributes are set,
 use the ``pre_processed: true`` field option:
@@ -700,14 +700,14 @@ One of the drawbacks of having a schemaless database is that MongoDB must
 store all field information along with every document, meaning that it
 takes up a lot of storage space in RAM and on disk. A common pattern to limit
 this is to alias fields to a small number of characters, while keeping the
-domain in the application expressive. Mongoid allows you to do this and
+domain in the application expressive. ActiveDocument allows you to do this and
 reference the fields in the domain via their long names in getters, setters,
 and criteria while performing the conversion for you.
 
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :n, as: :name, type: String
   end
 
@@ -730,7 +730,7 @@ from the aliased field:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String
     alias_attribute :n, :name
@@ -765,7 +765,7 @@ This is useful for storing different values in ``id`` and ``_id`` fields:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     unalias_attribute :id
     field :id, type: String
@@ -779,14 +779,14 @@ Reserved Names
 --------------
 
 Attempting to define a field on a document that conflicts with a reserved
-method name in Mongoid will raise an error. The list of reserved names can
-be obtained by invoking the ``Mongoid.destructive_fields`` method.
+method name in ActiveDocument will raise an error. The list of reserved names can
+be obtained by invoking the ``ActiveDocument.destructive_fields`` method.
 
 
 Field Redefinition
 ------------------
 
-By default Mongoid allows redefining fields on a model. To raise an error
+By default ActiveDocument allows redefining fields on a model. To raise an error
 when a field is redefined, set the ``duplicate_fields_exception``
 :ref:`configuration option <configuration-options>` to ``true``.
 
@@ -795,7 +795,7 @@ With the option set to true, the following example will raise an error:
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name
 
@@ -807,7 +807,7 @@ To define the field anyway, use the ``overwrite: true`` option:
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name
 
@@ -820,8 +820,8 @@ To define the field anyway, use the ``overwrite: true`` option:
 Custom IDs
 ----------
 
-By default, Mongoid defines the ``_id`` field on documents to contain a
-``BSON::ObjectId`` value which is automatically generated by Mongoid.
+By default, ActiveDocument defines the ``_id`` field on documents to contain a
+``BSON::ObjectId`` value which is automatically generated by ActiveDocument.
 
 It is possible to replace the ``_id`` field definition to change the type
 of the ``_id`` values or have different default values:
@@ -829,7 +829,7 @@ of the ``_id`` values or have different default values:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
     field :_id, type: String, default: ->{ name }
   end
@@ -839,15 +839,15 @@ It is possible to omit the default entirely:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :_id, type: String
   end
 
 If the default on ``_id`` is omitted, and no ``_id`` value is provided by
-your application, Mongoid will persist the document without the ``_id``
+your application, ActiveDocument will persist the document without the ``_id``
 value. In this case, if the document is a top-level document, an ``_id``
 value will be assigned by the server; if the document is an embedded document,
-no ``_id`` value will be assigned. Mongoid will not automatically retrieve
+no ``_id`` value will be assigned. ActiveDocument will not automatically retrieve
 this value, if assigned, when the document is persisted - you
 must obtain the persisted value (and the complete persisted document) using
 other means:
@@ -859,13 +859,13 @@ other means:
   band.id
   => nil
   band.reload
-  # raises Mongoid::Errors::DocumentNotFound
+  # raises ActiveDocument::Errors::DocumentNotFound
   Band.last
   => #<Band _id: 5fc681c22c97a6791f324b99, >
 
 Omitting ``_id`` fields is more common in :ref:`embedded documents <omit-id>`.
 
-Mongoid also defines the ``id`` field aliased to ``_id``. The ``id``
+ActiveDocument also defines the ``id`` field aliased to ``_id``. The ``id``
 alias can :ref:`be removed <unalias-id>` if desired (such as to integrate
 with systems that use the ``id`` field to store value different from ``_id``.
 
@@ -874,7 +874,7 @@ with systems that use the ``id`` field to store value different from ``_id``.
 Uncastable Values
 -----------------
 
-In Mongoid 8, Mongoid has standardized the treatment of the assignment and
+In ActiveDocument 8, ActiveDocument has standardized the treatment of the assignment and
 reading of "uncastable" values. A value is considered "uncastable" when it
 cannot be coerced to the type of its field. For example, an array would be an
 "uncastable" value to an Integer field.
@@ -889,7 +889,7 @@ default. Consider the following example:
 .. code::
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: Integer
   end
@@ -919,7 +919,7 @@ Note that the original uncastable values will be stored in the
   fields, ``to_f`` for Floats, and ``to_d`` for BigDecimals, is castable.
   Strings are the exception and will only call the corresponding ``to_*``
   method if the string is numeric. If a class only defines ``to_i`` and not
-  ``to_f`` and is being assigned to a Float field, this is uncastable, and Mongoid
+  ``to_f`` and is being assigned to a Float field, this is uncastable, and ActiveDocument
   will not perform a two-step conversion (i.e. ``to_i`` and then ``to_f``).
 
 
@@ -927,14 +927,14 @@ Reading Uncastable Values
 `````````````````````````
 
 When documents in the database contain values of different types than their
-representations in Mongoid, if Mongoid cannot coerce them into the correct type,
+representations in ActiveDocument, if ActiveDocument cannot coerce them into the correct type,
 it will replace the value with ``nil``. Consider the following model and document in the
 database:
 
 .. code::
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: Integer
   end
@@ -974,7 +974,7 @@ names:
 Customizing Field Behavior
 ==========================
 
-Mongoid offers several ways to customize the behavior of fields.
+ActiveDocument offers several ways to customize the behavior of fields.
 
 
 .. _custom-getters-and-setters:
@@ -988,7 +988,7 @@ same name as the field. Use ``read_attribute`` and ``write_attribute``
 methods inside the getters and setters to operate on the raw attribute
 values.
 
-For example, Mongoid provides the ``:default`` field option to write a
+For example, ActiveDocument provides the ``:default`` field option to write a
 default value into the field. If you wish to have a field default value
 in your application but do not wish to persist it, you can override the
 getter as follows:
@@ -996,7 +996,7 @@ getter as follows:
 .. code-block:: ruby
 
   class DistanceMeasurement
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :value, type: Float
     field :unit, type: String
@@ -1022,7 +1022,7 @@ may be implemented as follows:
 .. code-block:: ruby
 
   class DistanceMeasurement
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :value, type: Float
     field :unit, type: String
@@ -1045,14 +1045,14 @@ may be implemented as follows:
 Custom Field Types
 ------------------
 
-You can define custom types in Mongoid and determine how they are serialized
+You can define custom types in ActiveDocument and determine how they are serialized
 and deserialized. In this example, we define a new field type ``Point``, which we
 can use in our model class as follows:
 
 .. code-block:: ruby
 
   class Profile
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :location, type: Point
   end
 
@@ -1126,7 +1126,7 @@ The ``demongoize`` method is used when calling the getters of fields for your cu
 Note that in the example above, since ``demongoize`` calls ``Point.new``, a new instance of
 ``Point`` will be generated on each call to the getter.
 
-Mongoid will always call the ``demongoize`` method on values that were
+ActiveDocument will always call the ``demongoize`` method on values that were
 retrieved from the database, but applications may, in theory, call
 ``demongoize`` with arbitrary input. It is recommended that applications add
 handling for arbitrary input in their ``demongoize`` methods. We can rewrite
@@ -1147,7 +1147,7 @@ return ``nil`` on values that are uncastable to your custom type. See the
 section on :ref:`Uncastable Values <uncastable-values>` for more details.
 
 Lastly, the class method ``evolve`` is similar to ``mongoize``, however it is used
-when transforming objects for use in Mongoid query criteria.
+when transforming objects for use in ActiveDocument query criteria.
 
 .. code-block:: ruby
 
@@ -1206,7 +1206,7 @@ in the database:
   end
 
   class Profile
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :color, type: ColorMapping
   end
 
@@ -1234,7 +1234,7 @@ specifying its handler function as a block:
 
   # in /config/initializers/mongoid_custom_fields.rb
 
-  Mongoid::Fields.option :max_length do |model, field, value|
+  ActiveDocument::Fields.option :max_length do |model, field, value|
     model.validates_length_of field.name, maximum: value
   end
 
@@ -1243,7 +1243,7 @@ Then, use it your model class:
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String, max_length: 10
   end
@@ -1257,20 +1257,20 @@ in the field definition, even if the option's value is false or nil.
 Dynamic Fields
 ==============
 
-By default, Mongoid requires all fields that may be set on a document to
-be explicitly defined using ``field`` declarations. Mongoid also supports
+By default, ActiveDocument requires all fields that may be set on a document to
+be explicitly defined using ``field`` declarations. ActiveDocument also supports
 creating fields on the fly from an arbitrary hash or documents stored in
 the database. When a model uses fields not explicitly defined, such fields
 are called *dynamic fields*.
 
-To enable dynamic fields, include ``Mongoid::Attributes::Dynamic`` module
+To enable dynamic fields, include ``ActiveDocument::Attributes::Dynamic`` module
 in the model:
 
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
-    include Mongoid::Attributes::Dynamic
+    include ActiveDocument::Document
+    include ActiveDocument::Attributes::Dynamic
   end
 
   bob = Person.new(name: 'Bob', age: 42)
@@ -1398,7 +1398,7 @@ Attributes can always be read using mass attribute access or ``read_attribute``
 Special Characters in Field Names
 ---------------------------------
 
-Mongoid permits dynamic field names to include spaces and punctuation:
+ActiveDocument permits dynamic field names to include spaces and punctuation:
 
 .. code-block:: ruby
 
@@ -1416,16 +1416,16 @@ Mongoid permits dynamic field names to include spaces and punctuation:
 Localized Fields
 ================
 
-Mongoid supports localized fields via the `I18n gem <https://github.com/ruby-i18n/i18n>`_.
+ActiveDocument supports localized fields via the `I18n gem <https://github.com/ruby-i18n/i18n>`_.
 
 .. code-block:: ruby
 
    class Product
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :description, type: String, localize: true
    end
 
-By telling the field to ``localize``, Mongoid will under the covers store the field
+By telling the field to ``localize``, ActiveDocument will under the covers store the field
 as a hash of locale/value pairs, but normal access to it will behave like a string.
 
 .. code-block:: ruby
@@ -1454,7 +1454,7 @@ with float fields for differences with currency:
 .. code:: ruby
 
   class Product
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :price, type: Float, localize: true
     field :currency, type: String, localize: true
@@ -1484,12 +1484,12 @@ stored translations hash). We can create an instance of this model as follows:
 Localize ``:present`` Field Option
 ----------------------------------
 
-Mongoid supports the ``:present`` option when creating a localized field:
+ActiveDocument supports the ``:present`` option when creating a localized field:
 
 .. code-block:: ruby
 
    class Product
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :description, localize: :present
    end
 
@@ -1518,7 +1518,7 @@ removed from the ``_translations`` hash instead of writing the empty string.
 Fallbacks
 ---------
 
-Mongoid integrates with
+ActiveDocument integrates with
 `i18n fallbacks <https://github.com/ruby-i18n/i18n/wiki/Fallbacks>`_.
 To use the fallbacks, the respective functionality must be explicitly enabled.
 
@@ -1552,13 +1552,13 @@ language, translations will be looked up in the fallback languages:
   I18n.locale = :de
   product.description # "Marvelous!"
 
-Mongoid also defines a ``:fallbacks`` option on fields, which can be used to
+ActiveDocument also defines a ``:fallbacks`` option on fields, which can be used to
 disable fallback functionality on a specific field:
 
 .. code:: ruby
 
   class Product
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :description, type: String, localize: true, fallbacks: false
   end
 
@@ -1580,7 +1580,7 @@ Note that this option defaults to ``true``.
 Querying
 --------
 
-When querying for localized fields using Mongoid's criteria API, Mongoid will automatically
+When querying for localized fields using ActiveDocument's criteria API, ActiveDocument will automatically
 alter the criteria to match the current locale.
 
 .. code-block:: ruby
@@ -1599,7 +1599,7 @@ locales that you plan on searching on.
 .. code-block:: ruby
 
    class Product
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :description, localize: true
 
      index "description.de" => 1
@@ -1612,14 +1612,14 @@ locales that you plan on searching on.
 Read-Only Attributes
 ====================
 
-You can tell Mongoid that certain attributes are read-only. This will allow
+You can tell ActiveDocument that certain attributes are read-only. This will allow
 documents to be created with these attributes, but changes to them will be
 ignored when using mass update methods such as ``update_attributes``:
 
 .. code-block:: ruby
 
    class Band
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :name, type: String
      field :origin, type: String
 
@@ -1654,15 +1654,15 @@ changes to read-only fields.
 Timestamp Fields
 ================
 
-Mongoid supplies a timestamping module in ``Mongoid::Timestamps`` which
+ActiveDocument supplies a timestamping module in ``ActiveDocument::Timestamps`` which
 can be included to get basic behavior for ``created_at`` and
 ``updated_at`` fields.
 
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
-     include Mongoid::Timestamps
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps
    end
 
 You may also choose to only have specific timestamps for creation or
@@ -1671,13 +1671,13 @@ modification.
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
-     include Mongoid::Timestamps::Created
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps::Created
    end
 
    class Post
-     include Mongoid::Document
-     include Mongoid::Timestamps::Updated
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps::Updated
    end
 
 If you want to turn off timestamping for specific calls, use the timeless
@@ -1694,18 +1694,18 @@ you can include the short versions of the modules.
 .. code-block:: ruby
 
    class Band
-     include Mongoid::Document
-     include Mongoid::Timestamps::Short # For c_at and u_at.
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps::Short # For c_at and u_at.
    end
 
    class Band
-     include Mongoid::Document
-     include Mongoid::Timestamps::Created::Short # For c_at only.
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps::Created::Short # For c_at only.
    end
 
    class Band
-     include Mongoid::Document
-     include Mongoid::Timestamps::Updated::Short # For u_at only.
+     include ActiveDocument::Document
+     include ActiveDocument::Timestamps::Updated::Short # For u_at only.
    end
 
 
@@ -1715,10 +1715,10 @@ Field Names with Dots/Periods (``.``) and Dollar Signs (``$``)
 ==============================================================
 
 Using dots/periods (``.``) in fields names and starting a field name with
-a dollar sign (``$``) is not recommended, as Mongoid provides limited support
+a dollar sign (``$``) is not recommended, as ActiveDocument provides limited support
 for retrieving and operating on the documents stored in those fields.
 
-Both Mongoid and MongoDB query language (MQL) generally use the dot/period
+Both ActiveDocument and MongoDB query language (MQL) generally use the dot/period
 character (``.``) to separate field names in a field path that traverses
 embedded documents, and words beginning with the dollar sign (``$``) as
 operators. MongoDB provides `limited support
@@ -1732,14 +1732,14 @@ requiring the usage of the aggregation pipeline for both queries and updates,
 applications should avoid using dots in field names and starting field names
 with the dollar sign if possible.
 
-Mongoid, starting in version 8, now allows users to access fields that begin with
+ActiveDocument, starting in version 8, now allows users to access fields that begin with
 dollar signs and that contain dots/periods. They can be accessed using the ``send``
 method as follows:
 
 .. code::
 
     class User
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :"first.last", type: String
       field :"$_amount", type: Integer
     end
@@ -1765,7 +1765,7 @@ will raise an error:
 .. code::
 
     class User
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :"first.last", type: String
       field :"$_amount", type: Integer
     end

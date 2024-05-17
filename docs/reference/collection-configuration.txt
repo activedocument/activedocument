@@ -38,7 +38,7 @@ Time Series Collection
 .. code-block:: ruby
 
   class Measurement
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :temperature, type: Integer
     field :timestamp, type: Time
@@ -60,7 +60,7 @@ Capped Collections
 .. code-block:: ruby
 
   class Name
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     store_in collection_options: {
       capped: true,
@@ -74,7 +74,7 @@ Set a Default Collation on a Collection
 .. code-block:: ruby
 
   class Name
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     store_in collection_options: {
       collation: {
