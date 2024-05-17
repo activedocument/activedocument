@@ -6,7 +6,7 @@ def parse_data_key_options(argv = ARGV)
   # The only way to use OptionParser to parse custom options in rake is
   # to pass an empty argument ("--") before specifying them, e.g.:
   #
-  #    rake db:mongoid:encryption:create_data_key -- --client default
+  #    rake db:active_document:encryption:create_data_key -- --client default
   #
   # Otherwise, rake complains about an unknown option. Thus, we can tell
   # if the argument list is valid for us to parse by detecting this empty
@@ -36,7 +36,7 @@ def parse_data_key_options(argv = ARGV)
 end
 
 namespace :db do
-  namespace :mongoid do
+  namespace :active_document do
     namespace :encryption do
       desc 'Create encryption key'
       task create_data_key: [:environment] do

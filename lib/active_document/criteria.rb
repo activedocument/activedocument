@@ -101,7 +101,7 @@ module ActiveDocument
     #   a nested array. Each array will be flattened.
     #
     # @example Finds a document by its _id, invokes Findable#find.
-    #   critera.find("1234")
+    #   criteria.find("1234")
     #
     # @example Finds the first matching document using a block, invokes Enumerable#find.
     #   criteria.find { |item| item.name == "Depeche Mode" }

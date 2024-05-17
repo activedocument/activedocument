@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :db do
-  namespace :mongoid do
+  namespace :active_document do
 
     desc 'Load ActiveDocument models into memory'
     task load_models: :environment do
