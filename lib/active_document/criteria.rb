@@ -9,6 +9,8 @@ require 'active_document/criteria/queryable'
 require 'active_document/criteria/scopable'
 require 'active_document/criteria/options'
 require 'active_document/criteria/translator'
+require 'active_document/clients/options'
+require 'active_document/clients/sessions'
 
 module ActiveDocument
 

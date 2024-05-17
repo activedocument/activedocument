@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'active_document/clients/storage_options'
+require 'active_document/clients/options'
+require 'active_document/clients/sessions'
 require 'active_document/changeable'
 require 'active_document/collection_configurable'
 require 'active_document/encryptable'
@@ -24,6 +27,7 @@ require 'active_document/validatable'
 module ActiveDocument
 
   # This module provides inclusions of all behavior in a ActiveDocument document.
+  # TODO-SHIELDS: Module sucks, should be broken into nested singletons with delegation.
   module Composable
     extend ActiveSupport::Concern
 
@@ -38,7 +42,9 @@ module ActiveDocument
     include ActiveModel::Serializers::JSON
     include Atomic
     include Changeable
-    include Clients
+    include Clients::StorageOptions
+    include Clients::Options
+    include Clients::Sessions
     include CollectionConfigurable
     include Attributes
     include Evolvable
@@ -80,8 +86,9 @@ module ActiveDocument
       Reloadable,
       Scopable,
       Serializable,
-      Clients,
+      Clients::StorageOptions,
       Clients::Options,
+      Clients::Sessions,
       Shardable,
       Stateful,
       Cacheable,
@@ -123,6 +130,7 @@ module ActiveDocument
       #   ActiveDocument::Components.prohibited_methods
       #
       # @return [ Array<Symbol> ]
+      # TODO-SHIELDS: This should be done with reflection, not hardcoding.
       def prohibited_methods
         @prohibited_methods ||= MODULES.flat_map do |mod|
           mod.instance_methods.map(&:to_sym)
