@@ -18,7 +18,7 @@ describe ActiveDocument::Errors::InvalidConfigOption do
 
     it 'contains the summary in the message' do
       expect(error.message).to include(
-        'A invalid configuration option was provided in your activedocument.yml,'
+        'A invalid configuration option was provided in your active_document.yml,'
       )
     end
 

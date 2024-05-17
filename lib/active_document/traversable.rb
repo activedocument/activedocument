@@ -93,7 +93,7 @@ module ActiveDocument
       def discriminator_key=(value)
         raise Errors::InvalidDiscriminatorKeyTarget.new(self, superclass) if hereditary?
 
-        _mongoid_clear_types
+        _active_document_clear_types
 
         if value
           ActiveDocument::Fields::Validators::Macro.validate_field_name(self, value)
@@ -125,7 +125,7 @@ module ActiveDocument
       # @api private
       def discriminator_value=(value)
         value ||= name
-        _mongoid_clear_types
+        _active_document_clear_types
         add_discriminator_mapping(value)
         @discriminator_value = value
       end

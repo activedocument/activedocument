@@ -261,7 +261,7 @@ describe ActiveDocument::PersistenceContext do
       context 'when the parent object has a client set' do
 
         let(:file) do
-          File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
+          File.join(File.dirname(__FILE__), '..', 'config', 'active_document.yml')
         end
 
         before do

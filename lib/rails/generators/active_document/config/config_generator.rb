@@ -32,14 +32,14 @@ module ActiveDocument
         parent.underscore
       end
 
-      # Creates a +activedocument.yml+ config file from a template.
+      # Creates a +active_document.yml+ config file from a template.
       def create_config_file
-        template 'activedocument.yml', File.join('config', 'activedocument.yml')
+        template 'active_document.yml', File.join('config', 'active_document.yml')
       end
 
       # Creates a +active_document.rb+ initializer file from a template.
       def create_initializer_file
-        template 'mongoid.rb', File.join('config', 'initializers', 'mongoid.rb')
+        template 'active_document.rb', File.join('config', 'initializers', 'active_document.rb')
       end
     end
   end

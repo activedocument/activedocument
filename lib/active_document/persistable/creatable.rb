@@ -112,8 +112,8 @@ module ActiveDocument
           run_callbacks(:save, with_children: false) do
             run_callbacks(:create, with_children: false) do
               run_callbacks(:persist_parent, with_children: false) do
-                _mongoid_run_child_callbacks(:save) do
-                  _mongoid_run_child_callbacks(:create) do
+                _active_document_run_child_callbacks(:save) do
+                  _active_document_run_child_callbacks(:create) do
                     result = yield(self)
                     if !result.is_a?(Document) || result.errors.empty?
                       post_process_insert

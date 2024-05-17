@@ -185,7 +185,7 @@ module ActiveDocument
     # @note Use only in development or test environments for convenience.
     #
     # @example Set the database to connect to.
-    #   config.connect_to("mongoid_test")
+    #   config.connect_to("active_document_test")
     #
     # @param [ String ] name The database name.
     def connect_to(name, options = { read: { mode: :primary } })
@@ -209,11 +209,11 @@ module ActiveDocument
       Composable.prohibited_methods
     end
 
-    # Load the settings from a compliant activedocument.yml file. This can be used for
+    # Load the settings from a compliant active_document.yml file. This can be used for
     # easy setup with frameworks other than Rails.
     #
     # @example Configure ActiveDocument.
-    #   ActiveDocument.load!("/path/to/activedocument.yml")
+    #   ActiveDocument.load!("/path/to/active_document.yml")
     #
     # @param [ String ] path The path to the file.
     # @param [ String | Symbol ] environment The environment to load.

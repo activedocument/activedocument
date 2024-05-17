@@ -10,7 +10,7 @@ module ActiveDocument
 
       attr_reader :problem, :summary, :resolution
 
-      BASE_KEY = 'mongoid.errors.messages'
+      BASE_KEY = 'active_document.errors.messages'
 
       # Compose the message.
       #

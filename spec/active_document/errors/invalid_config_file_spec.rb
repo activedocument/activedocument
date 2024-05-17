@@ -18,7 +18,7 @@ describe ActiveDocument::Errors::InvalidConfigFile do
 
     it 'contains the summary in the message' do
       expect(error.message).to include(
-        'Your activedocument.yml configuration file does not contain the'
+        'Your active_document.yml configuration file does not contain the'
       )
     end
 

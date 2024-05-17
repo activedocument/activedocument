@@ -153,11 +153,11 @@ module ActiveDocument
     #   the document.
     #
     # @api private
-    def _mongoid_run_child_callbacks(kind, children: nil, &block)
+    def _active_document_run_child_callbacks(kind, children: nil, &block)
       if ActiveDocument::Config.around_callbacks_for_embeds
-        _mongoid_run_child_callbacks_with_around(kind, children: children, &block)
+        _active_document_run_child_callbacks_with_around(kind, children: children, &block)
       else
-        _mongoid_run_child_callbacks_without_around(kind, children: children, &block)
+        _active_document_run_child_callbacks_without_around(kind, children: children, &block)
       end
     end
 
@@ -175,7 +175,7 @@ module ActiveDocument
     #  the document.
     #
     #  @api private
-    def _mongoid_run_child_callbacks_with_around(kind, children: nil, &block)
+    def _active_document_run_child_callbacks_with_around(kind, children: nil, &block)
       child, *tail = children || cascadable_children(kind)
       with_children = !ActiveDocument::Config.prevent_multiple_calls_of_embedded_callbacks
       if child.nil?
@@ -184,7 +184,7 @@ module ActiveDocument
         child.run_callbacks(child_callback_type(kind, child), with_children: with_children, &block)
       else
         child.run_callbacks(child_callback_type(kind, child), with_children: with_children) do
-          _mongoid_run_child_callbacks_with_around(kind, children: tail, &block)
+          _active_document_run_child_callbacks_with_around(kind, children: tail, &block)
         end
       end
     end
@@ -198,16 +198,16 @@ module ActiveDocument
     #   the document.
     #
     # @api private
-    def _mongoid_run_child_callbacks_without_around(kind, children: nil, &block)
+    def _active_document_run_child_callbacks_without_around(kind, children: nil, &block)
       children ||= cascadable_children(kind)
-      callback_list = _mongoid_run_child_before_callbacks(kind, children: children)
+      callback_list = _active_document_run_child_before_callbacks(kind, children: children)
       return false if callback_list == false
 
       value = block&.call
       callback_list.each do |_next_sequence, env| # rubocop:disable Style/HashEachMethods
         env.value &&= value
       end
-      return false if _mongoid_run_child_after_callbacks(callback_list: callback_list) == false
+      return false if _active_document_run_child_after_callbacks(callback_list: callback_list) == false
 
       value
     end
@@ -221,7 +221,7 @@ module ActiveDocument
     #   to execute after callbacks in reverse order.
     #
     # @api private
-    def _mongoid_run_child_before_callbacks(kind, children: [], callback_list: [])
+    def _active_document_run_child_before_callbacks(kind, children: [], callback_list: [])
       children.each do |child|
         chain = child.__callbacks[child_callback_type(kind, child)]
         env = ActiveSupport::Callbacks::Filters::Environment.new(child, false, nil)
@@ -236,7 +236,7 @@ module ActiveDocument
         env.value = !env.halted
         callback_list << [next_sequence, env]
         if (grandchildren = child.send(:cascadable_children, kind))
-          _mongoid_run_child_before_callbacks(kind, children: grandchildren, callback_list: callback_list)
+          _active_document_run_child_before_callbacks(kind, children: grandchildren, callback_list: callback_list)
         end
       end
       callback_list
@@ -246,7 +246,7 @@ module ActiveDocument
     #
     # @param [ Array<ActiveSupport::Callbacks::CallbackSequence, ActiveSupport::Callbacks::Filters::Environment> ] callback_list List of
     #   pairs of callback sequence and environment.
-    def _mongoid_run_child_after_callbacks(callback_list: [])
+    def _active_document_run_child_after_callbacks(callback_list: [])
       callback_list.reverse_each do |next_sequence, env|
         next_sequence.invoke_after(env)
         return false if env.halted

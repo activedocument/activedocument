@@ -61,7 +61,7 @@ describe ActiveDocument::Config::Environment do
   describe '#load_yaml' do
     subject { described_class.load_yaml(path, environment) }
 
-    let(:path) { 'activedocument.yml' }
+    let(:path) { 'active_document.yml' }
     let(:environment) {}
 
     before do
@@ -77,7 +77,7 @@ describe ActiveDocument::Config::Environment do
 
     context 'when file found' do
       before do
-        allow(File).to receive(:read).with('activedocument.yml').and_return(file_contents)
+        allow(File).to receive(:read).with('active_document.yml').and_return(file_contents)
       end
 
       let(:file_contents) do
@@ -140,7 +140,7 @@ describe ActiveDocument::Config::Environment do
       raise 'Expected to find some schema maps' if paths.empty?
 
       before do
-        allow(File).to receive(:read).with('activedocument.yml').and_return(file_contents)
+        allow(File).to receive(:read).with('active_document.yml').and_return(file_contents)
       end
 
       let(:file_contents) do

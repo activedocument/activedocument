@@ -8,33 +8,33 @@ module ActiveDocument
   # on the current thread.
   module Threaded
 
-    DATABASE_OVERRIDE_KEY = '[mongoid]:db-override'
+    DATABASE_OVERRIDE_KEY = '[active_document]:db-override'
 
     # Constant for the key to store clients.
-    CLIENTS_KEY = '[mongoid]:clients'
+    CLIENTS_KEY = '[active_document]:clients'
 
     # The key to override the client.
-    CLIENT_OVERRIDE_KEY = '[mongoid]:client-override'
+    CLIENT_OVERRIDE_KEY = '[active_document]:client-override'
 
     # The key for the current thread's scope stack.
-    CURRENT_SCOPE_KEY = '[mongoid]:current-scope'
+    CURRENT_SCOPE_KEY = '[active_document]:current-scope'
 
-    AUTOSAVES_KEY = '[mongoid]:autosaves'
-    VALIDATIONS_KEY = '[mongoid]:validations'
+    AUTOSAVES_KEY = '[active_document]:autosaves'
+    VALIDATIONS_KEY = '[active_document]:validations'
 
     STACK_KEYS = Hash.new do |hash, key|
-      hash[key] = "[mongoid]:#{key}-stack"
+      hash[key] = "[active_document]:#{key}-stack"
     end
 
     # The key for the current thread's sessions.
-    SESSIONS_KEY = '[mongoid]:sessions'
+    SESSIONS_KEY = '[active_document]:sessions'
 
     # The key for storing documents modified inside transactions.
-    MODIFIED_DOCUMENTS_KEY = '[mongoid]:modified-documents'
+    MODIFIED_DOCUMENTS_KEY = '[active_document]:modified-documents'
 
     # The key storing the default value for whether or not callbacks are
     # executed on documents.
-    EXECUTE_CALLBACKS = '[mongoid]:execute-callbacks'
+    EXECUTE_CALLBACKS = '[active_document]:execute-callbacks'
 
     extend self
 

@@ -5,7 +5,7 @@ module ActiveDocument
 
     def use_spec_active_document_config
       around do |example|
-        config_path = File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
+        config_path = File.join(File.dirname(__FILE__), '..', 'config', 'active_document.yml')
 
         ActiveDocument::Clients.clear
         ActiveDocument.load!(config_path, :test)

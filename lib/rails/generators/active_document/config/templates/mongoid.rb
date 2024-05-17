@@ -7,13 +7,13 @@ ActiveDocument.configure do
   # features flags (refer to documentation)
   config.load_defaults target_version
 
-  # It is recommended to use config/activedocument.yml for most ActiveDocument-related
+  # It is recommended to use config/active_document.yml for most ActiveDocument-related
   # configuration, whenever possible, but if you prefer, you can set
   # configuration values here, instead:
   #
   #   config.log_level = :debug
   #
-  # Note that the settings in config/activedocument.yml always take precedence,
+  # Note that the settings in config/active_document.yml always take precedence,
   # whatever else is set here.
 end
 

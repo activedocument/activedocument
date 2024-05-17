@@ -34,7 +34,7 @@ introduces feature flags which are further explained in the
 sections below.
 
 To enable all new behavior in ActiveDocument 7.5, please use the following
-:ref:`configuration options <configuration-options>` in your activedocument.yml file.
+:ref:`configuration options <configuration-options>` in your active_document.yml file.
 We recommend newly created apps to do this as well.
 
 .. code-block:: yaml

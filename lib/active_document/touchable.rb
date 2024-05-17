@@ -188,7 +188,7 @@ module ActiveDocument
     private
 
     # The key to use to store the active touch callback suppression statuses
-    SUPPRESS_TOUCH_CALLBACKS_KEY = '[mongoid]:suppress-touch-callbacks'
+    SUPPRESS_TOUCH_CALLBACKS_KEY = '[active_document]:suppress-touch-callbacks'
 
     # Returns a hash to be used to store and query the various touch callback
     # suppression statuses for different classes.

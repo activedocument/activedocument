@@ -66,14 +66,14 @@ module ActiveDocument
       # Is the string a valid value for a ActiveDocument id?
       #
       # @example Is the string an id value?
-      #   "_id".mongoid_id?
+      #   "_id".active_document_id?
       #
       # @return [ true | false ] If the string is id or _id.
       # @deprecated
-      def mongoid_id?
+      def active_document_id?
         self =~ /\A(|_)id\z/
       end
-      ActiveDocument.deprecate(self, :mongoid_id?)
+      ActiveDocument.deprecate(self, :active_document_id?)
 
       # Is the string a number? The literals "NaN", "Infinity", and "-Infinity"
       # are counted as numbers.

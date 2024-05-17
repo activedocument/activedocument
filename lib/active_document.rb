@@ -46,7 +46,7 @@ module ActiveDocument
   extend Clients::Sessions::ClassMethods
 
   # A string added to the platform details of Ruby driver client handshake documents.
-  PLATFORM_DETAILS = "mongoid-#{VERSION}".freeze # rubocop:disable Style/RedundantFreeze
+  PLATFORM_DETAILS = "active_document-#{VERSION}".freeze # rubocop:disable Style/RedundantFreeze
 
   # The minimum MongoDB version supported.
   MONGODB_VERSION = '2.6.0'
@@ -55,11 +55,11 @@ module ActiveDocument
   #
   # @example Set up configuration options.
   #   ActiveDocument.configure do |config|
-  #     config.connect_to("mongoid_test")
+  #     config.connect_to("active_document_test")
   #
   #     config.clients.default = {
   #       hosts: ["localhost:27017"],
-  #       database: "mongoid_test",
+  #       database: "active_document_test",
   #     }
   #   end
   #
@@ -67,7 +67,7 @@ module ActiveDocument
   #   the block to perform variable assignment.
   #
   #   ActiveDocument.configure do
-  #     connect_to("mongoid_test")
+  #     connect_to("active_document_test")
   #
   #     config.preload_models = true
   #

@@ -79,7 +79,7 @@ The steps required are as follows:
 5. Click Download.
 
 Once extracted, ensure the full path to the library is configured within your
-``activedocument.yml`` as follows:
+``active_document.yml`` as follows:
 
 .. code-block:: yaml
 
@@ -142,7 +142,7 @@ Configure Clients
 
 Automatic CSFLE requires some additional configuration for the MongoDB client.
 Assuming that your application has just one ``default`` client, you need to
-add the following to your ``activedocument.yml``:
+add the following to your ``active_document.yml``:
 
 .. code-block:: yaml
 
@@ -248,7 +248,7 @@ Now we can tell ActiveDocument what should be encrypted:
 
 .. note::
   If you are developing a Rails application, it is recommended to set
-  ``preload_models`` to ``true`` in ``activedocument.yml``. This will ensure that
+  ``preload_models`` to ``true`` in ``active_document.yml``. This will ensure that
   ActiveDocument loads all models before the application starts, and the encryption
   schema is configured before any data is read or written.
 
@@ -340,7 +340,7 @@ Data Encryption Keys can be created using the
 ``db:mongoid:encryption:create_data_key`` ``Rake`` task. By default they are
 stored on the same cluster as the database.
 However, it might be a good idea to store the keys separately. This can be
-done by specifying a key vault client in ``activedocument.yml``:
+done by specifying a key vault client in ``active_document.yml``:
 
 .. code-block:: yaml
 
@@ -376,7 +376,7 @@ Here is an example of rotating keys using AWS KMS:
 
   # Create a key vault client
   key_vault_client = Mongo::Client.new('mongodb+srv://user:pass@yourcluster.mongodb.net')
-  # Or, if you declared the key value client in activedocument.yml, use it
+  # Or, if you declared the key value client in active_document.yml, use it
   key_vault_client = ActiveDocument.client(:key_vault)
 
   # Create the encryption object

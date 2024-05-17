@@ -95,7 +95,7 @@ Setup ActiveDocument
 
     bin/rails g mongoid:config
 
-This generator will create the ``config/activedocument.yml`` configuration file
+This generator will create the ``config/active_document.yml`` configuration file
 (used to configure the connection to the MongoDB deployment) and the
 ``config/initializers/mongoid.rb`` initializer file (which may be used for
 other ActiveDocument-related configuration). Note that as we are not using
@@ -112,9 +112,9 @@ a MongoDB server is running locally. If you do not already have a
 local MongoDB server, `download and install MongoDB
 <https://mongodb.com/docs/manual/installation/>`_.
 
-While the generated ``activedocument.yml`` will work without modifications,
+While the generated ``active_document.yml`` will work without modifications,
 we recommend reducing the server selection timeout for development.
-With this change, the uncommented lines of ``activedocument.yml`` should look
+With this change, the uncommented lines of ``active_document.yml`` should look
 like this:
 
 .. code-block:: yaml
@@ -141,11 +141,11 @@ Once the cluster is created, follow the instructions in `connect to the cluster
 page <https://docs.atlas.mongodb.com/connect-to-cluster/#connect-to-a-cluster>`_
 to obtain the URI. Use the *Ruby driver 2.5 or later* format.
 
-Paste the URI into the ``config/activedocument.yml`` file, and comment out the
+Paste the URI into the ``config/active_document.yml`` file, and comment out the
 hosts that are defined. We recommend setting the server selection timeout to 5
 seconds for development environment when using Atlas.
 
-The uncommented contents of ``config/activedocument.yml`` should look like this:
+The uncommented contents of ``config/active_document.yml`` should look like this:
 
 .. code-block:: yaml
 
@@ -334,16 +334,16 @@ Generate the default ActiveDocument configuration:
 
     bin/rails g mongoid:config
 
-This generator will create the ``config/activedocument.yml`` configuration file
+This generator will create the ``config/active_document.yml`` configuration file
 (used to configure the connection to the MongoDB deployment) and the
 ``config/initializers/mongoid.rb`` initializer file (which may be used for
 other ActiveDocument-related configuration). In general, it is recommended to use
-``activedocument.yml`` for all ActiveDocument configuration.
+``active_document.yml`` for all ActiveDocument configuration.
 
 Review the sections :ref:`Configure for Self Managed MongoDB <configure-self-managed>`
 and :ref:`Configure for MongoDB Atlas <configure-atlas>` to decide how you
 would like to deploy MongoDB, and adjust the ActiveDocument configuration
-(``config/activedocument.yml``) to match.
+(``config/active_document.yml``) to match.
 
 Loaded Frameworks
 -----------------

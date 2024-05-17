@@ -115,7 +115,7 @@ database, or a different client. The following example would store the Band clas
 default into a collection named "artists" in the database named "music", with the client "analytics".
 
 Note that the value supplied to the ``client`` option must be configured under ``clients``
-in your activedocument.yml.
+in your active_document.yml.
 
 .. code-block:: ruby
 

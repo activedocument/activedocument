@@ -4,7 +4,7 @@ require "benchmark"
 require "active_document"
 require "./perf/models"
 
-ActiveDocument.connect_to("mongoid_perf_test")
+ActiveDocument.connect_to("active_document_perf_test")
 Mongo::Logger.logger.level = ::Logger::FATAL
 
 ActiveDocument.purge!

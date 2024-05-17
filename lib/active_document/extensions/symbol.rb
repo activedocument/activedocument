@@ -9,14 +9,14 @@ module ActiveDocument
       # Is the symbol a valid value for a ActiveDocument id?
       #
       # @example Is the string an id value?
-      #   :_id.mongoid_id?
+      #   :_id.active_document_id?
       #
       # @return [ true | false ] If the symbol is :id or :_id.
       # @deprecated
-      def mongoid_id?
-        to_s.mongoid_id?
+      def active_document_id?
+        to_s.active_document_id?
       end
-      ActiveDocument.deprecate(self, :mongoid_id?)
+      ActiveDocument.deprecate(self, :active_document_id?)
 
       module ClassMethods
 

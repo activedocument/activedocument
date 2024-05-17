@@ -152,7 +152,7 @@ module ActiveDocument
     # not be closed.
     #
     # If the persistence context is requested with :client option only, it means
-    # that the context should use a client configured in activedocument.yml.
+    # that the context should use a client configured in active_document.yml.
     # Such clients should not be closed when the context is cleared since they
     # will be reused later.
     #
@@ -276,7 +276,7 @@ module ActiveDocument
       # Key to store persistence contexts in the thread local storage.
       #
       # @api private
-      PERSISTENCE_CONTEXT_KEY = :'[mongoid]:persistence_context'
+      PERSISTENCE_CONTEXT_KEY = :'[active_document]:persistence_context'
 
       # Get the persistence context for a given object from the thread local
       #   storage.

@@ -30,7 +30,7 @@ from Moped to the official MongoDB Ruby driver. Please see the
 :ref:`configuration section <configuration>` for a detailed description
 of all the new options.
 
-All references to session are now replaced with client. This includes the ``activedocument.yml``
+All references to session are now replaced with client. This includes the ``active_document.yml``
 configuration, ``store_in`` options, and all exceptions and modules with Session in the name.
 
 ``find_and_modify`` has been removed and replaced with 3 options: ``find_one_and_update``,

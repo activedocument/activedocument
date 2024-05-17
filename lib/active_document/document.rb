@@ -148,7 +148,7 @@ module ActiveDocument
     #
     # @return [ ActiveDocument::Document ] An instance of the specified class.
     def becomes(klass)
-      mongoid_document_check!(klass)
+      active_document_document_check!(klass)
 
       became = klass.new(clone_document)
       became.internal_state = internal_state
@@ -297,7 +297,7 @@ module ActiveDocument
     #
     # @raise [ ArgumentError ] if the class does not include
     #   ActiveDocument::Document.
-    def mongoid_document_check!(klass)
+    def active_document_document_check!(klass)
       return if klass.include?(ActiveDocument::Document)
 
       raise ArgumentError.new('A class which includes ActiveDocument::Document is expected')
@@ -457,19 +457,19 @@ module ActiveDocument
       # key/value on a class.
       #
       # @example Get the types.
-      #   document._mongoid_clear_types
+      #   document._active_document_clear_types
       #
       # @api private
-      def _mongoid_clear_types
+      def _active_document_clear_types
         @_types = nil
-        superclass._mongoid_clear_types if hereditary?
+        superclass._active_document_clear_types if hereditary?
       end
 
       # Set the i18n scope to overwrite ActiveModel.
       #
-      # @return [ Symbol ] :mongoid
+      # @return [ Symbol ] :active_document
       def i18n_scope
-        :mongoid
+        :active_document
       end
 
       # Returns the logger
@@ -485,4 +485,4 @@ module ActiveDocument
   end
 end
 
-ActiveSupport.run_load_hooks(:mongoid, ActiveDocument::Document)
+ActiveSupport.run_load_hooks(:active_document, ActiveDocument::Document)

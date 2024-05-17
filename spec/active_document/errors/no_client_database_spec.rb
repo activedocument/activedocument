@@ -24,7 +24,7 @@ describe ActiveDocument::Errors::NoClientDatabase do
 
     it 'contains the resolution in the message' do
       expect(error.message).to include(
-        'If configuring via a activedocument.yml, ensure that within your :analytics'
+        'If configuring via a active_document.yml, ensure that within your :analytics'
       )
     end
   end

@@ -12,7 +12,7 @@ Configuration
    :depth: 2
    :class: singlecol
 
-ActiveDocument is customarily configured through a ``activedocument.yml`` file that specifies
+ActiveDocument is customarily configured through a ``active_document.yml`` file that specifies
 options and clients. The simplest configuration is as follows, which configures
 ActiveDocument to talk to a MongoDB server at "localhost:27017" and use the database
 named "mongoid".
@@ -43,16 +43,16 @@ configuration file for you by running the following command:
 
   rails g mongoid:config
 
-The configuration file will be placed in ``config/activedocument.yml``. An
+The configuration file will be placed in ``config/active_document.yml``. An
 initializer will also be created and placed in
 ``config/initializers/mongoid.rb``. It is recommended that all configuration
-be specified in ``config/activedocument.yml``, but if you prefer, the ``mongoid.rb``
+be specified in ``config/active_document.yml``, but if you prefer, the ``mongoid.rb``
 initializer may also be used to set configuration options. Note, though, that
-settings in ``activedocument.yml`` always take precedence over settings in the
+settings in ``active_document.yml`` always take precedence over settings in the
 initializer.
 
 If you are not using Ruby on Rails, you can copy the minimal configuration
-given above and save it as ``config/activedocument.yml``.
+given above and save it as ``config/active_document.yml``.
 
 
 Loading ActiveDocument Configuration
@@ -78,10 +78,10 @@ the configuration file path as its argument, as follows:
 .. code-block:: ruby
 
   # Use automatically detected environment name
-  ActiveDocument.load!('path/to/your/activedocument.yml')
+  ActiveDocument.load!('path/to/your/active_document.yml')
 
   # Specify environment name manually
-  ActiveDocument.load!('path/to/your/activedocument.yml', :production)
+  ActiveDocument.load!('path/to/your/active_document.yml', :production)
 
 When ActiveDocument is asked to automatically detect the environment name,
 it does so by examining the following sources, in order:
@@ -119,7 +119,7 @@ current environment - but it does support defining multiple clients.
 ActiveDocument Configuration Options
 =============================
 
-The following annotated example ``activedocument.yml`` demonstrates how ActiveDocument
+The following annotated example ``active_document.yml`` demonstrates how ActiveDocument
 can be configured.
 
 ActiveDocument delegates to the Ruby driver for client configuration. Please review
@@ -793,7 +793,7 @@ the Ruby driver, which implements the three algorithms that are supported by Mon
   requires the `zstd-ruby <https://rubygems.org/gems/zstd-ruby>`_ library to
   be installed.
 
-To use wire protocol compression, configure the Ruby driver options within ``activedocument.yml``:
+To use wire protocol compression, configure the Ruby driver options within ``active_document.yml``:
 
 .. code-block:: yaml
 

@@ -67,9 +67,9 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def and(*criteria)
-          _mongoid_flatten_arrays(criteria).inject(clone) do |c, new_s|
+          _active_document_flatten_arrays(criteria).inject(clone) do |c, new_s|
             new_s = new_s.selector if new_s.is_a?(Selectable)
-            normalized = _mongoid_expand_keys(new_s)
+            normalized = _active_document_expand_keys(new_s)
             normalized.each do |k, v|
               k = k.to_s
               if c.selector[k]
@@ -475,7 +475,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def nor(*criteria)
-          _mongoid_add_top_level_operation('$nor', criteria)
+          _active_document_add_top_level_operation('$nor', criteria)
         end
 
         # Is the current selectable negating the next selection?
@@ -509,7 +509,7 @@ module ActiveDocument
           else
             criteria.compact.inject(clone) do |c, new_s|
               new_s = new_s.selector if new_s.is_a?(Selectable)
-              _mongoid_expand_keys(new_s).each do |k, v|
+              _active_document_expand_keys(new_s).each do |k, v|
                 k = k.to_s
                 if c.selector[k] || k.start_with?('$') || v.is_a?(Hash)
                   c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
@@ -545,11 +545,11 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def none_of(*criteria)
-          criteria = _mongoid_flatten_arrays(criteria)
+          criteria = _active_document_flatten_arrays(criteria)
           return dup if criteria.empty?
 
           exprs = criteria.map do |criterion|
-            _mongoid_expand_keys(
+            _active_document_expand_keys(
               criterion.is_a?(Selectable) ? criterion.selector : criterion
             )
           end
@@ -588,7 +588,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def or(*criteria)
-          _mongoid_add_top_level_operation('$or', criteria)
+          _active_document_add_top_level_operation('$or', criteria)
         end
 
         # Adds a disjunction of the arguments as an additional constraint
@@ -618,7 +618,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def any_of(*criteria)
-          criteria = _mongoid_flatten_arrays(criteria)
+          criteria = _active_document_flatten_arrays(criteria)
           case criteria.length
           when 0
             clone
@@ -632,7 +632,7 @@ module ActiveDocument
             # and add the result to self.
             exprs = criteria.map do |criterion|
               if criterion.is_a?(Selectable)
-                _mongoid_expand_keys(criterion.selector)
+                _active_document_expand_keys(criterion.selector)
               else
                 criterion.to_h do |k, v|
                   if k.is_a?(Symbol)
@@ -800,7 +800,7 @@ module ActiveDocument
             raise Errors::InvalidQuery.new("Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}")
           end
 
-          normalized = _mongoid_expand_keys(criterion)
+          normalized = _active_document_expand_keys(criterion)
           clone.tap do |query|
             normalized.each do |field, value|
               field_s = field.to_s

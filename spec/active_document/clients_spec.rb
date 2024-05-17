@@ -544,7 +544,7 @@ describe ActiveDocument::Clients do
   describe '#mongo_client' do
 
     let(:file) do
-      File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
+      File.join(File.dirname(__FILE__), '..', 'config', 'active_document.yml')
     end
 
     before do
@@ -556,7 +556,7 @@ describe ActiveDocument::Clients do
     context 'when getting the default' do
 
       let(:file) do
-        File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
+        File.join(File.dirname(__FILE__), '..', 'config', 'active_document.yml')
       end
       let!(:band) do
         Band.new
@@ -656,7 +656,7 @@ describe ActiveDocument::Clients do
   describe '.mongo_client' do
 
     let(:file) do
-      File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
+      File.join(File.dirname(__FILE__), '..', 'config', 'active_document.yml')
     end
 
     before do
@@ -672,7 +672,7 @@ describe ActiveDocument::Clients do
     context 'when getting the default' do
 
       let(:file) do
-        File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
+        File.join(File.dirname(__FILE__), '..', 'config', 'active_document.yml')
       end
       let!(:mongo_client) do
         Band.mongo_client
@@ -1160,7 +1160,7 @@ describe ActiveDocument::Clients do
   context 'when overriding the default database' do
 
     let(:file) do
-      File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
+      File.join(File.dirname(__FILE__), '..', 'config', 'active_document.yml')
     end
 
     before do

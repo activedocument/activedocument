@@ -34,7 +34,7 @@ module ActiveDocument
       # specified environment, or for the current ActiveDocument environment.
       #
       # @example Load the yaml.
-      #   Environment.load_yaml("/work/activedocument.yml")
+      #   Environment.load_yaml("/work/active_document.yml")
       #
       # @param [ String ] path The location of the file.
       # @param [ String | Symbol ] environment Optional environment name to

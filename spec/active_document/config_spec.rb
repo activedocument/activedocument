@@ -337,7 +337,7 @@ describe ActiveDocument::Config do
   describe '#load!' do
 
     let(:file) do
-      File.join(File.dirname(__FILE__), '..', 'config', 'activedocument.yml')
+      File.join(File.dirname(__FILE__), '..', 'config', 'active_document.yml')
     end
 
     context 'when existing clients exist in the configuration' do

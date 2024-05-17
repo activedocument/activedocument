@@ -29,12 +29,12 @@ module Rails
         }
       end
 
-      config.app_generators.orm :mongoid, migration: false
+      config.app_generators.orm :active_document, migration: false
 
       config.action_dispatch.rescue_responses&.merge!(rescue_responses)
 
       rake_tasks do
-        load 'mongoid/railties/database.rake'
+        load 'active_document/railties/database.rake'
       end
 
       # Exposes ActiveDocument's configuration to the Rails application configuration.
@@ -42,19 +42,19 @@ module Rails
       # @example Set up configuration in the Rails app.
       #   module MyApplication
       #     class Application < Rails::Application
-      #       config.mongoid.logger = Logger.new(STDERR, :warn)
+      #       config.active_document.logger = Logger.new(STDERR, :warn)
       #     end
       #   end
-      config.mongoid = ::ActiveDocument::Config
+      config.active_document = ::ActiveDocument::Config
 
-      # Initialize ActiveDocument. This will look for a activedocument.yml in the config
-      # directory and configure mongoid appropriately.
+      # Initialize ActiveDocument. This will look for a active_document.yml in the config
+      # directory and configure active_document appropriately.
       #
       # It runs after all config/initializers have loaded, so that the YAML
       # options can override options specified in
-      # (e.g.) config/initializers/mongoid.rb.
-      initializer 'mongoid.load-config', after: :load_config_initializers do
-        config_file = Rails.root.join('config/activedocument.yml')
+      # (e.g.) config/initializers/active_document.rb.
+      initializer 'active_document.load-config', after: :load_config_initializers do
+        config_file = Rails.root.join('config/active_document.yml')
         if config_file.file?
           begin
             ::ActiveDocument.load!(config_file)
@@ -81,7 +81,7 @@ module Rails
       #
       # This will happen for every request in development, once in other
       # environments.
-      initializer 'mongoid.preload-models' do |app|
+      initializer 'active_document.preload-models' do |app|
         config.to_prepare do
           ::Rails::ActiveDocument.preload_models(app)
         end
@@ -89,10 +89,10 @@ module Rails
 
       # Rails runs all initializers first before getting into any generator
       # code, so we have no way in the initializer to know if we are
-      # generating a activedocument.yml. So instead of failing, we catch all the
+      # generating a active_document.yml. So instead of failing, we catch all the
       # errors and print them out.
       def handle_configuration_error(error)
-        ::ActiveDocument.logger.error 'There is a configuration error with the current activedocument.yml.'
+        ::ActiveDocument.logger.error 'There is a configuration error with the current active_document.yml.'
         ::ActiveDocument.logger.error error.message
       end
 
@@ -101,7 +101,7 @@ module Rails
       # instrumentation event `process_action.action_controller`.
       #
       # The measurement is made via internal Mongo monitoring subscription
-      initializer 'mongoid.runtime-metric' do
+      initializer 'active_document.runtime-metric' do
         require 'active_document/railties/controller_runtime'
 
         ActiveSupport.on_load :action_controller do
@@ -113,7 +113,7 @@ module Rails
       end
 
       # Add custom serializers for BSON::ObjectId
-      initializer 'mongoid.active_job.custom_serializers' do
+      initializer 'active_document.active_job.custom_serializers' do
         ActiveSupport.on_load :active_job do
           require 'active_document/railties/bson_object_id_serializer'
 

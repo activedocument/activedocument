@@ -23,9 +23,9 @@ You can set ActiveDocument configuration options in your ``application.rb`` alon
 other Rails environment specific options by accessing config.mongoid. The
 ``mongoid:config`` generator will create an initializer in
 ``config/initializers/mongoid.rb`` which can also be used for configuring
-ActiveDocument. Note, though, that options set in your ``config/activedocument.yml`` will
+ActiveDocument. Note, though, that options set in your ``config/active_document.yml`` will
 take precedence over options set elsewhere; it is recommended that whenever
-possible you use ``activedocument.yml`` as the default location for ActiveDocument
+possible you use ``active_document.yml`` as the default location for ActiveDocument
 configuration.
 
 .. code-block:: ruby

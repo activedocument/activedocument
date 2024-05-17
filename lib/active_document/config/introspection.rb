@@ -6,7 +6,7 @@ module ActiveDocument
     # This module provides a way to inspect not only the defined configuration
     # settings and their defaults (which are available via
     # `ActiveDocument::Config.settings`), but also the documentation about them. It
-    # does this by scraping the `mongoid/config.rb` file with a regular
+    # does this by scraping the `active_document/config.rb` file with a regular
     # expression to match comments with options.
     #
     # @api private
@@ -28,7 +28,7 @@ module ActiveDocument
         attr_reader :default
 
         # The comment that describes this option, as scraped from
-        # mongoid/config.rb.
+        # active_document/config.rb.
         #
         # @return [ String ] The (possibly multi-line) comment. Each line is
         #   prefixed with the Ruby comment character ("#").

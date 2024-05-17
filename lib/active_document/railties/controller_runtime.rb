@@ -6,14 +6,14 @@ module ActiveDocument
 
       # This extension mimics the Rails' internal method to
       # measure ActiveRecord runtime during request processing.
-      # It appends MongoDB runtime value (`mongoid_runtime`) into payload
+      # It appends MongoDB runtime value (`active_document_runtime`) into payload
       # of instrumentation event `process_action.action_controller`.
       module ControllerExtension
         extend ActiveSupport::Concern
 
         protected
 
-        attr_internal :mongoid_runtime
+        attr_internal :active_document_runtime
 
         # Reset the runtime before each action.
         def process_action(action, *args)
@@ -26,14 +26,14 @@ module ActiveDocument
           mongo_rt_before_render = Collector.reset_runtime
           runtime = super
           mongo_rt_after_render = Collector.reset_runtime
-          self.mongoid_runtime = mongo_rt_before_render + mongo_rt_after_render
+          self.active_document_runtime = mongo_rt_before_render + mongo_rt_after_render
           runtime - mongo_rt_after_render
         end
 
         # Add the measurement to the instrumentation event payload.
         def append_info_to_payload(payload)
           super
-          payload[:mongoid_runtime] = (mongoid_runtime || 0) + Collector.reset_runtime
+          payload[:active_document_runtime] = (active_document_runtime || 0) + Collector.reset_runtime
         end
 
         module ClassMethods
@@ -42,8 +42,8 @@ module ActiveDocument
           # log message.
           def log_process_action(payload)
             messages = super
-            mongoid_runtime = payload[:mongoid_runtime]
-            messages << format('MongoDB: %.1fms', mongoid_runtime.to_f) if mongoid_runtime
+            active_document_runtime = payload[:active_document_runtime]
+            messages << format('MongoDB: %.1fms', active_document_runtime.to_f) if active_document_runtime
             messages
           end
         end

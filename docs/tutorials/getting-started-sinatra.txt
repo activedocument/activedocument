@@ -69,7 +69,7 @@ Run MongoDB Locally
 To develop locally with MongoDB, `download and install MongoDB
 <https://mongodb.com/docs/manual/installation/>`_.
 
-Once MongoDB is installed and running, create a file named ``config/activedocument.yml``
+Once MongoDB is installed and running, create a file named ``config/active_document.yml``
 pointing to your deployment. For example, if you launched a standalone
 ``mongod`` on the default port, the following contents would be appropriate:
 
@@ -95,7 +95,7 @@ Once the cluster is created, follow the instructions in `connect to the cluster
 page <https://docs.atlas.mongodb.com/connect-to-cluster/#connect-to-a-cluster>`_
 to obtain the URI. Use the *Ruby driver 2.5 or later* format.
 
-Create a file named ``config/activedocument.yml`` with the following
+Create a file named ``config/active_document.yml`` with the following
 contents, replacing the URI with the actual URI for your cluster:
 
 .. code-block:: yaml
@@ -126,7 +126,7 @@ with Sinatra, we need to do this ourselves:
 
 .. code-block:: ruby
 
-    ActiveDocument.load!(File.join(File.dirname(__FILE__), 'config', 'activedocument.yml'))
+    ActiveDocument.load!(File.join(File.dirname(__FILE__), 'config', 'active_document.yml'))
 
 Now we can define some models:
 
@@ -213,6 +213,6 @@ To start using ActiveDocument in an existing Sinatra applications, the steps are
 essentially the same as the one given above for a new application:
 
 1. Add the ``mongoid`` dependency to the ``Gemfile``.
-2. Create a ``activedocument.yml`` configuration file.
+2. Create a ``active_document.yml`` configuration file.
 3. Load the configuration file and configure ActiveDocument in the application.
 4. Define ActiveDocument models.

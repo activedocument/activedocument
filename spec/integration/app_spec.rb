@@ -136,7 +136,7 @@ describe 'ActiveDocument application tests' do
 
     it 'generates ActiveDocument config' do
       prepare_new_rails_app 'active_document-test-config' do
-        active_document_config_file = File.join(TMP_BASE, 'active_document-test-config/config/activedocument.yml')
+        active_document_config_file = File.join(TMP_BASE, 'active_document-test-config/config/active_document.yml')
 
         expect(File.exist?(active_document_config_file)).to be false
         check_call(%w[rails g active_document:config], env: clean_env)
@@ -287,7 +287,7 @@ describe 'ActiveDocument application tests' do
       'uri' => uri
     } } }
     config = { 'development' => env_config, 'production' => env_config }
-    File.open('config/activedocument.yml', 'w') do |f|
+    File.open('config/active_document.yml', 'w') do |f|
       f << YAML.dump(config)
     end
   end

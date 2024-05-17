@@ -24,7 +24,7 @@ describe ActiveDocument::Errors::NoClientsConfig do
 
     it 'contains the resolution in the message' do
       expect(error.message).to include(
-        'Double check your activedocument.yml to make sure that you have'
+        'Double check your active_document.yml to make sure that you have'
       )
     end
   end

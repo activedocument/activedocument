@@ -164,7 +164,7 @@ module ActiveDocument
               if expr.is_a?(Selectable)
                 expr = expr.selector
               end
-              normalized = _mongoid_expand_keys(expr)
+              normalized = _active_document_expand_keys(expr)
               sel.store(operator, result_criteria.push(normalized))
             end
           end
@@ -180,7 +180,7 @@ module ActiveDocument
         # - nil, in which case it is ignored
         #
         # @api private
-        def _mongoid_add_top_level_operation(operator, criteria)
+        def _active_document_add_top_level_operation(operator, criteria)
           # Flatten the criteria. The idea is that predicates in MongoDB
           # are always hashes and are never arrays. This method additionally
           # allows Criteria instances as predicates.
@@ -189,11 +189,11 @@ module ActiveDocument
           # flatten if needed.
           clone.tap do |query|
             sel = query.selector
-            _mongoid_flatten_arrays(criteria).each do |criterion|
+            _active_document_flatten_arrays(criteria).each do |criterion|
               expr = if criterion.is_a?(Selectable)
-                       _mongoid_expand_keys(criterion.selector)
+                       _active_document_expand_keys(criterion.selector)
                      else
-                       _mongoid_expand_keys(criterion)
+                       _active_document_expand_keys(criterion)
                      end
               if sel.empty?
                 sel.store(operator, [expr])
@@ -211,7 +211,7 @@ module ActiveDocument
         # Calling .flatten on an array which includes a Criteria instance
         # evaluates the criteria, which we do not want. Hence this method
         # explicitly only expands Array objects and Array subclasses.
-        def _mongoid_flatten_arrays(array)
+        def _active_document_flatten_arrays(array)
           out = []
           pending = array.dup
           until pending.empty?
@@ -254,7 +254,7 @@ module ActiveDocument
         # @param [ Hash ] expr Criteria including Key instances.
         #
         # @return [ BSON::Document ] The expanded criteria.
-        def _mongoid_expand_keys(expr)
+        def _active_document_expand_keys(expr)
           unless expr.is_a?(Hash)
             raise ArgumentError.new('Argument must be a Hash')
           end

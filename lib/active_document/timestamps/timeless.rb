@@ -52,7 +52,7 @@ module ActiveDocument
         #
         # @api private
         def timeless_table
-          Thread.current['[mongoid]:timeless'] ||= {}
+          Thread.current['[active_document]:timeless'] ||= {}
         end
 
         def_delegators :timeless_table, :[]=, :[]

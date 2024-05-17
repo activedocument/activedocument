@@ -217,8 +217,8 @@ module ActiveDocument
           run_callbacks(:save, with_children: false) do
             run_callbacks(:update, with_children: false) do
               run_callbacks(:persist_parent, with_children: false) do
-                _mongoid_run_child_callbacks(:save) do
-                  _mongoid_run_child_callbacks(:update, children: update_children, &block)
+                _active_document_run_child_callbacks(:save) do
+                  _active_document_run_child_callbacks(:update, children: update_children, &block)
                 end
               end
             end

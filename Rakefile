@@ -17,14 +17,14 @@ RSpec::Core::RakeTask.new('spec:progress') do |spec|
 end
 
 namespace :generate do
-  desc 'Generates a activedocument.yml from the template'
+  desc 'Generates an active_document.yml from the template'
   task config: :environment do
     require 'active_document'
     require 'erb'
 
-    template_path = 'lib/rails/generators/mongoid/config/templates/activedocument.yml'
+    template_path = 'lib/rails/generators/mongoid/config/templates/active_document.yml'
     config = ERB.new(File.read(template_path), trim_mode: '-').result(binding)
-    File.write('activedocument.yml', config)
+    File.write('active_document.yml', config)
   end
 end
 

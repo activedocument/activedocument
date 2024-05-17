@@ -294,7 +294,7 @@ module ActiveDocument
               if object && needs_no_database_query?(object, association)
                 __build__(name, object, association)
               else
-                selected_fields = _mongoid_filter_selected_fields(association.key)
+                selected_fields = _active_document_filter_selected_fields(association.key)
                 __build__(name, attributes[association.key], association, selected_fields)
               end
             end
@@ -317,7 +317,7 @@ module ActiveDocument
       # @return [ Hash | nil ]
       #
       # @api private
-      def _mongoid_filter_selected_fields(assoc_key)
+      def _active_document_filter_selected_fields(assoc_key)
         return nil unless __selected_fields
 
         # If the list of fields was specified using #without instead of #only
