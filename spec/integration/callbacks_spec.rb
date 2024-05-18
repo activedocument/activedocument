@@ -572,6 +572,7 @@ describe 'callbacks integration tests' do
     end
 
     before do
+      allow(logger).to receive(:info).and_return(nil)
       root.logger = logger
       root.embedded_once.first.logger = logger
       root.embedded_once.first.embedded_twice.first.logger = logger

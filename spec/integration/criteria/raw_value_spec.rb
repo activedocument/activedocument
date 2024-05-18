@@ -364,7 +364,8 @@ describe 'Queries with ActiveDocument::RawValue criteria' do
       end
 
       it 'matches objects without raw value' do
-        expect(Band.where(name: 1..3).to_a).to eq [band1, band2, band3, band4]
+        # TODO: Database ordering seems not be guaranteed here
+        expect(Band.where(name: 1..3).to_a).to contain_exactly(band1, band2, band3, band4)
       end
     end
 
