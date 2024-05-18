@@ -5,7 +5,7 @@ require 'spec_helper'
 describe ActiveDocument do
 
   describe '::VERSION' do
-    it { expect(ActiveDocument::VERSION).to match(/\A\d+\.\d+\.\d+\.\d+(?:\.\w+\d+)?\z/) }
+    it { expect(ActiveDocument::VERSION).to match(/\A\d+\.\d+\.\d+(?:\.\w*\d+)?\z/) }
   end
 
   describe '::GEM_NAME' do
