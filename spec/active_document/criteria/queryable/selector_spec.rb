@@ -350,7 +350,7 @@ describe ActiveDocument::Criteria::Queryable::Selector do
     end
   end
 
-  [:store, :[]=].each do |method|
+  %i[store []=].each do |method|
 
     describe "##{method}" do
 
@@ -644,7 +644,7 @@ describe ActiveDocument::Criteria::Queryable::Selector do
                   end
                 end
 
-                ['$and', '$or'].each do |operator|
+                %w[$and $or].each do |operator|
 
                   context "when the criterion is a #{operator}" do
 
@@ -915,7 +915,7 @@ describe ActiveDocument::Criteria::Queryable::Selector do
                   end
                 end
 
-                ['$and', '$or'].each do |operator|
+                %w[$and $or].each do |operator|
 
                   context "when the criterion is a #{operator}" do
 

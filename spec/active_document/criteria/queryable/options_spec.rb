@@ -130,7 +130,7 @@ describe ActiveDocument::Criteria::Queryable::Options do
     end
   end
 
-  [:store, :[]=].each do |method|
+  %i[store []=].each do |method|
 
     describe "##{method}" do
 
