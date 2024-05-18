@@ -25,7 +25,6 @@ describe ActiveDocument::Config::Defaults do
     shared_examples 'uses settings for 8.1' do
       it 'uses settings for 8.1' do
         expect(ActiveDocument.immutable_ids).to be false
-        expect(ActiveDocument.legacy_persistence_context_behavior).to be true
         expect(ActiveDocument.around_callbacks_for_embeds).to be true
         expect(ActiveDocument.prevent_multiple_calls_of_embedded_callbacks).to be false
       end
@@ -34,7 +33,6 @@ describe ActiveDocument::Config::Defaults do
     shared_examples 'does not use settings for 8.1' do
       it 'does not use settings for 8.1' do
         expect(ActiveDocument.immutable_ids).to be true
-        expect(ActiveDocument.legacy_persistence_context_behavior).to be false
         expect(ActiveDocument.around_callbacks_for_embeds).to be false
         expect(ActiveDocument.prevent_multiple_calls_of_embedded_callbacks).to be true
       end

@@ -23,7 +23,6 @@ module ActiveDocument
           load_defaults '8.1'
         when '8.1'
           self.immutable_ids = false
-          self.legacy_persistence_context_behavior = true
           self.around_callbacks_for_embeds = true
           self.prevent_multiple_calls_of_embedded_callbacks = false
 

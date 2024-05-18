@@ -13,6 +13,11 @@ AllCops:
     - 'perf/**/*'
     - 'test-apps/**/*'
     - 'vendor/**/*'
+    # TODO: Enable these
+    - 'lib/mongoid/adapters/**/*'
+    # TODO: Delete these dirs
+    - 'mongoid_bak/**/*'
+    - 'dynamoid/**/*'
 
 Lint/EmptyClass:
   Exclude:

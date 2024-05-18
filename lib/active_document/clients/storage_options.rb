@@ -40,8 +40,6 @@ module ActiveDocument
       #
       # @api private
       def remember_storage_options!
-        return if ActiveDocument.legacy_persistence_context_behavior
-
         opts = persistence_context.requested_storage_options
         self.remembered_storage_options = opts if opts
       end

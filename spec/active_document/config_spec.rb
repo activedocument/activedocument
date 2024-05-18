@@ -327,13 +327,6 @@ describe ActiveDocument::Config do
     it_behaves_like 'a config option'
   end
 
-  context 'when setting the legacy_persistence_context_behavior option in the config' do
-    let(:option) { :legacy_persistence_context_behavior }
-    let(:default) { false }
-
-    it_behaves_like 'a config option'
-  end
-
   describe '#load!' do
 
     let(:file) do
