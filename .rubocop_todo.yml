@@ -296,7 +296,7 @@ RSpec/ExpectInHook:
     - 'spec/active_document/copyable_spec.rb'
     - 'spec/active_document/criteria/includable_spec.rb'
     - 'spec/active_document/criteria_spec.rb'
-    - 'spec/active_document/errors/active_document_error_spec.rb'
+    - 'spec/active_document/errors/base_error_spec.rb'
     - 'spec/active_document/extensions/big_decimal_spec.rb'
     - 'spec/active_document/extensions/set_spec.rb'
     - 'spec/active_document/extensions/time_with_zone_spec.rb'
@@ -538,7 +538,7 @@ RSpec/NoExpectationExample:
     - 'spec/active_document/attributes_spec.rb'
     - 'spec/active_document/collection_configurable_spec.rb'
     - 'spec/active_document/document_spec.rb'
-    - 'spec/active_document/errors/active_document_error_spec.rb'
+    - 'spec/active_document/errors/base_error_spec.rb'
     - 'spec/active_document/inspectable_spec.rb'
     - 'spec/active_document/persistence_context_spec.rb'
     - 'spec/active_document/scopable_spec.rb'
@@ -616,7 +616,7 @@ RSpec/RepeatedExample:
     - 'spec/active_document/changeable_spec.rb'
     - 'spec/active_document/clients/factory_spec.rb'
     - 'spec/active_document/criteria/includable_spec.rb'
-    - 'spec/active_document/errors/active_document_error_spec.rb'
+    - 'spec/active_document/errors/base_error_spec.rb'
     - 'spec/active_document/factory_spec.rb'
     - 'spec/active_document/persistable/savable_spec.rb'
 
@@ -728,7 +728,7 @@ RSpec/SpecFilePathFormat:
 RSpec/StubbedMock:
   Exclude:
     - 'spec/active_document/clients_spec.rb'
-    - 'spec/active_document/errors/active_document_error_spec.rb'
+    - 'spec/active_document/errors/base_error_spec.rb'
     - 'spec/active_document/persistence_context_spec.rb'
     - 'spec/active_document/tasks/database_spec.rb'
     - 'spec/active_document/tasks/encryption_spec.rb'

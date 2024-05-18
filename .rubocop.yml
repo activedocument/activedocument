@@ -14,7 +14,7 @@ AllCops:
     - 'test-apps/**/*'
     - 'vendor/**/*'
     # TODO: Enable these
-    - 'lib/mongoid/adapters/**/*'
+    - 'lib/active_document/adapters/**/*'
     # TODO: Delete these dirs
     - 'mongoid_bak/**/*'
     - 'dynamoid/**/*'

@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe ActiveDocument::Errors::BaseError do
-
   let(:error) { described_class.new }
   let(:key) { :callbacks }
   let(:options) { {} }
