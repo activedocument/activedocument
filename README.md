@@ -1,4 +1,4 @@
-![ActiveDocument](https://github.com/activedocument/activedocument/assets/27655/f3e6284b-7d41-4273-8dd7-0a2317ae142c)
+![ActiveDocument](https://github.com/activedocument/activedocument/assets/27655/2cd42f28-3215-431c-ac35-344b6df40266)
 
 # ActiveDocument
 
@@ -15,13 +15,20 @@ Planned support includes:
 - Google Firestore
 - CouchDB
 
+## Project History
+
+ActiveDocument is a fork of [Mongoid](https://www.github.com/mongodb/mongoid) version 9.0.0.
+
+Mongoid is maintained by MongoDB, Inc. and only supports MongoDB database. ActiveDocument aims to provide
+an equally-robust level of support for MongoDB, while also adding support for other NoSQL databases.
+
 ## 📣 Open Call for Community Steering Committee
 
 If you would like to help with governance and/or maintenance of ActiveDocument, please [raise an issue](https://github.com/activedocument/activedocument/issues/new).
 
 ## Installation
 
-Add to your application's Gemfile:
+Add to your application's Gemfile. Note that `require: 'active_document'` contains an underscore (while the gem name does not.)
 
 ```ruby
 gem 'activedocument', git: 'https://github.com/activedocument/activedocument.git', require: 'active_document'
@@ -37,44 +44,39 @@ gem 'activedocument', git: 'https://github.com/activedocument/activedocument.git
   - MongoDB server 4.4+
   - MongoDB driver 2.18+
 
-We will target to support new Ruby and Rails versions within 2 months of release.
-ActiveDocument will provide security patches for its 2 most recent major versions.
-ActiveDocument will drop support for end-of-life (EOL) Ruby, Rails, and database
-versions soon after EOL.
+## Version Lifecycle
+
+- ActiveDocument will target to support new Ruby and Rails versions within 2 months of release.
+- Support for new database versions is subject to community contributions. Databases tend to
+  maintain a high degree of backwards compatibility.
+- ActiveDocument will provide security patches for its 2 most recent major versions.
+- ActiveDocument will drop support for end-of-life (EOL) Ruby, Rails, and database versions soon after EOL.
+
+## Roadmap
+
+Refer to the [Roadmap issue](https://github.com/activedocument/activedocument/issues/1).
 
 ## Purpose & Principles
 
-This is a *community-driven fork of ActiveDocument*, intended to improve the following over MongoDB's ActiveDocument:
+The ActiveDocument project is committed to the following principles:
 
-- Performance
+- Community involvement
+- Database neutrality
 - Feature robustness
+- Performance
 - Code quality
 - Behavior rationality
 - Developer experience
 - Stability
 - Transparency
-- Community involvement
-
-This fork will merge in changes at least once-per-month from [mongodb/active_document](https://github.com/mongodb/active_document)
-as its "upstream" repo. We may backport PRs to upstream where it makes sense to do so, but cannot guarantee that
-the upstream will merge them.
+- Full documentation
 
 ## Releases & Versioning
 
 **⚠️ Important:** ActiveDocument is currently in `alpha` state. Any releases in the 2.x series should
 be considered unstable. The first full release will be `3.0.0`.
 
-ActiveDocument is a fork of [Mongoid](https://www.github.com/mongodb/mongoid) from version 9.0.0.
-
 All new versions will undergo battle-testing in production at [TableCheck](https://www.tablecheck.com/en/join/) prior to being released.
-
-## Roadmap
-
-Refer to the [Roadmap issue](https://github.com/activedocument/activedocument/issues/13).
-
-#### Best Practices
-
-- ✅ 100% code documentation coverage, enforced with Rubocop.
 
 ## Documentation
 
@@ -82,18 +84,16 @@ The documentation of this fork will be hosted at: https://activedocument.github.
 
 ## Support
 
-For beginners, please use MongoDB's existing ActiveDocument support resources:
+Support channels are yet to be established for ActiveDocument.
 
-* [Stack Overflow](http://stackoverflow.com/questions/tagged/activedocument)
-* [MongoDB Community Forum](https://developer.mongodb.com/community/forums/tags/c/drivers-odms-connectors/7/active_document-odm)
-* [#active_document](http://webchat.freenode.net/?channels=active_document) on Freenode IRC
+As ActiveDocument is forked from Mongoid, you may find some of the support resources for Mongoid to be useful:
+
+* [Stack Overflow](http://stackoverflow.com/questions/tagged/mongoid)
+* [MongoDB Community Forum](https://developer.mongodb.com/community/forums/tags/c/drivers-odms-connectors/7/mongoid-odm)
 
 ## Issues & Contributing
 
-Feature requests and bugs affecting both upstream and ActiveDocument should be reported in the [MongoDB MONGOID Jira](https://jira.mongodb.org/browse/MONGOID/).
-Please also raise a [ActiveDocument Github issue](https://github.com/activedocument/activedocument/issues) in this project to track the fix. We prefer if upstream can make the fix first then we merge it.
-
-Issues specific to ActiveDocument should be raised in the [ActiveDocument Github issue tracker](https://github.com/activedocument/activedocument/issues)
+Issues should be raised in the [ActiveDocument Github issue tracker](https://github.com/activedocument/activedocument/issues).
 
 ## Security Issues
 
@@ -107,39 +107,27 @@ We appreciate your help to disclose security issues responsibly.
 
 ## Project Governance
 
-ActiveDocument is shepherded by the team at TableCheck. TableCheck have been avid ActiveDocument users since 2013,
-contributing over 150 PRs to ActiveDocument and MongoDB Ruby projects. TableCheck uses ActiveDocument to power millions of
-restaurant reservations each month, and are *personally invested* in the making the best user experience possible.
+ActiveDocument is shepherded by the team at TableCheck. TableCheck have been avid users of ActiveDocument's predecessor
+Mongoid since 2013, contributing over 150 PRs to it and related projects. TableCheck uses ActiveDocument to power millions of
+restaurant reservations each month, and are *personally invested* in the making the best developer experience possible.
 
-We invite experienced ActiveDocument hands in the community to apply for co-maintainership.
+We invite experienced hands in the community to apply for co-maintainership.
 Please raise a [ActiveDocument Github issue](https://github.com/activedocument/activedocument/issues) if interested.
 
-## Reasons for Forking
+## Contributors
 
-ActiveDocument started as an open-source project created by Durran Jordan in 2009. MongoDB Inc. took over maintainership in 2015.
-Since the transition, the hallmarks of user-disconnect and corporate fumbling have become apparent:
-
-- Introduction of [critical semver-breaking issues](https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/), with [no](https://jira.mongodb.org/browse/MONGOID-5272) [sign](https://github.com/mongodb/active_document/pull/5601#issuecomment-1506630267) of [improvement](https://jira.mongodb.org/browse/MONGOID-5016).
-- Lack of a publicly visible roadmap and direction (when requested, it was said to be a "corporate secret".)
-- [Unwillingness](https://github.com/mongodb/active_document/pull/5546#issuecomment-1448910968) to [adopt](https://github.com/mongodb/active_document/pull/5553#issuecomment-1500361845) [basic](https://github.com/mongodb/bson-ruby/pull/284) industry-standard best practices, e.g. Rubocop linter and a publicly-visible CI workflow.
-- Refusal to [merge](https://github.com/mongodb/active_document/pull/5541#discussion_r1101934994) [patches](https://github.com/mongodb/active_document/pull/5497) which would be of obvious benefit to the community.
-- Lack of bandwidth and resources to review simple PR contributions.
-
-**None of this is intended to disparage the hard-working and talented individuals at MongoDB Inc.**, but rather,
-to illustrate that the corporate rules, philosophy, and priorities of MongoDB Inc. are not aligned with the needs
-of its Ruby users.
-
-It's time to do better! 💪 We hope this project encourages MongoDB Inc. to improve its own offering.
+Big thanks to all [contributors to ActiveDocument](https://github.com/activedocument/activedocument/graphs/contributors),
+including contributors to ActiveDocument's predecessor Mongoid.
 
 ## Disclaimer
 
-MongoDB, Mongo, and the leaf logo are registered trademarks of MongoDB, Inc. and are used in compliance with
-[MongoDB's Trademark Usage Guidelines](https://www.mongodb.com/legal/trademark-usage-guidelines).
-Any usage herein should not be construed as an endorsement or affiliation of MongoDB, Inc. with this project.
+This project is not affiliated with or endorsed by MongoDB, Amazon Web Services, Google Cloud Platform, or
+the Apache Software Foundation. Trademarks are property of their respective owners.
 
-Code from the following related repos is incorporated under the MIT License:
+Code from the following repos is incorporated into ActiveDocument under the MIT License:
+- [mongodb/mongoid](https://github.com/mongodb/mongoid)
 - [mongodb-labs/mongo-ruby-spec-shared](https://github.com/mongodb-labs/mongo-ruby-spec-shared)
-- [active_document/active_document-test-apps](https://github.com/active_document/active_document-test-apps)
+- [mongoid/mongoid-test-apps](https://github.com/mongoid/mongoid-test-apps)
 
 [build-img]: https://github.com/activedocument/activedocument/actions/workflows/test.yml/badge.svg
 [build-url]: https://github.com/activedocument/activedocument/actions
