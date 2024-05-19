@@ -9,11 +9,11 @@ Gem::Specification.new do |s|
   s.name        = ActiveDocument::GEM_NAME
   s.version     = ActiveDocument::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ['TableCheck Inc.', 'Durran Jordan', 'The MongoDB Ruby Team']
-  s.email       = 'dev@tablecheck.com'
-  s.homepage    = 'https://active_document.org'
-  s.summary     = 'ActiveDocument: Ultra Edition'
-  s.description = 'Ruby ODM (Object Document Mapper) Framework for MongoDB. Maintained by the community, for the community.'
+  s.authors     = ['Johnny Shields']
+  s.email       = 'johnny.shields@gmail.com'
+  s.homepage    = 'https://github.com/activedocument/activedocument'
+  s.summary     = 'ActiveDocument is a Ruby ODM (Object Document Mapper) framework for No-SQL databases.'
+  s.description = 'Ruby ODM (Object Document Mapper) framework for No-SQL databases.'
   s.license     = 'MIT'
 
   s.metadata = {
@@ -36,6 +36,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('bson', ['>= 4.14.0', '< 6.0.0'])
 
-  s.files        = Dir.glob('lib/**/*') + %w[LICENSE README.md Rakefile]
+  s.files = Dir.glob('lib/**/*') + %w[LICENSE README.md Rakefile]
   s.require_path = 'lib'
 end

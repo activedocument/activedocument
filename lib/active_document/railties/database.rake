@@ -16,7 +16,7 @@ namespace :db do
   end
 
   unless Rake::Task.task_defined?('db:seed')
-    # if another ORM has defined db:seed, don"t run it twice.
+    # if another ORM has defined db:seed, don't run it twice.
     desc 'Load the seed data from db/seeds.rb'
     task seed: :environment do
       seed_file = Rails.root.join('db/seeds.rb')

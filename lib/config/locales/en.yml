@@ -118,7 +118,7 @@ en:
           message: "Empty configuration file: %{path}."
           summary: "Your active_document.yml configuration file appears to be empty."
           resolution: "Ensure your configuration file contains the correct contents.
-            Refer to: https://www.mongodb.com/docs/active_document/current/reference/configuration/"
+            Refer to: https://www.mongodb.com/docs/mongoid/current/reference/configuration/"
         gem_conflict:
           message: "Gem '%{this_gem}' conflicts with gem '%{other_gem}'."
           summary: "Gems '%{this_gem}' and '%{other_gem}' cannot be used in the same project."
@@ -153,7 +153,7 @@ en:
           resolution: "Pick an allowed option or fix the typo. If you were
             expecting the option to be there, please consult the following page
             with respect to ActiveDocument's configuration:\n\n
-            \_\_https://www.mongodb.com/docs/active_document/current/reference/configuration/#active_document-configuration-options"
+            \_\_https://www.mongodb.com/docs/mongoid/current/reference/configuration/#active_document-configuration-options"
         invalid_auto_encryption_configuration:
           message: "Invalid automatic encryption configuration for client %{client}."
           summary: "Automatic encryption options for client %{client} are
@@ -176,7 +176,7 @@ en:
           summary: "Your active_document.yml configuration file does not contain the
             correct file structure."
           resolution: "Ensure your configuration file contains the correct contents.
-            Refer to: https://www.mongodb.com/docs/active_document/current/reference/configuration/"
+            Refer to: https://www.mongodb.com/docs/mongoid/current/reference/configuration/"
         invalid_config_option:
           message: "Invalid configuration option: %{name}."
           summary: "A invalid configuration option was provided in your
@@ -185,7 +185,7 @@ en:
           resolution: "Remove the invalid option or fix the typo. If you were
             expecting the option to be there, please consult the following page
             with respect to ActiveDocument's configuration:\n\n
-            \_\_http://active_document.org/en/active_document/docs/installation.html"
+            \_\_http://www.mongodb.com/en/docs/mongoid/current/reference/configuration/"
         invalid_dependent_strategy:
           message: "Invalid dependent strategy: %{invalid_strategy}."
           summary: "An invalid dependent strategy was defined for the association:
@@ -268,14 +268,14 @@ en:
             \_\_\_\_field :%{name}, %{option}: true\n
             \_\_end\n\n
             Refer to:
-            https://www.mongodb.com/docs/active_document/current/reference/fields/#custom-field-options"
+            https://www.mongodb.com/docs/mongoid/current/reference/fields/#custom-field-options"
         invalid_field_type:
           message: "Invalid field type %{type_inspection} for field '%{field}' on model '%{klass}'."
           summary: "Model '%{klass}' defines a field '%{field}' with an unknown type value
             %{type_inspection}."
           resolution: "Please provide a valid type value for the field.
             Refer to:
-            https://www.mongodb.com/docs/active_document/current/reference/fields/#using-symbols-or-strings-instead-of-classes"
+            https://www.mongodb.com/docs/mongoid/current/reference/fields/#using-symbols-or-strings-instead-of-classes"
         invalid_global_executor_concurrency:
           message: "Invalid global_executor_concurrency option."
           summary: "You set global_executor_concurrency while async_query_executor

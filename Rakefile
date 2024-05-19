@@ -17,7 +17,7 @@ RSpec::Core::RakeTask.new('spec:progress') do |spec|
 end
 
 namespace :generate do
-  desc 'Generates a active_document.yml from the template'
+  desc 'Generates active_document.yml from the template'
   task config: :environment do
     require 'active_document'
     require 'erb'
