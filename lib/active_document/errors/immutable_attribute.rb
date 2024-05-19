@@ -7,7 +7,7 @@ module ActiveDocument
     # immutable attribute. For example, the _id attribute is immutable,
     # and attempting to change it on a document that has already been
     # persisted will result in this error.
-    class ImmutableAttribute < ActiveDocumentError
+    class ImmutableAttribute < BaseError
 
       # Create the new error.
       #

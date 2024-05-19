@@ -8,7 +8,7 @@ module ActiveDocument
     #
     # @example Create the error.
     #   Validations.new(person.errors)
-    class Validations < ActiveDocumentError
+    class Validations < BaseError
       attr_reader :document
       alias_method :record, :document
 

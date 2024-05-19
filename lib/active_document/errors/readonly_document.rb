@@ -5,7 +5,7 @@ module ActiveDocument
 
     # Raised when attempting to persist a document that was loaded from the
     # database with partial fields.
-    class ReadonlyDocument < ActiveDocumentError
+    class ReadonlyDocument < BaseError
 
       # Instantiate the exception.
       #

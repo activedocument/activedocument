@@ -17,7 +17,7 @@ module ActiveDocument
     #     embedded_in :person
     #     referenced_in :post
     #   end
-    class MixedRelations < ActiveDocumentError
+    class MixedRelations < BaseError
       def initialize(root_klass, embedded_klass)
         super(
           compose_message(

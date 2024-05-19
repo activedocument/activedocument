@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a bad configuration option is attempted to be
     # set.
-    class InvalidConfigOption < ActiveDocumentError
+    class InvalidConfigOption < BaseError
 
       # Create the new error.
       #

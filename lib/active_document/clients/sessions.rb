@@ -277,11 +277,11 @@ module ActiveDocument
         # controlled by that transaction. this is potentially a bug, so
         # let's tell them about it.
         #
-        # This is hacky; we're hijacking ActiveDocument::Errors::ActiveDocumentError in
+        # This is hacky; we're hijacking ActiveDocument::Errors::BaseError in
         # order to get the spiffy error message translation. If we later
         # decide to raise an error instead of just writing a message, we can
-        # subclass ActiveDocumentError and raise that exception here.
-        message = Errors::ActiveDocumentError.new.compose_message(
+        # subclass BaseError and raise that exception here.
+        message = Errors::BaseError.new.compose_message(
           'client_session_mismatch',
           model: self.class.name
         )

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This exception is raised when a bad value is attempted to be converted to
     # a date or time.
-    class InvalidTime < ActiveDocumentError
+    class InvalidTime < BaseError
 
       # Create the new invalid date error.
       #

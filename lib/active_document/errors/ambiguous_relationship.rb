@@ -19,7 +19,7 @@ module ActiveDocument
     #     belongs_to :person
     #     belongs_to :referred_by, class_name: "Person"
     #   end
-    class AmbiguousRelationship < ActiveDocumentError
+    class AmbiguousRelationship < BaseError
 
       # Create the new error.
       #

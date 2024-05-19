@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # This error is raised when a default client is not defined.
-    class NoDefaultClient < ActiveDocumentError
+    class NoDefaultClient < BaseError
 
       # Create the new error with the defined client names.
       #

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when attempting to create a new client that does
     # not have a named configuration.
-    class NoClientConfig < ActiveDocumentError
+    class NoClientConfig < BaseError
 
       # Create the new error.
       #

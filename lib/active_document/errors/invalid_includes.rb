@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when an invalid value is passed to an eager
     # loading query.
-    class InvalidIncludes < ActiveDocumentError
+    class InvalidIncludes < BaseError
 
       # Initialize the error.
       #

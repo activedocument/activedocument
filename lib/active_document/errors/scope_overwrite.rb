@@ -8,7 +8,7 @@ module ActiveDocument
     #
     # @example Create the error.
     #   ScopeOverwrite.new(Person,'teenies')
-    class ScopeOverwrite < ActiveDocumentError
+    class ScopeOverwrite < BaseError
       def initialize(model_name, scope_name)
         super(
           compose_message(

@@ -9,6 +9,6 @@ module ActiveDocument
     # the MongoDB transaction back, and the exception is passed on.
     # If ActiveDocument::Error::Rollback exception is raised, then the MongoDB
     # transaction will be rolled back, without passing on the exception.
-    class Rollback < ActiveDocumentError; end
+    class Rollback < BaseError; end
   end
 end

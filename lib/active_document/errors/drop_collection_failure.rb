@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when an attempt to drop a collection failed.
-    class DropCollectionFailure < ActiveDocumentError
+    class DropCollectionFailure < BaseError
 
       # Instantiate the drop collection error.
       #

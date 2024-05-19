@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to define a field using a :type option value
     # that is not present in the field type mapping.
-    class InvalidFieldType < ActiveDocumentError
+    class InvalidFieldType < BaseError
 
       # Create the new error.
       #

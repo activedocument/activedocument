@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Used when attempting to get embedded paths with incorrect root path set.
-    class InvalidPath < ActiveDocumentError
+    class InvalidPath < BaseError
 
       # Create the new error.
       #

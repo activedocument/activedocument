@@ -6,7 +6,7 @@ module ActiveDocument
     # Raised when querying the database for a document by a specific id or by
     # set of attributes which does not exist. If multiple ids were passed then
     # it will display all of those.
-    class DocumentNotFound < ActiveDocumentError
+    class DocumentNotFound < BaseError
 
       attr_reader :klass, :params
 

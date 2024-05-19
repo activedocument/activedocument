@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when calling #save! or .create! on a model when one
     # of the callbacks returns false.
-    class Callback < ActiveDocumentError
+    class Callback < BaseError
 
       # Create the new callbacks error.
       #

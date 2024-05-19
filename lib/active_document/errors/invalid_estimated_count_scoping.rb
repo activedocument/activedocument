@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to call estimated_count
     # on a model with a default scope.
-    class InvalidEstimatedCountScoping < ActiveDocumentError
+    class InvalidEstimatedCountScoping < BaseError
 
       # Creates the exception.
       #

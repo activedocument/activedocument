@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a client configuration contains both a uri and
     # other standard options.
-    class MixedClientConfiguration < ActiveDocumentError
+    class MixedClientConfiguration < BaseError
 
       # Initialize the error.
       #

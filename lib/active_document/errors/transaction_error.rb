@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a transaction failed because
     # of an unexpected error.
-    class TransactionError < ActiveDocumentError
+    class TransactionError < BaseError
 
       # Creates the exception.
       #

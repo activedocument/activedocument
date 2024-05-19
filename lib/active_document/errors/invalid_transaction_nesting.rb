@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a transaction is attempted to be used with a model whose client already
     # has an opened transaction.
-    class InvalidTransactionNesting < ActiveDocumentError
+    class InvalidTransactionNesting < BaseError
 
       # Create the error.
       def initialize

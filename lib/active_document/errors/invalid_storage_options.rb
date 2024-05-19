@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when options provided to :store_in are invalid.
-    class InvalidStorageOptions < ActiveDocumentError
+    class InvalidStorageOptions < BaseError
 
       # Create the new error.
       #

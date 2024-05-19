@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when invalid options are used to create a persistence context.
-    class InvalidPersistenceOption < ActiveDocumentError
+    class InvalidPersistenceOption < BaseError
 
       # Instantiate the persistence context option error.
       #

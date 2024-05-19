@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'active_document/errors/active_document_error'
+require 'active_document/errors/base_error'
 require 'active_document/errors/ambiguous_relationship'
 require 'active_document/errors/attribute_not_loaded'
 require 'active_document/errors/callback'
@@ -9,7 +9,6 @@ require 'active_document/errors/criteria_argument_required'
 require 'active_document/errors/document_not_destroyed'
 require 'active_document/errors/document_not_found'
 require 'active_document/errors/empty_config_file'
-require 'active_document/errors/gem_conflict'
 require 'active_document/errors/immutable_attribute'
 require 'active_document/errors/in_memory_collation_not_supported'
 require 'active_document/errors/invalid_auto_encryption_configuration'

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a session is attempted to be used with a model whose client already
     # has an opened session.
-    class InvalidSessionNesting < ActiveDocumentError
+    class InvalidSessionNesting < BaseError
 
       # Create the error.
       def initialize

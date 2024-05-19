@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when trying to load configuration with no RACK_ENV set
-    class NoEnvironment < ActiveDocumentError
+    class NoEnvironment < BaseError
 
       # Create the new no environment error.
       #

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # Raised when invalid query is passed to an embedded matcher, or an
     # invalid query fragment is passed to the query builder (Criteria object).
-    class InvalidQuery < ActiveDocumentError
+    class InvalidQuery < BaseError
 
       # Stringifies the argument using #inspect and truncates the result to
       # about 100 characters.

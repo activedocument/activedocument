@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to create an association that conflicts with
     # an already defined method.
-    class InvalidRelation < ActiveDocumentError
+    class InvalidRelation < BaseError
 
       # Create the new error.
       #

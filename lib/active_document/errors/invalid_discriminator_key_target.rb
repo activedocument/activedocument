@@ -10,7 +10,7 @@ module ActiveDocument
     # @param [ String ] operator The class' superclass.
     #
     # @api private
-    class InvalidDiscriminatorKeyTarget < ActiveDocumentError
+    class InvalidDiscriminatorKeyTarget < BaseError
       def initialize(class_name, superclass)
         super(
           compose_message(

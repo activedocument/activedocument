@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when Javascript criteria selector is passed for embedded document.
-    class UnsupportedJavascript < ActiveDocumentError
+    class UnsupportedJavascript < BaseError
 
       # Create the new error caused by using Javascript in embedded document criteria selector.
       #

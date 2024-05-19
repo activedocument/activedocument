@@ -17,15 +17,11 @@ If you would like to help with governance and/or maintenance of this project, pl
 
 ## Installation
 
-Replace `gem 'active_document'` in your application's Gemfile with:
+Add to your application's Gemfile:
 
 ```ruby
-gem 'active_document-ultra'
+gem 'active_document'
 ```
-
-Do **not** install the `active_document` and `active_document-ultra` gems at the same time.
-When loading, ActiveDocument Ultra will raise a `GemConflict` error if
-`active_document` gem is present in your bundle.
 
 ## Compatibility
 

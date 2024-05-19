@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Used when trying to persist data when metadata has not been set.
-    class NoMetadata < ActiveDocumentError
+    class NoMetadata < BaseError
 
       # Create the new error.
       #

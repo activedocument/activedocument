@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a bad global executor concurrency option is attempted
     # to be set.
-    class InvalidGlobalExecutorConcurrency < ActiveDocumentError
+    class InvalidGlobalExecutorConcurrency < BaseError
 
       # Create the new error.
       #

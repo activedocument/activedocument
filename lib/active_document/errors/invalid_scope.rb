@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # This error is raised when defining a scope of an invalid type.
-    class InvalidScope < ActiveDocumentError
+    class InvalidScope < BaseError
 
       # Create the error.
       #

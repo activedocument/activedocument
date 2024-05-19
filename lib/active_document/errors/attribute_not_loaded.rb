@@ -14,7 +14,7 @@ module ActiveDocument
     # @example Setting a field which has not been loaded.
     #   Band.without(:label).first.label = 'Sub Pop Records'
     #   #=> raises ActiveDocument::Errors::AttributeNotLoaded
-    class AttributeNotLoaded < ActiveDocumentError
+    class AttributeNotLoaded < BaseError
 
       # Create the new error.
       #

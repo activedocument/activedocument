@@ -231,7 +231,7 @@ In earlier ActiveDocument versions, the same conditions would raise an
 ``ActiveModel::MissingAttributeError``. Please check your code for
 any ActiveDocument-specific usages of this class, and change them to
 ``ActiveDocument::Errors::AttributeNotLoaded``. Note additionally that
-``AttributeNotLoaded`` inherits from ``ActiveDocument::Errors::ActiveDocumentError``,
+``AttributeNotLoaded`` inherits from ``ActiveDocument::Errors::BaseError``,
 while ``ActiveModel::MissingAttributeError`` does not.
 
 

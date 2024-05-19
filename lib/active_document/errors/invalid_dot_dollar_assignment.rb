@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to use the setter for a field that starts
     # with a dollar sign ($) or contains a dot/period (.).
-    class InvalidDotDollarAssignment < ActiveDocumentError
+    class InvalidDotDollarAssignment < BaseError
 
       # Create the new error.
       #

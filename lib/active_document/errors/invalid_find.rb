@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when invalid arguments are passed to #find.
-    class InvalidFind < ActiveDocumentError
+    class InvalidFind < BaseError
 
       # Create the new invalid find error.
       #

@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when no inverse_of definition can be found when needed.
-    class InverseNotFound < ActiveDocumentError
+    class InverseNotFound < BaseError
 
       # Create then new error.
       #

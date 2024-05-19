@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when an empty configuration file is attempted to be
     # loaded.
-    class EmptyConfigFile < ActiveDocumentError
+    class EmptyConfigFile < BaseError
 
       # Create the new error.
       #

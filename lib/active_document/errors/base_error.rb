@@ -3,11 +3,10 @@
 module ActiveDocument
   module Errors
 
-    # Default parent ActiveDocument error for all custom errors. This handles the base
+    # The parent error class for all custom errors. This handles the base
     # key for the translations and provides the convenience method for
     # translating the messages.
-    class ActiveDocumentError < StandardError
-
+    class BaseError < StandardError
       attr_reader :problem, :summary, :resolution
 
       BASE_KEY = 'active_document.errors.messages'

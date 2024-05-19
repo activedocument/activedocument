@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when an invalid index is defined.
-    class InvalidIndex < ActiveDocumentError
+    class InvalidIndex < BaseError
 
       # Create the new error.
       #

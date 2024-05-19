@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when attempting to do a query with a
     # collation on documents in memory.
-    class InMemoryCollationNotSupported < ActiveDocumentError
+    class InMemoryCollationNotSupported < BaseError
 
       # Create the new error.
       #

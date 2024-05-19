@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when automatic encryption configuration for a client
     # is invalid.
-    class InvalidAutoEncryptionConfiguration < ActiveDocumentError
+    class InvalidAutoEncryptionConfiguration < BaseError
 
       # Initialize the error.
       #

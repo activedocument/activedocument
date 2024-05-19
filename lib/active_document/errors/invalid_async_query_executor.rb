@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a bad async query executor option is attempted
     # to be set.
-    class InvalidQueryExecutor < ActiveDocumentError
+    class InvalidQueryExecutor < BaseError
 
       # Create the new error.
       #

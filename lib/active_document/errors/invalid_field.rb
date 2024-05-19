@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to create a field that conflicts with
     # an already defined method.
-    class InvalidField < ActiveDocumentError
+    class InvalidField < BaseError
 
       # Create the new error.
       #

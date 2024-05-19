@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when invalid options are passed to an association macro.
-    class InvalidOptions < ActiveDocumentError
+    class InvalidOptions < BaseError
 
       # Instantiate the options error.
       #

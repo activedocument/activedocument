@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # This error is raised when a method on Criteria is given a nil argument.
-    class CriteriaArgumentRequired < ActiveDocumentError
+    class CriteriaArgumentRequired < BaseError
 
       # Creates the new exception instance.
       #

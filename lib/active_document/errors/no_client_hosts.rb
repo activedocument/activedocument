@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # This error is raised when a client is configured without hosts.
-    class NoClientHosts < ActiveDocumentError
+    class NoClientHosts < BaseError
 
       # Create the new error.
       #

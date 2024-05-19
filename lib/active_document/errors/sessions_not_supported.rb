@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a session is attempted to be used with a model whose client cannot use it since
     # the mongodb deployment doesn't support sessions.
-    class SessionsNotSupported < ActiveDocumentError
+    class SessionsNotSupported < BaseError
 
       # Create the error.
       def initialize

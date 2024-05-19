@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to persist an embedded document
     # when there is no parent set.
-    class NoParent < ActiveDocumentError
+    class NoParent < BaseError
 
       # Create the new error.
       #

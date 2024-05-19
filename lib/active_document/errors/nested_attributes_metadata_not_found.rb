@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when metadata could not be found when defining
     # nested attributes, or the name was incorrect.
-    class NestedAttributesMetadataNotFound < ActiveDocumentError
+    class NestedAttributesMetadataNotFound < BaseError
 
       # Create the new metadata error.
       #

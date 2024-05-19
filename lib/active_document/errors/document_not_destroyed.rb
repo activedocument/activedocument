@@ -5,7 +5,7 @@ module ActiveDocument
 
     # Raised when attempting to destroy a document that had destroy callbacks
     # return false.
-    class DocumentNotDestroyed < ActiveDocumentError
+    class DocumentNotDestroyed < BaseError
 
       # Instantiate the exception.
       #

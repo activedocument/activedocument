@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to create a field that has an invalid
     # option.
-    class InvalidFieldOption < ActiveDocumentError
+    class InvalidFieldOption < BaseError
 
       # Create the new error.
       #

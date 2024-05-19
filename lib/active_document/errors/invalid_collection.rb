@@ -8,7 +8,7 @@ module ActiveDocument
     #
     # @example Create the error.
     #   InvalidCollection.new(Address)
-    class InvalidCollection < ActiveDocumentError
+    class InvalidCollection < BaseError
       def initialize(klass)
         super(
           compose_message('invalid_collection', { klass: klass.name })

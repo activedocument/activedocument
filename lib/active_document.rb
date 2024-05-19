@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_document/version'
-require 'active_document/bundle_checker'
 
 require 'forwardable'
 require 'time'

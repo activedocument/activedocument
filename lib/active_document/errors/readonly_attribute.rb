@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when attempting the change the value of a readonly
     # attribute after the document has been persisted.
-    class ReadonlyAttribute < ActiveDocumentError
+    class ReadonlyAttribute < BaseError
 
       # Create the new error.
       #

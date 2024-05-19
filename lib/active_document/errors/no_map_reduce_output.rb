@@ -5,7 +5,7 @@ module ActiveDocument
 
     # Raised when executing a map/reduce without specifying the output
     # location.
-    class NoMapReduceOutput < ActiveDocumentError
+    class NoMapReduceOutput < BaseError
 
       # Create the new error.
       #

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to set a value in ActiveDocument that is not
     # already set with dynamic attributes or the field is not defined.
-    class UnknownAttribute < ActiveDocumentError
+    class UnknownAttribute < BaseError
 
       # Create the new error.
       #

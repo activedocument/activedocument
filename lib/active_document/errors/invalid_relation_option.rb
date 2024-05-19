@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when an option provided for an association is invalid.
-    class InvalidRelationOption < ActiveDocumentError
+    class InvalidRelationOption < BaseError
 
       # Create the new error.
       #

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when no clients exists in the database
     # configuration.
-    class NoClientsConfig < ActiveDocumentError
+    class NoClientsConfig < BaseError
 
       # Create the new error.
       #

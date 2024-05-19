@@ -8,7 +8,7 @@ module ActiveDocument
     #
     # @example Create the error.
     #   TooManyNestedAttributeRecords.new('association', limit)
-    class TooManyNestedAttributeRecords < ActiveDocumentError
+    class TooManyNestedAttributeRecords < BaseError
       def initialize(association, limit)
         super(
           compose_message(

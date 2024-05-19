@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # This error is raised when a client is configured without a database.
-    class NoClientDatabase < ActiveDocumentError
+    class NoClientDatabase < BaseError
 
       # Create the new error.
       #

@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # This error is raised when an invalid strategy is defined for an association dependency.
-    class InvalidDependentStrategy < ActiveDocumentError
+    class InvalidDependentStrategy < BaseError
 
       # Create the new error.
       #

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to instantiate a model object from the value in
     # the '_type' field of a document and the class doesn't exist.
-    class UnknownModel < ActiveDocumentError
+    class UnknownModel < BaseError
 
       # Create the new error.
       #

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when a bad configuration file is attempted to be
     # loaded.
-    class InvalidConfigFile < ActiveDocumentError
+    class InvalidConfigFile < BaseError
 
       # Create the new error.
       #

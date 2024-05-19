@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when trying to call estimated_count
     # on a filtered criteria.
-    class InvalidEstimatedCountCriteria < ActiveDocumentError
+    class InvalidEstimatedCountCriteria < BaseError
 
       # Creates the exception.
       #

@@ -24,7 +24,7 @@ module ActiveDocument
     #   eye = Eye.new
     #   face = Face.new
     #   eye.eyeable = face # Raises error
-    class InvalidSetPolymorphicRelation < ActiveDocumentError
+    class InvalidSetPolymorphicRelation < BaseError
 
       # Create the new invalid set polymorphic association error.
       #

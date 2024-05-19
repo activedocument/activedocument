@@ -4,7 +4,7 @@ module ActiveDocument
   module Errors
 
     # Raised when an attempt to create a collection failed.
-    class CreateCollectionFailure < ActiveDocumentError
+    class CreateCollectionFailure < BaseError
 
       # Instantiate the create collection error.
       #

@@ -5,7 +5,7 @@ module ActiveDocument
 
     # This error is raised when attempting to destroy a model which has
     # an association with dependency option set to restrict.
-    class DeleteRestriction < ActiveDocumentError
+    class DeleteRestriction < BaseError
 
       # Create the new callbacks error.
       #
