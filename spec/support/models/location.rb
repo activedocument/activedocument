@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Location
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name
   field :info, type: Hash
   field :occupants, type: Array

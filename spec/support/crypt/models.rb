@@ -2,7 +2,7 @@
 
 module Crypt
   class Patient
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     encrypt_with key_id: 'grolrnFVSSW9Gq04Q87R9Q=='
 
@@ -19,14 +19,14 @@ module Crypt
   end
 
   class Insurance
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :policy_number, type: Integer, encrypt: { deterministic: true }
     embedded_in :patient, class_name: 'Crypt::Patient'
   end
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String, encrypt: {
       key_id: 'grolrnFVSSW9Gq04Q87R9Q==',
@@ -39,7 +39,7 @@ module Crypt
   end
 
   class Car
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     store_in database: 'vehicles'
 

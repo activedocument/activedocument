@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Manufacturer
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :products, type: Array, default: []
 

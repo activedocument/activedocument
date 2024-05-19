@@ -29,17 +29,17 @@ describe 'Encryption' do
   end
 
   let(:unencrypted_client) do
-    Mongoid.default_client
+    ActiveDocument.default_client
   end
 
   around do |example|
-    Mongoid.default_client[Crypt::Patient.collection_name].drop
-    Mongoid.default_client[Crypt::Car.collection_name].drop
+    ActiveDocument.default_client[Crypt::Patient.collection_name].drop
+    ActiveDocument.default_client[Crypt::Car.collection_name].drop
     existing_key_id = Crypt::Patient.encrypt_metadata[:key_id]
     Crypt::Patient.set_key_id(data_key_id)
     Crypt::Car.set_key_id(data_key_id)
-    Mongoid::Config.send(:clients=, config)
-    Mongoid::Clients.with_name(:key_vault)[key_vault_collection].drop
+    ActiveDocument::Config.send(:clients=, config)
+    ActiveDocument::Clients.with_name(:key_vault)[key_vault_collection].drop
     Crypt::Patient.store_in(client: :encrypted)
     Crypt::Car.store_in(client: :encrypted, database: Crypt::Car.storage_options[:database])
 

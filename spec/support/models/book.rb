@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Book
-  include Mongoid::Document
-  include Mongoid::Attributes::Dynamic
-  include Mongoid::Timestamps
+  include ActiveDocument::Document
+  include ActiveDocument::Attributes::Dynamic
+  include ActiveDocument::Timestamps
   field :title, type: String
   field :chapters, type: Integer
   belongs_to :series

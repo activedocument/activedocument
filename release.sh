@@ -2,10 +2,10 @@
 
 set -e
 
-NAME=mongoid
-RELEASE_NAME=mongoid-release
-VERSION_REQUIRE=mongoid/version
-VERSION_CONSTANT_NAME=Mongoid::VERSION
+NAME=active_document
+RELEASE_NAME=active_document-release
+VERSION_REQUIRE=active_document/version
+VERSION_CONSTANT_NAME=ActiveDocument::VERSION
 
 if ! test -f gem-private_key.pem; then
   echo "gem-private_key.pem missing - cannot release" 1>&2

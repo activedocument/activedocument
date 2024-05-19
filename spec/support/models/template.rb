@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Template
-  include Mongoid::Document
-  field :active, type: Mongoid::Boolean, default: false
+  include ActiveDocument::Document
+  field :active, type: ActiveDocument::Boolean, default: false
   validates :active, presence: true
 end

@@ -13,33 +13,33 @@ Installation
 Install the Gem
 ===============
 
-Mongoid is bundled as a gem, and is `hosted on Rubygems
-<https://rubygems.org/gems/mongoid>`_.
+ActiveDocument is bundled as a gem, and is `hosted on Rubygems
+<https://rubygems.org/gems/active_document>`_.
 It can be installed manually or with bundler.
 
 To install the gem manually:
 
 .. code-block:: sh
 
-    gem install mongoid
+    gem install active_document
 
 To install the gem with bundler, include the following in your ``Gemfile``:
 
 .. code-block:: ruby
 
-   gem 'mongoid'
+   gem 'active_document'
 
-Using Mongoid with a New Rails Application
+Using ActiveDocument with a New Rails Application
 ==========================================
 
-When creating a new Rails application and wish to use Mongoid for
+When creating a new Rails application and wish to use ActiveDocument for
 data access, give the ``--skip-active-record`` flag to the ``rails new``
 command to avoid depending on and configuring ActiveRecord.
 
-Using Mongoid with an Existing Rails Application
+Using ActiveDocument with an Existing Rails Application
 ================================================
 
-When converting an existing Rails application to use Mongoid for data access,
+When converting an existing Rails application to use ActiveDocument for data access,
 the ``config/application.rb`` file needs to be updated to remove the
 ``require 'rails/all'`` line and explicitly include the required frameworks
 (which could be all of the frameworks provided by Rails with the exception of

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Message
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :body, type: String
   field :priority, type: Integer

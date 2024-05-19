@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Pizza
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name, type: String
   has_one :topping, autosave: true
   validates_presence_of :topping

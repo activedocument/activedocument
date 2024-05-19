@@ -59,7 +59,7 @@ Lint/EmptyBlock:
 
 Lint/RedundantCopDisableDirective:
   Exclude:
-    - 'spec/mongoid/version_spec.rb'
+    - 'spec/active_document/version_spec.rb'
 
 RSpec/BeforeAfterAll:
   Exclude:
@@ -67,7 +67,7 @@ RSpec/BeforeAfterAll:
 
 Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
-    - 'spec/mongoid/equality_spec.rb'
+    - 'spec/active_document/equality_spec.rb'
 
 Lint/ConstantDefinitionInBlock:
   Exclude:
@@ -79,14 +79,14 @@ Lint/SuppressedException:
 
 Naming/AccessorMethodName:
   Exclude:
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
-    - 'lib/mongoid/atomic/modifiers.rb'
-    - 'lib/mongoid/clients/options.rb'
-    - 'lib/mongoid/criteria/options.rb'
-    - 'lib/mongoid/encryptable.rb'
-    - 'lib/mongoid/fields/encrypted.rb'
-    - 'lib/mongoid/persistence_context.rb'
-    - 'lib/mongoid/timestamps/timeless.rb'
+    - 'lib/active_document/association/referenced/has_many/enumerable.rb'
+    - 'lib/active_document/atomic/modifiers.rb'
+    - 'lib/active_document/clients/options.rb'
+    - 'lib/active_document/criteria/options.rb'
+    - 'lib/active_document/encryptable.rb'
+    - 'lib/active_document/fields/encrypted.rb'
+    - 'lib/active_document/persistence_context.rb'
+    - 'lib/active_document/timestamps/timeless.rb'
 
 RSpec/AroundBlock:
   Exclude:
@@ -94,7 +94,7 @@ RSpec/AroundBlock:
 
 RSpec/IdenticalEqualityAssertion:
   Exclude:
-    - 'spec/mongoid/equality_spec.rb'
+    - 'spec/active_document/equality_spec.rb'
 
 RSpec/InstanceVariable:
   Exclude:
@@ -102,22 +102,22 @@ RSpec/InstanceVariable:
 
 Security/MarshalLoad:
   Exclude:
-    - 'spec/mongoid/criteria/marshalable_spec.rb'
+    - 'spec/active_document/criteria/marshalable_spec.rb'
 
 RSpec/SubjectStub:
   Exclude:
-    - 'spec/mongoid/collection_configurable_spec.rb'
+    - 'spec/active_document/collection_configurable_spec.rb'
 
 Style/ClassVars:
   Exclude:
-    - 'lib/mongoid/contextual/mongo/documents_loader.rb'
-    - 'spec/mongoid/clients/transactions_spec_models.rb'
-    - 'spec/mongoid/contextual/mongo/documents_loader_spec.rb'
+    - 'lib/active_document/contextual/mongo/documents_loader.rb'
+    - 'spec/active_document/clients/transactions_spec_models.rb'
+    - 'spec/active_document/contextual/mongo/documents_loader_spec.rb'
 
 Style/CaseEquality:
   Exclude:
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/enumerable.rb'
+    - 'lib/active_document/association/embedded/embeds_many/proxy.rb'
+    - 'lib/active_document/association/referenced/has_many/enumerable.rb'
     - 'spec/**/*'
 
 RSpec/ExampleLength:
@@ -144,11 +144,11 @@ Layout/EmptyLinesAroundModuleBody:
 
 Performance/CollectionLiteralInLoop:
   Exclude:
-    - 'spec/mongoid/association/embedded/embeds_many/proxy_spec.rb'
-    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
-    - 'spec/mongoid/attributes_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selectable_spec.rb'
-    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
+    - 'spec/active_document/association/embedded/embeds_many/proxy_spec.rb'
+    - 'spec/active_document/association/referenced/has_many/proxy_spec.rb'
+    - 'spec/active_document/attributes_spec.rb'
+    - 'spec/active_document/criteria/queryable/selectable_spec.rb'
+    - 'spec/active_document/criteria/queryable/selector_spec.rb'
 
 Style/IfUnlessModifier:
   Enabled: false
@@ -156,15 +156,15 @@ Style/IfUnlessModifier:
 # --------------------------------------------------
 # These cops are intentionally disabled due to incompatibility.
 
-# Mongoid behavior differs from ActiveRecord
+# ActiveDocument behavior differs from ActiveRecord
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 
 # False positives
 Lint/HashCompareByIdentity:
   Exclude:
-    - 'lib/mongoid/persistence_context.rb'
-    - 'lib/mongoid/threaded.rb'
+    - 'lib/active_document/persistence_context.rb'
+    - 'lib/active_document/threaded.rb'
 
 # --------------------------------------------------
 # These cops are intentionally configured due to style preference.
@@ -183,20 +183,20 @@ Layout/FirstHashElementIndentation:
 
 Lint/AmbiguousBlockAssociation:
   Exclude:
-    - 'spec/mongoid/association/referenced/has_many/proxy_spec.rb'
-    - 'spec/mongoid/interceptable_spec.rb'
-    - 'spec/mongoid/touchable_spec.rb'
+    - 'spec/active_document/association/referenced/has_many/proxy_spec.rb'
+    - 'spec/active_document/interceptable_spec.rb'
+    - 'spec/active_document/touchable_spec.rb'
 
 Lint/MissingSuper:
   Exclude:
-    - 'lib/mongoid/association/embedded/embedded_in/proxy.rb'
-    - 'lib/mongoid/association/embedded/embeds_many/proxy.rb'
-    - 'lib/mongoid/association/embedded/embeds_one/proxy.rb'
-    - 'lib/mongoid/association/referenced/belongs_to/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_many/proxy.rb'
-    - 'lib/mongoid/association/referenced/has_one/proxy.rb'
-    - 'lib/mongoid/criteria/queryable/pipeline.rb'
-    - 'lib/mongoid/criteria/queryable/smash.rb'
+    - 'lib/active_document/association/embedded/embedded_in/proxy.rb'
+    - 'lib/active_document/association/embedded/embeds_many/proxy.rb'
+    - 'lib/active_document/association/embedded/embeds_one/proxy.rb'
+    - 'lib/active_document/association/referenced/belongs_to/proxy.rb'
+    - 'lib/active_document/association/referenced/has_many/proxy.rb'
+    - 'lib/active_document/association/referenced/has_one/proxy.rb'
+    - 'lib/active_document/criteria/queryable/pipeline.rb'
+    - 'lib/active_document/criteria/queryable/smash.rb'
 
 Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: true
@@ -233,7 +233,7 @@ Style/GuardClause:
     - 'Gemfile'
     - 'gemfiles/**/*'
     # this exclusion should be inlined
-    - 'lib/mongoid/criteria/queryable/mergeable.rb'
+    - 'lib/active_document/criteria/queryable/mergeable.rb'
 
 Style/ModuleFunction:
   EnforcedStyle: extend_self
@@ -255,5 +255,5 @@ Style/WhileUntilModifier:
 # See: https://github.com/rubocop/rubocop/issues/11802
 Style/SymbolArray:
   Exclude:
-    - 'spec/mongoid/criteria/queryable/selector_spec.rb'
-    - 'spec/mongoid/criteria/queryable/options_spec.rb'
+    - 'spec/active_document/criteria/queryable/selector_spec.rb'
+    - 'spec/active_document/criteria/queryable/options_spec.rb'

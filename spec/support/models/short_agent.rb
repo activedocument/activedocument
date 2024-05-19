@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class ShortAgent
-  include Mongoid::Document
-  include Mongoid::Timestamps::Updated::Short
+  include ActiveDocument::Document
+  include ActiveDocument::Timestamps::Updated::Short
 end

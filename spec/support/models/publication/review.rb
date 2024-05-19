@@ -2,7 +2,7 @@
 
 module Publication
   class Review
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :summary
 

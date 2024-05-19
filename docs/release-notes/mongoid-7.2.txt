@@ -1,5 +1,5 @@
 ***********
-Mongoid 7.2
+ActiveDocument 7.2
 ***********
 
 .. default-domain:: mongodb
@@ -10,9 +10,9 @@ Mongoid 7.2
    :depth: 2
    :class: singlecol
 
-This page describes significant changes and improvements in Mongoid 7.2.
+This page describes significant changes and improvements in ActiveDocument 7.2.
 The complete list of releases is available `on GitHub
-<https://github.com/mongodb/mongoid/releases>`_ and `in JIRA
+<https://github.com/mongodb/active_document/releases>`_ and `in JIRA
 <https://jira.mongodb.org/projects/MONGOID?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page>`_;
 please consult GitHub releases for detailed release notes and JIRA for
 the complete list of issues fixed in each release, including bug fixes.
@@ -21,12 +21,12 @@ the complete list of issues fixed in each release, including bug fixes.
 Embedded Document Matching
 --------------------------
 
-**Breaking change:** In Mongoid 7.2 :ref:`embedded matchers <embedded-matching>`
+**Breaking change:** In ActiveDocument 7.2 :ref:`embedded matchers <embedded-matching>`
 were largely rewritten. Most queries should produce the same results as in
-previous versions of Mongoid but a number of cases changed behavior to make
-Mongoid behave the same way MongoDB server behaves. Note that the changes,
+previous versions of ActiveDocument but a number of cases changed behavior to make
+ActiveDocument behave the same way MongoDB server behaves. Note that the changes,
 for the most part, affect queries using manually constructed MQL expressions;
-Mongoid query methods generate MQL that is generally not affected by the
+ActiveDocument query methods generate MQL that is generally not affected by the
 changes in embedded matching.
 
 To illustrate the differences, the examples below use the following model
@@ -35,14 +35,14 @@ definitions:
 .. code-block:: ruby
 
   class Job
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     embeds_many :tasks
   end
 
   class Task
-    include Mongoid::Document
-    include Mongoid::Attributes::Dynamic
+    include ActiveDocument::Document
+    include ActiveDocument::Attributes::Dynamic
 
     embedded_in :job
   end
@@ -58,21 +58,21 @@ The changes in behavior are as follows:
 
 ``$eq`` now performs exact matching when given regular a expression argument.
 Previously, both operators used regular expression matching, which caused
-Mongoid to not find documents where the field being matched was a regular
+ActiveDocument to not find documents where the field being matched was a regular
 expression itself:
 
 .. code-block:: ruby
 
   job.tasks.where(name: {'$eq': /house/}).first
-  # Mongoid 7.2:
+  # ActiveDocument 7.2:
   # => nil
-  # Mongoid 7.1:
+  # ActiveDocument 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 
   job.tasks.where(pattern: {'$eq': /test/}).first
-  # Mongoid 7.2:
+  # ActiveDocument 7.2:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
-  # Mongoid 7.1:
+  # ActiveDocument 7.1:
   # => nil
 
 To perform a regular expression match, provide the regular expression directly
@@ -81,7 +81,7 @@ without an operator:
 .. code-block:: ruby
 
   job.tasks.where(name: /house/).first
-  # Mongoid 7.2 and 7.1:
+  # ActiveDocument 7.2 and 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 
 ``$ne`` and Regular Expression Values
@@ -93,8 +93,8 @@ of MongoDB server:
 .. code-block:: ruby
 
   job.tasks.where(name: {'$ne': /apartment/}).first
-  # Mongoid 7.2: raises Mongoid::Errors::InvalidQuery
-  # Mongoid 7.1:
+  # ActiveDocument 7.2: raises ActiveDocument::Errors::InvalidQuery
+  # ActiveDocument 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 
 To perform a negated regular expression match, use the ``not`` method on a
@@ -103,28 +103,28 @@ symbol key:
 .. code-block:: ruby
 
   job.tasks.where(:name.not => /house/).first
-  # Mongoid 7.2 and 7.1:
+  # ActiveDocument 7.2 and 7.1:
   # => nil
   job.tasks.where(:name.not => /office/).first
-  # Mongoid 7.2 and 7.1:
+  # ActiveDocument 7.2 and 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 
 ``$eq``, ``$ne`` and Range Values
 `````````````````````````````````
 
 Range values are no longer accepted by ``$eq`` and ``$ne`` operators.
-This change should not be visible to applications since Mongoid generally
+This change should not be visible to applications since ActiveDocument generally
 expands Range values to a ``$gte``/``$lte`` pair before they get to the
 embedded matchers.
 
-To query using a range, use the following syntax which works in Mongoid 7.2
+To query using a range, use the following syntax which works in ActiveDocument 7.2
 as well as previous versions:
 
 .. code-block:: ruby
 
   job.tasks.where(hours: 10..15)
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {"hours"=>{"$gte"=>10, "$lte"=>15}}
   #   options:  {}
   #   class:    Task
@@ -133,7 +133,7 @@ as well as previous versions:
   job.tasks.where(hours: 10..15).first
   # => #<Task _id: 5ef8dd4c2c97a6465e8a4ffa, name: "Clean house", pattern: /test/, hours: 12>
 
-Mongoid 7.1 accepted Range values as operator arguments, but generated
+ActiveDocument 7.1 accepted Range values as operator arguments, but generated
 queries that would never match documents. For example, the following
 expression was accepted but never matched any documents:
 
@@ -141,13 +141,13 @@ expression was accepted but never matched any documents:
 
   job.tasks.where(hours: {'$in': 10..15})
   # =>
-  # #<Mongoid::Criteria
+  # #<ActiveDocument::Criteria
   #   selector: {"hours"=>{:$in=>{"$gte"=>10, "$lte"=>15}}}
   #   options:  {}
   #   class:    Task
   #   embedded: true>
 
-Mongoid 7.2 raises ``Mongoid::Errors::InvalidQuery`` in this case.
+ActiveDocument 7.2 raises ``ActiveDocument::Errors::InvalidQuery`` in this case.
 
 ``$elemMatch``
 ``````````````
@@ -162,18 +162,18 @@ Mongoid 7.2 raises ``Mongoid::Errors::InvalidQuery`` in this case.
   ])
 
   mixed_tasks_job.tasks.where(hours: {'$elemMatch': {'$lt': 20}}).first
-  # Mongoid 7.2:
+  # ActiveDocument 7.2:
   # => #<Task _id: 5ef8c7202c97a6465e8a4ff3, name: "Clean office", hours: [8, 16]>
-  # Mongoid 7.1: error
+  # ActiveDocument 7.1: error
 
 Implicit matching under ``$elemMatch`` has been fixed and now works:
 
 .. code-block:: ruby
 
   mixed_tasks_job.tasks.where(supplies: {'$elemMatch': {broom: 1}}).first
-  # Mongoid 7.2:
+  # ActiveDocument 7.2:
   # => #<Task _id: 5ef8c9162c97a6465e8a4ff6, name: "Clean house", hours: 12, supplies: [{:broom=>1}]>
-  # Mongoid 7.1:
+  # ActiveDocument 7.1:
   # => nil
 
 For compatibility with MongoDB server, ``$elemMatch`` requires a ``Hash``
@@ -183,53 +183,53 @@ regular expression matches, respectively:
 .. code-block:: ruby
 
   mixed_tasks_job.tasks.where(hours: {'$elemMatch': 8}).first
-  # Mongoid 7.2: raises Mongoid::Errors::InvalidQuery
-  # Mongoid 7.1:
+  # ActiveDocument 7.2: raises ActiveDocument::Errors::InvalidQuery
+  # ActiveDocument 7.1:
   # => nil
 
   mixed_tasks_job.tasks.where(hours: {'$elemMatch': {'$eq': 8}}).first
-  # Mongoid 7.2:
+  # ActiveDocument 7.2:
   # => #<Task _id: 5ef8ca0b2c97a6465e8a4ff9, name: "Clean office", hours: [8, 16]>
-  # Mongoid 7.1: error
+  # ActiveDocument 7.1: error
 
 ``$and``, ``$nor``, ``$or`` and Empty Argument Arrays
 `````````````````````````````````````````````````````
 
 ``$and``, ``$nor`` and ``$or`` operators now raise an exception when given
 empty arrays as arguments. This only applies to raw MQL query expressions;
-the corresponding Mongoid :ref:`query methods <logical-operations>`
+the corresponding ActiveDocument :ref:`query methods <logical-operations>`
 continue to permit being called without arguments. In previous versions
-of Mongoid, ``$and`` would match when given an empty array of conditions
+of ActiveDocument, ``$and`` would match when given an empty array of conditions
 and ``$nor`` and ``$or`` would not match when given empty arrays of
 conditions.
 
 .. code-block:: ruby
 
   job.tasks.where('$and': []).first
-  # Mongoid 7.2: raises Mongoid::Errors::InvalidQuery
-  # Mongoid 7.1:
+  # ActiveDocument 7.2: raises ActiveDocument::Errors::InvalidQuery
+  # ActiveDocument 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 
   job.tasks.where('$nor': []).first
-  # Mongoid 7.2: raises Mongoid::Errors::InvalidQuery
-  # Mongoid 7.1:
+  # ActiveDocument 7.2: raises ActiveDocument::Errors::InvalidQuery
+  # ActiveDocument 7.1:
   # => nil
 
   job.tasks.where('$or': []).first
-  # Mongoid 7.2: raises Mongoid::Errors::InvalidQuery
-  # Mongoid 7.1:
+  # ActiveDocument 7.2: raises ActiveDocument::Errors::InvalidQuery
+  # ActiveDocument 7.1:
   # => nil
 
   job.tasks.and.first
-  # Mongoid 7.2 and 7.1:
+  # ActiveDocument 7.2 and 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 
   job.tasks.nor.first
-  # Mongoid 7.2 and 7.1:
+  # ActiveDocument 7.2 and 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 
   job.tasks.or.first
-  # Mongoid 7.2 and 7.1:
+  # ActiveDocument 7.2 and 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 
 
@@ -242,7 +242,7 @@ seamlessly work in transactions.
 
 Model classes now also have the ``estimated_count`` method to obtain an
 approximate number of documents in the collection. This method is roughly
-equivalent to the ``count`` method in Mongoid 7.1 and earlier, except
+equivalent to the ``count`` method in ActiveDocument 7.1 and earlier, except
 ``estimated_count`` does not accept filter conditions.
 
 The new behavior is further described in the :ref:`Additional Query Methods
@@ -268,7 +268,7 @@ with other programming languages.
 Changing the Discriminator Key
 ------------------------------
 
-New feature: Mongoid now supports :ref:`changing the default discriminator key
+New feature: ActiveDocument now supports :ref:`changing the default discriminator key
 <discriminator-key>` from the default ``_type`` when using inheritance.
 This can be done by setting the ``discriminator_key`` field on the parent class
 or globally. To set the discriminator key on the parent class:
@@ -276,7 +276,7 @@ or globally. To set the discriminator key on the parent class:
 .. code-block:: ruby
 
    class Shape
-     include Mongoid::Document
+     include ActiveDocument::Document
 
      self.discriminator_key = "shape_type"
    end
@@ -291,10 +291,10 @@ To set the discriminator key globally:
 
 .. code-block:: ruby
 
-   Mongoid.discriminator_key = "global_discriminator"
+   ActiveDocument.discriminator_key = "global_discriminator"
 
    class Shape
-     include Mongoid::Document
+     include ActiveDocument::Document
    end
 
    class Circle < Shape
@@ -307,7 +307,7 @@ To set the discriminator key globally:
 Changing the Discriminator Value
 --------------------------------
 
-New feature: Mongoid now also supports :ref:`changing the discriminator value
+New feature: ActiveDocument now also supports :ref:`changing the discriminator value
 <discriminator-value>` from the default value, which is the class name.
 The discriminator value can be changed by setting the ``discriminator_value``
 on that class:
@@ -315,7 +315,7 @@ on that class:
 .. code-block:: ruby
 
    class Shape
-     include Mongoid::Document
+     include ActiveDocument::Document
    end
 
    class Circle < Shape
@@ -329,9 +329,9 @@ on that class:
 Shard Key Used For Reloading
 ----------------------------
 
-Minor change: When sharding is used, Mongoid 7.2 expects the shard key declared
+Minor change: When sharding is used, ActiveDocument 7.2 expects the shard key declared
 in models to match the shard key in the database for the respective collections.
-In Mongoid 7.2 model reloading (either explicit via the ``reload`` method
+In ActiveDocument 7.2 model reloading (either explicit via the ``reload`` method
 or implicit as part of persistence operations) uses the shard key, if one is
 defined, in the ``find`` command in addition to the ``id`` field value.
 This improves the performance of document reloading, and consequently some
@@ -344,13 +344,13 @@ Consider a class ``Band`` whose documents are sharded by the ``name`` key.
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
     field :name, type: String
 
     shard_key :name
   end
 
-Example Mongoid 7.2 behavior:
+Example ActiveDocument 7.2 behavior:
 
 .. code-block:: ruby
 
@@ -358,7 +358,7 @@ Example Mongoid 7.2 behavior:
   band.reload
   # Command logs: { "find"=>"bands", "filter"=>{ "_id"=>BSON::ObjectId('...') "name"=>"Destiny's Child" } }
 
-Example Mongoid 7.1 behavior:
+Example ActiveDocument 7.1 behavior:
 
 .. code-block:: ruby
 
@@ -366,7 +366,7 @@ Example Mongoid 7.1 behavior:
   band.reload
   # Command logs: { "find"=>"bands", "filter"=>{"_id"=>BSON::ObjectId('...') } }
 
-Mongoid provides :ref:`sharding management Rake tasks <sharding-management>`
+ActiveDocument provides :ref:`sharding management Rake tasks <sharding-management>`
 to shard collections according to shard keys declared in models.
 
 
@@ -374,7 +374,7 @@ Query Cache Moved to Driver
 ---------------------------
 
 Minor change: Ruby driver version 2.14.0 implements a new and improved query
-cache. When using driver version 2.14.0 or newer, Mongoid will use the driver's
+cache. When using driver version 2.14.0 or newer, ActiveDocument will use the driver's
 query cache to cache query results.
 
 The driver query cache introduces the following improvements:
@@ -389,22 +389,22 @@ The driver query cache introduces the following improvements:
 * Caching aggregation results
 * More efficient query cache invalidation
 
-Mongoid's query cache, which will now be referred to as the "legacy query cache,"
-has been deprecated. Mongoid will retain the legacy query cache for use with
+ActiveDocument's query cache, which will now be referred to as the "legacy query cache,"
+has been deprecated. ActiveDocument will retain the legacy query cache for use with
 older versions of the driver.
 
-The interface for enabling and disabling the query cache in Mongoid has not
+The interface for enabling and disabling the query cache in ActiveDocument has not
 changed. When using driver versions 2.14.0 and newer, this interface will
 enable or disable the query cache in the driver.
 
 The driver query cache is more correct and more effective than the legacy
-Mongoid query cache. If you plan to use the query cache, it is recommended
+ActiveDocument query cache. If you plan to use the query cache, it is recommended
 that you upgrade to driver version 2.14.
 
 To read more about the query cache improvements made in the driver, see
 `the Ruby driver documentation <https://mongodb.com/docs/ruby-driver/current/reference/query-cache/>`_.
 
-To read more about using the query cache with Mongoid and the limitations
+To read more about using the query cache with ActiveDocument and the limitations
 of the legacy query cache, see :ref:`the query cache documentation <query-cache>`.
 
 
@@ -412,18 +412,18 @@ of the legacy query cache, see :ref:`the query cache documentation <query-cache>
 ---------------------------------------------------------------
 
 Minor change: when a ``String`` value is written in a ``Regexp`` field,
-Mongoid 7.2 stores that value in MongoDB as a regular expression.
+ActiveDocument 7.2 stores that value in MongoDB as a regular expression.
 Subsequently it would be retrieved :ref:`as a BSON::Regexp::Raw instance
 <field-type-regexp>`.
 Previously the value would be stored as a string and would be retrieved as
 a string.
 
-Example Mongoid 7.2 behavior:
+Example ActiveDocument 7.2 behavior:
 
 .. code-block:: ruby
 
   class Offer
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :constraint, type: Regexp
   end
@@ -450,7 +450,7 @@ Example Mongoid 7.2 behavior:
   #     "constraint"=>#<BSON::Regexp::Raw:0x000055b4cce11320 @pattern="foo", @options="m">,
   #     "type"=>"regex"}
 
-Mongoid 7.1 behavior with the same model class:
+ActiveDocument 7.1 behavior with the same model class:
 
 .. code-block:: ruby
 

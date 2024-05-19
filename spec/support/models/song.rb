@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Song
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :title
   embedded_in :artist
 

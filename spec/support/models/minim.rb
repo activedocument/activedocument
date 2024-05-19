@@ -2,5 +2,5 @@
 
 # Minimal model, do not add any fields
 class Minim
-  include Mongoid::Document
+  include ActiveDocument::Document
 end

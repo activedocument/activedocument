@@ -3,7 +3,7 @@
 # Set up a root user so we can set up authentication on a database level.
 MONGOID_ROOT_USER = Mongo::Auth::User.new(
   database: Mongo::Database::ADMIN,
-  user: 'mongoid-user',
+  user: 'active_document-user',
   password: 'password',
   roles: [
     Mongo::Auth::Roles::USER_ADMIN_ANY_DATABASE,

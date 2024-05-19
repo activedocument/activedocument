@@ -24,7 +24,7 @@ describe 'embeds_one associations' do
   context 'when an anonymous class defines an embeds_one association' do
     let(:klass) do
       Class.new do
-        include Mongoid::Document
+        include ActiveDocument::Document
         embeds_one :address
       end
     end

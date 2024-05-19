@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'mongoid/association/referenced/has_one_models'
+require 'active_document/association/referenced/has_one_models'
 
 describe 'has_one associations' do
   context 'destroying parent in transaction with dependent child' do
@@ -58,7 +58,7 @@ describe 'has_one associations' do
               college.destroy!
             end
           end
-        end.to raise_error(Mongoid::Errors::DocumentNotDestroyed)
+        end.to raise_error(ActiveDocument::Errors::DocumentNotDestroyed)
 
         expect(HomCollege.count).to eq(1)
         expect(HomAddress.count).to eq(1)
@@ -125,7 +125,7 @@ describe 'has_one associations' do
       it 'raises InverseNotFound' do
         expect do
           parent.driver = HomBusDriver.new
-        end.to raise_error(Mongoid::Errors::InverseNotFound)
+        end.to raise_error(ActiveDocument::Errors::InverseNotFound)
       end
     end
   end

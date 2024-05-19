@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Service
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :sid
-  field :before_destroy_called, type: Mongoid::Boolean, default: false
-  field :after_destroy_called, type: Mongoid::Boolean, default: false
-  field :after_initialize_called, type: Mongoid::Boolean, default: false
+  field :before_destroy_called, type: ActiveDocument::Boolean, default: false
+  field :after_destroy_called, type: ActiveDocument::Boolean, default: false
+  field :after_initialize_called, type: ActiveDocument::Boolean, default: false
   embedded_in :person
   belongs_to :target, class_name: 'User'
   validates_numericality_of :sid

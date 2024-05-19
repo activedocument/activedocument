@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class OrderedPost
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :title, type: String
   field :rating, type: Integer
   belongs_to :person

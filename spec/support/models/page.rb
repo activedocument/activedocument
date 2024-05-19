@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Page
-  include Mongoid::Document
+  include ActiveDocument::Document
   embedded_in :quiz
   embeds_many :page_questions
 

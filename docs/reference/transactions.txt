@@ -17,7 +17,7 @@ MongoDB supports `multi-document transactions
 (Updates to multiple fields within a single document are atomic in all
 versions of MongoDB). Transactions require a non-standalone MongoDB topology
 and Ruby driver version 2.6 or higher. A higher level transaction API requires
-Mongoid version 9.0 or higher, while a lower level API requires Mongoid
+ActiveDocument version 9.0 or higher, while a lower level API requires ActiveDocument
 version 6.4 or higher.
 
 Using Transactions
@@ -27,7 +27,7 @@ Higher Level API
 ----------------
 
 A transaction can be started by calling the ``transaction`` method on an instance
-of a Mongoid document class, on a Mongoid document class, on or ``Mongoid`` module:
+of a ActiveDocument document class, on a ActiveDocument document class, on or ``ActiveDocument`` module:
 
 .. code-block:: ruby
 
@@ -41,11 +41,11 @@ of a Mongoid document class, on a Mongoid document class, on or ``Mongoid`` modu
     band.save!
   end
 
-  Mongoid.transaction do
+  ActiveDocument.transaction do
     band.destroy
   end
 
-When the ``transaction`` method is called, Mongoid does the following:
+When the ``transaction`` method is called, ActiveDocument does the following:
 
 * creates a session on a client that is used by the receiver of the
   ``transaction`` method call;
@@ -69,17 +69,17 @@ When the ``transaction`` method is called, Mongoid does the following:
   .. code-block:: ruby
 
     class Author
-      include Mongoid::Document
+      include ActiveDocument::Document
       store_in client: :encrypted_client
     end
 
     class User
-      include Mongoid::Document
+      include ActiveDocument::Document
       store_in client: :encrypted_client
     end
 
     class Article
-      include Mongoid::Document
+      include ActiveDocument::Document
       # This class uses the :default client
     end
 
@@ -94,7 +94,7 @@ When the ``transaction`` method is called, Mongoid does the following:
     end
 
 .. note::
-  When ``transaction`` method is called on ``Mongoid`` module, the transaction
+  When ``transaction`` method is called on ``ActiveDocument`` module, the transaction
   is created using the ``:default`` client.
 
 Aborting Transaction
@@ -102,7 +102,7 @@ Aborting Transaction
 
 Any exception raised inside the ``transaction`` method block aborts the
 transaction. Normally the raised exception passed on, except for the
-``Mongoid::Errors::Rollback``. This error should be raised if you  want to
+``ActiveDocument::Errors::Rollback``. This error should be raised if you  want to
 explicitly abort the transaction without passing on an exception.
 
 Callbacks
@@ -139,7 +139,7 @@ obtained by calling the ``with_session`` method on either a model class or insta
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
   end
 
   Person.with_session do |session|
@@ -200,11 +200,11 @@ that the session was initiated on. By default, all operations will be done on th
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
   end
 
   class Post
-    include Mongoid::Document
+    include ActiveDocument::Document
   end
 
   Person.with_session do |s|

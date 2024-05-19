@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Dictionary
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name, type: String
   field :publisher, type: String
   field :year, type: Integer

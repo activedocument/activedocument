@@ -10,14 +10,14 @@ Release Notes
   :titlesonly:
 
   release-notes/upgrading
-  release-notes/mongoid-9.0
-  release-notes/mongoid-8.1
-  release-notes/mongoid-8.0
-  release-notes/mongoid-7.5
-  release-notes/mongoid-7.4
-  release-notes/mongoid-7.3
-  release-notes/mongoid-7.2
-  release-notes/mongoid-7.1
-  release-notes/mongoid-7.0
-  release-notes/mongoid-6
-  release-notes/mongoid-5
+  release-notes/active_document-9.0
+  release-notes/active_document-8.1
+  release-notes/active_document-8.0
+  release-notes/active_document-7.5
+  release-notes/active_document-7.4
+  release-notes/active_document-7.3
+  release-notes/active_document-7.2
+  release-notes/active_document-7.1
+  release-notes/active_document-7.0
+  release-notes/active_document-6
+  release-notes/active_document-5

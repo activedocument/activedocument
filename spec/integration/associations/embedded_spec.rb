@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../mongoid/association/embedded/embeds_many_models'
-require_relative '../../mongoid/association/embedded/embeds_one_models'
+require_relative '../../active_document/association/embedded/embeds_many_models'
+require_relative '../../active_document/association/embedded/embeds_one_models'
 
 describe 'embedded associations' do
   context 'without default order' do
@@ -34,7 +34,7 @@ describe 'embedded associations' do
       end
 
       it 'returns created child when referencing Criteria created from embedded association' do
-        expect(congress.legislators.all).to be_a(Mongoid::Criteria)
+        expect(congress.legislators.all).to be_a(ActiveDocument::Criteria)
         expect(congress.legislators.all.to_a).to eq([legislator])
       end
     end
@@ -94,7 +94,7 @@ describe 'embedded associations' do
       end
 
       it 'returns created child when referencing Criteria created from embedded association' do
-        expect(manufactory.products.all).to be_a(Mongoid::Criteria)
+        expect(manufactory.products.all).to be_a(ActiveDocument::Criteria)
         expect(manufactory.products.all.to_a).to eq([product])
       end
     end

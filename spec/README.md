@@ -1,4 +1,4 @@
-# Running Mongoid Tests
+# Running ActiveDocument Tests
 
 ## Quick Start
 
@@ -9,8 +9,8 @@ branch, check out the matching submodules:
     git submodule init
     git submodule update
 
-Spin up a MongoDB deployment against which to run the Mongoid specs.
-Mongoid specs support a variety of MongoDB topologies, but the simplest is
+Spin up a MongoDB deployment against which to run the ActiveDocument specs.
+ActiveDocument specs support a variety of MongoDB topologies, but the simplest is
 a single MongoDB instance:
 
     # Launch mongod in one terminal

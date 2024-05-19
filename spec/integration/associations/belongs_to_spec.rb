@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../mongoid/association/referenced/has_one_models'
+require_relative '../../active_document/association/referenced/has_one_models'
 
 describe 'belongs_to associations' do
   context 'referencing top level classes when source class is namespaced' do
@@ -16,7 +16,7 @@ describe 'belongs_to associations' do
   context 'when an anonymous class defines a belongs_to association' do
     let(:klass) do
       Class.new do
-        include Mongoid::Document
+        include ActiveDocument::Document
         belongs_to :movie
       end
     end

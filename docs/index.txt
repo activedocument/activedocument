@@ -1,12 +1,12 @@
-.. _mongoid:
+.. _active_document:
 
 *******
-Mongoid
+ActiveDocument
 *******
 
 .. default-domain:: mongodb
 
-Mongoid is the officially supported object-document mapper (ODM)
+ActiveDocument is the officially supported object-document mapper (ODM)
 for MongoDB in Ruby.
 
 .. toctree::
@@ -16,7 +16,7 @@ for MongoDB in Ruby.
   tutorials
   schema-configuration
   working-with-data
-  API <https://mongodb.com/docs/mongoid/master/api/>
+  API <https://mongodb.com/docs/active_document/master/api/>
   release-notes
   contributing
   additional-resources

@@ -2,7 +2,7 @@
 
 # Model with one field called name
 class NameOnly
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :name, type: String
 end

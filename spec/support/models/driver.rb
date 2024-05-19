@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Driver
-  include Mongoid::Document
+  include ActiveDocument::Document
   has_one :vehicle
   accepts_nested_attributes_for :vehicle
 end

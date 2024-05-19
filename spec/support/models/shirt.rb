@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Shirt
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :color, type: String
 

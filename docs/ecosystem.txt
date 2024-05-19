@@ -10,8 +10,8 @@ Ecosystem
    :depth: 2
    :class: singlecol
 
-Mongoid has an extensive ecosystem of libraries integrating with or built
-on top of Mongoid, are listed below.
+ActiveDocument has an extensive ecosystem of libraries integrating with or built
+on top of ActiveDocument, are listed below.
 
 
 Projects
@@ -19,66 +19,66 @@ Projects
 
 - `Workarea Commerce <https://github.com/workarea-commerce/workarea>`_
 
-  Workarea is an enterprise-grade Ruby on Rails commerce platform that uses Mongoid.
+  Workarea is an enterprise-grade Ruby on Rails commerce platform that uses ActiveDocument.
 
 
 Extension Libraries
 ===================
   
-- `Mongoid Tree <https://github.com/benedikt/mongoid-tree>`_
+- `ActiveDocument Tree <https://github.com/benedikt/active_document-tree>`_
 
-  A tree structure for Mongoid documents using the materialized path pattern.
+  A tree structure for ActiveDocument documents using the materialized path pattern.
   
-- `Mongoid Token <https://github.com/thetron/mongoid_token>`_
+- `ActiveDocument Token <https://github.com/thetron/active_document_token>`_
 
-  A little random, unique token generator for Mongoid documents.
+  A little random, unique token generator for ActiveDocument documents.
 
-- `Mongoid Collection Snapshot <https://github.com/mongoid/mongoid-collection-snapshot>`_
+- `ActiveDocument Collection Snapshot <https://github.com/active_document/active_document-collection-snapshot>`_
 
-  Easy maintenance of collections of processed data in MongoDB with the Mongoid ODM.
+  Easy maintenance of collections of processed data in MongoDB with the ActiveDocument ODM.
 
-- `Mongoid Locker <https://github.com/mongoid/mongoid-locker>`_
+- `ActiveDocument Locker <https://github.com/active_document/active_document-locker>`_
 
-  Document-level locking for MongoDB via Mongoid.
+  Document-level locking for MongoDB via ActiveDocument.
   
 - `Mongo Beautiful Logger <https://github.com/ibraheemdev/mongo_beautiful_logger>`_
 
   A simple and beautiful logger library for MongoDB in your Ruby/Rails app.
   
-- `Mongoid Search <https://github.com/mongoid/mongoid_search>`_
+- `ActiveDocument Search <https://github.com/active_document/active_document_search>`_
 
-  Simple full text search for Mongoid.
+  Simple full text search for ActiveDocument.
   
-- `Mongoid Fulltext Search <https://github.com/mongoid/mongoid_fulltext>`_
+- `ActiveDocument Fulltext Search <https://github.com/active_document/active_document_fulltext>`_
 
-  Full-text search using n-gram matching for the Mongoid ODM.
+  Full-text search using n-gram matching for the ActiveDocument ODM.
 
 
 Integration Libraries
 =====================
 
-- `CarrierWave Mongoid <https://github.com/carrierwaveuploader/carrierwave-mongoid>`_
+- `CarrierWave ActiveDocument <https://github.com/carrierwaveuploader/carrierwave-active_document>`_
 
-  Mongoid Support for the Carrierwave file uploads library.
+  ActiveDocument Support for the Carrierwave file uploads library.
 
-- `Mongoid RSpec <https://github.com/mongoid/mongoid-rspec>`_
+- `ActiveDocument RSpec <https://github.com/active_document/active_document-rspec>`_
 
-  RSpec matchers and macros for Mongoid applications.
+  RSpec matchers and macros for ActiveDocument applications.
 
-- `RailsAdmin <https://github.com/sferik/rails_admin>`_ supports Mongoid out
+- `RailsAdmin <https://github.com/sferik/rails_admin>`_ supports ActiveDocument out
   of the box.
 
-- `ActiveAdmin Mongoid <https://github.com/activeadmin/activeadmin-mongoid>`_
+- `ActiveAdmin ActiveDocument <https://github.com/activeadmin/activeadmin-active_document>`_
 
-  ActiveAdmin hacks to support Mongoid.
+  ActiveAdmin hacks to support ActiveDocument.
   
-- `Mongoid History <https://github.com/mongoid/mongoid-history>`_
+- `ActiveDocument History <https://github.com/active_document/active_document-history>`_
 
-  Multi-user non-linear history tracking, auditing, undo, redo for mongoid.
-- `Delayed Job Mongoid <https://github.com/collectiveidea/delayed_job_mongoid>`_
+  Multi-user non-linear history tracking, auditing, undo, redo for active_document.
+- `Delayed Job ActiveDocument <https://github.com/collectiveidea/delayed_job_active_document>`_
 
-  Mongoid backend for delayed_job.
+  ActiveDocument backend for delayed_job.
   
-- `Mongo Session Store <https://github.com/mongoid/mongo_session_store>`_
+- `Mongo Session Store <https://github.com/active_document/mongo_session_store>`_
 
-  A Rails-compatible session store for Mongoid.
+  A Rails-compatible session store for ActiveDocument.

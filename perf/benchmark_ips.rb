@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 require "benchmark/ips"
-require "mongoid"
-require "./perf/models"
+require "active_document"
+require './perf/models'
 require './perf/gc_suite'
 
-Mongoid.connect_to("mongoid_perf_test")
+ActiveDocument.connect_to('active_document_perf_test')
 Mongo::Logger.logger.level = ::Logger::FATAL
-Mongoid.purge!
+ActiveDocument.purge!
 
-puts "Creating indexes..."
+puts 'Creating indexes...'
 
 [ Person, Post, Game, Preference ].each(&:create_indexes)
 
-puts "Starting benchmark..."
+puts 'Starting benchmark...'
 
 suite = GCSuite.new
 

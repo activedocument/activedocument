@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Person
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :birth_date, :type => Date
   field :title, :type => String
@@ -17,7 +17,7 @@ class Person
 end
 
 class Name
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :given, :type => String
   field :family, :type => String
@@ -26,7 +26,7 @@ class Name
 end
 
 class Address
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :street, :type => String
   field :city, :type => String
@@ -37,7 +37,7 @@ class Address
 end
 
 class Post
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :title, :type => String
   field :content, :type => String
@@ -47,7 +47,7 @@ class Post
 end
 
 class Game
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :name, :type => String
   belongs_to :person
@@ -56,7 +56,7 @@ class Game
 end
 
 class Preference
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :name, :type => String
   has_and_belongs_to_many :people, :validate => false

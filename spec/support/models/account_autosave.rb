@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AccountAutosave
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :_id, type: String, overwrite: true, default: -> { name.try(:parameterize) }
 
@@ -9,7 +9,7 @@ class AccountAutosave
   field :balance, type: Integer
   field :nickname, type: String
   field :name, type: String
-  field :balanced, type: Mongoid::Boolean, default: -> { balance? }
+  field :balanced, type: ActiveDocument::Boolean, default: -> { balance? }
 
   field :overridden, type: String
 

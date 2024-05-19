@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Author
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :id, type: Integer
-  field :author, type: Mongoid::Boolean
+  field :author, type: ActiveDocument::Boolean
   field :name, type: String
 end

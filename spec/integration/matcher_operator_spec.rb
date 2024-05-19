@@ -43,7 +43,7 @@ describe 'Matcher operators' do
           if spec['pending']
             before do
               # Cannot use `pending` here because some of the queries may work
-              # as specified (e.g. when Mongoid and server behavior differ).
+              # as specified (e.g. when ActiveDocument and server behavior differ).
               skip spec['pending'].to_s
             end
           end
@@ -60,7 +60,7 @@ describe 'Matcher operators' do
               it 'produces an error' do
                 expect do
                   document._matches?(query)
-                end.to raise_error(Mongoid::Errors::InvalidQuery)
+                end.to raise_error(ActiveDocument::Errors::InvalidQuery)
               end
             else
               it 'produces the correct result' do
@@ -89,14 +89,14 @@ describe 'Matcher operators' do
               end
             end
 
-            context 'via Mongoid DSL' do
+            context 'via ActiveDocument DSL' do
               if mop_error?(spec, 'dsl')
                 it 'produces an error' do
                   Mop.where(query).any?
                 rescue Mongo::Error::OperationFailure
                 rescue BSON::Error::UnserializableClass
-                rescue Mongoid::Errors::InvalidQuery
-                rescue Mongoid::Errors::CriteriaArgumentRequired
+                rescue ActiveDocument::Errors::InvalidQuery
+                rescue ActiveDocument::Errors::CriteriaArgumentRequired
                 else
                   raise 'Expected the query to raise an error'
                 end

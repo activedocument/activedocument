@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Division
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name, type: String
   embedded_in :league
   before_destroy :update_parent

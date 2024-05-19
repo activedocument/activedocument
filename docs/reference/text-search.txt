@@ -25,7 +25,7 @@ string elements.
   which is a more powerful and flexible text search solution.
   The rest of this section discusses text indexes and not Atlas Search.
 
-To perform text search with Mongoid, follow these steps:
+To perform text search with ActiveDocument, follow these steps:
 
 1. Define a text index on a model.
 2. Create the text index on the server.
@@ -35,7 +35,7 @@ To perform text search with Mongoid, follow these steps:
 Defining Text Search Index
 --------------------------
 
-Index definition through Mongoid is described in detail on the :ref:`indexes
+Index definition through ActiveDocument is described in detail on the :ref:`indexes
 <indexes>` page. Text search indexes are described in detail
 under `text indexes <https://mongodb.com/docs/manual/core/index-text/>`_
 in the MongoDB manual. Below is an example definition of a Band model with
@@ -44,7 +44,7 @@ a text index utilizing the description field:
 .. code-block:: ruby
 
   class Band
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: String
     field :description, type: String
@@ -58,11 +58,11 @@ Note that the index type (``text``) must be given as a string, not as a symbol.
 Creating Text Index
 -------------------
 
-To create the index, invoke the ``db:mongoid:create_indexes`` Rake task:
+To create the index, invoke the ``db:active_document:create_indexes`` Rake task:
 
 .. code-block:: ruby
 
-  bundle exec rake db:mongoid:create_indexes
+  bundle exec rake db:active_document:create_indexes
 
 
 Querying Using Text Index

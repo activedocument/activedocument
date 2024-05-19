@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WordOrigin
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :_id, type: Integer, overwrite: true, default: -> { origin_id }
 

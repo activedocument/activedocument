@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Pet
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name
   field :weight, type: Float, default: 0.0
   embeds_many :vet_visits

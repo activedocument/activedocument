@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Mongoid'
+project = 'ActiveDocument'
 copyright = '2021, MongoDB'
 
 

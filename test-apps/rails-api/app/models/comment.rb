@@ -1,5 +1,5 @@
 class Comment
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include ActiveDocument::Document
+  include ActiveDocument::Timestamps
   belongs_to :post
 end

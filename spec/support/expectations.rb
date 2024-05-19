@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Mongoid
+module ActiveDocument
   module Expectations
 
     def connection_class

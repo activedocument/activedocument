@@ -108,7 +108,7 @@ describe 'Contextual classes when dealing with empty result set' do
   end
 
   context 'Mongo' do
-    let(:context_cls) { Mongoid::Contextual::Mongo }
+    let(:context_cls) { ActiveDocument::Contextual::Mongo }
 
     let(:criteria) do
       Mop.and(Mop.where(a: 1), Mop.where(a: 2))
@@ -118,7 +118,7 @@ describe 'Contextual classes when dealing with empty result set' do
   end
 
   context 'Memory' do
-    let(:context_cls) { Mongoid::Contextual::Memory }
+    let(:context_cls) { ActiveDocument::Contextual::Memory }
 
     let(:criteria) do
       Mop.all.tap do |criteria|
@@ -130,7 +130,7 @@ describe 'Contextual classes when dealing with empty result set' do
   end
 
   context 'None' do
-    let(:context_cls) { Mongoid::Contextual::None }
+    let(:context_cls) { ActiveDocument::Contextual::None }
 
     let(:criteria) do
       Mop.none

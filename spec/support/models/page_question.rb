@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class PageQuestion
-  include Mongoid::Document
+  include ActiveDocument::Document
   embedded_in :page
 end

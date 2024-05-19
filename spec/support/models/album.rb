@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Album
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   belongs_to :artist
   before_destroy :set_parent_name

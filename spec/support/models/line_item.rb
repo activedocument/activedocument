@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LineItem
-  include Mongoid::Document
+  include ActiveDocument::Document
   embedded_in :purchase
   belongs_to :product, polymorphic: true
   validates :product, presence: true, uniqueness: { scope: :product }

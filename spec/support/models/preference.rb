@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Preference
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name, type: String
   field :value, type: String
   field :ranking, type: Integer

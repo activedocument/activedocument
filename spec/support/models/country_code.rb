@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CountryCode
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :_id, type: Integer, overwrite: true, default: -> { code }
 

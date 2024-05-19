@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-module Mongoid
+module ActiveDocument
   module ImmutableIds
     def immutable_id_examples_as(name)
       shared_examples_for name do
         shared_examples 'a persisted document' do
           it 'disallows _id to be updated' do
             expect { invoke_operation! }
-              .to raise_error(Mongoid::Errors::ImmutableAttribute)
+              .to raise_error(ActiveDocument::Errors::ImmutableAttribute)
           end
 
           context 'when immutable_ids is false' do
-            before { Mongoid::Config.immutable_ids = false }
-            after { Mongoid::Config.immutable_ids = true }
+            before { ActiveDocument::Config.immutable_ids = false }
+            after { ActiveDocument::Config.immutable_ids = true }
 
             it 'ignores the change and issue a warning' do
-              expect(Mongoid::Warnings).to receive(:warn_mutable_ids)
+              expect(ActiveDocument::Warnings).to receive(:warn_mutable_ids)
               expect { invoke_operation! }.to_not raise_error
               expect(id_is_unchanged).to_not be legacy_behavior_expects_id_to_change
             end
@@ -79,11 +79,11 @@ module Mongoid
 
               context 'updating embeds_one via parent' do
                 context 'when immutable_ids is false' do
-                  before { Mongoid::Config.immutable_ids = false }
-                  after { Mongoid::Config.immutable_ids = true }
+                  before { ActiveDocument::Config.immutable_ids = false }
+                  after { ActiveDocument::Config.immutable_ids = true }
 
                   it 'ignores the change' do
-                    expect(Mongoid::Warnings).to receive(:warn_mutable_ids)
+                    expect(ActiveDocument::Warnings).to receive(:warn_mutable_ids)
 
                     parent.pet = pet = Pet.new
                     parent.save
@@ -97,7 +97,7 @@ module Mongoid
                 end
 
                 context 'when immutable_ids is true' do
-                  before { expect(Mongoid::Config.immutable_ids).to be true }
+                  before { expect(ActiveDocument::Config.immutable_ids).to be true }
 
                   it 'raises an exception' do
                     parent.pet = Pet.new
@@ -106,7 +106,7 @@ module Mongoid
                     new_id = BSON::ObjectId.new
 
                     expect { parent.update(pet: { _id: new_id }) }
-                      .to raise_error(Mongoid::Errors::ImmutableAttribute)
+                      .to raise_error(ActiveDocument::Errors::ImmutableAttribute)
                   end
                 end
               end
