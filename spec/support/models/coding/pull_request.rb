@@ -2,7 +2,7 @@
 
 module Coding
   class PullRequest
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :title, type: String
 

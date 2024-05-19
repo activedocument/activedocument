@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Writer
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :speed, type: Integer, default: 0
 
   embedded_in :canvas

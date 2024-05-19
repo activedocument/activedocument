@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../mongoid/shardable_models'
+require_relative '../active_document/shardable_models'
 
 describe 'Sharding helpers' do
   require_topology :sharded
 
   describe 'shard_collection rake task' do
     let(:shard_collections) do
-      Mongoid::Tasks::Database.shard_collections([model_cls])
+      ActiveDocument::Tasks::Database.shard_collections([model_cls])
     end
 
     let(:create_indexes) do
-      Mongoid::Tasks::Database.create_indexes([model_cls])
+      ActiveDocument::Tasks::Database.create_indexes([model_cls])
     end
 
     shared_examples_for 'shards collection' do
@@ -71,7 +71,7 @@ describe 'Sharding helpers' do
       let(:model_cls) { SmMovie }
 
       before do
-        Mongoid::Tasks::Database.shard_collections([model_cls])
+        ActiveDocument::Tasks::Database.shard_collections([model_cls])
       end
 
       it_behaves_like 'shards collection'

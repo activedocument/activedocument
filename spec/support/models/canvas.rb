@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Canvas
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name
   embeds_many :shapes
   embeds_one :writer

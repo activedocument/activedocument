@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 require 'active_job'
-require 'mongoid/railties/bson_object_id_serializer'
+require 'active_document/railties/bson_object_id_serializer'
 
 describe 'ActiveJob Serialization' do
   skip unless defined?(ActiveJob)
@@ -24,7 +24,7 @@ describe 'ActiveJob Serialization' do
 
   before do
     ActiveJob::Serializers.add_serializers(
-      [Mongoid::Railties::ActiveJobSerializers::BsonObjectIdSerializer]
+      [ActiveDocument::Railties::ActiveJobSerializers::BsonObjectIdSerializer]
     )
   end
 

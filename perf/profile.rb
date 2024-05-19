@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require "perftools"
-require "mongoid"
+require "active_document"
 require "./perf/models"
 
-Mongoid.connect_to("mongoid_perf_test")
+ActiveDocument.connect_to("active_document_perf_test")
 
-Mongoid.purge!
+ActiveDocument.purge!
 
 puts "Starting profiler"
 

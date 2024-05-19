@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Purse
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :brand, type: String
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Instrument
-  include Mongoid::Document
+  include ActiveDocument::Document
 end
 
 require 'support/models/guitar'

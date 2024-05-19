@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Name
-  include Mongoid::Document
-  include Mongoid::Attributes::Dynamic
+  include ActiveDocument::Document
+  include ActiveDocument::Attributes::Dynamic
 
   validate :is_not_jamis
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Vehicle
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   belongs_to :shipping_container
   belongs_to :driver

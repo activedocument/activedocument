@@ -18,14 +18,14 @@ Inheritance
 Overview
 ========
 
-Mongoid supports inheritance in both top level and embedded documents. When
+ActiveDocument supports inheritance in both top level and embedded documents. When
 a child document inherits from a parent document, the parent document's
 fields, associations, validations and scopes are copied to the child document.
 
 .. code-block:: ruby
 
    class Canvas
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :name, type: String
      embeds_many :shapes
    end
@@ -39,7 +39,7 @@ fields, associations, validations and scopes are copied to the child document.
    end
 
    class Shape
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :x, type: Integer
      field :y, type: Integer
      embedded_in :canvas
@@ -76,7 +76,7 @@ documents ``Circle``, ``Rectangle``, and ``Shape``.
 Changing the Discriminator Key
 ==============================
 
-Mongoid supports changing the discriminator key from the default ``_type``. There are a few
+ActiveDocument supports changing the discriminator key from the default ``_type``. There are a few
 cases where one might want to do this:
 
 1. For optimization: The user might want to use a shorter key like ``_t``.
@@ -92,7 +92,7 @@ Take the above example:
 .. code-block:: ruby
 
    class Shape
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :x, type: Integer
      field :y, type: Integer
      embedded_in :canvas
@@ -122,7 +122,7 @@ For example:
 .. code-block:: ruby
 
    class Shape
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :x, type: Integer
      field :y, type: Integer
      embedded_in :canvas
@@ -148,10 +148,10 @@ use the globally set discriminator key instead of ``_type``. Take the above exam
 
 .. code-block:: ruby
 
-   Mongoid.discriminator_key = "_the_type"
+   ActiveDocument.discriminator_key = "_the_type"
 
    class Shape
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :x, type: Integer
      field :y, type: Integer
      embedded_in :canvas
@@ -181,7 +181,7 @@ that child class.
 Changing the Discriminator Value
 ================================
 
-Mongoid also supports changing the discriminator value from the default value, which is the class name.
+ActiveDocument also supports changing the discriminator value from the default value, which is the class name.
 One can change the discriminator value by using the ``discriminator_value=`` method on that specific class.
 
 Take the above example:
@@ -189,7 +189,7 @@ Take the above example:
 .. code-block:: ruby
 
    class Shape
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :x, type: Integer
      field :y, type: Integer
      embedded_in :canvas
@@ -260,7 +260,7 @@ either normal setting or through the build and create methods on the association
 Persistence Contexts
 ====================
 
-Mongoid allows the persistence context of a subclass to be changed from the
+ActiveDocument allows the persistence context of a subclass to be changed from the
 persistence context of its parent. This means that, using the ``store_in``
 method, we can store the documents of the subclasses in different collections
 (as well as different databases, clients) than their parents:
@@ -268,7 +268,7 @@ method, we can store the documents of the subclasses in different collections
 .. code:: ruby
 
   class Shape
-    include Mongoid::Document
+    include ActiveDocument::Document
     store_in collection: :shapes
   end
 

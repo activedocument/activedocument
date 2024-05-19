@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Galaxy
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include ActiveDocument::Document
+  include ActiveDocument::Timestamps
 
   field :age, type: Integer
-  field :was_touched, type: Mongoid::Boolean, default: false
+  field :was_touched, type: ActiveDocument::Boolean, default: false
   before_validation :set_age
 
   embeds_many :stars
@@ -22,13 +22,13 @@ class Galaxy
 end
 
 class Star
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include ActiveDocument::Document
+  include ActiveDocument::Timestamps
 
   embedded_in :galaxy, touch: true
 
   field :age, type: Integer
-  field :was_touched_after_parent, type: Mongoid::Boolean, default: false
+  field :was_touched_after_parent, type: ActiveDocument::Boolean, default: false
 
   before_validation :set_age
 
@@ -46,13 +46,13 @@ class Star
 end
 
 class Planet
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include ActiveDocument::Document
+  include ActiveDocument::Timestamps
 
   embedded_in :star, touch: true
 
   field :age, type: Integer
-  field :was_touched_after_parent, type: Mongoid::Boolean, default: false
+  field :was_touched_after_parent, type: ActiveDocument::Boolean, default: false
 
   before_validation :set_age
 
@@ -68,7 +68,7 @@ class Planet
 end
 
 class Emission
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :frequency
 
@@ -80,7 +80,7 @@ class Emission
 end
 
 class Country
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :age
 
@@ -96,7 +96,7 @@ class Country
 end
 
 class President
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   embedded_in :country
 
@@ -116,7 +116,7 @@ class President
 end
 
 class FirstSpouse
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   embedded_in :president
 
@@ -133,7 +133,7 @@ class FirstSpouse
 end
 
 class Architect
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   has_and_belongs_to_many :buildings, after_add: :after_add_callback,
                                       after_remove: :after_remove_callback, dependent: :nullify
@@ -151,13 +151,13 @@ class Architect
 end
 
 class Building
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   has_and_belongs_to_many :architects, dependent: :nullify
 end
 
 class Root
-  include Mongoid::Document
+  include ActiveDocument::Document
   embeds_many :embedded_once, cascade_callbacks: true
   after_save :trace
 
@@ -169,7 +169,7 @@ class Root
 end
 
 class EmbeddedOnce
-  include Mongoid::Document
+  include ActiveDocument::Document
   embeds_many :embedded_twice, cascade_callbacks: true
   embedded_in :root
   after_save :trace
@@ -182,7 +182,7 @@ class EmbeddedOnce
 end
 
 class EmbeddedTwice
-  include Mongoid::Document
+  include ActiveDocument::Document
   embedded_in :embedded_once
   after_save :trace
 

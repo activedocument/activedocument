@@ -22,7 +22,7 @@ second options hash parameter:
 .. code-block:: ruby
 
     class Person
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :ssn
 
       index({ ssn: 1 }, { unique: true, name: "ssn_index" })
@@ -33,7 +33,7 @@ You can define indexes on embedded document fields as well:
 .. code-block:: ruby
 
     class Person
-      include Mongoid::Document
+      include ActiveDocument::Document
       embeds_many :addresses
       index "addresses.street" => 1
     end
@@ -43,7 +43,7 @@ You can index on multiple fields and provide direction:
 .. code-block:: ruby
 
     class Person
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :first_name
       field :last_name
 
@@ -55,7 +55,7 @@ Indexes can be sparse:
 .. code-block:: ruby
 
     class Person
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :ssn
 
       index({ ssn: -1 }, { sparse: true })
@@ -66,7 +66,7 @@ For geospatial indexes, make sure the field being indexed is of type Array:
 .. code-block:: ruby
 
     class Person
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :location, type: Array
 
       index({ location: "2d" }, { min: -200, max: 200 })
@@ -77,7 +77,7 @@ Indexes can be scoped to a specific database:
 .. code-block:: ruby
 
     class Person
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :ssn
       index({ ssn: 1 }, { database: "users", unique: true })
     end
@@ -89,7 +89,7 @@ will also be resolved on the following options: ``partial_filter_expression``,
 .. code-block:: ruby
 
     class Person
-      include Mongoid::Document
+      include ActiveDocument::Document
       field :a, as: :age
       index({ age: 1 }, { partial_filter_expression: { age: { '$gte' => 20 } })
     end
@@ -99,15 +99,15 @@ will also be resolved on the following options: ``partial_filter_expression``,
   The expansion of field name aliases in index options such as
   ``partial_filter_expression`` is performed according to the behavior of MongoDB
   server 6.0. Future server versions may change how they interpret these options,
-  and Mongoid's functionality may not support such changes.
+  and ActiveDocument's functionality may not support such changes.
 
-Mongoid can define indexes on "foreign key" fields for associations.
+ActiveDocument can define indexes on "foreign key" fields for associations.
 This only works on the association macro that the foreign key is stored on:
 
 .. code-block:: ruby
 
     class Comment
-      include Mongoid::Document
+      include ActiveDocument::Document
       belongs_to :post, index: true
       has_and_belongs_to_many :preferences, index: true
     end
@@ -125,7 +125,7 @@ To declare a search index, use the ``search_index`` macro in your model:
 .. code-block:: ruby
 
     class Message
-      include Mongoid::Document
+      include ActiveDocument::Document
 
       search_index { ... }
       search_index :named_index, { ... }
@@ -139,17 +139,17 @@ Index Management Rake Tasks
 ===========================
 
 When you want to create the indexes in the database, use the provided
-``db:mongoid:create_indexes`` Rake task:
+``db:active_document:create_indexes`` Rake task:
 
 .. code-block:: bash
 
-    $ rake db:mongoid:create_indexes
+    $ rake db:active_document:create_indexes
 
-Mongoid also provides a Rake task to delete all secondary indexes.
+ActiveDocument also provides a Rake task to delete all secondary indexes.
 
 .. code-block:: bash
 
-    $ rake db:mongoid:remove_indexes
+    $ rake db:active_document:remove_indexes
 
 Note: the output of these Rake tasks goes to the default logger configured
 by Rails. This is usually a file like ``log/development.log`` and not standard
@@ -174,8 +174,8 @@ for creating and removing those search indexes:
 
 .. code-block:: bash
 
-    $ rake db:mongoid:create_search_indexes
-    $ rake db:mongoid:remove_search_indexes
+    $ rake db:active_document:create_search_indexes
+    $ rake db:active_document:remove_search_indexes
 
 By default, creating search indexes will wait for the indexes to be created,
 which can take quite some time. If you want to simply let the database create
@@ -184,7 +184,7 @@ environment variable to 0, like this:
 
 .. code-block:: bash
 
-    $ rake WAIT_FOR_SEARCH_INDEXES=0 db:mongoid:create_search_indexes
+    $ rake WAIT_FOR_SEARCH_INDEXES=0 db:active_document:create_search_indexes
 
 Note that the task for removing search indexes will remove all search indexes
 from all models, and should be used with caution.
@@ -205,14 +205,14 @@ following in a Rails console:
     Model.search_indexes.each { |index| ... }
 
 
-Telling Mongoid Where to Look For Models
+Telling ActiveDocument Where to Look For Models
 ----------------------------------------
 
-For non-Rails applications, Mongoid's rake tasks will look for models in
-``./app/models`` and ``./lib/models``. For Rails, Mongoid will look in
+For non-Rails applications, ActiveDocument's rake tasks will look for models in
+``./app/models`` and ``./lib/models``. For Rails, ActiveDocument will look in
 ``./app/models`` (or wherever you've configured Rails to look for models). If
-your models are in another location, you will need to tell Mongoid where to
-look for them with ``Mongoid.model_paths=``. You can do this by setting it
+your models are in another location, you will need to tell ActiveDocument where to
+look for them with ``ActiveDocument.model_paths=``. You can do this by setting it
 in your application's Rakefile:
 
 .. code-block:: ruby
@@ -220,10 +220,10 @@ in your application's Rakefile:
     # Rakefile
 
     # keep the defaults, but add more paths to look for models
-    Mongoid.model_paths += [ "./src/models", "./lib/documents" ]
+    ActiveDocument.model_paths += [ "./src/models", "./lib/documents" ]
 
     # or, override the defaults entirely
-    Mongoid.model_paths = [ "./src/models", "./lib/documents" ]
+    ActiveDocument.model_paths = [ "./src/models", "./lib/documents" ]
 
 Make sure that these paths are in your application's load path, as well. For
 example:
@@ -238,23 +238,23 @@ example:
 Using Rake Tasks With Non-Rails Applications
 --------------------------------------------
 
-Mongoid's Rake tasks are automatically loaded in Rails applications using
-Mongoid. When using Mongoid with a non-Rails application, these tasks must
+ActiveDocument's Rake tasks are automatically loaded in Rails applications using
+ActiveDocument. When using ActiveDocument with a non-Rails application, these tasks must
 be loaded manually:
 
 .. code-block:: ruby
 
     # Rakefile
 
-    require 'mongoid'
-    load 'mongoid/tasks/database.rake'
+    require 'active_document'
+    load 'active_document/tasks/database.rake'
 
 If your application uses Bundler, you can require ``bundler/setup`` instead of
-explicitly requiring ``mongoid``:
+explicitly requiring ``active_document``:
 
 .. code-block:: ruby
 
     # Rakefile
 
     require 'bundler/setup'
-    load 'mongoid/tasks/database.rake'
+    load 'active_document/tasks/database.rake'

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Movie
-  include Mongoid::Document
-  include Mongoid::Attributes::Dynamic
+  include ActiveDocument::Document
+  include ActiveDocument::Attributes::Dynamic
   field :title, type: String
   field :poster, type: Image
   field :poster_thumb, type: Thumbnail

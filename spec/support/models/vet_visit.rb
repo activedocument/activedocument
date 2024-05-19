@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class VetVisit
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :date, type: Date
   embedded_in :pet
 end

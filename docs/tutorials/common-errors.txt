@@ -10,7 +10,7 @@ Common Errors
    :depth: 2
    :class: singlecol
 
-Mongoid/Moped Authentication Error: failed with error 13
+ActiveDocument/Moped Authentication Error: failed with error 13
 ========================================================
 
 If you are encountering the following error:
@@ -42,7 +42,7 @@ If you are encountering the following error:
     from /.rbenv/versions/2.1.4/lib/ruby/gems/2.1.0/gems/activesupport-4.2.0/lib/active_support/notifications/instrumenter.rb:20:in `instrumen
 
 This error is caused by Moped, a Ruby driver that is no longer in use by
-Mongoid. Upgrading to Mongoid 5+ should fix this issue.
+ActiveDocument. Upgrading to ActiveDocument 5+ should fix this issue.
 
 You can find more information about this issue here:
 `MONGOID-4067 <https://jira.mongodb.org/browse/MONGOID-4067>`_.

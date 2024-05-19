@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Bar
-  include Mongoid::Document
-  include Mongoid::Attributes::Dynamic
+  include ActiveDocument::Document
+  include ActiveDocument::Attributes::Dynamic
   field :name, type: String
   field :location, type: Array
   field :lat_lng, type: LatLng

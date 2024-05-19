@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Basic
-  include Mongoid::Document
+  include ActiveDocument::Document
 end
 
 class SubBasic < Basic

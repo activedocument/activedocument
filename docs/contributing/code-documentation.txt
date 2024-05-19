@@ -16,7 +16,7 @@ Code Documentation
 Code Documentation
 ==================
 
-Mongoid uses its own flavor of `YARD <https://github.com/lsegal/yard>`_
+ActiveDocument uses its own flavor of `YARD <https://github.com/lsegal/yard>`_
 for code documentation. Please note the conventions outlined in this document.
 
 
@@ -72,7 +72,7 @@ Structure
   external usage should be marked ``@api private``. This macro does not
   require a comment.
 
-  Note that, because Mongoid's modules are mixed into application classes,
+  Note that, because ActiveDocument's modules are mixed into application classes,
   ``private`` visibility of a method does not necessarily indicate its
   status as an API private method.
 

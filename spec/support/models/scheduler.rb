@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Scheduler
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   def strategy
     Strategy.new

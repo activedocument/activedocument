@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Article
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :author_id, type: Integer
-  field :public, type: Mongoid::Boolean
+  field :public, type: ActiveDocument::Boolean
   field :title, type: String
-  field :is_rss, type: Mongoid::Boolean, default: false
+  field :is_rss, type: ActiveDocument::Boolean, default: false
   field :user_login, type: String
 
   has_and_belongs_to_many :tags, validate: false

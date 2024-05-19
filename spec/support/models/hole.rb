@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Hole
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   has_one :bolt, dependent: :destroy
   has_one :threadlocker, dependent: :delete_all

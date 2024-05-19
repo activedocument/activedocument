@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Filesystem
-  include Mongoid::Document
-  include Mongoid::Attributes::Dynamic
+  include ActiveDocument::Document
+  include ActiveDocument::Attributes::Dynamic
   embedded_in :server
 end

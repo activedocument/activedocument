@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class League
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name, type: String
   embeds_many :divisions
   accepts_nested_attributes_for :divisions, allow_destroy: true

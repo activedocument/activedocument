@@ -66,7 +66,7 @@ class Options
     @options = {}
     parse_cli_options!
     parse_env_options!
-    @options[:prefix] = 'docs/mongoid/master/api'
+    @options[:prefix] = 'docs/active_document/master/api'
     @options[:docs_path] = 'build/public/master/api'
   end
 

@@ -18,15 +18,15 @@ Getting Started (Rails 6)
 New Application
 ===============
 
-This section shows how to create a new Ruby on Rails application using Mongoid
+This section shows how to create a new Ruby on Rails application using ActiveDocument
 for data access. The application will be similar to the blog application
 described in the `Ruby on Rails Getting Started
 <https://guides.rubyonrails.org/getting_started.html#creating-the-blog-application>`_
-guide, however using Mongoid instead of ActiveRecord as the database adapter.
+guide, however using ActiveDocument instead of ActiveRecord as the database adapter.
 
 The complete source code for this application can be found in the
-`mongoid-demo GitHub repository
-<https://github.com/mongoid/mongoid-demo/tree/master/rails>`_.
+`active_document-demo GitHub repository
+<https://github.com/active_document/active_document-demo/tree/master/rails>`_.
 
 .. note::
 
@@ -70,9 +70,9 @@ Use the ``rails`` command to create the application skeleton, as follows:
     in a moment.
 
 We pass ``--skip-active-record`` to request that ActiveRecord is not added
-as a dependency, because we will be using Mongoid instead. Additionally
+as a dependency, because we will be using ActiveDocument instead. Additionally
 we pass ``--skip-bundle`` because we'll be modifying the ``Gemfile`` to
-add the ``mongoid`` dependency.
+add the ``active_document`` dependency.
 
 If you intend to test your application with RSpec, you can instruct the
 generator to omit default Rails test setup by passing ``--skip-test``
@@ -98,20 +98,20 @@ While not required, we recommend creating a Git repository for your application:
 Commit your changes as you are following this tutorial.
 
 
-Add Mongoid
+Add ActiveDocument
 -----------
 
 1. Modify the ``Gemfile`` to add a reference to the
-`mongoid <https://rubygems.org/gems/mongoid/>`_ gem:
+`active_document <https://rubygems.org/gems/active_document/>`_ gem:
 
 .. code-block:: ruby
   :caption: Gemfile
 
-    gem 'mongoid'
+    gem 'active_document'
 
 .. note::
 
-    Mongoid 7.0.5 or higher is required to use Rails 6.0.
+    ActiveDocument 7.0.5 or higher is required to use Rails 6.0.
 
 2. Install gem dependencies:
 
@@ -119,16 +119,16 @@ Add Mongoid
 
     bundle install
 
-3. Generate the default Mongoid configuration:
+3. Generate the default ActiveDocument configuration:
 
 .. code-block:: sh
 
-    bin/rails g mongoid:config
+    bin/rails g active_document:config
 
-This generator will create the ``config/mongoid.yml`` configuration file
+This generator will create the ``config/active_document.yml`` configuration file
 (used to configure the connection to the MongoDB deployment) and the
-``config/initializers/mongoid.rb`` initializer file (which may be used for
-other Mongoid-related configuration). Note that as we are not using
+``config/initializers/active_document.rb`` initializer file (which may be used for
+other ActiveDocument-related configuration). Note that as we are not using
 ActiveRecord we will not have a ``database.yml`` file.
 
 
@@ -142,9 +142,9 @@ a MongoDB server is running locally. If you do not already have a
 local MongoDB server, `download and install MongoDB
 <https://mongodb.com/docs/manual/installation/>`_.
 
-While the generated ``mongoid.yml`` will work without modifications,
+While the generated ``active_document.yml`` will work without modifications,
 we recommend reducing the server selection timeout for development.
-With this change, the uncommented lines of ``mongoid.yml`` should look
+With this change, the uncommented lines of ``active_document.yml`` should look
 like this:
 
 .. code-block:: none
@@ -171,11 +171,11 @@ Once the cluster is created, follow the instructions in `connect to the cluster
 page <https://docs.atlas.mongodb.com/connect-to-cluster/#connect-to-a-cluster>`_
 to obtain the URI. Use the *Ruby driver 2.5 or later* format.
 
-Paste the URI into the ``config/mongoid.yml`` file, and comment out the
+Paste the URI into the ``config/active_document.yml`` file, and comment out the
 hosts that are defined. We recommend setting the server selection timeout to 5
 seconds for development environment when using Atlas.
 
-The uncommented contents of ``config/mongoid.yml`` should look like this:
+The uncommented contents of ``config/active_document.yml`` should look like this:
 
 .. code-block:: yaml
 
@@ -220,7 +220,7 @@ Access the application by navigating to `localhost:3000
 Add Posts
 ---------
 
-Using the standard Rails scaffolding, Mongoid can generate the necessary
+Using the standard Rails scaffolding, ActiveDocument can generate the necessary
 model, controller and view files for our blog so that we can quickly begin
 creating blog posts:
 
@@ -254,7 +254,7 @@ association for the comments:
   :caption: app/models/post.rb
 
     class Post
-      include Mongoid::Document
+      include ActiveDocument::Document
 
       field :title, type: String
       field :body, type: String
@@ -263,7 +263,7 @@ association for the comments:
     end
 
 .. note::
-  *The following is only required if using a version of Mongoid < 7.0.8 or 7.1.2 (see*
+  *The following is only required if using a version of ActiveDocument < 7.0.8 or 7.1.2 (see*
   `MONGOID-4885 <https://jira.mongodb.org/browse/MONGOID-4885>`_ *for details)*
 
   Open the ``Comment`` model file, ``app/models/comment.rb``, and change the
@@ -273,7 +273,7 @@ association for the comments:
     :caption: app/models/comment.rb
 
       class Comment
-        include Mongoid::Document
+        include ActiveDocument::Document
 
         field :name, type: String
         field :message, type: String
@@ -367,22 +367,22 @@ Existing Application
 ====================
 
 Follow these steps to switch an existing Ruby on Rails application to use
-Mongoid instead of ActiveRecord.
+ActiveDocument instead of ActiveRecord.
 
 Dependencies
 ------------
 
 Remove or comment out any RDBMS libraries like ``sqlite``, ``pg`` etc.
-mentioned in ``Gemfile``, and add ``mongoid``:
+mentioned in ``Gemfile``, and add ``active_document``:
 
 .. code-block:: ruby
   :caption: Gemfile
 
-    gem 'mongoid'
+    gem 'active_document'
 
 .. note::
 
-    Mongoid 7.0.5 or higher is required to use Rails 6.0.
+    ActiveDocument 7.0.5 or higher is required to use Rails 6.0.
 
 Install gem dependencies:
 
@@ -424,7 +424,7 @@ via ``require 'rails/all'``, change it to require individual frameworks:
 .. note::
 
     At this time ActiveStorage requires ActiveRecord and is not usable with
-    Mongoid.
+    ActiveDocument.
 
 ActiveRecord Configuration
 --------------------------
@@ -457,34 +457,34 @@ Spring must be stopped after changing dependencies or configuration.
     ActiveRecord may be completely loaded or remove Spring from your
     application.
 
-Mongoid Configuration
+ActiveDocument Configuration
 ---------------------
 
-Generate the default Mongoid configuration:
+Generate the default ActiveDocument configuration:
 
 .. code-block:: sh
 
-    bin/rails g mongoid:config
+    bin/rails g active_document:config
 
-This generator will create the ``config/mongoid.yml`` configuration file
+This generator will create the ``config/active_document.yml`` configuration file
 (used to configure the connection to the MongoDB deployment) and the
-``config/initializers/mongoid.rb`` initializer file (which may be used for
-other Mongoid-related configuration). In general, it is recommended to use
-``mongoid.yml`` for all Mongoid configuration.
+``config/initializers/active_document.rb`` initializer file (which may be used for
+other ActiveDocument-related configuration). In general, it is recommended to use
+``active_document.yml`` for all ActiveDocument configuration.
 
 Review the sections :ref:`Run MongoDB Locally <run-locally>` and
 :ref:`Use MongoDB Atlas <use-atlas>` to decide how you would like to deploy
-MongoDB, and adjust Mongoid configuration (``config/mongoid.yml``) to match.
+MongoDB, and adjust ActiveDocument configuration (``config/active_document.yml``) to match.
 
 Adjust Models
 -------------
 
 If your application already has models, these will need to be changed when
-migrating from ActiveRecord to Mongoid.
+migrating from ActiveRecord to ActiveDocument.
 
 ActiveRecord models derive from ``ApplicationRecord`` and do not have
-column definitions. Mongoid models generally have no superclass but must
-include ``Mongoid::Document``, and usually define the fields explicitly
+column definitions. ActiveDocument models generally have no superclass but must
+include ``ActiveDocument::Document``, and usually define the fields explicitly
 (but :ref:`dynamic fields <dynamic-fields>` may also be used instead of
 explicit field definitions).
 
@@ -497,13 +497,13 @@ For example, a bare-bones Post model may look like this in ActiveRecord:
     has_many :comments, dependent: :destroy
   end
 
-The same model may look like this in Mongoid:
+The same model may look like this in ActiveDocument:
 
 .. code-block:: ruby
   :caption: app/models/post.rb
 
   class Post
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :title, type: String
     field :body, type: String
@@ -517,13 +517,13 @@ Or like this with dynamic fields:
   :caption: app/models/post.rb
 
   class Post
-    include Mongoid::Document
-    include Mongoid::Attributes::Dynamic
+    include ActiveDocument::Document
+    include ActiveDocument::Attributes::Dynamic
 
     has_many :comments, dependent: :destroy
   end
 
-Mongoid does not utilize ActiveRecord migrations, since MongoDB does not
+ActiveDocument does not utilize ActiveRecord migrations, since MongoDB does not
 require a schema to be defined prior to storing data.
 
 Data Migration
@@ -535,9 +535,9 @@ above, no schema migration is necessary because MongoDB does not require
 a predefined schema to store the data.
 
 The migration tools are often specific to the data being migrated because,
-even though Mongoid supports a superset of ActiveRecord associations,
+even though ActiveDocument supports a superset of ActiveRecord associations,
 the way that model references are stored in collections differs between
-Mongoid and ActiveRecord. With that said, MongoDB has
+ActiveDocument and ActiveRecord. With that said, MongoDB has
 some resources on migrating from an RDBMS to MongoDB such as the
 `RDBMS to MongoDB Migration Guide <https://s3.amazonaws.com/info-mongodb-com/RDBMStoMongoDBMigration.pdf>`_ and
 `Modernization Guide <https://www.mongodb.com/modernize>`_.
@@ -546,11 +546,11 @@ some resources on migrating from an RDBMS to MongoDB such as the
 Rails API
 ---------
 
-The process for creating a Rails API application with Mongoid is the same
+The process for creating a Rails API application with ActiveDocument is the same
 as when creating a regular application, with the only change being the
 ``--api`` parameter to ``rails new``. Migrating a Rails API application to
-Mongoid follows the same process described above for regular Rails applications.
+ActiveDocument follows the same process described above for regular Rails applications.
 
 A complete Rails API application similar to the one described in this tutorial
-can be found in `the mongoid-demo GitHub repository
-<https://github.com/mongoid/mongoid-demo/tree/master/rails-api>`_.
+can be found in `the active_document-demo GitHub repository
+<https://github.com/active_document/active_document-demo/tree/master/rails-api>`_.

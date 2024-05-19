@@ -12,14 +12,14 @@ Callbacks
    :depth: 2
    :class: singlecol
 
-Mongoid implements many of the `ActiveRecord callbacks
+ActiveDocument implements many of the `ActiveRecord callbacks
 <https://guides.rubyonrails.org/active_record_callbacks.html>`_.
 
 
 Document Callbacks
 ==================
 
-Mongoid supports the following callbacks for :doc:`documents </tutorials/documents>`:
+ActiveDocument supports the following callbacks for :doc:`documents </tutorials/documents>`:
 
 -  ``after_initialize``
 -  ``after_build``
@@ -43,9 +43,9 @@ Mongoid supports the following callbacks for :doc:`documents </tutorials/documen
 -  ``after_destroy``
 
 Callbacks are available on any document, whether it is embedded within
-another document or not. Note that to be efficient, Mongoid only invokes
+another document or not. Note that to be efficient, ActiveDocument only invokes
 the callback on the document that the persistence action was executed on.
-This enables Mongoid to support large hierarchies and to handle optimized
+This enables ActiveDocument to support large hierarchies and to handle optimized
 atomic updates efficiently (without invoking callbacks throughout the document
 hierarchy).
 
@@ -57,7 +57,7 @@ for cross-cutting concerns, like queueing up background jobs.
 .. code-block:: ruby
 
    class Article
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :name, type: String
      field :body, type: String
      field :slug, type: String
@@ -80,7 +80,7 @@ syntax as well:
 .. code-block:: ruby
 
    class Article
-     include Mongoid::Document
+     include ActiveDocument::Document
      field :name, type: String
 
      set_callback(:create, :before) do |document|
@@ -92,7 +92,7 @@ syntax as well:
 Association Callbacks
 =====================
 
-Mongoid has a set of callbacks that are specific to associations - these are:
+ActiveDocument has a set of callbacks that are specific to associations - these are:
 
 - ``after_add``
 - ``after_remove``
@@ -110,7 +110,7 @@ callback. Example:
 .. code-block:: ruby
 
    class Person
-     include Mongoid::Document
+     include ActiveDocument::Document
 
      has_many :posts, after_add: :send_email_to_subscribers
    end

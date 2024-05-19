@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Implant
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :name
   field :impressions, type: Integer, default: 0

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UserAccount
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :username, type: String
   field :name, type: String
   field :email, type: String

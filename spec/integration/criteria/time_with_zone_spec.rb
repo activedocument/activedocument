@@ -53,7 +53,7 @@ describe 'TimeWithZone in queries' do
       end
     end
 
-    context 'Mongoid static field' do
+    context 'ActiveDocument static field' do
 
       let(:view_lt) do
         Book.all.lt(updated_at: query_time + 10.minutes)
@@ -74,7 +74,7 @@ describe 'TimeWithZone in queries' do
       end
     end
 
-    context 'Mongoid dynamic field' do
+    context 'ActiveDocument dynamic field' do
 
       let(:view_lt) do
         Book.all.lt(dynamic_time: query_time + 10.minutes)

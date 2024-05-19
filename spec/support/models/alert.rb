@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Alert
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :message, type: String
   belongs_to :account
   has_many :items

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Building
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :name, type: String
 

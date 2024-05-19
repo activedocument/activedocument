@@ -12,17 +12,17 @@ Configuration
    :depth: 2
    :class: singlecol
 
-Mongoid is customarily configured through a ``mongoid.yml`` file that specifies
+ActiveDocument is customarily configured through a ``active_document.yml`` file that specifies
 options and clients. The simplest configuration is as follows, which configures
-Mongoid to talk to a MongoDB server at "localhost:27017" and use the database
-named "mongoid".
+ActiveDocument to talk to a MongoDB server at "localhost:27017" and use the database
+named "active_document".
 
 .. code-block:: yaml
 
   development:
     clients:
       default:
-        database: mongoid
+        database: active_document
         hosts:
           - localhost:27017
 
@@ -36,54 +36,54 @@ Most applications will use a single client named ``default``.
 Generating Default Configuration
 ================================
 
-If you are using Ruby on Rails, you can have Mongoid generate a default
+If you are using Ruby on Rails, you can have ActiveDocument generate a default
 configuration file for you by running the following command:
 
 .. code-block:: bash
 
-  rails g mongoid:config
+  rails g active_document:config
 
-The configuration file will be placed in ``config/mongoid.yml``. An
+The configuration file will be placed in ``config/active_document.yml``. An
 initializer will also be created and placed in
-``config/initializers/mongoid.rb``. It is recommended that all configuration
-be specified in ``config/mongoid.yml``, but if you prefer, the ``mongoid.rb``
+``config/initializers/active_document.rb``. It is recommended that all configuration
+be specified in ``config/active_document.yml``, but if you prefer, the ``active_document.rb``
 initializer may also be used to set configuration options. Note, though, that
-settings in ``mongoid.yml`` always take precedence over settings in the
+settings in ``active_document.yml`` always take precedence over settings in the
 initializer.
 
 If you are not using Ruby on Rails, you can copy the minimal configuration
-given above and save it as ``config/mongoid.yml``.
+given above and save it as ``config/active_document.yml``.
 
 
-Loading Mongoid Configuration
+Loading ActiveDocument Configuration
 =============================
 
-If you are using Ruby on Rails, Mongoid configuration is automatically loaded
+If you are using Ruby on Rails, ActiveDocument configuration is automatically loaded
 for the current environment as stored in ``Rails.env`` when the application
 loads.
 
-You may need to configure the ORM for your application to be Mongoid by
+You may need to configure the ORM for your application to be ActiveDocument by
 adding the following to ``application.rb``:
 
 .. code-block:: ruby
 
   config.generators do |g|
-    g.orm :mongoid
+    g.orm :active_document
   end
 
-If you are not using Ruby on Rails, Mongoid configuration must be loaded
-manually. This can be done via the ``Mongoid.load!`` method, which takes
+If you are not using Ruby on Rails, ActiveDocument configuration must be loaded
+manually. This can be done via the ``ActiveDocument.load!`` method, which takes
 the configuration file path as its argument, as follows:
 
 .. code-block:: ruby
 
   # Use automatically detected environment name
-  Mongoid.load!('path/to/your/mongoid.yml')
+  ActiveDocument.load!('path/to/your/active_document.yml')
 
   # Specify environment name manually
-  Mongoid.load!('path/to/your/mongoid.yml', :production)
+  ActiveDocument.load!('path/to/your/active_document.yml', :production)
 
-When Mongoid is asked to automatically detect the environment name,
+When ActiveDocument is asked to automatically detect the environment name,
 it does so by examining the following sources, in order:
 
 - If ``Rails`` top level constant is defined, ``Rails.env``.
@@ -91,14 +91,14 @@ it does so by examining the following sources, in order:
 - The ``RACK_ENV`` environment variable.
 - The ``MONGOID_ENV`` environment variable.
 
-It is also possible to configure Mongoid directly in Ruby, without using
+It is also possible to configure ActiveDocument directly in Ruby, without using
 a configuration file. This configuration style does not support the concept
 of environments - whatever configuration is provided, it is applied to the
 current environment - but it does support defining multiple clients.
 
 .. code-block:: ruby
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.clients.default = {
       hosts: ['localhost:27017'],
       database: 'my_db',
@@ -109,20 +109,20 @@ current environment - but it does support defining multiple clients.
 
 .. note::
 
-  Mongoid must be configured *before* any component of it is used or referenced.
+  ActiveDocument must be configured *before* any component of it is used or referenced.
   Once a component is used or referenced, changing configuration may not apply
   changes to already instantiated components.
 
 
 .. _configuration-options:
 
-Mongoid Configuration Options
+ActiveDocument Configuration Options
 =============================
 
-The following annotated example ``mongoid.yml`` demonstrates how Mongoid
+The following annotated example ``active_document.yml`` demonstrates how ActiveDocument
 can be configured.
 
-Mongoid delegates to the Ruby driver for client configuration. Please review
+ActiveDocument delegates to the Ruby driver for client configuration. Please review
 `the driver documentation <https://mongodb.com/docs/ruby-driver/current/reference/create-client/>`_
 for details on driver options.
 
@@ -133,11 +133,11 @@ for details on driver options.
     clients:
       # Defines the default client. (required)
       default:
-        # Mongoid can connect to a URI accepted by the driver:
+        # ActiveDocument can connect to a URI accepted by the driver:
         # uri: mongodb://user:password@mongodb.domain.com:27017/my_db_development
 
         # Otherwise define the parameters separately.
-        # This defines the name of the default database that Mongoid can connect to.
+        # This defines the name of the default database that ActiveDocument can connect to.
         # (required).
         database: my_db_development
         # Provides the hosts the default client can connect to. Must be an array
@@ -254,7 +254,7 @@ for details on driver options.
           # Whether to truncate long log lines. (default: true)
           # truncate_logs: true
 
-    # Configure Mongoid-specific options. (optional)
+    # Configure ActiveDocument-specific options. (optional)
     options:
       # Allow BSON::Decimal128 to be parsed and returned directly in
       # field values. When BSON 5 is present and the this option is set to false
@@ -322,7 +322,7 @@ for details on driver options.
       # to parent contexts by default.
       # join_contexts: false
 
-      # When this flag is false (the default as of Mongoid 9.0), a document that
+      # When this flag is false (the default as of ActiveDocument 9.0), a document that
       # is created or loaded will remember the storage options that were active
       # when it was loaded, and will use those same options by default when
       # saving or reloading itself.
@@ -341,7 +341,7 @@ for details on driver options.
       # update it or reload it would fail unless you first remembered to
       # explicitly specify the collection every time.
       #
-      # As of Mongoid 9.0, the record will remember that it came from
+      # As of ActiveDocument 9.0, the record will remember that it came from
       # 'other_collection', and updates and reloads will automatically default
       # to that collection, for that record object.
       # legacy_persistence_context_behavior: false
@@ -413,18 +413,18 @@ for details on driver options.
 Version Based Defaults
 ======================
 
-Mongoid supports setting the configuration options to the defaults for specific
-versions. This is useful for upgrading to a new Mongoid version. When upgrading
-your Mongoid version, the following should be set on ``Mongoid::Config``:
+ActiveDocument supports setting the configuration options to the defaults for specific
+versions. This is useful for upgrading to a new ActiveDocument version. When upgrading
+your ActiveDocument version, the following should be set on ``ActiveDocument::Config``:
 
 .. code:: ruby
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.load_defaults <OLD VERSION>
   end
 
-This way, when upgrading to a new version of Mongoid, your code will run with
-the configuration options from the previous version of Mongoid. Then,
+This way, when upgrading to a new version of ActiveDocument, your code will run with
+the configuration options from the previous version of ActiveDocument. Then,
 one-by-one, you can change the feature flags for the new version, and test that
 your code still acts as expected. Once all of the new feature flags have been
 accounted for, the call to ``load_defaults`` may be changed to take in the *new*
@@ -432,22 +432,22 @@ version, and all of the changed feature flags may be removed.
 
 For example, suppose we're upgrading from 7.5 to 8.0. Between these two versions,
 two feature flags were added: ``legacy_attributes`` and ``map_big_decimal_to_decimal128``.
-Before upgrading to Mongoid 8, add the following to your ``Mongoid::Config``:
+Before upgrading to ActiveDocument 8, add the following to your ``ActiveDocument::Config``:
 
 .. code:: ruby
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.load_defaults 7.5
   end
 
-After upgrading to Mongoid 8.0 in your ``Gemfile``, any feature flags will
+After upgrading to ActiveDocument 8.0 in your ``Gemfile``, any feature flags will
 remain set to their 7.5 default behavior: ``legacy_attributes: true,
 map_big_decimal_to_decimal128: false``. You may then flip these feature flags
 one-by-one to their 8.0 behavior:
 
 .. code:: ruby
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.load_defaults 7.5
     config.legacy_attributes = false
     # config.map_big_decimal_to_decimal128 = true
@@ -461,7 +461,7 @@ of those lines can be removed and the ``load_defaults`` replaced with:
 
 .. code:: ruby
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.load_defaults 8.0
   end
 
@@ -469,7 +469,7 @@ of those lines can be removed and the ``load_defaults`` replaced with:
 ERb Preprocessing
 =================
 
-When loading a configuration file, Mongoid processes it with ERb before
+When loading a configuration file, ActiveDocument processes it with ERb before
 parsing it as YAML. This allows, for example, constructing the contents of
 the configuration file at runtime based on environment variables:
 
@@ -494,38 +494,38 @@ the configuration file at runtime based on environment variables:
 Logging
 =======
 
-When configuring logging, it is important to keep in mind that Mongoid
+When configuring logging, it is important to keep in mind that ActiveDocument
 provides a model layer on top of the MongoDB Ruby driver, and the driver
 dispatches the CRUD operations to the MongoDB deployment. Therefore, some
-of the logging output in an application using Mongoid comes from Mongoid
+of the logging output in an application using ActiveDocument comes from ActiveDocument
 itself, and some comes from the driver.
 
 The Mongo client is a Ruby driver client instance, therefore
-the logger of a Mongo client is the Ruby driver logger, not the Mongoid
+the logger of a Mongo client is the Ruby driver logger, not the ActiveDocument
 logger. In other words:
 
 .. code-block:: ruby
 
-  # Ruby driver logger, not Mongoid logger
-  Mongoid.client(:default).logger
+  # Ruby driver logger, not ActiveDocument logger
+  ActiveDocument.client(:default).logger
 
-Depending on whether Mongoid is used in a Ruby on Rails application, and how
-both Mongoid and Ruby driver are configured, they may use the same logger
+Depending on whether ActiveDocument is used in a Ruby on Rails application, and how
+both ActiveDocument and Ruby driver are configured, they may use the same logger
 instance or different instances, potentially with different configurations.
 
 In Ruby on Rails Application
 ----------------------------
 
-When used in a Ruby on Rails application, Mongoid by default inherits
+When used in a Ruby on Rails application, ActiveDocument by default inherits
 the logger and the log level from Rails, and sets the driver's logger
 to the same logger instance:
 
 .. code-block:: ruby
 
-  Rails.logger === Mongoid.logger
+  Rails.logger === ActiveDocument.logger
   # => true
 
-  Mongoid.logger === Mongo::Logger.logger
+  ActiveDocument.logger === Mongo::Logger.logger
   # => true
 
 To change the log level, use `standard Rails configuration
@@ -541,18 +541,18 @@ Place the following in one of environment configuration files, such as
 
 .. note::
 
-  The ``log_level`` Mongoid configuration option is not used when Mongoid operates
-  in a Rails application, because Mongoid inherits Rails' log level in this case.
+  The ``log_level`` ActiveDocument configuration option is not used when ActiveDocument operates
+  in a Rails application, because ActiveDocument inherits Rails' log level in this case.
 
-To configure either Mongoid or driver logger differently from the Rails logger,
+To configure either ActiveDocument or driver logger differently from the Rails logger,
 use an initializer as follows:
 
 .. code-block:: ruby
 
   Rails.application.configure do
     config.after_initialize do
-      # Change Mongoid log destination and/or level
-      Mongoid.logger = Logger.new(STDERR).tap do |logger|
+      # Change ActiveDocument log destination and/or level
+      ActiveDocument.logger = Logger.new(STDERR).tap do |logger|
         logger.level = Logger::DEBUG
       end
 
@@ -567,7 +567,7 @@ use an initializer as follows:
 
   There is currently no provision in the Ruby standard library ``Logger``
   to return the log device (i.e. the ``IO`` object) that a logger is using.
-  To have, for example, Mongoid and/or the Ruby driver log to the
+  To have, for example, ActiveDocument and/or the Ruby driver log to the
   standard Rails log file (e.g. ``log/development.log``) but with a
   different level from standard Rails logger (``Rails.logger``), the
   file must be opened separately and the resulting ``IO`` object passed to
@@ -575,7 +575,7 @@ use an initializer as follows:
 
 .. note::
 
-  Since by default Mongoid sets its own logger and the driver's logger to the
+  Since by default ActiveDocument sets its own logger and the driver's logger to the
   same instance as the Rails logger, modifying any of the instances affects
   all of them. For example the following changes log level for all three
   loggers, unless the application assigned a separate ``Logger`` instance
@@ -583,12 +583,12 @@ use an initializer as follows:
 
   .. code-block:: ruby
 
-    Mongoid::Logger.logger.level = Logger::DEBUG
+    ActiveDocument::Logger.logger.level = Logger::DEBUG
 
 Standalone
 ----------
 
-When not loaded in a Ruby on Rails application, Mongoid respects the
+When not loaded in a Ruby on Rails application, ActiveDocument respects the
 ``log_level`` top level configuration option. It can be given in the
 configuration file as follows:
 
@@ -601,21 +601,21 @@ configuration file as follows:
     options:
       log_level: :debug
 
-... or when configuring Mongoid inline:
+... or when configuring ActiveDocument inline:
 
 .. code-block:: ruby
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.log_level = :debug
   end
 
-The default log destination in Mongoid 7.1 and higher is standard error.
-The default log destination in Mongoid 7.0 and lower is standard output.
+The default log destination in ActiveDocument 7.1 and higher is standard error.
+The default log destination in ActiveDocument 7.0 and lower is standard output.
 To change the log destination, create a new logger instance as follows:
 
 .. code-block:: ruby
 
-  Mongoid.logger = Logger.new(STDERR).tap do |logger|
+  ActiveDocument.logger = Logger.new(STDERR).tap do |logger|
     logger.level = Logger::DEBUG
   end
 
@@ -627,15 +627,15 @@ To change the Ruby driver log level or destination:
     logger.level = Logger::DEBUG
   end
 
-To set the driver logger to be the same as the Mongoid logger:
+To set the driver logger to be the same as the ActiveDocument logger:
 
 .. code-block:: ruby
 
-  Mongo::Logger.logger = Mongoid.logger
+  Mongo::Logger.logger = ActiveDocument.logger
 
 .. note::
 
-  Mongoid does not alter the driver's logger when running in
+  ActiveDocument does not alter the driver's logger when running in
   standalone mode.
 
 .. _time-zones:
@@ -643,7 +643,7 @@ To set the driver logger to be the same as the Mongoid logger:
 Time Zones
 ==========
 
-Mongoid uses ActiveSupport's time zone functionality, which is far
+ActiveDocument uses ActiveSupport's time zone functionality, which is far
 more robust than Ruby's standard library. Importantly, ActiveSupport
 allows configuration of ``Time.zone``, a thread-global variable which
 provides context for working with date and time values.
@@ -708,13 +708,13 @@ Setting time zone on data loaded from MongoDB
 ---------------------------------------------
 
 MongoDB stores all times in UTC without time zone information.
-Mongoid models load and returns time values as instances of
+ActiveDocument models load and returns time values as instances of
 ``ActiveSupport::TimeWithZone``. You may set the ``use_utc`` option
-to control how Mongoid sets the time zone when loading from the database:
+to control how ActiveDocument sets the time zone when loading from the database:
 
-- If false (default), Mongoid will use ``Time.zone`` to set the time
+- If false (default), ActiveDocument will use ``Time.zone`` to set the time
   zone of time values are loaded from database.
-- If true, Mongoid will always set the time zone as UTC on loaded
+- If true, ActiveDocument will always set the time zone as UTC on loaded
   time values.
 
 ``use_utc`` only affects how data is loaded, and does not affect
@@ -779,7 +779,7 @@ assigning and removing them, see `the Ruby driver documentation <https://mongodb
 Network Compression
 ===================
 
-Mongoid supports compression of messages to and from MongoDB servers. This functionality is provided by
+ActiveDocument supports compression of messages to and from MongoDB servers. This functionality is provided by
 the Ruby driver, which implements the three algorithms that are supported by MongoDB servers:
 
 - `Snappy <https://google.github.io/snappy/>`_: ``snappy`` compression
@@ -793,7 +793,7 @@ the Ruby driver, which implements the three algorithms that are supported by Mon
   requires the `zstd-ruby <https://rubygems.org/gems/zstd-ruby>`_ library to
   be installed.
 
-To use wire protocol compression, configure the Ruby driver options within ``mongoid.yml``:
+To use wire protocol compression, configure the Ruby driver options within ``active_document.yml``:
 
 .. code-block:: yaml
 
@@ -826,7 +826,7 @@ as ``compressors: ["zstd", "snappy", "zlib"]``.
 Client-Side Encryption
 ======================
 
-When loading the configuration file, Mongoid permits the file to contain
+When loading the configuration file, ActiveDocument permits the file to contain
 ``BSON::Binary`` instances which are used for specifying ``keyId`` in
 the schema map for `client-side encryption
 <https://www.mongodb.com/docs/ruby-driver/current/reference/in-use-encryption/client-side-encryption/>`_,
@@ -863,7 +863,7 @@ as the following example shows:
 Usage with Forking Servers
 ==========================
 
-When using Mongoid with a forking web server such as Puma, or any application
+When using ActiveDocument with a forking web server such as Puma, or any application
 that otherwise forks to spawn child processes, special considerations apply.
 
 If possible, we recommend to not perform any MongoDB operations in the parent
@@ -876,13 +876,13 @@ In a nutshell, to avoid various connection errors such as ``Mongo::Error::Socket
 and ``Mongo::Error::NoServerAvailable``, you must do the following:
 
 1. Disconnect MongoDB clients in the parent Ruby process immediately *before*
-   forking using ``Mongoid.disconnect_clients``. This ensures the parent and child
+   forking using ``ActiveDocument.disconnect_clients``. This ensures the parent and child
    process do not accidentally reuse the same sockets and have I/O conflicts.
-   Note that ``Mongoid.disconnect_clients`` does not disrupt any in-flight
+   Note that ``ActiveDocument.disconnect_clients`` does not disrupt any in-flight
    MongoDB operations, and will automatically reconnect when you perform new
    operations.
 2. Reconnect your MongoDB clients in the child Ruby process immediately *after*
-   forking using ``Mongoid.reconnect_clients``. This is required to respawn
+   forking using ``ActiveDocument.reconnect_clients``. This is required to respawn
    the driver's monitoring threads in the child process.
 
 Most web servers provide hooks that can be used by applications to
@@ -902,18 +902,18 @@ parent process (`Puma documentation <https://puma.io/puma/#clustered-mode>`_).
 
   # Runs in the Puma master process before it forks a child worker.
   before_fork do
-    Mongoid.disconnect_clients
+    ActiveDocument.disconnect_clients
   end
 
   # Required when using Puma's fork_worker option. Runs in the
   # child worker 0 process before it forks grandchild workers.
   on_refork do
-    Mongoid.disconnect_clients
+    ActiveDocument.disconnect_clients
   end
 
   # Runs in each Puma child process after it forks from its parent.
   on_worker_boot do
-    Mongoid.reconnect_clients
+    ActiveDocument.reconnect_clients
   end
 
 Unicorn
@@ -928,11 +928,11 @@ the ``before_fork`` hook to close clients in the parent process
   # config/unicorn.rb
 
   before_fork do |_server, _worker|
-    Mongoid.disconnect_clients
+    ActiveDocument.disconnect_clients
   end
 
   after_fork do |_server, _worker|
-    Mongoid.reconnect_clients
+    ActiveDocument.reconnect_clients
   end
 
 Passenger
@@ -948,7 +948,7 @@ before the workers are forked.
 
   if defined?(PhusionPassenger)
     PhusionPassenger.on_event(:starting_worker_process) do |forked|
-      Mongoid.reconnect_clients if forked
+      ActiveDocument.reconnect_clients if forked
     end
   end
 
@@ -1020,7 +1020,7 @@ Sample recommended development configuration:
   development:
     clients:
       default:
-        database: mongoid
+        database: active_document
         hosts:
           - localhost:27017
         options:

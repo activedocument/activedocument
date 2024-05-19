@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Draft
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :text
 

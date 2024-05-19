@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Patient
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :title, type: String
   store_in collection: 'inpatient'
   embeds_many :addresses, as: :addressable

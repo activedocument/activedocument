@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Profile
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :name, type: String
 
   embeds_one :profile_image
@@ -10,7 +10,7 @@ class Profile
 end
 
 class ProfileImage
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :url, type: String
 
   embedded_in :profile

@@ -52,17 +52,17 @@ describe '#discriminator_key' do
     context 'after class creation' do
       before do
         class GlobalIntDiscriminatorParent
-          include Mongoid::Document
+          include ActiveDocument::Document
         end
 
         class GlobalIntDiscriminatorChild < GlobalIntDiscriminatorParent
         end
 
-        Mongoid.discriminator_key = 'test'
+        ActiveDocument.discriminator_key = 'test'
       end
 
       after do
-        Mongoid.discriminator_key = '_type'
+        ActiveDocument.discriminator_key = '_type'
         Object.send(:remove_const, :GlobalIntDiscriminatorParent)
         Object.send(:remove_const, :GlobalIntDiscriminatorChild)
       end
@@ -86,7 +86,7 @@ describe '#discriminator_key' do
       before do
 
         class PreGlobalIntDiscriminatorParent
-          include Mongoid::Document
+          include ActiveDocument::Document
         end
 
         class PreGlobalIntDiscriminatorChild < PreGlobalIntDiscriminatorParent
@@ -116,7 +116,7 @@ describe '#discriminator_key' do
     context 'after child class creation' do
       before do
         class LocalIntDiscriminatorParent
-          include Mongoid::Document
+          include ActiveDocument::Document
         end
 
         class LocalIntDiscriminatorChild < LocalIntDiscriminatorParent
@@ -146,7 +146,7 @@ describe '#discriminator_key' do
     context 'before child class creation' do
       before do
         class PreLocalIntDiscriminatorParent
-          include Mongoid::Document
+          include ActiveDocument::Document
           self.discriminator_key = 'test2'
         end
 
@@ -177,7 +177,7 @@ describe '#discriminator_key' do
     context 'when changing the discriminator_key' do
       before do
         class DBDiscriminatorParent
-          include Mongoid::Document
+          include ActiveDocument::Document
           self.discriminator_key = 'dkey'
         end
 
@@ -203,7 +203,7 @@ describe '#discriminator_key' do
     context 'when changing the discriminator_key after saving to the db' do
       before do
         class DBDiscriminatorParent
-          include Mongoid::Document
+          include ActiveDocument::Document
         end
 
         class DBDiscriminatorChild < DBDiscriminatorParent
@@ -233,7 +233,7 @@ describe '#discriminator_key' do
     context 'Example 1' do
       before do
         class Example1Shape
-          include Mongoid::Document
+          include ActiveDocument::Document
           field :x, type: Integer
           field :y, type: Integer
           embedded_in :canvas
@@ -285,7 +285,7 @@ describe '#discriminator_key' do
     context 'Example 2' do
       before do
         class Example2Shape
-          include Mongoid::Document
+          include ActiveDocument::Document
           field :x, type: Integer
           field :y, type: Integer
           embedded_in :canvas
@@ -340,7 +340,7 @@ describe '#discriminator_key' do
 
       before do
         class Example3Shape
-          include Mongoid::Document
+          include ActiveDocument::Document
           field :x, type: Integer
           field :y, type: Integer
           embedded_in :canvas

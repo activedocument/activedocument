@@ -6,6 +6,6 @@ class ClientRegistry
   include Singleton
 
   def global_client(_name)
-    Mongoid.default_client
+    ActiveDocument.default_client
   end
 end

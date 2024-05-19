@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Product
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :description, localize: true
   field :name, localize: true, default: 'no translation'
   field :price, type: Integer

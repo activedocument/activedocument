@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Comment
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :title, type: String
   field :text, type: String

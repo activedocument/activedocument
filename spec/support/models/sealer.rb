@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Sealer
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   belongs_to :hole
 end

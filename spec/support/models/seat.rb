@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Seat
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   embedded_in :vehicle
 

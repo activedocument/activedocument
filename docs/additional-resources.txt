@@ -10,8 +10,8 @@ Additional Resources
    :depth: 2
    :class: singlecol
 
-This page lists some of the third-party guides and blog posts about Mongoid,
-as well as sample Mongoid applications. Additional resources for the driver
+This page lists some of the third-party guides and blog posts about ActiveDocument,
+as well as sample ActiveDocument applications. Additional resources for the driver
 are listed on the `respective driver page
 <https://mongodb.com/docs/ruby-driver/current/reference/additional-resources/>`_.
 
@@ -19,22 +19,22 @@ are listed on the `respective driver page
 Screencasts
 ===========
 
-- `RailsCasts: Mongoid (revised)
+- `RailsCasts: ActiveDocument (revised)
   <https://www.youtube.com/watch?v=L0RqU2MdqXU>`_
 
-  An overview of Mongoid, by Ryan Bates including the basics
+  An overview of ActiveDocument, by Ryan Bates including the basics
   of setting up an app, querying for documents, adding embedded
   associations, overriding the id, and more.
 
-- `Ruby on Rails Web Services and Integration with MongoDB, Week 3: Mongoid
+- `Ruby on Rails Web Services and Integration with MongoDB, Week 3: ActiveDocument
   <https://www.youtube.com/watch?v=9LylgiMYsUM>`_
 
-  A detailed introduction to Mongoid and Ruby on Rails web services.
+  A detailed introduction to ActiveDocument and Ruby on Rails web services.
 
-- `Create a search bar in Rails with Mongoid
+- `Create a search bar in Rails with ActiveDocument
   <https://www.youtube.com/watch?v=zusWR8jS5-A>`_
 
-  A Tutorial explaining how to implement text search with Mongoid.
+  A Tutorial explaining how to implement text search with ActiveDocument.
 
 
 Articles
@@ -42,20 +42,20 @@ Articles
 
 - `A Simple Content Management System in Sinatra <https://www.sitepoint.com/a-simple-content-management-system-in-sinatra>`_
 
-  Building a content management application with Sinatra and Mongoid.
+  Building a content management application with Sinatra and ActiveDocument.
 
 - `How To Create A Ruby API With Sinatra <https://x-team.com/blog/how-to-create-a-ruby-api-with-sinatra>`_
 
-  Creating a Sinatra API with Mongoid.
+  Creating a Sinatra API with ActiveDocument.
 
 - `Converting an existing Ruby on Rails application to MongoDB <https://ibraheem.ca/posts/convert-rails-to-mongodb>`_
 
-  How to Convert an existing Ruby on Rails application to use MongoDB and Mongoid.
+  How to Convert an existing Ruby on Rails application to use MongoDB and ActiveDocument.
 
 
 Sample Applications
 ===================
 
-- `Mongoid Demo <https://github.com/mongoid/mongoid-demo>`_
+- `ActiveDocument Demo <https://github.com/active_document/active_document-demo>`_
 
-  A repository containing sample applications using Mongoid.
+  A repository containing sample applications using ActiveDocument.

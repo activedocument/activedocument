@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Sound
-  include Mongoid::Document
-  field :active, type: Mongoid::Boolean
+  include ActiveDocument::Document
+  field :active, type: ActiveDocument::Boolean
   default_scope -> { where(active: true) }
 end

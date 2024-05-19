@@ -1,31 +1,31 @@
-![Mongoid: Ultra Edition](https://repository-images.githubusercontent.com/298015080/6028fc36-ae5d-46c1-af7a-19dc3c7f56f1)
+![ActiveDocument: Ultra Edition](https://repository-images.githubusercontent.com/298015080/6028fc36-ae5d-46c1-af7a-19dc3c7f56f1)
 
-# Mongoid: Ultra Edition
+# ActiveDocument: Ultra Edition
 
 [![Build Status][build-img]][build-url]👨‍🔧
 [![Gem Version][rubygems-img]][rubygems-url]🔜
 [![License][license-img]][license-url]
 
-The no-baloney fork of Mongoid. Made by the community, for the community.
-Mongoid is the Ruby Object Document Mapper (ODM) for MongoDB.
+The no-baloney fork of ActiveDocument. Made by the community, for the community.
+ActiveDocument is the Ruby Object Document Mapper (ODM) for MongoDB.
 
-This fork of Mongoid is **not** endorsed by or affiliated with MongoDB Inc. 👍
+This fork of ActiveDocument is **not** endorsed by or affiliated with MongoDB Inc. 👍
 
 ## 📣 Open Call for Community Steering Committee
 
-If you would like to help with governance and/or maintenance of this project, please [raise an issue](https://github.com/tablecheck/mongoid-ultra/issues/new).
+If you would like to help with governance and/or maintenance of this project, please [raise an issue](https://github.com/tablecheck/active_document-ultra/issues/new).
 
 ## Installation
 
-Replace `gem 'mongoid'` in your application's Gemfile with:
+Replace `gem 'active_document'` in your application's Gemfile with:
 
 ```ruby
-gem 'mongoid-ultra'
+gem 'active_document-ultra'
 ```
 
-Do **not** install the `mongoid` and `mongoid-ultra` gems at the same time.
-When loading, Mongoid Ultra will raise a `GemConflict` error if
-`mongoid` gem is present in your bundle.
+Do **not** install the `active_document` and `active_document-ultra` gems at the same time.
+When loading, ActiveDocument Ultra will raise a `GemConflict` error if
+`active_document` gem is present in your bundle.
 
 ## Compatibility
 
@@ -34,14 +34,14 @@ When loading, Mongoid Ultra will raise a `GemConflict` error if
 - JRuby 9.4+
 - MongoDB server 4.4+
 
-Version support may differ from MongoDB Mongoid. We will target to have support for new
-Ruby and Rails versions within 1 month of release. As a general policy, Mongoid Ultra will
+Version support may differ from MongoDB ActiveDocument. We will target to have support for new
+Ruby and Rails versions within 1 month of release. As a general policy, ActiveDocument Ultra will
 drop support for end-of-life (EOL) versions soon after EOL. If you are using unsupported EOL
-software, please stick with an older version of Mongoid until you upgrade.
+software, please stick with an older version of ActiveDocument until you upgrade.
 
 ## Purpose & Principles
 
-This is a *community-driven fork of Mongoid*, intended to improve the following over MongoDB's Mongoid:
+This is a *community-driven fork of ActiveDocument*, intended to improve the following over MongoDB's ActiveDocument:
 
 - Performance
 - Feature robustness
@@ -52,15 +52,15 @@ This is a *community-driven fork of Mongoid*, intended to improve the following 
 - Transparency
 - Community involvement
 
-This fork will merge in changes at least once-per-month from [mongodb/mongoid](https://github.com/mongodb/mongoid)
+This fork will merge in changes at least once-per-month from [mongodb/active_document](https://github.com/mongodb/active_document)
 as its "upstream" repo. We may backport PRs to upstream where it makes sense to do so, but cannot guarantee that
 the upstream will merge them.
 
 ## Releases & Versioning
 
-**Important:** Mongoid Ultra is currently in `alpha` state. The first full release will be `9.0.0.0`.
+**Important:** ActiveDocument Ultra is currently in `alpha` state. The first full release will be `9.0.0.0`.
 
-For the time being, version numbers will shadow those of `mongodb/mongoid` with an additional "patch" number added:
+For the time being, version numbers will shadow those of `mongodb/active_document` with an additional "patch" number added:
 
 `X.Y.Z.P`
 
@@ -72,15 +72,15 @@ We will also use `.alpha1`, `.beta1`, `.rc1`, etc. suffixes to denote pre-releas
 removing functionality *except* in major `X` releases. We may introduce new features in new patch `P` releases,
 and will use feature flags prefixed with `ultra_` to allow users to opt-in.
 
-You may distinguish Mongoid Ultra from MongoDB Mongoid by the constant `Mongoid::ULTRA == true`.
+You may distinguish ActiveDocument Ultra from MongoDB ActiveDocument by the constant `ActiveDocument::ULTRA == true`.
 
 All new versions will undergo battle-testing in production at TableCheck prior to being released.
 
 ## Roadmap
 
-Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/13).
+Refer to the [Roadmap issue](https://github.com/tablecheck/active_document-ultra/issues/13).
 
-## Differences versus MongoDB Mongoid
+## Differences versus MongoDB ActiveDocument
 
 #### Additions
 
@@ -103,33 +103,33 @@ Refer to the [Roadmap issue](https://github.com/tablecheck/mongoid-ultra/issues/
 - 🙅🏾‍♀️ Remove Evergreen CI and replace with Github Actions which is publicly visible and auto-runs on all contributor patches.
 - 🙅🏼 Remove MRSS submodules and other MongoDB Inc. corporate baloney.
 - 🙅🏻‍♂️️ [MONGOID-5579](https://jira.mongodb.org/browse/MONGOID-5579) - Drop support for versions earlier than MongoDB 4.4, Ruby 2.7, Rails 6.0, JRuby 9.4 and remove deprecated cruft.
-- 🙅🏾‍♀️ [MONGOID-5597](https://jira.mongodb.org/browse/MONGOID-5597) - Remove `Mongoid::QueryCache` in favor of `Mongo::QueryCache`.
+- 🙅🏾‍♀️ [MONGOID-5597](https://jira.mongodb.org/browse/MONGOID-5597) - Remove `ActiveDocument::QueryCache` in favor of `Mongo::QueryCache`.
 
 ## Documentation
 
-The documentation of this fork will be hosted at: https://tablecheck.github.io/mongoid-ultra/ (not online yet!)
+The documentation of this fork will be hosted at: https://tablecheck.github.io/active_document-ultra/ (not online yet!)
 
 ## Support
 
-For beginners, please use MongoDB's existing Mongoid support resources:
+For beginners, please use MongoDB's existing ActiveDocument support resources:
 
-* [Stack Overflow](http://stackoverflow.com/questions/tagged/mongoid)
-* [MongoDB Community Forum](https://developer.mongodb.com/community/forums/tags/c/drivers-odms-connectors/7/mongoid-odm)
-* [#mongoid](http://webchat.freenode.net/?channels=mongoid) on Freenode IRC
+* [Stack Overflow](http://stackoverflow.com/questions/tagged/active_document)
+* [MongoDB Community Forum](https://developer.mongodb.com/community/forums/tags/c/drivers-odms-connectors/7/active_document-odm)
+* [#active_document](http://webchat.freenode.net/?channels=active_document) on Freenode IRC
 
 ## Issues & Contributing
 
-Feature requests and bugs affecting both upstream and Mongoid Ultra should be reported in the [MongoDB MONGOID Jira](https://jira.mongodb.org/browse/MONGOID/).
-Please also raise a [Mongoid Ultra Github issue](https://github.com/tablecheck/mongoid-ultra/issues) in this project to track the fix. We prefer if upstream can make the fix first then we merge it.
+Feature requests and bugs affecting both upstream and ActiveDocument Ultra should be reported in the [MongoDB MONGOID Jira](https://jira.mongodb.org/browse/MONGOID/).
+Please also raise a [ActiveDocument Ultra Github issue](https://github.com/tablecheck/active_document-ultra/issues) in this project to track the fix. We prefer if upstream can make the fix first then we merge it.
 
-Issues specific to Mongoid Ultra should be raised in the [Mongoid Ultra Github issue tracker](https://github.com/tablecheck/mongoid-ultra/issues)
+Issues specific to ActiveDocument Ultra should be raised in the [ActiveDocument Ultra Github issue tracker](https://github.com/tablecheck/active_document-ultra/issues)
 
 ## Security Issues
 
-Security issues affecting both upstream and Mongoid Ultra should be
+Security issues affecting both upstream and ActiveDocument Ultra should be
 [reported to MongoDB](https://www.mongodb.com/docs/manual/tutorial/create-a-vulnerability-report/).
 
-Security issues affecting only Mongoid Ultra should be reported to [security@tablecheck.com](mailto:security@tablecheck.com).
+Security issues affecting only ActiveDocument Ultra should be reported to [security@tablecheck.com](mailto:security@tablecheck.com).
 The email should be encrypted with the following PGP public key:
 
 * Key ID: `0xDF7D22A0E8772326`
@@ -139,22 +139,22 @@ We appreciate your help to disclose security issues responsibly.
 
 ## Project Governance
 
-Mongoid Ultra is shepherded by the team at TableCheck. TableCheck have been avid Mongoid users since 2013,
-contributing over 150 PRs to Mongoid and MongoDB Ruby projects. TableCheck uses Mongoid to power millions of
+ActiveDocument Ultra is shepherded by the team at TableCheck. TableCheck have been avid ActiveDocument users since 2013,
+contributing over 150 PRs to ActiveDocument and MongoDB Ruby projects. TableCheck uses ActiveDocument to power millions of
 restaurant reservations each month, and are *personally invested* in the making the best user experience possible.
 
-We invite experienced Mongoid hands in the community to apply for co-maintainership.
-Please raise a [Mongoid Ultra Github issue](https://github.com/tablecheck/mongoid-ultra/issues) if interested.
+We invite experienced ActiveDocument hands in the community to apply for co-maintainership.
+Please raise a [ActiveDocument Ultra Github issue](https://github.com/tablecheck/active_document-ultra/issues) if interested.
 
 ## Reasons for Forking
 
-Mongoid started as an open-source project created by Durran Jordan in 2009. MongoDB Inc. took over maintainership in 2015.
+ActiveDocument started as an open-source project created by Durran Jordan in 2009. MongoDB Inc. took over maintainership in 2015.
 Since the transition, the hallmarks of user-disconnect and corporate fumbling have become apparent:
 
-- Introduction of [critical semver-breaking issues](https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/), with [no](https://jira.mongodb.org/browse/MONGOID-5272) [sign](https://github.com/mongodb/mongoid/pull/5601#issuecomment-1506630267) of [improvement](https://jira.mongodb.org/browse/MONGOID-5016).
+- Introduction of [critical semver-breaking issues](https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/), with [no](https://jira.mongodb.org/browse/MONGOID-5272) [sign](https://github.com/mongodb/active_document/pull/5601#issuecomment-1506630267) of [improvement](https://jira.mongodb.org/browse/MONGOID-5016).
 - Lack of a publicly visible roadmap and direction (when requested, it was said to be a "corporate secret".)
-- [Unwillingness](https://github.com/mongodb/mongoid/pull/5546#issuecomment-1448910968) to [adopt](https://github.com/mongodb/mongoid/pull/5553#issuecomment-1500361845) [basic](https://github.com/mongodb/bson-ruby/pull/284) industry-standard best practices, e.g. Rubocop linter and a publicly-visible CI workflow.
-- Refusal to [merge](https://github.com/mongodb/mongoid/pull/5541#discussion_r1101934994) [patches](https://github.com/mongodb/mongoid/pull/5497) which would be of obvious benefit to the community.
+- [Unwillingness](https://github.com/mongodb/active_document/pull/5546#issuecomment-1448910968) to [adopt](https://github.com/mongodb/active_document/pull/5553#issuecomment-1500361845) [basic](https://github.com/mongodb/bson-ruby/pull/284) industry-standard best practices, e.g. Rubocop linter and a publicly-visible CI workflow.
+- Refusal to [merge](https://github.com/mongodb/active_document/pull/5541#discussion_r1101934994) [patches](https://github.com/mongodb/active_document/pull/5497) which would be of obvious benefit to the community.
 - Lack of bandwidth and resources to review simple PR contributions.
 
 **None of this is intended to disparage the hard-working and talented individuals at MongoDB Inc.**, but rather,
@@ -171,11 +171,11 @@ Any usage herein should not be construed as an endorsement or affiliation of Mon
 
 Code from the following related repos is incorporated under the MIT License:
 - [mongodb-labs/mongo-ruby-spec-shared](https://github.com/mongodb-labs/mongo-ruby-spec-shared)
-- [mongoid/mongoid-test-apps](https://github.com/mongoid/mongoid-test-apps)
+- [active_document/active_document-test-apps](https://github.com/active_document/active_document-test-apps)
 
-[build-img]: https://github.com/tablecheck/mongoid-ultra/actions/workflows/test.yml/badge.svg
-[build-url]: https://github.com/tablecheck/mongoid-ultra/actions
-[rubygems-img]: https://badge.fury.io/rb/mongoid-ultra.svg
-[rubygems-url]: http://badge.fury.io/rb/mongoid-ultra
+[build-img]: https://github.com/tablecheck/active_document-ultra/actions/workflows/test.yml/badge.svg
+[build-url]: https://github.com/tablecheck/active_document-ultra/actions
+[rubygems-img]: https://badge.fury.io/rb/active_document-ultra.svg
+[rubygems-url]: http://badge.fury.io/rb/active_document-ultra
 [license-img]: https://img.shields.io/badge/license-MIT-green.svg
 [license-url]: https://www.opensource.org/licenses/MIT

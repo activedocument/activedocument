@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Artist
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   attr_accessor :before_add_called, :after_add_called, :before_add_referenced_called, :after_add_referenced_called, :before_remove_embedded_called, :after_remove_embedded_called, :before_remove_referenced_called, :after_remove_referenced_called
 

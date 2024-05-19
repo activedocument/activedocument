@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Catalog
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :array_field, type: Array
   field :big_decimal_field, type: BigDecimal

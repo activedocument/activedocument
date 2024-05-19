@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'mongoid/railties/controller_runtime'
+require 'active_document/railties/controller_runtime'
 
-describe 'Mongoid::Railties::ControllerRuntime' do
-  controller_runtime = Mongoid::Railties::ControllerRuntime
+describe 'ActiveDocument::Railties::ControllerRuntime' do
+  controller_runtime = ActiveDocument::Railties::ControllerRuntime
   collector = controller_runtime::Collector
 
   reference_controller_class = Class.new do
@@ -30,7 +30,7 @@ describe 'Mongoid::Railties::ControllerRuntime' do
   end
 
   def set_metric(value) # rubocop:disable Naming/AccessorMethodName
-    Thread.current['Mongoid.controller_runtime'] = value
+    Thread.current['ActiveDocument.controller_runtime'] = value
   end
 
   def clear_metric!
@@ -86,7 +86,7 @@ describe 'Mongoid::Railties::ControllerRuntime' do
     end)
     returned = controller.send :cleanup_view_runtime
     expect(controller.instance_variable_get(:@cleanup_view_runtime)).to be(true)
-    expect(controller.mongoid_runtime).to eq(14)
+    expect(controller.active_document_runtime).to eq(14)
     expect(returned).to be(29)
   end
 
@@ -95,7 +95,7 @@ describe 'Mongoid::Railties::ControllerRuntime' do
     set_metric 42
     controller.send :append_info_to_payload, payload
     expect(controller.instance_variable_get(:@append_info_to_payload)).to be(true)
-    expect(payload[:mongoid_runtime]).to eq(42)
+    expect(payload[:active_document_runtime]).to eq(42)
   end
 
   it 'adds metric to log message' do
@@ -103,7 +103,7 @@ describe 'Mongoid::Railties::ControllerRuntime' do
       controller_class.instance_variable_set :@log_process_action, true
       []
     end)
-    messages = controller_class.log_process_action mongoid_runtime: 42.101
+    messages = controller_class.log_process_action active_document_runtime: 42.101
     expect(controller_class.instance_variable_get(:@log_process_action)).to be(true)
     expect(messages).to eq(['MongoDB: 42.1ms'])
   end

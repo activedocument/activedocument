@@ -2,7 +2,7 @@
 
 module ForeignKeySpec
   class Company
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :c, type: String
     has_many :emails, class_name: 'ForeignKeySpec::Email',
@@ -12,7 +12,7 @@ module ForeignKeySpec
   end
 
   class Email
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :c_ref, type: String
     belongs_to :company, class_name: 'ForeignKeySpec::Company',
@@ -20,7 +20,7 @@ module ForeignKeySpec
   end
 
   class Founder
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :c_ref, type: String
     belongs_to :company, class_name: 'ForeignKeySpec::Company',
@@ -28,7 +28,7 @@ module ForeignKeySpec
   end
 
   class Animal
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :a, type: String
     has_and_belongs_to_many :zoos, class_name: 'ForeignKeySpec::Zoo',
@@ -36,7 +36,7 @@ module ForeignKeySpec
   end
 
   class Zoo
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :z, type: String
     has_and_belongs_to_many :animals, class_name: 'ForeignKeySpec::Animal',
@@ -44,7 +44,7 @@ module ForeignKeySpec
   end
 
   class ScopedCompany
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :c, type: String
     has_many :emails, class_name: 'ForeignKeySpec::ScopedEmail',
@@ -52,7 +52,7 @@ module ForeignKeySpec
   end
 
   class ScopedEmail
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :c_ref, type: String
     belongs_to :company, class_name: 'ForeignKeySpec::ScopedCompany',

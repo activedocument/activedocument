@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EyeBowl
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   has_many :blue_eyes, class_name: 'Eye', as: :eyeable
   has_many :brown_eyes, class_name: 'Eye', as: :eyeable

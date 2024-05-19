@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class PersonAutosave
-  include Mongoid::Document
-  include Mongoid::Attributes::Dynamic
+  include ActiveDocument::Document
+  include ActiveDocument::Attributes::Dynamic
   attr_accessor :mode
 
   class_attribute :somebody_elses_important_class_options
@@ -10,8 +10,8 @@ class PersonAutosave
 
   field :username, default: -> { "arthurnn#{rand(0..10)}" }
   field :title
-  field :terms, type: Mongoid::Boolean
-  field :pets, type: Mongoid::Boolean, default: false
+  field :terms, type: ActiveDocument::Boolean
+  field :pets, type: ActiveDocument::Boolean, default: false
   field :age, type: Integer, default: '100'
   field :dob, type: Date
   field :employer_id

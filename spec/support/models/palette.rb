@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Palette
-  include Mongoid::Document
+  include ActiveDocument::Document
   embedded_in :canvas
   embeds_many :tools
 end

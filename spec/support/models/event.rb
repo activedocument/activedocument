@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Event
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :title
   field :date, type: Date

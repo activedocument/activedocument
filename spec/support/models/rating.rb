@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Rating
-  include Mongoid::Document
+  include ActiveDocument::Document
   field :value, type: Integer
   belongs_to :ratable, polymorphic: true
   has_many :comments

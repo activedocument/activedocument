@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ArrayField
-  include Mongoid::Document
+  include ActiveDocument::Document
 
   field :af, type: Array
 end
