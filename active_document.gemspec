@@ -18,11 +18,11 @@ Gem::Specification.new do |s|
 
   s.metadata = {
     'rubygems_mfa_required' => 'true',
-    'bug_tracker_uri' => 'https://github.com/tablecheck/active_document/issues',
-    'changelog_uri' => 'https://github.com/tablecheck/active_document/releases',
+    'bug_tracker_uri' => 'https://github.com/activedocument/activedocument/issues',
+    'changelog_uri' => 'https://github.com/activedocument/activedocument/releases',
     'documentation_uri' => 'https://www.mongodb.com/docs/active_document/',
-    'homepage_uri' => 'https://github.com/tablecheck/active_document',
-    'source_code_uri' => 'https://github.com/tablecheck/active_document'
+    'homepage_uri' => 'https://github.com/activedocument/activedocument',
+    'source_code_uri' => 'https://github.com/activedocument/activedocument'
   }
 
   s.required_ruby_version = '>= 2.7'

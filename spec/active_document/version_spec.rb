@@ -13,6 +13,6 @@ describe ActiveDocument do
   end
 
   describe '::GEM_NAME' do
-    it { expect(ActiveDocument::GEM_NAME).to eq('active_document-ultra') }
+    it { expect(ActiveDocument::GEM_NAME).to eq('active_document') }
   end
 end

@@ -171,5 +171,5 @@ as the source of truth. However, we make a few intentional deviations:
  (We use ``EnforcedStyle: compact`` for `Rubcop's Style/RaiseArgs cop
  <https://docs.rubocop.org/rubocop/cops_style.html#styleraiseargs>`_.)
 
-Refer to `.rubocop.yml <https://github.com/tablecheck/active_document-ultra/blob/master/.rubocop.yml>`_
+Refer to `.rubocop.yml <https://github.com/activedocument/activedocument/blob/master/.rubocop.yml>`_
 for additional style exceptions.
