@@ -1,4 +1,4 @@
-![ActiveDocument](https://github.com/activedocument/activedocument/assets/27655/2cd42f28-3215-431c-ac35-344b6df40266)
+![ActiveDocument](https://github.com/activedocument/activedocument/assets/27655/d413fc53-821c-4028-a50b-029867cd9445)
 
 # ActiveDocument
 
