@@ -9,8 +9,9 @@
 **⚠️ ActiveDocument is currently in alpha**
 
 ActiveDocument is a Ruby Object Document Mapper (ODM) for NoSQL databases.
-It is analogous to what [ActiveRecord](https://github.com/rails/rails/tree/main/activerecord)
-provides for SQL databases.
+It is similar but not identical to what Rails' [ActiveRecord](https://github.com/rails/rails/tree/main/activerecord) ORM
+provides for SQL databases. ActiveDocument may be used with [Ruby on Rails](https://rubyonrails.org/),
+other Ruby frameworks such as [Sinatra](https://sinatrarb.com/) and [Hanami](https://hanamirb.org/), or as a standalone.
 
 ### Database support
 
