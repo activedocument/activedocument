@@ -81,10 +81,10 @@ describe ActiveDocument::Fields::FieldTypes do
         end
 
         it 'warns deprecation for the class type once' do
-          expect(Mongoid.logger).to receive(:warn).once.with(match(/\AUsing a Class \(String\)/))
+          expect(ActiveDocument.logger).to receive(:warn).once.with(match(/\AUsing a Class \(String\)/))
           described_class.get(String)
           described_class.get(String)
-          expect(Mongoid.logger).to receive(:warn).once.with(match(/\AUsing a Class \(Integer\)/))
+          expect(ActiveDocument.logger).to receive(:warn).once.with(match(/\AUsing a Class \(Integer\)/))
           described_class.get(Integer)
           described_class.get(String)
           described_class.get(Integer)

@@ -855,19 +855,21 @@ describe ActiveDocument::Config do
       ActiveDocument::Fields.instance_variable_set(:@options, {})
     end
 
-    it 'can define a custom field option' do
-      ActiveDocument.configure do |config|
-        config.field_option :my_required do |model, field, value|
-          model.validates_presence_of field.name if value
-        end
-      end
-
-      klass = Class.new do
+    let(:klass) do
+      Class.new do
         include ActiveDocument::Document
         field :my_field, my_required: true
 
         def self.model_name
-          double('model_name', human: 'Klass')
+          OpenStruct.new(human: 'Klass') # rubocop:disable Style/OpenStructUse
+        end
+      end
+    end
+
+    it 'can define a custom field option' do
+      ActiveDocument.configure do |config|
+        config.field_option :my_required do |model, field, value|
+          model.validates_presence_of field.name if value
         end
       end
 

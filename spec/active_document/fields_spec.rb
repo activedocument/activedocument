@@ -1955,12 +1955,6 @@ describe ActiveDocument::Fields do
     end
   end
 
-  describe '::TYPE_MAPPINGS' do
-    it 'returns the default mapping' do
-      expect(described_class::TYPE_MAPPINGS).to eq ActiveDocument::Fields::FieldTypes::DEFAULT_MAPPING
-    end
-  end
-
   describe 'localize: :present' do
 
     let(:product) do

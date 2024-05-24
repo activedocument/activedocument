@@ -677,7 +677,7 @@ en:
           summary: "Model '%{klass}' declares a field :%{field} with an unknown :type value
             %{type_inspection}. This value is neither present in ActiveDocument's default type mapping,
             nor defined in a custom field type mapping."
-          resolution: "Please provide a known type value for the field. If you
+          resolution: "Please specify a known :type value for the field. If you
             meant to define a custom field type, please do so first as follows:\n\n
             \_\_ActiveDocument.configure do |config|\n
             \_\_\_\_config.field_type %{type_inspection}, YourTypeClass
