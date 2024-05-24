@@ -44,16 +44,16 @@ describe ActiveDocument::Contextual::Mongo::DocumentsLoader do
 
     describe '#initialize' do
       it 'initializes in pending state' do
-        expect(subject).to be_pending
-        expect(subject).to_not be_started
+        is_expected.to be_pending
+        is_expected.to_not be_started
       end
     end
 
     describe '#unschedule' do
       it 'changes state' do
         subject.unschedule
-        expect(subject).to_not be_pending
-        expect(subject).to_not be_started
+        is_expected.to_not be_pending
+        is_expected.to_not be_started
       end
     end
 
@@ -74,8 +74,8 @@ describe ActiveDocument::Contextual::Mongo::DocumentsLoader do
 
       it 'changes the state to started' do
         subject.wait!
-        expect(subject).to be_started
-        expect(subject).to_not be_pending
+        is_expected.to be_started
+        is_expected.to_not be_pending
       end
     end
   end

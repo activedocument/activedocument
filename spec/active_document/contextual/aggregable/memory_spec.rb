@@ -19,7 +19,7 @@ describe ActiveDocument::Contextual::Aggregable::Memory do
       end
 
       it do
-        expect(subject).to eq('count' => 0, 'avg' => nil, 'max' => nil, 'min' => nil, 'sum' => 0)
+        is_expected.to eq('count' => 0, 'avg' => nil, 'max' => nil, 'min' => nil, 'sum' => 0)
       end
     end
 
@@ -39,7 +39,7 @@ describe ActiveDocument::Contextual::Aggregable::Memory do
       end
 
       it do
-        expect(subject).to eq('count' => 0, 'avg' => 750.0, 'max' => 1000, 'min' => 500, 'sum' => 1500)
+        is_expected.to eq('count' => 0, 'avg' => 750.0, 'max' => 1000, 'min' => 500, 'sum' => 1500)
       end
     end
   end
