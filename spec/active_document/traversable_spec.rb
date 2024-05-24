@@ -825,7 +825,7 @@ describe ActiveDocument::Traversable do
 
         class DuplicateDiscriminatorKeyParent
           include ActiveDocument::Document
-          field :dkey, type: String
+          field :dkey, type: :string
         end
 
         class DuplicateDiscriminatorKeyChild < DuplicateDiscriminatorKeyParent

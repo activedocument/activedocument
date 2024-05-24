@@ -3,9 +3,9 @@
 class Passport
   include ActiveDocument::Document
 
-  field :number, type: String
-  field :country, type: String
-  field :exp, as: :expiration_date, type: Date
+  field :number, type: :string
+  field :country, type: :string
+  field :exp, as: :expiration_date, type: :date
   field :name, localize: true
   field :localized_translations, localize: true
 
@@ -17,6 +17,6 @@ end
 class PassportPage
   include ActiveDocument::Document
 
-  field :num_stamps, type: Integer
+  field :num_stamps, type: :integer
   embedded_in :passport
 end

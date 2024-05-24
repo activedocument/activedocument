@@ -3,10 +3,10 @@
 class Phone
   include ActiveDocument::Document
 
-  field :_id, type: String, overwrite: true, default: -> { number }
+  field :_id, type: :string, overwrite: true, default: -> { number }
   field :number
   field :ext, as: :extension
-  field :landline, type: Boolean
+  field :landline, type: :boolean
 
   embeds_one :country_code
   embedded_in :person

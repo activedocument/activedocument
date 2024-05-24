@@ -13,7 +13,7 @@ removed in a future major version of Mongoid.
     include Mongoid::Document
 
     # Deprecated; will log a warning message.
-    field :first_name, type: String
+    field :first_name, type: :string
 
     # Good
     field :last_name, type: :string

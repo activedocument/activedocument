@@ -2,7 +2,7 @@
 
 class Division
   include ActiveDocument::Document
-  field :name, type: String
+  field :name, type: :string
   embedded_in :league
   before_destroy :update_parent
 

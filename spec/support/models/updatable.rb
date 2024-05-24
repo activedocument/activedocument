@@ -3,5 +3,5 @@
 class Updatable
   include ActiveDocument::Document
 
-  field :updated_at, type: BSON::Timestamp
+  field :updated_at, type: :timestamp
 end

@@ -2,8 +2,8 @@
 
 class Note
   include ActiveDocument::Document
-  field :text, type: String
-  field :saved, type: ActiveDocument::Boolean, default: false
+  field :text, type: :string
+  field :saved, type: :boolean, default: false
   embedded_in :noteable, polymorphic: true
 
   after_save :update_saved
@@ -15,5 +15,5 @@ class Note
   end
 
   embedded_in :page
-  field :message, type: String
+  field :message, type: :string
 end

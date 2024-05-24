@@ -2,7 +2,7 @@
 
 class Fanatic
   include ActiveDocument::Document
-  field :age, type: Integer
+  field :age, type: :integer
 
   embedded_in :band
 end

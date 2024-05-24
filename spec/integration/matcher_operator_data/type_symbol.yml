@@ -14,15 +14,6 @@
       $type: 14
   matches: true
 
-- name: bson symbol - matches
-  document:
-    bson_symbol_field: !ruby/object:BSON::Symbol::Raw
-      symbol: hello
-  query:
-    bson_symbol_field:
-      $type: 14
-  matches: true
-
 - name: string field - does not match
   document:
     pi: hello

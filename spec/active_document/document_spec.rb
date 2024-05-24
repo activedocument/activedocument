@@ -779,7 +779,7 @@ describe ActiveDocument::Document do
       Person.validates_format_of(:ssn, without: /\$\$\$/)
 
       class Manager < Person
-        field :level, type: Integer, default: 1
+        field :level, type: :integer, default: 1
       end
     end
 

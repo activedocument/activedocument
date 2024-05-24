@@ -2,7 +2,7 @@
 
 class DrugAutosave
   include ActiveDocument::Document
-  field :name, type: String
-  field :generic, type: ActiveDocument::Boolean
+  field :name, type: :string
+  field :generic, type: :boolean
   belongs_to :person, class_name: 'PersonAutosave', inverse_of: nil, counter_cache: true
 end

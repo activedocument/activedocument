@@ -256,8 +256,8 @@ association for the comments:
     class Post
       include ActiveDocument::Document
 
-      field :title, type: String
-      field :body, type: String
+      field :title, type: :string
+      field :body, type: :string
 
       has_many :comments, dependent: :destroy
     end
@@ -275,8 +275,8 @@ association for the comments:
       class Comment
         include ActiveDocument::Document
 
-        field :name, type: String
-        field :message, type: String
+        field :name, type: :string
+        field :message, type: :string
 
         belongs_to :post
       end
@@ -505,8 +505,8 @@ The same model may look like this in ActiveDocument:
   class Post
     include ActiveDocument::Document
 
-    field :title, type: String
-    field :body, type: String
+    field :title, type: :string
+    field :body, type: :string
 
     has_many :comments, dependent: :destroy
   end

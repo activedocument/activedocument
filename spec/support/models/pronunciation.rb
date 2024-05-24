@@ -2,6 +2,6 @@
 
 class Pronunciation
   include ActiveDocument::Document
-  field :sound, type: String
+  field :sound, type: :string
   embedded_in :word
 end

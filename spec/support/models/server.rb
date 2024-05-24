@@ -2,8 +2,8 @@
 
 class Server
   include ActiveDocument::Document
-  field :name, type: String
-  field :after, type: ActiveDocument::Boolean, default: false
+  field :name, type: :string
+  field :after, type: :boolean, default: false
   belongs_to :node
   embeds_many :filesystems, validate: false
   accepts_nested_attributes_for :filesystems

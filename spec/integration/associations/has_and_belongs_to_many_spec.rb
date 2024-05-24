@@ -20,7 +20,7 @@ module HabtmSpec
 
   class Attachment
     include ActiveDocument::Document
-    field :file, type: String
+    field :file, type: :string
   end
 end
 

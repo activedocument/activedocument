@@ -50,7 +50,7 @@ module ActiveDocument
         return if fields.key?(discriminator_key)
 
         default_proc = -> { self.class.discriminator_value }
-        field(discriminator_key, default: default_proc, type: String)
+        field(discriminator_key, default: default_proc, type: :string)
       end
     end
 
@@ -115,7 +115,7 @@ module ActiveDocument
         return unless !fields.key?(discriminator_key) && !descendants.empty?
 
         default_proc = -> { self.class.discriminator_value }
-        field(discriminator_key, default: default_proc, type: String)
+        field(discriminator_key, default: default_proc, type: :string)
       end
 
       # Returns the discriminator key.

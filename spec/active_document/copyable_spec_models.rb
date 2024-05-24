@@ -35,13 +35,13 @@ module CopyableSpec
   class Reg
     include ActiveDocument::Document
 
-    field :name, type: String
+    field :name, type: :string
   end
 
   class Dyn
     include ActiveDocument::Document
     include ActiveDocument::Attributes::Dynamic
 
-    field :name, type: String
+    field :name, type: :string
   end
 end

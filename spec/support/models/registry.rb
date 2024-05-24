@@ -2,6 +2,6 @@
 
 class Registry
   include ActiveDocument::Document
-  field :data, type: BSON::Binary
-  field :obj_id, type: BSON::ObjectId
+  field :data, type: :binary
+  field :obj_id, type: :bson_object_id
 end

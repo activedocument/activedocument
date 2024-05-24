@@ -2,6 +2,6 @@
 
 class Shelf
   include ActiveDocument::Document
-  field :level, type: Integer
+  field :level, type: :integer
   recursively_embeds_one
 end

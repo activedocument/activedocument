@@ -3,9 +3,9 @@
 class Agent
   include ActiveDocument::Document
   include ActiveDocument::Timestamps::Updated
-  field :title, type: String
-  field :number, type: String
-  field :dob, type: Time
+  field :title, type: :string
+  field :number, type: :string
+  field :dob, type: :time
   embeds_many :names, as: :namable
   embeds_one :address
   belongs_to :game

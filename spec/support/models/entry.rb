@@ -2,7 +2,7 @@
 
 class Entry
   include ActiveDocument::Document
-  field :title, type: String
-  field :body, type: String
+  field :title, type: :string
+  field :body, type: :string
   recursively_embeds_many
 end

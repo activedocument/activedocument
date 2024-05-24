@@ -204,7 +204,7 @@ data in the database is of a different type than the field definition.
 
    class Person
      include ActiveDocument::Document
-     field :age, type: Integer
+     field :age, type: :integer
    end
 
    # Query for the string "42", not the integer 42
@@ -246,7 +246,7 @@ considers ``Time.zone`` to perform type conversion.
    class Magazine
      include ActiveDocument::Document
 
-     field :published_at, type: Time
+     field :published_at, type: :time
    end
 
    Time.zone = 'Asia/Tokyo'
@@ -411,7 +411,7 @@ declared as BSON::Decimal128 will return a BigDecimal value by default.
    class Model
      include ActiveDocument::Document
 
-     field :decimal_field, type: BSON::Decimal128
+     field :decimal_field, type: :big_decimal
    end
 
    # under BSON <= 4

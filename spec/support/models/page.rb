@@ -7,7 +7,7 @@ class Page
 
   embedded_in :book, touch: true
   embeds_many :notes
-  field :content, type: String
+  field :content, type: :string
 
   after_initialize do
     if self[:content]

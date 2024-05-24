@@ -8,9 +8,9 @@ describe 'Dots and Dollars' do
   before(:all) do
     class DADMUser
       include ActiveDocument::Document
-      field :'first.last', type: String, default: 'Neil.Shweky'
-      field :$_amount, type: Integer, default: 0
-      field :'$a.b', type: Boolean, default: true
+      field :'first.last', type: :string, default: 'Neil.Shweky'
+      field :$_amount, type: :integer, default: 0
+      field :'$a.b', type: :boolean, default: true
     end
   end
 

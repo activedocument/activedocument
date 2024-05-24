@@ -3,5 +3,5 @@
 class Contractor
   include ActiveDocument::Document
   embedded_in :building
-  field :name, type: String
+  field :name, type: :string
 end

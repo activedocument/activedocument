@@ -9,8 +9,8 @@ describe ActiveDocument::Tasks::Database do
       class Measurement
         include ActiveDocument::Document
 
-        field :timestamp, type: Time
-        field :temperature, type: Integer
+        field :timestamp, type: :time
+        field :temperature, type: :integer
 
         embeds_many :comments
 
@@ -21,7 +21,7 @@ describe ActiveDocument::Tasks::Database do
       class Comment
         include ActiveDocument::Document
 
-        field :content, type: String
+        field :content, type: :string
 
         embedded_in :measurement
 

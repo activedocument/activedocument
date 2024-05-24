@@ -3,5 +3,5 @@
 class ShortQuiz
   include ActiveDocument::Document
   include ActiveDocument::Timestamps::Created::Short
-  field :name, type: String
+  field :name, type: :string
 end

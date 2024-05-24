@@ -208,8 +208,8 @@ association for the comments:
     class Post
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
-      field :title, type: String
-      field :body, type: String
+      field :title, type: :string
+      field :body, type: :string
 
       has_many :comments, dependent: :destroy
     end
@@ -417,8 +417,8 @@ The same model may look like this in ActiveDocument:
   class Post
     include ActiveDocument::Document
 
-    field :title, type: String
-    field :body, type: String
+    field :title, type: :string
+    field :body, type: :string
 
     has_many :comments, dependent: :destroy
   end

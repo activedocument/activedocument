@@ -3,7 +3,7 @@
 class SmMovie
   include ActiveDocument::Document
 
-  field :year, type: Integer
+  field :year, type: :integer
 
   index year: 1
   shard_key :year
@@ -27,7 +27,7 @@ end
 class SmAssistant
   include ActiveDocument::Document
 
-  field :gender, type: String
+  field :gender, type: :string
 
   index gender: 1
   shard_key 'gender' => :hashed
@@ -65,7 +65,7 @@ end
 class SmReviewAuthor
   include ActiveDocument::Document
   embedded_in :review, class_name: 'SmReview', touch: false
-  field :name, type: String
+  field :name, type: :string
 end
 
 class SmReview

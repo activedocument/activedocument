@@ -268,7 +268,7 @@ in the database below the document being written:
   class Product
     include ActiveDocument::Document
     
-    field :tags, type: Hash
+    field :tags, type: :hash
   end
   
   product = Product.new(tags: {color: 'black'})

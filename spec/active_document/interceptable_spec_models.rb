@@ -255,10 +255,10 @@ class InterceptableWing
   belongs_to :plane, class_name: 'InterceptablePlane'
   has_one :engine, autobuild: true, class_name: 'InterceptableEngine'
 
-  field :_id, type: String, default: -> { 'hello-wing' }
+  field :_id, type: :string, default: -> { 'hello-wing' }
 
-  field :p_id, type: String, default: -> { plane&.id }
-  field :e_id, type: String, default: -> { engine&.id }
+  field :p_id, type: :string, default: -> { plane&.id }
+  field :e_id, type: :string, default: -> { engine&.id }
 end
 
 class InterceptableEngine
@@ -266,7 +266,7 @@ class InterceptableEngine
 
   belongs_to :wing, class_name: 'InterceptableWing'
 
-  field :_id, type: String, default: -> { "hello-engine-#{wing&.id}" }
+  field :_id, type: :string, default: -> { "hello-engine-#{wing&.id}" }
 end
 
 class InterceptableCompany

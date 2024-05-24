@@ -3,5 +3,5 @@
 class Idnodef
   include ActiveDocument::Document
 
-  field :_id, type: String, overwrite: true
+  field :_id, type: :string, overwrite: true
 end

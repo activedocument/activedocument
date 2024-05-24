@@ -136,7 +136,7 @@ module ActiveDocument
       # @example Create a basic index.
       #   class Person
       #     include ActiveDocument::Document
-      #     field :name, type: String
+      #     field :name, type: :string
       #     search_index({ ... })
       #     search_index :name_of_index, { ... }
       #   end

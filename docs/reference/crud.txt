@@ -442,17 +442,17 @@ are:
           person.set(name: "Tyler Durden") # updates name in the database
 
 
-    	  person = Person.new
+          person = Person.new
           person.set(name: "Tyler Durden") # does not write to database
-    	  person.name # => "Tyler Durden"
-    	  person.persisted? # => true
+          person.name # => "Tyler Durden"
+          person.persisted? # => true
 
 
-    	  class Post
-    	    include ActiveDocument::Document
+          class Post
+            include ActiveDocument::Document
 
-    	    field :metadata, type: Hash
-    	  end
+            field :metadata, type: :hash
+          end
 
           post = Post.create!
           post.set('metadata.published_at' => Time.now)
@@ -473,7 +473,7 @@ are:
 
             embedded_in :flight
 
-            field :route, type: String
+            field :route, type: :string
           end
 
           flight = Flight.create!
@@ -879,7 +879,7 @@ the database up to the time it is saved. Any persistence operation clears the ch
 
    class Person
      include ActiveDocument::Document
-     field :name, type: String
+     field :name, type: :string
    end
 
    person = Person.first
@@ -967,7 +967,7 @@ For example, adding to a set like this does not work:
   class Band
     include ActiveDocument::Document
 
-    field :tours, type: Set
+    field :tours, type: :set
   end
 
   band = Band.new
@@ -987,7 +987,7 @@ back to the model as follows:
   class Band
     include ActiveDocument::Document
 
-    field :tours, type: Set
+    field :tours, type: :set
   end
 
   band = Band.new
@@ -1039,8 +1039,8 @@ The read-only status is reset on reloading the document.
 
   class Band
     include ActiveDocument::Document
-    field :name, type: String
-    field :genre, type: String
+    field :name, type: :string
+    field :genre, type: :string
   end
 
   band = Band.only(:name).first
@@ -1058,8 +1058,8 @@ Another way to make a document read-only is by overriding the readonly? method:
 
   class Band
     include ActiveDocument::Document
-    field :name, type: String
-    field :genre, type: String
+    field :name, type: :string
+    field :genre, type: :string
 
     def readonly?
       true

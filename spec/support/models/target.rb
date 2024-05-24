@@ -2,6 +2,6 @@
 
 class Target
   include ActiveDocument::Document
-  field :name, type: String
+  field :name, type: :string
   embedded_in :targetable, polymorphic: true
 end

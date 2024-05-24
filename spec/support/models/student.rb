@@ -5,8 +5,8 @@ class Student
 
   belongs_to :school
 
-  field :name, type: String
-  field :grade, type: Integer, default: 3
+  field :name, type: :string
+  field :grade, type: :integer, default: 3
 
   after_destroy do
     school.after_destroy_triggered = true if school

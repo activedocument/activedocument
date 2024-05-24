@@ -8,7 +8,7 @@ class HomCollege
   # The address is added with different dependency mechanisms in tests:
   # has_one :address, class_name: 'HomAddress', dependent: :destroy
 
-  field :state, type: String
+  field :state, type: :string
 end
 
 class HomAccreditation
@@ -16,8 +16,8 @@ class HomAccreditation
 
   belongs_to :college, class_name: 'HomCollege'
 
-  field :degree, type: String
-  field :year, type: Integer, default: 2012
+  field :degree, type: :string
+  field :year, type: :integer, default: 2012
 
   def format
     'fmt'
@@ -83,7 +83,7 @@ end
 class HomTrainer
   include ActiveDocument::Document
 
-  field :name, type: String
+  field :name, type: :string
 
   has_one :animal, class_name: 'HomAnimal', scope: :reptile
 end
@@ -91,7 +91,7 @@ end
 class HomAnimal
   include ActiveDocument::Document
 
-  field :taxonomy, type: String
+  field :taxonomy, type: :string
 
   scope :reptile, -> { where(taxonomy: 'reptile') }
 
@@ -101,7 +101,7 @@ end
 class HomPost
   include ActiveDocument::Document
 
-  field :title, type: String
+  field :title, type: :string
 
   has_one :comment, inverse_of: :post, class_name: 'HomComment'
 end
@@ -109,7 +109,7 @@ end
 class HomComment
   include ActiveDocument::Document
 
-  field :content, type: String
+  field :content, type: :string
 
   belongs_to :post, inverse_of: :comment, optional: true, class_name: 'HomPost'
 end

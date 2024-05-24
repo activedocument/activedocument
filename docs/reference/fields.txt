@@ -107,7 +107,7 @@ type. Such fields are untyped:
 
     field :properties
     # Equivalent to:
-    field :properties, type: Object
+    field :properties, type: :undefined
   end
 
 An untyped field can store values of any type which is directly serializable
@@ -168,7 +168,7 @@ An example usage is shown below:
   class Post
     include ActiveDocument::Document
 
-    field :status, type: StringifiedSymbol
+    field :status, type: :stringified_symbol
   end
 
   post = Post.new(status: :hello)
@@ -584,7 +584,7 @@ fixed, as in the following example:
   class Order
     include ActiveDocument::Document
 
-    field :state, type: String, default: 'created'
+    field :state, type: :string, default: 'created'
   end
 
 The default value can also be specified as a ``Proc``:
@@ -594,7 +594,7 @@ The default value can also be specified as a ``Proc``:
   class Order
     include ActiveDocument::Document
 
-    field :fulfill_by, type: Time, default: ->{ Time.now + 3.days }
+    field :fulfill_by, type: :time, default: ->{ Time.now + 3.days }
   end
 
 .. note::
@@ -604,8 +604,8 @@ The default value can also be specified as a ``Proc``:
 
   .. code-block:: ruby
 
-    field :submitted_at, type: Time, default: Time.now
-    field :submitted_at, type: Time, default: ->{ Time.now }
+    field :submitted_at, type: :time, default: Time.now
+    field :submitted_at, type: :time, default: ->{ Time.now }
 
   The second definition is most likely the desired one, which causes the
   time of submission to be set to the current time at the moment of
@@ -617,7 +617,7 @@ being operated on:
 
 .. code-block:: ruby
 
-  field :fulfill_by, type: Time, default: ->{
+  field :fulfill_by, type: :time, default: ->{
     # Order should be fulfilled in 2 business hours.
     if (7..8).include?(self.submitted_at.hour)
       self.submitted_at + 4.hours
@@ -635,7 +635,7 @@ use the ``pre_processed: true`` field option:
 
 .. code-block:: ruby
 
-  field :fulfill_by, type: Time, default: ->{ Time.now + 3.days },
+  field :fulfill_by, type: :time, default: ->{ Time.now + 3.days },
     pre_processed: true
 
 The ``pre_processed: true`` option is also necessary when specifying a custom
@@ -644,7 +644,7 @@ is set correctly via associations:
 
 .. code-block:: ruby
 
-  field :_id, type: String, default: -> { 'hello' }, pre_processed: true
+  field :_id, type: :string, default: -> { 'hello' }, pre_processed: true
 
 
 .. _storage-field-names:
@@ -664,7 +664,7 @@ and criteria while performing the conversion for you.
 
   class Band
     include ActiveDocument::Document
-    field :n, as: :name, type: String
+    field :n, as: :name, type: :string
   end
 
   band = Band.new(name: "Placebo")
@@ -688,7 +688,7 @@ from the aliased field:
   class Band
     include ActiveDocument::Document
 
-    field :name, type: String
+    field :name, type: :string
     alias_attribute :n, :name
   end
 
@@ -724,7 +724,7 @@ This is useful for storing different values in ``id`` and ``_id`` fields:
     include ActiveDocument::Document
 
     unalias_attribute :id
-    field :id, type: String
+    field :id, type: :string
   end
 
   Band.new(id: '42')
@@ -755,7 +755,7 @@ With the option set to true, the following example will raise an error:
 
     field :name
 
-    field :name, type: String
+    field :name, type: :string
   end
 
 To define the field anyway, use the ``overwrite: true`` option:
@@ -767,7 +767,7 @@ To define the field anyway, use the ``overwrite: true`` option:
 
     field :name
 
-    field :name, type: String, overwrite: true
+    field :name, type: :string, overwrite: true
   end
 
 
@@ -786,8 +786,8 @@ of the ``_id`` values or have different default values:
 
   class Band
     include ActiveDocument::Document
-    field :name, type: String
-    field :_id, type: String, default: ->{ name }
+    field :name, type: :string
+    field :_id, type: :string, default: ->{ name }
   end
 
 It is possible to omit the default entirely:
@@ -796,7 +796,7 @@ It is possible to omit the default entirely:
 
   class Band
     include ActiveDocument::Document
-    field :_id, type: String
+    field :_id, type: :string
   end
 
 If the default on ``_id`` is omitted, and no ``_id`` value is provided by
@@ -847,7 +847,7 @@ default. Consider the following example:
   class User
     include ActiveDocument::Document
 
-    field :name, type: Integer
+    field :name, type: :integer
   end
 
   User.new(name: [ "hello" ])
@@ -892,7 +892,7 @@ database:
   class User
     include ActiveDocument::Document
 
-    field :name, type: Integer
+    field :name, type: :integer
   end
 
 .. code::
@@ -954,8 +954,8 @@ getter as follows:
   class DistanceMeasurement
     include ActiveDocument::Document
 
-    field :value, type: Float
-    field :unit, type: String
+    field :value, type: :float
+    field :unit, type: :string
 
     def unit
       read_attribute(:unit) || "m"
@@ -980,8 +980,8 @@ may be implemented as follows:
   class DistanceMeasurement
     include ActiveDocument::Document
 
-    field :value, type: Float
-    field :unit, type: String
+    field :value, type: :float
+    field :unit, type: :string
 
     def unit=(value)
       if value.blank?
@@ -1140,6 +1140,7 @@ section on :ref:`Uncastable Values <uncastable-values>` for more details.
 
 .. _phantom-custom-field-types:
 
+# TODO: This needs to be changed to a type converter
 Phantom Custom Field Types
 ``````````````````````````
 
@@ -1185,7 +1186,7 @@ in the database:
 
   class Profile
     include ActiveDocument::Document
-    field :color, type: ColorMapping
+    field :color, type: :color_mapping
   end
 
   profile = Profile.new(color: 'white')
@@ -1225,7 +1226,7 @@ Then, use it your model class:
   class Person
     include ActiveDocument::Document
 
-    field :name, type: String, max_length: 10
+    field :name, type: :string, max_length: 10
   end
 
 Note that the handler function will be invoked whenever the option is used
@@ -1402,7 +1403,7 @@ ActiveDocument supports localized fields via the `I18n gem <https://github.com/r
 
    class Product
      include ActiveDocument::Document
-     field :description, type: String, localize: true
+     field :description, type: :string, localize: true
    end
 
 By telling the field to ``localize``, ActiveDocument will under the covers store the field
@@ -1436,8 +1437,8 @@ with float fields for differences with currency:
   class Product
     include ActiveDocument::Document
 
-    field :price, type: Float, localize: true
-    field :currency, type: String, localize: true
+    field :price, type: :float, localize: true
+    field :currency, type: :string, localize: true
   end
 
 By creating the model in this way, we can separate the price from the currency
@@ -1539,7 +1540,7 @@ disable fallback functionality on a specific field:
 
   class Product
     include ActiveDocument::Document
-    field :description, type: String, localize: true, fallbacks: false
+    field :description, type: :string, localize: true, fallbacks: false
   end
 
   product = Product.new
@@ -1600,8 +1601,8 @@ ignored when using mass update methods such as ``update_attributes``:
 
    class Band
      include ActiveDocument::Document
-     field :name, type: String
-     field :origin, type: String
+     field :name, type: :string
+     field :origin, type: :string
 
      attr_readonly :name, :origin
    end
@@ -1720,8 +1721,8 @@ method as follows:
 
     class User
       include ActiveDocument::Document
-      field :"first.last", type: String
-      field :"$_amount", type: Integer
+      field :"first.last", type: :string
+      field :"$_amount", type: :integer
     end
 
     user = User.first
@@ -1746,8 +1747,8 @@ will raise an error:
 
     class User
       include ActiveDocument::Document
-      field :"first.last", type: String
-      field :"$_amount", type: Integer
+      field :"first.last", type: :string
+      field :"$_amount", type: :integer
     end
 
     user = User.new

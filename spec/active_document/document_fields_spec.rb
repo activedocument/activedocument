@@ -245,18 +245,4 @@ describe ActiveDocument::Document do
       ).to eq 1
     end
   end
-
-  context 'BSON::Regexp::Raw field' do
-    it 'round-trips BSON::Regexp::Raws' do
-      mop = Mop.create!(bson_regexp_field: BSON::Regexp::Raw.new('foo'))
-      expect(mop.bson_regexp_field).to be_a BSON::Regexp::Raw
-      expect(Mop.find(mop.id).bson_regexp_field).to be_a BSON::Regexp::Raw
-      expect(
-        Mop.collection.find(
-          '_id' => mop.id,
-          'bson_regexp_field' => { '$type' => 'regex' }
-        ).count
-      ).to eq 1
-    end
-  end
 end

@@ -4,26 +4,26 @@ class Band
   include ActiveDocument::Document
   include ActiveDocument::Attributes::Dynamic
 
-  field :name, type: String
-  field :active, type: ActiveDocument::Boolean, default: true
-  field :origin, type: String
-  field :genres, type: Array
-  field :member_count, type: Integer
-  field :mems, as: :members, type: Array
-  field :likes, type: Integer
-  field :views, type: Integer
-  field :rating, type: Float
-  field :upserted, type: ActiveDocument::Boolean, default: false
-  field :created, type: DateTime
-  field :updated, type: Time
-  field :sales, type: BigDecimal
-  field :decimal, type: BSON::Decimal128
-  field :y, as: :years, type: Integer
-  field :founded, type: Date
-  field :decibels, type: Range
-  field :deleted, type: Boolean
-  field :mojo, type: Object
-  field :tags, type: Hash
+  field :name, type: :string
+  field :active, type: :boolean, default: true
+  field :origin, type: :string
+  field :genres, type: :array
+  field :member_count, type: :integer
+  field :mems, as: :members, type: :array
+  field :likes, type: :integer
+  field :views, type: :integer
+  field :rating, type: :float
+  field :upserted, type: :boolean, default: false
+  field :created, type: :date_time
+  field :updated, type: :time
+  field :sales, type: :big_decimal
+  field :decimal, type: :big_decimal
+  field :y, as: :years, type: :integer
+  field :founded, type: :date
+  field :decibels, type: :range
+  field :deleted, type: :boolean
+  field :mojo, type: :undefined
+  field :tags, type: :hash
   field :fans
   field :location, type: LatLng
 

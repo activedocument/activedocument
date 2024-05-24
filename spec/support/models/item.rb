@@ -2,9 +2,9 @@
 
 class Item
   include ActiveDocument::Document
-  field :title, type: String
-  field :is_rss, type: ActiveDocument::Boolean, default: false
-  field :user_login, type: String
+  field :title, type: :string
+  field :is_rss, type: :boolean, default: false
+  field :user_login, type: :string
 end
 
 require 'support/models/sub_item'

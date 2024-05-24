@@ -2,7 +2,7 @@
 
 class Author
   include ActiveDocument::Document
-  field :id, type: Integer
-  field :author, type: ActiveDocument::Boolean
-  field :name, type: String
+  field :id, type: :integer
+  field :author, type: :boolean
+  field :name, type: :string
 end

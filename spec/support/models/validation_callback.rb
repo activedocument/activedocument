@@ -2,7 +2,7 @@
 
 class ValidationCallback
   include ActiveDocument::Document
-  field :history, type: Array, default: []
+  field :history, type: :array, default: []
   validate do
     history << :validate
   end

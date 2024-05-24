@@ -12,7 +12,7 @@ module RefHasManySpec
     class Child
       include ActiveDocument::Document
       belongs_to :parent
-      field :name, type: String
+      field :name, type: :string
 
       def initialize(*args)
         super
