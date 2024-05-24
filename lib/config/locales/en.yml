@@ -254,8 +254,8 @@ en:
           resolution: "When defining the field :%{name} on '%{klass}', please provide
             valid options for the field. These are currently: %{valid}. If you
             meant to define a custom field option, please do so first as follows:\n\n
-            \_\_ActiveDocument::Fields.configure do\n
-            \_\_\_\_option :%{option} do |model, field, value|\n
+            \_\_ActiveDocument.configure do |config|\n
+            \_\_\_\_config.field_option :%{option} do |model, field, value|\n
             \_\_\_\_\_\_# Your logic here...\n
             \_\_\_\_end\n
             \_\_end\n
@@ -265,20 +265,12 @@ en:
             \_\_end\n\n
             Refer to:
             https://www.mongodb.com/docs/mongoid/current/reference/fields/#custom-field-options"
-        invalid_field_type:
-          message: "Invalid field type %{type_inspection} for field :%{field} on model '%{klass}'."
-          summary: "Model '%{klass}' defines a field :%{field} with an unknown :type value
-            %{type_inspection}. This value is neither present in ActiveDocument's default type mapping,
-            nor defined in a custom field type mapping."
-          resolution: "Please provide a valid :type value for the field. If you
-            meant to define a custom field type, please do so first as follows:\n\n
-            \_\_ActiveDocument::Fields.configure do\n
-            \_\_\_\_type %{type_inspection}, YourTypeClass\n
-            \_\_end\n
-            \_\_class %{klass}\n
-            \_\_\_\_include ActiveDocument::Document\n
-            \_\_\_\_field :%{field}, type: %{type_inspection}\n
-            \_\_end\n\n
+        invalid_field_type_definition:
+          message: "The field type definition of %{type_inspection} to %{klass_inspection} is invalid."
+          summary: "In the field type definition, either field_type %{type_inspection} is not
+            a Symbol or String, and/or klass %{klass_inspection} is not a Class or Module."
+          resolution: "Please ensure you are specifying field_type as either a Symbol or String,
+            and klass as a Class or Module.\n\n
             Refer to:
             https://www.mongodb.com/docs/mongoid/current/reference/fields/#custom-field-types"
         invalid_global_executor_concurrency:
@@ -680,6 +672,22 @@ en:
           resolution: "Define the field '%{name}' in %{klass}, or include
             ActiveDocument::Attributes::Dynamic in %{klass} if you intend to
             store values in fields that are not explicitly defined."
+        unknown_field_type:
+          message: "Unknown field type %{type_inspection} for field :%{field} on model '%{klass}'."
+          summary: "Model '%{klass}' declares a field :%{field} with an unknown :type value
+            %{type_inspection}. This value is neither present in ActiveDocument's default type mapping,
+            nor defined in a custom field type mapping."
+          resolution: "Please provide a known type value for the field. If you
+            meant to define a custom field type, please do so first as follows:\n\n
+            \_\_ActiveDocument.configure do |config|\n
+            \_\_\_\_config.field_type %{type_inspection}, YourTypeClass
+            \_\_end\n
+            \_\_class %{klass}\n
+            \_\_\_\_include ActiveDocument::Document\n
+            \_\_\_\_field :%{field}, type: %{type_inspection}\n
+            \_\_end\n\n
+            Refer to:
+            https://docs.mongodb.com/mongoid/current/reference/fields/#custom-field-types"
         unknown_model:
           message: "Attempted to instantiate an object of the unknown model '%{klass}'."
           summary: "A document with the value '%{value}' at the key '_type' was used to

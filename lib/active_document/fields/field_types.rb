@@ -3,12 +3,16 @@
 module ActiveDocument
   module Fields
 
-    # Singleton module which contains a cache for field type definitions.
+    # Singleton module which contains a mapping of field types to field class.
     # Custom field types can be configured.
+    #
+    # @api private
     module FieldTypes
       extend self
 
-      # For fields defined with symbols use the correct class.
+      # The default mapping of field type symbol/string identifiers to classes.
+      #
+      # @api private
       DEFAULT_MAPPING = {
         array: Array,
         bigdecimal: BigDecimal,
@@ -18,7 +22,6 @@ module ActiveDocument
         date: Date,
         datetime: DateTime,
         date_time: DateTime,
-        decimal128: BSON::Decimal128,
         double: Float,
         float: Float,
         hash: Hash,
@@ -32,53 +35,82 @@ module ActiveDocument
         stringified_symbol: ActiveDocument::StringifiedSymbol,
         symbol: Symbol,
         time: Time,
-        time_with_zone: ActiveSupport::TimeWithZone
+        undefined: Object
       }.with_indifferent_access.freeze
 
-      def get(value)
-        value = value.to_sym if value.is_a?(String)
-        mapping[value] || handle_unmapped_type(value)
-      end
+      class << self
 
-      def define(symbol, klass)
-        mapping[symbol.to_sym] = klass
-      end
-
-      delegate :delete, to: :mapping
-
-      private
-
-      def mapping
-        @mapping ||= DEFAULT_MAPPING.dup
-      end
-
-      def handle_unmapped_type(type)
-        return Object if type.nil?
-
-        if type.is_a?(Module)
-          warn_class_type(type.name)
-          return ActiveDocument::Boolean if type.to_s == 'Boolean'
-
-          return type
+        # Resolves the user-provided field type to the field type class.
+        #
+        # @example
+        #   ActiveDocument::FieldTypes.get(:point)
+        #
+        # @param [ Module | Symbol | String ] field_type The field
+        #   type class or its string or symbol identifier.
+        #
+        # @return [ Module | nil ] The underlying field type class, or nil if
+        #   string or symbol was passed and it is not mapped to any class.
+        def get(field_type)
+          case field_type
+          when Module
+            module_field_type(field_type)
+          when Symbol, String
+            mapping[field_type]
+          end
         end
 
-        nil
-      end
+        # Defines a field type mapping, for later use in field :type option.
+        #
+        # @example
+        #   ActiveDocument::FieldTypes.define_type(:point, Point)
+        #
+        # @param [ Symbol | String ] field_type The identifier of the
+        #   defined type. This identifier may be accessible as either a
+        #   Symbol or a String regardless of the type passed to this method.
+        # @param [ Class ] klass the class of the defined type, which must
+        #   include mongoize, demongoize, and evolve methods.
+        def define_type(field_type, klass)
+          unless (field_type.is_a?(String) || field_type.is_a?(Symbol)) && klass.is_a?(Module)
+            raise ActiveDocument::Errors::InvalidFieldTypeDefinition.new(field_type, klass)
+          end
 
-      def warn_class_type(type)
-        return if warned_class_types.include?(type)
+          mapping[field_type] = klass
+        end
 
-        symbol = type.demodulize.underscore
-        ActiveDocument.logger.warn(
-          "Using a Class (#{type}) in the field :type option is deprecated " \
-          'and will be removed in a future major ActiveDocument version. ' \
-          "Please use a Symbol (:#{symbol}) instead."
-        )
-        warned_class_types << type
-      end
+        delegate :delete, to: :mapping
 
-      def warned_class_types
-        @warned_class_types ||= []
+        # The memoized mapping of field type definitions to classes.
+        #
+        # @return [ ActiveSupport::HashWithIndifferentAccess<Symbol, Class> ] The memoized field mapping.
+        def mapping
+          @mapping ||= DEFAULT_MAPPING.dup
+        end
+
+        private
+
+        def module_field_type(field_type)
+          warn_class_type(field_type)
+          return ActiveDocument::Boolean if field_type.to_s == 'Boolean'
+
+          field_type
+        end
+
+        def warn_class_type(type)
+          type = type.name
+          return if warned_class_types.include?(type)
+
+          symbol = type.demodulize.underscore
+          ActiveDocument.logger.warn(
+            "Using a Class (#{type}) in the field :type option is deprecated " \
+            'and will be removed in a future major ActiveDocument version. ' \
+            "Please use a Symbol (:#{symbol}) instead."
+          )
+          warned_class_types << type
+        end
+
+        def warned_class_types
+          @warned_class_types ||= []
+        end
       end
     end
   end

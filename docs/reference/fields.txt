@@ -1016,10 +1016,21 @@ First, declare the new field type mapping in an initializer:
 
 .. code-block:: ruby
 
-  # in /config/initializers/mongoid_custom_fields.rb
+  # in /config/initializers/active_document_custom_fields.rb
 
   ActiveDocument::Fields.configure do
     type :point, Point
+  end
+
+
+You may optionally declare a mapping for the new field type in an initializer:
+
+.. code-block:: ruby
+
+  # in /config/initializers/active_document_custom_fields.rb
+
+  ActiveDocument.configure do |config|
+    config.field_type :point, Point
   end
 
 
@@ -1201,8 +1212,10 @@ specifying its handler function as a block:
 
   # in /config/initializers/active_document_custom_fields.rb
 
-  ActiveDocument::Fields.option :max_length do |model, field, value|
-    model.validates_length_of field.name, maximum: value
+  ActiveDocument.configure do |config|
+    config.field_option :max_length do |model, field, value|
+      model.validates_length_of field.name, maximum: value
+    end
   end
 
 Then, use it your model class:

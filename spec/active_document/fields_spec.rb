@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe ActiveDocument::Fields do
 
-  describe "#\{field}_translations" do
+  describe '{field}_translations' do
 
     let(:product) do
       Product.new
@@ -73,7 +73,7 @@ describe ActiveDocument::Fields do
     end
   end
 
-  describe "#\{field}_translations=" do
+  describe '{field}_translations=' do
 
     let(:product) do
       Product.new
@@ -331,11 +331,10 @@ describe ActiveDocument::Fields do
         bigdecimal: BigDecimal,
         big_decimal: BigDecimal,
         binary: BSON::Binary,
-        boolean: Mongoid::Boolean,
+        boolean: ActiveDocument::Boolean,
         date: Date,
         datetime: DateTime,
         date_time: DateTime,
-        decimal128: BSON::Decimal128,
         double: Float,
         float: Float,
         hash: Hash,
@@ -346,10 +345,10 @@ describe ActiveDocument::Fields do
         regexp: Regexp,
         set: Set,
         string: String,
-        stringified_symbol: Mongoid::StringifiedSymbol,
+        stringified_symbol: ActiveDocument::StringifiedSymbol,
         symbol: Symbol,
         time: Time,
-        time_with_zone: ActiveSupport::TimeWithZone
+        undefined: Object
       }.each do |field_type, field_klass|
 
         it "converts Symbol :#{field_type} to #{field_klass}" do
@@ -362,18 +361,18 @@ describe ActiveDocument::Fields do
       end
 
       context 'when using an unknown symbol' do
-        it 'raises InvalidFieldType' do
+        it 'raises UnknownFieldType' do
           expect do
-            klass.field(:test, type:  :bogus)
-          end.to raise_error(ActiveDocument::Errors::InvalidFieldType, /defines a field :test with an unknown :type value :bogus/)
+            klass.field(:test, type: :bogus)
+          end.to raise_error(ActiveDocument::Errors::UnknownFieldType, /declares a field :test with an unknown :type value :bogus/)
         end
       end
 
       context 'when using an unknown string' do
-        it 'raises InvalidFieldType' do
+        it 'raises UnknownFieldType' do
           expect do
-            klass.field(:test, type:  'bogus')
-          end.to raise_error(ActiveDocument::Errors::InvalidFieldType, /defines a field :test with an unknown :type value "bogus"/)
+            klass.field(:test, type: 'bogus')
+          end.to raise_error(ActiveDocument::Errors::UnknownFieldType, /declares a field :test with an unknown :type value "bogus"/)
         end
       end
     end
@@ -526,49 +525,6 @@ describe ActiveDocument::Fields do
 
         it 'returns the current locale value' do
           expect(description).to eq('Cheaper drinks')
-        end
-      end
-    end
-
-    context 'when the field is declared as BSON::Decimal128' do
-      let(:document) { Mop.create!(decimal128_field: BSON::Decimal128.new(Math::PI.to_s)).reload }
-
-      shared_examples 'BSON::Decimal128 is BigDecimal' do
-        it 'returns a BigDecimal' do
-          expect(document.decimal128_field).to be_a BigDecimal
-        end
-      end
-
-      shared_examples 'BSON::Decimal128 is BSON::Decimal128' do
-        it 'returns a BSON::Decimal128' do
-          expect(document.decimal128_field).to be_a BSON::Decimal128
-        end
-      end
-
-      it 'is declared as BSON::Decimal128' do
-        expect(Mop.fields['decimal128_field'].type).to eq BSON::Decimal128
-      end
-
-      context 'when BSON version <= 4' do
-        max_bson_version '4.99.99'
-        it_behaves_like 'BSON::Decimal128 is BSON::Decimal128'
-      end
-
-      context 'when BSON version >= 5' do
-        min_bson_version '5.0.0'
-
-        context 'when allow_bson5_decimal128 is false' do
-          config_override :allow_bson5_decimal128, false
-          it_behaves_like 'BSON::Decimal128 is BigDecimal'
-        end
-
-        context 'when allow_bson5_decimal128 is true' do
-          config_override :allow_bson5_decimal128, true
-          it_behaves_like 'BSON::Decimal128 is BSON::Decimal128'
-        end
-
-        context 'when allow_bson5_decimal128 is default' do
-          it_behaves_like 'BSON::Decimal128 is BigDecimal'
         end
       end
     end
@@ -1049,7 +1005,7 @@ describe ActiveDocument::Fields do
       expect(Person.field(:testing)).to eq(Person.fields['testing'])
     end
 
-    context "when the field name conflicts with active_document's internals" do
+    context "when the field name conflicts with ActiveDocument's internals" do
 
       %i[_association invalid].each do |meth|
         context "when the field is named #{meth}" do
@@ -1999,56 +1955,9 @@ describe ActiveDocument::Fields do
     end
   end
 
-  describe '.configure DSL' do
-
-    describe '.type method' do
-      after do
-        klass = Mongoid::Fields::FieldTypes
-        klass.instance_variable_set(:@mapping, klass::DEFAULT_MAPPING.dup)
-      end
-
-      it 'can define a custom type' do
-        described_class.configure do
-          type :my_type, Integer
-        end
-
-        expect(described_class::FieldTypes.get(:my_type)).to eq Integer
-      end
-
-      it 'can override and existing type' do
-        described_class.configure do
-          type :integer, String
-        end
-
-        expect(described_class::FieldTypes.get(:integer)).to eq String
-      end
-    end
-
-    describe '.option method' do
-      after do
-        described_class.instance_variable_set(:@options, {})
-      end
-
-      it 'can define a custom field option' do
-        described_class.configure do
-          option :my_required do |model, field, value|
-            model.validates_presence_of field.name if value
-          end
-        end
-
-        klass = Class.new do
-          include Mongoid::Document
-          field :my_field, my_required: true
-
-          def self.model_name
-            OpenStruct.new(human: 'Klass')
-          end
-        end
-
-        instance = klass.new
-        expect(instance.valid?).to be false
-        expect(instance.errors.full_messages).to eq ["My field can't be blank"]
-      end
+  describe '::TYPE_MAPPINGS' do
+    it 'returns the default mapping' do
+      expect(described_class::TYPE_MAPPINGS).to eq ActiveDocument::Fields::FieldTypes::DEFAULT_MAPPING
     end
   end
 

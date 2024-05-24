@@ -215,6 +215,9 @@ Naming/PredicateName:
     - has_attribute?
     - has_attribute_before_type_cast?
 
+RSpec/ImplicitSubject:
+  Enabled: false
+
 RSpec/IndexedLet:
   Enabled: false
 

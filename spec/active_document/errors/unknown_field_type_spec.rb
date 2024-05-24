@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::Errors::InvalidFieldType do
+describe ActiveDocument::Errors::UnknownFieldType do
 
   describe '#message' do
 

@@ -2,9 +2,11 @@
 
 require 'spec_helper'
 
-describe Mongoid::Fields::FieldTypes do
+describe ActiveDocument::Fields::FieldTypes do
 
-  after do
+  around do |example|
+    described_class.instance_variable_set(:@mapping, described_class::DEFAULT_MAPPING.dup)
+    example.run
     described_class.instance_variable_set(:@mapping, described_class::DEFAULT_MAPPING.dup)
   end
 
@@ -20,7 +22,7 @@ describe Mongoid::Fields::FieldTypes do
     end
 
     context 'when value is a default mapped string' do
-      let(:type) { 'double' }
+      let(:type) { 'float' }
 
       it 'uses the default mapped type' do
         is_expected.to eq Float
@@ -28,7 +30,7 @@ describe Mongoid::Fields::FieldTypes do
     end
 
     context 'when value is a custom mapped symbol' do
-      before { described_class.define('number', Integer) }
+      before { described_class.define_type('number', Integer) }
 
       let(:type) { :number }
 
@@ -38,7 +40,7 @@ describe Mongoid::Fields::FieldTypes do
     end
 
     context 'when value is a custom mapped string' do
-      before { described_class.define(:number, Float) }
+      before { described_class.define_type(:number, Float) }
 
       let(:type) { 'number' }
 
@@ -51,7 +53,7 @@ describe Mongoid::Fields::FieldTypes do
       let(:type) { :my_value }
 
       it 'returns nil' do
-        is_expected.to eq nil
+        is_expected.to be_nil
       end
     end
 
@@ -59,7 +61,7 @@ describe Mongoid::Fields::FieldTypes do
       let(:type) { 'my_value' }
 
       it 'returns nil' do
-        is_expected.to eq nil
+        is_expected.to be_nil
       end
     end
 
@@ -96,16 +98,16 @@ describe Mongoid::Fields::FieldTypes do
         Boolean
       end
 
-      it 'returns Mongoid::Boolean type' do
-        is_expected.to eq Mongoid::Boolean
+      it 'returns ActiveDocument::Boolean type' do
+        is_expected.to eq ActiveDocument::Boolean
       end
     end
 
     context 'when value is nil' do
       let(:type) { nil }
 
-      it 'returns Object type' do
-        is_expected.to eq Object
+      it 'returns nil' do
+        is_expected.to be_nil
       end
     end
   end
@@ -113,17 +115,17 @@ describe Mongoid::Fields::FieldTypes do
   describe '.define' do
 
     it 'can define a new type' do
-      described_class.define(:my_string, String)
+      described_class.define_type(:my_string, String)
       expect(described_class.get(:my_string)).to eq String
     end
 
     it 'can override a default type' do
-      described_class.define(:integer, String)
+      described_class.define_type(:integer, String)
       expect(described_class.get(:integer)).to eq String
     end
 
     it 'does not alter the DEFAULT_MAPPING constant' do
-      described_class.define(:integer, String)
+      described_class.define_type(:integer, String)
       expect(described_class::DEFAULT_MAPPING[:integer]).to eq Integer
     end
   end
@@ -131,7 +133,7 @@ describe Mongoid::Fields::FieldTypes do
   describe '.delete' do
 
     it 'can delete a custom type' do
-      described_class.define(:my_string, String)
+      described_class.define_type(:my_string, String)
       expect(described_class.get(:my_string)).to eq String
       described_class.delete('my_string')
       expect(described_class.get(:my_string)).to be_nil
@@ -145,6 +147,23 @@ describe Mongoid::Fields::FieldTypes do
     it 'does not alter the DEFAULT_MAPPING constant' do
       described_class.delete(:integer)
       expect(described_class::DEFAULT_MAPPING[:integer]).to eq Integer
+    end
+  end
+
+  describe '.mapping' do
+
+    it 'returns the default mapping by default' do
+      expect(described_class.mapping).to eq described_class::DEFAULT_MAPPING
+    end
+
+    it 'can add a type' do
+      described_class.define_type(:my_string, String)
+      expect(described_class.mapping[:my_string]).to eq(String)
+    end
+
+    it 'can delete a default type' do
+      described_class.delete(:integer)
+      expect(described_class.mapping).to_not have_key(:integer)
     end
   end
 end

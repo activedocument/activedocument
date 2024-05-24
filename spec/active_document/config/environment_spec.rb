@@ -115,7 +115,7 @@ describe ActiveDocument::Config::Environment do
 
       context 'when environment not specified' do
         it 'uses the rails environment' do
-          expect(subject).to eq('clients' => ['test'])
+          is_expected.to eq('clients' => ['test'])
         end
       end
 
@@ -123,7 +123,7 @@ describe ActiveDocument::Config::Environment do
         let(:environment) { 'development' }
 
         it 'uses the specified environment' do
-          expect(subject).to eq('clients' => ['dev'])
+          is_expected.to eq('clients' => ['dev'])
         end
       end
 
@@ -163,7 +163,7 @@ describe ActiveDocument::Config::Environment do
           end
 
           it 'loads successfully' do
-            expect(subject).to be_a(Hash)
+            is_expected.to be_a(Hash)
             expect(subject.fetch('clients').fetch('default').fetch('options').fetch('auto_encryption_options').fetch('schema_map')).to be_a(Hash)
           end
         end

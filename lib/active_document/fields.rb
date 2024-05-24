@@ -26,7 +26,7 @@ module ActiveDocument
     # BSON classes that are not supported as field types
     #
     # @api private
-    INVALID_BSON_CLASSES = [BSON::Decimal128, BSON::Int32, BSON::Int64].freeze
+    UNSUPPORTED_BSON_TYPES = [BSON::Decimal128, BSON::Int32, BSON::Int64].freeze
 
     module ClassMethods
       # Returns the list of id fields for this model class, as both strings
@@ -282,10 +282,8 @@ module ActiveDocument
       # provided in the field definition -- even if it is false or nil.
       #
       # @example
-      #   ActiveDocument::Fields.configure do
-      #     option :required do |model, field, value|
-      #       model.validates_presence_of field.name if value
-      #     end
+      #   ActiveDocument::Fields.option :required do |model, field, value|
+      #     model.validates_presence_of field.name if value
       #   end
       #
       # @param [ Symbol ] option_name the option name to match against
@@ -805,69 +803,39 @@ module ActiveDocument
 
       # Get the class for the given type.
       #
-      # @param [ Symbol ] name The name of the field.
-      # @param [ Symbol | Class ] type The type of the field.
+      # @param [ Symbol ] field_name The name of the field.
+      # @param [ Symbol | Class ] raw_type The type of the field.
       #
       # @return [ Class ] The type of the field.
       #
-      # @raise [ ActiveDocument::Errors::InvalidFieldType ] if given an invalid field
+      # @raises [ ActiveDocument::Errors::UnknownFieldType ] if given an invalid field
       #   type.
       #
       # @api private
-      def retrieve_and_validate_type(name, type)
-        type_mapping = TYPE_MAPPINGS[type]
-        result = type_mapping || unmapped_type(type)
+      def get_field_type(field_name, raw_type)
+        type = raw_type ? Fields::FieldTypes.get(raw_type) : Object
+        raise ActiveDocument::Errors::UnknownFieldType.new(name, field_name, raw_type) unless type
 
-        if !result.is_a?(Class)
-          raise Errors::InvalidFieldType.new(self, name, type)
-        elsif unsupported_type?(result)
-          warn_message = "Using #{result} as the field type is not supported. "
-          warn_message += if result == BSON::Decimal128
-                            'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+.'
-                          else
-                            'Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type.'
-                          end
-          ActiveDocument.logger.warn(warn_message)
-        end
-
-        result
+        warn_if_unsupported_bson_type(type)
+        type
       end
 
-      def field_type_klass_for(field, type)
-        klass = Fields::FieldTypes.get(type)
-        return klass if klass
-
-        raise ActiveDocument::Errors::InvalidFieldType.new(name, field, type)
-      end
-
-      # Returns the type of the field if the type was not in the TYPE_MAPPINGS
-      # hash.
+      # Logs a warning message if the given type cannot be represented
+      # by BSON.
       #
-      # @param [ Symbol | Class ] type The type of the field.
-      #
-      # @return [ Class ] The type of the field.
+      # @param [ Class ] type The type of the field.
       #
       # @api private
-      def unmapped_type(type)
-        if type.to_s == 'Boolean'
-          ActiveDocument::Boolean
-        else
-          type || Object
-        end
-      end
+      def warn_if_unsupported_bson_type(type)
+        return unless UNSUPPORTED_BSON_TYPES.include?(type)
 
-      # Queries whether or not the given type is permitted as a declared field
-      # type.
-      #
-      # @param [ Class ] type The type to query
-      #
-      # @return [ true | false ] whether or not the type is supported
-      #
-      # @api private
-      def unsupported_type?(type)
-        return !ActiveDocument::Config.allow_bson5_decimal128? if type == BSON::Decimal128
-
-        INVALID_BSON_CLASSES.include?(type)
+        warn_message = "Using #{type} as the field type is not supported. "
+        warn_message += if type == BSON::Decimal128
+                          'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+.'
+                        else
+                          'Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type.'
+                        end
+        ActiveDocument.logger.warn(warn_message)
       end
     end
   end
