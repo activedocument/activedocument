@@ -24,7 +24,7 @@ describe ActiveDocument::Matcher::Expression do
       let(:expr) { { title: 'Sir', '$comment' => 'hello' } }
 
       it 'ignores the $comment' do
-        expect(subject).to be true
+        is_expected.to be true
       end
     end
   end

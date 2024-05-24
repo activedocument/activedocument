@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe ActiveDocument::Fields do
 
-  describe "#\{field}_translations" do
+  describe '{field}_translations' do
 
     let(:product) do
       Product.new
@@ -73,7 +73,7 @@ describe ActiveDocument::Fields do
     end
   end
 
-  describe "#\{field}_translations=" do
+  describe '{field}_translations=' do
 
     let(:product) do
       Product.new
@@ -326,83 +326,53 @@ describe ActiveDocument::Fields do
         end
       end
 
-      it 'converts :array to Array' do
-        expect(klass.field(:test, type: :array).type).to be(Array)
-      end
+      {
+        array: Array,
+        bigdecimal: BigDecimal,
+        big_decimal: BigDecimal,
+        binary: BSON::Binary,
+        boolean: ActiveDocument::Boolean,
+        date: Date,
+        datetime: DateTime,
+        date_time: DateTime,
+        double: Float,
+        float: Float,
+        hash: Hash,
+        integer: Integer,
+        object: Object,
+        object_id: BSON::ObjectId,
+        range: Range,
+        regexp: Regexp,
+        set: Set,
+        string: String,
+        stringified_symbol: ActiveDocument::StringifiedSymbol,
+        symbol: Symbol,
+        time: Time,
+        undefined: Object
+      }.each do |field_type, field_klass|
 
-      it 'converts :big_decimal to BigDecimal' do
-        expect(klass.field(:test, type: :big_decimal).type).to be(BigDecimal)
-      end
+        it "converts Symbol :#{field_type} to #{field_klass}" do
+          expect(klass.field(:test, type: field_type).type).to be(field_klass)
+        end
 
-      it 'converts :binary to BSON::Binary' do
-        expect(klass.field(:test, type: :binary).type).to be(BSON::Binary)
-      end
-
-      it 'converts :boolean to ActiveDocument::Boolean' do
-        expect(klass.field(:test, type: :boolean).type).to be(ActiveDocument::Boolean)
-      end
-
-      it 'converts :date to Date' do
-        expect(klass.field(:test, type: :date).type).to be(Date)
-      end
-
-      it 'converts :date_time to DateTime' do
-        expect(klass.field(:test, type: :date_time).type).to be(DateTime)
-      end
-
-      it 'converts :float to Float' do
-        expect(klass.field(:test, type: :float).type).to be(Float)
-      end
-
-      it 'converts :hash to Hash' do
-        expect(klass.field(:test, type: :hash).type).to be(Hash)
-      end
-
-      it 'converts :integer to Integer' do
-        expect(klass.field(:test, type: :integer).type).to be(Integer)
-      end
-
-      it 'converts :object_id to BSON::ObjectId' do
-        expect(klass.field(:test, type: :object_id).type).to be(BSON::ObjectId)
-      end
-
-      it 'converts :range to Range' do
-        expect(klass.field(:test, type: :range).type).to be(Range)
-      end
-
-      it 'converts :regexp to Rexegp' do
-        expect(klass.field(:test, type: :regexp).type).to be(Regexp)
-      end
-
-      it 'converts :set to Set' do
-        expect(klass.field(:test, type: :set).type).to be(Set)
-      end
-
-      it 'converts :string to String' do
-        expect(klass.field(:test, type: :string).type).to be(String)
-      end
-
-      it 'converts :symbol to Symbol' do
-        expect(klass.field(:test, type: :symbol).type).to be(Symbol)
-      end
-
-      it 'converts :time to Time' do
-        expect(klass.field(:test, type: :time).type).to be(Time)
+        it "converts String \"#{field_type}\" to #{field_klass}" do
+          expect(klass.field(:test, type: field_type.to_s).type).to be(field_klass)
+        end
       end
 
       context 'when using an unknown symbol' do
-        it 'raises InvalidFieldType' do
+        it 'raises UnknownFieldType' do
           expect do
-            klass.field(:test, type:  :bogus)
-          end.to raise_error(ActiveDocument::Errors::InvalidFieldType, /defines a field 'test' with an unknown type value :bogus/)
+            klass.field(:test, type: :bogus)
+          end.to raise_error(ActiveDocument::Errors::UnknownFieldType, /declares a field :test with an unknown :type value :bogus/)
         end
       end
 
       context 'when using an unknown string' do
-        it 'raises InvalidFieldType' do
+        it 'raises UnknownFieldType' do
           expect do
-            klass.field(:test, type:  'bogus')
-          end.to raise_error(ActiveDocument::Errors::InvalidFieldType, /defines a field 'test' with an unknown type value "bogus"/)
+            klass.field(:test, type: 'bogus')
+          end.to raise_error(ActiveDocument::Errors::UnknownFieldType, /declares a field :test with an unknown :type value "bogus"/)
         end
       end
     end
@@ -555,49 +525,6 @@ describe ActiveDocument::Fields do
 
         it 'returns the current locale value' do
           expect(description).to eq('Cheaper drinks')
-        end
-      end
-    end
-
-    context 'when the field is declared as BSON::Decimal128' do
-      let(:document) { Mop.create!(decimal128_field: BSON::Decimal128.new(Math::PI.to_s)).reload }
-
-      shared_examples 'BSON::Decimal128 is BigDecimal' do
-        it 'returns a BigDecimal' do
-          expect(document.decimal128_field).to be_a BigDecimal
-        end
-      end
-
-      shared_examples 'BSON::Decimal128 is BSON::Decimal128' do
-        it 'returns a BSON::Decimal128' do
-          expect(document.decimal128_field).to be_a BSON::Decimal128
-        end
-      end
-
-      it 'is declared as BSON::Decimal128' do
-        expect(Mop.fields['decimal128_field'].type).to eq BSON::Decimal128
-      end
-
-      context 'when BSON version <= 4' do
-        max_bson_version '4.99.99'
-        it_behaves_like 'BSON::Decimal128 is BSON::Decimal128'
-      end
-
-      context 'when BSON version >= 5' do
-        min_bson_version '5.0.0'
-
-        context 'when allow_bson5_decimal128 is false' do
-          config_override :allow_bson5_decimal128, false
-          it_behaves_like 'BSON::Decimal128 is BigDecimal'
-        end
-
-        context 'when allow_bson5_decimal128 is true' do
-          config_override :allow_bson5_decimal128, true
-          it_behaves_like 'BSON::Decimal128 is BSON::Decimal128'
-        end
-
-        context 'when allow_bson5_decimal128 is default' do
-          it_behaves_like 'BSON::Decimal128 is BigDecimal'
         end
       end
     end
@@ -1078,7 +1005,7 @@ describe ActiveDocument::Fields do
       expect(Person.field(:testing)).to eq(Person.fields['testing'])
     end
 
-    context "when the field name conflicts with active_document's internals" do
+    context "when the field name conflicts with ActiveDocument's internals" do
 
       %i[_association invalid].each do |meth|
         context "when the field is named #{meth}" do
