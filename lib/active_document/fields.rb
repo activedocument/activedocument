@@ -5,6 +5,7 @@ require 'active_document/fields/encrypted'
 require 'active_document/fields/foreign_key'
 require 'active_document/fields/localized'
 require 'active_document/fields/validators'
+require 'active_document/fields/field_types'
 
 module ActiveDocument
 
@@ -14,27 +15,6 @@ module ActiveDocument
 
     StringifiedSymbol = ActiveDocument::StringifiedSymbol
     Boolean = ActiveDocument::Boolean
-
-    # For fields defined with symbols use the correct class.
-    TYPE_MAPPINGS = {
-      array: Array,
-      big_decimal: BigDecimal,
-      binary: BSON::Binary,
-      boolean: ActiveDocument::Boolean,
-      date: Date,
-      date_time: DateTime,
-      float: Float,
-      hash: Hash,
-      integer: Integer,
-      object_id: BSON::ObjectId,
-      range: Range,
-      regexp: Regexp,
-      set: Set,
-      string: String,
-      stringified_symbol: StringifiedSymbol,
-      symbol: Symbol,
-      time: Time
-    }.with_indifferent_access
 
     # Constant for all names of the _id field in a document.
     #
@@ -273,6 +253,27 @@ module ActiveDocument
 
     class << self
 
+      # DSL method used for configuration readability, typically in
+      # an initializer.
+      #
+      # @example
+      #   ActiveDocument::Fields.configure do
+      #     # do configuration
+      #   end
+      def configure(&block)
+        instance_exec(&block)
+      end
+
+      # Defines a field type mapping, for later use in field :type option.
+      #
+      # @example
+      #   ActiveDocument::Fields.configure do
+      #     type :point, Point
+      #   end
+      def type(symbol, klass)
+        Fields::FieldTypes.define(symbol, klass)
+      end
+
       # Stores the provided block to be run when the option name specified is
       # defined on a field.
       #
@@ -281,8 +282,10 @@ module ActiveDocument
       # provided in the field definition -- even if it is false or nil.
       #
       # @example
-      #   ActiveDocument::Fields.option :required do |model, field, value|
-      #     model.validates_presence_of field if value
+      #   ActiveDocument::Fields.configure do
+      #     option :required do |model, field, value|
+      #       model.validates_presence_of field.name if value
+      #     end
       #   end
       #
       # @param [ Symbol ] option_name the option name to match against
@@ -828,6 +831,12 @@ module ActiveDocument
         end
 
         result
+      end
+
+      def field_type_klass_for(field, type)
+        klass = Fields::FieldTypes.get(type)
+        return klass if klass
+        raise ActiveDocument::Errors::InvalidFieldType.new(self.name, field, type)
       end
 
       # Returns the type of the field if the type was not in the TYPE_MAPPINGS

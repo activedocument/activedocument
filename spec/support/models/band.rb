@@ -25,6 +25,7 @@ class Band
   field :mojo, type: Object
   field :tags, type: Hash
   field :fans
+  field :location, type: LatLng
 
   alias_attribute :d, :deleted
 
