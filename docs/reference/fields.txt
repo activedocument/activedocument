@@ -63,14 +63,13 @@ The valid types for fields are as follows:
 - :ref:`:big_decimal <field-type-big-decimal>`
 - :binary (``BSON::Binary``)
 - :boolean
+- :bson_object_id (``BSON::ObjectID``)
 - :ref:`date <field-type-date>`
 - :ref:`date_time <field-type-date-time>`
-- :decimal128 (``BSON::Decimal128``)
 - :float
 - :ref:`hash <field-type-hash>`
 - :integer
 - :ref:`object <untyped-fields>`
-- :object_id (``BSON::ObjectID``)
 - :range
 - :ref:`regexp <field-type-regexp>`
 - :set
@@ -78,7 +77,7 @@ The valid types for fields are as follows:
 - :ref:`stringified_symbol <field-type-stringified-symbol>`
 - :ref:`symbol <field-type-stringified-symbol>`
 - :ref:`time <field-type-time>`
-- :time_with_zone (``ActiveSupport::TimeWithZone``)
+- :ref:`undefined <field-type-undefined>`
 
 To define custom field types, refer to :ref:`Custom Field Types <custom-field-types>` below.
 Unrecognized field type symbols will result in an `InvalidFieldType` error when the model class is loaded.
@@ -92,13 +91,13 @@ Unrecognized field type symbols will result in an `InvalidFieldType` error when 
   BSON <=4 and values of type ``BigDecimal`` in BSON 5+.
 
 
-.. _untyped-fields:
+.. _field-type-undefined:
 
-Untyped Fields
---------------
+Field Type :undefined
+---------------------
 
-Not specifying a type for a field is the same as specifying the ``Object``
-type. Such fields are untyped:
+You may declare field type as ``:undefined`` to allow any type of value to be
+stored in the database:
 
 .. code-block:: ruby
 
