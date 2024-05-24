@@ -867,7 +867,7 @@ describe ActiveDocument::Config do
         field :my_field, my_required: true
 
         def self.model_name
-          OpenStruct.new(human: 'Klass')
+          double('model_name', human: 'Klass')
         end
       end
 

@@ -793,7 +793,7 @@ module ActiveDocument
       # @api private
       def field_for(name, options)
         opts = options.merge(klass: self)
-        opts[:type] = retrieve_and_validate_type(name, options[:type])
+        opts[:type] = get_field_type(name, options[:type])
         return Fields::Localized.new(name, opts) if options[:localize]
         return Fields::ForeignKey.new(name, opts) if options[:identity]
         return Fields::Encrypted.new(name, opts) if options[:encrypt]

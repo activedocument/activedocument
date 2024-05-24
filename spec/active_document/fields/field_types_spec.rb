@@ -72,7 +72,7 @@ describe ActiveDocument::Fields::FieldTypes do
         is_expected.to eq String
       end
 
-      context 'deprecation' do
+      context 'with deprecation' do
         around do |example|
           old_types = described_class.instance_variable_get(:@warned_class_types)
           described_class.instance_variable_set(:@warned_class_types, [])
