@@ -50,26 +50,32 @@ gem 'activedocument', git: 'https://github.com/activedocument/activedocument.git
 ### Defining models
 
 - Model fields and relations are defined in your Ruby classes.
-- To add new fields or relations, simply add the field definition to your code
-then release a new version of your app, and the field will be included on
-documents saved thereafter. **No migrations and no `schema.rb` needed!**
+- To add new fields or relations, simply add the field definition to your code then release a new version of your app,
+  and the field will be included on documents saved thereafter. **No migrations and no `schema.rb` needed!**
 
 ```ruby
+# /app/models/trainer.rb
 class Trainer
+  # Include base module into each model class
   include ActiveDocument::Document
 
+  # Define database fields and types
   field :name, type: :string
   field :age,  type: :integer
 
+  # Define relations to other database tables
   belongs_to_many :gyms
 
+  # Models can be nested inside each other
   embeds_many :addresses
-  
+
+  # Can define methods as normal
   def battle(other_trainer)
     # ...
   end
 end
 
+# /app/models/gym.rb
 class Gym
   include ActiveDocument::Document
 
@@ -80,6 +86,7 @@ class Gym
   embeds_many :addresses
 end
 
+# /app/models/address.rb
 class Address
   include ActiveDocument::Document
 
@@ -93,10 +100,8 @@ end
 ### Persisting data
 
 - Data can be assigned similarly to ActiveRecord.
-- Many-to-many relationships are stored as Arrays of foreign keys
-  in the database. **No join tables needed!**
-- You may documents within other documents, which are stored
-  using nested Array and Hash (Map) types in the database.
+- Many-to-many relationships are stored as Arrays of foreign keys in the database. **No join tables needed!**
+- You may documents within other documents, which are stored using nested Array and Hash (Map) types in the database.
   Nesting may also be done N-levels deep.
 
 ```ruby
@@ -104,7 +109,7 @@ gym = Gym.new(name: 'Pewter City Gym')
 gym.addresses.build(city: 'Pewter City', region: 'Kanto')
 gym.save!
 
-# Persisted document in database:
+# Document persisted in database "gyms" table:
 # {
 #   "_id": "664c0c0cd777ae66fec0e8a4",
 #   "name": "Pewter City Gym",
@@ -123,7 +128,7 @@ trainer.addresses.build(city: 'Pallet Town', region: 'Kanto')
 trainer.addresses.build(city: 'New Bark Town', region: 'Johto')
 trainer.save!
 
-# Persisted document in database:
+# Document persisted in database "trainers" table:
 # {
 #   "_id": "664c0c0cd777ae66fec0e8a5",
 #   "name": "Ash",
@@ -145,21 +150,24 @@ trainer.save!
 
 ### Querying and working with data
 
-- Querying for models is done using a chainable API similar to ActiveRecord.
-- ActiveDocument also exposes the underlying NoSQL database query API
-where it is possible to do so.
+- You may retrieve models using chainable query methods similar to ActiveRecord.
+- ActiveDocument also exposes the underlying NoSQL database query API where it is possible to do so.
 
 ```ruby
 ash = Trainer.where(name: 'Ash').first
   #=> #<Trainer name="Ash", age=10>
 
-team_rocket = Trainer.any_in(name: ['Jessie', 'James'])
+# Query methods return an instance of `ActiveDocument::Criteria`,
+# which is a chainable, lazy-evaluated query builder object.
+team_rocket_query = Trainer.any_in(name: ['Jessie', 'James'])
   #=> #<ActiveDocument::Criteria>
 
-team_rocket = team_rocket.where(age: { '$gt' => 20 })
+team_rocket_query = team_rocket_query.where(age: { '$gt' => 20 })
   #=> #<ActiveDocument::Criteria>
 
-team_rocket.to_a
+# Call `.to_a`, `.first`, `.each`, `.map`, etc. to execute the query
+# and return instance(s) of the model objects.
+team_rocket = team_rocket_query.to_a
   #=> [#<Trainer name="Jessie", age=25>, #<Trainer name="James", age=27>]
 
 ash.battle(team_rocket.first)
