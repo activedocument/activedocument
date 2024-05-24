@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'spec_helper'
 
 describe Mongoid::Fields::FieldTypes do
 
@@ -29,6 +29,7 @@ describe Mongoid::Fields::FieldTypes do
 
     context 'when value is a custom mapped symbol' do
       before { described_class.define('number', Integer) }
+
       let(:type) { :number }
 
       it 'uses the custom mapped type' do
@@ -38,6 +39,7 @@ describe Mongoid::Fields::FieldTypes do
 
     context 'when value is a custom mapped string' do
       before { described_class.define(:number, Float) }
+
       let(:type) { 'number' }
 
       it 'uses the custom mapped type' do
@@ -132,12 +134,12 @@ describe Mongoid::Fields::FieldTypes do
       described_class.define(:my_string, String)
       expect(described_class.get(:my_string)).to eq String
       described_class.delete('my_string')
-      expect(described_class.get(:my_string)).to eq nil
+      expect(described_class.get(:my_string)).to be_nil
     end
 
     it 'can delete a default type' do
       described_class.delete(:integer)
-      expect(described_class.get(:integer)).to eq nil
+      expect(described_class.get(:integer)).to be_nil
     end
 
     it 'does not alter the DEFAULT_MAPPING constant' do

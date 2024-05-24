@@ -2001,7 +2001,7 @@ describe ActiveDocument::Fields do
 
   describe '.configure DSL' do
 
-    context '.type method' do
+    describe '.type method' do
       after do
         klass = Mongoid::Fields::FieldTypes
         klass.instance_variable_set(:@mapping, klass::DEFAULT_MAPPING.dup)
@@ -2024,7 +2024,7 @@ describe ActiveDocument::Fields do
       end
     end
 
-    context '.option method' do
+    describe '.option method' do
       after do
         described_class.instance_variable_set(:@options, {})
       end
@@ -2046,7 +2046,7 @@ describe ActiveDocument::Fields do
         end
 
         instance = klass.new
-        expect(instance.valid?).to eq false
+        expect(instance.valid?).to be false
         expect(instance.errors.full_messages).to eq ["My field can't be blank"]
       end
     end

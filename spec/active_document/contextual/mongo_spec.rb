@@ -3725,73 +3725,73 @@ describe ActiveDocument::Contextual::Mongo do
             end
           end
 
-          context "when operation is $pull" do
+          context 'when operation is $pull' do
 
-            context "when pulling single element" do
+            context 'when pulling single element' do
 
               before do
-                depeche_mode.update_attribute(:genres, ["electronic", "pop"])
-                new_order.update_attribute(:genres, ["electronic", "pop"])
-                context.update_all("$pull" => { genres: "electronic" })
+                depeche_mode.update_attribute(:genres, %w[electronic pop])
+                new_order.update_attribute(:genres, %w[electronic pop])
+                context.update_all('$pull' => { genres: 'electronic' })
               end
 
-              it "updates the first matching document" do
-                expect(depeche_mode.reload.genres).to eq(["pop"])
+              it 'updates the first matching document' do
+                expect(depeche_mode.reload.genres).to eq(['pop'])
               end
 
-              it "updates the last matching document" do
-                expect(new_order.reload.genres).to eq(["pop"])
+              it 'updates the last matching document' do
+                expect(new_order.reload.genres).to eq(['pop'])
               end
             end
 
-            context "when pulling based on condition" do
+            context 'when pulling based on condition' do
               before do
-                depeche_mode.update_attribute(:genres, ["electronic", "pop", "dance"])
-                new_order.update_attribute(:genres, ["electronic", "pop", "dance"])
-                context.update_all("$pull" => { genres: { '$in' => ["electronic", "pop"] } })
+                depeche_mode.update_attribute(:genres, %w[electronic pop dance])
+                new_order.update_attribute(:genres, %w[electronic pop dance])
+                context.update_all('$pull' => { genres: { '$in' => %w[electronic pop] } })
               end
 
-              it "updates the first matching document" do
-                expect(depeche_mode.reload.genres).to eq(["dance"])
+              it 'updates the first matching document' do
+                expect(depeche_mode.reload.genres).to eq(['dance'])
               end
 
-              it "updates the last matching document" do
-                expect(new_order.reload.genres).to eq(["dance"])
+              it 'updates the last matching document' do
+                expect(new_order.reload.genres).to eq(['dance'])
               end
             end
           end
 
-          context "when operation is $pop" do
+          context 'when operation is $pop' do
 
             before do
-              depeche_mode.update_attribute(:genres, ["pop", "electronic"])
+              depeche_mode.update_attribute(:genres, %w[pop electronic])
             end
 
-            it "removes first element in array" do
-              context.update_all("$pop" => { genres: -1 })
-              expect(depeche_mode.reload.genres).to eq(["electronic"])
+            it 'removes first element in array' do
+              context.update_all('$pop' => { genres: -1 })
+              expect(depeche_mode.reload.genres).to eq(['electronic'])
             end
 
-            it "removes last element in array" do
-              context.update_all("$pop" => { genres: 1 })
-              expect(depeche_mode.reload.genres).to eq(["pop"])
+            it 'removes last element in array' do
+              context.update_all('$pop' => { genres: 1 })
+              expect(depeche_mode.reload.genres).to eq(['pop'])
             end
           end
 
-          context "when operation is $pullAll" do
+          context 'when operation is $pullAll' do
 
             before do
-              depeche_mode.update_attribute(:genres, ["pop", "electronic", "dance", "pop" ])
-              new_order.update_attribute(:genres, ["electronic", "pop", "electronic", "dance"])
-              context.update_all("$pullAll" => { genres: ["pop", "electronic"] })
+              depeche_mode.update_attribute(:genres, %w[pop electronic dance pop])
+              new_order.update_attribute(:genres, %w[electronic pop electronic dance])
+              context.update_all('$pullAll' => { genres: %w[pop electronic] })
             end
 
-            it "updates the first matching document" do
-              expect(depeche_mode.reload.genres).to eq(["dance"])
+            it 'updates the first matching document' do
+              expect(depeche_mode.reload.genres).to eq(['dance'])
             end
 
-            it "updates the last matching document" do
-              expect(new_order.reload.genres).to eq(["dance"])
+            it 'updates the last matching document' do
+              expect(new_order.reload.genres).to eq(['dance'])
             end
           end
         end
@@ -3826,7 +3826,7 @@ describe ActiveDocument::Contextual::Mongo do
 
         context 'when the attributes must be mongoized using complex type' do
           before do
-            context.update_all("$set" => { location: LatLng.new(52.30, 13.25) })
+            context.update_all('$set' => { location: LatLng.new(52.30, 13.25) })
           end
 
           it 'updates the first matching document' do

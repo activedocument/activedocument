@@ -58,6 +58,7 @@ module ActiveDocument
         if type.is_a?(Module)
           warn_class_type(type.name)
           return ActiveDocument::Boolean if type.to_s == 'Boolean'
+
           return type
         end
 
@@ -66,10 +67,11 @@ module ActiveDocument
 
       def warn_class_type(type)
         return if warned_class_types.include?(type)
+
         symbol = type.demodulize.underscore
         ActiveDocument.logger.warn(
-          "Using a Class (#{type}) in the field :type option is deprecated " +
-          "and will be removed in a future major ActiveDocument version. " +
+          "Using a Class (#{type}) in the field :type option is deprecated " \
+          'and will be removed in a future major ActiveDocument version. ' \
           "Please use a Symbol (:#{symbol}) instead."
         )
         warned_class_types << type

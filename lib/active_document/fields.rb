@@ -836,7 +836,8 @@ module ActiveDocument
       def field_type_klass_for(field, type)
         klass = Fields::FieldTypes.get(type)
         return klass if klass
-        raise ActiveDocument::Errors::InvalidFieldType.new(self.name, field, type)
+
+        raise ActiveDocument::Errors::InvalidFieldType.new(name, field, type)
       end
 
       # Returns the type of the field if the type was not in the TYPE_MAPPINGS
