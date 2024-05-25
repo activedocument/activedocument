@@ -407,44 +407,6 @@ describe ActiveDocument::Fields do
       end
     end
 
-    context 'when the Symbol type is used' do
-
-      before do
-        ActiveDocument::Warnings.class_eval do
-          @symbol_type_deprecated = false
-        end
-      end
-
-      after do
-        Label.fields.delete('should_warn')
-      end
-
-      it 'warns that the BSON symbol type is deprecated' do
-        expect(ActiveDocument.logger).to receive(:warn)
-
-        Label.field :should_warn, type: :symbol
-      end
-
-      it 'warns on first use of Symbol type only' do
-        expect(ActiveDocument.logger).to receive(:warn).once
-
-        Label.field :should_warn, type: :symbol
-      end
-
-      context 'when using Symbol field type in multiple classes' do
-        after do
-          Truck.fields.delete('should_warn')
-        end
-
-        it 'warns on first use of Symbol type only' do
-          expect(ActiveDocument.logger).to receive(:warn).once
-
-          Label.field :should_warn, type: :symbol
-          Truck.field :should_warn, type: :symbol
-        end
-      end
-    end
-
     context 'when the options are not valid' do
 
       it 'raises an error' do
