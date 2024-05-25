@@ -207,7 +207,7 @@ module ActiveDocument
           # TODO: check if this overrides existing conditions on the field
           clone.tap do |query|
             criterion&.each_pair do |field, value|
-              query.selector.merge!(QueryNormalizer.expr_part(field.to_s, value))
+              query.selector.merge!(field.to_s => value.deep_stringify_keys)
             end
             query.reset_state!
           end
