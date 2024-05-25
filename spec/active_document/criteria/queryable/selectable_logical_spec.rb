@@ -1548,7 +1548,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in separate hashes' do
           let(:selection) do
-            query.send(tested_method, { field { '$gt' => 3 } }, { field: 5 })
+            query.send(tested_method, { field: { '$gt' => 3 } }, { field: 5 })
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -2078,7 +2078,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'non-regexp argument' do
         let(:selection) do
-          query.not(field: 1, field: { '$gt' => 0 })
+          query.not(field: [1, { '$gt' => 0 }])
         end
 
         it 'combines conditions with $eq' do
@@ -2090,7 +2090,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'regexp argument' do
         let(:selection) do
-          query.not(field: /t/, field: { '$gt' => 0 })
+          query.not(field: [/t/, { '$gt' => 0 }])
         end
 
         it 'combines conditions with $regex' do
