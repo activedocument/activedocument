@@ -861,8 +861,8 @@ describe ActiveDocument::Scopable do
       context 'when both scopes are or queries' do
 
         before do
-          Band.scope(:xxx, -> { Band.any_of({ :aaa.gt => 0 }, { :bbb.gt => 0 }) })
-          Band.scope(:yyy, -> { Band.any_of({ ccc: nil }, { :ccc.gt => 1 }) })
+          Band.scope(:xxx, -> { Band.any_of({ aaa: { '$gt' => 0 } }, { bbb: { '$gt' => 0 } }) })
+          Band.scope(:yyy, -> { Band.any_of({ ccc: nil }, { ccc: { '$gt' => 1 } }) })
         end
 
         after do

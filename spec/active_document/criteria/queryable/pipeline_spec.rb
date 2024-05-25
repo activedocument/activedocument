@@ -54,7 +54,7 @@ describe ActiveDocument::Criteria::Queryable::Pipeline do
       context 'when using symbol shortcuts' do
 
         before do
-          pipeline.group(:count.sum => 1, :max.max => 'likes')
+          pipeline.group(count: { '$sum' => 1 }, max: { '$max' => 'likes' })
         end
 
         it 'adds the group operation to the pipeline' do

@@ -192,7 +192,7 @@ ActiveDocument 7.3 behavior:
 
 .. code-block:: ruby
 
-  Band.where(year: 2020, :year.gt => 1960)
+  Band.where(year: 2020, year: { '$gt' => 1960 })
   # => 
   # #<ActiveDocument::Criteria
   #   selector: {"year"=>{"$eq"=>2020, "$gt"=>1960}}
@@ -212,7 +212,7 @@ ActiveDocument 7.2 behavior:
 
 .. code-block:: ruby
 
-  Band.where(year: 2020, :year.gt => 1960)
+  Band.where(year: 2020, year: { '$gt' => 1960 })
   # => 
   # #<ActiveDocument::Criteria
   #   selector: {"year"=>2020, "$and"=>[{"year"=>{"$gt"=>1960}}]}
@@ -238,7 +238,7 @@ ActiveDocument 7.3 behavior:
 
 .. code-block:: ruby
 
-  Band.not(year: 2020, :year.gt => 1960)
+  Band.not(year: 2020, year: { '$gt' => 1960 })
   # => 
   # #<ActiveDocument::Criteria
   #   selector: {"$and"=>[{"$nor"=>[{"year"=>{"$eq"=>2020, "$gt"=>1960}}]}]}
@@ -250,7 +250,7 @@ ActiveDocument 7.2 behavior:
 
 .. code-block:: ruby
 
-  Band.not(year: 2020, :year.gt => 1960)
+  Band.not(year: 2020, year: { '$gt' => 1960 })
   # => 
   # #<ActiveDocument::Criteria
   #   selector: {"year"=>{"$ne"=>2020}, "$and"=>[{"$nor"=>[{"year"=>{"$gt"=>1960}}]}]}

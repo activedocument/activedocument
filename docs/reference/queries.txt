@@ -161,7 +161,7 @@ name, as follows:
 
 .. code-block:: ruby
 
-  Band.where(:founded.gt => 1980)
+  Band.where(founded: { '$gt' => 1980 })
   # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gt"=>1980}}
   #   options:  {}
@@ -1240,7 +1240,7 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.distinct(:name)
-          Band.where(:fans.gt => 100000).
+          Band.where(fans: { '$gt' => 100000 }).
             distinct(:name)
 
           Band.distinct('cities.name')
@@ -1336,7 +1336,7 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.find_or_create_by(name: "Photek")
-          Band.where(:likes.gt => 10).find_or_create_by(name: "Photek")
+          Band.where(likes: { '$gt' => 10 }).find_or_create_by(name: "Photek")
 
         ``find_or_create_by`` can be used on any scope, but in this case
         the criteria given by the scope and by ``find_or_create_by`` are
@@ -1359,7 +1359,7 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
            Band.find_or_initialize_by(name: "Photek")
-           Band.where(:likes.gt => 10).find_or_initialize_by(name: "Photek")
+           Band.where(likes: { '$gt' => 10 }).find_or_initialize_by(name: "Photek")
 
    * - ``Criteria#first|last``
 
@@ -1372,8 +1372,8 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.first
-          Band.where(:members.with_size => 3).first
-          Band.where(:members.with_size => 3).last
+          Band.where(members: { '$withSize' => 3 }).first
+          Band.where(members: { '$withSize' => 3 }).last
           Band.first(2)
 
    * - ``Criteria#first!|last!``
@@ -1387,8 +1387,8 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.first!
-          Band.where(:members.with_size => 3).first!
-          Band.where(:members.with_size => 3).last!
+          Band.where(members: { '$withSize' => 3 }).first!
+          Band.where(members: { '$withSize' => 3 }).last!
 
    * - ``Criteria#first_or_create``
 

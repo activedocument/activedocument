@@ -141,7 +141,7 @@ class PersonAutosave
   scope :search, ->(query) { any_of({ title: query }) }
 
   def self.older_than(age:)
-    where(:age.gt => age)
+    where(age: { '$gt' => age })
   end
 
   def score_with_rescoring=(score)

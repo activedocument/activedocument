@@ -125,8 +125,8 @@ module ActiveDocument
               final_key, evolved_value = store_creds(name, serializer, value)
 
               # This builds a query shape around the value, when the query
-              # involves complex keys. For example, {:foo.lt => 5} produces
-              # {'foo' => {'$lt' => 5}}. This step should be done after all
+              # involves complex keys. For example, { foo: { '$lt' => 5 } } produces
+              # { 'foo' => { '$lt' => 5 } }. This step should be done after all
               # value-based processing is complete.
               evolved_value = key.transform_value(evolved_value) if key.is_a?(Key)
 

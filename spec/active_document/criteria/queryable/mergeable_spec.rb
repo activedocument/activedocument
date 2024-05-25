@@ -45,27 +45,19 @@ describe ActiveDocument::Criteria::Queryable::Mergeable do
     let(:expanded) do
       query.send(:_active_document_expand_keys, condition)
     end
-    let(:lt) do
-      ActiveDocument::Criteria::Queryable::Key.new('age', :__override__, '$lt')
-    end
-    let(:gtp) do
-      ActiveDocument::Criteria::Queryable::Key.new('age', :__override__, '$gt')
-    end
-    let(:gt) do
-      ActiveDocument::Criteria::Queryable::Key.new('age', :__override__, '$gt')
-    end
 
     it 'expands simple keys' do
       expect(query.send(:_active_document_expand_keys, { a: 1 })).to eq({ 'a' => 1 })
     end
 
     it 'expands Key instances' do
-      expect(query.send(:_active_document_expand_keys, { gt => 42 })).to eq({ 'age' => { '$gt' => 42 } })
+      expected = { 'age' => { '$gt' => 42 } }
+      expect(query.send(:_active_document_expand_keys, expected)).to eq({ 'age' => { '$gt' => 42 } })
     end
 
     it 'expands multiple Key instances on the same field' do
       expected = { 'age' => { '$gt' => 42, '$lt' => 50 } }
-      expect(query.send(:_active_document_expand_keys, { gt => 42, lt => 50 })).to eq(expected)
+      expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
     end
 
     context 'given implicit equality and Key instance on the same field' do
@@ -74,14 +66,14 @@ describe ActiveDocument::Criteria::Queryable::Mergeable do
           context 'implicit equality then Key instance' do
             it 'expands implicit equality with $eq and combines with Key operator' do
               expected = { 'age' => { '$eq' => value, '$lt' => 50 } }
-              expect(query.send(:_active_document_expand_keys, { 'age' => value, lt => 50 })).to eq(expected)
+              expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
             end
           end
 
           context 'symbol operator then implicit equality' do
             it 'expands implicit equality with $eq and combines with Key operator' do
               expected = { 'age' => { '$gt' => 42, '$eq' => value } }
-              expect(query.send(:_active_document_expand_keys, { gt => 42, 'age' => value })).to eq(expected)
+              expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
             end
           end
         end
@@ -94,22 +86,18 @@ describe ActiveDocument::Criteria::Queryable::Mergeable do
           context 'implicit equality then Key instance' do
             it 'expands implicit equality with $eq and combines with Key operator' do
               expected = { 'age' => { '$regex' => value, '$lt' => 50 } }
-              expect(query.send(:_active_document_expand_keys, { 'age' => value, lt => 50 })).to eq(expected)
+              expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
             end
           end
 
           context 'Key instance then implicit equality' do
             it 'expands implicit equality with $eq and combines with Key operator' do
               expected = { 'age' => { '$gt' => 50, '$regex' => value } }
-              expect(query.send(:_active_document_expand_keys, { gt => 50, 'age' => value })).to eq(expected)
+              expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
             end
           end
         end
       end
-    end
-
-    it 'Ruby does not allow same symbol operator with different values' do
-      expect({ gt => 42, gtp => 50 }).to eq({ gtp => 50 })
     end
 
     context 'field name => value' do
@@ -138,16 +126,12 @@ describe ActiveDocument::Criteria::Queryable::Mergeable do
     end
 
     context 'Key instance => value' do
-      let(:key) do
-        ActiveDocument::Criteria::Queryable::Key.new(:foo, :__override__, '$gt')
-      end
-
       let(:condition) do
-        { key => 'bar' }
+        { 'foo' => { '$gt' => 'bar' } }
       end
 
       it 'expands' do
-        expect(expanded).to eq({ 'foo' => { '$gt' => 'bar' } })
+        expect(expanded).to eq(condition)
       end
     end
 
@@ -169,7 +153,7 @@ describe ActiveDocument::Criteria::Queryable::Mergeable do
 
       context 'symbol key' do
         let(:condition) do
-          { foo: { :$in => %w[bar] } }
+          { foo: { '$in': %w[bar] } }
         end
 
         it_behaves_like 'expands'

@@ -19,7 +19,7 @@ module ActiveDocument
       #
       # More complex conditions would start involving Key objects. For example:
       #
-      #   Foo.where(:price.gt => 1)
+      #   Foo.where(price: { '$gt' => 1 })
       #
       # ... causes a Key instance to be created as follows:
       #

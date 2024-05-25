@@ -13,7 +13,7 @@ class Event
   belongs_to :owner
 
   def self.each_day(start_date, end_date)
-    groups = only(:date).asc(:date).where(:date.gte => start_date, :date.lte => end_date).group
+    groups = only(:date).asc(:date).where(date: { '$gte' => start_date, '$lte' => end_date }).group
     groups.each do |hash|
       yield(hash['date'], hash['group'])
     end

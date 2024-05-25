@@ -239,14 +239,6 @@ module ActiveDocument
         # - {:$operator => operator_value_expression}
         # - {'$operator' => operator_value_expression}
         #
-        # Ruby does not permit multiple symbol operators. For example,
-        # {:foo.gt => 1, :foo.gt => 2} is collapsed to {:foo.gt => 2} by the
-        # language. Therefore this method never has to deal with multiple
-        # identical operators.
-        #
-        # Similarly, this method should never need to expand a literal value
-        # and an operator at the same time.
-        #
         # This method effectively converts symbol keys to string keys in
         # the input +expr+, such that the downstream code can assume that
         # conditions always contain string keys.

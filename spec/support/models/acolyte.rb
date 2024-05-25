@@ -11,7 +11,7 @@ class Acolyte
 
   default_scope -> { asc(:name) }
   scope :active, -> { where(status: 'active') }
-  scope :named, -> { where(:name.exists => true) }
+  scope :named, -> { where(name: { '$exists' => true }) }
 
   def callback_test?
     name == 'callback-test'

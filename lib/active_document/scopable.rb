@@ -122,7 +122,7 @@ module ActiveDocument
       #     field :count, type: :integer
       #
       #     scope :active, -> { where(active: true) }
-      #     scope :at_least, ->(count){ where(:count.gt => count) }
+      #     scope :at_least, ->(count){ where(count: { '$gt' => count }) }
       #   end
       #
       # @param [ Symbol ] name The name of the scope.

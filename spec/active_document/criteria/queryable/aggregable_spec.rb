@@ -307,7 +307,7 @@ describe ActiveDocument::Criteria::Queryable::Aggregable do
       context 'when using symbol shortcuts' do
 
         let(:aggregation) do
-          query.group(:count.sum => 1, :max.max => 'likes')
+          query.group(count: { '$sum' => 1 }, max: { '$max' => 'likes' })
         end
 
         let!(:pipeline) do
@@ -349,7 +349,7 @@ describe ActiveDocument::Criteria::Queryable::Aggregable do
       context 'when using symbol shortcuts' do
 
         let(:aggregation) do
-          query.group(:count.sum => 1, :max.max => 'alias')
+          query.group(count: { '$sum' => 1 }, max: { '$max' => 'alias' })
         end
 
         let!(:pipeline) do

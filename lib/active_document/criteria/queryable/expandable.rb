@@ -7,7 +7,7 @@ module ActiveDocument
       # query forms to the MongoDB hash condition selector syntax.
       #
       # @example Example high level form.
-      #   Band.where(:foo.gt => 5)
+      #   Band.where(foo: { '$gt' => 5 })
       #
       # @api private
       module Expandable

@@ -3,7 +3,6 @@
 require 'active_document/criteria/queryable/expandable'
 require 'active_document/criteria/queryable/extensions'
 require 'active_document/criteria/queryable/key'
-require 'active_document/criteria/queryable/macroable'
 require 'active_document/criteria/queryable/mergeable'
 require 'active_document/criteria/queryable/smash'
 require 'active_document/criteria/queryable/aggregable'
