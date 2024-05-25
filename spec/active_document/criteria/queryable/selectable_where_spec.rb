@@ -419,7 +419,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $near' do
 
         let(:selection) do
-          query.where(:field.near => [1, 1])
+          query.where(field: { '$near' => [1, 1] })
         end
 
         it 'adds the $near criterion' do
@@ -436,7 +436,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $nearSphere' do
 
         let(:selection) do
-          query.where(:field.near_sphere => [1, 1])
+          query.where(field: { '$nearSphere' => [1, 1] })
         end
 
         it 'adds the $nearSphere criterion' do

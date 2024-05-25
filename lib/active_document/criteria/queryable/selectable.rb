@@ -189,10 +189,10 @@ module ActiveDocument
         #   query.geo_spatial(:location.intersects_polygon => [[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]])
         #
         # @example Add a geo within criterion for a polygon.
-        #   query.geo_spatial(:location.within_polygon => [[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]])
+        #   query.geo_spatial(location: { '$geoWithin' => { '$polygon' => [[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]] } })
         #
         # @example Add a geo within criterion for a box.
-        #   query.geo_spatial(:location.within_box => [[ 1, 10 ], [ 2, 10 ])
+        #   query.geo_spatial(location: { '$geoWithin' => { '$box' => [[ 1, 10 ], [ 2, 10 ] } })
         #
         # @param [ Hash ] criterion The criterion.
         #
@@ -375,7 +375,7 @@ module ActiveDocument
         #   selectable.near(location: [ 23.1, 12.1 ])
         #
         # @example Execute an $near in a where query.
-        #   selectable.where(:field.near => [ 23.2, 12.1 ])
+        #   selectable.where(field: { '$near' => [ 23.2, 12.1 ] })
         #
         # @param [ Hash ] criterion The field/location pair.
         #
@@ -392,7 +392,7 @@ module ActiveDocument
         #   selectable.near_sphere(location: [ 23.1, 12.1 ])
         #
         # @example Execute an $nearSphere in a where query.
-        #   selectable.where(:field.near_sphere => [ 10.11, 3.22 ])
+        #   selectable.where(field: { '$nearSphere' => [ 10.11, 3.22 ] })
         #
         # @param [ Hash ] criterion The field/location pair.
         #

@@ -771,7 +771,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the geometry is within a polygon' do
 
         let(:selection) do
-          query.geo_spatial(:location.within_polygon => [[[1, 10], [2, 10], [1, 10]]])
+          query.geo_spatial(location: { '$geoWithin' => { '$polygon' => [[[1, 10], [2, 10], [1, 10]]] } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -789,7 +789,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when used with the $box operator ($geoWithin query)' do
           let(:selection) do
-            query.geo_spatial(:location.within_box => [[1, 10], [2, 10]])
+            query.geo_spatial(location: { '$geoWithin' => { '$box' => [[1, 10], [2, 10]] } })
           end
 
           it 'adds the $geoIntersects expression' do
