@@ -533,7 +533,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
             context 'regexp argument' do
               let(:selection) do
-                query.send(tested_method,  field: [/t/, { '$lt' => 5 }])
+                query.send(tested_method, field: [/t/, { '$lt' => 5 }])
               end
 
               it_behaves_like 'combines conditions with $regex'

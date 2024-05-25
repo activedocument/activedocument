@@ -285,86 +285,41 @@ describe ActiveDocument::Criteria::Queryable::Aggregable do
 
     context 'when the expression fields are not aliased' do
 
-      context 'when using full notation' do
-
-        let(:aggregation) do
-          query.group(count: { '$sum' => 1 }, max: { '$max' => 'likes' })
-        end
-
-        let!(:pipeline) do
-          aggregation.pipeline
-        end
-
-        it 'adds the group operation to the pipeline' do
-          expect(pipeline).to eq([
-            { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'likes' } } }
-          ])
-        end
-
-        it_behaves_like 'an aggregable object'
+      let(:aggregation) do
+        query.group(count: { '$sum' => 1 }, max: { '$max' => 'likes' })
       end
 
-      context 'when using symbol shortcuts' do
-
-        let(:aggregation) do
-          query.group(count: { '$sum' => 1 }, max: { '$max' => 'likes' })
-        end
-
-        let!(:pipeline) do
-          aggregation.pipeline
-        end
-
-        it 'adds the group operation to the pipeline' do
-          expect(pipeline).to eq([
-            { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'likes' } } }
-          ])
-        end
-
-        it_behaves_like 'an aggregable object'
+      let!(:pipeline) do
+        aggregation.pipeline
       end
+
+      it 'adds the group operation to the pipeline' do
+        expect(pipeline).to eq([
+          { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'likes' } } }
+        ])
+      end
+
+      it_behaves_like 'an aggregable object'
     end
 
     context 'when the expression fields are aliased' do
 
-      context 'when using full notation' do
-
-        let(:aggregation) do
-          query.group(count: { '$sum' => 1 }, max: { '$max' => 'alias' })
-        end
-
-        let!(:pipeline) do
-          aggregation.pipeline
-        end
-
-        it 'adds the group operation to the pipeline' do
-          skip
-          expect(pipeline).to eq([
-            { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'a' } } }
-          ])
-        end
-
-        it_behaves_like 'an aggregable object'
+      let(:aggregation) do
+        query.group(count: { '$sum' => 1 }, max: { '$max' => 'alias' })
       end
 
-      context 'when using symbol shortcuts' do
-
-        let(:aggregation) do
-          query.group(count: { '$sum' => 1 }, max: { '$max' => 'alias' })
-        end
-
-        let!(:pipeline) do
-          aggregation.pipeline
-        end
-
-        it 'adds the group operation to the pipeline' do
-          skip
-          expect(pipeline).to eq([
-            { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'a' } } }
-          ])
-        end
-
-        it_behaves_like 'an aggregable object'
+      let!(:pipeline) do
+        aggregation.pipeline
       end
+
+      it 'adds the group operation to the pipeline' do
+        skip
+        expect(pipeline).to eq([
+          { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'a' } } }
+        ])
+      end
+
+      it_behaves_like 'an aggregable object'
     end
   end
 end
