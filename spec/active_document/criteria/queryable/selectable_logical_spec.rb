@@ -1082,8 +1082,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           it 'adds all criteria' do
             expect(selection.selector).to eq({
               expected_operator => [
-                { 'first' => { '$gt' => 3 } },
-                { 'first' => { '$lt' => 5 } }
+                { 'first' => { '$gt' => 3, '$lt' => 5 } }
               ]
             })
           end
@@ -1980,9 +1979,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           query.not.where(first: { '$not' => /1/ })
         end
 
-        it 'does not double the $not selector' do
+        it 'collapses the double $not selector' do
           expect(selection.selector).to eq({
-            'first' => { '$not' => /1/ }
+            'first' => { '$regexp' => /1/ }
           })
         end
 

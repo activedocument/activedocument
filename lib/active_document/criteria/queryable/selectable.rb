@@ -167,10 +167,10 @@ module ActiveDocument
         #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Point', coordinates: [1, 10] } } })
         #
         # @example Add a geo intersect criterion for a polygon.
-        #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 10]] } } })
+        #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 5]] } } })
         #
         # @example Add a geo within criterion for a polygon.
-        #   query.geo_spatial(location: { '$geoWithin' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 10]] } } })
+        #   query.geo_spatial(location: { '$geoWithin' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 5]] } } })
         #
         # @param [ Hash ] criterion The criterion.
         #
@@ -605,7 +605,7 @@ module ActiveDocument
         #   #size method on enumerables or symbols.
         #
         # @example Execute an $size in a where query.
-        #   selectable.where(field: { '$withSize' => 10 })
+        #   selectable.where(field: { '$size' => 10 })
         #
         # @param [ Hash ] criterion The field/size pairs criterion.
         #
@@ -624,7 +624,7 @@ module ActiveDocument
         #   selectable.with_type(field: 15)
         #
         # @example Execute an $type in a where query.
-        #   selectable.where(field: { '$withType' => 15 })
+        #   selectable.where(field: { '$type' => 15 })
         #
         # @note https://www.mongodb.com/docs/manual/reference/bson-types/
         #   contains a list of all types.

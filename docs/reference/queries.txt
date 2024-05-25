@@ -1373,8 +1373,8 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.first
-          Band.where(members: { '$withSize' => 3 }).first
-          Band.where(members: { '$withSize' => 3 }).last
+          Band.where(members: { '$size' => 3 }).first
+          Band.where(members: { '$size' => 3 }).last
           Band.first(2)
 
    * - ``Criteria#first!|last!``
@@ -1388,8 +1388,8 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.first!
-          Band.where(members: { '$withSize' => 3 }).first!
-          Band.where(members: { '$withSize' => 3 }).last!
+          Band.where(members: { '$size' => 3 }).first!
+          Band.where(members: { '$size' => 3 }).last!
 
    * - ``Criteria#first_or_create``
 

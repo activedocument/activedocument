@@ -749,7 +749,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the geometry is a polygon intersection' do
 
         let(:selection) do
-          query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 10]] } } })
+          query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 5]] } } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -758,7 +758,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
               '$geoIntersects' => {
                 '$geometry' => {
                   'type' => 'Polygon',
-                  'coordinates' => [[[1, 10], [2, 10], [1, 10]]]
+                  'coordinates' => [[1, 10], [2, 10], [1, 5]]
                 }
               }
             }
@@ -769,9 +769,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       context 'when the geometry is within a polygon' do
-
         let(:selection) do
-          query.geo_spatial(location: { '$geoWithin' => { '$polygon' => [[[1, 10], [2, 10], [1, 10]]] } })
+          query.geo_spatial(location: { '$geoWithin' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 5]] } } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -780,7 +779,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
               '$geoWithin' => {
                 '$geometry' => {
                   'type' => 'Polygon',
-                  'coordinates' => [[[1, 10], [2, 10], [1, 10]]]
+                  'coordinates' => [[1, 10], [2, 10], [1, 5]]
                 }
               }
             }

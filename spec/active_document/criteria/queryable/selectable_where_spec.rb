@@ -247,7 +247,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when the value is complex' do
 
           let(:selection) do
-            query.where(field: { '$elematch' => { key: { '$gt' => 1 } } })
+            query.where(field: { '$elemMatch' => { key: { '$gt' => 1 } } })
           end
 
           it 'adds the $elemMatch criterion' do
@@ -485,7 +485,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing an integer' do
 
           let(:selection) do
-            query.where(field: { '$withSize' => 10 })
+            query.where(field: { '$size' => 10 })
           end
 
           it 'adds the $size criterion' do
@@ -502,7 +502,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing a string' do
 
           let(:selection) do
-            query.where(field: { '$withSize' => '10' })
+            query.where(field: { '$size' => '10' })
           end
 
           it 'adds the $size criterion' do
@@ -520,7 +520,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $type' do
 
         let(:selection) do
-          query.where(field: { '$withType' => 10 })
+          query.where(field: { '$type' => 10 })
         end
 
         it 'adds the $type criterion' do
