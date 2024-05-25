@@ -3,5 +3,5 @@
 class ArrayField
   include ActiveDocument::Document
 
-  field :af, type: Array
+  field :af, type: :array
 end

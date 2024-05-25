@@ -62,7 +62,7 @@ describe ActiveDocument::Association::Embedded::Cyclic do
           include ActiveDocument::Document
           recursively_embeds_many
 
-          field :name, type: String
+          field :name, type: :string
         end
       end
 

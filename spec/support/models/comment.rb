@@ -3,8 +3,8 @@
 class Comment
   include ActiveDocument::Document
 
-  field :title, type: String
-  field :text, type: String
+  field :title, type: :string
+  field :text, type: :string
 
   belongs_to :account
   belongs_to :movie

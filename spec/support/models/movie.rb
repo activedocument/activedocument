@@ -3,7 +3,7 @@
 class Movie
   include ActiveDocument::Document
   include ActiveDocument::Attributes::Dynamic
-  field :title, type: String
+  field :title, type: :string
   field :poster, type: Image
   field :poster_thumb, type: Thumbnail
   has_many :ratings, as: :ratable, dependent: :nullify

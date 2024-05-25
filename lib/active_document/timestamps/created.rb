@@ -12,7 +12,7 @@ module ActiveDocument
       included do
         include ActiveDocument::Timestamps::Timeless
 
-        field :created_at, type: Time
+        field :created_at, type: :time
         set_callback :create, :before, :set_created_at
       end
 

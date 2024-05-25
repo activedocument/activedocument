@@ -84,7 +84,7 @@ module ActiveDocument
       # @example Create a basic index.
       #   class Person
       #     include ActiveDocument::Document
-      #     field :name, type: String
+      #     field :name, type: :string
       #     index({ name: 1 }, { unique: true })
       #   end
       #

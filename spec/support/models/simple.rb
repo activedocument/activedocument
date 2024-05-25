@@ -2,6 +2,6 @@
 
 class Simple
   include ActiveDocument::Document
-  field :name, type: String
+  field :name, type: :string
   scope :nothing, -> { none }
 end

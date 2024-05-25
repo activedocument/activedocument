@@ -4,7 +4,7 @@ class Cover
   include ActiveDocument::Document
   include ActiveDocument::Timestamps
 
-  field :title, type: String
+  field :title, type: :string
 
   embedded_in :book
 end

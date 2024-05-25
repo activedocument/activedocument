@@ -111,10 +111,6 @@ module ActiveDocument
             unless OPTIONS.include?(option) || Fields.options.include?(option)
               raise Errors::InvalidFieldOption.new(klass, name, option, OPTIONS)
             end
-
-            if option == :type && options[option] == Symbol
-              ActiveDocument::Warnings.warn_symbol_type_deprecated
-            end
           end
         end
       end

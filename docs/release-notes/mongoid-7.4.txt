@@ -449,7 +449,7 @@ Given the following definitions:
   class Band
     include ActiveDocument::Document
 
-    field :sales, type: BigDecimal
+    field :sales, type: :big_decimal
   end
 
   Band.create!(sales: "1E2")
@@ -549,7 +549,7 @@ following definitions:
     include ActiveDocument::Document
 
     embedded_in :band
-    field :sales, type: BigDecimal
+    field :sales, type: :big_decimal
   end
 
 ActiveDocument 7.4 behavior with ``ActiveDocument.legacy_pluck_distinct`` set to ``false``:

@@ -40,7 +40,7 @@ class TransactionsSpecPerson
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :name, type: String
+  field :name, type: :string
 
   after_commit do
     after_commit_counter.inc
@@ -55,7 +55,7 @@ class TransactionsSpecPersonWithOnCreate
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :name, type: String
+  field :name, type: :string
 
   after_commit on: :create do
     after_commit_counter.inc
@@ -70,7 +70,7 @@ class TransactionsSpecPersonWithOnUpdate
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :name, type: String
+  field :name, type: :string
 
   after_commit on: :update do
     after_commit_counter.inc
@@ -85,7 +85,7 @@ class TransactionsSpecPersonWithOnDestroy
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :name, type: String
+  field :name, type: :string
 
   after_commit on: :destroy do
     after_commit_counter.inc
@@ -100,7 +100,7 @@ class TransactionSpecRaisesBeforeSave
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :attr, type: String
+  field :attr, type: :string
 
   before_save do
     raise 'I cannot be saved'
@@ -119,7 +119,7 @@ class TransactionSpecRaisesAfterSave
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :attr, type: String
+  field :attr, type: :string
 
   after_save do
     raise 'I cannot be saved'
@@ -145,7 +145,7 @@ class TransactionSpecRaisesBeforeCreate
     @@after_rollback_counter ||= TransactionsSpecCounter.new
   end
 
-  field :attr, type: String
+  field :attr, type: :string
 
   before_create do
     raise 'I cannot be saved'

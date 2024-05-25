@@ -6,14 +6,14 @@ class Name
 
   validate :is_not_jamis
 
-  field :_id, type: String, overwrite: true, default: lambda {
+  field :_id, type: :string, overwrite: true, default: lambda {
     "#{first_name}-#{last_name}"
   }
 
-  field :first_name, type: String
-  field :last_name, type: String
-  field :parent_title, type: String
-  field :middle, type: String
+  field :first_name, type: :string
+  field :last_name, type: :string
+  field :parent_title, type: :string
+  field :middle, type: :string
 
   embeds_many :translations, validate: false
   embeds_one :language, as: :translatable, validate: false

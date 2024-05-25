@@ -3,7 +3,7 @@
 class Purse
   include ActiveDocument::Document
 
-  field :brand, type: String
+  field :brand, type: :string
 
   embedded_in :person
 end

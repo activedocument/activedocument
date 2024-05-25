@@ -148,7 +148,7 @@ module ActiveDocument
       #
       # @return [ Class ] The name of the class.
       def type
-        @type ||= options[:type] || Object
+        @type ||= FieldTypes.get(options[:type]) || Object
       end
 
       private

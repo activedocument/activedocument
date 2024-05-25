@@ -5,8 +5,8 @@ class School
 
   has_many :students
 
-  field :district, type: String
-  field :team, type: String
+  field :district, type: :string
+  field :team, type: :string
 
   field :after_destroy_triggered, default: false
 

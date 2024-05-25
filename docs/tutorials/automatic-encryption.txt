@@ -208,21 +208,21 @@ Now we can tell ActiveDocument what should be encrypted:
     encrypt_with key_id: 'KImyywsTQWi1+cFYIHdtlA=='
 
     # This field is not encrypted.
-    field :category, type: String
+    field :category, type: :string
 
     # This field is encrypted using AEAD_AES_256_CBC_HMAC_SHA_512-Random
     # algorithm.
-    field :passport_id, type: String, encrypt: {
+    field :passport_id, type: :string, encrypt: {
         deterministic: false
     }
     # This field is encrypted using AEAD_AES_256_CBC_HMAC_SHA_512-Deterministic
     # algorithm.
-    field :blood_type, type: String, encrypt: {
+    field :blood_type, type: :string, encrypt: {
         deterministic: true
     }
     # This field is encrypted using AEAD_AES_256_CBC_HMAC_SHA_512-Random
     # algorithm and using  a different data key.
-    field :ssn, type: Integer, encrypt: {
+    field :ssn, type: :integer, encrypt: {
         deterministic: false, key_id: 'Vxr5m+5cQISjDOruzZgE0w=='
     }
 
@@ -233,12 +233,12 @@ Now we can tell ActiveDocument what should be encrypted:
     include ActiveDocument::Document
     include ActiveDocument::Timestamps
 
-    field :insurer, type: String
+    field :insurer, type: :string
 
     # This field is encrypted using AEAD_AES_256_CBC_HMAC_SHA_512-Random
     # algorithm using the key which alternate name is stored in the
     # policy_number_key field.
-    field :policy_number, type: Integer, encrypt: {
+    field :policy_number, type: :integer, encrypt: {
         deterministic: false,
         key_name_field: :policy_number_key
     }

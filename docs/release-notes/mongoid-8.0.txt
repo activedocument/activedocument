@@ -336,7 +336,7 @@ in ``after_*`` callbacks. This follows ActiveRecord/ActiveModel behavior.
   class Cat
     include ActiveDocument::Document
 
-    field :age, type: Integer
+    field :age, type: :integer
 
     after_save do
       p self
@@ -379,8 +379,8 @@ as well as ActiveRecord-compatible ``previously_new_record?`` and
   class User
     include ActiveDocument::Document
 
-    field :name, type: String
-    field :age, type: Integer
+    field :name, type: :string
+    field :age, type: :integer
   end
 
   user = User.create!(name: 'Sam', age: 18)
@@ -499,7 +499,7 @@ ActiveDocument 8.0 behavior:
 
     embedded_in :mall
 
-    field :street, type: String
+    field :street, type: :string
   end
 
   class Mall
@@ -624,7 +624,7 @@ When given a block, without ``_id`` arguments, ``find`` delegates to
 
   class Band
     include ActiveDocument::Document
-    field :name, type: String
+    field :name, type: :string
   end
 
   Band.create!(name: "Depeche Mode")
@@ -747,7 +747,7 @@ Repaired Storing Strings in BSON::Binary fields
 
   class Registry
     include ActiveDocument::Document
-    field :data, type: BSON::Binary
+    field :data, type: :binary
   end
 
   registry = Registry.create!(data: "data!")

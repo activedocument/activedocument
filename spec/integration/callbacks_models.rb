@@ -4,8 +4,8 @@ class Galaxy
   include ActiveDocument::Document
   include ActiveDocument::Timestamps
 
-  field :age, type: Integer
-  field :was_touched, type: ActiveDocument::Boolean, default: false
+  field :age, type: :integer
+  field :was_touched, type: :boolean, default: false
   before_validation :set_age
 
   embeds_many :stars
@@ -27,8 +27,8 @@ class Star
 
   embedded_in :galaxy, touch: true
 
-  field :age, type: Integer
-  field :was_touched_after_parent, type: ActiveDocument::Boolean, default: false
+  field :age, type: :integer
+  field :was_touched_after_parent, type: :boolean, default: false
 
   before_validation :set_age
 
@@ -51,8 +51,8 @@ class Planet
 
   embedded_in :star, touch: true
 
-  field :age, type: Integer
-  field :was_touched_after_parent, type: ActiveDocument::Boolean, default: false
+  field :age, type: :integer
+  field :was_touched_after_parent, type: :boolean, default: false
 
   before_validation :set_age
 
@@ -121,7 +121,7 @@ class FirstSpouse
   embedded_in :president
 
   field :name
-  field :age, type: Integer
+  field :age, type: :integer
 
   before_validation :set_age
 
@@ -138,8 +138,8 @@ class Architect
   has_and_belongs_to_many :buildings, after_add: :after_add_callback,
                                       after_remove: :after_remove_callback, dependent: :nullify
 
-  field :after_add_num_buildings, type: Integer
-  field :after_remove_num_buildings, type: Integer
+  field :after_add_num_buildings, type: :integer
+  field :after_remove_num_buildings, type: :integer
 
   def after_add_callback(_obj)
     self.after_add_num_buildings = buildings.length

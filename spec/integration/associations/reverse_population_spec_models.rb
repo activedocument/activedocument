@@ -23,14 +23,14 @@ module ReversePopulationSpec
   class Animal
     include ActiveDocument::Document
 
-    field :a, type: String
+    field :a, type: :string
     has_and_belongs_to_many :zoos, class_name: 'ReversePopulationSpec::Zoo'
   end
 
   class Zoo
     include ActiveDocument::Document
 
-    field :z, type: String
+    field :z, type: :string
     has_and_belongs_to_many :animals, class_name: 'ReversePopulationSpec::Animal'
   end
 end

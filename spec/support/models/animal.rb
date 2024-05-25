@@ -3,12 +3,12 @@
 class Animal
   include ActiveDocument::Document
 
-  field :_id, type: String, overwrite: true, default: -> { name.try(:parameterize) }
+  field :_id, type: :string, overwrite: true, default: -> { name.try(:parameterize) }
 
   field :name
-  field :height, type: Integer
-  field :weight, type: Integer
-  field :tags, type: Array
+  field :height, type: :integer
+  field :weight, type: :integer
+  field :tags, type: :array
 
   embedded_in :person
 

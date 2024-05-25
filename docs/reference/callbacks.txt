@@ -58,9 +58,9 @@ for cross-cutting concerns, like queueing up background jobs.
 
    class Article
      include ActiveDocument::Document
-     field :name, type: String
-     field :body, type: String
-     field :slug, type: String
+     field :name, type: :string
+     field :body, type: :string
+     field :slug, type: :string
 
      before_create :send_message
 
@@ -81,7 +81,7 @@ syntax as well:
 
    class Article
      include ActiveDocument::Document
-     field :name, type: String
+     field :name, type: :string
 
      set_callback(:create, :before) do |document|
        # Message sending code here.

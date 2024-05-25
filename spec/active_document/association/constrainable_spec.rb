@@ -11,7 +11,7 @@ describe ActiveDocument::Association::Constrainable do
       before(:all) do
         Person.field(
           :_id,
-          type: BSON::ObjectId,
+          type: :bson_object_id,
           pre_processed: true,
           default: -> { BSON::ObjectId.new },
           overwrite: true

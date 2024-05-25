@@ -2,8 +2,8 @@
 
 class Oscar
   include ActiveDocument::Document
-  field :title, type: String
-  field :destroy_after_save, type: ActiveDocument::Boolean, default: false
+  field :title, type: :string
+  field :destroy_after_save, type: :boolean, default: false
   before_save :complain
 
   def complain

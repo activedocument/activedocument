@@ -2,6 +2,6 @@
 
 class Deed
   include ActiveDocument::Document
-  field :title, type: String
+  field :title, type: :string
   embedded_in :owner
 end

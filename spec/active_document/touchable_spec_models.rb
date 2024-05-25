@@ -6,7 +6,7 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :title, type: String
+      field :title, type: :string
 
       embeds_many :entrances, class_name: 'TouchableSpec::Embedded::Entrance'
       embeds_many :floors, class_name: 'TouchableSpec::Embedded::Floor'
@@ -16,8 +16,8 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :last_used_at, type: Time
-      field :level, type: Integer
+      field :last_used_at, type: :time
+      field :level, type: :integer
 
       embedded_in :building, touch: false, class_name: 'TouchableSpec::Embedded::Building'
 
@@ -29,8 +29,8 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :level, type: Integer
-      field :last_used_at, type: Time
+      field :level, type: :integer
+      field :last_used_at, type: :time
 
       embedded_in :building, touch: true, class_name: 'TouchableSpec::Embedded::Building'
 
@@ -80,7 +80,7 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :level, type: Integer
+      field :level, type: :integer
 
       belongs_to :building, touch: false, class_name: 'TouchableSpec::Referenced::Building'
 
@@ -95,7 +95,7 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :level, type: Integer
+      field :level, type: :integer
 
       belongs_to :building, touch: true, class_name: 'TouchableSpec::Referenced::Building'
 

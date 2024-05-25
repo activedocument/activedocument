@@ -186,7 +186,7 @@ module ActiveDocument
           return unless polymorphic?
 
           @owner_class.polymorphic = true
-          @owner_class.field(inverse_type, type: String)
+          @owner_class.field(inverse_type, type: :string)
         end
 
         def polymorphic_inverses(other = nil)

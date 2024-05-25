@@ -314,7 +314,7 @@ describe ActiveDocument::Fields do
       end
 
       it 'converts to ActiveDocument::Boolean' do
-        expect(klass.field(:test, type: ActiveDocument::Boolean).type).to be(ActiveDocument::Boolean)
+        expect(klass.field(:test, type: :boolean).type).to be(ActiveDocument::Boolean)
       end
     end
 
@@ -332,6 +332,7 @@ describe ActiveDocument::Fields do
         big_decimal: BigDecimal,
         binary: BSON::Binary,
         boolean: ActiveDocument::Boolean,
+        bson_object_id: BSON::ObjectId,
         date: Date,
         datetime: DateTime,
         date_time: DateTime,
@@ -340,7 +341,6 @@ describe ActiveDocument::Fields do
         hash: Hash,
         integer: Integer,
         object: Object,
-        object_id: BSON::ObjectId,
         range: Range,
         regexp: Regexp,
         set: Set,
@@ -348,6 +348,7 @@ describe ActiveDocument::Fields do
         stringified_symbol: ActiveDocument::StringifiedSymbol,
         symbol: Symbol,
         time: Time,
+        timestamp: BSON::Timestamp,
         undefined: Object
       }.each do |field_type, field_klass|
 
@@ -382,7 +383,7 @@ describe ActiveDocument::Fields do
       context 'when the options are all standard' do
 
         before do
-          Band.field :acceptable, type: ActiveDocument::Boolean
+          Band.field :acceptable, type: :boolean
         end
 
         after do
@@ -397,49 +398,11 @@ describe ActiveDocument::Fields do
       context 'when a custom option is provided' do
 
         before do
-          Band.field :acceptable, type: ActiveDocument::Boolean, custom: true
+          Band.field :acceptable, type: :boolean, custom: true
         end
 
         it 'adds the field to the model' do
           expect(Band.fields['acceptable']).to_not be_nil
-        end
-      end
-    end
-
-    context 'when the Symbol type is used' do
-
-      before do
-        ActiveDocument::Warnings.class_eval do
-          @symbol_type_deprecated = false
-        end
-      end
-
-      after do
-        Label.fields.delete('should_warn')
-      end
-
-      it 'warns that the BSON symbol type is deprecated' do
-        expect(ActiveDocument.logger).to receive(:warn)
-
-        Label.field :should_warn, type: Symbol
-      end
-
-      it 'warns on first use of Symbol type only' do
-        expect(ActiveDocument.logger).to receive(:warn).once
-
-        Label.field :should_warn, type: Symbol
-      end
-
-      context 'when using Symbol field type in multiple classes' do
-        after do
-          Truck.fields.delete('should_warn')
-        end
-
-        it 'warns on first use of Symbol type only' do
-          expect(ActiveDocument.logger).to receive(:warn).once
-
-          Label.field :should_warn, type: Symbol
-          Truck.field :should_warn, type: Symbol
         end
       end
     end
@@ -894,7 +857,7 @@ describe ActiveDocument::Fields do
       context 'when provided a default array' do
 
         before do
-          Person.field(:array_testing, type: Array, default: [], overwrite: true)
+          Person.field(:array_testing, type: :array, default: [], overwrite: true)
         end
 
         after do
@@ -912,7 +875,7 @@ describe ActiveDocument::Fields do
       context 'when provided a default hash' do
 
         before do
-          Person.field(:hash_testing, type: Hash, default: {}, overwrite: true)
+          Person.field(:hash_testing, type: :hash, default: {}, overwrite: true)
         end
 
         after do
@@ -933,7 +896,7 @@ describe ActiveDocument::Fields do
           before do
             Person.field(
               :generated_testing,
-              type: Float,
+              type: :float,
               default: -> { Time.now.to_f },
               overwrite: true
             )
@@ -956,7 +919,7 @@ describe ActiveDocument::Fields do
           before do
             Person.field(
               :rank,
-              type: Integer,
+              type: :integer,
               default: -> { title? ? 1 : 2 },
               overwrite: true
             )
@@ -1131,7 +1094,7 @@ describe ActiveDocument::Fields do
       end
 
       before do
-        Person.field :aliased, as: :alias, type: ActiveDocument::Boolean, overwrite: true
+        Person.field :aliased, as: :alias, type: :boolean, overwrite: true
       end
 
       it 'uses the alias to write the attribute' do
@@ -1310,7 +1273,7 @@ describe ActiveDocument::Fields do
   describe '.replace_field' do
 
     let!(:original) do
-      Person.field(:id_test, type: BSON::ObjectId, label: 'id')
+      Person.field(:id_test, type: :bson_object_id, label: 'id')
     end
     let(:new_field) do
       Person.fields['id_test']

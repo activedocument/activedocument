@@ -2,6 +2,6 @@
 
 class Sound
   include ActiveDocument::Document
-  field :active, type: ActiveDocument::Boolean
+  field :active, type: :boolean
   default_scope -> { where(active: true) }
 end

@@ -29,7 +29,6 @@ module ActiveDocument
     end
 
     warning :geo_haystack_deprecated, 'The geoHaystack type is deprecated.'
-    warning :symbol_type_deprecated, 'The BSON Symbol type is deprecated by MongoDB. Please use String or StringifiedSymbol field types instead of the Symbol field type.'
     warning :legacy_readonly, 'The readonly! method will only mark the document readonly when the legacy_readonly feature flag is switched off.'
     warning :mutable_ids, 'Ignoring updates to immutable attribute `_id`. Please set ActiveDocument::Config.immutable_ids to true and update your code so that `_id` is never updated.'
   end

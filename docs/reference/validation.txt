@@ -39,8 +39,8 @@ value of the respective field from the model. Consider the following example:
   class Band
     include ActiveDocument::Document
 
-    field :name, type: String
-    field :year, type: Integer
+    field :name, type: :string
+    field :year, type: :integer
 
     validates_uniqueness_of :name, conditions: -> { where(:year.gte => 2000) }
   end

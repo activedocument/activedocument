@@ -4,16 +4,16 @@ class Label
   include ActiveDocument::Document
   include ActiveDocument::Timestamps::Updated::Short
 
-  field :name, type: String
-  field :sales, type: BigDecimal
-  field :age, type: Integer
+  field :name, type: :string
+  field :sales, type: :big_decimal
+  field :age, type: :integer
 
-  field :after_create_called, type: ActiveDocument::Boolean, default: false
-  field :after_save_called, type: ActiveDocument::Boolean, default: false
-  field :after_update_called, type: ActiveDocument::Boolean, default: false
-  field :after_validation_called, type: ActiveDocument::Boolean, default: false
+  field :after_create_called, type: :boolean, default: false
+  field :after_save_called, type: :boolean, default: false
+  field :after_update_called, type: :boolean, default: false
+  field :after_validation_called, type: :boolean, default: false
 
-  field :before_save_count, type: Integer, default: 0
+  field :before_save_count, type: :integer, default: 0
 
   embedded_in :artist
   embedded_in :band

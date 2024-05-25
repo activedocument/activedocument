@@ -295,7 +295,7 @@ describe 'callbacks integration tests' do
 
     class CBIntSpecProfile
       include ActiveDocument::Document
-      field :name, type: String
+      field :name, type: :string
       shard_key :name
 
       attr_reader :atomic_selector_in_after_save
@@ -378,8 +378,8 @@ describe 'callbacks integration tests' do
       class PreviouslyWasPerson
         include ActiveDocument::Document
 
-        field :title, type: String
-        field :age, type: Integer
+        field :title, type: :string
+        field :age, type: :integer
 
         attr_reader :after_save_vals
 
@@ -405,8 +405,8 @@ describe 'callbacks integration tests' do
       class PreviouslyNewRecordPerson
         include ActiveDocument::Document
 
-        field :title, type: String
-        field :age, type: Integer
+        field :title, type: :string
+        field :age, type: :integer
 
         attr_reader :previously_new_record_value
 
@@ -428,8 +428,8 @@ describe 'callbacks integration tests' do
       class PreviouslyPersistedPerson
         include ActiveDocument::Document
 
-        field :title, type: String
-        field :age, type: Integer
+        field :title, type: :string
+        field :age, type: :integer
 
         attr_reader :previously_persisted_value
 
@@ -452,8 +452,8 @@ describe 'callbacks integration tests' do
     class TestSCTAAndABLSInCallbacks
       include ActiveDocument::Document
 
-      field :name, type: String
-      field :age, type: Integer
+      field :name, type: :string
+      field :age, type: :integer
 
       set_callback :save, :before do
         %i[name age].each do |attr|

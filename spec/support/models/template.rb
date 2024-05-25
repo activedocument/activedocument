@@ -2,6 +2,6 @@
 
 class Template
   include ActiveDocument::Document
-  field :active, type: ActiveDocument::Boolean, default: false
+  field :active, type: :boolean, default: false
   validates :active, presence: true
 end

@@ -19,6 +19,7 @@ module ActiveDocument
         big_decimal: BigDecimal,
         binary: BSON::Binary,
         boolean: ActiveDocument::Boolean,
+        bson_object_id: BSON::ObjectId,
         date: Date,
         datetime: DateTime,
         date_time: DateTime,
@@ -27,7 +28,6 @@ module ActiveDocument
         hash: Hash,
         integer: Integer,
         object: Object,
-        object_id: BSON::ObjectId,
         range: Range,
         regexp: Regexp,
         set: Set,
@@ -35,6 +35,7 @@ module ActiveDocument
         stringified_symbol: ActiveDocument::StringifiedSymbol,
         symbol: Symbol,
         time: Time,
+        timestamp: BSON::Timestamp,
         undefined: Object
       }.with_indifferent_access.freeze
 

@@ -117,7 +117,7 @@ module ActiveDocument
         :_id,
         default: -> { BSON::ObjectId.new },
         pre_processed: true,
-        type: BSON::ObjectId
+        type: :bson_object_id
       )
 
       alias_attribute(:id, :_id)
@@ -463,7 +463,7 @@ module ActiveDocument
       # added as an instance method to the Document.
       #
       # @example Define a field.
-      #   field :score, type: Integer, default: 0
+      #   field :score, type: :integer, default: 0
       #
       # @param [ Symbol ] name The name of the field.
       # @param [ Hash ] options The options to pass to the field.

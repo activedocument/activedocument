@@ -619,11 +619,11 @@ describe ActiveDocument::Criteria::Findable do
     context 'when using string ids' do
 
       before(:all) do
-        Band.field :_id, overwrite: true, type: String
+        Band.field :_id, overwrite: true, type: :string
       end
 
       after(:all) do
-        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
+        Band.field :_id, overwrite: true, type: :bson_object_id, default: -> { BSON::ObjectId.new }
       end
 
       let!(:band) do
@@ -785,11 +785,11 @@ describe ActiveDocument::Criteria::Findable do
     context 'when using hash ids' do
 
       before(:all) do
-        Band.field :_id, overwrite: true, type: Hash
+        Band.field :_id, overwrite: true, type: :hash
       end
 
       after(:all) do
-        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
+        Band.field :_id, overwrite: true, type: :bson_object_id, default: -> { BSON::ObjectId.new }
       end
 
       let!(:band) do
@@ -951,11 +951,11 @@ describe ActiveDocument::Criteria::Findable do
     context 'when using integer ids' do
 
       before(:all) do
-        Band.field :_id, overwrite: true, type: Integer
+        Band.field :_id, overwrite: true, type: :integer
       end
 
       after(:all) do
-        Band.field :_id, overwrite: true, type: BSON::ObjectId, default: -> { BSON::ObjectId.new }
+        Band.field :_id, overwrite: true, type: :bson_object_id, default: -> { BSON::ObjectId.new }
       end
 
       let!(:band) do

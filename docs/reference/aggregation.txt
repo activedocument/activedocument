@@ -37,19 +37,19 @@ referenced associations at the same time:
     include ActiveDocument::Document
     has_many :tours
     has_many :awards
-    field :name, type: String
+    field :name, type: :string
   end
 
   class Tour
     include ActiveDocument::Document
     belongs_to :band
-    field :year, type: Integer
+    field :year, type: :integer
   end
 
   class Award
     include ActiveDocument::Document
     belongs_to :band
-    field :name, type: String
+    field :name, type: :string
   end
 
 To retrieve bands that toured since 2000 and have at least one award, one
@@ -114,8 +114,8 @@ For example, given the following models:
 
     embeds_many :participants
 
-    field :name, type: String
-    field :states, type: Array
+    field :name, type: :string
+    field :states, type: :array
   end
 
   class Participant
@@ -123,7 +123,7 @@ For example, given the following models:
 
     embedded_in :tour
 
-    field :name, type: String
+    field :name, type: :string
   end
 
 We can find out which states a participant visited:

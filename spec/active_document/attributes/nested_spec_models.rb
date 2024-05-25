@@ -3,7 +3,7 @@
 class NestedAuthor
   include ActiveDocument::Document
 
-  field :name, type: String
+  field :name, type: :string
   has_one :post, class_name: 'NestedPost'
   accepts_nested_attributes_for :post
 end
@@ -11,14 +11,14 @@ end
 class NestedComment
   include ActiveDocument::Document
 
-  field :body, type: String
+  field :body, type: :string
   belongs_to :post, class_name: 'NestedPost'
 end
 
 class NestedPost
   include ActiveDocument::Document
 
-  field :title, type: String
+  field :title, type: :string
   belongs_to :author, class_name: 'NestedAuthor'
   has_many :comments, class_name: 'NestedComment'
   accepts_nested_attributes_for :comments
@@ -36,13 +36,13 @@ end
 class NestedCover
   include ActiveDocument::Document
 
-  field :title, type: String
+  field :title, type: :string
   embedded_in :book, class_name: 'NestedBook'
 end
 
 class NestedPage
   include ActiveDocument::Document
 
-  field :number, type: Integer
+  field :number, type: :integer
   embedded_in :book, class_name: 'NestedBook'
 end

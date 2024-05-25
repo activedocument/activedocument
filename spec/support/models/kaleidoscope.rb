@@ -2,7 +2,7 @@
 
 class Kaleidoscope
   include ActiveDocument::Document
-  field :active, type: ActiveDocument::Boolean, default: true
+  field :active, type: :boolean, default: true
 
   scope :activated, -> { where(active: true) }
 end

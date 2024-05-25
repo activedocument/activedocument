@@ -35,7 +35,7 @@ callbacks:
   class Person
     include ActiveDocument::Document
 
-    field :name, type: String
+    field :name, type: :string
 
     before_save do
       puts "attribute_was(:name): #{attribute_was(:name)}"
@@ -212,7 +212,7 @@ to or from a certain value:
 
   class Person
     include ActiveDocument::Document
-    field :name, type: String
+    field :name, type: :string
   end
 
   person = Person.create!(name: "Trout")
@@ -283,8 +283,8 @@ set to ``true``, documents become read-only when they are projected (i.e. using
 
   class Band
     include ActiveDocument::Document
-    field :name, type: String
-    field :genre, type: String
+    field :name, type: :string
+    field :genre, type: :string
   end
 
   band = Band.only(:name).first
@@ -365,7 +365,7 @@ example:
 
   class Band
     include ActiveDocument::Document
-    field :name, type: String
+    field :name, type: :string
     embeds_many :albums
   end
 
@@ -394,10 +394,10 @@ criteria in a ``$nor`` operation. For example:
 
   class Building
     include ActiveDocument::Document
-    field :city, type: String
-    field :height, type: Integer
-    field :purpose, type: String
-    field :occupancy, type: Integer
+    field :city, type: :string
+    field :height, type: :integer
+    field :purpose, type: :string
+    field :occupancy, type: :integer
   end
 
   Building.where(city: 'Portland').

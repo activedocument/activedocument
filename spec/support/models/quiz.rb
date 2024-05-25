@@ -3,7 +3,7 @@
 class Quiz
   include ActiveDocument::Document
   include ActiveDocument::Timestamps::Created
-  field :name, type: String
-  field :topic, type: String
+  field :name, type: :string
+  field :topic, type: :string
   embeds_many :pages
 end

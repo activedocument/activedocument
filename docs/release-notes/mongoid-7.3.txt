@@ -74,7 +74,7 @@ continues to work in 7.3 as it did in 7.2:
   class User
     include ActiveDocument::Document
 
-    field :verified, type: Boolean
+    field :verified, type: :boolean
   end
 
 However, code that is not executed in the context of a class including
@@ -88,13 +88,13 @@ unqualified:
     include ActiveDocument::Document
   end
   
-  User.field :verified, type: Boolean
+  User.field :verified, type: :boolean
 
 To fix it, use the fully-qualified ``ActiveDocument::Boolean`` class:
 
 .. code-block:: ruby
   
-  User.field :verified, type: ActiveDocument::Boolean
+  User.field :verified, type: :boolean
 
 Note that ``class_eval`` is executed in the scope of the caller, not in
 the scope of the class being modified. Thus even when using ``class_eval``
@@ -103,7 +103,7 @@ it is necessary to fully qualify ``ActiveDocument::Boolean``:
 .. code-block:: ruby
   
   User.class_eval do
-    field :verified, type: ActiveDocument::Boolean
+    field :verified, type: :boolean
   end
 
 Additionally, in ActiveDocument 7.2 ``::Boolean`` and ``ActiveDocument::Boolean`` were

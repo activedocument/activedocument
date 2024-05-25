@@ -7,7 +7,7 @@ describe ActiveDocument::Fields::Localized do
   context 'when no default is provided' do
 
     let(:field) do
-      described_class.new(:description, localize: true, type: String)
+      described_class.new(:description, localize: true, type: :string)
     end
 
     it 'defaults to nil' do
@@ -24,7 +24,7 @@ describe ActiveDocument::Fields::Localized do
           :description,
           localize: true,
           default: 'No translation',
-          type: String
+          type: :string
         )
       end
 
@@ -40,7 +40,7 @@ describe ActiveDocument::Fields::Localized do
           :description,
           localize: true,
           default: 1,
-          type: Integer
+          type: :integer
         )
       end
 
@@ -55,7 +55,7 @@ describe ActiveDocument::Fields::Localized do
     context 'when the type is a string' do
 
       let(:field) do
-        described_class.new(:description, localize: true, type: String)
+        described_class.new(:description, localize: true, type: :string)
       end
 
       context 'when the field is nil' do
@@ -240,7 +240,7 @@ describe ActiveDocument::Fields::Localized do
     context 'when the type is not a string' do
 
       let(:field) do
-        described_class.new(:description, localize: true, type: Integer)
+        described_class.new(:description, localize: true, type: :integer)
       end
 
       context 'when the field is nil' do
@@ -345,7 +345,7 @@ describe ActiveDocument::Fields::Localized do
               context 'when fallbacks are disabled' do
 
                 let(:field) do
-                  described_class.new(:description, localize: true, type: Integer, fallbacks: false)
+                  described_class.new(:description, localize: true, type: :integer, fallbacks: false)
                 end
 
                 let(:value) do
@@ -384,7 +384,7 @@ describe ActiveDocument::Fields::Localized do
     context 'when the type is a string' do
 
       let(:field) do
-        described_class.new(:description, localize: true, type: String)
+        described_class.new(:description, localize: true, type: :string)
       end
 
       context 'when no locale is defined' do
@@ -418,7 +418,7 @@ describe ActiveDocument::Fields::Localized do
     context 'when the type is not a string' do
 
       let(:field) do
-        described_class.new(:description, localize: true, type: Integer)
+        described_class.new(:description, localize: true, type: :integer)
       end
 
       context 'when no locale is defined' do
@@ -458,7 +458,7 @@ describe ActiveDocument::Fields::Localized do
         context 'when the value is false' do
 
           let(:field) do
-            described_class.new(:boolean_value, localize: true, type: ActiveDocument::Boolean)
+            described_class.new(:boolean_value, localize: true, type: :boolean)
           end
 
           let(:value) do
@@ -473,7 +473,7 @@ describe ActiveDocument::Fields::Localized do
         context 'when the value is true' do
 
           let(:field) do
-            described_class.new(:boolean_value, localize: true, type: ActiveDocument::Boolean)
+            described_class.new(:boolean_value, localize: true, type: :boolean)
           end
 
           let(:value) do
@@ -498,7 +498,7 @@ describe ActiveDocument::Fields::Localized do
               end
 
               let(:field) do
-                described_class.new(:boolean_value, localize: true, type: ActiveDocument::Boolean)
+                described_class.new(:boolean_value, localize: true, type: :boolean)
               end
 
               let(:value) do
@@ -518,7 +518,7 @@ describe ActiveDocument::Fields::Localized do
               end
 
               let(:field) do
-                described_class.new(:boolean_value, localize: true, type: ActiveDocument::Boolean)
+                described_class.new(:boolean_value, localize: true, type: :boolean)
               end
 
               let(:value) do
@@ -538,7 +538,7 @@ describe ActiveDocument::Fields::Localized do
   describe 'localize: :present' do
 
     let(:field) do
-      described_class.new(:description, localize: :present, type: String)
+      described_class.new(:description, localize: :present, type: :string)
     end
 
     context 'when setting the localize to present' do
@@ -555,7 +555,7 @@ describe ActiveDocument::Fields::Localized do
     context 'when localize is not localize_present' do
 
       let(:field) do
-        described_class.new(:description, localize: true, type: String)
+        described_class.new(:description, localize: true, type: :string)
       end
 
       it 'is localized?' do

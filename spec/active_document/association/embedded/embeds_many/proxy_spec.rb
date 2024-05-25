@@ -498,9 +498,9 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
 
           class TrackingIdValidationHistory
             include ActiveDocument::Document
-            field :old_state, type: String
-            field :new_state, type: String
-            field :when_changed, type: DateTime
+            field :old_state, type: :string
+            field :new_state, type: :string
+            field :when_changed, type: :date_time
             embedded_in :tracking_id, class_name: 'MyCompany::Model::TrackingId'
           end
         end
