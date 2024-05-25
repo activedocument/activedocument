@@ -13,18 +13,6 @@ module ActiveDocument
         base.extend(ClassMethods)
       end
 
-      # Convert the big decimal to an $inc-able value.
-      #
-      # @example Convert the big decimal.
-      #   bd.__to_inc__
-      #
-      # @return [ Float ] The big decimal as a float.
-      # @deprecated
-      def __to_inc__
-        to_f
-      end
-      ActiveDocument.deprecate(self, :__to_inc__)
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #

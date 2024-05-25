@@ -361,18 +361,6 @@ module ActiveDocument
       use_utc? ? 'UTC' : ::Time.zone
     end
 
-    # Is the application running under passenger?
-    #
-    # @example Is the application using passenger?
-    #   config.running_with_passenger?
-    #
-    # @return [ true | false ] If the app is deployed on Passenger.
-    #
-    # @deprecated
-    def running_with_passenger?
-      @running_with_passenger ||= defined?(PhusionPassenger)
-    end
-
     # Defines a field type mapping, for later use in field :type option.
     #
     # @example
@@ -409,8 +397,6 @@ module ActiveDocument
     def field_option(option_name, &block)
       ActiveDocument::Fields.option(option_name, &block)
     end
-
-    ActiveDocument.deprecate(self, :running_with_passenger?)
 
     private
 

@@ -8,18 +8,6 @@ module ActiveDocument
         # Adds query type-casting behavior to Regexp class.
         module Regexp
 
-          # Is the object a regexp?
-          #
-          # @example Is the object a regex?
-          #   /\A[123]/.regexp?
-          #
-          # @return [ true ] Always true.
-          # @deprecated
-          def regexp?
-            true
-          end
-          ActiveDocument.deprecate(self, :regexp?)
-
           module ClassMethods
 
             # Evolve the object into a regex.
@@ -39,18 +27,6 @@ module ActiveDocument
 
           # Adds query type-casting behavior to BSON::Regexp::Raw class.
           module RawExt
-
-            # Is the object a regexp?
-            #
-            # @example Is the object a regex?
-            #   bson_raw_regexp.regexp?
-            #
-            # @return [ true ] Always true.
-            # @deprecated
-            def regexp?
-              true
-            end
-            ActiveDocument.deprecate(self, :regexp?)
 
             module ClassMethods
 

@@ -2669,17 +2669,6 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#to_criteria' do
-
-    let(:criteria) do
-      Band.all
-    end
-
-    it 'returns self' do
-      expect(criteria.to_criteria).to eq(criteria)
-    end
-  end
-
   describe '#to_proc' do
 
     let(:criteria) do
@@ -3434,8 +3423,8 @@ describe ActiveDocument::Criteria do
     end
 
     context 'when the method exists on the criteria' do
-      it 'returns false' do
-        expect(criteria.respond_to?(:to_criteria)).to be true
+      it 'returns true' do
+        expect(criteria.respond_to?(:embedded?)).to be true
       end
     end
 

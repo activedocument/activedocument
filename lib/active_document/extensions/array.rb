@@ -16,18 +16,6 @@ module ActiveDocument
         self
       end
 
-      # Get the array of args as arguments for a find query.
-      #
-      # @example Get the array as find args.
-      #   [ 1, 2, 3 ].__find_args__
-      #
-      # @return [ Array ] The array of args.
-      # @deprecated
-      def __find_args__
-        flat_map(&:__find_args__).uniq(&:to_s)
-      end
-      ActiveDocument.deprecate(self, :__find_args__)
-
       # Mongoize the array into an array of object ids.
       #
       # @example Evolve the array to object ids.
@@ -53,18 +41,6 @@ module ActiveDocument
       def __mongoize_time__
         ::Time.zone.local(*self)
       end
-
-      # Is the array a set of multiple arguments in a method?
-      #
-      # @example Is this multi args?
-      #   [ 1, 2, 3 ].multi_arged?
-      #
-      # @return [ true | false ] If the array is multi args.
-      # @deprecated
-      def multi_arged?
-        (!first.is_a?(Hash) && first.resizable?) || size > 1
-      end
-      ActiveDocument.deprecate(self, :multi_arged?)
 
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
@@ -103,25 +79,6 @@ module ActiveDocument
       end
 
       module ClassMethods
-
-        # Convert the provided object to a proper array of foreign keys.
-        #
-        # @example Mongoize the object.
-        #   Array.__mongoize_fk__(constraint, object)
-        #
-        # @param [ ActiveDocument::Association::Relatable ] association The association metadata.
-        # @param [ Object ] object The object to convert.
-        #
-        # @return [ Array ] The array of ids.
-        # @deprecated
-        def __mongoize_fk__(association, object)
-          if object.resizable?
-            object.blank? ? object : association.convert_to_foreign_key(object)
-          else
-            object.blank? ? [] : association.convert_to_foreign_key(Array(object))
-          end
-        end
-        ActiveDocument.deprecate(self, :__mongoize_fk__)
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
         # type.

@@ -6,18 +6,6 @@ module ActiveDocument
     # Adds type-casting behavior to Symbol class.
     module Symbol
 
-      # Is the symbol a valid value for a ActiveDocument id?
-      #
-      # @example Is the string an id value?
-      #   :_id.active_document_id?
-      #
-      # @return [ true | false ] If the symbol is :id or :_id.
-      # @deprecated
-      def active_document_id?
-        to_s.active_document_id?
-      end
-      ActiveDocument.deprecate(self, :active_document_id?)
-
       module ClassMethods
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
