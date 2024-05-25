@@ -36,7 +36,6 @@ module ActiveDocument
           -1,
           '2d',
           '2dsphere',
-          'geoHaystack',
           'text',
           'hashed'
         ].freeze
@@ -99,8 +98,6 @@ module ActiveDocument
             unless VALID_TYPES.include?(value)
               raise Errors::InvalidIndex.new(klass, spec, options)
             end
-
-            ActiveDocument::Warnings.warn_geo_haystack_deprecated if value == 'geoHaystack'
           end
         end
       end

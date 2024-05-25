@@ -123,18 +123,6 @@ module ActiveDocument
             self
           end
 
-          # Is the object a regex.
-          #
-          # @example Is the object a regex?
-          #   obj.regexp?
-          #
-          # @return [ false ] Always false.
-          # @deprecated
-          def regexp?
-            false
-          end
-          ActiveDocument.deprecate(self, :regexp?)
-
           module ClassMethods
 
             # Evolve the object.

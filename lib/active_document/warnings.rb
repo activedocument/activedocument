@@ -28,7 +28,6 @@ module ActiveDocument
       end
     end
 
-    warning :geo_haystack_deprecated, 'The geoHaystack type is deprecated.'
     warning :legacy_readonly, 'The readonly! method will only mark the document readonly when the legacy_readonly feature flag is switched off.'
     warning :mutable_ids, 'Ignoring updates to immutable attribute `_id`. Please set ActiveDocument::Config.immutable_ids to true and update your code so that `_id` is never updated.'
   end

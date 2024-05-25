@@ -8,9 +8,9 @@ describe ActiveDocument::Warnings do
 
     context 'when calling a warn_* method' do
 
-      let(:id) { :geo_haystack_deprecated }
+      let(:id) { :mutable_ids }
       let(:message) do
-        'The geoHaystack type is deprecated.'
+        /\AIgnoring updates to immutable attribute/
       end
 
       before do

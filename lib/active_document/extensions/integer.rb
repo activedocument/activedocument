@@ -26,18 +26,6 @@ module ActiveDocument
         true
       end
 
-      # Is the object not to be converted to bson on criteria creation?
-      #
-      # @example Is the object unconvertable?
-      #   object.unconvertable_to_bson?
-      #
-      # @return [ true ] If the object is unconvertable.
-      # @deprecated
-      def unconvertable_to_bson?
-        true
-      end
-      ActiveDocument.deprecate(self, :unconvertable_to_bson?)
-
       module ClassMethods
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
