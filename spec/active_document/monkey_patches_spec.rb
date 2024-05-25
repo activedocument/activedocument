@@ -40,7 +40,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
       __array__
       __deep_copy__
       __evolve_object_id__
-      __expand_complex__
       __intersect__
       __intersect_from_array__
       __intersect_from_object__
@@ -108,7 +107,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
     String => %i[
       __evolve_date__
       __evolve_time__
-      __expr_part__
       __mongo_expression__
       __mongoize_time__
       __sort_option__
@@ -117,9 +115,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
       reader
       valid_method_name?
       writer?
-    ],
-    Symbol => %i[
-      __expr_part__
     ],
     TrueClass => %i[is_a?],
     Time => %i[
@@ -145,8 +140,7 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
       re_define_method
     ],
     Float => %i[__numeric__],
-    Integer => %i[__numeric__],
-    String => %i[__expr_part__]
+    Integer => %i[__numeric__]
   }.each_value(&:sort!)
 
   def active_document_method?(method)

@@ -113,16 +113,6 @@ module ActiveDocument
             [self]
           end
 
-          # Get the object as expanded.
-          #
-          # @example Get the object expanded.
-          #   obj.__expand_complex__
-          #
-          # @return [ Object ] self.
-          def __expand_complex__
-            self
-          end
-
           module ClassMethods
 
             # Evolve the object.

@@ -52,16 +52,6 @@ module ActiveDocument
             map(&:__evolve_date__)
           end
 
-          # Get the object as expanded.
-          #
-          # @example Get the object expanded.
-          #   obj.__expand_complex__
-          #
-          # @return [ Array ] The expanded array.
-          def __expand_complex__
-            map(&:__expand_complex__)
-          end
-
           # Evolve the array to an array of times.
           #
           # @example Evolve the array to times.

@@ -58,7 +58,7 @@ module ActiveDocument
         def and(*criteria)
           _active_document_flatten_arrays(criteria).inject(clone) do |c, new_s|
             new_s = new_s.selector if new_s.is_a?(Selectable)
-            normalized = _active_document_expand_keys(new_s)
+            normalized = QueryNormalizer.normalize_expr(self, new_s)
             normalized.each do |k, v|
               k = k.to_s
               if c.selector[k]
@@ -180,7 +180,7 @@ module ActiveDocument
 
           # Merge the criterion into the selection
           selection(criterion) do |selector, field, value|
-            selector.merge!(field.__expr_part__(value))
+            selector.merge!(QueryNormalizer.expr_part(field, value))
           end
         end
 
@@ -459,7 +459,7 @@ module ActiveDocument
           else
             criteria.compact.inject(clone) do |c, new_s|
               new_s = new_s.selector if new_s.is_a?(Selectable)
-              _active_document_expand_keys(new_s).each do |k, v|
+              QueryNormalizer.normalize_expr(self, new_s).each do |k, v|
                 k = k.to_s
                 if c.selector[k] || k.start_with?('$') || v.is_a?(Hash)
                   c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
@@ -498,7 +498,8 @@ module ActiveDocument
           return dup if criteria.empty?
 
           exprs = criteria.map do |criterion|
-            _active_document_expand_keys(
+            QueryNormalizer.normalize_expr(
+              self,
               criterion.is_a?(Selectable) ? criterion.selector : criterion
             )
           end
@@ -581,7 +582,7 @@ module ActiveDocument
             # and add the result to self.
             exprs = criteria.map do |criterion|
               if criterion.is_a?(Selectable)
-                _active_document_expand_keys(criterion.selector)
+                QueryNormalizer.normalize_expr(self, criterion.selector)
               else
                 criterion.to_h do |k, v|
                   if k.is_a?(Symbol)
@@ -744,7 +745,7 @@ module ActiveDocument
             raise Errors::InvalidQuery.new("Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}")
           end
 
-          normalized = _active_document_expand_keys(criterion)
+          normalized = QueryNormalizer.normalize_expr(self, criterion)
           clone.tap do |query|
             normalized.each do |field, value|
               field_s = field.to_s

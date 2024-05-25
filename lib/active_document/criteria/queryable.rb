@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_document/criteria/queryable/query_normalizer'
 require 'active_document/criteria/queryable/expandable'
 require 'active_document/criteria/queryable/extensions'
 require 'active_document/criteria/queryable/mergeable'

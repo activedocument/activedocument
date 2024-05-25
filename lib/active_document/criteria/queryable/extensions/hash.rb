@@ -120,20 +120,6 @@ module ActiveDocument
             end
           end
 
-          # Get the object as expanded.
-          #
-          # @example Get the object expanded.
-          #   obj.__expand_complex__
-          #
-          # @return [ Hash ] The expanded hash.
-          def __expand_complex__
-            replacement = {}
-            each_pair do |key, value|
-              replacement.merge!(key.__expr_part__(value.__expand_complex__))
-            end
-            replacement
-          end
-
           private
 
           # Apply the provided strategy for the hash with the given object.

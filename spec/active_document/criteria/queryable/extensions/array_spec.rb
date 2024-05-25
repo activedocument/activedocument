@@ -308,17 +308,6 @@ describe Array do
     end
   end
 
-  describe '#__expand_complex__' do
-
-    let(:array) do
-      [{ test: { '$in' => ['value'] } }]
-    end
-
-    it 'expands all keys inside the array' do
-      expect(array.__expand_complex__).to eq([{ 'test' => { '$in' => ['value'] } }])
-    end
-  end
-
   describe '#__intersect__' do
 
     context 'when the other object is a non-enumerable' do
