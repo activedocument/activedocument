@@ -32,6 +32,10 @@ module ActiveDocument
         # @param [ Object ] value The field value.
         #
         # @return [ Storable ] self.
+        #
+        # TODO: $all, $nin should union their operators
+        # TODO: $in should intersect their operators
+        # TODO: $in: [] should be a dead query
         def add_field_expression(field, value)
           unless field.is_a?(String)
             raise ArgumentError.new("Field must be a string: #{field}")
@@ -54,6 +58,7 @@ module ActiveDocument
               new_value = selector[field].merge(value)
               selector.store(field, new_value)
             elsif selector[field] != value
+              # TODO: Yuck! This should be a top-level and
               add_operator_expression('$and', [{ field => value }])
             end
           else
@@ -205,29 +210,6 @@ module ActiveDocument
 
           self
         end
-
-        # Adds an arbitrary expression to the query.
-        #
-        # Field can either be a field name or an operator.
-        #
-        # Mutates the receiver.
-        #
-        # @param [ String ] field Field name or operator name.
-        # @param [ Object ] value Field value or operator expression.
-        #
-        # @return [ Storable ] self.
-        def add_one_expression(field, value)
-          unless field.is_a?(String)
-            raise ArgumentError.new("Field must be a string: #{field}")
-          end
-
-          if field.start_with?('$')
-            add_operator_expression(field, value)
-          else
-            add_field_expression(field, value)
-          end
-        end
-
       end
     end
   end

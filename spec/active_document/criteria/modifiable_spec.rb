@@ -711,7 +711,7 @@ describe ActiveDocument::Criteria::Modifiable do
         context 'when the criteria has a selector with query operators' do
 
           let(:document) do
-            Band.in(genres: %w[Hiphop Soul]).first_or_create(name: 'Smooth')
+            Band.any_in(genres: %w[Hiphop Soul]).first_or_create(name: 'Smooth')
           end
 
           it 'does not create a document with the query operators' do
@@ -727,7 +727,7 @@ describe ActiveDocument::Criteria::Modifiable do
           end
 
           let(:document) do
-            band.records.in(producers: ['nonexistent']).first_or_create(name: 'new-embedded-doc')
+            band.records.any_in(producers: ['nonexistent']).first_or_create(name: 'new-embedded-doc')
             band.reload
           end
 
@@ -857,7 +857,7 @@ describe ActiveDocument::Criteria::Modifiable do
         context 'when the document is not found' do
 
           let(:document) do
-            Band.in(name: ['New Order']).first_or_create(active: false)
+            Band.any_in(name: ['New Order']).first_or_create(active: false)
           end
 
           it 'returns a new document' do
@@ -981,7 +981,7 @@ describe ActiveDocument::Criteria::Modifiable do
         context 'when the document is not found' do
 
           let(:document) do
-            Band.in(name: ['New Order']).first_or_create!(active: false)
+            Band.any_in(name: ['New Order']).first_or_create!(active: false)
           end
 
           it 'returns a new document' do
@@ -1174,7 +1174,7 @@ describe ActiveDocument::Criteria::Modifiable do
         context 'when the document is not found' do
 
           let(:document) do
-            Band.in(name: ['New Order']).first_or_initialize(active: false)
+            Band.any_in(name: ['New Order']).first_or_initialize(active: false)
           end
 
           it 'returns a new document' do

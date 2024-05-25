@@ -34,7 +34,7 @@ module ActiveDocument
         #
         # @return [ Pipeline ] The pipeline.
         def group(entry)
-          push('$group' => evolve(QueryNormalizer.expand_complex(entry)))
+          push('$group' => evolve(entry))
         end
 
         # Initialize the new pipeline.

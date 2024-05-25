@@ -287,9 +287,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe '#and' do
-
-    let(:tested_method) { :and }
+  describe '#all_of' do
+    let(:tested_method) { :all_of }
     let(:expected_operator) { '$and' }
 
     it_behaves_like 'a hoisting logical operation'
@@ -1973,7 +1972,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are a double negative' do
 
         let(:selection) do
-          query.not.where(first: { '$not' => /1/ })
+          query.not.where(first: { '$not' => { '$regexp' => /1/ } })
         end
 
         it 'collapses the double $not selector' do

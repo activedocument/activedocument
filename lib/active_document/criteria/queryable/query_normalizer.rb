@@ -33,7 +33,7 @@ module ActiveDocument
 
           result = BSON::Document.new
           expr.each do |field, value|
-            QueryNormalizer.expr_part(field, QueryNormalizer.expand_complex(value), negating: negating).each do |k, v|
+            QueryNormalizer.expr_part(field, value, negating: negating).each do |k, v|
               if (existing = result[k])
                 if existing.is_a?(Hash)
                   # Existing value is an operator.
@@ -113,32 +113,9 @@ module ActiveDocument
         # @api private
         def expr_part(key, value, negating: false)
           if negating
-            { key => { regexp?(value) ? '$not' : '$ne' => value } }
+            { key => { value.is_a?(Hash) || regexp?(value) ? '$not' : '$ne' => value } }
           else
             { key => value }
-          end
-        end
-
-        # Get the object as expanded.
-        #
-        # @example Get the object expanded.
-        #   QueryNormalizer.expand_complex(object)
-        #
-        # @return [ Object ] The expanded object.
-        #
-        # @api private
-        def expand_complex(object)
-          case object
-          when Array
-            object.map { |value| expand_complex(value) }
-          when Hash
-            replacement = {}
-            object.each_pair do |key, value|
-              replacement.merge!(expr_part(key, expand_complex(value)))
-            end
-            replacement
-          else
-            object
           end
         end
 

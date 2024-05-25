@@ -77,7 +77,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
         context 'when negating' do
           let(:negating) { true }
 
-          it { is_expected.to eq({ 'age' => { '$not' => { '$eq' => value, '$lt' => 50 } } }) }
+          it { is_expected.to eq({ 'age' => { '$not' => { '$regex' => value, '$lt' => 50 } } }) }
         end
       end
     end
@@ -230,64 +230,6 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
             is_expected.to eq({ field: { '$ne' => 'test' } })
           end
         end
-      end
-    end
-  end
-
-  describe '.expand_complex' do
-    subject { described_class.expand_complex(object) }
-
-    context 'when Array' do
-      let(:object) do
-        [{ test: { '$in' => ['value'] } }]
-      end
-
-      it 'expands all keys inside the array' do
-        is_expected.to eq([{ 'test' => { '$in' => ['value'] } }])
-      end
-    end
-
-    context 'when Hash' do
-      let(:object) do
-        {
-          test1: {
-            '$elemMatch' => {
-              test2: {
-                '$elemMatch' => {
-                  test3: { '$in' => ['value1'] }
-                }
-              }
-            }
-          }
-        }
-      end
-
-      let(:expected) do
-        {
-          'test1' => {
-            '$elemMatch' => {
-              'test2' => {
-                '$elemMatch' => {
-                  'test3' => { '$in' => ['value1'] }
-                }
-              }
-            }
-          }
-        }
-      end
-
-      it 'expands the nested values' do
-        is_expected.to eq(expected)
-      end
-    end
-
-    context 'when other Object' do
-      let(:object) do
-        'Foobar'
-      end
-
-      it 'expands all keys inside the array' do
-        is_expected.to eq('Foobar')
       end
     end
   end

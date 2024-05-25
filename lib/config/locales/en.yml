@@ -55,11 +55,9 @@ en:
             your version of the server."
         criteria_argument_required:
           message: "Calling Criteria methods with nil arguments is not allowed."
-          summary: "Arguments to Criteria methods cannot be nil, and most
-            Criteria methods require at least one argument. Only logical
-            operations (and, or, nor and not), `all' and `where' can be called
-            without arguments.
-            The method that was called with nil argument was: %{query_method}."
+          summary: "Arguments to most Criteria methods cannot be nil, and most
+            Criteria methods require at least one argument. The method that
+            was called with nil argument was: %{query_method}."
           resolution: "Invoke Criteria methods with non-nil arguments or omit
             the respective invocations."
         calling_document_find_with_nil_is_invalid:
