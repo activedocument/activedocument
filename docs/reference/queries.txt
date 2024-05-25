@@ -23,7 +23,7 @@ A more complex query utilizing various ActiveDocument features could be as follo
 .. code-block:: ruby
 
   Band.
-    where(:founded.gte => "1980-01-01").
+    where(founded: { '$gte' => '1980-01-01' }).
     in(name: [ "Tool", "Deftones" ]).
     union.
     in(name: [ "Melvins" ])
@@ -59,14 +59,14 @@ Criteria instance with the new conditions added to the existing conditions:
 
 .. code-block:: ruby
 
-  scope = Band.where(:founded.gte => "1980-01-01")
+  scope = Band.where(founded: { '$gte' => '1980-01-01' })
   # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01"}}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
-  scope.where(:founded.lte => "2020-01-01")
+  scope.where(founded: { '$lte' => '2020-01-01' })
   # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01", "$lte"=>"2020-01-01"}}
   #   options:  {}
@@ -507,7 +507,7 @@ an ``{'$and' => [{'$nor' => ...}]}`` construct:
   # => {"name"=>/Best/, "$and"=>[{"$nor"=>[{"name"=>"Astral Projection"}]}]}
 
   # Symbol operator syntax
-  Band.not(:name.ne => 'Astral Projection')
+  Band.not(name: { '$ne' => 'Astral Projection' })
   # => #<ActiveDocument::Criteria
   #   selector: {"$and"=>[{"$nor"=>[{"name"=>{"$ne"=>"Astral Projection"}}]}]}
   #   options:  {}
@@ -1870,7 +1870,7 @@ by a provided name. Just like normal criteria, they are lazy and chainable.
     field :genres, type: :array
 
     scope :english, ->{ where(country: "England") }
-    scope :rock, ->{ where(:genres.in => [ "rock" ]) }
+    scope :rock, ->{ where(genres: { '$in' => ['rock'] }) }
   end
 
   Band.english.rock # Get the English rock bands.

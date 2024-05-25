@@ -165,7 +165,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     context 'when provided a nested criterion' do
 
       let(:selection) do
-        query.send(tested_method, :test.elem_match => { :field.in => [1, 2] })
+        query.send(tested_method, :test.elem_match => { field: { '$in' => [1, 2] } })
       end
 
       it 'builds the correct selector' do
@@ -1798,7 +1798,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the following criteria is a where' do
 
         let(:selection) do
-          query.not.where(field: 1, :other.in => [1, 2])
+          query.not.where(field: 1, other: { '$in' => [1, 2] })
         end
 
         it 'negates the selection with an operator' do
@@ -1977,7 +1977,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are a double negative' do
 
         let(:selection) do
-          query.not.where(:first.not => /1/)
+          query.not.where(first: { '$not' => /1/ })
         end
 
         it 'does not double the $not selector' do

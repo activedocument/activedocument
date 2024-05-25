@@ -2595,7 +2595,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when chaining criteria' do
-      let(:posts) { person.posts.posting.where(:title.in => ['First']) }
+      let(:posts) { person.posts.posting.where(title: { '$in' => ['First'] }) }
 
       it 'applies the criteria to the documents' do
         expect(posts).to eq([post_one])

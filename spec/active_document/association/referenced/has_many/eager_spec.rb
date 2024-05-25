@@ -211,7 +211,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Eager do
       context 'when the child has a default scope' do
 
         let(:criteria) do
-          Exhibitor.where(:status.ne => 'removed')
+          Exhibitor.where(status: { '$ne' => 'removed' })
         end
 
         let(:exhibitor_present) do

@@ -102,10 +102,10 @@ symbol key:
 
 .. code-block:: ruby
 
-  job.tasks.where(:name.not => /house/).first
+  job.tasks.where(name: { '$not' => /house/ }).first
   # ActiveDocument 7.2 and 7.1:
   # => nil
-  job.tasks.where(:name.not => /office/).first
+  job.tasks.where(name: { '$not' => /office/ }).first
   # ActiveDocument 7.2 and 7.1:
   # => #<Task _id: 5ef8dc3e2c97a645ec86bb33, name: "Clean house", pattern: /test/, hours: 12>
 

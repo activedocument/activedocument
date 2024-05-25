@@ -384,7 +384,7 @@ describe ActiveDocument::Scopable do
         before do
           Record.scope(
             :tool,
-            -> { Record.where(:name.in => %w[undertow aenima lateralus]) }
+            -> { Record.where(name: { '$in' => %w[undertow aenima lateralus] }) }
           )
         end
 

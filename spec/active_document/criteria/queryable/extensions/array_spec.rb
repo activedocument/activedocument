@@ -311,7 +311,7 @@ describe Array do
   describe '#__expand_complex__' do
 
     let(:array) do
-      [{ :test.in => ['value'] }]
+      [{ test: { '$in' => ['value'] }] }
     end
 
     it 'expands all keys inside the array' do

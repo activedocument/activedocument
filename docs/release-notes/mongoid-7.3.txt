@@ -200,7 +200,7 @@ ActiveDocument 7.3 behavior:
   #   class:    Band
   #   embedded: false>
 
-  Band.where(name: /A/, :name.ne => 'Astral')
+  Band.where(name: /A/, name: { '$ne' => 'Astral Projection' })
   # => 
   # #<ActiveDocument::Criteria
   #   selector: {"name"=>{"$regex"=>/A/, "$ne"=>"Astral"}}
@@ -220,7 +220,7 @@ ActiveDocument 7.2 behavior:
   #   class:    Band
   #   embedded: false>
 
-  Band.where(name: /A/, :name.ne => 'Astral')
+  Band.where(name: /A/, name: { '$ne' => 'Astral Projection' })
   # => 
   # #<ActiveDocument::Criteria
   #   selector: {"name"=>/A/, "$and"=>[{"name"=>{"$ne"=>"Astral"}}]}

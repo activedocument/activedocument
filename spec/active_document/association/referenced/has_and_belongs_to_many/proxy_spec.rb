@@ -2807,7 +2807,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     context 'when chaining criteria' do
 
       let(:preferences) do
-        person.preferences.posting.where(:name.in => ['First'])
+        person.preferences.posting.where(name: { '$in' => ['First'] })
       end
 
       it 'applies the criteria to the documents' do
