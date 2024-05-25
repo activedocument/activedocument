@@ -705,7 +705,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the geometry is a point intersection' do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_point => [1, 10])
+          query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Point', coordinates: [1, 10] } } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -727,7 +727,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the geometry is a line intersection' do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_line => [[1, 10], [2, 10]])
+          query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'LineString', coordinates: [[1, 10], [2, 10]] } } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -749,7 +749,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the geometry is a polygon intersection' do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_polygon => [[[1, 10], [2, 10], [1, 10]]])
+          query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 10]] } } })
         end
 
         it 'adds the $geoIntersects expression' do

@@ -9,15 +9,6 @@ module ActiveDocument
       # to the selectable that has to do with building MongoDB selectors.
       module Selectable
 
-        # Constant for a LineString $geometry.
-        LINE_STRING = 'LineString'
-
-        # Constant for a Point $geometry.
-        POINT = 'Point'
-
-        # Constant for a Polygon $geometry.
-        POLYGON = 'Polygon'
-
         # @attribute [rw] negating If the next expression is negated.
         # @attribute [rw] selector The query selector.
         attr_accessor :negating, :selector
@@ -166,33 +157,20 @@ module ActiveDocument
         # Add a $geoIntersects or $geoWithin selection. Symbol operators must
         # be used as shown in the examples to expand the criteria.
         #
-        # @note The only valid geometry shapes for a $geoIntersects are:
-        #   :intersects_line, :intersects_point, and :intersects_polygon.
-        #
-        # @note The only valid options for a $geoWithin query are the geometry
-        #   shape :within_polygon and the operator :within_box.
-        #
-        # @note The :within_box operator for the $geoWithin query expects the
-        #   lower left (south west) coordinate pair as the first argument and
-        #   the upper right (north east) as the second argument.
-        #   Important: When latitude and longitude are passed, longitude is
-        #   expected as the first element of the coordinate pair.
-        #   Source: https://www.mongodb.com/docs/manual/reference/operator/query/box/
+        # @note Refer to Geospatial Query Operators
+        #   https://www.mongodb.com/docs/manual/reference/operator/query-geospatial/
         #
         # @example Add a geo intersect criterion for a line.
-        #   query.geo_spatial(:location.intersects_line => [[ 1, 10 ], [ 2, 10 ]])
+        #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'LineString', coordinates: [[1, 10], [2, 10]] } } })
         #
         # @example Add a geo intersect criterion for a point.
-        #   query.geo_spatial(:location.intersects_point => [[ 1, 10 ]])
+        #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Point', coordinates: [1, 10] } } })
         #
         # @example Add a geo intersect criterion for a polygon.
-        #   query.geo_spatial(:location.intersects_polygon => [[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]])
+        #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 10]] } } })
         #
         # @example Add a geo within criterion for a polygon.
-        #   query.geo_spatial(location: { '$geoWithin' => { '$polygon' => [[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]] } })
-        #
-        # @example Add a geo within criterion for a box.
-        #   query.geo_spatial(location: { '$geoWithin' => { '$box' => [[ 1, 10 ], [ 2, 10 ] } })
+        #   query.geo_spatial(location: { '$geoWithin' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 10]] } } })
         #
         # @param [ Hash ] criterion The criterion.
         #
@@ -200,7 +178,10 @@ module ActiveDocument
         def geo_spatial(criterion)
           raise Errors::CriteriaArgumentRequired.new(:geo_spatial) if criterion.nil?
 
-          __merge__(criterion)
+          # Merge the criterion into the selection
+          selection(criterion) do |selector, field, value|
+            selector.merge!(field.__expr_part__(value))
+          end
         end
 
         # Add the $eq criterion to the selector.
