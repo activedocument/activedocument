@@ -3512,7 +3512,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#with_size' do
+  describe '#size_of' do
 
     let!(:match) do
       Band.create!(genres: %w[electro dub])
@@ -3523,7 +3523,7 @@ describe ActiveDocument::Criteria do
     end
 
     let(:criteria) do
-      Band.with_size(genres: 2)
+      Band.size_of(genres: 2)
     end
 
     it 'returns the matching documents' do
@@ -3531,14 +3531,14 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#with_type' do
+  describe '#type_of' do
 
     let!(:match) do
       Band.create!(name: 'Depeche Mode')
     end
 
     let(:criteria) do
-      Band.with_type(name: 2)
+      Band.type_of(name: 2)
     end
 
     it 'returns the matching documents' do

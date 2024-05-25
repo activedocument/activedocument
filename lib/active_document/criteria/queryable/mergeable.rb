@@ -61,8 +61,8 @@ module ActiveDocument
         def and_with_operator(criterion, operator)
           crit = self
           criterion&.each_pair do |field, value|
-            val = prepare(field, operator, value)
-            # The prepare method already takes the negation into account. We
+            val = prepare_for_merging(field, operator, value)
+            # The prepare_for_merging method already takes the negation into account. We
             # set negating to false here so that ``and`` doesn't also apply
             # negation and we have a double negative.
             crit.negating = false
@@ -224,7 +224,7 @@ module ActiveDocument
         def __override__(criterion, operator)
           criterion = criterion.selector if criterion.is_a?(Selectable)
           selection(criterion) do |selector, field, value|
-            expression = prepare(field, operator, value)
+            expression = prepare_for_merging(field, operator, value)
             existing = selector[field]
             if existing.respond_to?(:merge!)
               selector.store(field, existing.merge!(expression))
@@ -281,7 +281,7 @@ module ActiveDocument
           selection(criterion) do |selector, field, value|
             selector.store(
               field,
-              selector[field].send(strategy, prepare(field, operator, value))
+              selector[field].send(strategy, prepare_for_merging(field, operator, value))
             )
           end
         end
@@ -291,15 +291,14 @@ module ActiveDocument
         # @api private
         #
         # @example Prepare the value.
-        #   mergeable.prepare("field", "$gt", 10)
+        #   mergeable.prepare_for_merging("field", "$gt", 10)
         #
         # @param [ String ] field The name of the field.
         # @param [ Object ] value The value.
         #
         # @return [ Object ] The serialized value.
-        def prepare(field, operator, value)
+        def prepare_for_merging(field, operator, value)
           unless /exists|type|size/.match?(operator)
-            value = QueryNormalizer.expand_complex(value)
             field = field.to_s
             name = aliases[field] || field
             serializer = serializers[name]
