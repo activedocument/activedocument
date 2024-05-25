@@ -177,8 +177,11 @@ module ActiveDocument
           raise Errors::CriteriaArgumentRequired.new(:geo_spatial) if criterion.nil?
 
           # Merge the criterion into the selection
-          selection(criterion) do |selector, field, value|
-            selector.merge!(QueryNormalizer.expr_part(field, value))
+          clone.tap do |query|
+            criterion&.each_pair do |field, value|
+              query.selector.merge!(field => value.deep_stringify_keys)
+            end
+            query.reset_strategies!
           end
         end
 
