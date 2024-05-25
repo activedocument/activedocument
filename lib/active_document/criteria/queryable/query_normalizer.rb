@@ -55,6 +55,7 @@ module ActiveDocument
         # @return [ Hash ] The $in friendly criterion with array values.
         #
         # @api private
+        # TODO: remove this, properly support ranges on any_in, etc., raise error for scalars
         def expand_condition_to_array_values(criterion)
           raise ArgumentError.new('Criterion cannot be nil here') if criterion.nil?
 
