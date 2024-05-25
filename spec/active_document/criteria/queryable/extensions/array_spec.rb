@@ -500,7 +500,7 @@ describe Array do
     context 'when the array is selectable keys' do
 
       let(:selection) do
-        [:field_one.asc, :field_two.desc]
+        [{ field_one: :asc }, { field_two: :desc }]
       end
 
       it 'adds the sorting criteria' do

@@ -969,8 +969,9 @@ on symbols, as follows:
 
 .. code-block:: ruby
 
-  Band.order(:name.desc, :description.asc)
+  Band.order(name: :desc, description: :asc)
 
+# TODO: remove SQL baloney
 The arguments can be provided as a string using SQL syntax:
 
 .. code-block:: ruby

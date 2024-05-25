@@ -4134,7 +4134,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       Person.create!
     end
     let(:criteria) do
-      person.messages.order_by(:body.asc, :priority.desc)
+      person.messages.order_by(body: :asc, priority: :desc)
     end
 
     let(:message_one) do

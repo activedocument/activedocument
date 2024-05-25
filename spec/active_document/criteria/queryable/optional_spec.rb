@@ -761,7 +761,7 @@ describe ActiveDocument::Criteria::Queryable::Optional do
           context 'when the array is selectable keys' do
 
             let(:selection) do
-              query.send(method, [:field_one.asc, :field_two.desc])
+              query.send(method, [{ field_one: :asc }, { field_two: :desc }])
             end
 
             it 'adds the sorting criteria' do
@@ -827,7 +827,7 @@ describe ActiveDocument::Criteria::Queryable::Optional do
           context 'when the values are selectable keys' do
 
             let(:selection) do
-              query.send(method, :field_one.asc, :field_two.desc)
+              query.send(method, field_one: :asc, field_two: :desc)
             end
 
             it 'adds the sorting criteria' do
