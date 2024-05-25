@@ -22,9 +22,9 @@ module ActiveDocument
         #
         # The following parameter forms are accepted:
         #
-        # - field is a string or symbol; value is the field query expresision
-        # - field is a Key instance; value is the field query expression
-        # - field is a string corresponding to a MongoDB operator; value is
+        # - field is a String or Symbol; value is the field query expression
+        # - field is a Hash; value is the field query expression
+        # - field is a String corresponding to a MongoDB operator; value is
         #   the operator value expression.
         #
         # This method expands the field-value combination to the MongoDB
@@ -32,7 +32,7 @@ module ActiveDocument
         # [expanded key, expanded value]. The expanded key is converted to
         # a string if it wasn't already a string.
         #
-        # @param [ String | Symbol | Key ] field The field to expand.
+        # @param [ String | Symbol | Hash ] field The field to expand.
         # @param [ Object ] value The field's value.
         #
         # @return [ Array<String, Object> ] The expanded field and value.

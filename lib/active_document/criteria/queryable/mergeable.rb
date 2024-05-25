@@ -226,7 +226,7 @@ module ActiveDocument
         # the input +expr+, such that the downstream code can assume that
         # conditions always contain string keys.
         #
-        # @param [ Hash ] expr Criteria including Key instances.
+        # @param [ Hash ] expr Criteria including nested hashes.
         #
         # @return [ BSON::Document ] The expanded criteria.
         def _active_document_expand_keys(expr)

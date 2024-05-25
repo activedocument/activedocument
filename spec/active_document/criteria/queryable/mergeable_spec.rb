@@ -50,28 +50,28 @@ describe ActiveDocument::Criteria::Queryable::Mergeable do
       expect(query.send(:_active_document_expand_keys, { a: 1 })).to eq({ 'a' => 1 })
     end
 
-    it 'expands Key instances' do
+    it 'expands Hash' do
       expected = { 'age' => { '$gt' => 42 } }
       expect(query.send(:_active_document_expand_keys, expected)).to eq({ 'age' => { '$gt' => 42 } })
     end
 
-    it 'expands multiple Key instances on the same field' do
+    it 'expands multiple Hash keys on the same field' do
       expected = { 'age' => { '$gt' => 42, '$lt' => 50 } }
       expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
     end
 
-    context 'given implicit equality and Key instance on the same field' do
+    context 'given implicit equality and Hash on the same field' do
       [42, 'infinite', [nil]].each do |value|
         context "for non-regular expression value #{value}" do
-          context 'implicit equality then Key instance' do
-            it 'expands implicit equality with $eq and combines with Key operator' do
+          context 'implicit equality then Hash' do
+            it 'expands implicit equality with $eq and combines with Hash' do
               expected = { 'age' => { '$eq' => value, '$lt' => 50 } }
               expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
             end
           end
 
           context 'symbol operator then implicit equality' do
-            it 'expands implicit equality with $eq and combines with Key operator' do
+            it 'expands implicit equality with $eq and combines with Hash' do
               expected = { 'age' => { '$gt' => 42, '$eq' => value } }
               expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
             end
@@ -80,18 +80,18 @@ describe ActiveDocument::Criteria::Queryable::Mergeable do
       end
     end
 
-    context 'given implicit equality with Regexp argument and Key instance on the same field' do
+    context 'given implicit equality with Regexp argument and Hash on the same field' do
       [/42/, BSON::Regexp::Raw.new('42')].each do |value|
         context "for regular expression value #{value}" do
-          context 'implicit equality then Key instance' do
-            it 'expands implicit equality with $eq and combines with Key operator' do
+          context 'implicit equality then Hash' do
+            it 'expands implicit equality with $eq and combines with Hash' do
               expected = { 'age' => { '$regex' => value, '$lt' => 50 } }
               expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
             end
           end
 
           context 'Key instance then implicit equality' do
-            it 'expands implicit equality with $eq and combines with Key operator' do
+            it 'expands implicit equality with $eq and combines with Hash' do
               expected = { 'age' => { '$gt' => 50, '$regex' => value } }
               expect(query.send(:_active_document_expand_keys, expected)).to eq(expected)
             end

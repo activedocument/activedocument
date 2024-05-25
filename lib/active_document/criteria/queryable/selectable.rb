@@ -809,7 +809,7 @@ module ActiveDocument
         def selection(criterion = nil)
           clone.tap do |query|
             criterion&.each_pair do |field, value|
-              yield(query.selector, field.is_a?(Key) ? field : field.to_s, value)
+              yield(query.selector, field.to_s, value)
             end
             query.reset_strategies!
           end

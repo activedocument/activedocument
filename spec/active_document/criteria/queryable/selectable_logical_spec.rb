@@ -78,7 +78,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
     end
 
-    context 'when provided a single criterion that is handled via Key' do
+    context 'when provided a single criterion that is handled via Hash' do
 
       shared_examples_for 'adds the conditions to top level' do
 
@@ -450,7 +450,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
         end
 
-        context 'when criteria are handled via Key' do
+        context 'when criteria are handled via Hash' do
           shared_examples_for 'adds the conditions to top level' do
 
             it 'adds the conditions to top level' do
@@ -487,7 +487,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
         end
 
-        context 'when criteria are simple and handled via Key' do
+        context 'when criteria are simple and handled via Hash' do
           shared_examples_for 'combines conditions with $and' do
 
             it 'combines conditions with $and' do
@@ -557,7 +557,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
         end
 
-        context 'when criteria are handled via Key and simple' do
+        context 'when criteria are handled via Hash and simple' do
           shared_examples_for 'combines conditions with $and' do
 
             it 'combines conditions with $and' do
@@ -688,11 +688,11 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
     end
 
-    context 'when Key instances are used and types involved have serializers' do
+    context 'when Hash is used and types involved have serializers' do
       let(:time) { Time.now }
 
       let(:query) do
-        Band.all.and(:created_at.gt => time)
+        Band.all.and(created_at: { '$gt' => time })
       end
 
       let(:expected) do
@@ -938,7 +938,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
       end
 
-      context 'when the criteria uses a Key instance' do
+      context 'when the criteria uses a Hash' do
 
         let(:selection) do
           query.send(tested_method, { first: [1, 2] }, { second: { '$gt' => 3 } })
@@ -1395,7 +1395,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
       end
 
-      context 'when the criteria uses a Key instance' do
+      context 'when the criteria uses a Hash' do
 
         let(:selection) do
           query.any_of({ first: [1, 2] }, { second: { '$gt' => 3 } })
@@ -1413,7 +1413,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
       end
 
-      context 'when criteria are simple and handled via Key' do
+      context 'when criteria are simple and handled via Hash' do
         shared_examples_for 'adds conditions with $or' do
 
           it 'adds conditions with $or' do
@@ -1491,7 +1491,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
       end
 
-      context 'when criteria are handled via Key and simple' do
+      context 'when criteria are handled via Hash and simple' do
         shared_examples_for 'adds conditions with $or' do
 
           it 'adds conditions with $or' do
@@ -1776,7 +1776,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
       end
 
-      context 'when the criteria uses Key' do
+      context 'when the criteria uses Hash' do
 
         let(:selection) do
           query.not(age: { '$gt' => 50 })
@@ -2302,7 +2302,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
       end
 
-      context 'when the criteria uses a Key instance' do
+      context 'when the criteria uses a Hash' do
         let(:selection) do
           query.none_of({ first: [1, 2] }, { second: { '$gt' => 3 } })
         end
@@ -2319,7 +2319,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
       end
 
-      context 'when criteria are simple and handled via Key' do
+      context 'when criteria are simple and handled via Hash' do
         shared_examples_for 'adds conditions with $nor' do
           it 'adds conditions with $nor' do
             expect(selection.selector).to eq({
@@ -2380,7 +2380,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
       end
 
-      context 'when criteria are handled via Key and simple' do
+      context 'when criteria are handled via Hash and simple' do
         shared_examples_for 'adds conditions with $nor' do
           it 'adds conditions with $nor' do
             expect(selection.selector).to eq({

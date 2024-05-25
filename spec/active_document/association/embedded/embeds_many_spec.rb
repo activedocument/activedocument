@@ -297,7 +297,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany do
         }
       end
 
-      it 'returns a Criteria Queryable Key' do
+      it 'returns a Hash' do
         expect(association.order).to be_a(Hash)
       end
     end
