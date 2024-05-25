@@ -1514,9 +1514,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe '#with_size' do
+  describe '#size_of' do
 
-    let(:query_method) { :with_size }
+    let(:query_method) { :size_of }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
@@ -1526,7 +1526,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when provided an integer' do
 
         let(:selection) do
-          query.with_size(field: 10)
+          query.size_of(field: 10)
         end
 
         it 'adds the $size selector' do
@@ -1543,7 +1543,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when provided a string' do
 
         let(:selection) do
-          query.with_size(field: '10')
+          query.size_of(field: '10')
         end
 
         it 'adds the $size selector with an integer' do
@@ -1565,7 +1565,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when provided integers' do
 
           let(:selection) do
-            query.with_size(first: 10, second: 15)
+            query.size_of(first: 10, second: 15)
           end
 
           it 'adds the $size selectors' do
@@ -1583,7 +1583,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when provided strings' do
 
           let(:selection) do
-            query.with_size(first: '10', second: '15')
+            query.size_of(first: '10', second: '15')
           end
 
           it 'adds the $size selectors' do
@@ -1605,7 +1605,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.with_size(first: 10).with_size(second: 15)
+          query.size_of(first: 10).size_of(second: 15)
         end
 
         it 'adds the $size selectors' do
@@ -1623,7 +1623,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are on the same field' do
 
         let(:selection) do
-          query.with_size(first: 10).with_size(first: 15)
+          query.size_of(first: 10).size_of(first: 15)
         end
 
         it 'overwrites the first $size selector' do
@@ -1639,9 +1639,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe '#with_type' do
+  describe '#type_of' do
 
-    let(:query_method) { :with_type }
+    let(:query_method) { :type_of }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
@@ -1651,7 +1651,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when provided an integer' do
 
         let(:selection) do
-          query.with_type(field: 10)
+          query.type_of(field: 10)
         end
 
         it 'adds the $type selector' do
@@ -1668,7 +1668,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when provided a string' do
 
         let(:selection) do
-          query.with_type(field: '10')
+          query.type_of(field: '10')
         end
 
         it 'adds the $type selector' do
@@ -1688,7 +1688,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.with_type(first: 10, second: 15)
+          query.type_of(first: 10, second: 15)
         end
 
         it 'adds the $type selectors' do
@@ -1709,7 +1709,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.with_type(first: 10).with_type(second: 15)
+          query.type_of(first: 10).type_of(second: 15)
         end
 
         it 'adds the $type selectors' do
@@ -1727,7 +1727,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are on the same field' do
 
         let(:selection) do
-          query.with_type(first: 10).with_type(first: 15)
+          query.type_of(first: 10).type_of(first: 15)
         end
 
         it 'overwrites the first $type selector' do

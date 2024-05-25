@@ -5,13 +5,12 @@ require 'spec_helper'
 describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
 
   describe '.normalize_expr' do
-    # TODO: test negating
-    let(:negating) do
-      false
-    end
-
     subject(:normalized) do
       described_class.normalize_expr(condition, negating: negating)
+    end
+
+    let(:negating) do
+      false
     end
 
     context 'when simple keys' do
@@ -20,6 +19,12 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       end
 
       it { is_expected.to eq({ 'a' => 1 }) }
+
+      context 'when negating' do
+        let(:negating) { true }
+
+        it { is_expected.to eq({ 'a' => { '$ne' => 1 } }) }
+      end
     end
 
     context 'when Hash' do
@@ -82,14 +87,22 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       end
     end
 
-    context 'field name => value' do
+    context 'when field => value' do
       shared_examples_for 'expands' do
         it 'expands' do
           is_expected.to eq({ 'foo' => 'bar' })
         end
+
+        context 'when negating' do
+          let(:negating) { true }
+
+          it 'expands' do
+            is_expected.to eq({ 'foo' => { '$ne' => 'bar' } })
+          end
+        end
       end
 
-      context 'string key' do
+      context 'when string key' do
         let(:condition) do
           { 'foo' => 'bar' }
         end
@@ -97,7 +110,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
         it_behaves_like 'expands'
       end
 
-      context 'symbol key' do
+      context 'when symbol key' do
         let(:condition) do
           { foo: 'bar' }
         end
@@ -106,7 +119,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       end
     end
 
-    context 'Key instance => value' do
+    context 'when operator expression' do
       let(:condition) do
         { 'foo' => { '$gt' => 'bar' } }
       end
@@ -116,7 +129,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       end
     end
 
-    context 'operator => operator value expression' do
+    context 'when field => operator value expression' do
       shared_examples_for 'expands' do
 
         it 'expands' do
@@ -124,7 +137,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
         end
       end
 
-      context 'string key' do
+      context 'when string operator key' do
         let(:condition) do
           { foo: { '$in' => %w[bar] } }
         end
@@ -132,7 +145,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
         it_behaves_like 'expands'
       end
 
-      context 'symbol key' do
+      context 'when symbol operator key' do
         let(:condition) do
           { foo: { '$in': %w[bar] } }
         end
@@ -153,7 +166,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
         is_expected.to eq({ 'field' => 10 })
       end
 
-      context 'with a Regexp' do
+      context 'when Regexp' do
         let(:value) { /test/ }
 
         it 'returns the expression with the value' do
@@ -161,7 +174,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
         end
       end
 
-      context 'with a BSON::Regexp::Raw' do
+      context 'when BSON::Regexp::Raw' do
         let(:value) { BSON::Regexp::Raw.new('^[123]') }
 
         it 'returns the expression with the value' do
@@ -172,7 +185,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       context 'when negated' do
         subject { described_class.expr_part('field', value, negating: true) }
 
-        context 'with a Regexp' do
+        context 'when Regexp' do
           let(:value) { /test/ }
 
           it 'returns the expression with the value negated' do
@@ -180,7 +193,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
           end
         end
 
-        context 'with a BSON::Regexp::Raw' do
+        context 'when BSON::Regexp::Raw' do
           let(:value) { BSON::Regexp::Raw.new('^[123]') }
 
           it 'returns the expression with the value' do
@@ -188,7 +201,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
           end
         end
 
-        context 'with anything else' do
+        context 'when anything else' do
           let(:value) { 'test' }
 
           it 'returns the expression with the value negated' do
@@ -205,7 +218,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
         is_expected.to eq({ field: 10 })
       end
 
-      context 'with a regexp' do
+      context 'when regexp' do
         subject { described_class.expr_part(:field, /test/) }
 
         it 'returns the symbol with the value' do
@@ -215,7 +228,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
 
       context 'when negated' do
 
-        context 'with a regexp' do
+        context 'when regexp' do
           subject { described_class.expr_part(:field, /test/, negating: true) }
 
           it 'returns the symbol with the value negated' do
@@ -223,7 +236,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
           end
         end
 
-        context 'with anything else' do
+        context 'when anything else' do
           subject { described_class.expr_part(:field, 'test', negating: true) }
 
           it 'returns the symbol with the value negated' do

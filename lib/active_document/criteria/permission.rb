@@ -36,8 +36,8 @@ module ActiveDocument
          not
          or
          any_of
-         with_size
-         with_type
+         size_of
+         type_of
          where].each do |method|
         define_method(method) do |*criteria|
           raise Errors::CriteriaNotPermitted.new(klass, method, criteria) unless should_permit?(criteria)

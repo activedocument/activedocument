@@ -28,8 +28,8 @@ module ActiveDocument
           crit = self
           criterion&.each_pair do |field, value|
             val = prepare_for_merging(field, operator, value)
-            # The prepare method already takes the negation into account. We
-            # set negating to false here so that ``and`` doesn't also apply
+            # The prepare_for_merging method already takes the negation into account.
+            # We set negating to false here so that ``and`` doesn't also apply
             # negation and we have a double negative.
             crit.negating = false
             crit = crit.and(field => val)

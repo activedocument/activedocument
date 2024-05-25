@@ -161,9 +161,7 @@ module ActiveDocument
         def exists(criterion)
           raise Errors::CriteriaArgumentRequired.new(:exists) if criterion.nil?
 
-          typed_override(criterion, '$exists') do |value|
-            ActiveDocument::Boolean.evolve(value)
-          end
+          and_with_operator(criterion, '$exists')
         end
 
         # Add a $geoIntersects or $geoWithin selection. Symbol operators must
@@ -568,9 +566,9 @@ module ActiveDocument
         # Add a $size selection for array fields.
         #
         # @example Add the $size selection.
-        #   selectable.with_size(field: 5)
+        #   selectable.size_of(field: 5)
         #
-        # @note This method is named #with_size not to conflict with any existing
+        # @note This method is named #size_of not to conflict with any existing
         #   #size method on enumerables or symbols.
         #
         # @example Execute an $size in a where query.
@@ -579,18 +577,16 @@ module ActiveDocument
         # @param [ Hash ] criterion The field/size pairs criterion.
         #
         # @return [ Selectable ] The cloned selectable.
-        def with_size(criterion)
-          raise Errors::CriteriaArgumentRequired.new(:with_size) if criterion.nil?
+        def size_of(criterion)
+          raise Errors::CriteriaArgumentRequired.new(:size_of) if criterion.nil?
 
-          typed_override(criterion, '$size') do |value|
-            ::Integer.evolve(value)
-          end
+          and_with_operator(criterion, '$size')
         end
 
         # Adds a $type selection to the selectable.
         #
         # @example Add the $type selection.
-        #   selectable.with_type(field: 15)
+        #   selectable.type_of(field: 15)
         #
         # @example Execute an $type in a where query.
         #   selectable.where(field: { '$type' => 15 })
@@ -601,12 +597,10 @@ module ActiveDocument
         # @param [ Hash ] criterion The field/type pairs.
         #
         # @return [ Selectable ] The cloned selectable.
-        def with_type(criterion)
-          raise Errors::CriteriaArgumentRequired.new(:with_type) if criterion.nil?
+        def type_of(criterion)
+          raise Errors::CriteriaArgumentRequired.new(:type_of) if criterion.nil?
 
-          typed_override(criterion, '$type') do |value|
-            ::Integer.evolve(value)
-          end
+          and_with_operator(criterion, '$type')
         end
 
         # Construct a text search selector.
@@ -725,29 +719,6 @@ module ActiveDocument
               end
             end
             query.reset_state!
-          end
-        end
-
-        # Force the values of the criterion to be evolved.
-        #
-        # @api private
-        #
-        # @example Force values to booleans.
-        #   selectable.force_typing(criterion) do |val|
-        #     Boolean.evolve(val)
-        #   end
-        #
-        # @param [ Hash ] criterion The criterion.
-        def typed_override(criterion, operator, &block)
-          criterion&.transform_values!(&block)
-          selection(criterion) do |selector, field, value|
-            expression = prepare_for_merging(field, operator, value)
-            existing = selector[field]
-            if existing.respond_to?(:merge!)
-              selector.store(field, existing.merge!(expression))
-            else
-              selector.store(field, expression)
-            end
           end
         end
 

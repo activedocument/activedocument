@@ -45,6 +45,12 @@ module ActiveDocument
             raise ArgumentError.new("Field cannot be an operator (i.e. begin with $): #{field}")
           end
 
+          value_is_expression = value.is_a?(Hash) &&
+                                value.keys.all? { |key| key.to_s.start_with?('$') }
+          if value_is_expression
+            value = value.to_h { |k, v| [k, typecast_operator_expression(k, v)] }
+          end
+
           if selector[field]
             # We already have a restriction by the field we are trying
             # to restrict, combine the restrictions.
@@ -209,6 +215,20 @@ module ActiveDocument
           end
 
           self
+        end
+
+        private
+
+        def typecast_operator_expression(operator, op_expr)
+          case operator
+          when '$exists'
+            ActiveDocument::Boolean.evolve(op_expr)
+          when '$size', '$type'
+            # TODO: $type should allow a symbol value like :boolean, etc.
+            ::Integer.evolve(op_expr)
+          else
+            op_expr
+          end
         end
       end
     end
