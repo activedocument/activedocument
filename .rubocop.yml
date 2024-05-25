@@ -235,8 +235,6 @@ Style/GuardClause:
   Exclude:
     - 'Gemfile'
     - 'gemfiles/**/*'
-    # this exclusion should be inlined
-    - 'lib/active_document/criteria/queryable/mergeable.rb'
 
 Style/ModuleFunction:
   EnforcedStyle: extend_self

@@ -23,6 +23,13 @@ Query Functionality
 | `#in` | Renamed `$in` to `#any_in` (also aliased to `#contains_any`) |
         alias_method :not_in, :nin
 
+Operator methods
+
+| Method | Migration |
+| ------ | --------- |
+| `#with_size` | Renamed to `#size_of`. |
+| `#with_type` | Renamed to `#type_of`. |
+
 Chainable Logical Operators
 
 These are dangerous and have. ActiveDocument will not attempt to be SQL-like, and will not attempt to replicate anything

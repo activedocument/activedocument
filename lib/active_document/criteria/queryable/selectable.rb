@@ -13,6 +13,17 @@ module ActiveDocument
         # @attribute [rw] selector The query selector.
         attr_accessor :negating, :selector
 
+        # Clear the current negating flag, used after cloning.
+        #
+        # @example Reset the state.
+        #   selectable.reset_state!
+        #
+        # @return [ ActiveDocument::Criteria ] self.
+        def reset_state!
+          self.negating = nil
+          self
+        end
+
         # Add the $all criterion.
         #
         # @example Add the criterion.
@@ -67,7 +78,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def and(*criteria)
-          __flatten_arrays__(criteria).inject(clone) do |c, new_s|
+          flatten_args(criteria).inject(clone) do |c, new_s|
             new_s = new_s.selector if new_s.is_a?(Selectable)
             normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
             normalized.each do |k, v|
@@ -113,11 +124,15 @@ module ActiveDocument
         def between(criterion)
           raise Errors::CriteriaArgumentRequired.new(:between) if criterion.nil?
 
-          selection(criterion) do |selector, field, value|
-            selector.store(
-              field,
-              { '$gte' => value.min, '$lte' => value.max }
-            )
+          # TODO: this will override existing conditions on the field
+          clone.tap do |query|
+            criterion&.each_pair do |field, value|
+              query.selector.store(
+                field,
+                { '$gte' => value.min, '$lte' => value.max }
+              )
+            end
+            query.reset_state!
           end
         end
 
@@ -189,8 +204,12 @@ module ActiveDocument
           raise Errors::CriteriaArgumentRequired.new(:geo_spatial) if criterion.nil?
 
           # Merge the criterion into the selection
-          selection(criterion) do |selector, field, value|
-            selector.merge!(QueryNormalizer.expr_part(field, value))
+          # TODO: check if this overrides existing conditions on the field
+          clone.tap do |query|
+            criterion&.each_pair do |field, value|
+              query.selector.merge!(QueryNormalizer.expr_part(field.to_s, value))
+            end
+            query.reset_state!
           end
         end
 
@@ -465,15 +484,21 @@ module ActiveDocument
           end
         end
 
+        # TODO: only used by #not. check if this can be removed.
         def __override__(criterion, operator)
-          selection(criterion) do |selector, field, value|
-            expression = prepare_for_merging(field, operator, value)
-            existing = selector[field]
-            if existing.respond_to?(:merge!)
-              selector.store(field, existing.merge!(expression))
-            else
-              selector.store(field, expression)
+          clone.tap do |query|
+            criterion&.each_pair do |field, value|
+              selector = query.selector
+              field = field.to_s
+              expression = prepare_for_merging(field, operator, value)
+              existing = selector[field]
+              if existing.respond_to?(:merge!)
+                selector.store(field, existing.merge!(expression))
+              else
+                selector.store(field, expression)
+              end
             end
+            query.reset_state!
           end
         end
 
@@ -494,7 +519,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def none_of(*criteria)
-          criteria = __flatten_arrays__(criteria)
+          criteria = flatten_args(criteria)
           return dup if criteria.empty?
 
           exprs = criteria.map do |criterion|
@@ -534,7 +559,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def any_of(*criteria)
-          criteria = __flatten_arrays__(criteria)
+          criteria = flatten_args(criteria)
           case criteria.length
           when 0
             clone
@@ -681,6 +706,80 @@ module ActiveDocument
 
         private
 
+        # Merge criteria with operators using the and operator.
+        #
+        # @param [ Hash ] criterion The criterion to add to the criteria.
+        # @param [ String ] operator The MongoDB operator.
+        #
+        # @return [ ActiveDocument::Criteria ] The resulting criteria.
+        def and_with_operator(criterion, operator)
+          crit = self
+          criterion&.each_pair do |field, value|
+            val = prepare_for_merging(field, operator, value)
+            # The prepare_for_merging method already takes the negation into account.
+            # We set negating to false here so that ``and`` doesn't also apply
+            # negation and we have a double negative.
+            crit.negating = false
+            crit = crit.and(field => val)
+          end
+          crit
+        end
+
+        # Adds $and/$or/$nor criteria to a copy of this selection.
+        #
+        # Each of the criteria can be a Hash of key/value pairs or MongoDB
+        # operators (keys beginning with $), or a Selectable object
+        # (which typically will be a Criteria instance).
+        #
+        # @api private
+        #
+        # @example Add the criterion.
+        #   selectable.__combine_criteria__([ 1, 2 ], "$in")
+        #
+        # @param [ Array<Hash | ActiveDocument::Criteria> ] criteria Multiple key/value pair
+        #   matches or Criteria objects.
+        # @param [ String ] operator The MongoDB operator.
+        #
+        # @return [ Selectable ] The new selectable.
+        def __combine_criteria__(criteria, operator)
+          clone.tap do |query|
+            sel = query.selector
+            criteria.flatten.each do |expr|
+              next unless expr
+
+              result_criteria = sel[operator] || []
+              if expr.is_a?(Selectable)
+                expr = expr.selector
+              end
+              normalized = QueryNormalizer.normalize_expr(expr, negating: negating?)
+              sel.store(operator, result_criteria.push(normalized))
+            end
+          end
+        end
+
+        # Prepare the value for merging.
+        #
+        # @api private
+        #
+        # @example Prepare the value.
+        #   selectable.prepare_for_merging("field", "$gt", 10)
+        #
+        # @param [ String ] field The name of the field.
+        # @param [ Object ] value The value.
+        #
+        # @return [ Object ] The serialized value.
+        def prepare_for_merging(field, operator, value)
+          # TODO: Skipped because these are type-casted
+          unless /exists|type|size/.match?(operator)
+            field = field.to_s
+            name = aliases[field] || field
+            serializer = serializers[name]
+            value = serializer.evolve(value) if serializer
+          end
+          selection = { operator => value }
+          negating? ? { '$not' => selection } : selection
+        end
+
         # Adds the specified expression to the query.
         #
         # Criterion must be a hash in one of the following forms:
@@ -744,23 +843,23 @@ module ActiveDocument
           end
         end
 
-        # Take the provided criterion and store it as a selection in the query
-        # selector.
-        #
-        # @example Store the selection.
-        #   selectable.selection({ field: "value" })
-        #
-        # @param [ Hash ] criterion The selection to store.
-        #
-        # @return [ Selectable ] The cloned selectable.
-        # @api private
-        def selection(criterion = nil)
-          clone.tap do |query|
-            criterion&.each_pair do |field, value|
-              yield(query.selector, field.to_s, value)
+        # Calling .flatten on an array which includes a Criteria instance
+        # evaluates the criteria, which we do not want. Hence this method
+        # explicitly only expands Array objects and Array subclasses.
+        def flatten_args(array)
+          out = []
+          pending = array.dup
+          until pending.empty?
+            item = pending.shift
+            if item.nil?
+              # skip
+            elsif item.is_a?(Array)
+              pending.concat(item)
+            else
+              out << item
             end
-            query.reset_state!
           end
+          out
         end
 
         class << self
