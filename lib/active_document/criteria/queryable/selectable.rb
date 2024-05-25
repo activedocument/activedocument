@@ -28,7 +28,7 @@ module ActiveDocument
         #   selectable.all(field: [ 1, 2 ])
         #
         # @example Execute an $all in a where query.
-        #   selectable.where(:field.all => [ 1, 2 ])
+        #   selectable.where(field: { '$all' => [ 1, 2 ] })
         #
         # @param [ Hash... ] *criteria The key value pair(s) for $all matching.
         #
@@ -263,7 +263,7 @@ module ActiveDocument
         #   selectable.in(age: 18..24)
         #
         # @example Execute an $in in a where query.
-        #   selectable.where(:field.in => [ 1, 2, 3 ])
+        #   selectable.where(field: { '$in' => [ 1, 2, 3 ] })
         #
         # @param [ Hash ] condition The field/value criterion pairs.
         #
@@ -340,7 +340,7 @@ module ActiveDocument
         #   selectable.mod(field: [ 10, 1 ])
         #
         # @example Execute an $mod in a where query.
-        #   selectable.where(:field.mod => [ 10, 1 ])
+        #   selectable.where(field: { '$mod' => [ 10, 1 ] })
         #
         # @param [ Hash ] criterion The field/mod selections.
         #
@@ -412,7 +412,7 @@ module ActiveDocument
         #   selectable.nin(age: 18..24)
         #
         # @example Execute an $nin in a where query.
-        #   selectable.where(:field.nin => [ 1, 2, 3 ])
+        #   selectable.where(field: { '$nin' => [ 1, 2, 3 ] })
         #
         # @param [ Hash ] condition The field/value criterion pairs.
         #

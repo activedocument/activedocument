@@ -165,7 +165,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     context 'when provided a nested criterion' do
 
       let(:selection) do
-        query.send(tested_method, :test.elem_match => { field: { '$in' => [1, 2] } })
+        query.send(tested_method, test: { '$elem_match' => { field: { '$in' => [1, 2] } } })
       end
 
       it 'builds the correct selector' do

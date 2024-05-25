@@ -212,7 +212,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when performing a single query' do
 
           let(:selection) do
-            query.where(:field.all => [1, 2])
+            query.where(field: { '$all' => [1, 2] })
           end
 
           it 'adds the $all criterion' do
@@ -336,7 +336,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing an $in' do
 
         let(:selection) do
-          query.where(:field.in => [1, 2])
+          query.where(field: { '$in' => [1, 2] })
         end
 
         it 'adds the $in criterion' do
@@ -385,7 +385,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $mod' do
 
         let(:selection) do
-          query.where(:field.mod => [10, 1])
+          query.where(field: { '$mod' => [10, 1] })
         end
 
         it 'adds the $lte criterion' do
@@ -453,7 +453,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $nin' do
 
         let(:selection) do
-          query.where(:field.nin => [1, 2])
+          query.where(field: { '$nin' => [1, 2] })
         end
 
         it 'adds the $nin criterion' do
