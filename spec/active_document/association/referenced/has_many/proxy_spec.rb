@@ -2854,7 +2854,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     end
 
     it 'chaining order criteria' do
-      expect(person.ordered_posts.order_by(:title.desc).to_a)
+      expect(person.ordered_posts.order_by(title: :desc).to_a)
         .to eq [post_three, post_two, post_one]
     end
   end
