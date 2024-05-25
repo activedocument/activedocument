@@ -502,7 +502,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing a string' do
 
           let(:selection) do
-            query.where(:field.with_size => '10')
+            query.where(field: { '$withSize' => '10' })
           end
 
           it 'adds the $size criterion' do

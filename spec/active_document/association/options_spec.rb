@@ -682,12 +682,12 @@ describe ActiveDocument::Association::Options do
 
             let(:options) do
               {
-                order: :rating.desc
+                order: { rating: :desc }
               }
             end
 
-            it 'returns a ActiveDocument::Criteria::Queryable::Key' do
-              expect(association.order).to be_a(ActiveDocument::Criteria::Queryable::Key)
+            it 'returns a Hash' do
+              expect(association.order).to be_a(Hash)
             end
           end
 

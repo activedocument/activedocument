@@ -4,45 +4,6 @@ require 'spec_helper'
 
 describe Symbol do
 
-  describe '.add_key' do
-
-    before do
-      described_class.add_key(:fubar, :union, '$fu', '$bar', &:to_s)
-    end
-
-    after do
-      described_class.undef_method(:fubar)
-    end
-
-    let(:fubar) do
-      :testing.fubar
-    end
-
-    it 'adds the method to symbol' do
-      expect(fubar).to be_a(ActiveDocument::Criteria::Queryable::Key)
-    end
-
-    it 'sets the key name' do
-      expect(fubar.name).to eq(:testing)
-    end
-
-    it 'sets the key strategy' do
-      expect(fubar.strategy).to eq(:__union__)
-    end
-
-    it 'sets the key operator' do
-      expect(fubar.operator).to eq('$fu')
-    end
-
-    it 'sets the additional key operator' do
-      expect(fubar.expanded).to eq('$bar')
-    end
-
-    it 'sets the transform block' do
-      expect(fubar.block).to_not be_nil
-    end
-  end
-
   describe '.evolve' do
 
     context 'when provided nil' do

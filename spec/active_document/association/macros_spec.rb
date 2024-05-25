@@ -192,7 +192,7 @@ describe ActiveDocument::Association::Macros do
     context 'when defining order on relation' do
 
       before do
-        klass.embeds_many(:addresses, order: :number.asc)
+        klass.embeds_many(:addresses, order: { number: :asc })
       end
 
       let(:association) do
@@ -203,8 +203,8 @@ describe ActiveDocument::Association::Macros do
         expect(association.order).to_not be_nil
       end
 
-      it 'returns ActiveDocument::Criteria::Queryable::Key' do
-        expect(association.order).to be_a(ActiveDocument::Criteria::Queryable::Key)
+      it 'returns Hash' do
+        expect(association.order).to be_a(Hash)
       end
     end
 
@@ -782,7 +782,7 @@ describe ActiveDocument::Association::Macros do
     context 'when defining order on relation' do
 
       before do
-        klass.has_many(:posts, order: :rating.asc)
+        klass.has_many(:posts, order: { rating: :asc })
       end
 
       let(:association) do
@@ -793,8 +793,8 @@ describe ActiveDocument::Association::Macros do
         expect(association.order).to_not be_nil
       end
 
-      it 'returns ActiveDocument::Criteria::Queryable::Key' do
-        expect(association.order).to be_a(ActiveDocument::Criteria::Queryable::Key)
+      it 'returns Hash' do
+        expect(association.order).to be_a(Hash)
       end
     end
 
@@ -869,7 +869,7 @@ describe ActiveDocument::Association::Macros do
       context 'when defining order on relation' do
 
         before do
-          klass.has_and_belongs_to_many(:preferences, order: :ranking.asc)
+          klass.has_and_belongs_to_many(:preferences, order: { ranking: :asc })
         end
 
         let(:association) do
@@ -880,8 +880,8 @@ describe ActiveDocument::Association::Macros do
           expect(association.order).to_not be_nil
         end
 
-        it 'returns ActiveDocument::Criteria::Queryable::Key' do
-          expect(association.order).to be_a(ActiveDocument::Criteria::Queryable::Key)
+        it 'returns Hash' do
+          expect(association.order).to be_a(Hash)
         end
       end
 

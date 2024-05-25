@@ -477,12 +477,12 @@ describe ActiveDocument::Association::Referenced::HasMany do
 
       let(:options) do
         {
-          order: :rating.desc
+          order: { rating: :desc }
         }
       end
 
       it 'returns a Criteria Queryable Key' do
-        expect(association.order).to be_a(ActiveDocument::Criteria::Queryable::Key)
+        expect(association.order).to be_a(Hash)
       end
     end
 
