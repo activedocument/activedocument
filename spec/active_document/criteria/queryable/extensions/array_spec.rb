@@ -100,13 +100,6 @@ describe Array do
     end
   end
 
-  describe '#__array__' do
-
-    it 'returns self' do
-      expect([1, 2, 3].__array__).to eq([1, 2, 3])
-    end
-  end
-
   describe '__deep_copy__' do
 
     let(:inner) do

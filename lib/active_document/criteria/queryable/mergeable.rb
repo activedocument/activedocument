@@ -147,7 +147,7 @@ module ActiveDocument
               if expr.is_a?(Selectable)
                 expr = expr.selector
               end
-              normalized = QueryNormalizer.normalize_expr(self, expr)
+              normalized = QueryNormalizer.normalize_expr(expr, negating: negating?)
               sel.store(operator, result_criteria.push(normalized))
             end
           end
@@ -174,9 +174,9 @@ module ActiveDocument
             sel = query.selector
             _active_document_flatten_arrays(criteria).each do |criterion|
               expr = if criterion.is_a?(Selectable)
-                       QueryNormalizer.normalize_expr(self, criterion.selector)
+                       QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
                      else
-                       QueryNormalizer.normalize_expr(self, criterion)
+                       QueryNormalizer.normalize_expr(criterion, negating: negating?)
                      end
               if sel.empty?
                 sel.store(operator, [expr])

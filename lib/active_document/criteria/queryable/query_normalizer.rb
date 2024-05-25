@@ -12,11 +12,10 @@ module ActiveDocument
         #
         # The argument must be a hash containing key-value pairs of the
         # following forms:
-        # - {field_name: value}
-        # - {'field_name' => value}
-        # - {key_instance: value}
-        # - {:$operator => operator_value_expression}
-        # - {'$operator' => operator_value_expression}
+        # - { field_name: value }
+        # - { 'field_name' => value }
+        # - { :$operator => operator_value_expression }
+        # - { '$operator' => operator_value_expression }
         #
         # This method effectively converts symbol keys to string keys in
         # the input +expr+, such that the downstream code can assume that
@@ -25,14 +24,16 @@ module ActiveDocument
         # @param [ Hash ] expr Query expression including nested hashes.
         #
         # @return [ BSON::Document ] The expanded criteria.
-        def normalize_expr(query, expr)
+        #
+        # @api private
+        def normalize_expr(expr, negating: false)
           unless expr.is_a?(Hash)
             raise ArgumentError.new('Argument must be a Hash')
           end
 
           result = BSON::Document.new
           expr.each do |field, value|
-            QueryNormalizer.expr_part(field, QueryNormalizer.expand_complex(value), query.negating?).each do |k, v|
+            QueryNormalizer.expr_part(field, QueryNormalizer.expand_complex(value), negating: negating).each do |k, v|
               if (existing = result[k])
                 if existing.is_a?(Hash)
                   # Existing value is an operator.
@@ -43,7 +44,7 @@ module ActiveDocument
                     # If there are no conflicts, combine the hashes, otherwise
                     # add new conditions to top level with $and.
                     if (v.keys & existing.keys).empty?
-                      existing.update(v)
+                      existing.merge!(v)
                     else
                       raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
                       # result['$and'] ||= []
@@ -70,7 +71,7 @@ module ActiveDocument
                       # result['$and'] ||= []
                       # result['$and'] << { k => v }
                     else
-                      existing.update(op => v)
+                      existing.merge!(op => v)
                     end
                   end
                 else
@@ -108,7 +109,9 @@ module ActiveDocument
         # @param [ true | false ] negating If the selection should be negated.
         #
         # @return [ Hash ] The selection.
-        def expr_part(key, value, negating = false)
+        #
+        # @api private
+        def expr_part(key, value, negating: false)
           if negating
             { key => { regexp?(value) ? '$not' : '$ne' => value } }
           else
@@ -122,6 +125,8 @@ module ActiveDocument
         #   QueryNormalizer.expand_complex(object)
         #
         # @return [ Object ] The expanded object.
+        #
+        # @api private
         def expand_complex(object)
           case object
           when Array
@@ -137,6 +142,23 @@ module ActiveDocument
           end
         end
 
+        # Expand criterion values to arrays, to be used with operators that
+        # take an array as argument such as $in.
+        #
+        # @example Convert all the values to arrays.
+        #   selectable.with_array_values({ key: 1...4 })
+        #
+        # @param [ Hash ] criterion The criterion.
+        #
+        # @return [ Hash ] The $in friendly criterion with array values.
+        #
+        # @api private
+        def expand_condition_to_array_values(criterion)
+          raise ArgumentError.new('Criterion cannot be nil here') if criterion.nil?
+
+          criterion.transform_values { |value| to_array(value) }
+        end
+
         private
 
         # Returns whether the object is Regexp-like.
@@ -146,6 +168,23 @@ module ActiveDocument
         # @return [ Boolean ] Whether the object is Regexp-like.
         def regexp?(object)
           object.is_a?(Regexp) || object.is_a?(BSON::Regexp::Raw)
+        end
+
+        # Get the object as an array or wrapped by an array.
+        #
+        # @example Get the range as an array.
+        #   QueryNormalizer.to_array(1...3)
+        #
+        # @return [ Array ] The object as an array.
+        def to_array(object)
+          case object
+          when Array
+            object
+          when Range
+            object.to_a
+          else
+            [object]
+          end
         end
       end
     end

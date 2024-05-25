@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_document/criteria/queryable/query_normalizer'
-require 'active_document/criteria/queryable/expandable'
 require 'active_document/criteria/queryable/extensions'
 require 'active_document/criteria/queryable/mergeable'
 require 'active_document/criteria/queryable/smash'
@@ -25,7 +24,6 @@ module ActiveDocument
     #   end
     module Queryable
       include Storable
-      include Expandable
       include Mergeable
       include Aggregable
       include Selectable

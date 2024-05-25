@@ -20,16 +20,6 @@ module ActiveDocument
             object.__add_from_array__(self)
           end
 
-          # Return the object as an array.
-          #
-          # @example Get the array.
-          #   [ 1, 2 ].__array__
-          #
-          # @return [ Array ] self
-          def __array__
-            self
-          end
-
           # Makes a deep copy of the array, deep copying every element inside the
           # array.
           #

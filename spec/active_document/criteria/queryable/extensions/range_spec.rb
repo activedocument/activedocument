@@ -4,13 +4,6 @@ require 'spec_helper'
 
 describe Range do
 
-  describe '#__array__' do
-
-    it 'returns the range as an array' do
-      expect((1..3).__array__).to eq([1, 2, 3])
-    end
-  end
-
   describe '#__evolve_date__' do
 
     subject(:evolved) { (min..max).__evolve_date__ }

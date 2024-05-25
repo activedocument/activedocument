@@ -30,7 +30,7 @@ module ActiveDocument
           criteria.inject(clone) do |query, condition|
             raise Errors::CriteriaArgumentRequired.new(:all) if condition.nil?
 
-            condition = expand_condition_to_array_values(condition)
+            condition = QueryNormalizer.expand_condition_to_array_values(condition)
 
             if strategy
               send(strategy, condition, '$all')
@@ -58,7 +58,7 @@ module ActiveDocument
         def and(*criteria)
           _active_document_flatten_arrays(criteria).inject(clone) do |c, new_s|
             new_s = new_s.selector if new_s.is_a?(Selectable)
-            normalized = QueryNormalizer.normalize_expr(self, new_s)
+            normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
             normalized.each do |k, v|
               k = k.to_s
               if c.selector[k]
@@ -252,7 +252,7 @@ module ActiveDocument
         def in(condition)
           raise Errors::CriteriaArgumentRequired.new(:in) if condition.nil?
 
-          condition = expand_condition_to_array_values(condition)
+          condition = QueryNormalizer.expand_condition_to_array_values(condition)
 
           if strategy
             send(strategy, condition, '$in')
@@ -401,7 +401,7 @@ module ActiveDocument
         def nin(condition)
           raise Errors::CriteriaArgumentRequired.new(:nin) if condition.nil?
 
-          condition = expand_condition_to_array_values(condition)
+          condition = QueryNormalizer.expand_condition_to_array_values(condition)
 
           if strategy
             send(strategy, condition, '$nin')
@@ -459,7 +459,7 @@ module ActiveDocument
           else
             criteria.compact.inject(clone) do |c, new_s|
               new_s = new_s.selector if new_s.is_a?(Selectable)
-              QueryNormalizer.normalize_expr(self, new_s).each do |k, v|
+              QueryNormalizer.normalize_expr(new_s, negating: negating?).each do |k, v|
                 k = k.to_s
                 if c.selector[k] || k.start_with?('$') || v.is_a?(Hash)
                   c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
@@ -499,8 +499,8 @@ module ActiveDocument
 
           exprs = criteria.map do |criterion|
             QueryNormalizer.normalize_expr(
-              self,
-              criterion.is_a?(Selectable) ? criterion.selector : criterion
+              criterion.is_a?(Selectable) ? criterion.selector : criterion,
+              negating: negating?
             )
           end
 
@@ -582,7 +582,7 @@ module ActiveDocument
             # and add the result to self.
             exprs = criteria.map do |criterion|
               if criterion.is_a?(Selectable)
-                QueryNormalizer.normalize_expr(self, criterion.selector)
+                QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
               else
                 criterion.to_h do |k, v|
                   if k.is_a?(Symbol)
@@ -745,7 +745,7 @@ module ActiveDocument
             raise Errors::InvalidQuery.new("Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}")
           end
 
-          normalized = QueryNormalizer.normalize_expr(self, criterion)
+          normalized = QueryNormalizer.normalize_expr(criterion, negating: negating?)
           clone.tap do |query|
             normalized.each do |field, value|
               field_s = field.to_s

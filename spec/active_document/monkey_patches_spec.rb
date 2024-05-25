@@ -37,7 +37,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
     Object => %i[
       __add__
       __add_from_array__
-      __array__
       __deep_copy__
       __evolve_object_id__
       __intersect__

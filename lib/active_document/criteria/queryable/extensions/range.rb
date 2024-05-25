@@ -8,16 +8,6 @@ module ActiveDocument
         # Adds query type-casting behavior to Range class.
         module Range
 
-          # Get the range as an array.
-          #
-          # @example Get the range as an array.
-          #   1...3.__array__
-          #
-          # @return [ Array ] The range as an array.
-          def __array__
-            to_a
-          end
-
           # Convert the range to a $gte/$lte mongo friendly query for dates.
           #
           # @example Evolve the range.

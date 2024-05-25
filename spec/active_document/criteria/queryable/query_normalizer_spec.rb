@@ -5,12 +5,13 @@ require 'spec_helper'
 describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
 
   describe '.normalize_expr' do
-    let(:query) do
-      ActiveDocument::Query.new
+    # TODO: test negating
+    let(:negating) do
+      false
     end
 
     subject(:normalized) do
-      described_class.normalize_expr(query, condition)
+      described_class.normalize_expr(condition, negating: negating)
     end
 
     context 'when simple keys' do
@@ -27,6 +28,12 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       end
 
       it { is_expected.to eq(condition) }
+
+      context 'when negating' do
+        let(:negating) { true }
+
+        it { is_expected.to eq({ 'age' => { '$not' => { '$gt' => 42 } } }) }
+      end
     end
 
     context 'when multiple Hash keys on the same field' do
@@ -35,36 +42,42 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       end
 
       it { is_expected.to eq(condition) }
+
+      context 'when negating' do
+        let(:negating) { true }
+
+        it { is_expected.to eq({ 'age' => { '$not' => { '$gt' => 42, '$lt' => 50 } } }) }
+      end
     end
 
-    context 'given implicit equality and Hash on the same field' do
-      [42, 'infinite', [nil]].each do |value|
-        context 'implicit equality then Hash' do
-          let(:condition) do
-            { 'age' => { '$eq' => value, '$lt' => 50 } }
-          end
+    [42, 'infinite', [nil]].each do |value|
+      context "when mixed with equality value #{value}" do
+        let(:condition) do
+          { 'age' => { '$eq' => value, '$lt' => 50 } }
+        end
 
-          it { is_expected.to eq(condition) }
+        it { is_expected.to eq(condition) }
+
+        context 'when negating' do
+          let(:negating) { true }
+
+          it { is_expected.to eq({ 'age' => { '$not' => { '$eq' => value, '$lt' => 50 } } }) }
         end
       end
     end
 
-    context 'given implicit equality with Regexp argument and Hash on the same field' do
-      [/42/, BSON::Regexp::Raw.new('42')].each do |value|
-        context "for regular expression value #{value}" do
-          context 'implicit equality then Hash' do
-            it 'expands implicit equality with $eq and combines with Hash' do
-              expected = { 'age' => { '$regex' => value, '$lt' => 50 } }
-              expect(described_class.normalize_expr(query, expected)).to eq(expected)
-            end
-          end
+    [/42/, BSON::Regexp::Raw.new('42')].each do |value|
+      context "when mixed with regular expression value #{value}" do
+        let(:condition) do
+          { 'age' => { '$regex' => value, '$lt' => 50 } }
+        end
 
-          context 'Key instance then implicit equality' do
-            it 'expands implicit equality with $eq and combines with Hash' do
-              expected = { 'age' => { '$gt' => 50, '$regex' => value } }
-              expect(described_class.normalize_expr(query, expected)).to eq(expected)
-            end
-          end
+        it { is_expected.to eq(condition) }
+
+        context 'when negating' do
+          let(:negating) { true }
+
+          it { is_expected.to eq({ 'age' => { '$not' => { '$eq' => value, '$lt' => 50 } } }) }
         end
       end
     end
@@ -157,7 +170,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       end
 
       context 'when negated' do
-        subject { described_class.expr_part('field', value, true) }
+        subject { described_class.expr_part('field', value, negating: true) }
 
         context 'with a Regexp' do
           let(:value) { /test/ }
@@ -203,7 +216,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       context 'when negated' do
 
         context 'with a regexp' do
-          subject { described_class.expr_part(:field, /test/, true) }
+          subject { described_class.expr_part(:field, /test/, negating: true) }
 
           it 'returns the symbol with the value negated' do
             is_expected.to eq({ field: { '$not' => /test/ } })
@@ -211,7 +224,7 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
         end
 
         context 'with anything else' do
-          subject { described_class.expr_part(:field, 'test', true) }
+          subject { described_class.expr_part(:field, 'test', negating: true) }
 
           it 'returns the symbol with the value negated' do
             is_expected.to eq({ field: { '$ne' => 'test' } })
@@ -276,6 +289,87 @@ describe ActiveDocument::Criteria::Queryable::QueryNormalizer do
       it 'expands all keys inside the array' do
         is_expected.to eq('Foobar')
       end
+    end
+  end
+
+  describe '.to_array' do
+    subject { described_class.send(:to_array, object) }
+
+    context 'when Array' do
+      let(:object) do
+        [4, { foo: :bar }]
+      end
+
+      it { is_expected.to eq(object) }
+    end
+
+    context 'when Range' do
+      let(:object) do
+        1..3
+      end
+
+      it { is_expected.to eq([1, 2, 3]) }
+    end
+
+    context 'when other Object' do
+      let(:object) do
+        'Foobar'
+      end
+
+      it { is_expected.to eq(['Foobar']) }
+    end
+  end
+
+  describe '.expand_condition_to_array_values' do
+
+    shared_examples_for 'expands' do
+      subject(:expanded) do
+        described_class.expand_condition_to_array_values(criterion)
+      end
+
+      it 'expands' do
+        is_expected.to eq(expected)
+      end
+
+      context 'when input is frozen' do
+        before do
+          criterion.freeze
+        end
+
+        it 'expands' do
+          is_expected.to eq(expected)
+        end
+      end
+
+      it 'does not modify input' do
+        criterion_copy = criterion.dup.freeze
+        is_expected.to eq(expected)
+        expect(criterion).to eq(criterion_copy)
+      end
+    end
+
+    context 'when Hash with literal value' do
+      let(:criterion) do
+        { foo: 4 }
+      end
+
+      let(:expected) do
+        { foo: [4] }
+      end
+
+      it_behaves_like 'expands'
+    end
+
+    context 'when Hash with Range value' do
+      let(:criterion) do
+        { foo: 1..4 }
+      end
+
+      let(:expected) do
+        { foo: [1, 2, 3, 4] }
+      end
+
+      it_behaves_like 'expands'
     end
   end
 end
