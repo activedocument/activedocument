@@ -136,7 +136,7 @@ class PersonAutosave
   accepts_nested_attributes_for :quiz
   accepts_nested_attributes_for :services, allow_destroy: true
 
-  scope :minor, -> { where(:age.lt => 18) }
+  scope :minor, -> { where(age: { '$lt' => 18 }) }
   scope :without_ssn, -> { without(:ssn) }
   scope :search, ->(query) { any_of({ title: query }) }
 

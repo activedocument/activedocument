@@ -1725,7 +1725,7 @@ describe ActiveDocument::Criteria do
       context 'when there are no duplicate values' do
 
         let(:criteria) do
-          Band.where(:name.exists => true)
+          Band.where(name: { '$exists' => true })
         end
 
         let!(:plucked) do
@@ -1798,7 +1798,7 @@ describe ActiveDocument::Criteria do
       context 'when plucking multi-fields' do
 
         let(:plucked) do
-          Band.where(:name.exists => true).pluck(:name, :likes)
+          Band.where(name: { '$exists' => true }).pluck(:name, :likes)
         end
 
         it 'returns the values' do
@@ -1809,7 +1809,7 @@ describe ActiveDocument::Criteria do
       context 'when there are duplicate values' do
 
         let(:plucked) do
-          Band.where(:name.exists => true).pluck(:likes)
+          Band.where(name: { '$exists' => true }).pluck(:likes)
         end
 
         it 'returns the duplicates' do
@@ -2145,7 +2145,7 @@ describe ActiveDocument::Criteria do
       context 'when there are no duplicate values' do
 
         let(:criteria) do
-          Band.where(:name.exists => true)
+          Band.where(name: { '$exists' => true })
         end
 
         let!(:plucked) { [] }
@@ -2213,7 +2213,7 @@ describe ActiveDocument::Criteria do
       context 'when plucking multi-fields' do
 
         let!(:plucked) { [] }
-        let!(:pluck_each) { Band.where(:name.exists => true).pluck_each(:name, :likes) { |v| plucked << v } }
+        let!(:pluck_each) { Band.where(name: { '$exists' => true }).pluck_each(:name, :likes) { |v| plucked << v } }
 
         it 'returns the values' do
           expect(plucked).to contain_exactly(['Depeche Mode', 3], ['Tool', 3], ['Photek', 1])
@@ -2223,7 +2223,7 @@ describe ActiveDocument::Criteria do
       context 'when there are duplicate values' do
 
         let!(:plucked) { [] }
-        let!(:pluck_each) { Band.where(:name.exists => true).pluck_each(:likes) { |v| plucked << v } }
+        let!(:pluck_each) { Band.where(name: { '$exists' => true }).pluck_each(:likes) { |v| plucked << v } }
 
         it 'returns the duplicates' do
           expect(plucked).to contain_exactly(3, 3, 1)

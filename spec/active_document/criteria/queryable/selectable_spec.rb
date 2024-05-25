@@ -497,7 +497,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         let(:selection) do
-          query.elem_match(users: { :time.gt => time })
+          query.elem_match(users: { time: { '$gt' => time } })
         end
 
         it 'adds the $elemMatch expression' do
@@ -2265,7 +2265,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when using complex keys with different operators' do
 
         let(:selection) do
-          query.where(:field.gt => 5, :field.lt => 10, :field.ne => 7)
+          query.where(field: { '$gt' => 5, '$lt' => 10, '$ne' => 7 })
         end
 
         it 'merges the strategies on the same field' do

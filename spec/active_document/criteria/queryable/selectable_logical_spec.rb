@@ -1148,7 +1148,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'regexp argument' do
         let(:selection) do
-          query.send(tested_method, field: /t/, :field.gt => 0)
+          query.send(tested_method, field: [/t/, { '$gt' => 0 }])
         end
 
         it 'combines conditions with $regex' do
@@ -1476,7 +1476,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in separate hashes' do
           let(:selection) do
-            query.send(tested_method, { field: 3 }, { :field.lt => 5 })
+            query.send(tested_method, { field: 3 }, { field: { '$lt' => 5 } })
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1484,7 +1484,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when the criterion is wrapped in an array' do
           let(:selection) do
-            query.send(tested_method, [field: 3], [:field.lt => 5])
+            query.send(tested_method, [field: 3], [field: { '$lt' => 5 }])
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1531,7 +1531,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'criteria are provided in the same hash' do
           context 'non-regexp argument' do
             let(:selection) do
-              query.send(tested_method, :field.gt => 3, :field => 5)
+              query.send(tested_method, field: [{ '$gt' => 3 }, 5])
             end
 
             it_behaves_like 'combines conditions with $eq'
@@ -1539,7 +1539,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
           context 'regexp argument' do
             let(:selection) do
-              query.send(tested_method, :field.gt => 3, :field => /t/)
+              query.send(tested_method, field: [{ '$gt' => 3 }, /t/])
             end
 
             it_behaves_like 'combines conditions with $regex'
@@ -1548,7 +1548,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in separate hashes' do
           let(:selection) do
-            query.send(tested_method, { :field.gt => 3 }, { field: 5 })
+            query.send(tested_method, { field { '$gt' => 3 } }, { field: 5 })
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1556,7 +1556,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when the criterion is wrapped in an array' do
           let(:selection) do
-            query.send(tested_method, [:field.gt => 3], [field: 5])
+            query.send(tested_method, [field: { '$gt' => 3 }], [field: 5])
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1581,7 +1581,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when a criterion is wrapped in an array' do
 
         let(:selection) do
-          query.any_of([{ first: [1, 2] }, { :second.gt => 3 }])
+          query.any_of([{ first: [1, 2] }, { second: { '$gt' => 3 } }])
         end
 
         it_behaves_like 'returns a cloned query'
@@ -1654,7 +1654,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when using fields that meaningfully evolve values' do
 
         let(:query) do
-          Dictionary.any_of({ a: 1 }, :published.gt => Date.new(2020, 2, 3))
+          Dictionary.any_of({ a: 1 }, published: { '$gt' => Date.new(2020, 2, 3) })
         end
 
         it 'generates the expected query' do
@@ -1779,7 +1779,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criteria uses Key' do
 
         let(:selection) do
-          query.not(:age.gt => 50)
+          query.not(age: { '$gt' => 50 })
         end
 
         it 'negates the gt selection' do
@@ -2078,7 +2078,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'non-regexp argument' do
         let(:selection) do
-          query.not(field: 1, :field.gt => 0)
+          query.not(field: 1, field: { '$gt' => 0 })
         end
 
         it 'combines conditions with $eq' do
@@ -2090,7 +2090,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'regexp argument' do
         let(:selection) do
-          query.not(field: /t/, :field.gt => 0)
+          query.not(field: /t/, field: { '$gt' => 0 })
         end
 
         it 'combines conditions with $regex' do
@@ -2106,7 +2106,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     # This test confirms that MONGOID-5097 has been repaired.
     context 'when using exists on a field of type Time' do
       let(:criteria) do
-        Dictionary.any_of({ :published.exists => true }, published: nil)
+        Dictionary.any_of({ published: { '$exists' => true } }, published: nil)
       end
 
       it "doesn't raise an error" do
@@ -2304,7 +2304,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when the criteria uses a Key instance' do
         let(:selection) do
-          query.none_of({ first: [1, 2] }, { :second.gt => 3 })
+          query.none_of({ first: [1, 2] }, { second: { '$gt' => 3 } })
         end
 
         it 'adds the $nor selector' do
@@ -2355,26 +2355,26 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in the same hash' do
           context 'non-regexp argument' do
-            let(:selection) { query.none_of(:field => 3, :field.lt => 5) }
+            let(:selection) { query.none_of(field: [3, { '$lt' => 5 }]) }
 
             it_behaves_like 'combines conditions with $eq'
           end
 
           context 'regexp argument' do
-            let(:selection) { query.none_of(:field => /t/, :field.lt => 5) }
+            let(:selection) { query.none_of(field: [/t/, { '$lt' => 5 }]) }
 
             it_behaves_like 'combines conditions with $regex'
           end
         end
 
         context 'criteria are provided in separate hashes' do
-          let(:selection) { query.none_of({ field: 3 }, { :field.lt => 5 }) }
+          let(:selection) { query.none_of({ field: 3 }, { field: { '$lt' => 5 } }) }
 
           it_behaves_like 'adds conditions with $nor'
         end
 
         context 'when the criterion is wrapped in an array' do
-          let(:selection) { query.none_of([field: 3], [:field.lt => 5]) }
+          let(:selection) { query.none_of([field: 3], [field: { '$lt' => 5 }]) }
 
           it_behaves_like 'adds conditions with $nor'
         end
@@ -2416,26 +2416,26 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in the same hash' do
           context 'non-regexp argument' do
-            let(:selection) { query.none_of(:field.gt => 3, :field => 5) }
+            let(:selection) { query.none_of(field: [{ '$gt' => 3 }, 5]) }
 
             it_behaves_like 'combines conditions with $eq'
           end
 
           context 'regexp argument' do
-            let(:selection) { query.none_of(:field.gt => 3, :field => /t/) }
+            let(:selection) { query.none_of(field: [{ '$gt' => 3 }, /t/]) }
 
             it_behaves_like 'combines conditions with $regex'
           end
         end
 
         context 'criteria are provided in separate hashes' do
-          let(:selection) { query.none_of({ :field.gt => 3 }, { field: 5 }) }
+          let(:selection) { query.none_of({ field: { '$gt' => 3 } }, { field: 5 }) }
 
           it_behaves_like 'adds conditions with $nor'
         end
 
         context 'when the criterion is wrapped in an array' do
-          let(:selection) { query.none_of([:field.gt => 3], [field: 5]) }
+          let(:selection) { query.none_of([field: { '$gt' => 3 }], [field: 5]) }
 
           it_behaves_like 'adds conditions with $nor'
         end
@@ -2453,7 +2453,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when a criterion is wrapped in an array' do
         let(:selection) do
-          query.none_of([{ first: [1, 2] }, { :second.gt => 3 }])
+          query.none_of([{ first: [1, 2] }, { second: { '$gt' => 3 } }])
         end
 
         it_behaves_like 'returns a cloned query'
@@ -2521,7 +2521,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     context 'when using multiple criteria and symbol operators' do
       context 'when using fields that meaningfully evolve values' do
         let(:query) do
-          Dictionary.none_of({ a: 1 }, :published.gt => Date.new(2020, 2, 3))
+          Dictionary.none_of({ a: 1 }, published: { '$gt' => Date.new(2020, 2, 3) })
         end
 
         it 'generates the expected query' do
