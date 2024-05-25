@@ -709,7 +709,7 @@ describe ActiveDocument::Association::Options do
 
             let(:options) do
               {
-                order: :rating.desc
+                order: { rating: :desc }
               }
             end
 
