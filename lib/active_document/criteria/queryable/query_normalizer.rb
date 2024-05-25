@@ -3,6 +3,8 @@
 module ActiveDocument
   class Criteria
     module Queryable
+
+      # Singleton module for normalizing query expressions.
       module QueryNormalizer
         extend self
 
@@ -26,6 +28,7 @@ module ActiveDocument
         # @return [ BSON::Document ] The expanded criteria.
         #
         # @api private
+        # rubocop:disable Style/GuardClause
         def normalize_expr(expr, negating: false)
           unless expr.is_a?(Hash)
             raise ArgumentError.new('Argument must be a Hash')
@@ -98,6 +101,7 @@ module ActiveDocument
           end
           result
         end
+        # rubocop:enable Style/GuardClause
 
         # Get the value as a expression.
         #
