@@ -1,4 +1,64 @@
 
+Deprecation
+
+In general, anything marked deprecated in Mongoid has been removed in
+
+We recommend you to have upgrade to Mongoid 9.0 before attempting to migrate to ActiveDocument.
+
+
+Philosophy:
+- Build your own queries using nested hashes.
+- SQL like / ActiveRecord like chaining is not supported.
+
+Symbol Operators
+
+:foo.in => ['bar', 'baz']
+
+Query Functionality
+
+| Method | Migration |
+| ------ | --------- |
+| `#all` | No longer supports method arguments. Use `#contains_all` if you mean to match an Array's elements. |
+| `#all_in` | Removed. Use `#contains_all`. |
+| `#in` | Renamed `$in` to `#any_in` (also aliased to `#contains_any`) |
+        alias_method :not_in, :nin
+
+Chainable Logical Operators
+
+These are dangerous and have. ActiveDocument will not attempt to be SQL-like, and will not attempt to replicate anything
+in active record.
+https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/
+
+| `#and` | Removed. Chaining operations are removed because they cause confusion. Use non-chaining `#all_of` instead. |
+| `#or` | Removed. Chaining operations are removed because they cause confusion. Use non-chaining `#any_of` instead. |
+| `#nor` | Removed. Chaining operations are removed because they cause confusion. Use non-chaining `#none_of` instead. |
+| `#not` | Still works . |
+
+Merge strategies
+
+Merge strategies have been removed. Instead, build a query hash using the `$and`, `$or`, and `$nor` operators.
+
+| `#override` | Removed. |
+| `#union` | Removed. Use `$or` to build a query hash instead. |
+| `#intersect` | Removed. Use `$and` to build a query hash instead. |
+
+Implicit range queries
+
+BAD:
+  Band.any_in(year: 1950)
+
+GOOD:
+  Band.where(year: 1950)
+  Band.any_in(year: [1950])
+
+  => #<ActiveDocument::Criteria
+    selector: {"year"=>{"$in"=>[1950]}}
+    options:  {}
+    class:    Band
+    embedded: false>
+
+
+
 Setting Field Type as a Class is Deprecated
 -------------------------------------------
 

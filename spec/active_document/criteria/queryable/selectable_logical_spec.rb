@@ -216,7 +216,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   end
 
   # Non-hoisting means the operator is always present, for example
-  # Foo.or(a: 1) produces {'$or' => [{'a' => 1}]}.
+  # Foo.any_of(a: 1) produces {'$or' => [{'a' => 1}]}.
   shared_examples_for 'a non-hoisting logical operation' do
 
     context 'when there is a single predicate' do
@@ -297,7 +297,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     context 'when provided no criterion' do
 
       let(:selection) do
-        query.and
+        query.all_of
       end
 
       it 'does not add any criterion' do
@@ -787,7 +787,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when complex criteria conditions are given' do
         let(:selection) do
-          base_selection.and(query.or([one: 'one'], [two: 'two']))
+          base_selection.where(query.any_of([one: 'one'], [two: 'two']))
         end
 
         it 'adds new conditions to top level' do
@@ -1162,24 +1162,21 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe '#or' do
-
-    let(:tested_method) { :or }
+  describe '#any_of' do
+    let(:tested_method) { :any_of }
     let(:expected_operator) { '$or' }
 
     it_behaves_like '$or/$nor'
   end
 
-  describe '#nor' do
-
-    let(:tested_method) { :nor }
+  describe '#none_of' do
+    let(:tested_method) { :none_of }
     let(:expected_operator) { '$nor' }
 
     it_behaves_like '$or/$nor'
   end
 
   describe '#any_of' do
-
     let(:tested_method) { :any_of }
     let(:expected_operator) { '$or' }
 
@@ -1333,12 +1330,12 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when query already has an $or condition and another condition' do
 
         let(:selection) do
-          query.or(field: [1, 2]).where(foo: 'bar').any_of(test: 1)
+          query.any_of({ field: [1, 2] }, { hello: 'world' }).where(foo: 'bar').any_of(test: 1)
         end
 
         it 'adds the new condition' do
           expect(selection.selector).to eq(
-            '$or' => [{ 'field' => [1, 2] }],
+            '$or' => [{ 'field' => [1, 2] }, { 'hello' => 'world' }],
             'foo' => 'bar',
             'test' => 1
           )
@@ -1348,12 +1345,12 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when any_of has multiple arguments' do
 
         let(:selection) do
-          query.or(field: [1, 2]).where(foo: 'bar').any_of({ a: 1 }, { b: 2 })
+          query.any_of({ field: [1, 2] }, { hello: 'world' }).where(foo: 'bar').any_of({ a: 1 }, { b: 2 })
         end
 
         it 'adds the new condition to top level' do
           expect(selection.selector).to eq(
-            '$or' => [{ 'field' => [1, 2] }],
+            '$or' => [{ 'field' => [1, 2] }, { 'hello' => 'world' }],
             'foo' => 'bar',
             '$and' => [{ '$or' => [{ 'a' => 1 }, { 'b' => 2 }] }]
           )
@@ -1361,12 +1358,12 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when query already has a top-level $and' do
           let(:selection) do
-            query.or(field: [1, 2]).where('$and' => [foo: 'bar']).any_of({ a: 1 }, { b: 2 })
+            query.any_of({ field: [1, 2] }, { hello: 'world' }).where('$and' => [foo: 'bar']).any_of({ a: 1 }, { b: 2 })
           end
 
           it 'adds the new condition to top level $and' do
             expect(selection.selector).to eq(
-              '$or' => [{ 'field' => [1, 2] }],
+              '$or' => [{ 'field' => [1, 2] }, { 'hello' => 'world' }],
               '$and' => [{ 'foo' => 'bar' }, { '$or' => [{ 'a' => 1 }, { 'b' => 2 }] }]
             )
           end
@@ -1735,15 +1732,15 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
       end
 
-      context 'when the next condition is #all' do
-        let(:query_method) { :all }
+      context 'when the next condition is #contains_all' do
+        let(:query_method) { :contains_all }
         let(:operator) { '$all' }
 
         it_behaves_like 'negates the next condition'
       end
 
       context 'when the next condition is #in' do
-        let(:query_method) { :in }
+        let(:query_method) { :any_in }
         let(:operator) { '$in' }
 
         it_behaves_like 'negates the next condition'
@@ -2240,7 +2237,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when query already has a $nor condition and another condition' do
         let(:selection) do
-          query.nor(field: [1, 2]).where(foo: 'bar').none_of(test: 1)
+          query.none_of(field: [1, 2]).where(foo: 'bar').none_of(test: 1)
         end
 
         it 'adds the new condition' do
@@ -2254,7 +2251,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when none_of has multiple arguments' do
         let(:selection) do
-          query.nor(field: [1, 2]).where(foo: 'bar').none_of({ a: 1 }, { b: 2 })
+          query.none_of(field: [1, 2]).where(foo: 'bar').none_of({ a: 1 }, { b: 2 })
         end
 
         it 'adds the new condition to top level' do
@@ -2267,7 +2264,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when query already has a top-level $and' do
           let(:selection) do
-            query.nor(field: [1, 2]).where('$and' => [foo: 'bar']).none_of({ a: 1 }, { b: 2 })
+            query.none_of(field: [1, 2]).where('$and' => [foo: 'bar']).none_of({ a: 1 }, { b: 2 })
           end
 
           it 'adds the new condition to top level $and' do

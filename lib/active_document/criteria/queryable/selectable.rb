@@ -27,6 +27,25 @@ module ActiveDocument
         def all(*criteria)
           return clone.tap(&:reset_strategies!) if criteria.empty?
 
+          raise ArgumentError.new('Use #contains_all instead of #all for to match all array values')
+        end
+
+        # Add the $all criterion to match all values in the array.
+        #
+        # @example Add the criterion.
+        #   selectable.all(field: [ 1, 2 ])
+        #
+        # @example Execute an $all in a where query.
+        #   selectable.where(field: { '$all' => [ 1, 2 ] })
+        #
+        # @param [ Hash... ] *criteria The key value pair(s) for $all matching.
+        #
+        # @return [ Selectable ] The cloned selectable.
+        def contains_all(*criteria)
+          if criteria.empty?
+            raise ArgumentError.new('Criterion cannot be nil here')
+          end
+
           criteria.inject(clone) do |query, condition|
             raise Errors::CriteriaArgumentRequired.new(:all) if condition.nil?
 
@@ -43,7 +62,6 @@ module ActiveDocument
             end
           end.reset_strategies!
         end
-        alias_method :all_in, :all
 
         # Add the $and criterion.
         #
@@ -249,8 +267,8 @@ module ActiveDocument
         # @param [ Hash ] condition The field/value criterion pairs.
         #
         # @return [ Selectable ] The cloned selectable.
-        def in(condition)
-          raise Errors::CriteriaArgumentRequired.new(:in) if condition.nil?
+        def any_in(condition)
+          raise Errors::CriteriaArgumentRequired.new(:any_in) if condition.nil?
 
           condition = QueryNormalizer.expand_condition_to_array_values(condition)
 
@@ -264,7 +282,7 @@ module ActiveDocument
             end.reset_strategies!
           end
         end
-        alias_method :any_in, :in
+        alias_method :contains_any, :any_in
 
         # Add the $lt criterion to the selector.
         #
@@ -414,19 +432,7 @@ module ActiveDocument
           end
         end
         alias_method :not_in, :nin
-
-        # Adds $nor selection to the selectable.
-        #
-        # @example Add the $nor selection.
-        #   selectable.nor(field: 1, field: 2)
-        #
-        # @param [ [ Hash | ActiveDocument::Criteria | Array<Hash | ActiveDocument::Criteria> ]... ] *criteria
-        #   Multiple key/value pair matches or Criteria objects.
-        #
-        # @return [ Selectable ] The new selectable.
-        def nor(*criteria)
-          _active_document_add_top_level_operation('$nor', criteria)
-        end
+        alias_method :contains_none, :nin
 
         # Is the current selectable negating the next selection?
         #
@@ -505,40 +511,6 @@ module ActiveDocument
           end
 
           self.and('$nor' => exprs)
-        end
-
-        # Creates a disjunction using $or from the existing criteria in the
-        # receiver and the provided arguments.
-        #
-        # This behavior (receiver becoming one of the disjunction operands)
-        # matches ActiveRecord's +or+ behavior.
-        #
-        # Use +any_of+ to add a disjunction of the arguments as an additional
-        # constraint to the criteria already existing in the receiver.
-        #
-        # Each argument can be a Hash, a Criteria object, an array of
-        # Hash or Criteria objects, or a nested array. Nested arrays will be
-        # flattened and can be of any depth. Passing arrays is deprecated.
-        #
-        # @example Add the $or selection where both fields must have the specified values.
-        #   selectable.or(field: 1, field: 2)
-        #
-        # @example Add the $or selection where either value match is sufficient.
-        #   selectable.or({field: 1}, {field: 2})
-        #
-        # @example Same as previous example but using the deprecated array wrap.
-        #   selectable.or([{field: 1}, {field: 2}])
-        #
-        # @example Same as previous example, also deprecated.
-        #   selectable.or([{field: 1}], [{field: 2}])
-        #
-        # @param [ [ Hash | ActiveDocument::Criteria | Array<Hash | ActiveDocument::Criteria> ]... ] *criteria
-        #   Multiple key/value pair matches or Criteria objects, or arrays
-        #   thereof. Passing arrays is deprecated.
-        #
-        # @return [ Selectable ] The new selectable.
-        def or(*criteria)
-          _active_document_add_top_level_operation('$or', criteria)
         end
 
         # Adds a disjunction of the arguments as an additional constraint
