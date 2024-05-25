@@ -3502,7 +3502,7 @@ describe ActiveDocument::Criteria do
 
       let(:criteria) do
         Bar.geo_spatial(
-          location: { '$geoWithin' => { '$polygon' => [[[50, 10], [50, 20], [60, 20], [60, 10], [50, 10]]] } }
+          location: { '$geoWithin' => { '$polygon' => [[50, 10], [50, 20], [60, 20], [60, 10], [50, 10]] } }
         )
       end
 

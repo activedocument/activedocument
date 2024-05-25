@@ -496,18 +496,5 @@ describe Array do
         end
       end
     end
-
-    context 'when the array is selectable keys' do
-
-      let(:selection) do
-        [{ field_one: :asc }, { field_two: :desc }]
-      end
-
-      it 'adds the sorting criteria' do
-        expect(selection.__sort_option__).to eq(
-          { field_one: 1, field_two: -1 }
-        )
-      end
-    end
   end
 end

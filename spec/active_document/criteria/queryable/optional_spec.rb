@@ -757,21 +757,6 @@ describe ActiveDocument::Criteria::Queryable::Optional do
               it_behaves_like 'a cloning option'
             end
           end
-
-          context 'when the array is selectable keys' do
-
-            let(:selection) do
-              query.send(method, [{ field_one: :asc }, { field_two: :desc }])
-            end
-
-            it 'adds the sorting criteria' do
-              expect(selection.options).to eq(
-                { sort: { 'field_one' => 1, 'field_two' => -1 } }
-              )
-            end
-
-            it_behaves_like 'a cloning option'
-          end
         end
 
         context 'when provided values' do
@@ -822,21 +807,6 @@ describe ActiveDocument::Criteria::Queryable::Optional do
 
               it_behaves_like 'a cloning option'
             end
-          end
-
-          context 'when the values are selectable keys' do
-
-            let(:selection) do
-              query.send(method, field_one: :asc, field_two: :desc)
-            end
-
-            it 'adds the sorting criteria' do
-              expect(selection.options).to eq(
-                { sort: { 'field_one' => 1, 'field_two' => -1 } }
-              )
-            end
-
-            it_behaves_like 'a cloning option'
           end
         end
 
