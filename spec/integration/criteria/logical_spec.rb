@@ -64,7 +64,7 @@ describe 'Criteria logical operations' do
         let!(:doc) { Dokument.create! }
 
         it 'sets the $or selector' do
-          scope = Dokument.or(:created_at.lte => DateTime.now).sort(id: 1)
+          scope = Dokument.or(created_at: { '$lte' => DateTime.now }).sort(id: 1)
           # input was converted from DateTime to Time
           expect(scope.criteria.selector['$or'].first['created_at']['$lte']).to be_a(Time)
           expect(scope.to_a).to eq([doc])

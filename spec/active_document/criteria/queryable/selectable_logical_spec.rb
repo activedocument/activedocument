@@ -1673,7 +1673,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when using fields that do not meaningfully evolve values' do
 
         let(:query) do
-          Dictionary.any_of({ a: 1 }, :submitted_on.gt => Date.new(2020, 2, 3))
+          Dictionary.any_of({ a: 1 }, submitted_on: { '$gt' => Date.new(2020, 2, 3) })
         end
 
         it 'generates the expected query' do
@@ -2539,7 +2539,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when using fields that do not meaningfully evolve values' do
         let(:query) do
-          Dictionary.none_of({ a: 1 }, :submitted_on.gt => Date.new(2020, 2, 3))
+          Dictionary.none_of({ a: 1 }, submitted_on: { '$gt' => Date.new(2020, 2, 3) })
         end
 
         it 'generates the expected query' do

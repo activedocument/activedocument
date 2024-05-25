@@ -230,7 +230,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when the value is not complex' do
 
           let(:selection) do
-            query.where(:field.elem_match => { key: 1 })
+            query.where(field: { '$elemMatch' => { key: 1 } })
           end
 
           it 'adds the $elemMatch criterion' do
@@ -247,7 +247,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when the value is complex' do
 
           let(:selection) do
-            query.where(:field.elem_match => { key: { '$gt' => 1 } })
+            query.where(field: { '$elematch' => { key: { '$gt' => 1 } } })
           end
 
           it 'adds the $elemMatch criterion' do
@@ -284,7 +284,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing string values' do
 
           let(:selection) do
-            query.where(:field.exists => 't')
+            query.where(field: { '$exists' => 't' })
           end
 
           it 'adds the $exists criterion' do
@@ -468,7 +468,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $not' do
 
         let(:selection) do
-          query.where(:field.not => /test/)
+          query.where(field: { '$not' => /test/ })
         end
 
         it 'adds the $not criterion' do

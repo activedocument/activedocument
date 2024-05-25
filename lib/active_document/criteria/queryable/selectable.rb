@@ -121,7 +121,7 @@ module ActiveDocument
         #   )
         #
         # @example Execute an $elemMatch in a where query.
-        #   selectable.where(:field.elem_match => { name: "value" })
+        #   selectable.where(field: { '$elemMatch' => { name: 'value' } })
         #
         # @param [ Hash ] criterion The field/match pairs.
         #
@@ -338,7 +338,7 @@ module ActiveDocument
         #   selectable.ne(field: 10)
         #
         # @example Execute an $ne in a where query.
-        #   selectable.where(:field.ne => "value")
+        #   selectable.where(field: { '$ne' => 'value' })
         #
         # @param [ Hash ] criterion The field/ne selections.
         #
@@ -447,7 +447,7 @@ module ActiveDocument
         #   selectable.not(name: /Bob/)
         #
         # @example Execute a $not in a where query.
-        #   selectable.where(:field.not => /Bob/)
+        #   selectable.where(field: { '$not' => /Bob/ })
         #
         # @param [ [ Hash | ActiveDocument::Criteria ]... ] *criteria The key/value pair
         #   matches or Criteria objects to negate.

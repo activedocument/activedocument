@@ -1816,10 +1816,10 @@ values, respectively, are straightforward:
 .. code-block:: ruby
 
   Voter.where(born_on: Date.today).selector
-  # => {"born_on"=>2020-12-18 00:00:00 UTC}
+  # => { "born_on" => 2020-12-18 00:00:00 UTC }
 
   Voter.where(registered_at: Time.now).selector
-  # => {"registered_at"=>2020-12-19 04:33:36.939788067 UTC}
+  # => { "registered_at" => 2020-12-19 04:33:36.939788067 UTC }
 
 But, note the differences in behavior when providing a ``Date`` instance
 in all possible scenarios:

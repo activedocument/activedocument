@@ -104,9 +104,13 @@ describe Hash do
 
     let(:hash) do
       {
-        :test1.elem_match => {
-          :test2.elem_match => {
-            :test3.in => ['value1']
+        test1: {
+          '$elemMatch' => {
+            test2: {
+              '$elemMatch' => {
+                test3: { '$in' => ['value1'] }
+              }
+            }
           }
         }
       }

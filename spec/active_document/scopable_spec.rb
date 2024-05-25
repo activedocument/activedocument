@@ -762,7 +762,7 @@ describe ActiveDocument::Scopable do
               Article.scope(:is_public, -> { where(public: true) })
               Article.scope(:authored, lambda do
                 author_ids = Author.author.pluck(:id)
-                where(:author_id.in => author_ids)
+                where(author_id: { '$in' => author_ids })
               end)
 
               Author.create!(author: true, id: 1)
