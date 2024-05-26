@@ -1725,7 +1725,7 @@ describe ActiveDocument::Criteria do
       context 'when there are no duplicate values' do
 
         let(:criteria) do
-          Band.where(:name.exists => true)
+          Band.where(name: { '$exists' => true })
         end
 
         let!(:plucked) do
@@ -1798,7 +1798,7 @@ describe ActiveDocument::Criteria do
       context 'when plucking multi-fields' do
 
         let(:plucked) do
-          Band.where(:name.exists => true).pluck(:name, :likes)
+          Band.where(name: { '$exists' => true }).pluck(:name, :likes)
         end
 
         it 'returns the values' do
@@ -1809,7 +1809,7 @@ describe ActiveDocument::Criteria do
       context 'when there are duplicate values' do
 
         let(:plucked) do
-          Band.where(:name.exists => true).pluck(:likes)
+          Band.where(name: { '$exists' => true }).pluck(:likes)
         end
 
         it 'returns the duplicates' do
@@ -2145,7 +2145,7 @@ describe ActiveDocument::Criteria do
       context 'when there are no duplicate values' do
 
         let(:criteria) do
-          Band.where(:name.exists => true)
+          Band.where(name: { '$exists' => true })
         end
 
         let!(:plucked) { [] }
@@ -2213,7 +2213,7 @@ describe ActiveDocument::Criteria do
       context 'when plucking multi-fields' do
 
         let!(:plucked) { [] }
-        let!(:pluck_each) { Band.where(:name.exists => true).pluck_each(:name, :likes) { |v| plucked << v } }
+        let!(:pluck_each) { Band.where(name: { '$exists' => true }).pluck_each(:name, :likes) { |v| plucked << v } }
 
         it 'returns the values' do
           expect(plucked).to contain_exactly(['Depeche Mode', 3], ['Tool', 3], ['Photek', 1])
@@ -2223,7 +2223,7 @@ describe ActiveDocument::Criteria do
       context 'when there are duplicate values' do
 
         let!(:plucked) { [] }
-        let!(:pluck_each) { Band.where(:name.exists => true).pluck_each(:likes) { |v| plucked << v } }
+        let!(:pluck_each) { Band.where(name: { '$exists' => true }).pluck_each(:likes) { |v| plucked << v } }
 
         it 'returns the duplicates' do
           expect(plucked).to contain_exactly(3, 3, 1)
@@ -3502,7 +3502,7 @@ describe ActiveDocument::Criteria do
 
       let(:criteria) do
         Bar.geo_spatial(
-          :location.within_polygon => [[[50, 10], [50, 20], [60, 20], [60, 10], [50, 10]]]
+          location: { '$geoWithin' => { '$polygon' => [[50, 10], [50, 20], [60, 20], [60, 10], [50, 10]] } }
         )
       end
 
@@ -3512,7 +3512,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#with_size' do
+  describe '#size_of' do
 
     let!(:match) do
       Band.create!(genres: %w[electro dub])
@@ -3523,7 +3523,7 @@ describe ActiveDocument::Criteria do
     end
 
     let(:criteria) do
-      Band.with_size(genres: 2)
+      Band.size_of(genres: 2)
     end
 
     it 'returns the matching documents' do
@@ -3531,14 +3531,14 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#with_type' do
+  describe '#type_of' do
 
     let!(:match) do
       Band.create!(name: 'Depeche Mode')
     end
 
     let(:criteria) do
-      Band.with_type(name: 2)
+      Band.type_of(name: 2)
     end
 
     it 'returns the matching documents' do

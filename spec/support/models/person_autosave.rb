@@ -50,7 +50,7 @@ class PersonAutosave
 
   attr_reader :rescored
 
-  embeds_many :favorites, order: :title.desc, inverse_of: :perp, validate: false
+  embeds_many :favorites, order: { title: :desc }, inverse_of: :perp, validate: false
   embeds_many :videos, order: [%i[title asc]], validate: false
   embeds_many :phone_numbers, class_name: 'Phone', validate: false
   embeds_many :phones, store_as: :mobile_phones, validate: false
@@ -99,7 +99,7 @@ class PersonAutosave
       'Testing'
     end
   end
-  has_many :ordered_posts, order: :rating.desc, validate: false
+  has_many :ordered_posts, order: { rating: :desc }, validate: false
   has_and_belongs_to_many \
     :preferences,
     index: true,
@@ -107,7 +107,7 @@ class PersonAutosave
     validate: false
   has_and_belongs_to_many :user_accounts, validate: false
   has_and_belongs_to_many :houses, validate: false
-  has_and_belongs_to_many :ordered_preferences, order: :value.desc, validate: false
+  has_and_belongs_to_many :ordered_preferences, order: { value: :desc }, validate: false
 
   has_many :drugs, class_name: 'DrugAutosave', validate: false
   # Must not have dependent: :destroy
@@ -136,12 +136,12 @@ class PersonAutosave
   accepts_nested_attributes_for :quiz
   accepts_nested_attributes_for :services, allow_destroy: true
 
-  scope :minor, -> { where(:age.lt => 18) }
+  scope :minor, -> { where(age: { '$lt' => 18 }) }
   scope :without_ssn, -> { without(:ssn) }
   scope :search, ->(query) { any_of({ title: query }) }
 
   def self.older_than(age:)
-    where(:age.gt => age)
+    where(age: { '$gt' => age })
   end
 
   def score_with_rescoring=(score)

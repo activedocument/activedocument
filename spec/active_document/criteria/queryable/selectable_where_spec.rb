@@ -212,7 +212,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when performing a single query' do
 
           let(:selection) do
-            query.where(:field.all => [1, 2])
+            query.where(field: { '$all' => [1, 2] })
           end
 
           it 'adds the $all criterion' do
@@ -230,7 +230,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when the value is not complex' do
 
           let(:selection) do
-            query.where(:field.elem_match => { key: 1 })
+            query.where(field: { '$elemMatch' => { key: 1 } })
           end
 
           it 'adds the $elemMatch criterion' do
@@ -247,7 +247,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when the value is complex' do
 
           let(:selection) do
-            query.where(:field.elem_match => { :key.gt => 1 })
+            query.where(field: { '$elemMatch' => { key: { '$gt' => 1 } } })
           end
 
           it 'adds the $elemMatch criterion' do
@@ -267,7 +267,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing boolean values' do
 
           let(:selection) do
-            query.where(:field.exists => true)
+            query.where(field: { '$exists' => true })
           end
 
           it 'adds the $exists criterion' do
@@ -284,7 +284,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing string values' do
 
           let(:selection) do
-            query.where(:field.exists => 't')
+            query.where(field: { '$exists' => 't' })
           end
 
           it 'adds the $exists criterion' do
@@ -302,7 +302,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $gt' do
 
         let(:selection) do
-          query.where(:field.gt => 10)
+          query.where(field: { '$gt' => 10 })
         end
 
         it 'adds the $gt criterion' do
@@ -319,7 +319,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $gte' do
 
         let(:selection) do
-          query.where(:field.gte => 10)
+          query.where(field: { '$gte' => 10 })
         end
 
         it 'adds the $gte criterion' do
@@ -336,7 +336,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing an $in' do
 
         let(:selection) do
-          query.where(:field.in => [1, 2])
+          query.where(field: { '$in' => [1, 2] })
         end
 
         it 'adds the $in criterion' do
@@ -351,7 +351,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $lt' do
 
         let(:selection) do
-          query.where(:field.lt => 10)
+          query.where(field: { '$lt' => 10 })
         end
 
         it 'adds the $lt criterion' do
@@ -368,7 +368,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $lte' do
 
         let(:selection) do
-          query.where(:field.lte => 10)
+          query.where(field: { '$lte' => 10 })
         end
 
         it 'adds the $lte criterion' do
@@ -385,7 +385,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $mod' do
 
         let(:selection) do
-          query.where(:field.mod => [10, 1])
+          query.where(field: { '$mod' => [10, 1] })
         end
 
         it 'adds the $lte criterion' do
@@ -402,7 +402,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $ne' do
 
         let(:selection) do
-          query.where(:field.ne => 10)
+          query.where(field: { '$ne' => 10 })
         end
 
         it 'adds the $ne criterion' do
@@ -419,7 +419,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $near' do
 
         let(:selection) do
-          query.where(:field.near => [1, 1])
+          query.where(field: { '$near' => [1, 1] })
         end
 
         it 'adds the $near criterion' do
@@ -436,7 +436,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $nearSphere' do
 
         let(:selection) do
-          query.where(:field.near_sphere => [1, 1])
+          query.where(field: { '$nearSphere' => [1, 1] })
         end
 
         it 'adds the $nearSphere criterion' do
@@ -453,7 +453,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $nin' do
 
         let(:selection) do
-          query.where(:field.nin => [1, 2])
+          query.where(field: { '$nin' => [1, 2] })
         end
 
         it 'adds the $nin criterion' do
@@ -468,7 +468,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $not' do
 
         let(:selection) do
-          query.where(:field.not => /test/)
+          query.where(field: { '$not' => /test/ })
         end
 
         it 'adds the $not criterion' do
@@ -485,7 +485,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing an integer' do
 
           let(:selection) do
-            query.where(:field.with_size => 10)
+            query.where(field: { '$size' => 10 })
           end
 
           it 'adds the $size criterion' do
@@ -502,7 +502,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing a string' do
 
           let(:selection) do
-            query.where(:field.with_size => '10')
+            query.where(field: { '$size' => '10' })
           end
 
           it 'adds the $size criterion' do
@@ -520,7 +520,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when performing a $type' do
 
         let(:selection) do
-          query.where(:field.with_type => 10)
+          query.where(field: { '$type' => 10 })
         end
 
         it 'adds the $type criterion' do

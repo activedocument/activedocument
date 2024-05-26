@@ -20,16 +20,6 @@ module ActiveDocument
             object.__add_from_array__(self)
           end
 
-          # Return the object as an array.
-          #
-          # @example Get the array.
-          #   [ 1, 2 ].__array__
-          #
-          # @return [ Array ] self
-          def __array__
-            self
-          end
-
           # Makes a deep copy of the array, deep copying every element inside the
           # array.
           #
@@ -50,16 +40,6 @@ module ActiveDocument
           # @return [ Array<Time> ] The array as times at midnight UTC.
           def __evolve_date__
             map(&:__evolve_date__)
-          end
-
-          # Get the object as expanded.
-          #
-          # @example Get the object expanded.
-          #   obj.__expand_complex__
-          #
-          # @return [ Array ] The expanded array.
-          def __expand_complex__
-            map(&:__expand_complex__)
           end
 
           # Evolve the array to an array of times.

@@ -472,12 +472,12 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
 
       let(:options) do
         {
-          order: :rating.desc
+          order: { rating: :desc }
         }
       end
 
-      it 'returns a Criteria Queryable Key' do
-        expect(association.order).to be_a(ActiveDocument::Criteria::Queryable::Key)
+      it 'returns a Hash' do
+        expect(association.order).to be_a(Hash)
       end
     end
 
@@ -497,7 +497,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
         { scope: -> { unscoped.where(foo: :bar) } }
       end
 
-      it 'returns a Criteria Queryable Key' do
+      it 'returns a Proc' do
         expect(association.scope).to be_a(Proc)
       end
     end

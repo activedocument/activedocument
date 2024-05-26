@@ -8,16 +8,6 @@ module ActiveDocument
       # document from the database. The selectable module brings all functionality
       # to the selectable that has to do with building MongoDB selectors.
       module Selectable
-        extend Macroable
-
-        # Constant for a LineString $geometry.
-        LINE_STRING = 'LineString'
-
-        # Constant for a Point $geometry.
-        POINT = 'Point'
-
-        # Constant for a Polygon $geometry.
-        POLYGON = 'Polygon'
 
         # @attribute [rw] negating If the next expression is negated.
         # @attribute [rw] selector The query selector.
@@ -29,7 +19,7 @@ module ActiveDocument
         #   selectable.all(field: [ 1, 2 ])
         #
         # @example Execute an $all in a where query.
-        #   selectable.where(:field.all => [ 1, 2 ])
+        #   selectable.where(field: { '$all' => [ 1, 2 ] })
         #
         # @param [ Hash... ] *criteria The key value pair(s) for $all matching.
         #
@@ -40,7 +30,7 @@ module ActiveDocument
           criteria.inject(clone) do |query, condition|
             raise Errors::CriteriaArgumentRequired.new(:all) if condition.nil?
 
-            condition = expand_condition_to_array_values(condition)
+            condition = QueryNormalizer.expand_condition_to_array_values(condition)
 
             if strategy
               send(strategy, condition, '$all')
@@ -54,7 +44,6 @@ module ActiveDocument
           end.reset_strategies!
         end
         alias_method :all_in, :all
-        key :all, :union, '$all'
 
         # Add the $and criterion.
         #
@@ -69,7 +58,7 @@ module ActiveDocument
         def and(*criteria)
           _active_document_flatten_arrays(criteria).inject(clone) do |c, new_s|
             new_s = new_s.selector if new_s.is_a?(Selectable)
-            normalized = _active_document_expand_keys(new_s)
+            normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
             normalized.each do |k, v|
               k = k.to_s
               if c.selector[k]
@@ -132,7 +121,7 @@ module ActiveDocument
         #   )
         #
         # @example Execute an $elemMatch in a where query.
-        #   selectable.where(:field.elem_match => { name: "value" })
+        #   selectable.where(field: { '$elemMatch' => { name: 'value' } })
         #
         # @param [ Hash ] criterion The field/match pairs.
         #
@@ -142,7 +131,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$elemMatch')
         end
-        key :elem_match, :override, '$elemMatch'
 
         # Add the $exists selection.
         #
@@ -153,7 +141,7 @@ module ActiveDocument
         #   selectable.exists(field: true, other: false)
         #
         # @example Execute an $exists in a where query.
-        #   selectable.where(:field.exists => true)
+        #   selectable.where(field: { '$exists' => true })
         #
         # @param [ Hash ] criterion The field/boolean existence checks.
         #
@@ -165,40 +153,24 @@ module ActiveDocument
             ActiveDocument::Boolean.evolve(value)
           end
         end
-        key :exists, :override, '$exists' do |value|
-          ActiveDocument::Boolean.evolve(value)
-        end
 
         # Add a $geoIntersects or $geoWithin selection. Symbol operators must
         # be used as shown in the examples to expand the criteria.
         #
-        # @note The only valid geometry shapes for a $geoIntersects are:
-        #   :intersects_line, :intersects_point, and :intersects_polygon.
-        #
-        # @note The only valid options for a $geoWithin query are the geometry
-        #   shape :within_polygon and the operator :within_box.
-        #
-        # @note The :within_box operator for the $geoWithin query expects the
-        #   lower left (south west) coordinate pair as the first argument and
-        #   the upper right (north east) as the second argument.
-        #   Important: When latitude and longitude are passed, longitude is
-        #   expected as the first element of the coordinate pair.
-        #   Source: https://www.mongodb.com/docs/manual/reference/operator/query/box/
+        # @note Refer to Geospatial Query Operators
+        #   https://www.mongodb.com/docs/manual/reference/operator/query-geospatial/
         #
         # @example Add a geo intersect criterion for a line.
-        #   query.geo_spatial(:location.intersects_line => [[ 1, 10 ], [ 2, 10 ]])
+        #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'LineString', coordinates: [[1, 10], [2, 10]] } } })
         #
         # @example Add a geo intersect criterion for a point.
-        #   query.geo_spatial(:location.intersects_point => [[ 1, 10 ]])
+        #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Point', coordinates: [1, 10] } } })
         #
         # @example Add a geo intersect criterion for a polygon.
-        #   query.geo_spatial(:location.intersects_polygon => [[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]])
+        #   query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 5]] } } })
         #
         # @example Add a geo within criterion for a polygon.
-        #   query.geo_spatial(:location.within_polygon => [[ 1, 10 ], [ 2, 10 ], [ 1, 10 ]])
-        #
-        # @example Add a geo within criterion for a box.
-        #   query.geo_spatial(:location.within_box => [[ 1, 10 ], [ 2, 10 ])
+        #   query.geo_spatial(location: { '$geoWithin' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 5]] } } })
         #
         # @param [ Hash ] criterion The criterion.
         #
@@ -206,22 +178,14 @@ module ActiveDocument
         def geo_spatial(criterion)
           raise Errors::CriteriaArgumentRequired.new(:geo_spatial) if criterion.nil?
 
-          __merge__(criterion)
+          # Merge the criterion into the selection
+          clone.tap do |query|
+            criterion&.each_pair do |field, value|
+              query.selector.merge!(field => value.deep_stringify_keys)
+            end
+            query.reset_strategies!
+          end
         end
-
-        key :intersects_line, :override, '$geoIntersects', '$geometry' do |value|
-          { 'type' => LINE_STRING, 'coordinates' => value }
-        end
-        key :intersects_point, :override, '$geoIntersects', '$geometry' do |value|
-          { 'type' => POINT, 'coordinates' => value }
-        end
-        key :intersects_polygon, :override, '$geoIntersects', '$geometry' do |value|
-          { 'type' => POLYGON, 'coordinates' => value }
-        end
-        key :within_polygon, :override, '$geoWithin', '$geometry' do |value|
-          { 'type' => POLYGON, 'coordinates' => value }
-        end
-        key :within_box, :override, '$geoWithin', '$box'
 
         # Add the $eq criterion to the selector.
         #
@@ -229,7 +193,7 @@ module ActiveDocument
         #   selectable.eq(age: 60)
         #
         # @example Execute an $eq in a where query.
-        #   selectable.where(:field.eq => 10)
+        #   selectable.where(field: { '$eq' => 10 })
         #
         # @param [ Hash ] criterion The field/value pairs to check.
         #
@@ -239,7 +203,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$eq')
         end
-        key :eq, :override, '$eq'
 
         # Add the $gt criterion to the selector.
         #
@@ -247,7 +210,7 @@ module ActiveDocument
         #   selectable.gt(age: 60)
         #
         # @example Execute an $gt in a where query.
-        #   selectable.where(:field.gt => 10)
+        #   selectable.where(field: { '$gt' => 10 })
         #
         # @param [ Hash ] criterion The field/value pairs to check.
         #
@@ -257,7 +220,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$gt')
         end
-        key :gt, :override, '$gt'
 
         # Add the $gte criterion to the selector.
         #
@@ -265,7 +227,7 @@ module ActiveDocument
         #   selectable.gte(age: 60)
         #
         # @example Execute an $gte in a where query.
-        #   selectable.where(:field.gte => 10)
+        #   selectable.where(field: { '$gte' => 10 })
         #
         # @param [ Hash ] criterion The field/value pairs to check.
         #
@@ -275,7 +237,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$gte')
         end
-        key :gte, :override, '$gte'
 
         # Adds the $in selection to the selectable.
         #
@@ -286,7 +247,7 @@ module ActiveDocument
         #   selectable.in(age: 18..24)
         #
         # @example Execute an $in in a where query.
-        #   selectable.where(:field.in => [ 1, 2, 3 ])
+        #   selectable.where(field: { '$in' => [ 1, 2, 3 ] })
         #
         # @param [ Hash ] condition The field/value criterion pairs.
         #
@@ -294,7 +255,7 @@ module ActiveDocument
         def in(condition)
           raise Errors::CriteriaArgumentRequired.new(:in) if condition.nil?
 
-          condition = expand_condition_to_array_values(condition)
+          condition = QueryNormalizer.expand_condition_to_array_values(condition)
 
           if strategy
             send(strategy, condition, '$in')
@@ -307,7 +268,6 @@ module ActiveDocument
           end
         end
         alias_method :any_in, :in
-        key :in, :intersect, '$in'
 
         # Add the $lt criterion to the selector.
         #
@@ -315,7 +275,7 @@ module ActiveDocument
         #   selectable.lt(age: 60)
         #
         # @example Execute an $lt in a where query.
-        #   selectable.where(:field.lt => 10)
+        #   selectable.where(field: { '$lt' => 10 })
         #
         # @param [ Hash ] criterion The field/value pairs to check.
         #
@@ -325,7 +285,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$lt')
         end
-        key :lt, :override, '$lt'
 
         # Add the $lte criterion to the selector.
         #
@@ -333,7 +292,7 @@ module ActiveDocument
         #   selectable.lte(age: 60)
         #
         # @example Execute an $lte in a where query.
-        #   selectable.where(:field.lte => 10)
+        #   selectable.where(field: { '$lte' => 10 })
         #
         # @param [ Hash ] criterion The field/value pairs to check.
         #
@@ -343,7 +302,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$lte')
         end
-        key :lte, :override, '$lte'
 
         # Add a $maxDistance selection to the selectable.
         #
@@ -366,7 +324,7 @@ module ActiveDocument
         #   selectable.mod(field: [ 10, 1 ])
         #
         # @example Execute an $mod in a where query.
-        #   selectable.where(:field.mod => [ 10, 1 ])
+        #   selectable.where(field: { '$mod' => [ 10, 1 ] })
         #
         # @param [ Hash ] criterion The field/mod selections.
         #
@@ -376,7 +334,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$mod')
         end
-        key :mod, :override, '$mod'
 
         # Adds $ne selection to the selectable.
         #
@@ -384,7 +341,7 @@ module ActiveDocument
         #   selectable.ne(field: 10)
         #
         # @example Execute an $ne in a where query.
-        #   selectable.where(:field.ne => "value")
+        #   selectable.where(field: { '$ne' => 'value' })
         #
         # @param [ Hash ] criterion The field/ne selections.
         #
@@ -395,7 +352,6 @@ module ActiveDocument
           and_with_operator(criterion, '$ne')
         end
         alias_method :excludes, :ne
-        key :ne, :override, '$ne'
 
         # Adds a $near criterion to a geo selection.
         #
@@ -403,7 +359,7 @@ module ActiveDocument
         #   selectable.near(location: [ 23.1, 12.1 ])
         #
         # @example Execute an $near in a where query.
-        #   selectable.where(:field.near => [ 23.2, 12.1 ])
+        #   selectable.where(field: { '$near' => [ 23.2, 12.1 ] })
         #
         # @param [ Hash ] criterion The field/location pair.
         #
@@ -413,7 +369,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$near')
         end
-        key :near, :override, '$near'
 
         # Adds a $nearSphere criterion to a geo selection.
         #
@@ -421,7 +376,7 @@ module ActiveDocument
         #   selectable.near_sphere(location: [ 23.1, 12.1 ])
         #
         # @example Execute an $nearSphere in a where query.
-        #   selectable.where(:field.near_sphere => [ 10.11, 3.22 ])
+        #   selectable.where(field: { '$nearSphere' => [ 10.11, 3.22 ] })
         #
         # @param [ Hash ] criterion The field/location pair.
         #
@@ -431,7 +386,6 @@ module ActiveDocument
 
           and_with_operator(criterion, '$nearSphere')
         end
-        key :near_sphere, :override, '$nearSphere'
 
         # Adds the $nin selection to the selectable.
         #
@@ -442,7 +396,7 @@ module ActiveDocument
         #   selectable.nin(age: 18..24)
         #
         # @example Execute an $nin in a where query.
-        #   selectable.where(:field.nin => [ 1, 2, 3 ])
+        #   selectable.where(field: { '$nin' => [ 1, 2, 3 ] })
         #
         # @param [ Hash ] condition The field/value criterion pairs.
         #
@@ -450,7 +404,7 @@ module ActiveDocument
         def nin(condition)
           raise Errors::CriteriaArgumentRequired.new(:nin) if condition.nil?
 
-          condition = expand_condition_to_array_values(condition)
+          condition = QueryNormalizer.expand_condition_to_array_values(condition)
 
           if strategy
             send(strategy, condition, '$nin')
@@ -463,7 +417,6 @@ module ActiveDocument
           end
         end
         alias_method :not_in, :nin
-        key :nin, :intersect, '$nin'
 
         # Adds $nor selection to the selectable.
         #
@@ -497,7 +450,7 @@ module ActiveDocument
         #   selectable.not(name: /Bob/)
         #
         # @example Execute a $not in a where query.
-        #   selectable.where(:field.not => /Bob/)
+        #   selectable.where(field: { '$not' => /Bob/ })
         #
         # @param [ [ Hash | ActiveDocument::Criteria ]... ] *criteria The key/value pair
         #   matches or Criteria objects to negate.
@@ -509,7 +462,7 @@ module ActiveDocument
           else
             criteria.compact.inject(clone) do |c, new_s|
               new_s = new_s.selector if new_s.is_a?(Selectable)
-              _active_document_expand_keys(new_s).each do |k, v|
+              QueryNormalizer.normalize_expr(new_s, negating: negating?).each do |k, v|
                 k = k.to_s
                 if c.selector[k] || k.start_with?('$') || v.is_a?(Hash)
                   c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
@@ -526,7 +479,6 @@ module ActiveDocument
             end
           end
         end
-        key :not, :override, '$not'
 
         # Negate the arguments, constraining the query to only those documents
         # that do NOT match the arguments.
@@ -549,8 +501,9 @@ module ActiveDocument
           return dup if criteria.empty?
 
           exprs = criteria.map do |criterion|
-            _active_document_expand_keys(
-              criterion.is_a?(Selectable) ? criterion.selector : criterion
+            QueryNormalizer.normalize_expr(
+              criterion.is_a?(Selectable) ? criterion.selector : criterion,
+              negating: negating?
             )
           end
 
@@ -632,7 +585,7 @@ module ActiveDocument
             # and add the result to self.
             exprs = criteria.map do |criterion|
               if criterion.is_a?(Selectable)
-                _active_document_expand_keys(criterion.selector)
+                QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
               else
                 criterion.to_h do |k, v|
                   if k.is_a?(Symbol)
@@ -650,50 +603,45 @@ module ActiveDocument
         # Add a $size selection for array fields.
         #
         # @example Add the $size selection.
-        #   selectable.with_size(field: 5)
+        #   selectable.size_of(field: 5)
         #
-        # @note This method is named #with_size not to conflict with any existing
+        # @note This method is named #size_of not to conflict with any existing
         #   #size method on enumerables or symbols.
         #
         # @example Execute an $size in a where query.
-        #   selectable.where(:field.with_size => 10)
+        #   selectable.where(field: { '$size' => 10 })
         #
         # @param [ Hash ] criterion The field/size pairs criterion.
         #
         # @return [ Selectable ] The cloned selectable.
-        def with_size(criterion)
-          raise Errors::CriteriaArgumentRequired.new(:with_size) if criterion.nil?
+        def size_of(criterion)
+          raise Errors::CriteriaArgumentRequired.new(:size_of) if criterion.nil?
 
           typed_override(criterion, '$size') do |value|
             ::Integer.evolve(value)
           end
         end
-        key :with_size, :override, '$size' do |value|
-          ::Integer.evolve(value)
-        end
 
         # Adds a $type selection to the selectable.
         #
         # @example Add the $type selection.
-        #   selectable.with_type(field: 15)
+        #   selectable.type_of(field: 15)
         #
         # @example Execute an $type in a where query.
-        #   selectable.where(:field.with_type => 15)
+        #   selectable.where(field: { '$type' => 15 })
         #
-        # @note http://vurl.me/PGOU contains a list of all types.
+        # @note https://www.mongodb.com/docs/manual/reference/bson-types/
+        #   contains a list of all types.
         #
         # @param [ Hash ] criterion The field/type pairs.
         #
         # @return [ Selectable ] The cloned selectable.
-        def with_type(criterion)
-          raise Errors::CriteriaArgumentRequired.new(:with_type) if criterion.nil?
+        def type_of(criterion)
+          raise Errors::CriteriaArgumentRequired.new(:type_of) if criterion.nil?
 
           typed_override(criterion, '$type') do |value|
             ::Integer.evolve(value)
           end
-        end
-        key :with_type, :override, '$type' do |value|
-          ::Integer.evolve(value)
         end
 
         # Construct a text search selector.
@@ -800,7 +748,7 @@ module ActiveDocument
             raise Errors::InvalidQuery.new("Expression must be a Hash: #{Errors::InvalidQuery.truncate_expr(criterion)}")
           end
 
-          normalized = _active_document_expand_keys(criterion)
+          normalized = QueryNormalizer.normalize_expr(criterion, negating: negating?)
           clone.tap do |query|
             normalized.each do |field, value|
               field_s = field.to_s
@@ -865,7 +813,7 @@ module ActiveDocument
         def selection(criterion = nil)
           clone.tap do |query|
             criterion&.each_pair do |field, value|
-              yield(query.selector, field.is_a?(Key) ? field : field.to_s, value)
+              yield(query.selector, field.to_s, value)
             end
             query.reset_strategies!
           end

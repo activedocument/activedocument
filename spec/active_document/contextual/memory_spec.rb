@@ -871,7 +871,7 @@ describe ActiveDocument::Contextual::Memory do
       end
 
       let(:criteria) do
-        Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+        Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
           crit.documents = [hobrecht, friedel]
         end
       end
@@ -897,7 +897,7 @@ describe ActiveDocument::Contextual::Memory do
       context 'when there is a collation on the criteria' do
 
         let(:criteria) do
-          Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+          Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
             crit.documents = [hobrecht, friedel]
           end.collation(locale: 'en_US', strength: 2)
         end
@@ -924,7 +924,7 @@ describe ActiveDocument::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+      Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
         crit.documents = [hobrecht, friedel]
       end
     end
@@ -953,7 +953,7 @@ describe ActiveDocument::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+      Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
         crit.documents = [hobrecht, friedel]
       end
     end
@@ -979,7 +979,7 @@ describe ActiveDocument::Contextual::Memory do
     context 'when there is a collation on the criteria' do
 
       let(:criteria) do
-        Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+        Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
           crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
@@ -1005,7 +1005,7 @@ describe ActiveDocument::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+      Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
         crit.documents = [hobrecht, friedel]
       end
     end
@@ -1023,7 +1023,7 @@ describe ActiveDocument::Contextual::Memory do
     context 'when there is a collation on the criteria' do
 
       let(:criteria) do
-        Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+        Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
           crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
@@ -1150,7 +1150,7 @@ describe ActiveDocument::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+      Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
         crit.documents = [hobrecht, friedel]
       end
     end
@@ -1176,7 +1176,7 @@ describe ActiveDocument::Contextual::Memory do
     context 'when there is a collation on the criteria' do
 
       let(:criteria) do
-        Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+        Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
           crit.documents = [hobrecht, friedel]
         end.collation(locale: 'en_US', strength: 2)
       end
@@ -1201,7 +1201,7 @@ describe ActiveDocument::Contextual::Memory do
     end
 
     let(:criteria) do
-      Address.where(:street.in => %w[hobrecht friedel]).tap do |crit|
+      Address.where(street: { '$in' => %w[hobrecht friedel] }).tap do |crit|
         crit.documents = [hobrecht, friedel]
       end
     end

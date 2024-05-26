@@ -1283,11 +1283,11 @@ describe ActiveDocument::Criteria::Findable do
     context 'when providing multiple ids' do
 
       let(:criteria) do
-        Band.where(:_id.in => [band.id, band_two.id])
+        Band.where(_id: { '$in' => [band._id, band_two._id] })
       end
 
       let(:from_db) do
-        criteria.multiple_from_db([band.id, band_two.id])
+        criteria.multiple_from_db([band._id, band_two._id])
       end
 
       it 'returns the document from the database' do

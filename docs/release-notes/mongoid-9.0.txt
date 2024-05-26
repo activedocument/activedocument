@@ -138,7 +138,7 @@ In ActiveDocument 8.x and older ``touch`` method leaves models in the changed st
    band = Band.create!
    band.touch
    band.changed? # => true
-   band.changes # => {"updated_at"=>[2023-01-30 13:12:57.477191135 UTC, 2023-01-30 13:13:11.482975646 UTC]}
+   band.changes # => { "updated_at" => [2023-01-30 13:12:57.477191135 UTC, 2023-01-30 13:13:11.482975646 UTC] }
 
 Starting from 9.0 ActiveDocument now correctly clears changed state after using ``touch``
 method.

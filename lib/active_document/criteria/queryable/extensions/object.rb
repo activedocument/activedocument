@@ -103,26 +103,6 @@ module ActiveDocument
             self
           end
 
-          # Get the object as an array.
-          #
-          # @example Get the object as an array.
-          #   4.__array__
-          #
-          # @return [ Array ] The wrapped object.
-          def __array__
-            [self]
-          end
-
-          # Get the object as expanded.
-          #
-          # @example Get the object expanded.
-          #   obj.__expand_complex__
-          #
-          # @return [ Object ] self.
-          def __expand_complex__
-            self
-          end
-
           module ClassMethods
 
             # Evolve the object.

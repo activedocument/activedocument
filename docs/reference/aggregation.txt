@@ -132,7 +132,7 @@ We can find out which states a participant visited:
 
   criteria = Tour.where('participants.name' => 'Serenity',).
     unwind(:states).
-    group(_id: 'states', :states.add_to_set => '$states').
+    group(_id: 'states', states: { '$addToSet' => '$states' }).
     project(_id: 0, states: 1)
 
   pp criteria.pipeline
@@ -154,7 +154,7 @@ The field expressions support ActiveDocument symbol-operator syntax:
 
 .. code-block:: ruby
 
-    criteria = Tour.all.group(_id: 'states', :states.add_to_set => '$states')
+    criteria = Tour.all.group(_id: 'states', states: { '$addToSet' => '$states' })
     criteria.pipeline
     # => [{"$group"=>{"_id"=>"states", "states"=>{"$addToSet"=>"$states"}}}]
 

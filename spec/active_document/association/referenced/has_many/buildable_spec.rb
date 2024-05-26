@@ -41,7 +41,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Buildable do
 
       let(:options) do
         {
-          order: :rating.asc
+          order: { rating: :asc }
         }
       end
 

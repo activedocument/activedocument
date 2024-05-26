@@ -23,7 +23,7 @@ A more complex query utilizing various ActiveDocument features could be as follo
 .. code-block:: ruby
 
   Band.
-    where(:founded.gte => "1980-01-01").
+    where(founded: { '$gte' => '1980-01-01' }).
     in(name: [ "Tool", "Deftones" ]).
     union.
     in(name: [ "Melvins" ])
@@ -59,14 +59,14 @@ Criteria instance with the new conditions added to the existing conditions:
 
 .. code-block:: ruby
 
-  scope = Band.where(:founded.gte => "1980-01-01")
+  scope = Band.where(founded: { '$gte' => '1980-01-01' })
   # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01"}}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
-  scope.where(:founded.lte => "2020-01-01")
+  scope.where(founded: { '$lte' => '2020-01-01' })
   # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gte"=>"1980-01-01", "$lte"=>"2020-01-01"}}
   #   options:  {}
@@ -161,7 +161,7 @@ name, as follows:
 
 .. code-block:: ruby
 
-  Band.where(:founded.gt => 1980)
+  Band.where(founded: { '$gt' => 1980 })
   # => #<ActiveDocument::Criteria
   #   selector: {"founded"=>{"$gt"=>1980}}
   #   options:  {}
@@ -507,7 +507,7 @@ an ``{'$and' => [{'$nor' => ...}]}`` construct:
   # => {"name"=>/Best/, "$and"=>[{"$nor"=>[{"name"=>"Astral Projection"}]}]}
 
   # Symbol operator syntax
-  Band.not(:name.ne => 'Astral Projection')
+  Band.not(name: { '$ne' => 'Astral Projection' })
   # => #<ActiveDocument::Criteria
   #   selector: {"$and"=>[{"$nor"=>[{"name"=>{"$ne"=>"Astral Projection"}}]}]}
   #   options:  {}
@@ -969,8 +969,9 @@ on symbols, as follows:
 
 .. code-block:: ruby
 
-  Band.order(:name.desc, :description.asc)
+  Band.order(name: :desc, description: :asc)
 
+# TODO: remove SQL baloney
 The arguments can be provided as a string using SQL syntax:
 
 .. code-block:: ruby
@@ -1240,7 +1241,7 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.distinct(:name)
-          Band.where(:fans.gt => 100000).
+          Band.where(fans: { '$gt' => 100000 }).
             distinct(:name)
 
           Band.distinct('cities.name')
@@ -1336,7 +1337,7 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.find_or_create_by(name: "Photek")
-          Band.where(:likes.gt => 10).find_or_create_by(name: "Photek")
+          Band.where(likes: { '$gt' => 10 }).find_or_create_by(name: "Photek")
 
         ``find_or_create_by`` can be used on any scope, but in this case
         the criteria given by the scope and by ``find_or_create_by`` are
@@ -1359,7 +1360,7 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
            Band.find_or_initialize_by(name: "Photek")
-           Band.where(:likes.gt => 10).find_or_initialize_by(name: "Photek")
+           Band.where(likes: { '$gt' => 10 }).find_or_initialize_by(name: "Photek")
 
    * - ``Criteria#first|last``
 
@@ -1372,8 +1373,8 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.first
-          Band.where(:members.with_size => 3).first
-          Band.where(:members.with_size => 3).last
+          Band.where(members: { '$size' => 3 }).first
+          Band.where(members: { '$size' => 3 }).last
           Band.first(2)
 
    * - ``Criteria#first!|last!``
@@ -1387,8 +1388,8 @@ ActiveDocument also has some helpful methods on criteria.
         .. code-block:: ruby
 
           Band.first!
-          Band.where(:members.with_size => 3).first!
-          Band.where(:members.with_size => 3).last!
+          Band.where(members: { '$size' => 3 }).first!
+          Band.where(members: { '$size' => 3 }).last!
 
    * - ``Criteria#first_or_create``
 
@@ -1815,10 +1816,10 @@ values, respectively, are straightforward:
 .. code-block:: ruby
 
   Voter.where(born_on: Date.today).selector
-  # => {"born_on"=>2020-12-18 00:00:00 UTC}
+  # => { "born_on" => 2020-12-18 00:00:00 UTC }
 
   Voter.where(registered_at: Time.now).selector
-  # => {"registered_at"=>2020-12-19 04:33:36.939788067 UTC}
+  # => { "registered_at" => 2020-12-19 04:33:36.939788067 UTC }
 
 But, note the differences in behavior when providing a ``Date`` instance
 in all possible scenarios:
@@ -1870,7 +1871,7 @@ by a provided name. Just like normal criteria, they are lazy and chainable.
     field :genres, type: :array
 
     scope :english, ->{ where(country: "England") }
-    scope :rock, ->{ where(:genres.in => [ "rock" ]) }
+    scope :rock, ->{ where(genres: { '$in' => ['rock'] }) }
   end
 
   Band.english.rock # Get the English rock bands.

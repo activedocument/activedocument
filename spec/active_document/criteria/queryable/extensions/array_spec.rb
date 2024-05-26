@@ -100,13 +100,6 @@ describe Array do
     end
   end
 
-  describe '#__array__' do
-
-    it 'returns self' do
-      expect([1, 2, 3].__array__).to eq([1, 2, 3])
-    end
-  end
-
   describe '__deep_copy__' do
 
     let(:inner) do
@@ -308,17 +301,6 @@ describe Array do
     end
   end
 
-  describe '#__expand_complex__' do
-
-    let(:array) do
-      [{ :test.in => ['value'] }]
-    end
-
-    it 'expands all keys inside the array' do
-      expect(array.__expand_complex__).to eq([{ 'test' => { '$in' => ['value'] } }])
-    end
-  end
-
   describe '#__intersect__' do
 
     context 'when the other object is a non-enumerable' do
@@ -494,19 +476,6 @@ describe Array do
             { field_one: 1 }
           )
         end
-      end
-    end
-
-    context 'when the array is selectable keys' do
-
-      let(:selection) do
-        [:field_one.asc, :field_two.desc]
-      end
-
-      it 'adds the sorting criteria' do
-        expect(selection.__sort_option__).to eq(
-          { field_one: 1, field_two: -1 }
-        )
       end
     end
   end

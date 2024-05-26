@@ -40,7 +40,7 @@ end
 class EmmManufactory
   include ActiveDocument::Document
 
-  embeds_many :products, order: :id.desc, class_name: 'EmmProduct'
+  embeds_many :products, order: { id: :desc }, class_name: 'EmmProduct'
 end
 
 class EmmProduct

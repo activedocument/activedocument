@@ -3,6 +3,7 @@
 module ActiveDocument
   class Criteria
 
+    # TODO: this needs to consider native $ operators
     # Mixin module for ActiveDocument::Criteria which adds strong
     # parameters validation when using ActionController::Parameters
     # objects as arguments to condition methods.
@@ -15,6 +16,7 @@ module ActiveDocument
          between
          elem_match
          exists
+         geo_spatial
          gt
          gte
          in
@@ -34,13 +36,9 @@ module ActiveDocument
          not
          or
          any_of
-         with_size
-         with_type
-         where
-         within_box
-         within_circle
-         within_polygon
-         within_spherical_circle].each do |method|
+         size_of
+         type_of
+         where].each do |method|
         define_method(method) do |*criteria|
           raise Errors::CriteriaNotPermitted.new(klass, method, criteria) unless should_permit?(criteria)
 
