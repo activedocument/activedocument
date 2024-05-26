@@ -435,7 +435,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           [
-            ['$in', '$in'],
+            %w[$in $in],
             [:$in, '$in'],
             ['$in', :$in],
             %i[$in $in]
@@ -521,32 +521,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
             it_behaves_like 'returns a cloned query'
           end
 
-          context 'criteria are provided in the same hash' do
-            context 'non-regexp argument' do
-              let(:selection) do
-                query.send(tested_method, field: [3, { '$lt' => 5 }])
-              end
-
-              it_behaves_like 'combines conditions with $eq'
-            end
-
-            context 'regexp argument' do
-              let(:selection) do
-                query.send(tested_method, field: [/t/, { '$lt' => 5 }])
-              end
-
-              it_behaves_like 'combines conditions with $regex'
-            end
-          end
-
-          context 'criteria are provided in separate hashes' do
-            let(:selection) do
-              query.send(tested_method, field: [3, { '$lt' => 5 }])
-            end
-
-            it_behaves_like 'combines conditions with $and'
-          end
-
           context 'when the criterion is wrapped in an array' do
             let(:selection) do
               query.send(tested_method, [field: 3], [field: { '$lt' => 5 }])
@@ -589,24 +563,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
             end
 
             it_behaves_like 'returns a cloned query'
-          end
-
-          context 'criteria are provided in the same hash' do
-            context 'non-regexp argument' do
-              let(:selection) do
-                query.send(tested_method, field: [{ '$gt' => 3 }, 5])
-              end
-
-              it_behaves_like 'combines conditions with $eq'
-            end
-
-            context 'regexp argument' do
-              let(:selection) do
-                query.send(tested_method, field: [{ '$gt' => 3 }, /t/])
-              end
-
-              it_behaves_like 'combines conditions with $regex'
-            end
           end
 
           context 'criteria are provided in separate hashes' do
@@ -1127,38 +1083,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
       end
     end
-
-    context 'when giving multiple conditions in one call on the same key with symbol operator' do
-
-      context 'non-regexp argument' do
-        let(:selection) do
-          query.send(tested_method, field: [1, { '$gt' => 0 }])
-        end
-
-        it 'combines conditions with $eq' do
-          expect(selection.selector).to eq({
-            expected_operator => [
-              'field' => { '$eq' => 1, '$gt' => 0 }
-            ]
-          })
-        end
-      end
-
-      context 'regexp argument' do
-        let(:selection) do
-          query.send(tested_method, field: [/t/, { '$gt' => 0 }])
-        end
-
-        it 'combines conditions with $regex' do
-          expect(selection.selector).to eq({
-            expected_operator => [
-              'field' => { '$regex' => /t/, '$gt' => 0 }
-            ]
-          })
-        end
-      end
-
-    end
   end
 
   describe '#any_of' do
@@ -1451,24 +1375,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           it_behaves_like 'returns a cloned query'
         end
 
-        context 'criteria are provided in the same hash' do
-          context 'non-regexp argument' do
-            let(:selection) do
-              query.send(tested_method, field: [3, { '$lt' => 5 }])
-            end
-
-            it_behaves_like 'combines conditions with $eq'
-          end
-
-          context 'regexp argument' do
-            let(:selection) do
-              query.send(tested_method, field: [/t/, { '$lt' => 5 }])
-            end
-
-            it_behaves_like 'combines conditions with $regex'
-          end
-        end
-
         context 'criteria are provided in separate hashes' do
           let(:selection) do
             query.send(tested_method, { field: 3 }, { field: { '$lt' => 5 } })
@@ -1521,24 +1427,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it_behaves_like 'returns a cloned query'
-        end
-
-        context 'criteria are provided in the same hash' do
-          context 'non-regexp argument' do
-            let(:selection) do
-              query.send(tested_method, field: [{ '$gt' => 3 }, 5])
-            end
-
-            it_behaves_like 'combines conditions with $eq'
-          end
-
-          context 'regexp argument' do
-            let(:selection) do
-              query.send(tested_method, field: [{ '$gt' => 3 }, /t/])
-            end
-
-            it_behaves_like 'combines conditions with $regex'
-          end
         end
 
         context 'criteria are provided in separate hashes' do
@@ -1970,7 +1858,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       context 'when the criterion are a double negative' do
-
         let(:selection) do
           query.not.where(first: { '$not' => { '$regexp' => /1/ } })
         end
@@ -2066,35 +1953,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           'bar' => { '$ne' => 42 },
           'a' => { '$ne' => 2 }
         )
-      end
-    end
-
-    context 'when giving multiple conditions in one call on the same key with symbol operator' do
-
-      context 'non-regexp argument' do
-        let(:selection) do
-          query.not(field: [1, { '$gt' => 0 }])
-        end
-
-        it 'combines conditions with $eq' do
-          expect(selection.selector).to eq({
-            '$and' => [{ '$nor' => [{ 'field' => { '$eq' => 1, '$gt' => 0 } }] }]
-          })
-        end
-      end
-
-      context 'regexp argument' do
-        let(:selection) do
-          query.not(field: [/t/, { '$gt' => 0 }])
-        end
-
-        it 'combines conditions with $regex' do
-          expect(selection.selector).to eq({
-            '$and' => ['$nor' => [
-              'field' => { '$regex' => /t/, '$gt' => 0 }
-            ]]
-          })
-        end
       end
     end
 
@@ -2348,20 +2206,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           it_behaves_like 'returns a cloned query'
         end
 
-        context 'criteria are provided in the same hash' do
-          context 'non-regexp argument' do
-            let(:selection) { query.none_of(field: [3, { '$lt' => 5 }]) }
-
-            it_behaves_like 'combines conditions with $eq'
-          end
-
-          context 'regexp argument' do
-            let(:selection) { query.none_of(field: [/t/, { '$lt' => 5 }]) }
-
-            it_behaves_like 'combines conditions with $regex'
-          end
-        end
-
         context 'criteria are provided in separate hashes' do
           let(:selection) { query.none_of({ field: 3 }, { field: { '$lt' => 5 } }) }
 
@@ -2407,20 +2251,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it_behaves_like 'returns a cloned query'
-        end
-
-        context 'criteria are provided in the same hash' do
-          context 'non-regexp argument' do
-            let(:selection) { query.none_of(field: [{ '$gt' => 3 }, 5]) }
-
-            it_behaves_like 'combines conditions with $eq'
-          end
-
-          context 'regexp argument' do
-            let(:selection) { query.none_of(field: [{ '$gt' => 3 }, /t/]) }
-
-            it_behaves_like 'combines conditions with $regex'
-          end
         end
 
         context 'criteria are provided in separate hashes' do

@@ -222,13 +222,23 @@ module ActiveDocument
         def typecast_operator_expression(operator, op_expr)
           case operator
           when '$exists'
-            ActiveDocument::Boolean.evolve(op_expr)
+            evolve_boolean_strict(op_expr)
           when '$size', '$type'
             # TODO: $type should allow a symbol value like :boolean, etc.
             ::Integer.evolve(op_expr)
           else
             op_expr
           end
+        end
+
+        # Strictly evolve a boolean value for $exists condition.
+        def evolve_boolean_strict(object)
+          return false if object.nil?
+
+          value = ActiveDocument::Boolean.mongoize(object)
+          raise ActiveDocument::Errors::CriteriaArgumentRequired.new('$exists') if value.nil?
+
+          value
         end
       end
     end
