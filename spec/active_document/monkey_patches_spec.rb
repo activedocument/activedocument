@@ -35,16 +35,9 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
 
   expected_instance_methods = {
     Object => %i[
-      __add__
-      __add_from_array__
       __deep_copy__
       __evolve_object_id__
-      __intersect__
-      __intersect_from_array__
-      __intersect_from_object__
       __mongoize_object_id__
-      __union__
-      __union_from_object__
       ivar
       mongoize
       numeric?

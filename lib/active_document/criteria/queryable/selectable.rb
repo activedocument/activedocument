@@ -13,6 +13,17 @@ module ActiveDocument
         # @attribute [rw] selector The query selector.
         attr_accessor :negating, :selector
 
+        # Clear the current negating flag, used after cloning.
+        #
+        # @example Reset the state.
+        #   selectable.reset_state!
+        #
+        # @return [ ActiveDocument::Criteria ] self.
+        def reset_state!
+          self.negating = nil
+          self
+        end
+
         # Add the $all criterion.
         #
         # @example Add the criterion.
@@ -25,23 +36,18 @@ module ActiveDocument
         #
         # @return [ Selectable ] The cloned selectable.
         def all(*criteria)
-          return clone.tap(&:reset_strategies!) if criteria.empty?
+          return clone.tap(&:reset_state!) if criteria.empty?
 
           criteria.inject(clone) do |query, condition|
             raise Errors::CriteriaArgumentRequired.new(:all) if condition.nil?
 
             condition = QueryNormalizer.expand_condition_to_array_values(condition)
-
-            if strategy
-              send(strategy, condition, '$all')
-            else
-              condition.inject(query) do |q, (field, value)|
-                v = { '$all' => value }
-                v = { '$not' => v } if negating?
-                q.add_field_expression(field.to_s, v)
-              end
+            condition.inject(query) do |q, (field, value)|
+              v = { '$all' => value }
+              v = { '$not' => v } if negating?
+              q.add_field_expression(field.to_s, v)
             end
-          end.reset_strategies!
+          end.reset_state!
         end
         alias_method :all_in, :all
 
@@ -56,7 +62,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def and(*criteria)
-          _active_document_flatten_arrays(criteria).inject(clone) do |c, new_s|
+          flatten_args(criteria).inject(clone) do |c, new_s|
             new_s = new_s.selector if new_s.is_a?(Selectable)
             normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
             normalized.each do |k, v|
@@ -76,7 +82,7 @@ module ActiveDocument
                   merged_v = c.selector[k].merge(v)
                   c.selector.store(k, merged_v)
                 else
-                  c = c.send(:__multi__, [k => v], '$and')
+                  c = c.send(:__combine_criteria__, [k => v], '$and')
                 end
               else
                 c.selector.store(k, v)
@@ -98,14 +104,19 @@ module ActiveDocument
         # @param [ Hash ] criterion Multiple key/range pairs.
         #
         # @return [ Selectable ] The cloned selectable.
+        # TODO: this needs to support inclusive an exclusive range
         def between(criterion)
           raise Errors::CriteriaArgumentRequired.new(:between) if criterion.nil?
 
-          selection(criterion) do |selector, field, value|
-            selector.store(
-              field,
-              { '$gte' => value.min, '$lte' => value.max }
-            )
+          # TODO: this will override existing conditions on the field
+          clone.tap do |query|
+            criterion&.each_pair do |field, value|
+              query.selector.store(
+                field,
+                { '$gte' => value.min, '$lte' => value.max }
+              )
+            end
+            query.reset_state!
           end
         end
 
@@ -179,11 +190,12 @@ module ActiveDocument
           raise Errors::CriteriaArgumentRequired.new(:geo_spatial) if criterion.nil?
 
           # Merge the criterion into the selection
+          # TODO: check if this overrides existing conditions on the field
           clone.tap do |query|
             criterion&.each_pair do |field, value|
-              query.selector.merge!(field => value.deep_stringify_keys)
+              query.selector.merge!(field.to_s => value.deep_stringify_keys)
             end
-            query.reset_strategies!
+            query.reset_state!
           end
         end
 
@@ -256,16 +268,11 @@ module ActiveDocument
           raise Errors::CriteriaArgumentRequired.new(:in) if condition.nil?
 
           condition = QueryNormalizer.expand_condition_to_array_values(condition)
-
-          if strategy
-            send(strategy, condition, '$in')
-          else
-            condition.inject(clone) do |query, (field, value)|
-              v = { '$in' => value }
-              v = { '$not' => v } if negating?
-              query.add_field_expression(field.to_s, v)
-            end.reset_strategies!
-          end
+          condition.inject(clone) do |query, (field, value)|
+            v = { '$in' => value }
+            v = { '$not' => v } if negating?
+            query.add_field_expression(field.to_s, v)
+          end.reset_state!
         end
         alias_method :any_in, :in
 
@@ -315,7 +322,7 @@ module ActiveDocument
           raise Errors::CriteriaArgumentRequired.new(:max_distance) if criterion.nil?
 
           # $maxDistance must be given together with $near
-          __add__(criterion, '$maxDistance')
+          and_with_operator(criterion, '$maxDistance')
         end
 
         # Adds $mod selection to the selectable.
@@ -405,16 +412,11 @@ module ActiveDocument
           raise Errors::CriteriaArgumentRequired.new(:nin) if condition.nil?
 
           condition = QueryNormalizer.expand_condition_to_array_values(condition)
-
-          if strategy
-            send(strategy, condition, '$nin')
-          else
-            condition.inject(clone) do |query, (field, value)|
-              v = { '$nin' => value }
-              v = { '$not' => v } if negating?
-              query.add_field_expression(field.to_s, v)
-            end.reset_strategies!
-          end
+          condition.inject(clone) do |query, (field, value)|
+            v = { '$nin' => value }
+            v = { '$not' => v } if negating?
+            query.add_field_expression(field.to_s, v)
+          end.reset_state!
         end
         alias_method :not_in, :nin
 
@@ -428,7 +430,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def nor(*criteria)
-          _active_document_add_top_level_operation('$nor', criteria)
+          add_top_level_operation('$nor', criteria)
         end
 
         # Is the current selectable negating the next selection?
@@ -465,7 +467,7 @@ module ActiveDocument
               QueryNormalizer.normalize_expr(new_s, negating: negating?).each do |k, v|
                 k = k.to_s
                 if c.selector[k] || k.start_with?('$') || v.is_a?(Hash)
-                  c = c.send(:__multi__, [{ '$nor' => [{ k => v }] }], '$and')
+                  c = c.send(:__combine_criteria__, [{ '$nor' => [{ k => v }] }], '$and')
                 else
                   negated_operator = if v.is_a?(Regexp)
                                        '$not'
@@ -477,6 +479,24 @@ module ActiveDocument
               end
               c
             end
+          end
+        end
+
+        # TODO: only used by #not. check if this can be removed.
+        def __override__(criterion, operator)
+          clone.tap do |query|
+            criterion&.each_pair do |field, value|
+              selector = query.selector
+              field = field.to_s
+              expression = prepare_for_merging(field, operator, value)
+              existing = selector[field]
+              if existing.respond_to?(:merge!)
+                selector.store(field, existing.merge!(expression))
+              else
+                selector.store(field, expression)
+              end
+            end
+            query.reset_state!
           end
         end
 
@@ -497,7 +517,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def none_of(*criteria)
-          criteria = _active_document_flatten_arrays(criteria)
+          criteria = flatten_args(criteria)
           return dup if criteria.empty?
 
           exprs = criteria.map do |criterion|
@@ -541,7 +561,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def or(*criteria)
-          _active_document_add_top_level_operation('$or', criteria)
+          add_top_level_operation('$or', criteria)
         end
 
         # Adds a disjunction of the arguments as an additional constraint
@@ -571,7 +591,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def any_of(*criteria)
-          criteria = _active_document_flatten_arrays(criteria)
+          criteria = flatten_args(criteria)
           case criteria.length
           when 0
             clone
@@ -717,10 +737,84 @@ module ActiveDocument
                          end
           end
 
-          selectable.reset_strategies!
+          selectable.reset_state!
         end
 
         private
+
+        # Merge criteria with operators using the and operator.
+        #
+        # @param [ Hash ] criterion The criterion to add to the criteria.
+        # @param [ String ] operator The MongoDB operator.
+        #
+        # @return [ ActiveDocument::Criteria ] The resulting criteria.
+        def and_with_operator(criterion, operator)
+          crit = self
+          criterion&.each_pair do |field, value|
+            val = prepare_for_merging(field, operator, value)
+            # The prepare_for_merging method already takes the negation into account.
+            # We set negating to false here so that ``and`` doesn't also apply
+            # negation and we have a double negative.
+            crit.negating = false
+            crit = crit.and(field => val)
+          end
+          crit
+        end
+
+        # Adds $and/$or/$nor criteria to a copy of this selection.
+        #
+        # Each of the criteria can be a Hash of key/value pairs or MongoDB
+        # operators (keys beginning with $), or a Selectable object
+        # (which typically will be a Criteria instance).
+        #
+        # @api private
+        #
+        # @example Add the criterion.
+        #   selectable.__combine_criteria__([ 1, 2 ], "$in")
+        #
+        # @param [ Array<Hash | ActiveDocument::Criteria> ] criteria Multiple key/value pair
+        #   matches or Criteria objects.
+        # @param [ String ] operator The MongoDB operator.
+        #
+        # @return [ Selectable ] The new selectable.
+        def __combine_criteria__(criteria, operator)
+          clone.tap do |query|
+            sel = query.selector
+            criteria.flatten.each do |expr|
+              next unless expr
+
+              result_criteria = sel[operator] || []
+              if expr.is_a?(Selectable)
+                expr = expr.selector
+              end
+              normalized = QueryNormalizer.normalize_expr(expr, negating: negating?)
+              sel.store(operator, result_criteria.push(normalized))
+            end
+          end
+        end
+
+        # Prepare the value for merging.
+        #
+        # @api private
+        #
+        # @example Prepare the value.
+        #   selectable.prepare_for_merging("field", "$gt", 10)
+        #
+        # @param [ String ] field The name of the field.
+        # @param [ Object ] value The value.
+        #
+        # @return [ Object ] The serialized value.
+        def prepare_for_merging(field, operator, value)
+          # TODO: Skipped because these are type-casted
+          unless /exists|type|size/.match?(operator)
+            field = field.to_s
+            name = aliases[field] || field
+            serializer = serializers[name]
+            value = serializer.evolve(value) if serializer
+          end
+          selection = { operator => value }
+          negating? ? { '$not' => selection } : selection
+        end
 
         # Adds the specified expression to the query.
         #
@@ -759,7 +853,7 @@ module ActiveDocument
                 query.add_field_expression(field, value)
               end
             end
-            query.reset_strategies!
+            query.reset_state!
           end
         end
 
@@ -796,26 +890,65 @@ module ActiveDocument
             else
               query.add_operator_expression('$where', criterion)
             end
-            query.reset_strategies!
+            query.reset_state!
           end
         end
 
-        # Take the provided criterion and store it as a selection in the query
-        # selector.
-        #
-        # @example Store the selection.
-        #   selectable.selection({ field: "value" })
-        #
-        # @param [ Hash ] criterion The selection to store.
-        #
-        # @return [ Selectable ] The cloned selectable.
-        # @api private
-        def selection(criterion = nil)
-          clone.tap do |query|
-            criterion&.each_pair do |field, value|
-              yield(query.selector, field.to_s, value)
+        # Calling .flatten on an array which includes a Criteria instance
+        # evaluates the criteria, which we do not want. Hence this method
+        # explicitly only expands Array objects and Array subclasses.
+        def flatten_args(array)
+          out = []
+          pending = array.dup
+          until pending.empty?
+            item = pending.shift
+            if item.nil?
+              # skip
+            elsif item.is_a?(Array)
+              pending.concat(item)
+            else
+              out << item
             end
-            query.reset_strategies!
+          end
+          out
+        end
+
+
+        # Combines criteria into a MongoDB selector.
+        #
+        # Criteria is an array of criterion objects which will be flattened.
+        #
+        # Each criterion can be:
+        # - A hash
+        # - A Criteria instance
+        # - nil, in which case it is ignored
+        #
+        # @api private
+        def add_top_level_operation(operator, criteria)
+          # Flatten the criteria. The idea is that predicates in MongoDB
+          # are always hashes and are never arrays. This method additionally
+          # allows Criteria instances as predicates.
+          # The flattening is existing ActiveDocument behavior but we could possibly
+          # get rid of it as applications can splat their predicates, or
+          # flatten if needed.
+          clone.tap do |query|
+            sel = query.selector
+            flatten_args(criteria).each do |criterion|
+              expr = if criterion.is_a?(Selectable)
+                       QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
+                     else
+                       QueryNormalizer.normalize_expr(criterion, negating: negating?)
+                     end
+              if sel.empty?
+                sel.store(operator, [expr])
+              elsif sel.keys == [operator]
+                sel.store(operator, sel[operator] + [expr])
+              else
+                operands = [sel.dup] + [expr]
+                sel.clear
+                sel.store(operator, operands)
+              end
+            end
           end
         end
 

@@ -261,115 +261,33 @@ To match values of fields of embedded documents, use the dot notation:
 
 .. _logical-operations:
 
+# TODO: This section is a mess. It needs to be reorganized and rewritten.
+
 Logical Operations
 ==================
 
-ActiveDocument supports ``and``, ``or``, ``nor`` and ``not`` logical operations on
-``Criteria`` objects. These methods take one or more hash of conditions
-or another ``Criteria`` object as their arguments, with ``not`` additionally
-having an argument-free version.
+ActiveDocument supports ``all_of`` (and), ``any_of`` (or), ``none_of`` (nor), and ``not``
+logical operations on ``Criteria`` objects. These methods take one or more hash of
+conditions.
 
 .. code-block:: ruby
 
-  # and with conditions
-  Band.where(label: 'Trust in Trance').and(name: 'Astral Projection')
+  # all_of (and)
+  Band.all_of({ label: 'Trust in Trance' }, { name: 'Astral Projection' })
 
-  # or with scope
-  Band.where(label: 'Trust in Trance').or(Band.where(name: 'Astral Projection'))
+  # any_of (or)
+  Band.any_of({ label: 'Trust in Trance' }, { name: 'Astral Projection' }))
 
-  # not with conditions
-  Band.not(label: 'Trust in Trance', name: 'Astral Projection')
+  # none_of (nor)
+  Band.none_of({ label: 'Trust in Trance' }, { name: 'Astral Projection' })
 
-  # argument-less not
+  # chainable not: affects immediately following condition
   Band.not.where(label: 'Trust in Trance', name: 'Astral Projection')
 
-For backwards compatibility with earlier ActiveDocument versions, all of the logical
-operation methods also accept arrays of parameters, which will be flattened
-to obtain the criteria. Passing arrays to logical operations is deprecated and
-may be removed in a future version of ActiveDocument.
 
-The following calls all produce the same query conditions:
+.. _all-of:
 
-.. code-block:: ruby
-
-  # Condition hashes passed to separate and invocations
-  Band.and(name: 'SUN Project').and(member_count: 2)
-
-  # Multiple condition hashes in the same and invocation
-  Band.and({name: 'SUN Project'}, {member_count: 2})
-
-  # Multiple condition hashes in an array - deprecated
-  Band.and([{name: 'SUN Project'}, {member_count: 2}])
-
-  # Condition hash in where and a scope
-  Band.where(name: 'SUN Project').and(Band.where(member_count: 2))
-
-  # Condition hash in and and a scope
-  Band.and({name: 'SUN Project'}, Band.where(member_count: 2))
-
-  # Scope as an array element, nested arrays - deprecated
-  Band.and([Band.where(name: 'SUN Project'), [{member_count: 2}]])
-
-  # All produce:
-  # => #<ActiveDocument::Criteria
-  #   selector: {"name"=>"SUN Project", "member_count"=>2}
-  #   options:  {}
-  #   class:    Band
-  #   embedded: false>
-
-
-Operator Combinations
----------------------
-
-As of ActiveDocument 7.1, logical operators (``and``, ``or``, ``nor`` and ``not``)
-have been changed to have the the same semantics as `those of ActiveRecord
-<https://guides.rubyonrails.org/active_record_querying.html>`_.
-To obtain the semantics of ``or`` as it behaved in ActiveDocument 7.0 and earlier,
-use ``any_of`` which is described below.
-
-When conditions are specified on the same field multiple times, all
-conditions are added to the criteria:
-
-.. code-block:: ruby
-
-  Band.where(name: 1).where(name: 2).selector
-  # => {"name"=>"1", "$and"=>[{"name"=>"2"}]}
-
-  Band.where(name: 1).or(name: 2).selector
-  # => {"$or"=>[{"name"=>"1"}, {"name"=>"2"}]}
-
-``any_of``, ``none_of``, ``nor`` and ``not`` behave similarly, with ``not`` producing
-different query shapes as described below.
-
-When ``and``, ``or`` and ``nor`` logical operators are used, they
-operate on the criteria built up to that point and its argument.
-``where`` has the same meaning as ``and``:
-
-.. code-block:: ruby
-
-  # or joins the two conditions
-  Band.where(name: 'Sun').or(label: 'Trust').selector
-  # => {"$or"=>[{"name"=>"Sun"}, {"label"=>"Trust"}]}
-
-  # or applies only to the first condition, the second condition is added
-  # to the top level as $and
-  Band.or(name: 'Sun').where(label: 'Trust').selector
-  # => {"$or"=>[{"name"=>"Sun"}], "label"=>"Trust"}
-
-  # Same as previous example - where and and are aliases
-  Band.or(name: 'Sun').and(label: 'Trust').selector
-  # => {"$or"=>[{"name"=>"Sun"}], "label"=>"Trust"}
-
-  # Same operator can be stacked any number of times
-  Band.or(name: 'Sun').or(label: 'Trust').selector
-  # => {"$or"=>[{"name"=>"Sun"}, {"label"=>"Trust"}]}
-
-  # The label: Foo condition is added to the top level as $and
-  Band.where(name: 'Sun').or(label: 'Trust').where(label: 'Foo').selector
-  # => {"$or"=>[{"name"=>"Sun"}, {"label"=>"Trust"}], "label"=>"Foo"}
-
-
-``and`` Behavior
+``all_of`` Behavior
 ----------------
 
 The ``and`` method will add new simple conditions to the top level of the
@@ -390,53 +308,25 @@ conditions on a field sometimes replaced previously specified conditions on
 the same field, depending on which form of ``and`` was used.
 
 
-``or``/``nor`` Behavior
-_----------------------
-
-``or`` and ``nor`` produce ``$or`` and ``$nor`` MongoDB operators, respectively,
-using the receiver and all of the arguments as operands. For example:
-
-.. code-block:: ruby
-
-  Band.where(name: /Best/).or(name: 'Astral Projection')
-  # => {"$or"=>[{"name"=>/Best/}, {"name"=>"Astral Projection"}]}
-
-  Band.where(name: /Best/).and(name: 'Astral Projection').
-    or(Band.where(label: /Records/)).and(label: 'Trust').selector
-  # => {"$or"=>[{"name"=>/Best/, "$and"=>[{"name"=>"Astral Projection"}]}, {"label"=>/Records/}], "label"=>"Trust"}
-
-If the only condition on the receiver is another ``or``/``nor``, the new
-conditions are added to the existing list:
-
-.. code-block:: ruby
-
-  Band.where(name: /Best/).or(name: 'Astral Projection').
-    or(Band.where(label: /Records/)).selector
-  # => {"$or"=>[{"name"=>/Best/}, {"name"=>"Astral Projection"}, {"label"=>/Records/}]}
-
-Use ``any_of`` to add a disjunction to a Criteria object while maintaining
-all of the conditions built up so far as they are.
-
-
 .. _any-of:
 
 ``any_of`` Behavior
 -------------------
 
-``any_of`` adds a disjunction built from its arguments to the existing
-conditions in the criteria. For example:
+``any_of`` adds an "or" condition to the criteria. This will return query results
+for which any of its arguments are true. For example:
 
 .. code-block:: ruby
 
-  Band.where(label: /Trust/).any_of({name: 'Astral Projection'}, {name: /Best/})
-  # => {"label"=>/Trust/, "$or"=>[{"name"=>"Astral Projection"}, {"name"=>/Best/}]}
+  Band.where(label: /Trust/).any_of({ name: 'Astral Projection' }, { name: /Best/ })
+  # => { "label" => /Trust/, "$or" => [{ "name"=>"Astral Projection" }, { "name"=>/Best/ }] }
 
-The conditions are hoisted to the top level if possible:
+When given a single argument, the condition is hoisted to the top level:
 
 .. code-block:: ruby
 
-  Band.where(label: /Trust/).any_of({name: 'Astral Projection'})
-  # => {"label"=>/Trust/, "name"=>"Astral Projection"}
+  Band.where(label: /Trust/).any_of({ name: 'Astral Projection' })
+  # => { "label" => /Trust/, "name" => "Astral Projection" }
 
 
 .. _none-of:
@@ -444,14 +334,16 @@ The conditions are hoisted to the top level if possible:
 ``none_of`` Behavior
 --------------------
 
-``none_of`` adds a negated disjunction ("nor") built from its arguments to
-the existing conditions in the criteria. For example:
+``any_of`` adds an "nor" ("negated or") condition to the criteria. This will
+return query results for which none of its arguments are true. For example:
 
 .. code-block:: ruby
 
-  Band.where(label: /Trust/).none_of({name: 'Astral Projection'}, {name: /Best/})
-  # => {"label"=>/Trust/, "$nor"=>[{"name"=>"Astral Projection"}, {"name"=>/Best/}]}
+  Band.where(label: /Trust/).none_of({ name: 'Astral Projection' }, { name: /Best/ })
+  # => {"label"=>/Trust/, "$nor" => [{ "name" => "Astral Projection" }, { "name" => /Best/ }]}
 
+
+.. _not:
 
 ``not`` Behavior
 ----------------
@@ -490,8 +382,8 @@ added to the criteria.
     Band.not.where(name: /Best/).selector
     # => {"name"=>{"$not"=>/Best/}}
 
-Similarly to ``and``, ``not`` will negate individual conditions for simple
-field criteria. For complex conditions and when a field already has a condition
+``not`` will negate individual conditions for simple field criteria.
+For complex conditions and when a field already has a condition
 defined on it, since MongoDB server only supports the ``$not`` operator on
 a per-field basis rather than globally, ActiveDocument emulates ``$not`` by using
 an ``{'$and' => [{'$nor' => ...}]}`` construct:
@@ -517,176 +409,6 @@ an ``{'$and' => [{'$nor' => ...}]}`` construct:
 If using ``not`` with arrays or regular expressions, please note the
 caveats/limitations of ``$not`` `stated in the MongoDB server documentation
 <https://mongodb.com/docs/manual/reference/operator/query/not/>`_.
-
-
-Incremental Query Construction
-==============================
-
-By default, when conditions are added to a query, ActiveDocument considers each
-condition complete and independent from any other conditions potentially
-present in the query. For example, calling ``in`` twice adds two separate
-``$in`` conditions:
-
-.. code-block:: ruby
-
-  Band.in(name: ['a']).in(name: ['b'])
-  => #<ActiveDocument::Criteria
-    selector: {"name"=>{"$in"=>["a"]}, "$and"=>[{"name"=>{"$in"=>["b"]}}]}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-Some operator methods support building the condition incrementally. In this
-case, when an condition on a field which uses one of the supported operators
-is being added, if there already is a condition on the same field using the
-same operator, the operator expressions are combined according to the
-specified *merge strategy*.
-
-.. _merge-strategies:
-
-Merge Strategies
-----------------
-
-ActiveDocument provides three merge strategies:
-
-- **Override**: the new operator instance replaces any existing conditions on
-  the same field using the same operator.
-- **Intersect**: if there already is a condition using the same operator on the
-  same field, the values of the existing condition are intersected with the
-  values of the new condition and the result is stored as the operator value.
-- **Union**: if there already is a condition using the same operator on the
-  same field, the values of the new condition are added to the values of the
-  existing condition and the result is stored as the operator value.
-
-The following snippet demonstrates all of the strategies, using ``in`` as the
-example operator:
-
-.. code-block:: ruby
-
-  Band.in(name: ['a']).override.in(name: ['b'])
-  => #<ActiveDocument::Criteria
-    selector: {"name"=>{"$in"=>["b"]}}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-  Band.in(name: ['a', 'b']).intersect.in(name: ['b', 'c'])
-  => #<ActiveDocument::Criteria
-    selector: {"name"=>{"$in"=>["b"]}}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-  Band.in(name: ['a']).union.in(name: ['b'])
-  => #<ActiveDocument::Criteria
-    selector: {"name"=>{"$in"=>["a", "b"]}}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-The strategy is requested by calling ``override``, ``intersect`` or ``union``
-on a ``Criteria`` instance. The requested strategy applies to the next
-condition method called on the query. If the next condition method called does
-not support merge strategies, the strategy is reset, as shown in the following
-example:
-
-.. code-block:: ruby
-
-  Band.in(name: ['a']).union.ne(name: 'c').in(name: ['b'])
-  => #<ActiveDocument::Criteria
-    selector: {"name"=>{"$in"=>["a"], "$ne"=>"c"}, "$and"=>[{"name"=>{"$in"=>["b"]}}]}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-Since ``ne`` does not support merge strategies, the ``union`` strategy was
-ignored and reset and when ``in`` was invoked the second time there was no
-strategy active.
-
-.. warning::
-
-  Merge strategies currently assume the previous condition(s) have been added
-  to the top level of the query, however this is not always the case
-  (conditions may be nested under an ``$and`` clause). Using merge strategies
-  with complex criteria may cause incorrect queries to be constructed.
-  This misbehavior is `intended to be fixed in the future
-  <https://jira.mongodb.org/browse/MONGOID-5350>`_.
-
-
-Supported Operator Methods
---------------------------
-
-The following operator methods support merge strategies:
-
-- ``all``
-- ``in``
-- ``nin``
-
-The set of methods may be expanded in future releases of ActiveDocument. For
-future compatibility, only invoke a strategy method when the next method call
-is an operator that supports merge strategies.
-
-Note that the merge strategies are currently only applied when conditions are
-added through the designated methods. In the following example merge strategy
-is not applied because the second condition is added via ``where``, not via
-``in``:
-
-.. code-block:: ruby
-
-  Band.in(foo: ['a']).union.where(foo: {'$in' => 'b'})
-  => #<ActiveDocument::Criteria
-    selector: {"foo"=>{"$in"=>["a"]}, "$and"=>[{"foo"=>{"$in"=>"b"}}]}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-This behavior may change in a future release of ActiveDocument and should not be
-relied upon.
-
-In contrast, it does not matter how the existing query was built when a
-merge strategy-supporting operator method is invoked. In the following
-example, the first condition was added through ``where`` but the strategy
-mechanism still applies:
-
-.. code-block:: ruby
-
-  Band.where(foo: {'$in' => ['a']}).union.in(foo: ['b'])
-  => #<ActiveDocument::Criteria
-    selector: {"foo"=>{"$in"=>["a", "b"]}}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-Operator Value Expansion
-------------------------
-
-Operator methods that support merge strategies all take ``Array`` as their value
-type. ActiveDocument expands ``Array``-compatible types, such as a ``Range``,
-when they are used with these operator methods:
-
-.. code-block:: ruby
-
-  Band.in(year: 1950..1960)
-  => #<ActiveDocument::Criteria
-    selector: {"year"=>{"$in"=>[1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960]}}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-Additionally, ActiveDocument has historically wrapped non-``Array`` values in arrays,
-as the following example demonstrates:
-
-.. code-block:: ruby
-
-  Band.in(year: 1950)
-  => #<ActiveDocument::Criteria
-    selector: {"year"=>{"$in"=>[1950]}}
-    options:  {}
-    class:    Band
-    embedded: false>
-
-This wrapping behavior is deprecated and should not be relied on. It may be
-removed in a future release of ActiveDocument.
 
 
 Query Methods

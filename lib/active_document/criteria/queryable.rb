@@ -2,7 +2,6 @@
 
 require 'active_document/criteria/queryable/query_normalizer'
 require 'active_document/criteria/queryable/extensions'
-require 'active_document/criteria/queryable/mergeable'
 require 'active_document/criteria/queryable/smash'
 require 'active_document/criteria/queryable/aggregable'
 require 'active_document/criteria/queryable/pipeline'
@@ -24,7 +23,6 @@ module ActiveDocument
     #   end
     module Queryable
       include Storable
-      include Mergeable
       include Aggregable
       include Selectable
       include Optional
