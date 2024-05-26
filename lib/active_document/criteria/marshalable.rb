@@ -17,7 +17,7 @@ module ActiveDocument
       #
       # @return [ Array<Object> ] The dumped data.
       def marshal_dump
-        data = [klass, :mongo, inclusions, documents, strategy, negating]
+        data = [klass, :mongo, inclusions, documents, negating]
         data.push(scoping_options).push(dump_hash(:selector)).push(dump_hash(:options))
       end
 
@@ -29,7 +29,7 @@ module ActiveDocument
       # @param [ Array ] data The raw data.
       def marshal_load(data)
         @scoping_options, raw_selector, raw_options = data.pop(3)
-        @klass, _driver, @inclusions, @documents, @strategy, @negating = data
+        @klass, _driver, @inclusions, @documents, @negating = data
         @selector = load_hash(Queryable::Selector, raw_selector)
         @options = load_hash(Queryable::Options, raw_options)
       end

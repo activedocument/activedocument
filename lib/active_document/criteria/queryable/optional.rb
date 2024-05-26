@@ -203,10 +203,12 @@ module ActiveDocument
         # @return [ Optional ] The cloned optional.
         def slice(criterion = nil)
           option(criterion) do |options|
-            options.__union__(
-              fields: criterion.inject({}) do |option, (field, val)|
-                option.tap { |opt| opt.store(field, { '$slice' => val }) }
-              end
+            options.store(
+              :fields,
+              criterion.each_with_object(options[:fields] || {}) do |(field, val), option|
+                option.store(field, { '$slice' => val })
+              end,
+              false
             )
           end
         end
@@ -236,7 +238,7 @@ module ActiveDocument
           option(*args) do |options|
             options.store(
               :fields,
-              args.inject(options[:fields] || {}) { |sub, field| sub.tap { sub[field] = 0 } },
+              args.each_with_object(options[:fields] || {}) { |field, sub| sub[field] = 0 },
               false
             )
           end

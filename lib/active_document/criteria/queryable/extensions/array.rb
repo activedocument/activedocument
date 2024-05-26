@@ -8,18 +8,6 @@ module ActiveDocument
         # Adds query type-casting behavior to Array class.
         module Array
 
-          # Combine the two objects using the add strategy.
-          #
-          # @example Add the object to the array.
-          #   [ 1, 2, 3 ].__add__(4)
-          #
-          # @param [ Object ] object The object to add.
-          #
-          # @return [ Object ] The result of the add.
-          def __add__(object)
-            object.__add_from_array__(self)
-          end
-
           # Makes a deep copy of the array, deep copying every element inside the
           # array.
           #
@@ -50,18 +38,6 @@ module ActiveDocument
           # @return [ Array<Time> ] The array as times.
           def __evolve_time__
             map(&:__evolve_time__)
-          end
-
-          # Combine the two objects using an intersection strategy.
-          #
-          # @example Intersect with the object.
-          #   [ 1, 2 ].__intersect__(3)
-          #
-          # @param [ Object ] object The object to intersect with.
-          #
-          # @return [ Object ] The result of the intersection.
-          def __intersect__(object)
-            object.__intersect_from_array__(self)
           end
 
           # Gets the array as options in the proper format to pass as MongoDB sort
