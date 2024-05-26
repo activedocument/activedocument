@@ -36,6 +36,8 @@ These are dangerous and have. ActiveDocument will not attempt to be SQL-like, an
 in active record.
 https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/
 
+To avoid accidental confusion with both Mongoid and ActiveRecord's behavior, we are removing the `and`, `or`, and `nor` operators.
+
 | `#and` | Removed. Chaining operations are removed because they cause confusion. Use non-chaining `#all_of` instead. |
 | `#or` | Removed. Chaining operations are removed because they cause confusion. Use non-chaining `#any_of` instead. |
 | `#nor` | Removed. Chaining operations are removed because they cause confusion. Use non-chaining `#none_of` instead. |
