@@ -7,7 +7,7 @@ module ActiveDocument
       # An queryable selectable is selectable, in that it has the ability to select
       # document from the database. The selectable module brings all functionality
       # to the selectable that has to do with building MongoDB selectors.
-      module Selectable
+      module Selectable # rubocop:disable Metrics/ModuleLength
 
         # @attribute [rw] negating If the next expression is negated.
         # @attribute [rw] selector The query selector.
@@ -912,7 +912,6 @@ module ActiveDocument
           end
           out
         end
-
 
         # Combines criteria into a MongoDB selector.
         #
