@@ -19,7 +19,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     ActiveDocument::Query.new('id' => '_id')
   end
 
-  shared_examples_for 'supports merge strategies' do
+  shared_examples_for 'ands the arguments' do
 
     context 'when the field is not aliased' do
       let(:selection) do
@@ -78,37 +78,268 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'expands range to array' do
-          expect(selection.selector).to eq({
-            'foo' => { operator => [2, 3, 4] }
-          })
+          expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
         end
       end
 
       context 'when existing condition has Array value' do
         let(:selection) do
-          query.send(query_method, foo: [1, 2]).send(query_method, foo: 2..4)
+          query.send(query_method, foo: [1, 2, 3]).send(query_method, foo: 2..4)
         end
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-            'foo' => { operator => [1, 2, 3, 4] }
+            'foo' => { operator => [1, 2, 3] },
+            '$and' => [{ 'foo' => { operator => [2, 3, 4] } }]
           })
         end
       end
 
       context 'when existing condition has Range value' do
         let(:selection) do
-          query.send(query_method, foo: 1..2).send(query_method, foo: 2..4)
+          query.send(query_method, foo: 1..3).send(query_method, foo: 2..4)
         end
 
         it 'expands range to array' do
           expect(selection.selector).to eq({
-            'foo' => { operator => [1, 2, 3, 4] }
+            'foo' => { operator => [1, 2, 3] },
+            '$and' => [{ 'foo' => { operator => [2, 3, 4] } }]
           })
         end
       end
     end
   end
+
+  # TODO: these should be added for in, nin, all
+  # shared_examples_for 'intersects the arguments' do
+  #
+  #   context 'when the field is not aliased' do
+  #     let(:selection) do
+  #       query.send(query_method, first: [1, 2]).send(query_method, first: [2, 3])
+  #     end
+  #
+  #     it 'intersects the conditions' do
+  #       expect(selection.selector).to eq({ 'first' => { operator => [2] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when the field is aliased' do
+  #     let(:selection) do
+  #       query.send(query_method, id: [1, 2]).send(query_method, _id: [2, 3])
+  #     end
+  #
+  #     it 'intersects the conditions' do
+  #       expect(selection.selector).to eq({ '_id' => { operator => [2] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when the field uses a serializer' do
+  #     let(:query) do
+  #       ActiveDocument::Query.new({}, { 'field' => FieldWithSerializer.new })
+  #     end
+  #
+  #     let(:selection) do
+  #       query.send(query_method, field: %w[1 2]).send(query_method, field: %w[2 3])
+  #     end
+  #
+  #     it 'intersects the conditions' do
+  #       expect(selection.selector).to eq({ 'field' => { operator => [2] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when operator value is a Range' do
+  #
+  #     context 'when there is no existing condition' do
+  #       let(:selection) do
+  #         query.send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #       end
+  #     end
+  #
+  #     context 'when existing condition has Array value' do
+  #       let(:selection) do
+  #         query.send(query_method, foo: [1, 2, 3]).send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3] } })
+  #       end
+  #     end
+  #
+  #     context 'when existing condition has Range value' do
+  #       let(:selection) do
+  #         query.send(query_method, foo: 1..3).send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3] } })
+  #       end
+  #     end
+  #   end
+  # end
+  #
+  # shared_examples_for 'unions the arguments' do
+  #
+  #   context 'when the field is not aliased' do
+  #     let(:selection) do
+  #       query.send(query_method, first: [1, 2]).union.send(query_method, first: [3, 4])
+  #     end
+  #
+  #     it 'unions the conditions' do
+  #       expect(selection.selector).to eq({ 'first' => { operator => [1, 2, 3, 4] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when the field is aliased' do
+  #     let(:selection) do
+  #       query.send(query_method, _id: [1, 2]).union.send(query_method, id: [3, 4])
+  #     end
+  #
+  #     it 'unions the conditions' do
+  #       expect(selection.selector).to eq({ '_id' => { operator => [1, 2, 3, 4] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when the field uses a serializer' do
+  #     let(:query) do
+  #       ActiveDocument::Query.new({}, { 'field' => FieldWithSerializer.new })
+  #     end
+  #
+  #     let(:selection) do
+  #       query.send(query_method, field: %w[1 2]).send(query_method, field: %w[2 3])
+  #     end
+  #
+  #     it 'intersects the conditions' do
+  #       expect(selection.selector).to eq({ 'field' => { operator => [1, 2, 3] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when operator value is a Range' do
+  #
+  #     context 'when there is no existing condition' do
+  #       let(:selection) do
+  #         query.send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #       end
+  #     end
+  #
+  #     context 'when existing condition has Array value' do
+  #
+  #       let(:selection) do
+  #         query.send(query_method, foo: [1, 2]).send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [1, 2, 3, 4] } })
+  #       end
+  #     end
+  #
+  #     context 'when existing condition has Range value' do
+  #       let(:selection) do
+  #         query.send(query_method, foo: 1..2).send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [1, 2, 3, 4] } })
+  #       end
+  #     end
+  #   end
+  # end
+  #
+  # shared_examples_for 'overrides the arguments' do
+  #
+  #   context 'when the field is not aliased' do
+  #     let(:selection) do
+  #       query.send(query_method, first: [1, 2]).override.send(query_method, first: [3, 4])
+  #     end
+  #
+  #     it 'overwrites the first condition' do
+  #       expect(selection.selector).to eq({ 'first' => { operator => [3, 4] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when the field is aliased' do
+  #     let(:selection) do
+  #       query.send(query_method, _id: [1, 2]).override.send(query_method, id: [3, 4])
+  #     end
+  #
+  #     it 'overwrites the first condition' do
+  #       expect(selection.selector).to eq({ '_id' => { operator => [3, 4] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when the field uses a serializer' do
+  #     let(:query) do
+  #       ActiveDocument::Query.new({}, { 'field' => FieldWithSerializer.new })
+  #     end
+  #
+  #     let(:selection) do
+  #       query.send(query_method, field: %w[1 2]).send(query_method, field: %w[2 3])
+  #     end
+  #
+  #     it 'intersects the conditions' do
+  #       expect(selection.selector).to eq({ 'field' => { operator => [2, 3] } })
+  #     end
+  #
+  #     it_behaves_like 'returns a cloned query'
+  #   end
+  #
+  #   context 'when operator value is a Range' do
+  #
+  #     context 'when there is no existing condition' do
+  #
+  #       let(:selection) do
+  #         query.send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #       end
+  #     end
+  #
+  #     context 'when existing condition has Array value' do
+  #       let(:selection) do
+  #         query.send(query_method, foo: [1, 2]).send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #       end
+  #     end
+  #
+  #     context 'when existing condition has Range value' do
+  #       let(:selection) do
+  #         query.send(query_method, foo: 1..2).send(query_method, foo: 2..4)
+  #       end
+  #
+  #       it 'expands range to array' do
+  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #       end
+  #     end
+  #   end
+  # end
 
   describe '#all' do
     let(:query_method) { :all }
@@ -293,7 +524,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       context 'when the criterion are on the same field' do
-        it_behaves_like 'supports merge strategies'
+        it_behaves_like 'ands the arguments'
+        # TODO: it_behaves_like 'unions the arguments'
       end
     end
   end
@@ -943,7 +1175,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       context 'when the criterion are on the same field' do
-        it_behaves_like 'supports merge strategies'
+        it_behaves_like 'ands the arguments'
+        # TODO: it_behaves_like 'intersects the arguments'
       end
     end
   end
@@ -1508,14 +1741,13 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       context 'when the criterion are on the same field' do
-
-        it_behaves_like 'supports merge strategies'
+        it_behaves_like 'ands the arguments'
+        # TODO: it_behaves_like 'unions the arguments'
       end
     end
   end
 
   describe '#size_of' do
-
     let(:query_method) { :size_of }
 
     it_behaves_like 'requires an argument'

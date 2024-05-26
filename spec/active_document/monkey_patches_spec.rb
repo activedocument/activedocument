@@ -87,8 +87,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
     NilClass => %i[
       __evolve_date__
       __evolve_time__
-      __expanded__
-      __override__
       collectionize
     ],
     Range => %i[
