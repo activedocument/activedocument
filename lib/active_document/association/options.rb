@@ -22,7 +22,7 @@ module ActiveDocument
 
       # The custom sorting options on the association.
       #
-      # @return [ ActiveDocument::Criteria::Queryable::Key ] The custom sorting options.
+      # @return [ Hash ] The custom sorting options.
       def order
         @options[:order]
       end

@@ -2813,7 +2813,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     context 'when chaining criteria' do
 
       let(:addresses) do
-        person.addresses.california.where(:street.in => ['Market'])
+        person.addresses.california.where(street: { '$in' => ['Market'] })
       end
 
       it 'applies the criteria to the documents' do
@@ -2854,7 +2854,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     end
 
     context 'when chaining criteria' do
-      let(:addresses) { person.addresses.california.where(:street.in => ['Market']) }
+      let(:addresses) { person.addresses.california.where(street: { '$in' => ['Market'] }) }
 
       it 'returns true for existing method' do
         expect(addresses.respond_to?(:any_of)).to be true
@@ -4134,7 +4134,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       Person.create!
     end
     let(:criteria) do
-      person.messages.order_by(:body.asc, :priority.desc)
+      person.messages.order_by(body: :asc, priority: :desc)
     end
 
     let(:message_one) do

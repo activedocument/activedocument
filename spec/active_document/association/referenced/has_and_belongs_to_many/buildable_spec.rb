@@ -49,7 +49,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Buildable
 
       let(:options) do
         {
-          order: :rating.desc
+          order: { rating: :desc }
         }
       end
 

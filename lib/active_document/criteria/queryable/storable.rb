@@ -41,6 +41,12 @@ module ActiveDocument
             raise ArgumentError.new("Field cannot be an operator (i.e. begin with $): #{field}")
           end
 
+          value_is_expression = value.is_a?(Hash) &&
+                                value.keys.all? { |key| key.to_s.start_with?('$') }
+          if value_is_expression
+            value = value.to_h { |k, v| [k, typecast_operator_expression(k, v)] }
+          end
+
           if selector[field]
             # We already have a restriction by the field we are trying
             # to restrict, combine the restrictions.
@@ -206,28 +212,29 @@ module ActiveDocument
           self
         end
 
-        # Adds an arbitrary expression to the query.
-        #
-        # Field can either be a field name or an operator.
-        #
-        # Mutates the receiver.
-        #
-        # @param [ String ] field Field name or operator name.
-        # @param [ Object ] value Field value or operator expression.
-        #
-        # @return [ Storable ] self.
-        def add_one_expression(field, value)
-          unless field.is_a?(String)
-            raise ArgumentError.new("Field must be a string: #{field}")
-          end
+        private
 
-          if field.start_with?('$')
-            add_operator_expression(field, value)
+        def typecast_operator_expression(operator, op_expr)
+          case operator
+          when '$exists'
+            evolve_boolean_strict(op_expr)
+          when '$size', '$type'
+            # TODO: $type should allow a symbol value like :boolean, etc.
+            ::Integer.evolve(op_expr)
           else
-            add_field_expression(field, value)
+            op_expr
           end
         end
 
+        # Strictly evolve a boolean value for $exists condition.
+        def evolve_boolean_strict(object)
+          return false if object.nil?
+
+          value = ActiveDocument::Boolean.mongoize(object)
+          raise ActiveDocument::Errors::CriteriaArgumentRequired.new('$exists') if value.nil?
+
+          value
+        end
       end
     end
   end

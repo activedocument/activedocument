@@ -261,7 +261,7 @@ describe ActiveDocument::Persistable::Creatable do
       end
 
       it 'returns on of this subclasses if you find by _type' do
-        expect(Canvas.where(:_type.in => ['Firefox']).count).to eq(1)
+        expect(Canvas.where(_type: { '$in' => ['Firefox'] }).count).to eq(1)
       end
     end
 

@@ -497,7 +497,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         let(:selection) do
-          query.elem_match(users: { :time.gt => time })
+          query.elem_match(users: { time: { '$gt' => time } })
         end
 
         it 'adds the $elemMatch expression' do
@@ -705,7 +705,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the geometry is a point intersection' do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_point => [1, 10])
+          query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Point', coordinates: [1, 10] } } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -727,7 +727,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the geometry is a line intersection' do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_line => [[1, 10], [2, 10]])
+          query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'LineString', coordinates: [[1, 10], [2, 10]] } } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -749,7 +749,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the geometry is a polygon intersection' do
 
         let(:selection) do
-          query.geo_spatial(:location.intersects_polygon => [[[1, 10], [2, 10], [1, 10]]])
+          query.geo_spatial(location: { '$geoIntersects' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 5]] } } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -758,7 +758,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
               '$geoIntersects' => {
                 '$geometry' => {
                   'type' => 'Polygon',
-                  'coordinates' => [[[1, 10], [2, 10], [1, 10]]]
+                  'coordinates' => [[1, 10], [2, 10], [1, 5]]
                 }
               }
             }
@@ -769,9 +769,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       context 'when the geometry is within a polygon' do
-
         let(:selection) do
-          query.geo_spatial(:location.within_polygon => [[[1, 10], [2, 10], [1, 10]]])
+          query.geo_spatial(location: { '$geoWithin' => { '$geometry' => { type: 'Polygon', coordinates: [[1, 10], [2, 10], [1, 5]] } } })
         end
 
         it 'adds the $geoIntersects expression' do
@@ -780,7 +779,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
               '$geoWithin' => {
                 '$geometry' => {
                   'type' => 'Polygon',
-                  'coordinates' => [[[1, 10], [2, 10], [1, 10]]]
+                  'coordinates' => [[1, 10], [2, 10], [1, 5]]
                 }
               }
             }
@@ -789,7 +788,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when used with the $box operator ($geoWithin query)' do
           let(:selection) do
-            query.geo_spatial(:location.within_box => [[1, 10], [2, 10]])
+            query.geo_spatial(location: { '$geoWithin' => { '$box' => [[1, 10], [2, 10]] } })
           end
 
           it 'adds the $geoIntersects expression' do
@@ -1639,9 +1638,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe '#with_size' do
+  describe '#size_of' do
 
-    let(:query_method) { :with_size }
+    let(:query_method) { :size_of }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
@@ -1651,7 +1650,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when provided an integer' do
 
         let(:selection) do
-          query.with_size(field: 10)
+          query.size_of(field: 10)
         end
 
         it 'adds the $size selector' do
@@ -1668,7 +1667,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when provided a string' do
 
         let(:selection) do
-          query.with_size(field: '10')
+          query.size_of(field: '10')
         end
 
         it 'adds the $size selector with an integer' do
@@ -1690,7 +1689,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when provided integers' do
 
           let(:selection) do
-            query.with_size(first: 10, second: 15)
+            query.size_of(first: 10, second: 15)
           end
 
           it 'adds the $size selectors' do
@@ -1708,7 +1707,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when provided strings' do
 
           let(:selection) do
-            query.with_size(first: '10', second: '15')
+            query.size_of(first: '10', second: '15')
           end
 
           it 'adds the $size selectors' do
@@ -1730,7 +1729,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.with_size(first: 10).with_size(second: 15)
+          query.size_of(first: 10).size_of(second: 15)
         end
 
         it 'adds the $size selectors' do
@@ -1748,7 +1747,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are on the same field' do
 
         let(:selection) do
-          query.with_size(first: 10).with_size(first: 15)
+          query.size_of(first: 10).size_of(first: 15)
         end
 
         it 'overwrites the first $size selector' do
@@ -1764,9 +1763,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe '#with_type' do
+  describe '#type_of' do
 
-    let(:query_method) { :with_type }
+    let(:query_method) { :type_of }
 
     it_behaves_like 'requires an argument'
     it_behaves_like 'requires a non-nil argument'
@@ -1776,7 +1775,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when provided an integer' do
 
         let(:selection) do
-          query.with_type(field: 10)
+          query.type_of(field: 10)
         end
 
         it 'adds the $type selector' do
@@ -1793,7 +1792,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when provided a string' do
 
         let(:selection) do
-          query.with_type(field: '10')
+          query.type_of(field: '10')
         end
 
         it 'adds the $type selector' do
@@ -1813,7 +1812,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.with_type(first: 10, second: 15)
+          query.type_of(first: 10, second: 15)
         end
 
         it 'adds the $type selectors' do
@@ -1834,7 +1833,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.with_type(first: 10).with_type(second: 15)
+          query.type_of(first: 10).type_of(second: 15)
         end
 
         it 'adds the $type selectors' do
@@ -1852,7 +1851,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are on the same field' do
 
         let(:selection) do
-          query.with_type(first: 10).with_type(first: 15)
+          query.type_of(first: 10).type_of(first: 15)
         end
 
         it 'overwrites the first $type selector' do
@@ -1923,314 +1922,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe Symbol do
-
-    describe '#all' do
-
-      let(:key) do
-        :field.all
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $all' do
-        expect(key.operator).to eq('$all')
-      end
-    end
-
-    describe '#elem_match' do
-
-      let(:key) do
-        :field.elem_match
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $elemMatch' do
-        expect(key.operator).to eq('$elemMatch')
-      end
-    end
-
-    describe '#exists' do
-
-      let(:key) do
-        :field.exists
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $exists' do
-        expect(key.operator).to eq('$exists')
-      end
-    end
-
-    describe '#gt' do
-
-      let(:key) do
-        :field.gt
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $gt' do
-        expect(key.operator).to eq('$gt')
-      end
-    end
-
-    describe '#gte' do
-
-      let(:key) do
-        :field.gte
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $gte' do
-        expect(key.operator).to eq('$gte')
-      end
-    end
-
-    describe '#in' do
-
-      let(:key) do
-        :field.in
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $in' do
-        expect(key.operator).to eq('$in')
-      end
-    end
-
-    describe '#lt' do
-
-      let(:key) do
-        :field.lt
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $lt' do
-        expect(key.operator).to eq('$lt')
-      end
-    end
-
-    describe '#lte' do
-
-      let(:key) do
-        :field.lte
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $lte' do
-        expect(key.operator).to eq('$lte')
-      end
-    end
-
-    describe '#mod' do
-
-      let(:key) do
-        :field.mod
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $mod' do
-        expect(key.operator).to eq('$mod')
-      end
-    end
-
-    describe '#ne' do
-
-      let(:key) do
-        :field.ne
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $ne' do
-        expect(key.operator).to eq('$ne')
-      end
-    end
-
-    describe '#near' do
-
-      let(:key) do
-        :field.near
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $near' do
-        expect(key.operator).to eq('$near')
-      end
-    end
-
-    describe '#near_sphere' do
-
-      let(:key) do
-        :field.near_sphere
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $nearSphere' do
-        expect(key.operator).to eq('$nearSphere')
-      end
-    end
-
-    describe '#nin' do
-
-      let(:key) do
-        :field.nin
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $nin' do
-        expect(key.operator).to eq('$nin')
-      end
-    end
-
-    describe '#not' do
-
-      let(:key) do
-        :field.not
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $not' do
-        expect(key.operator).to eq('$not')
-      end
-
-    end
-
-    describe '#with_size' do
-
-      let(:key) do
-        :field.with_size
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $size' do
-        expect(key.operator).to eq('$size')
-      end
-    end
-
-    describe '#with_type' do
-
-      let(:key) do
-        :field.with_type
-      end
-
-      it 'returns a selection key' do
-        expect(key).to be_a(ActiveDocument::Criteria::Queryable::Key)
-      end
-
-      it 'sets the name as the key' do
-        expect(key.name).to eq(:field)
-      end
-
-      it 'sets the operator as $type' do
-        expect(key.operator).to eq('$type')
-      end
-    end
-  end
-
   context 'when using multiple strategies on the same field' do
 
     context 'when using the strategies via methods' do
@@ -2265,7 +1956,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when using complex keys with different operators' do
 
         let(:selection) do
-          query.where(:field.gt => 5, :field.lt => 10, :field.ne => 7)
+          query.where(field: { '$gt' => 5, '$lt' => 10, '$ne' => 7 })
         end
 
         it 'merges the strategies on the same field' do

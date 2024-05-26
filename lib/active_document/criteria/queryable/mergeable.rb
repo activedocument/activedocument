@@ -61,8 +61,8 @@ module ActiveDocument
         def and_with_operator(criterion, operator)
           crit = self
           criterion&.each_pair do |field, value|
-            val = prepare(field, operator, value)
-            # The prepare method already takes the negation into account. We
+            val = prepare_for_merging(field, operator, value)
+            # The prepare_for_merging method already takes the negation into account. We
             # set negating to false here so that ``and`` doesn't also apply
             # negation and we have a double negative.
             crit.negating = false
@@ -103,23 +103,6 @@ module ActiveDocument
         def __expanded__(criterion, outer, inner)
           selection(criterion) do |selector, field, value|
             selector.store(field, { outer => { inner => value } })
-          end
-        end
-
-        # Perform a straight merge of the criterion into the selection and let the
-        # symbol overrides do all the work.
-        #
-        # @api private
-        #
-        # @example Straight merge the expanded criterion.
-        #   mergeable.__merge__(location: [ 1, 10 ])
-        #
-        # @param [ Hash ] criterion The criteria.
-        #
-        # @return [ Mergeable ] The cloned object.
-        def __merge__(criterion)
-          selection(criterion) do |selector, field, value|
-            selector.merge!(field.__expr_part__(value))
           end
         end
 
@@ -164,7 +147,7 @@ module ActiveDocument
               if expr.is_a?(Selectable)
                 expr = expr.selector
               end
-              normalized = _active_document_expand_keys(expr)
+              normalized = QueryNormalizer.normalize_expr(expr, negating: negating?)
               sel.store(operator, result_criteria.push(normalized))
             end
           end
@@ -191,9 +174,9 @@ module ActiveDocument
             sel = query.selector
             _active_document_flatten_arrays(criteria).each do |criterion|
               expr = if criterion.is_a?(Selectable)
-                       _active_document_expand_keys(criterion.selector)
+                       QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
                      else
-                       _active_document_expand_keys(criterion)
+                       QueryNormalizer.normalize_expr(criterion, negating: negating?)
                      end
               if sel.empty?
                 sel.store(operator, [expr])
@@ -227,106 +210,6 @@ module ActiveDocument
           out
         end
 
-        # Takes a criteria hash and expands Key objects into hashes containing
-        # MQL corresponding to said key objects. Also converts the input to
-        # BSON::Document to permit indifferent access.
-        #
-        # The argument must be a hash containing key-value pairs of the
-        # following forms:
-        # - {field_name: value}
-        # - {'field_name' => value}
-        # - {key_instance: value}
-        # - {:$operator => operator_value_expression}
-        # - {'$operator' => operator_value_expression}
-        #
-        # Ruby does not permit multiple symbol operators. For example,
-        # {:foo.gt => 1, :foo.gt => 2} is collapsed to {:foo.gt => 2} by the
-        # language. Therefore this method never has to deal with multiple
-        # identical operators.
-        #
-        # Similarly, this method should never need to expand a literal value
-        # and an operator at the same time.
-        #
-        # This method effectively converts symbol keys to string keys in
-        # the input +expr+, such that the downstream code can assume that
-        # conditions always contain string keys.
-        #
-        # @param [ Hash ] expr Criteria including Key instances.
-        #
-        # @return [ BSON::Document ] The expanded criteria.
-        def _active_document_expand_keys(expr)
-          unless expr.is_a?(Hash)
-            raise ArgumentError.new('Argument must be a Hash')
-          end
-
-          result = BSON::Document.new
-          expr.each do |field, value|
-            field.__expr_part__(value.__expand_complex__, negating?).each do |k, v|
-              if (existing = result[k])
-                if existing.is_a?(Hash)
-                  # Existing value is an operator.
-                  # If new value is also an operator, ensure there are no
-                  # conflicts and add
-                  if v.is_a?(Hash)
-                    # The new value is also an operator.
-                    # If there are no conflicts, combine the hashes, otherwise
-                    # add new conditions to top level with $and.
-                    if (v.keys & existing.keys).empty?
-                      existing.update(v)
-                    else
-                      raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
-                      # result['$and'] ||= []
-                      # result['$and'] << { k => v }
-                    end
-                  else
-                    # The new value is a simple value.
-                    # Transform the implicit equality to either $eq or $regexp
-                    # depending on the type of the argument. See
-                    # https://www.mongodb.com/docs/manual/reference/operator/query/eq/#std-label-eq-usage-examples
-                    # for the description of relevant server behavior.
-                    op = case v
-                         when Regexp, BSON::Regexp::Raw
-                           '$regex'
-                         else
-                           '$eq'
-                         end
-                    # If there isn't an $eq/$regex operator already in the
-                    # query, transform the new value into an operator
-                    # expression and add it to the existing hash. Otherwise
-                    # add the new condition with $and to the top level.
-                    if existing.key?(op)
-                      raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
-                      # result['$and'] ||= []
-                      # result['$and'] << { k => v }
-                    else
-                      existing.update(op => v)
-                    end
-                  end
-                else
-                  # Existing value is a simple value.
-                  # See the notes above about transformations to $eq/$regex.
-                  op = case existing
-                       when Regexp, BSON::Regexp::Raw
-                         '$regex'
-                       else
-                         '$eq'
-                       end
-                  if v.is_a?(Hash) && !v.key?(op)
-                    result[k] = { op => existing }.update(v)
-                  else
-                    raise NotImplementedError.new('Ruby does not allow same symbol operator with different values')
-                    # result['$and'] ||= []
-                    # result['$and'] << { k => v }
-                  end
-                end
-              else
-                result[k] = v
-              end
-            end
-          end
-          result
-        end
-
         # Adds the criterion to the existing selection.
         #
         # @api private
@@ -341,7 +224,7 @@ module ActiveDocument
         def __override__(criterion, operator)
           criterion = criterion.selector if criterion.is_a?(Selectable)
           selection(criterion) do |selector, field, value|
-            expression = prepare(field, operator, value)
+            expression = prepare_for_merging(field, operator, value)
             existing = selector[field]
             if existing.respond_to?(:merge!)
               selector.store(field, existing.merge!(expression))
@@ -398,7 +281,7 @@ module ActiveDocument
           selection(criterion) do |selector, field, value|
             selector.store(
               field,
-              selector[field].send(strategy, prepare(field, operator, value))
+              selector[field].send(strategy, prepare_for_merging(field, operator, value))
             )
           end
         end
@@ -408,15 +291,14 @@ module ActiveDocument
         # @api private
         #
         # @example Prepare the value.
-        #   mergeable.prepare("field", "$gt", 10)
+        #   mergeable.prepare_for_merging("field", "$gt", 10)
         #
         # @param [ String ] field The name of the field.
         # @param [ Object ] value The value.
         #
         # @return [ Object ] The serialized value.
-        def prepare(field, operator, value)
+        def prepare_for_merging(field, operator, value)
           unless /exists|type|size/.match?(operator)
-            value = value.__expand_complex__
             field = field.to_s
             name = aliases[field] || field
             serializer = serializers[name]

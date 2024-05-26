@@ -7,7 +7,6 @@ module ActiveDocument
       # The optional module includes all behavior that has to do with extra
       # options surrounding queries, like skip, limit, sorting, etc.
       module Optional
-        extend Macroable
 
         # @attribute [rw] options The query options.
         attr_accessor :options
@@ -24,8 +23,6 @@ module ActiveDocument
           sort_with_list(*fields, 1)
         end
         alias_method :asc, :ascending
-        key :asc, :override, 1
-        key :ascending, :override, 1
 
         # Adds the option for telling MongoDB how many documents to retrieve in
         # it's batching.
@@ -52,8 +49,6 @@ module ActiveDocument
           sort_with_list(*fields, -1)
         end
         alias_method :desc, :descending
-        key :desc, :override, -1
-        key :descending, :override, -1
 
         # Add an index hint to the query options.
         #
@@ -136,17 +131,18 @@ module ActiveDocument
         #   optional.order_by(name: "asc", dob: "desc")
         #
         # @example Add sorting options via an array with integer directions.
-        #   optional.order_by([[ name, 1 ], [ dob, -1 ]])
+        #   optional.order_by([[name, 1], [dob, -1]])
         #
         # @example Add sorting options via an array with symbol directions.
-        #   optional.order_by([[ :name, :asc ], [ :dob, :desc ]])
+        #   optional.order_by([[:name, :asc], [:dob, :desc]])
         #
         # @example Add sorting options via an array with string directions.
-        #   optional.order_by([[ "name", "asc" ], [ "dob", "desc" ]])
+        #   optional.order_by([["name", "asc"], ["dob", "desc"]])
         #
         # @example Add sorting options with keys.
-        #   optional.order_by(:name.asc, :dob.desc)
+        #   optional.order_by({ name: :asc, dob: :desc })
         #
+        # TODO: remove SQL baloney
         # @example Add sorting options via a string.
         #   optional.order_by("name ASC, dob DESC")
         #

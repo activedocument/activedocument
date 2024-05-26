@@ -7,7 +7,7 @@ class Birthday
   embedded_in :owner, inverse_of: :birthdays
 
   def self.each_day(start_date, end_date, &block)
-    groups = only(:date).asc(:date).where(:date.gte => start_date, :date.lte => end_date).group
+    groups = only(:date).asc(:date).where(date: { '$gte' => start_date, '$lte' => end_date }).group
     groups.each(&block)
   end
 end

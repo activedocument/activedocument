@@ -19,7 +19,7 @@ module ActiveDocument
       #   Person.where(:title => "Sir").build
       #
       # @example Build with selectors getting ignored.
-      #   Person.where(:age.gt => 5).build
+      #   Person.where(age: { '$gt' => 5 }).build
       #
       # @return [ ActiveDocument::Document ] A non-persisted document.
       def build(attrs = {}, &block)
@@ -34,7 +34,7 @@ module ActiveDocument
       #   Person.where(:title => "Sir").create
       #
       # @example Create with selectors getting ignored.
-      #   Person.where(:age.gt => 5).create
+      #   Person.where(age: { '$gt' => 5 }).create
       #
       # @return [ ActiveDocument::Document ] A newly created document.
       def create(attrs = {}, &block)
@@ -49,7 +49,7 @@ module ActiveDocument
       #   Person.where(:title => "Sir").create
       #
       # @example Create with selectors getting ignored.
-      #   Person.where(:age.gt => 5).create
+      #   Person.where(age: { '$gt' => 5 }).create
       #
       # @raise [ Errors::Validations ] on a validation error.
       #

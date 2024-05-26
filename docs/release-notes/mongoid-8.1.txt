@@ -401,9 +401,9 @@ criteria in a ``$nor`` operation. For example:
   end
 
   Building.where(city: 'Portland').
-    none_of(:height.lt => 100,
+    none_of(height: { '$lt' => 100 },
             :purpose => 'apartment',
-            :occupancy.gt => 2500)
+            occupancy: { '$gt' => 2500 })
 
 This would query all buildings in Portland, excluding apartments, buildings less than
 100 units tall, and buildings with an occupancy greater than 2500 people.

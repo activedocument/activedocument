@@ -54,38 +54,7 @@ module ActiveDocument
             end
           end
 
-          # Get the string as a specification.
-          #
-          # @example Get the string as a criteria.
-          #   "field".__expr_part__(value)
-          #
-          # @param [ Object ] value The value of the criteria.
-          # @param [ true | false ] negating If the selection should be negated.
-          #
-          # @return [ Hash ] The selection.
-          def __expr_part__(value, negating = false)
-            ::String.__expr_part__(self, value, negating)
-          end
-
           module ClassMethods
-
-            # Get the value as a expression.
-            #
-            # @example Get the value as an expression.
-            #   String.__expr_part__("field", value)
-            #
-            # @param [ String | Symbol ] key The field key.
-            # @param [ Object ] value The value of the criteria.
-            # @param [ true | false ] negating If the selection should be negated.
-            #
-            # @return [ Hash ] The selection.
-            def __expr_part__(key, value, negating = false)
-              if negating
-                { key => { "$#{__regexp?(value) ? 'not' : 'ne'}" => value } }
-              else
-                { key => value }
-              end
-            end
 
             # Evolves the string into a MongoDB friendly value - in this case
             # a string.

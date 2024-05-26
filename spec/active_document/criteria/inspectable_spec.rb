@@ -7,7 +7,7 @@ describe ActiveDocument::Criteria::Inspectable do
   describe '#inspect' do
 
     let(:criteria) do
-      Person.where(:age.gt => 10, title: 'Sir')
+      Person.where(age: { '$gt' => 10 }, title: 'Sir')
     end
 
     it 'includes the selector' do

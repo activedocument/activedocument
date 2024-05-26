@@ -28,13 +28,13 @@ module ActiveDocument
         # Add a group operation to the aggregation pipeline.
         #
         # @example Add a group operation.
-        #   pipeline.group(:_id => "foo", :count.sum => 1, :max.max => "likes")
+        #   pipeline.group(_id: 'foo', count: { '$sum' => 1 }, max: { '$max' => 'likes' })
         #
         # @param [ Hash ] entry The group entry.
         #
         # @return [ Pipeline ] The pipeline.
         def group(entry)
-          push('$group' => evolve(entry.__expand_complex__))
+          push('$group' => evolve(entry))
         end
 
         # Initialize the new pipeline.

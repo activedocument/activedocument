@@ -820,7 +820,7 @@ describe ActiveDocument::Validatable::UniquenessValidator do
           before do
             Dictionary.validates_uniqueness_of(
               :name,
-              conditions: -> { Dictionary.where(:year.gte => 1900, :year.lt => 2000) }
+              conditions: -> { Dictionary.where(year: { '$gte' => 1900, '$lt' => 2000 }) }
             )
           end
 

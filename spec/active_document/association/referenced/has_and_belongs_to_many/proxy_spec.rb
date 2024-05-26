@@ -2807,7 +2807,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     context 'when chaining criteria' do
 
       let(:preferences) do
-        person.preferences.posting.where(:name.in => ['First'])
+        person.preferences.posting.where(name: { '$in' => ['First'] })
       end
 
       it 'applies the criteria to the documents' do
@@ -3322,7 +3322,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     it 'chains default criteria with additional' do
-      expect(person.ordered_preferences.order_by(:name.desc).to_a).to eq(
+      expect(person.ordered_preferences.order_by(name: :desc).to_a).to eq(
         [preference_three, preference_two, preference_one]
       )
     end

@@ -38,30 +38,14 @@ describe ActiveDocument::Criteria::Queryable::Pipeline do
         described_class.new
       end
 
-      context 'when using full notation' do
-
-        before do
-          pipeline.group(count: { '$sum' => 1 }, max: { '$max' => 'likes' })
-        end
-
-        it 'adds the group operation to the pipeline' do
-          expect(pipeline).to eq([
-            { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'likes' } } }
-          ])
-        end
+      before do
+        pipeline.group(count: { '$sum' => 1 }, max: { '$max' => 'likes' })
       end
 
-      context 'when using symbol shortcuts' do
-
-        before do
-          pipeline.group(:count.sum => 1, :max.max => 'likes')
-        end
-
-        it 'adds the group operation to the pipeline' do
-          expect(pipeline).to eq([
-            { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'likes' } } }
-          ])
-        end
+      it 'adds the group operation to the pipeline' do
+        expect(pipeline).to eq([
+          { '$group' => { 'count' => { '$sum' => 1 }, 'max' => { '$max' => 'likes' } } }
+        ])
       end
     end
   end

@@ -2595,7 +2595,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     end
 
     context 'when chaining criteria' do
-      let(:posts) { person.posts.posting.where(:title.in => ['First']) }
+      let(:posts) { person.posts.posting.where(title: { '$in' => ['First'] }) }
 
       it 'applies the criteria to the documents' do
         expect(posts).to eq([post_one])
@@ -2854,7 +2854,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     end
 
     it 'chaining order criteria' do
-      expect(person.ordered_posts.order_by(:title.desc).to_a)
+      expect(person.ordered_posts.order_by(title: :desc).to_a)
         .to eq [post_three, post_two, post_one]
     end
   end
