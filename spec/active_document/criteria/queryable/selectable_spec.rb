@@ -397,9 +397,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector' do
-            expect(selection.selector).to eq({
-                                               'field' => { '$all' => [1, 2] }
-                                             })
+            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
           end
 
           it 'returns a cloned query' do
@@ -414,9 +412,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector with wrapped value' do
-            expect(selection.selector).to eq({
-                                               'field' => { '$all' => [1] }
-                                             })
+            expect(selection.selector).to eq({ 'field' => { '$all' => [1] } })
           end
 
           it 'returns a cloned query' do
@@ -453,9 +449,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector' do
-            expect(selection.selector).to eq({
-                                               'field' => { '$all' => [1, 2] }
-                                             })
+            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
           end
 
           it 'returns a cloned query' do
@@ -470,9 +464,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector with wrapped value' do
-            expect(selection.selector).to eq({
-                                               'field' => { '$all' => [1] }
-                                             })
+            expect(selection.selector).to eq({ 'field' => { '$all' => [1] } })
           end
 
           it 'returns a cloned query' do
@@ -492,9 +484,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         it 'adds the $all selectors' do
           expect(selection.selector).to eq({
-                                             'first' => { '$all' => [1, 2] },
-                                             'second' => { '$all' => [3, 4] }
-                                           })
+            'first' => { '$all' => [1, 2] },
+            'second' => { '$all' => [3, 4] }
+          })
         end
 
         it 'returns a cloned query' do
