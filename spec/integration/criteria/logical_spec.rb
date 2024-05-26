@@ -9,27 +9,27 @@ describe 'Criteria logical operations' do
 
   describe 'and' do
     it 'combines conditions on different fields given as hashes' do
-      bands = Band.where(name: /Proj/).and(genres: 'Psy')
+      bands = Band.where(name: /Proj/).all_of(genres: 'Psy')
       expect(bands.to_a).to eq([ap])
     end
 
     it 'combines conditions on different fields given as scopes' do
-      bands = Band.where(name: /Proj/).and(Band.where(genres: 'Psy'))
+      bands = Band.where(name: /Proj/).all_of(Band.where(genres: 'Psy'))
       expect(bands.to_a).to eq([ap])
     end
 
     it 'combines conditions on same field given as hashes' do
-      bands = Band.where(name: /Proj/).and(name: /u/)
+      bands = Band.where(name: /Proj/).all_of(name: /u/)
       expect(bands.to_a).to eq([sp])
     end
 
     it 'combines conditions on same field given as scopes' do
-      bands = Band.where(name: /Proj/).and(Band.where(name: /u/))
+      bands = Band.where(name: /Proj/).all_of(Band.where(name: /u/))
       expect(bands.to_a).to eq([sp])
     end
 
     it 'combines existing `$and` clause in query and `where` condition' do
-      bands = Band.where(id: 1).and({ year: { '$in' => [2020] } }, { year: { '$in' => [2021] } }).where(id: 2)
+      bands = Band.where(id: 1).all_of({ year: { '$in' => [2020] } }, { year: { '$in' => [2021] } }).where(id: 2)
       expect(bands.selector).to eq({
         '_id' => 1,
         'year' => { '$in' => [2020] },

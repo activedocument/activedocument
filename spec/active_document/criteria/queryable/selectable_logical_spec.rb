@@ -16,7 +16,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   end
 
   # Hoisting means the operator can be elided, for example
-  # Foo.and(a: 1) produces simply {'a' => 1}.
+  # Foo.all_of(a: 1) produces simply {'a' => 1}.
   shared_examples_for 'a hoisting logical operation' do
 
     let(:query) do
@@ -182,7 +182,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criteria are for different fields' do
 
         let(:selection) do
-          query.and(first: [1, 2]).send(tested_method, second: [3, 4])
+          query.all_of(first: [1, 2]).send(tested_method, second: [3, 4])
         end
 
         it 'adds the conditions to top level' do
@@ -198,7 +198,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criteria are on the same field' do
 
         let(:selection) do
-          query.and(first: [1, 2]).send(tested_method, first: [3, 4])
+          query.all_of(first: [1, 2]).send(tested_method, first: [3, 4])
         end
 
         it 'combines via $and operator' do
@@ -313,7 +313,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     context 'when provided nil' do
 
       let(:selection) do
-        query.and(nil)
+        query.all_of(nil)
       end
 
       it 'does not add any criterion' do
@@ -333,7 +333,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'simple criterion' do
           let(:selection) do
-            query.and({ first: [1, 2] }).and({ first: [1, 2] })
+            query.all_of({ first: [1, 2] }).all_of({ first: [1, 2] })
           end
 
           it 'adds all conditions' do
@@ -350,7 +350,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'Key criterion' do
           let(:selection) do
-            query.and({ first: [1, 2] }).and(first: { '$gt' => 3 })
+            query.all_of({ first: [1, 2] }).all_of(first: { '$gt' => 3 })
           end
 
           it 'adds all conditions' do
@@ -367,7 +367,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'Key criterion when existing criterion is an operator' do
           let(:selection) do
-            query.and(first: { '$lt' => 5 }).and(first: { '$gt' => 3 })
+            query.all_of(first: { '$lt' => 5 }).all_of(first: { '$gt' => 3 })
           end
 
           it 'adds all conditions' do
@@ -383,7 +383,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the new criteria are for different fields' do
 
         let(:selection) do
-          query.and({ first: [1, 2] }, { second: [3, 4] })
+          query.all_of({ first: [1, 2] }, { second: [3, 4] })
         end
 
         it 'adds all conditions to top level' do
@@ -400,7 +400,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when criteria are simple' do
           let(:selection) do
-            query.and({ first: [1, 2] }, { first: [3, 4] })
+            query.all_of({ first: [1, 2] }, { first: [3, 4] })
           end
 
           it 'combines via $and operator' do
@@ -418,7 +418,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when criteria use operators' do
           shared_examples 'behave correctly' do
             let(:selection) do
-              query.and(
+              query.all_of(
                 { field: { first_operator => [1, 2] } },
                 { field: { second_operator => [3, 4] } }
               )
@@ -589,7 +589,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         ActiveDocument::Query.new.where(hello: 'world')
       end
 
-      let(:result) { query.and(other) }
+      let(:result) { query.all_of(other) }
 
       context 'different fields' do
 
@@ -631,7 +631,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         ActiveDocument::Query.new.where(a: 2)
       end
 
-      let(:result) { query.and(other1, other2, other3) }
+      let(:result) { query.all_of(other1, other2, other3) }
 
       it 'combines' do
         expect(result.selector).to eq(
@@ -647,7 +647,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:time) { Time.now }
 
       let(:query) do
-        Band.all.and(created_at: { '$gt' => time })
+        Band.all.all_of(created_at: { '$gt' => time })
       end
 
       let(:expected) do
@@ -670,7 +670,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'and/and' do
         let(:scope) do
-          Band.and(foo: 1).and(foo: 2)
+          Band.all_of(foo: 1).all_of(foo: 2)
         end
 
         it_behaves_like 'adds most recent criterion as $and'
@@ -678,7 +678,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'and/and' do
         let(:scope) do
-          Band.and(foo: 1).and(foo: 2)
+          Band.all_of(foo: 1).all_of(foo: 2)
         end
 
         it_behaves_like 'adds most recent criterion as $and'
@@ -686,7 +686,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'and/where' do
         let(:scope) do
-          Band.and(foo: 1).where(foo: 2)
+          Band.all_of(foo: 1).where(foo: 2)
         end
 
         it_behaves_like 'adds most recent criterion as $and'
@@ -694,7 +694,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'where/and' do
         let(:scope) do
-          Band.where(foo: 1).and(foo: 2)
+          Band.where(foo: 1).all_of(foo: 2)
         end
 
         it_behaves_like 'adds most recent criterion as $and'
@@ -716,7 +716,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when hash conditions are given' do
         let(:selection) do
-          base_selection.and(hello: 'world')
+          base_selection.all_of(hello: 'world')
         end
 
         it 'adds new conditions to top level' do
@@ -729,7 +729,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when criteria conditions are given' do
         let(:selection) do
-          base_selection.and(query.where(hello: 'world'))
+          base_selection.all_of(query.where(hello: 'world'))
         end
 
         it 'adds new conditions to top level' do

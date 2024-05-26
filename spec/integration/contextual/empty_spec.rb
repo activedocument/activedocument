@@ -111,7 +111,7 @@ describe 'Contextual classes when dealing with empty result set' do
     let(:context_cls) { ActiveDocument::Contextual::Mongo }
 
     let(:criteria) do
-      Mop.and(Mop.where(a: 1), Mop.where(a: 2))
+      Mop.all_of(Mop.where(a: 1), Mop.where(a: 2))
     end
 
     include_examples 'behave as expected'

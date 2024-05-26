@@ -70,14 +70,14 @@ module ActiveDocument
         # Add the $and criterion.
         #
         # @example Add the criterion.
-        #   selectable.and({ field: value }, { other: value })
+        #   selectable.all_of({ field: value }, { other: value })
         #
         # @param [ [ Hash | ActiveDocument::Criteria | Array<Hash | ActiveDocument::Criteria> ]... ] *criteria
         #   Multiple key/value pair matches or Criteria objects that all must
         #   match to return results.
         #
         # @return [ Selectable ] The new selectable.
-        def and(*criteria)
+        def all_of(*criteria)
           flatten_args(criteria).inject(clone) do |c, new_s|
             new_s = new_s.selector if new_s.is_a?(Selectable)
             normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
@@ -107,7 +107,6 @@ module ActiveDocument
             c
           end
         end
-        alias_method :all_of, :and
 
         # Add the range selection.
         #
@@ -529,7 +528,7 @@ module ActiveDocument
             )
           end
 
-          self.and('$nor' => exprs)
+          self.all_of('$nor' => exprs)
         end
 
         # Adds a disjunction of the arguments as an additional constraint
@@ -567,7 +566,7 @@ module ActiveDocument
             # When we have a single criteria, any_of behaves like and.
             # Note: criteria can be a Query object, which #where method does
             # not support.
-            self.and(*criteria)
+            self.all_of(*criteria)
           else
             # When we have multiple criteria, combine them all with $or
             # and add the result to self.
@@ -584,7 +583,7 @@ module ActiveDocument
                 end
               end
             end
-            self.and('$or' => exprs)
+            self.all_of('$or' => exprs)
           end
         end
 
@@ -720,7 +719,7 @@ module ActiveDocument
             # We set negating to false here so that ``and`` doesn't also apply
             # negation and we have a double negative.
             crit.negating = false
-            crit = crit.and(field => val)
+            crit = crit.all_of(field => val)
           end
           crit
         end
