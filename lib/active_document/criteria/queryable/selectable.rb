@@ -412,10 +412,10 @@ module ActiveDocument
         # Adds the $nin selection to the selectable.
         #
         # @example Add $nin selection on an array.
-        #   selectable.nin(age: [ 1, 2, 3 ])
+        #   selectable.not_in(age: [ 1, 2, 3 ])
         #
         # @example Add $nin selection on a range.
-        #   selectable.nin(age: 18..24)
+        #   selectable.not_in(age: 18..24)
         #
         # @example Execute an $nin in a where query.
         #   selectable.where(field: { '$nin' => [ 1, 2, 3 ] })
@@ -423,7 +423,7 @@ module ActiveDocument
         # @param [ Hash ] condition The field/value criterion pairs.
         #
         # @return [ Selectable ] The cloned selectable.
-        def nin(condition)
+        def not_in(condition)
           raise Errors::CriteriaArgumentRequired.new(:nin) if condition.nil?
 
           condition = QueryNormalizer.expand_condition_to_array_values(condition)
@@ -433,7 +433,6 @@ module ActiveDocument
             query.add_field_expression(field.to_s, v)
           end.reset_state!
         end
-        alias_method :not_in, :nin
         alias_method :contains_none, :nin
 
         # Is the current selectable negating the next selection?
