@@ -1616,7 +1616,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#nin' do
+  describe '#not_in' do
 
     let!(:match) do
       Band.create!(name: 'Depeche Mode')
@@ -1627,7 +1627,7 @@ describe ActiveDocument::Criteria do
     end
 
     let(:criteria) do
-      Band.nin(name: ['Tool'])
+      Band.not_in(name: ['Tool'])
     end
 
     it 'returns the matching documents' do

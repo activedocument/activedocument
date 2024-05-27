@@ -20,8 +20,8 @@ Query Functionality
 | ------ | --------- |
 | `#all` | No longer supports method arguments. Use `#contains_all` if you mean to match an Array's elements. |
 | `#all_in` | Removed. Use `#contains_all`. |
-| `#in` | Renamed `$in` to `#any_in` (also aliased to `#contains_any`) |
-        alias_method :not_in, :nin
+| `#in` | Renamed `#any_in` (also aliased to `#contains_any`) |
+| `#nin` | Renamed `#not_in` (also aliased to `#contains_none`) |
 
 Operator methods
 

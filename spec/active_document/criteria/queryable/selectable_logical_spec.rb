@@ -1235,8 +1235,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'negates the next condition'
       end
 
-      context 'when the next condition is #nin' do
-        let(:query_method) { :nin }
+      context 'when the next condition is #not_in' do
+        let(:query_method) { :not_in }
         let(:operator) { '$nin' }
 
         it_behaves_like 'negates the next condition'
