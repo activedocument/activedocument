@@ -30,7 +30,7 @@ describe 'Criteria and default scope' do
         expect(base.selector).to eq({ 'active' => true })
       end
 
-      context '.any_of with single args' do
+      describe '.any_of with single args' do
         let(:criteria) do
           base.any_of(timed: true)
         end
@@ -40,7 +40,7 @@ describe 'Criteria and default scope' do
         end
       end
 
-      context '.any_of with multiple args' do
+      describe '.any_of with multiple args' do
         let(:criteria) do
           base.any_of({ foobar: false }, { timed: true })
         end
