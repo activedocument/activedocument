@@ -424,7 +424,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The cloned selectable.
         def not_in(condition)
-          raise Errors::CriteriaArgumentRequired.new(:nin) if condition.nil?
+          raise Errors::CriteriaArgumentRequired.new(:not_in) if condition.nil?
 
           condition = QueryNormalizer.expand_condition_to_array_values(condition)
           condition.inject(clone) do |query, (field, value)|
