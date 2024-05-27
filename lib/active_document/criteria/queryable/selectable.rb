@@ -38,8 +38,25 @@ module ActiveDocument
         def all(*criteria)
           return clone.tap(&:reset_state!) if criteria.empty?
 
+          raise ArgumentError.new('Use #contains_all instead of #all for to match all array values')
+        end
+
+        # Add the $all criterion to match all values in the array.
+        #
+        # @example Add the criterion.
+        #   selectable.all(field: [ 1, 2 ])
+        #
+        # @example Execute an $all in a where query.
+        #   selectable.where(field: { '$all' => [ 1, 2 ] })
+        #
+        # @param [ Hash... ] *criteria The key value pair(s) for $all matching.
+        #
+        # @return [ Selectable ] The cloned selectable.
+        def contains_all(*criteria)
+          raise Errors::CriteriaArgumentRequired.new(:contains_all) if criteria.empty?
+
           criteria.inject(clone) do |query, condition|
-            raise Errors::CriteriaArgumentRequired.new(:all) if condition.nil?
+            raise Errors::CriteriaArgumentRequired.new(:contains_all) if condition.nil?
 
             condition = QueryNormalizer.expand_condition_to_array_values(condition)
             condition.inject(query) do |q, (field, value)|
@@ -49,19 +66,18 @@ module ActiveDocument
             end
           end.reset_state!
         end
-        alias_method :all_in, :all
 
         # Add the $and criterion.
         #
         # @example Add the criterion.
-        #   selectable.and({ field: value }, { other: value })
+        #   selectable.all_of({ field: value }, { other: value })
         #
         # @param [ [ Hash | ActiveDocument::Criteria | Array<Hash | ActiveDocument::Criteria> ]... ] *criteria
         #   Multiple key/value pair matches or Criteria objects that all must
         #   match to return results.
         #
         # @return [ Selectable ] The new selectable.
-        def and(*criteria)
+        def all_of(*criteria)
           flatten_args(criteria).inject(clone) do |c, new_s|
             new_s = new_s.selector if new_s.is_a?(Selectable)
             normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
@@ -91,7 +107,6 @@ module ActiveDocument
             c
           end
         end
-        alias_method :all_of, :and
 
         # Add the range selection.
         #
@@ -264,8 +279,8 @@ module ActiveDocument
         # @param [ Hash ] condition The field/value criterion pairs.
         #
         # @return [ Selectable ] The cloned selectable.
-        def in(condition)
-          raise Errors::CriteriaArgumentRequired.new(:in) if condition.nil?
+        def any_in(condition)
+          raise Errors::CriteriaArgumentRequired.new(:any_in) if condition.nil?
 
           condition = QueryNormalizer.expand_condition_to_array_values(condition)
           condition.inject(clone) do |query, (field, value)|
@@ -274,7 +289,7 @@ module ActiveDocument
             query.add_field_expression(field.to_s, v)
           end.reset_state!
         end
-        alias_method :any_in, :in
+        alias_method :contains_any, :any_in
 
         # Add the $lt criterion to the selector.
         #
@@ -419,19 +434,7 @@ module ActiveDocument
           end.reset_state!
         end
         alias_method :not_in, :nin
-
-        # Adds $nor selection to the selectable.
-        #
-        # @example Add the $nor selection.
-        #   selectable.nor(field: 1, field: 2)
-        #
-        # @param [ [ Hash | ActiveDocument::Criteria | Array<Hash | ActiveDocument::Criteria> ]... ] *criteria
-        #   Multiple key/value pair matches or Criteria objects.
-        #
-        # @return [ Selectable ] The new selectable.
-        def nor(*criteria)
-          add_top_level_operation('$nor', criteria)
-        end
+        alias_method :contains_none, :nin
 
         # Is the current selectable negating the next selection?
         #
@@ -527,41 +530,7 @@ module ActiveDocument
             )
           end
 
-          self.and('$nor' => exprs)
-        end
-
-        # Creates a disjunction using $or from the existing criteria in the
-        # receiver and the provided arguments.
-        #
-        # This behavior (receiver becoming one of the disjunction operands)
-        # matches ActiveRecord's +or+ behavior.
-        #
-        # Use +any_of+ to add a disjunction of the arguments as an additional
-        # constraint to the criteria already existing in the receiver.
-        #
-        # Each argument can be a Hash, a Criteria object, an array of
-        # Hash or Criteria objects, or a nested array. Nested arrays will be
-        # flattened and can be of any depth. Passing arrays is deprecated.
-        #
-        # @example Add the $or selection where both fields must have the specified values.
-        #   selectable.or(field: 1, field: 2)
-        #
-        # @example Add the $or selection where either value match is sufficient.
-        #   selectable.or({field: 1}, {field: 2})
-        #
-        # @example Same as previous example but using the deprecated array wrap.
-        #   selectable.or([{field: 1}, {field: 2}])
-        #
-        # @example Same as previous example, also deprecated.
-        #   selectable.or([{field: 1}], [{field: 2}])
-        #
-        # @param [ [ Hash | ActiveDocument::Criteria | Array<Hash | ActiveDocument::Criteria> ]... ] *criteria
-        #   Multiple key/value pair matches or Criteria objects, or arrays
-        #   thereof. Passing arrays is deprecated.
-        #
-        # @return [ Selectable ] The new selectable.
-        def or(*criteria)
-          add_top_level_operation('$or', criteria)
+          self.all_of('$nor' => exprs)
         end
 
         # Adds a disjunction of the arguments as an additional constraint
@@ -599,7 +568,7 @@ module ActiveDocument
             # When we have a single criteria, any_of behaves like and.
             # Note: criteria can be a Query object, which #where method does
             # not support.
-            self.and(*criteria)
+            self.all_of(*criteria)
           else
             # When we have multiple criteria, combine them all with $or
             # and add the result to self.
@@ -616,7 +585,7 @@ module ActiveDocument
                 end
               end
             end
-            self.and('$or' => exprs)
+            self.all_of('$or' => exprs)
           end
         end
 
@@ -756,7 +725,7 @@ module ActiveDocument
             # We set negating to false here so that ``and`` doesn't also apply
             # negation and we have a double negative.
             crit.negating = false
-            crit = crit.and(field => val)
+            crit = crit.all_of(field => val)
           end
           crit
         end
@@ -911,44 +880,6 @@ module ActiveDocument
             end
           end
           out
-        end
-
-        # Combines criteria into a MongoDB selector.
-        #
-        # Criteria is an array of criterion objects which will be flattened.
-        #
-        # Each criterion can be:
-        # - A hash
-        # - A Criteria instance
-        # - nil, in which case it is ignored
-        #
-        # @api private
-        def add_top_level_operation(operator, criteria)
-          # Flatten the criteria. The idea is that predicates in MongoDB
-          # are always hashes and are never arrays. This method additionally
-          # allows Criteria instances as predicates.
-          # The flattening is existing ActiveDocument behavior but we could possibly
-          # get rid of it as applications can splat their predicates, or
-          # flatten if needed.
-          clone.tap do |query|
-            sel = query.selector
-            flatten_args(criteria).each do |criterion|
-              expr = if criterion.is_a?(Selectable)
-                       QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
-                     else
-                       QueryNormalizer.normalize_expr(criterion, negating: negating?)
-                     end
-              if sel.empty?
-                sel.store(operator, [expr])
-              elsif sel.keys == [operator]
-                sel.store(operator, sel[operator] + [expr])
-              else
-                operands = [sel.dup] + [expr]
-                sel.clear
-                sel.store(operator, operands)
-              end
-            end
-          end
         end
 
         class << self

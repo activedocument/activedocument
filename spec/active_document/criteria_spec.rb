@@ -255,25 +255,22 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  %i[and all_of].each do |method|
+  describe '#all_of' do
 
-    describe "##{method}" do
+    let!(:match) do
+      Band.create!(name: 'Depeche Mode', genres: ['electro'])
+    end
 
-      let!(:match) do
-        Band.create!(name: 'Depeche Mode', genres: ['electro'])
-      end
+    let!(:non_match) do
+      Band.create!(genres: ['house'])
+    end
 
-      let!(:non_match) do
-        Band.create!(genres: ['house'])
-      end
+    let(:criteria) do
+      Band.send(method, { genres: 'electro' }, { name: 'Depeche Mode' })
+    end
 
-      let(:criteria) do
-        Band.send(method, { genres: 'electro' }, { name: 'Depeche Mode' })
-      end
-
-      it 'returns the matching documents' do
-        expect(criteria).to eq([match])
-      end
+    it 'returns the matching documents' do
+      expect(criteria).to eq([match])
     end
   end
 
