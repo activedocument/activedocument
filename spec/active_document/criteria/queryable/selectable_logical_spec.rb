@@ -215,81 +215,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  # Non-hoisting means the operator is always present, for example
-  # Foo.any_of(a: 1) produces {'$or' => [{'a' => 1}]}.
-  shared_examples_for 'a non-hoisting logical operation' do
-
-    context 'when there is a single predicate' do
-      let(:query) do
-        ActiveDocument::Query.new.send(tested_method, hello: 'world')
-      end
-
-      it 'adds the predicate' do
-        expect(query.selector).to eq(expected_operator => [{ 'hello' => 'world' }])
-      end
-    end
-
-    context 'when the single predicate is wrapped in an array' do
-      let(:query) do
-        ActiveDocument::Query.new.send(tested_method, [{ hello: 'world' }])
-      end
-
-      it 'adds the predicate' do
-        expect(query.selector).to eq(expected_operator => [{ 'hello' => 'world' }])
-      end
-    end
-
-    context 'when argument is a Criteria' do
-      let(:query) do
-        ActiveDocument::Query.new.where(hello: 'world')
-      end
-
-      let(:other) do
-        ActiveDocument::Query.new.where(foo: 'bar')
-      end
-
-      let(:result) { query.send(tested_method, other) }
-
-      it 'combines' do
-        # This is used for $or / $nor, the two conditions should remain
-        # as separate hashes
-        expect(result.selector).to eq(expected_operator => [{ 'hello' => 'world' }, { 'foo' => 'bar' }])
-      end
-    end
-
-    context 'when argument is a mix of Criteria and hashes' do
-      let(:query) do
-        ActiveDocument::Query.new.where(hello: 'world')
-      end
-
-      let(:other1) do
-        ActiveDocument::Query.new.where(foo: 'bar')
-      end
-
-      let(:other2) do
-        { bar: 42 }
-      end
-
-      let(:other3) do
-        ActiveDocument::Query.new.where(a: 2)
-      end
-
-      let(:result) { query.send(tested_method, other1, other2, other3) }
-
-      it 'combines' do
-        expect(result.selector).to eq(expected_operator => [
-          { 'hello' => 'world' },
-          { 'foo' => 'bar' },
-          { 'bar' => 42 },
-          { 'a' => 2 }
-        ])
-      end
-    end
-  end
-
   describe '#all_of' do
     let(:tested_method) { :all_of }
-    let(:expected_operator) { '$and' }
 
     it_behaves_like 'a hoisting logical operation'
 
@@ -775,350 +702,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  shared_examples '$or/$nor' do
-
-    it_behaves_like 'a non-hoisting logical operation'
-
-    context 'when provided no arguments' do
-
-      let(:selection) do
-        query.send(tested_method)
-      end
-
-      it_behaves_like 'returns a cloned query'
-
-      it 'does not add any criteria' do
-        expect(selection.selector).to eq({})
-      end
-
-      it 'returns the query' do
-        expect(selection).to eq(query)
-      end
-    end
-
-    context 'when provided nil' do
-
-      let(:selection) do
-        query.send(tested_method, nil)
-      end
-
-      it_behaves_like 'returns a cloned query'
-
-      it 'does not add any criteria' do
-        expect(selection.selector).to eq({})
-      end
-
-      it 'returns the query' do
-        expect(selection).to eq(query)
-      end
-    end
-
-    context 'when provided a single criterion' do
-
-      let(:selection) do
-        query.send(tested_method, field: [1, 2])
-      end
-
-      it_behaves_like 'returns a cloned query'
-
-      it 'adds the $or/$nor selector' do
-        expect(selection.selector).to eq({
-          expected_operator => [{ 'field' => [1, 2] }]
-        })
-      end
-
-      context 'when the criterion is wrapped in array' do
-
-        let(:selection) do
-          query.send(tested_method, [{ field: [1, 2] }])
-        end
-
-        it_behaves_like 'returns a cloned query'
-
-        it 'adds the $or/$nor selector' do
-          expect(selection.selector).to eq({
-            expected_operator => [{ 'field' => [1, 2] }]
-          })
-        end
-
-        context 'when the array has nil as one of the elements' do
-
-          let(:selection) do
-            query.send(tested_method, [{ field: [1, 2] }, nil])
-          end
-
-          it_behaves_like 'returns a cloned query'
-
-          it 'adds the $or/$nor selector ignoring the nil element' do
-            expect(selection.selector).to eq({
-              expected_operator => [{ 'field' => [1, 2] }]
-            })
-          end
-        end
-      end
-
-      context 'when query already has a condition on another field' do
-
-        let(:selection) do
-          query.where(foo: 'bar').send(tested_method, field: [1, 2])
-        end
-
-        it 'moves original conditions under $or/$nor' do
-          expect(selection.selector).to eq({
-            expected_operator => [{ 'foo' => 'bar' }, { 'field' => [1, 2] }]
-          })
-        end
-      end
-
-      context 'when query already has an $or/$nor condition and another condition' do
-
-        let(:selection) do
-          query.send(tested_method, field: [1, 2]).where(foo: 'bar').send(tested_method, test: 1)
-        end
-
-        it 'unions existing conditions' do
-          expect(selection.selector).to eq(
-            expected_operator => [
-              {
-                expected_operator => [{ 'field' => [1, 2] }],
-                'foo' => 'bar'
-              },
-              { 'test' => 1 }
-            ]
-          )
-        end
-      end
-    end
-
-    context 'when provided multiple criteria' do
-
-      context 'when the criteria are for different fields' do
-
-        let(:selection) do
-          query.send(tested_method, { first: [1, 2] }, { second: [3, 4] })
-        end
-
-        it_behaves_like 'returns a cloned query'
-
-        it 'adds the $or/$nor selector' do
-          expect(selection.selector).to eq({
-            expected_operator => [
-              { 'first' => [1, 2] },
-              { 'second' => [3, 4] }
-            ]
-          })
-        end
-      end
-
-      context 'when the criteria uses a Hash' do
-
-        let(:selection) do
-          query.send(tested_method, { first: [1, 2] }, { second: { '$gt' => 3 } })
-        end
-
-        it 'adds the $or/$nor selector' do
-          expect(selection.selector).to eq({
-            expected_operator => [
-              { 'first' => [1, 2] },
-              { 'second' => { '$gt' => 3 } }
-            ]
-          })
-        end
-
-        it_behaves_like 'returns a cloned query'
-
-        context 'when the criterion is a time' do
-          let(:selection) do
-            query.send(tested_method, field: { '$gte' => Time.new(2020, 1, 1) })
-          end
-
-          it 'adds the conditions' do
-            expect(selection.selector).to eq(expected_operator => [
-              'field' => { '$gte' => Time.new(2020, 1, 1) }
-            ])
-          end
-
-          it 'keeps the type' do
-            expect(selection.selector[expected_operator].first['field']['$gte']).to be_a(Time)
-          end
-        end
-
-        context 'when the criterion is a datetime' do
-          let(:selection) do
-            query.send(tested_method, field: { '$gte' => DateTime.new(2020, 1, 1) })
-          end
-
-          it 'adds the conditions' do
-            expect(selection.selector).to eq(expected_operator => [
-              'field' => { '$gte' => Time.utc(2020, 1, 1) }
-            ])
-          end
-
-          it 'converts argument to a time' do
-            expect(selection.selector[expected_operator].first['field']['$gte']).to be_a(Time)
-          end
-        end
-
-        context 'when the criterion is a date' do
-          let(:selection) do
-            query.send(tested_method, field: { '$gte' => Date.new(2020, 1, 1) })
-          end
-
-          it 'adds the conditions' do
-            expect(selection.selector).to eq(expected_operator => [
-              'field' => { '$gte' => Time.utc(2020, 1, 1) }
-            ])
-          end
-
-          it 'converts argument to a time' do
-            expect(selection.selector[expected_operator].first['field']['$gte']).to be_a(Time)
-          end
-        end
-      end
-
-      context 'when a criterion has an aliased field' do
-
-        let(:selection) do
-          query.send(tested_method, { id: 1 })
-        end
-
-        it 'adds the $or/$nor selector and aliases the field' do
-          expect(selection.selector).to eq({
-            expected_operator => [{ '_id' => 1 }]
-          })
-        end
-
-        it_behaves_like 'returns a cloned query'
-      end
-
-      context 'when a criterion is wrapped in an array' do
-
-        let(:selection) do
-          query.send(tested_method, [{ first: [1, 2] }, { second: { '$gt' => 3 } }])
-        end
-
-        it_behaves_like 'returns a cloned query'
-
-        it 'adds the $or/$nor selector' do
-          expect(selection.selector).to eq({
-            expected_operator => [
-              { 'first' => [1, 2] },
-              { 'second' => { '$gt' => 3 } }
-            ]
-          })
-        end
-      end
-
-      context 'when the criteria are on the same field' do
-
-        context 'simple criteria' do
-          let(:selection) do
-            query.send(tested_method, { first: [1, 2] }, { first: [3, 4] })
-          end
-
-          it_behaves_like 'returns a cloned query'
-
-          it 'appends both $or/$nor expressions' do
-            expect(selection.selector).to eq({
-              expected_operator => [
-                { 'first' => [1, 2] },
-                { 'first' => [3, 4] }
-              ]
-            })
-          end
-        end
-
-        context 'Key criteria as one argument' do
-          let(:selection) do
-            query.send(tested_method, first: { '$gt' => 3, '$lt' => 5 })
-          end
-
-          it_behaves_like 'returns a cloned query'
-
-          it 'adds all criteria' do
-            expect(selection.selector).to eq({
-              expected_operator => [
-                { 'first' => { '$gt' => 3, '$lt' => 5 } }
-              ]
-            })
-          end
-        end
-
-        context 'Key criteria as multiple arguments' do
-          let(:selection) do
-            query.send(tested_method, { first: { '$gt' => 3, '$lt' => 5 } })
-          end
-
-          it_behaves_like 'returns a cloned query'
-
-          it 'adds all criteria' do
-            expect(selection.selector).to eq({
-              expected_operator => [
-                { 'first' => { '$gt' => 3, '$lt' => 5 } }
-              ]
-            })
-          end
-        end
-      end
-    end
-
-    context 'when chaining the criterion' do
-
-      context 'when the criterion are for different fields' do
-
-        let(:selection) do
-          query.send(tested_method, first: [1, 2]).send(tested_method, second: [3, 4])
-        end
-
-        it_behaves_like 'returns a cloned query'
-
-        it 'adds the $or/$nor selectors' do
-          expect(selection.selector).to eq({
-            expected_operator => [
-              { 'first' => [1, 2] },
-              { 'second' => [3, 4] }
-            ]
-          })
-        end
-      end
-
-      context 'when the criterion are on the same field' do
-
-        let(:selection) do
-          query.send(tested_method, first: [1, 2]).send(tested_method, first: [3, 4])
-        end
-
-        it_behaves_like 'returns a cloned query'
-
-        it 'appends both $or/$nor expressions' do
-          expect(selection.selector).to eq({
-            expected_operator => [
-              { 'first' => [1, 2] },
-              { 'first' => [3, 4] }
-            ]
-          })
-        end
-      end
-    end
-  end
-
   describe '#any_of' do
     let(:tested_method) { :any_of }
-    let(:expected_operator) { '$or' }
-
-    it_behaves_like '$or/$nor'
-  end
-
-  describe '#none_of' do
-    let(:tested_method) { :none_of }
-    let(:expected_operator) { '$nor' }
-
-    it_behaves_like '$or/$nor'
-  end
-
-  describe '#any_of' do
-    let(:tested_method) { :any_of }
-    let(:expected_operator) { '$or' }
 
     it_behaves_like 'a hoisting logical operation'
 
@@ -1141,12 +726,12 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         ActiveDocument::Query.new.where(a: 2)
       end
 
-      let(:result) { query.send(tested_method, other1, other2, other3) }
+      let(:result) { query.any_of(other1, other2, other3) }
 
       it 'combines' do
         expect(result.selector).to eq(
           'hello' => 'world',
-          expected_operator => [
+          '$or' => [
             { 'foo' => 'bar' },
             { 'bar' => 42 },
             { 'a' => 2 }
@@ -1394,7 +979,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in separate hashes' do
           let(:selection) do
-            query.send(tested_method, { field: 3 }, { field: { '$lt' => 5 } })
+            query.any_of({ field: 3 }, { field: { '$lt' => 5 } })
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1402,7 +987,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when the criterion is wrapped in an array' do
           let(:selection) do
-            query.send(tested_method, [field: 3], [field: { '$lt' => 5 }])
+            query.any_of([field: 3], [field: { '$lt' => 5 }])
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1448,7 +1033,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'criteria are provided in separate hashes' do
           let(:selection) do
-            query.send(tested_method, { field: { '$gt' => 3 } }, { field: 5 })
+            query.any_of({ field: { '$gt' => 3 } }, { field: 5 })
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -1456,7 +1041,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         context 'when the criterion is wrapped in an array' do
           let(:selection) do
-            query.send(tested_method, [field: { '$gt' => 3 }], [field: 5])
+            query.any_of([field: { '$gt' => 3 }], [field: 5])
           end
 
           it_behaves_like 'adds conditions with $or'
@@ -2004,6 +1589,43 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   end
 
   describe '#none_of' do
+
+    context 'when there is a single predicate' do
+      let(:query) do
+        ActiveDocument::Query.new.none_of(hello: 'world')
+      end
+
+      it 'adds the predicate' do
+        expect(query.selector).to eq('$nor' => [{ 'hello' => 'world' }])
+      end
+    end
+
+    context 'when the single predicate is wrapped in an array' do
+      let(:query) do
+        ActiveDocument::Query.new.none_of([{ hello: 'world' }])
+      end
+
+      it 'adds the predicate' do
+        expect(query.selector).to eq('$nor' => [{ 'hello' => 'world' }])
+      end
+    end
+
+    context 'when argument is a Criteria' do
+      let(:query) do
+        ActiveDocument::Query.new.where(hello: 'world')
+      end
+
+      let(:other) do
+        ActiveDocument::Query.new.where(foo: 'bar')
+      end
+
+      let(:result) { query.none_of(other) }
+
+      it 'combines' do
+        expect(result.selector).to eq('$nor' => [{ 'foo' => 'bar' }], 'hello' => 'world')
+      end
+    end
+
     context 'when argument is a mix of Criteria and hashes' do
       let(:query) { ActiveDocument::Query.new.where(hello: 'world') }
       let(:other1) { ActiveDocument::Query.new.where(foo: 'bar') }
