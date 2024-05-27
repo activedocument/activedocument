@@ -397,7 +397,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
+            expect(selection.selector).to eq({
+                                               'field' => { '$all' => [1, 2] }
+                                             })
           end
 
           it 'returns a cloned query' do
@@ -412,7 +414,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector with wrapped value' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1] } })
+            expect(selection.selector).to eq({
+                                               'field' => { '$all' => [1] }
+                                             })
           end
 
           it 'returns a cloned query' do
@@ -449,7 +453,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
+            expect(selection.selector).to eq({
+                                               'field' => { '$all' => [1, 2] }
+                                             })
           end
 
           it 'returns a cloned query' do
@@ -464,7 +470,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector with wrapped value' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1] } })
+            expect(selection.selector).to eq({
+                                               'field' => { '$all' => [1] }
+                                             })
           end
 
           it 'returns a cloned query' do
@@ -484,9 +492,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         it 'adds the $all selectors' do
           expect(selection.selector).to eq({
-            'first' => { '$all' => [1, 2] },
-            'second' => { '$all' => [3, 4] }
-          })
+                                             'first' => { '$all' => [1, 2] },
+                                             'second' => { '$all' => [3, 4] }
+                                           })
         end
 
         it 'returns a cloned query' do
@@ -1646,8 +1654,9 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe '#not_in' do
-    let(:query_method) { :not_in }
+  describe '#nin' do
+
+    let(:query_method) { :nin }
     let(:operator) { '$nin' }
 
     it_behaves_like 'requires an argument'
@@ -1658,7 +1667,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when providing an array' do
 
         let(:selection) do
-          query.not_in(field: [1, 2])
+          query.nin(field: [1, 2])
         end
 
         it 'adds the $nin selector' do
@@ -1675,7 +1684,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when providing a single value' do
 
         let(:selection) do
-          query.not_in(field: 1)
+          query.nin(field: 1)
         end
 
         it 'adds the $nin selector with wrapped value' do
@@ -1695,7 +1704,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.not_in(first: [1, 2], second: [3, 4])
+          query.nin(first: [1, 2], second: [3, 4])
         end
 
         it 'adds the $nin selectors' do
@@ -1716,7 +1725,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.not_in(first: [1, 2]).not_in(second: [3, 4])
+          query.nin(first: [1, 2]).nin(second: [3, 4])
         end
 
         it 'adds the $nin selectors' do

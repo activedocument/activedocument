@@ -7,7 +7,7 @@ module ActiveDocument
       # An queryable selectable is selectable, in that it has the ability to select
       # document from the database. The selectable module brings all functionality
       # to the selectable that has to do with building MongoDB selectors.
-      module Selectable # rubocop:disable Metrics/ModuleLength
+      module Selectable
 
         # @attribute [rw] negating If the next expression is negated.
         # @attribute [rw] selector The query selector.
@@ -22,6 +22,59 @@ module ActiveDocument
         def reset_state!
           self.negating = nil
           self
+        end
+
+        delegate :where,
+                 :all_of,
+                 to: :query_builder
+
+        # AST should be cloned on each query method
+        def ast
+          @ast ||= QueryAST::RootNode.new
+        end
+
+        def query_builder
+          QueryBuilder.new(ast)
+        end
+
+        # This is the general entry point for most MongoDB queries. This either
+        # creates a standard field: value selection, and expanded selection with
+        # the use of hash methods, or a $where selection if a string is provided.
+        #
+        # @example Add a standard selection.
+        #   selectable.where(name: "syd")
+        #
+        # @example Add a javascript selection.
+        #   selectable.where("this.name == 'syd'")
+        #
+        # @param [ [ Hash | String ]... ] *criterion The standard selection
+        #   or javascript string.
+        #
+        # @return [ Selectable ] The cloned selectable.
+        def where(*criteria)
+          clone.tap do |query|
+            query.query_builder.where(*criteria)
+          end
+          # selectable = clone
+          #
+          # criteria.each do |criterion|
+          #   raise Errors::CriteriaArgumentRequired.new(:where) if criterion.nil?
+          #
+          #   # We need to save the criterion in an instance variable so
+          #   # Modifiable methods know how to create a polymorphic object.
+          #   # Note that this method in principle accepts multiple criteria,
+          #   # but only the first one will be stored in @criterion. This
+          #   # works out to be fine because first_or_create etc. methods
+          #   # only ever specify one criterion to #where.
+          #   @criterion = criterion
+          #   selectable = if criterion.is_a?(String)
+          #                  js_query(criterion)
+          #                else
+          #                  expr_query(criterion)
+          #                end
+          # end
+          #
+          # selectable.reset_state!
         end
 
         # Add the $all criterion.
@@ -44,7 +97,7 @@ module ActiveDocument
         # Add the $all criterion to match all values in the array.
         #
         # @example Add the criterion.
-        #   selectable.all(field: [ 1, 2 ])
+        #   selectable.contains_all(field: [ 1, 2 ])
         #
         # @example Execute an $all in a where query.
         #   selectable.where(field: { '$all' => [ 1, 2 ] })
@@ -53,18 +106,21 @@ module ActiveDocument
         #
         # @return [ Selectable ] The cloned selectable.
         def contains_all(*criteria)
-          raise Errors::CriteriaArgumentRequired.new(:contains_all) if criteria.empty?
-
-          criteria.inject(clone) do |query, condition|
-            raise Errors::CriteriaArgumentRequired.new(:contains_all) if condition.nil?
-
-            condition = QueryNormalizer.expand_condition_to_array_values(condition)
-            condition.inject(query) do |q, (field, value)|
-              v = { '$all' => value }
-              v = { '$not' => v } if negating?
-              q.add_field_expression(field.to_s, v)
-            end
-          end.reset_state!
+          criteria.each_with_object(clone) do |(field, condition), query|
+            query.selector << QueryAst::FieldContainsAll.new(field, condition)
+          end
+          # raise Errors::CriteriaArgumentRequired.new(:contains_all) if criteria.empty?
+          #
+          # criteria.inject(clone) do |query, condition|
+          #   raise Errors::CriteriaArgumentRequired.new(:contains_all) if condition.nil?
+          #
+          #   condition = QueryNormalizer.expand_condition_to_array_values(condition)
+          #   condition.inject(query) do |q, (field, value)|
+          #     v = { '$all' => value }
+          #     v = { '$not' => v } if negating?
+          #     q.add_field_expression(field.to_s, v)
+          #   end
+          # end.reset_state!
         end
 
         # Add the $and criterion.
@@ -78,34 +134,37 @@ module ActiveDocument
         #
         # @return [ Selectable ] The new selectable.
         def all_of(*criteria)
-          flatten_args(criteria).inject(clone) do |c, new_s|
-            new_s = new_s.selector if new_s.is_a?(Selectable)
-            normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
-            normalized.each do |k, v|
-              k = k.to_s
-              if c.selector[k]
-                # There is already a condition on k.
-                # If v is an operator, and all existing conditions are
-                # also operators, and v isn't present in existing conditions,
-                # we can add to existing conditions.
-                # Otherwise use $and.
-                if v.is_a?(Hash) &&
-                   v.length == 1 &&
-                   (new_k = v.keys.first).start_with?('$') &&
-                   (existing_kv = c.selector[k]).is_a?(Hash) &&
-                   !existing_kv.key?(new_k) &&
-                   existing_kv.keys.all? { |sub_k| sub_k.start_with?('$') }
-                  merged_v = c.selector[k].merge(v)
-                  c.selector.store(k, merged_v)
-                else
-                  c = c.send(:__combine_criteria__, [k => v], '$and')
-                end
-              else
-                c.selector.store(k, v)
-              end
-            end
-            c
+          criteria.each_with_object(clone) do |(field, condition), query|
+            query.selector << QueryAst::FieldContainsAll.new(field, condition)
           end
+          # flatten_args(criteria).inject(clone) do |c, new_s|
+          #   new_s = new_s.selector if new_s.is_a?(Selectable)
+          #   normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
+          #   normalized.each do |k, v|
+          #     k = k.to_s
+          #     if c.selector[k]
+          #       # There is already a condition on k.
+          #       # If v is an operator, and all existing conditions are
+          #       # also operators, and v isn't present in existing conditions,
+          #       # we can add to existing conditions.
+          #       # Otherwise use $and.
+          #       if v.is_a?(Hash) &&
+          #          v.length == 1 &&
+          #          (new_k = v.keys.first).start_with?('$') &&
+          #          (existing_kv = c.selector[k]).is_a?(Hash) &&
+          #          !existing_kv.key?(new_k) &&
+          #          existing_kv.keys.all? { |sub_k| sub_k.start_with?('$') }
+          #         merged_v = c.selector[k].merge(v)
+          #         c.selector.store(k, merged_v)
+          #       else
+          #         c = c.send(:__combine_criteria__, [k => v], '$and')
+          #       end
+          #     else
+          #       c.selector.store(k, v)
+          #     end
+          #   end
+          #   c
+          # end
         end
 
         # Add the range selection.
@@ -671,44 +730,7 @@ module ActiveDocument
           end
         end
 
-        # This is the general entry point for most MongoDB queries. This either
-        # creates a standard field: value selection, and expanded selection with
-        # the use of hash methods, or a $where selection if a string is provided.
-        #
-        # @example Add a standard selection.
-        #   selectable.where(name: "syd")
-        #
-        # @example Add a javascript selection.
-        #   selectable.where("this.name == 'syd'")
-        #
-        # @param [ [ Hash | String ]... ] *criterion The standard selection
-        #   or javascript string.
-        #
-        # @return [ Selectable ] The cloned selectable.
-        def where(*criteria)
-          selectable = clone
-
-          criteria.each do |criterion|
-            raise Errors::CriteriaArgumentRequired.new(:where) if criterion.nil?
-
-            # We need to save the criterion in an instance variable so
-            # Modifiable methods know how to create a polymorphic object.
-            # Note that this method in principle accepts multiple criteria,
-            # but only the first one will be stored in @criterion. This
-            # works out to be fine because first_or_create etc. methods
-            # only ever specify one criterion to #where.
-            @criterion = criterion
-            selectable = if criterion.is_a?(String)
-                           js_query(criterion)
-                         else
-                           expr_query(criterion)
-                         end
-          end
-
-          selectable.reset_state!
-        end
-
-        private
+        # private
 
         # Merge criteria with operators using the and operator.
         #
