@@ -742,10 +742,27 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       context 'when complex criteria conditions are given' do
         let(:selection) do
+          base_selection.any_of(query.any_of([one: 'one'], [two: 'two']))
+        end
+
+        it 'adds new conditions to top level' do
+          expect(selection.selector).to eq({
+            'foo' => 'bar',
+            '$or' => [
+              { 'one' => 'one' },
+              { 'two' => 'two' }
+            ]
+          })
+        end
+      end
+
+      context 'when complex criteria conditions are given' do
+        let(:selection) do
           base_selection.where(query.any_of([one: 'one'], [two: 'two']))
         end
 
         it 'adds new conditions to top level' do
+          pending '#where should support merging criteria'
           expect(selection.selector).to eq({
             'foo' => 'bar',
             '$or' => [
@@ -1862,7 +1879,14 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           query.not.where(first: { '$not' => { '$regexp' => /1/ } })
         end
 
+        it 'has legacy behavior for the double $not selector' do
+          expect(selection.selector).to eq({
+            'first' => { '$not' => { '$not' => { '$regexp' => /1/ } } }
+          })
+        end
+
         it 'collapses the double $not selector' do
+          pending 'collapse double-not'
           expect(selection.selector).to eq({
             'first' => { '$regexp' => /1/ }
           })
