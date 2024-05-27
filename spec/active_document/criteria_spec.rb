@@ -233,25 +233,41 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  %i[all all_in].each do |method|
+  describe "#all" do
 
-    describe "##{method}" do
+    let!(:match1) do
+      Band.create!(genres: %w[electro dub])
+    end
 
-      let!(:match) do
-        Band.create!(genres: %w[electro dub])
-      end
+    let!(:match2) do
+      Band.create!(genres: ['house'])
+    end
 
-      let!(:non_match) do
-        Band.create!(genres: ['house'])
-      end
+    let(:criteria) do
+      Band.all
+    end
 
-      let(:criteria) do
-        Band.send(method, genres: %w[electro dub])
-      end
+    it 'returns the matching documents' do
+      expect(criteria).to eq([match1, match2])
+    end
+  end
 
-      it 'returns the matching documents' do
-        expect(criteria).to eq([match])
-      end
+  describe "#contains_all" do
+
+    let!(:match) do
+      Band.create!(genres: %w[electro dub])
+    end
+
+    let!(:non_match) do
+      Band.create!(genres: ['house'])
+    end
+
+    let(:criteria) do
+      Band.contains_all(genres: %w[electro dub])
+    end
+
+    it 'returns the matching documents' do
+      expect(criteria).to eq([match])
     end
   end
 
@@ -266,7 +282,7 @@ describe ActiveDocument::Criteria do
     end
 
     let(:criteria) do
-      Band.send(method, { genres: 'electro' }, { name: 'Depeche Mode' })
+      Band.all_of({ genres: 'electro' }, { name: 'Depeche Mode' })
     end
 
     it 'returns the matching documents' do
@@ -1082,43 +1098,65 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  %i[in any_in].each do |method|
+  describe '#any_in' do
 
-    describe "##{method}" do
+    context 'when querying on a normal field' do
 
-      context 'when querying on a normal field' do
+      let!(:match) do
+        Band.create!(genres: %w[electro dub])
+      end
 
-        let!(:match) do
-          Band.create!(genres: %w[electro dub])
-        end
+      let!(:non_match) do
+        Band.create!(genres: ['house'])
+      end
 
-        let!(:non_match) do
-          Band.create!(genres: ['house'])
-        end
+      let(:criteria) do
+        Band.any_in(genres: ['dub'])
+      end
+
+      it 'returns the matching documents' do
+        expect(criteria).to eq([match])
+      end
+    end
+
+    context 'when querying on a foreign key' do
+
+      let(:id) do
+        BSON::ObjectId.new
+      end
+
+      let!(:match_one) do
+        Person.create!(preference_ids: [id])
+      end
+
+      context 'when providing valid ids' do
 
         let(:criteria) do
-          Band.send(method, genres: ['dub'])
+          Person.any_in(preference_ids: [id])
         end
 
         it 'returns the matching documents' do
-          expect(criteria).to eq([match])
+          expect(criteria).to eq([match_one])
         end
       end
 
-      context 'when querying on a foreign key' do
+      context 'when providing empty strings' do
 
-        let(:id) do
-          BSON::ObjectId.new
+        let(:criteria) do
+          Person.any_in(preference_ids: [id, ''])
         end
 
-        let!(:match_one) do
-          Person.create!(preference_ids: [id])
+        it 'returns the matching documents' do
+          expect(criteria).to eq([match_one])
         end
+      end
 
-        context 'when providing valid ids' do
+      context 'when providing nils' do
+
+        context 'when the relation is a many to many' do
 
           let(:criteria) do
-            Person.send(method, preference_ids: [id])
+            Person.any_in(preference_ids: [id, nil])
           end
 
           it 'returns the matching documents' do
@@ -1126,43 +1164,18 @@ describe ActiveDocument::Criteria do
           end
         end
 
-        context 'when providing empty strings' do
+        context 'when the relation is a one to one' do
+
+          let!(:game) do
+            Game.create!
+          end
 
           let(:criteria) do
-            Person.send(method, preference_ids: [id, ''])
+            Game.any_in(person_id: [nil])
           end
 
           it 'returns the matching documents' do
-            expect(criteria).to eq([match_one])
-          end
-        end
-
-        context 'when providing nils' do
-
-          context 'when the relation is a many to many' do
-
-            let(:criteria) do
-              Person.send(method, preference_ids: [id, nil])
-            end
-
-            it 'returns the matching documents' do
-              expect(criteria).to eq([match_one])
-            end
-          end
-
-          context 'when the relation is a one to one' do
-
-            let!(:game) do
-              Game.create!
-            end
-
-            let(:criteria) do
-              Game.send(method, person_id: [nil])
-            end
-
-            it 'returns the matching documents' do
-              expect(criteria).to eq([game])
-            end
+            expect(criteria).to eq([game])
           end
         end
       end
@@ -1622,7 +1635,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#nor' do
+  describe '#none_of' do
 
     let!(:match) do
       Band.create!(name: 'Depeche Mode')
@@ -1633,7 +1646,7 @@ describe ActiveDocument::Criteria do
     end
 
     let(:criteria) do
-      Band.nor({ name: 'Tool' }, { name: 'New Order' })
+      Band.none_of({ name: 'Tool' }, { name: 'New Order' })
     end
 
     it 'returns the matching documents' do
@@ -1641,38 +1654,35 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  %i[or any_of].each do |method|
+  describe '#any_of' do
 
-    describe "##{method}" do
+    let!(:match) do
+      Band.create!(name: 'Depeche Mode')
+    end
 
-      let!(:match) do
-        Band.create!(name: 'Depeche Mode')
+    let!(:non_match) do
+      Band.create!(name: 'Tool')
+    end
+
+    context 'when sending a normal $or criterion' do
+
+      let(:criteria) do
+        Band.any_of({ name: 'Depeche Mode' }, { name: 'New Order' })
       end
 
-      let!(:non_match) do
-        Band.create!(name: 'Tool')
+      it 'returns the matching documents' do
+        expect(criteria).to eq([match])
+      end
+    end
+
+    context 'when matching against an id or other parameter' do
+
+      let(:criteria) do
+        Band.any_of({ id: match.id }, { name: 'New Order' })
       end
 
-      context 'when sending a normal $or criterion' do
-
-        let(:criteria) do
-          Band.send(method, { name: 'Depeche Mode' }, { name: 'New Order' })
-        end
-
-        it 'returns the matching documents' do
-          expect(criteria).to eq([match])
-        end
-      end
-
-      context 'when matching against an id or other parameter' do
-
-        let(:criteria) do
-          Band.send(method, { id: match.id }, { name: 'New Order' })
-        end
-
-        it 'returns the matching documents' do
-          expect(criteria).to eq([match])
-        end
+      it 'returns the matching documents' do
+        expect(criteria).to eq([match])
       end
     end
   end

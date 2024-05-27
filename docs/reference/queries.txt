@@ -1801,8 +1801,7 @@ that would affect its visibility within the scoped association.
 .. note::
 
   After the default scope is applied, it is no longer distinguished from
-  other query conditions. This can lead to surprising behavior when using
-  ``or`` and ``nor`` operators in particular:
+  other query conditions.
 
   .. code-block:: ruby
 
@@ -1824,26 +1823,21 @@ that would affect its visibility within the scoped association.
     #   class:    Band
     #   embedded: false>
 
-    Band.where(name: 'Infected Mushroom').or(touring: true)
+    Band.any_of({ name: 'Infected Mushroom' }, { touring: true })
     # =>
     # #<ActiveDocument::Criteria
-    #   selector: {"$or"=>[{"active"=>true, "name"=>"Infected Mushroom"}, {"touring"=>true}]}
+    #   selector: {"active"=>true, "$or"=>[{"name"=>"Infected Mushroom"}, {"touring"=>true}]}
     #   options:  {}
     #   class:    Band
     #   embedded: false>
 
-    Band.or(touring: true)
+    Band.any_of({ touring: true })
     # =>
     # #<ActiveDocument::Criteria
-    #   selector: {"$or"=>[{"active"=>true}, {"touring"=>true}]}
+    #   selector: {"active"=>true, "touring"=>true}
     #   options:  {}
     #   class:    Band
     #   embedded: false>
-
-  In the last example, you might expect the two conditions
-  (``active: true`` and ``touring: true``) to be combined with an ``$and``,
-  but because the ``Band`` class already has the scope applied to it,
-  it becomes one of the disjunction branches of the ``or``.
 
 
 Runtime Default Scope Override
