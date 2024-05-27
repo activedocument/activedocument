@@ -30,22 +30,7 @@ describe 'Criteria and default scope' do
         expect(base.selector).to eq({ 'active' => true })
       end
 
-      describe '.or' do
-        let(:criteria) do
-          base.or(timed: true)
-        end
-
-        it 'adds new condition in parallel to default scope conditions' do
-          expect(criteria.selector).to eq({
-            '$or' => [
-              { 'active' => true },
-              { 'timed' => true }
-            ]
-          })
-        end
-      end
-
-      describe '.any_of' do
+      context '.any_of with single args' do
         let(:criteria) do
           base.any_of(timed: true)
         end
@@ -54,20 +39,37 @@ describe 'Criteria and default scope' do
           expect(criteria.selector).to eq({ 'active' => true, 'timed' => true })
         end
       end
+
+      context '.any_of with multiple args' do
+        let(:criteria) do
+          base.any_of({ foobar: false }, { timed: true })
+        end
+
+        it 'adds new condition in parallel to default scope conditions' do
+          expect(criteria.selector).to eq({
+            'active' => true,
+            '$or' => [
+              { 'foobar' => false },
+              { 'timed' => true }
+            ]
+          })
+        end
+      end
     end
 
     context 'logical operator called on the class' do
       let(:base) { Appointment }
 
-      describe '.or' do
+      describe '.any_of' do
         let(:criteria) do
-          base.or(timed: true)
+          base.any_of([{ foobar: false }, { timed: true }])
         end
 
         it 'adds new condition in parallel to default scope conditions' do
           expect(criteria.selector).to eq({
+            'active' => true,
             '$or' => [
-              { 'active' => true },
+              { 'foobar' => false },
               { 'timed' => true }
             ]
           })
