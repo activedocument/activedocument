@@ -530,7 +530,7 @@ module ActiveDocument
             )
           end
 
-          self.all_of('$nor' => exprs)
+          all_of('$nor' => exprs)
         end
 
         # Adds a disjunction of the arguments as an additional constraint
@@ -568,7 +568,7 @@ module ActiveDocument
             # When we have a single criteria, any_of behaves like and.
             # Note: criteria can be a Query object, which #where method does
             # not support.
-            self.all_of(*criteria)
+            all_of(*criteria)
           else
             # When we have multiple criteria, combine them all with $or
             # and add the result to self.
@@ -585,7 +585,7 @@ module ActiveDocument
                 end
               end
             end
-            self.all_of('$or' => exprs)
+            all_of('$or' => exprs)
           end
         end
 
