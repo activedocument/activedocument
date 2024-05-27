@@ -233,7 +233,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe "#all" do
+  describe '#all' do
 
     let!(:match1) do
       Band.create!(genres: %w[electro dub])
@@ -252,7 +252,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe "#contains_all" do
+  describe '#contains_all' do
 
     let!(:match) do
       Band.create!(genres: %w[electro dub])
