@@ -433,7 +433,7 @@ module ActiveDocument
             query.add_field_expression(field.to_s, v)
           end.reset_state!
         end
-        alias_method :contains_none, :nin
+        alias_method :contains_none, :not_in
 
         # Is the current selectable negating the next selection?
         #
