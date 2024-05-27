@@ -364,6 +364,27 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
     end
 
+    context 'when given an argument' do
+      let(:selection) do
+        query.all(field: [1, 2])
+      end
+
+      it { expect { selection.selector }.to raise_error(ArgumentError) }
+    end
+  end
+
+  describe '#contains_all' do
+    let(:query_method) { :contains_all }
+    let(:operator) { '$all' }
+
+    context 'when provided no criterion' do
+      let(:selection) do
+        query.contains_all
+      end
+
+      it { expect { selection.selector }.to raise_error(ActiveDocument::Errors::CriteriaArgumentRequired) }
+    end
+
     it_behaves_like 'requires a non-nil argument'
 
     context 'when provided a single criterion' do
@@ -371,15 +392,12 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when no serializers are provided' do
 
         context 'when providing an array' do
-
           let(:selection) do
-            query.all(field: [1, 2])
+            query.contains_all(field: [1, 2])
           end
 
           it 'adds the $all selector' do
-            expect(selection.selector).to eq({
-              'field' => { '$all' => [1, 2] }
-            })
+            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
           end
 
           it 'returns a cloned query' do
@@ -390,13 +408,11 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing a single value' do
 
           let(:selection) do
-            query.all(field: 1)
+            query.contains_all(field: 1)
           end
 
           it 'adds the $all selector with wrapped value' do
-            expect(selection.selector).to eq({
-              'field' => { '$all' => [1] }
-            })
+            expect(selection.selector).to eq({ 'field' => { '$all' => [1] } })
           end
 
           it 'returns a cloned query' do
@@ -406,7 +422,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       context 'when serializers are provided' do
-
         before(:all) do
           class Field
             def evolve(object)
@@ -430,13 +445,11 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing an array' do
 
           let(:selection) do
-            query.all(field: %w[1 2])
+            query.contains_all(field: %w[1 2])
           end
 
           it 'adds the $all selector' do
-            expect(selection.selector).to eq({
-              'field' => { '$all' => [1, 2] }
-            })
+            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
           end
 
           it 'returns a cloned query' do
@@ -447,13 +460,11 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         context 'when providing a single value' do
 
           let(:selection) do
-            query.all(field: '1')
+            query.contains_all(field: '1')
           end
 
           it 'adds the $all selector with wrapped value' do
-            expect(selection.selector).to eq({
-              'field' => { '$all' => [1] }
-            })
+            expect(selection.selector).to eq({ 'field' => { '$all' => [1] } })
           end
 
           it 'returns a cloned query' do
@@ -468,7 +479,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.all(first: [1, 2], second: [3, 4])
+          query.contains_all(first: [1, 2], second: [3, 4])
         end
 
         it 'adds the $all selectors' do
@@ -489,7 +500,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.all(first: [1, 2]).all(second: [3, 4])
+          query.contains_all(first: [1, 2]).contains_all(second: [3, 4])
         end
 
         it 'adds the $all selectors' do
@@ -512,7 +523,6 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   end
 
   describe '#between' do
-
     let(:query_method) { :between }
 
     it_behaves_like 'requires an argument'
@@ -1072,9 +1082,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  describe '#in' do
-
-    let(:query_method) { :in }
+  describe '#any_in' do
+    let(:query_method) { :any_in }
     let(:operator) { '$in' }
 
     it_behaves_like 'requires an argument'
@@ -1083,9 +1092,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     context 'when provided a single criterion' do
 
       context 'when providing an array' do
-
         let(:selection) do
-          query.in(field: [1, 2])
+          query.any_in(field: [1, 2])
         end
 
         it 'adds the $in selector' do
@@ -1102,7 +1110,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when providing a single value' do
 
         let(:selection) do
-          query.in(field: 1)
+          query.any_in(field: 1)
         end
 
         it 'adds the $in selector with wrapped value' do
@@ -1122,7 +1130,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.in(first: [1, 2], second: 3..4)
+          query.any_in(first: [1, 2], second: 3..4)
         end
 
         it 'adds the $in selectors' do
@@ -1143,7 +1151,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when the criterion are for different fields' do
 
         let(:selection) do
-          query.in(first: [1, 2]).in(second: [3, 4])
+          query.any_in(first: [1, 2]).any_in(second: [3, 4])
         end
 
         it 'adds the $in selectors' do
@@ -2014,48 +2022,64 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
     end
   end
 
-  context 'when using multiple strategies on the same field' do
+  context 'when using multiple operators on the same field' do
 
-    context 'when using the strategies via methods' do
-
-      context 'when different operators are specified' do
-
-        let(:selection) do
-          query.gt(field: 5).lt(field: 10).ne(field: 7)
-        end
-
-        it 'merges the strategies on the same field' do
-          expect(selection.selector).to eq(
-            'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 }
-          )
-        end
+    context 'when different operators are specified' do
+      let(:selection) do
+        query.gt(field: 5).lt(field: 10).ne(field: 7)
       end
 
-      context 'when the same operator is specified' do
-
-        let(:selection) do
-          query.where(field: 5).where(field: 10)
-        end
-
-        it 'combines conditions' do
-          expect(selection.selector).to eq('field' => 5, '$and' => [{ 'field' => 10 }])
-        end
+      it 'merges the operators on the same field' do
+        expect(selection.selector).to eq(
+          'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 }
+        )
       end
     end
 
-    context 'when using the strategies via #where' do
+    context 'when the same operator is specified' do
+      let(:selection) do
+        query.where(field: 5).where(field: 10)
+      end
 
-      context 'when using complex keys with different operators' do
+      it 'combines conditions' do
+        # TODO: this should be the below:
+        # expect(selection.selector).to eq('$and' => [{ 'field' => 5 }, { 'field' => 10 }])
+        expect(selection.selector).to eq('field' => 5, '$and' => [{ 'field' => 10 }])
+      end
+    end
 
-        let(:selection) do
-          query.where(field: { '$gt' => 5, '$lt' => 10, '$ne' => 7 })
-        end
+    context 'when using complex keys with different operators' do
+      let(:selection) do
+        query.where(field: { '$gt' => 5, '$lt' => 10, '$ne' => 7 })
+      end
 
-        it 'merges the strategies on the same field' do
-          expect(selection.selector).to eq(
-            'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 }
-          )
-        end
+      it 'merges the strategies on the same field' do
+        expect(selection.selector).to eq(
+          'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 }
+        )
+      end
+    end
+
+    context 'when using complex keys with different and same operators' do
+      let(:selection) do
+        query.where(field: { '$gt' => 5, '$lt' => 10, '$ne' => 7 })
+             .where(field: { '$gt' => 6 })
+             .where(field: 42)
+      end
+
+      it 'merges the strategies on the same field' do
+        # TODO: this should be the below:
+        # expect(selection.selector).to eq(
+        #   '$and' => [
+        #     { 'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 } },
+        #     { 'field' => { '$gt' => 6 } },
+        #     { 'field' => 42 }
+        #   ]
+        # )
+        expect(selection.selector).to eq(
+          'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 },
+          '$and' => [{ 'field' => { '$gt' => 6 } }, { 'field' => 42 }]
+        )
       end
     end
   end
