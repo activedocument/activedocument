@@ -8,25 +8,6 @@ describe ActiveDocument::Extensions::Integer do
     118347652312341
   end
 
-  describe '#__mongoize_time__' do
-
-    let(:integer) do
-      1335532685
-    end
-
-    let(:mongoized) do
-      integer.__mongoize_time__
-    end
-
-    let(:expected_time) { Time.at(integer).in_time_zone }
-
-    context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
-
-      it_behaves_like 'mongoizes to AS::TimeWithZone'
-    end
-  end
-
   %i[mongoize demongoize].each do |method|
 
     describe ".#{method}" do

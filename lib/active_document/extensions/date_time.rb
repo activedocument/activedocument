@@ -6,16 +6,6 @@ module ActiveDocument
     # Adds type-casting behavior to Time class.
     module DateTime
 
-      # Mongoize the date time into a time.
-      #
-      # @example Mongoize the date time.
-      #   date_time.__mongoize_time__
-      #
-      # @return [ Time | ActiveSupport::TimeWithZone ] The mongoized time.
-      def __mongoize_time__
-        in_time_zone(::Time.zone)
-      end
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #

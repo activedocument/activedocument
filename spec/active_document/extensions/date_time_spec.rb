@@ -4,28 +4,6 @@ require 'spec_helper'
 
 describe ActiveDocument::Extensions::DateTime do
 
-  describe '__mongoize_time__' do
-
-    let(:date_time) do
-      # DateTime has time zone information, even if a time zone is not provided
-      # when parsing a string
-      DateTime.parse('2012-06-17 18:42:15.123457')
-    end
-
-    let(:mongoized) do
-      date_time.__mongoize_time__
-    end
-
-    let(:expected_time) { date_time.to_time.in_time_zone }
-
-    context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
-
-      it_behaves_like 'mongoizes to AS::TimeWithZone'
-      it_behaves_like 'maintains precision when mongoized'
-    end
-  end
-
   describe '.demongoize' do
 
     let!(:time) do

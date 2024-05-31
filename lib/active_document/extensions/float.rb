@@ -6,16 +6,6 @@ module ActiveDocument
     # Adds type-casting behavior to Float class.
     module Float
 
-      # Converts the float into a time as the number of seconds since the epoch.
-      #
-      # @example Convert the float into a time.
-      #   1335532685.117847.__mongoize_time__
-      #
-      # @return [ Time | ActiveSupport::TimeWithZone ] The time.
-      def __mongoize_time__
-        ::Time.zone.at(self)
-      end
-
       # Is the float a number?
       #
       # @example Is the object a number?.

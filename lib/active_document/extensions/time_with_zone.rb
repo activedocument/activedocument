@@ -6,16 +6,6 @@ module ActiveDocument
     # Adds type-casting behavior to ActiveSupport::TimeWithZone class.
     module TimeWithZone
 
-      # Mongoizes an ActiveSupport::TimeWithZone into a time.
-      #
-      # TimeWithZone always mongoize into TimeWithZone instances
-      # (which are themselves).
-      #
-      # @return [ ActiveSupport::TimeWithZone ] self.
-      def __mongoize_time__
-        self
-      end
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #
@@ -24,7 +14,7 @@ module ActiveDocument
       #
       # @return [ Time ] The object mongoized.
       def mongoize
-        ::ActiveSupport::TimeWithZone.mongoize(self)
+        TypeConverters::Time.to_database(self)
       end
 
       # This code is copied from Time class extension in bson-ruby gem. It
@@ -53,7 +43,7 @@ module ActiveDocument
         #
         # @return [ TimeWithZone ] The object as a date.
         def demongoize(object)
-          ::Time.demongoize(object).try(:in_time_zone)
+          TypeConverters::Time.to_ruby_cast(object)
         end
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -66,7 +56,7 @@ module ActiveDocument
         #
         # @return [ Time ] The object mongoized.
         def mongoize(object)
-          ::Time.mongoize(object)
+          TypeConverters::Time.to_database_cast(object)
         end
       end
     end

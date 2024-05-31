@@ -17,6 +17,7 @@ require 'active_document/timestamps'
 require 'active_document/association'
 require 'active_document/composable'
 require 'active_document/touchable'
+require 'active_document/type_converters'
 
 module ActiveDocument
 

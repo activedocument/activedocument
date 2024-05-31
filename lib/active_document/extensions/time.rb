@@ -6,16 +6,6 @@ module ActiveDocument
     # Adds type-casting behavior to Time class.
     module Time
 
-      # Mongoizes a Time into a time.
-      #
-      # Time always mongoize into Time instances
-      # (which are themselves).
-      #
-      # @return [ Time ] self.
-      def __mongoize_time__
-        self
-      end
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #
@@ -24,7 +14,7 @@ module ActiveDocument
       #
       # @return [ Time | nil ] The object mongoized or nil.
       def mongoize
-        ::Time.mongoize(self)
+        TypeConverters::Time.to_database(self)
       end
 
       module ClassMethods
@@ -38,25 +28,7 @@ module ActiveDocument
         #
         # @return [ Time | nil ] The object as a time.
         def demongoize(object)
-          return if object.blank?
-
-          time = if object.acts_like?(:time)
-                   ActiveDocument::Config.use_utc? ? object : object.getlocal
-                 elsif object.acts_like?(:date)
-                   ::Date.demongoize(object).to_time
-                 elsif object.is_a?(String)
-                   begin
-                     object.__mongoize_time__
-                   rescue ArgumentError
-                     nil
-                   end
-                 elsif object.is_a?(BSON::Timestamp)
-                   ::Time.at(object.seconds)
-                 end
-
-          return if time.nil?
-
-          time.in_time_zone(ActiveDocument.time_zone)
+          TypeConverters::Time.to_ruby_cast(object)
         end
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -69,23 +41,7 @@ module ActiveDocument
         #
         # @return [ Time | nil ] The object mongoized or nil.
         def mongoize(object)
-          return if object.blank?
-
-          begin
-            time = object.try(:__mongoize_time__)
-          rescue ArgumentError
-            return
-          end
-
-          return unless time.acts_like?(:time)
-
-          if object.respond_to?(:sec_fraction)
-            ::Time.at(time.to_i, object.sec_fraction * (10**6)).utc
-          elsif time.respond_to?(:subsec)
-            ::Time.at(time.to_i, time.subsec * (10**6)).utc
-          else
-            ::Time.at(time.to_i, time.usec).utc
-          end
+          TypeConverters::Time.to_database_cast(object)
         end
       end
     end

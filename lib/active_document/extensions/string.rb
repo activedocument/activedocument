@@ -26,27 +26,6 @@ module ActiveDocument
         convert_to_object_id if present?
       end
 
-      # Mongoize the string for storage.
-      #
-      # @note Returns a local time in the default time zone.
-      #
-      # @example Mongoize the string.
-      #   "2012-01-01".__mongoize_time__
-      #   # => 2012-01-01 00:00:00 -0500
-      #
-      # @raise [ ArgumentError ] The string is not a valid time string.
-      #
-      # @return [ Time | ActiveSupport::TimeWithZone ] Local time in the
-      #   configured default time zone corresponding to this string.
-      def __mongoize_time__
-        # This extra Time.parse is required to raise an error if the string
-        # is not a valid time string. ActiveSupport::TimeZone does not
-        # perform this check.
-        ::Time.parse(self)
-
-        ::Time.zone.parse(self)
-      end
-
       # Convert the string to a collection friendly name.
       #
       # @example Collectionize the string.

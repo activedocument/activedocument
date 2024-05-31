@@ -48,7 +48,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
     Array => %i[
       __evolve_date__
       __evolve_time__
-      __mongoize_time__
       __sort_option__
       __sort_pair__
       delete_one
@@ -60,18 +59,15 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
     Date => %i[
       __evolve_date__
       __evolve_time__
-      __mongoize_time__
     ],
     DateTime => %i[
       __evolve_date__
       __evolve_time__
-      __mongoize_time__
     ],
     FalseClass => %i[is_a?],
     Float => %i[
       __evolve_date__
       __evolve_time__
-      __mongoize_time__
     ],
     Hash => %i[
       __sort_option__
@@ -79,7 +75,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
     Integer => %i[
       __evolve_date__
       __evolve_time__
-      __mongoize_time__
     ],
     Module => %i[
       re_define_method
@@ -98,7 +93,6 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
       __evolve_date__
       __evolve_time__
       __mongo_expression__
-      __mongoize_time__
       __sort_option__
       before_type_cast?
       collectionize
@@ -110,12 +104,10 @@ RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeC
     Time => %i[
       __evolve_date__
       __evolve_time__
-      __mongoize_time__
     ],
     ActiveSupport::TimeWithZone => %i[
       __evolve_date__
       __evolve_time__
-      __mongoize_time__
       _bson_to_i
     ],
     BSON::Decimal128 => %i[

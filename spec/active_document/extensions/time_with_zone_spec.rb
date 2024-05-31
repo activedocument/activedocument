@@ -334,26 +334,4 @@ describe ActiveDocument::Extensions::TimeWithZone do
       expect(time.mongoize.to_f).to eq(time.to_f)
     end
   end
-
-  describe '__mongoize_time__' do
-
-    let(:time) do
-      ActiveSupport::TimeZone['Magadan'].at(1543331265.123457)
-    end
-    let(:mongoized) do
-      time.__mongoize_time__
-    end
-    let(:expected_time) { time.in_time_zone }
-
-    before do
-      expect(time).to be_a(ActiveSupport::TimeWithZone)
-    end
-
-    context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
-
-      it_behaves_like 'mongoizes to AS::TimeWithZone'
-      it_behaves_like 'maintains precision when mongoized'
-    end
-  end
 end
