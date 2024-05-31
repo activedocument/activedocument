@@ -28,8 +28,10 @@ module ActiveDocument
       def to_database_cast(object)
         time = to_ruby_cast(object, in_zone: false)
         return unless time
+
         # TODO: Handle this generically
         raise ArgumentError if time.is_a?(ActiveDocument::RawValue)
+
         to_database(time)
       end
 
@@ -64,9 +66,9 @@ module ActiveDocument
                  when String
                    to_ruby_cast_from_string(object)
                  when Integer, Float, BigDecimal
-                   ::Time.at(object)
+                   ::Time.at(object) # rubocop:disable Rails/TimeZone
                  when BSON::Timestamp
-                   ::Time.at(object.seconds)
+                   ::Time.at(object.seconds) # rubocop:disable Rails/TimeZone
                  end
         rescue ArgumentError
           return ActiveDocument::RawValue(object)
@@ -95,7 +97,7 @@ module ActiveDocument
         # This extra Time.parse is required to raise an error if the string
         # is not a valid time string. ActiveSupport::TimeZone does not
         # perform this check.
-        ::Time.parse(string)
+        ::Time.parse(string) # rubocop:disable Rails/TimeZone
         ::Time.zone.parse(string)
       end
 

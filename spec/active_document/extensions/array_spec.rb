@@ -202,7 +202,6 @@ describe ActiveDocument::Extensions::Array do
     end
   end
 
-
   describe '#delete_one' do
 
     context "when the object doesn't exist" do

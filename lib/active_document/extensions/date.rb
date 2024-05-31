@@ -35,8 +35,8 @@ module ActiveDocument
             return object if object.is_a?(RawValue)
           end
 
-          return unless object.acts_like?(:time) || object.acts_like?(:date)
           # TODO: RawValue
+          return unless object.acts_like?(:time) || object.acts_like?(:date)
 
           ::Date.new(object.year, object.month, object.day)
         end
@@ -53,18 +53,16 @@ module ActiveDocument
         def mongoize(object)
           return if object.blank?
 
-          time = begin
-            if object.is_a?(String)
-              begin
-                # https://jira.mongodb.org/browse/MONGOID-4460
-                ::Time.parse(object)
-              rescue ArgumentError => e
-                raise(e) # TODO: RawValue error
-              end
-            else
-              TypeConverters::Time.to_database_cast(self, in_zone: false)
-            end
-          end
+          time = if object.is_a?(String)
+                   begin
+                     # https://jira.mongodb.org/browse/MONGOID-4460
+                     ::Time.parse(object)
+                   rescue ArgumentError => e # rubocop:disable Lint/UselessRescue
+                     raise(e) # TODO: RawValue error
+                   end
+                 else
+                   TypeConverters::Time.to_database_cast(self)
+                 end
 
           raise ArgumentError.new if time.is_a?(ActiveDocument::RawValue)
 

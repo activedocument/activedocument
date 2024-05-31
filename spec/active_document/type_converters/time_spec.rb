@@ -39,7 +39,7 @@ describe ActiveDocument::TypeConverters::Time do
     subject(:converted) { described_class.to_database_cast(object) }
 
     context 'when Time' do
-      let(:object) { Time.at(1543331265.123457) }
+      let(:object) { Time.at(1543331265.123457) } # rubocop:disable Rails/TimeZone
       let(:expected_time) { object.utc }
 
       it_behaves_like 'converts to Time'
@@ -151,7 +151,7 @@ describe ActiveDocument::TypeConverters::Time do
     subject(:converted) { described_class.to_ruby_cast(object) }
 
     context 'when Time' do
-      let(:object) { Time.at(1543331265.123457) }
+      let(:object) { Time.at(1543331265.123457) } # rubocop:disable Rails/TimeZone
       let(:expected_time) { object.in_time_zone }
 
       it_behaves_like 'converts to ActiveSupport::TimeWithZone'
