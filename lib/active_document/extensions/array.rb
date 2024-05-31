@@ -12,8 +12,7 @@ module ActiveDocument
       #
       # @return [ Array<BSON::ObjectId> ] The converted array.
       def __evolve_object_id__
-        map!(&:__evolve_object_id__)
-        self
+        ActiveDocument::TypeConverters::Array.to_query_object_id(self)
       end
 
       # Mongoize the array into an array of object ids.
@@ -23,8 +22,7 @@ module ActiveDocument
       #
       # @return [ Array<BSON::ObjectId> ] The converted array.
       def __mongoize_object_id__
-        map!(&:__mongoize_object_id__).compact!
-        self
+        ActiveDocument::TypeConverters::Array.to_database_object_id(self)
       end
 
       # Converts the array for storing as a time.
@@ -39,7 +37,7 @@ module ActiveDocument
       #   configured default time zone corresponding to date/time components
       #   in this array.
       def __mongoize_time__
-        ::Time.zone.local(*self)
+        ActiveDocument::TypeConverters::Time.to_database_casted(self)
       end
 
       # Turn the object from the ruby type we deal with to a Mongo friendly

@@ -16,7 +16,7 @@ module ActiveDocument
       #   configured default time zone corresponding to local midnight of
       #   this date.
       def __mongoize_time__
-        ActiveDocument::TypeConverters::Time.to_database_casted(object)
+        ::Time.zone.local(year, month, day)
       end
 
       # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -40,12 +40,12 @@ module ActiveDocument
         # @param [ Time ] object The time from Mongo.
         #
         # @return [ Date | nil ] The object as a date or nil.
-        def demongoize(object)
+        def to_ruby_casted(object)
           return if object.nil?
 
           if object.is_a?(String)
             object = begin
-              ActiveDocument::TypeConverters::Time.to_database_casted(object)
+              object.__mongoize_time__
             rescue ArgumentError
               nil
             end
@@ -65,7 +65,7 @@ module ActiveDocument
         # @param [ Object ] object The object to mongoize.
         #
         # @return [ Time | nil ] The object mongoized or nil.
-        def mongoize(object)
+        def to_database_casted(object)
           return if object.blank?
 
           time = begin
@@ -73,7 +73,7 @@ module ActiveDocument
               # https://jira.mongodb.org/browse/MONGOID-4460
               ::Time.parse(object)
             else
-              ActiveDocument::TypeConverters::Time.to_database_casted(object)
+              object.try(:__mongoize_time__)
             end
           rescue ArgumentError
             nil
