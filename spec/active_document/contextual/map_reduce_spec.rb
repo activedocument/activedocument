@@ -254,13 +254,11 @@ describe ActiveDocument::Contextual::MapReduce do
   end
 
   describe '#raw' do
-
     let(:client) do
       collection.database.client
     end
 
     context 'when not specifying an out' do
-
       it 'raises a NoMapReduceOutput error' do
         expect do
           map_reduce.raw
@@ -269,9 +267,26 @@ describe ActiveDocument::Contextual::MapReduce do
     end
 
     context 'when providing replace' do
-
       let(:replace_map_reduce) do
         map_reduce.out(replace: 'output-collection')
+      end
+
+      context 'when a read preference is defined' do
+        require_topology :replica_set
+
+        let(:criteria) do
+          Band.all.read(mode: :secondary)
+        end
+
+        it 'uses the read preference' do
+          # On 4.4 it seems the server inserts on the primary,
+          # not on the server that executed the map/reduce.
+          pending 'To be investigated'
+
+          expect do
+            replace_map_reduce.raw
+          end.to raise_exception(Mongo::Error::OperationFailure)
+        end
       end
     end
   end
