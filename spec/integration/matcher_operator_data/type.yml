@@ -5,7 +5,6 @@
     pi:
       $type: 0
   error: true
-  min_server_version: 4.2
 
 - name: type is too negative
   document:

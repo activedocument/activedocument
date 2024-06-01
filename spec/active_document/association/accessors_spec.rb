@@ -612,54 +612,24 @@ describe ActiveDocument::Association::Accessors do
         end
 
         context 'when projecting association and a field in association' do
-          shared_examples 'is prohibited on 4.4+ server' do
-            context '4.4 server and higher' do
-              min_server_version '4.4'
-
-              it 'is not allowed by server' do
-                expect do
-                  persisted_person
-                end.to raise_error(Mongo::Error::OperationFailure, /Path collision at pass/)
-              end
+          shared_examples 'is prohibited by server' do
+            it 'is not allowed by server' do
+              expect do
+                persisted_person
+              end.to raise_error(Mongo::Error::OperationFailure, /Path collision at pass/)
             end
           end
 
           context 'association then field' do
             let(:persisted_person) { Person.only(:pass, 'pass.number').first }
 
-            context '4.2 server and lower' do
-              max_server_version '4.2'
-
-              it 'creates an accessor for the projected field on the embedded document' do
-                expect(persisted_person.passport.number).to eq('123123321')
-              end
-
-              it 'does not create an accessor for another field on the embedded document' do
-                expect do
-                  persisted_person.passport.country
-                end.to raise_error(ActiveDocument::Errors::AttributeNotLoaded, /Attempted to access attribute 'country' on Passport which was not loaded/)
-              end
-            end
-
-            include_examples 'is prohibited on 4.4+ server'
+            include_examples 'is prohibited by server'
           end
 
           context 'field then association' do
             let(:persisted_person) { Person.only('pass.number', :pass).first }
 
-            context '4.2 server and lower' do
-              max_server_version '4.2'
-
-              it 'creates an accessor for the projected field on the embedded document' do
-                expect(persisted_person.passport.number).to eq('123123321')
-              end
-
-              it 'retrieves other fields' do
-                expect(persisted_person.passport.country).to eq('USA')
-              end
-            end
-
-            include_examples 'is prohibited on 4.4+ server'
+            include_examples 'is prohibited by server'
           end
         end
       end
@@ -704,52 +674,24 @@ describe ActiveDocument::Association::Accessors do
         end
 
         context 'when projecting association and a field in association' do
-
-          shared_examples 'is prohibited on 4.4+ server' do
-            context '4.4 server and higher' do
-              min_server_version '4.4'
-
-              it 'is not allowed by server' do
-                expect do
-                  persisted_person
-                end.to raise_error(Mongo::Error::OperationFailure, /Path collision at phone_numbers/)
-              end
+          shared_examples 'is prohibited by server' do
+            it 'is not allowed by server' do
+              expect do
+                persisted_person
+              end.to raise_error(Mongo::Error::OperationFailure, /Path collision at phone_numbers/)
             end
           end
 
           context 'association then field' do
             let(:persisted_person) { Person.only(:phone_numbers, 'phone_numbers.number').first }
 
-            context '4.2 server and lower' do
-              max_server_version '4.2'
-
-              include_examples 'allows access to field of projected association'
-
-              it 'does not create an accessor for another field on the embedded document' do
-                expect do
-                  persisted_person.phone_numbers.first.landline
-                end.to raise_error(ActiveDocument::Errors::AttributeNotLoaded, /Attempted to access attribute 'landline' on Phone which was not loaded/)
-              end
-
-            end
-
-            include_examples 'is prohibited on 4.4+ server'
+            include_examples 'is prohibited by server'
           end
 
           context 'field then association' do
             let(:persisted_person) { Person.only('phone_numbers.number', :phone_numbers).first }
 
-            context '4.2 server and lower' do
-              max_server_version '4.2'
-
-              include_examples 'allows access to field of projected association'
-
-              it 'retrieves all fields of association' do
-                expect(persisted_person.phone_numbers.first.landline).to be true
-              end
-            end
-
-            include_examples 'is prohibited on 4.4+ server'
+            include_examples 'is prohibited by server'
           end
         end
       end
