@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 describe 'Dots and Dollars' do
-  min_server_version '5.0'
-
   before(:all) do
     class DADMUser
       include ActiveDocument::Document

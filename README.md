@@ -42,7 +42,7 @@ gem 'activedocument', git: 'https://github.com/activedocument/activedocument.git
   - Rails 6.0+
   - JRuby 9.4+
 - MongoDB
-  - MongoDB server 4.4+
+  - MongoDB server 5.0+
   - MongoDB driver 2.18+
 
 ## OK, show me the code!
