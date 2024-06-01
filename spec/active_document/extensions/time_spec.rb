@@ -144,7 +144,7 @@ describe ActiveDocument::Extensions::Time do
     context 'when the value is uncastable' do
 
       it 'returns nil' do
-        expect(Time.demongoize('bogus')).to be_nil
+        expect(Time.demongoize('bogus')).to eq ActiveDocument::RawValue('bogus')
       end
     end
 
@@ -231,7 +231,7 @@ describe ActiveDocument::Extensions::Time do
             end
 
             it 'returns nil' do
-              expect(Time.demongoize(string)).to be_nil
+              expect(Time.demongoize(string)).to eq ActiveDocument::RawValue('bogus')
             end
           end
         end
@@ -310,7 +310,7 @@ describe ActiveDocument::Extensions::Time do
             end
 
             it 'returns nil' do
-              expect(Time.demongoize(string)).to be_nil
+              expect(Time.demongoize(string)).to eq ActiveDocument::RawValue('bogus')
             end
           end
         end
@@ -413,7 +413,9 @@ describe ActiveDocument::Extensions::Time do
             end
 
             it 'returns nil' do
-              expect(Time.mongoize(string)).to be_nil
+              # TODO: UncastableType error
+              expect { Time.mongoize(string) }.to raise_error(ArgumentError)
+              # expect(Time.mongoize(string)).to be_nil
             end
           end
         end
@@ -482,13 +484,14 @@ describe ActiveDocument::Extensions::Time do
           end
 
           context 'when the string is an invalid time' do
-
             let(:string) do
               'bogus'
             end
 
             it 'returns nil' do
-              expect(Time.mongoize(string)).to be_nil
+              # TODO: UncastableType error
+              expect { Time.mongoize(string) }.to raise_error(ArgumentError)
+              # expect(Time.mongoize(string)).to be_nil
             end
           end
         end

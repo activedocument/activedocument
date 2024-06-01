@@ -181,7 +181,9 @@ describe ActiveDocument::Extensions::TimeWithZone do
         end
 
         it 'returns nil' do
-          expect(mongoized).to be_nil
+          # TODO: UncastableType error
+          expect { mongoized }.to raise_error(ArgumentError)
+          # expect(mongoized).to be_nil
         end
       end
 

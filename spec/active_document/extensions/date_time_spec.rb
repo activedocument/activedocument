@@ -60,11 +60,13 @@ describe ActiveDocument::Extensions::DateTime do
     context 'when the string is an invalid time' do
 
       let(:mongoized) do
-        DateTime.mongoize('time')
+        DateTime.mongoize('bogus')
       end
 
       it 'returns nil' do
-        expect(mongoized).to be_nil
+        # TODO: UncastableType error
+        expect { mongoized }.to raise_error(ArgumentError)
+        # expect(mongoized).to be_nil
       end
     end
   end

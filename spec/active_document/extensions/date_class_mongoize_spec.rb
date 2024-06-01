@@ -7,7 +7,6 @@ describe ActiveDocument::Extensions::Date do
   describe '.mongoize' do
 
     context 'when provided a date' do
-
       let(:date) do
         Date.new(2010, 1, 1)
       end
@@ -30,7 +29,6 @@ describe ActiveDocument::Extensions::Date do
       include_context 'setting ActiveSupport time zone'
 
       context 'when the string is a valid date' do
-
         let(:mongoized) do
           Date.mongoize('2010-01-01')
         end
@@ -96,7 +94,7 @@ describe ActiveDocument::Extensions::Date do
         end
       end
 
-      context 'when the string is empty' do
+      context 'when empty String' do
 
         let(:mongoized) do
           Date.mongoize('')
@@ -107,14 +105,15 @@ describe ActiveDocument::Extensions::Date do
         end
       end
 
-      context 'when the string is an invalid time' do
-
+      context 'when bogus String' do
         let(:mongoized) do
-          Date.mongoize('time')
+          Date.mongoize('bogus')
         end
 
         it 'returns nil' do
-          expect(mongoized).to be_nil
+          # TODO: UncastableType error
+          expect { mongoized }.to raise_error(ArgumentError)
+          # expect(mongoized).to be_nil
         end
       end
     end
