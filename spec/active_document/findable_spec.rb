@@ -899,7 +899,6 @@ describe ActiveDocument::Findable do
   end
 
   context 'when ActiveDocument is configured to use activesupport time zone' do
-    config_override :use_utc, false
     time_zone_override 'Asia/Kolkata'
 
     let!(:time) do

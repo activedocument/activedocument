@@ -389,9 +389,6 @@ for details on driver options.
       # existing method.
       # scope_overwrite_exception: false
 
-      # Return stored times as UTC.
-      # use_utc: false
-
     # Configure Driver-specific options. (optional)
     driver_options:
       # When this flag is off, an aggregation done on a view will be executed over
@@ -707,21 +704,15 @@ time zone handling is as follows:
 Setting time zone on data loaded from MongoDB
 ---------------------------------------------
 
+# TODO: Clarify this section
+
 MongoDB stores all times in UTC without time zone information.
 ActiveDocument models load and returns time values as instances of
-``ActiveSupport::TimeWithZone``. You may set the ``use_utc`` option
-to control how ActiveDocument sets the time zone when loading from the database:
+``ActiveSupport::TimeWithZone``. ActiveDocument will use ``Time.zone`` to set the time
+zone of time values are loaded from database.
 
-- If false (default), ActiveDocument will use ``Time.zone`` to set the time
-  zone of time values are loaded from database.
-- If true, ActiveDocument will always set the time zone as UTC on loaded
-  time values.
-
-``use_utc`` only affects how data is loaded, and does not affect
-how data is persisted. For example, if you assign a ``Time`` or
-``ActiveSupport::TimeWithZone`` instance to a time field, the time
-zone information of the assigned instance always will be used
-irrespective of the ``use_utc`` setting. Alternatively, if you
+if you assign a ``Time`` or ``ActiveSupport::TimeWithZone`` instance to a time field, the time
+zone information of the assigned instance always will be used. Alternatively, if you
 assign a string value to a time field, any time zone information
 in the string will be used if present. If the string does not include
 time zone information it will be parsed according to ``Time.zone``.

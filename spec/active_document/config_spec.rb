@@ -426,10 +426,6 @@ describe ActiveDocument::Config do
         expect(described_class.raise_not_found_error).to be true
       end
 
-      it 'sets the use utc option' do
-        expect(described_class.use_utc).to be false
-      end
-
       it 'sets the join_contexts default option' do
         expect(described_class.join_contexts).to be false
       end
@@ -504,10 +500,6 @@ describe ActiveDocument::Config do
 
         it 'sets the raise not found error option' do
           expect(described_class.raise_not_found_error).to be true
-        end
-
-        it 'sets the use utc option' do
-          expect(described_class.use_utc).to be false
         end
 
         it 'sets the join_contexts default option' do

@@ -414,18 +414,16 @@ describe DateTime do
     end
 
     context 'when provided an invalid string' do
-
       let(:evolved) do
         described_class.evolve('bogus')
       end
 
       it 'returns that string' do
-        expect(evolved).to eq('bogus')
+        expect(evolved).to eq ActiveDocument::RawValue('bogus')
       end
     end
 
     context 'when provided nil' do
-
       it 'returns nil' do
         expect(described_class.evolve(nil)).to be_nil
       end

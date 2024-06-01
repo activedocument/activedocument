@@ -8,26 +8,6 @@ describe ActiveDocument::Extensions::Float do
     118.345
   end
 
-  describe '#__mongoize_time__' do
-
-    let(:float) do
-      1335532685.123457
-    end
-
-    let(:mongoized) do
-      float.__mongoize_time__
-    end
-
-    let(:expected_time) { Time.at(float).in_time_zone }
-
-    context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
-
-      it_behaves_like 'mongoizes to AS::TimeWithZone'
-      it_behaves_like 'maintains precision when mongoized'
-    end
-  end
-
   %i[mongoize demongoize].each do |method|
 
     describe ".#{method}" do

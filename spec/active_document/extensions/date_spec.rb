@@ -4,67 +4,54 @@ require 'spec_helper'
 
 describe ActiveDocument::Extensions::Date do
 
-  describe '__mongoize_time__' do
-
-    context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
-
-      let(:date) do
-        Date.new(2010, 1, 1)
-      end
-
-      let(:expected_time) do
-        Time.zone.local(2010, 1, 1, 0, 0, 0, 0)
-      end
-
-      let(:mongoized) do
-        date.__mongoize_time__
-      end
-
-      it_behaves_like 'mongoizes to AS::TimeWithZone'
-    end
-  end
-
   describe '.demongoize' do
+    subject(:converted) { Date.demongoize(object) }
 
-    let(:time) do
-      Time.utc(2010, 1, 1, 0, 0, 0, 0)
-    end
+    let(:expected) { Date.new(2010, 1, 1) }
 
-    let(:expected) do
-      Date.new(2010, 1, 1)
-    end
+    context 'when Date' do
+      let(:object) { Date.new(2010, 1, 1) }
 
-    it 'keeps the date' do
-      expect(Date.demongoize(expected)).to eq(expected)
-      expect(Date.demongoize(expected)).to be_a(Date)
-    end
-
-    it 'converts to a date' do
-      expect(Date.demongoize(time)).to eq(expected)
-      expect(Date.demongoize(time)).to be_a(Date)
-    end
-
-    context 'when demongoizing nil' do
-
-      it 'returns nil' do
-        expect(Date.demongoize(nil)).to be_nil
+      it 'keeps the date' do
+        is_expected.to eq(object)
+        is_expected.to be_a(Date)
       end
     end
 
-    context 'when demongoizing a bogus value' do
+    context 'when Time' do
+      let(:object) { Time.utc(2010, 1, 1, 0, 0, 0, 0) }
 
-      it 'returns nil' do
-        expect(Date.demongoize('bogus')).to be_nil
+      it 'converts to a date' do
+        is_expected.to eq(expected)
+        is_expected.to be_a(Date)
       end
     end
 
-    context 'when demongoizing a string' do
+    context 'when nil' do
+      let(:object) { nil }
 
-      let(:date) { '2022-07-11 14:03:42 -0400' }
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when valid String' do
+      let(:object) { '2022-07-11 14:03:42 -0400' }
+      let(:expected) { object.to_date }
 
       it 'returns a date' do
-        expect(Date.demongoize(date)).to eq(date.to_date)
+        is_expected.to eq expected
+        is_expected.to be_a(Date)
+      end
+    end
+
+    context 'when bogus String' do
+      let(:object) { 'bogus' }
+      let(:expected) { ActiveDocument::RawValue('bogus') }
+
+      it 'returns RawValue' do
+        is_expected.to eq expected
+        is_expected.to be_a ActiveDocument::RawValue
       end
     end
   end
@@ -122,9 +109,10 @@ describe ActiveDocument::Extensions::Date do
     end
 
     context 'when the value is uncastable' do
-
       it 'returns nil' do
-        expect(Date.mongoize('bogus')).to be_nil
+        # TODO: type casting error
+        expect { Date.mongoize('bogus') }.to raise_error(ArgumentError)
+        # expect(Date.mongoize('bogus')).to be_nil
       end
     end
   end

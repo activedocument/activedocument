@@ -4,28 +4,6 @@ require 'spec_helper'
 
 describe ActiveDocument::Extensions::DateTime do
 
-  describe '__mongoize_time__' do
-
-    let(:date_time) do
-      # DateTime has time zone information, even if a time zone is not provided
-      # when parsing a string
-      DateTime.parse('2012-06-17 18:42:15.123457')
-    end
-
-    let(:mongoized) do
-      date_time.__mongoize_time__
-    end
-
-    let(:expected_time) { date_time.to_time.in_time_zone }
-
-    context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
-
-      it_behaves_like 'mongoizes to AS::TimeWithZone'
-      it_behaves_like 'maintains precision when mongoized'
-    end
-  end
-
   describe '.demongoize' do
 
     let!(:time) do
@@ -44,26 +22,21 @@ describe ActiveDocument::Extensions::DateTime do
       expect(DateTime.demongoize(time)).to eq(time)
     end
 
-    context 'when using utc' do
-      config_override :use_utc, true
+    context 'when setting a utc time' do
+      let(:user) do
+        User.new
+      end
 
-      context 'when setting a utc time' do
+      let(:date) do
+        DateTime.parse('2012-01-23 08:26:14 PM')
+      end
 
-        let(:user) do
-          User.new
-        end
+      before do
+        user.last_login = date
+      end
 
-        let(:date) do
-          DateTime.parse('2012-01-23 08:26:14 PM')
-        end
-
-        before do
-          user.last_login = date
-        end
-
-        it 'does not return the time with time zone applied' do
-          expect(user.last_login).to eq(date)
-        end
+      it 'does not return the time with time zone applied' do
+        expect(user.last_login).to eq(date)
       end
     end
 
@@ -82,11 +55,13 @@ describe ActiveDocument::Extensions::DateTime do
     context 'when the string is an invalid time' do
 
       let(:mongoized) do
-        DateTime.mongoize('time')
+        DateTime.mongoize('bogus')
       end
 
       it 'returns nil' do
-        expect(mongoized).to be_nil
+        # TODO: UncastableType error
+        expect { mongoized }.to raise_error(ArgumentError)
+        # expect(mongoized).to be_nil
       end
     end
   end

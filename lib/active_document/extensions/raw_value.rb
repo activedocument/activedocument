@@ -29,5 +29,14 @@ module ActiveDocument
     def inspect
       "RawValue: #{raw_value.inspect}"
     end
+
+    # Returns whether the other object is equal to this one.
+    #
+    # @param [ Object ] other The object to compare.
+    #
+    # @return [ true, false ] The result.
+    def ==(other)
+      other.is_a?(RawValue) && raw_value == other.raw_value
+    end
   end
 end

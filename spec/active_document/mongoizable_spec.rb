@@ -32,6 +32,7 @@ describe 'mongoize/demongoize/evolve methods' do
   shared_examples 'handles undemongoizable values' do
 
     context 'when passing an invalid value' do
+
       context 'to demongoize' do
         it 'returns nil' do
           expect(klass.demongoize(invalid_value)).to be_nil
@@ -110,6 +111,109 @@ describe 'mongoize/demongoize/evolve methods' do
   shared_examples 'handles uncastable values' do
     include_examples 'handles unmongoizable values'
     include_examples 'handles undemongoizable values'
+  end
+
+  shared_examples 'new - handles unmongoizable values' do
+
+    context 'when passing an invalid value' do
+      context 'to mongoize' do
+        it 'raises error' do
+          # TODO: UncastableType error
+          expect { klass.mongoize(invalid_value) }.to raise_error ArgumentError
+        end
+      end
+
+      context 'when assigning an invalid value to a field' do
+        let(:catalog) { Catalog.create!(field_name => invalid_value) }
+
+        it 'raises error' do
+          # TODO: UncastableType error
+          expect { catalog }.to raise_error ArgumentError
+        end
+      end
+    end
+  end
+
+  shared_examples 'new - handles undemongoizable values' do
+
+    context 'when passing an invalid value' do
+
+      context 'to demongoize' do
+        it 'returns nil' do
+          expect(klass.demongoize(invalid_value)).to eq ActiveDocument::RawValue(invalid_value)
+        end
+      end
+
+      context 'when retrieving an invalid value from the db' do
+        before do
+          Catalog.collection.insert_one(field_name => invalid_value)
+        end
+
+        let(:catalog) { Catalog.first }
+
+        it 'returns nil' do
+          expect(catalog.send(field_name)).to eq ActiveDocument::RawValue(invalid_value)
+        end
+      end
+    end
+  end
+
+  shared_examples 'new - pushes through unmongoizable values' do
+
+    context 'when passing an invalid value' do
+      context 'to mongoize' do
+        it 'returns that value' do
+          expect(klass.mongoize(invalid_value)).to eq(mongoized_value)
+        end
+      end
+    end
+
+    context 'when assigning an invalid value to a field' do
+      let!(:catalog) { Catalog.create!(field_name => invalid_value) }
+      let(:from_db) { Catalog.find(catalog._id) }
+
+      it 'returns the inputted value' do
+        expect(catalog.attributes[field_name]).to be_nil
+      end
+
+      it 'persists the inputted value' do
+        expect(from_db.attributes[field_name]).to be_nil
+      end
+    end
+  end
+
+  shared_examples 'new - pushes through undemongoizable values' do
+
+    context 'when reading an invalid value from the db' do
+      before do
+        Catalog.collection.insert_one(field_name => invalid_value)
+      end
+
+      let(:from_db) { Catalog.first }
+
+      it 'reads the inputted value' do
+        expect(from_db.send(field_name)).to eq(demongoized_value)
+      end
+    end
+  end
+
+  shared_examples 'new - pushes through unevolvable values' do
+
+    context 'when passing an uncastable value to evolve' do
+      it 'pushes the value through' do
+        expect(klass.evolve(invalid_value)).to eq ActiveDocument::RawValue(invalid_value)
+      end
+    end
+  end
+
+  shared_examples 'new - pushes through uncastable values' do
+    include_examples 'new - pushes through unmongoizable values'
+    include_examples 'new - pushes through undemongoizable values'
+  end
+
+  shared_examples 'new - handles uncastable values' do
+    include_examples 'new - handles unmongoizable values'
+    include_examples 'new - handles undemongoizable values'
   end
 
   let(:mongoized_value) { invalid_value }
@@ -270,8 +374,8 @@ describe 'mongoize/demongoize/evolve methods' do
     let(:klass) { described_class }
     let(:field_name) { :time_field }
 
-    include_examples 'handles uncastable values'
-    include_examples 'pushes through unevolvable values'
+    include_examples 'new - handles uncastable values'
+    include_examples 'new - pushes through unevolvable values'
   end
 
   describe ActiveSupport::TimeWithZone do
@@ -279,7 +383,7 @@ describe 'mongoize/demongoize/evolve methods' do
     let(:klass) { described_class }
     let(:field_name) { :time_with_zone_field }
 
-    include_examples 'handles uncastable values'
-    include_examples 'pushes through unevolvable values'
+    include_examples 'new - handles uncastable values'
+    include_examples 'new - pushes through unevolvable values'
   end
 end

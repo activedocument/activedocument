@@ -202,31 +202,6 @@ describe ActiveDocument::Extensions::Array do
     end
   end
 
-  describe '#__mongoize_time__' do
-
-    let(:array) do
-      [2010, 11, 19, 0, 24, 49.123457]
-    end
-
-    let(:mongoized) do
-      array.__mongoize_time__
-    end
-
-    context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
-
-      # In AS time zone (could be different from Ruby time zone)
-      let(:expected_time) { Time.zone.local(*array).in_time_zone }
-
-      it 'converts to the as time zone' do
-        expect(mongoized.zone).to eq('JST')
-      end
-
-      it_behaves_like 'mongoizes to AS::TimeWithZone'
-      it_behaves_like 'maintains precision when mongoized'
-    end
-  end
-
   describe '#delete_one' do
 
     context "when the object doesn't exist" do

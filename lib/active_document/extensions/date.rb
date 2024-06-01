@@ -6,19 +6,6 @@ module ActiveDocument
     # Adds type-casting behavior to Date class.
     module Date
 
-      # Convert the date into a time.
-      #
-      # @example Convert the date to a time.
-      #   Date.new(2018, 11, 1).__mongoize_time__
-      #   # => Thu, 01 Nov 2018 00:00:00 EDT -04:00
-      #
-      # @return [ Time | ActiveSupport::TimeWithZone ] Local time in the
-      #   configured default time zone corresponding to local midnight of
-      #   this date.
-      def __mongoize_time__
-        ::Time.zone.local(year, month, day)
-      end
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #
@@ -44,13 +31,11 @@ module ActiveDocument
           return if object.nil?
 
           if object.is_a?(String)
-            object = begin
-              object.__mongoize_time__
-            rescue ArgumentError
-              nil
-            end
+            object = TypeConverters::Time.cast(object)
+            return object if object.is_a?(RawValue)
           end
 
+          # TODO: RawValue
           return unless object.acts_like?(:time) || object.acts_like?(:date)
 
           ::Date.new(object.year, object.month, object.day)
@@ -68,16 +53,19 @@ module ActiveDocument
         def mongoize(object)
           return if object.blank?
 
-          time = begin
-            if object.is_a?(String)
-              # https://jira.mongodb.org/browse/MONGOID-4460
-              ::Time.parse(object)
-            else
-              object.try(:__mongoize_time__)
-            end
-          rescue ArgumentError
-            nil
-          end
+          time = if object.is_a?(String)
+                   begin
+                     # https://jira.mongodb.org/browse/MONGOID-4460
+                     ::Time.parse(object)
+                   rescue ArgumentError => e # rubocop:disable Lint/UselessRescue
+                     raise(e) # TODO: RawValue error
+                   end
+                 else
+                   TypeConverters::Time.cast(object)
+                 end
+
+          raise ArgumentError.new if time.is_a?(ActiveDocument::RawValue)
+
           return unless time.acts_like?(:time)
 
           ::Time.utc(time.year, time.month, time.day)

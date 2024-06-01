@@ -11,7 +11,6 @@ describe ActiveDocument::Extensions::TimeWithZone do
     end
 
     context 'when the time zone is not defined' do
-      config_override :use_utc, false
 
       context 'when the local time is not observing daylight saving' do
 
@@ -97,35 +96,29 @@ describe ActiveDocument::Extensions::TimeWithZone do
     end
 
     context 'when the time zone is defined as UTC' do
-      config_override :use_utc, true
-
       it 'returns utc' do
         expect(ActiveSupport::TimeWithZone.demongoize(time.dup.utc).utc_offset).to eq(0)
       end
+    end
 
-      context 'when setting ActiveSupport time zone' do
-        time_zone_override 'Stockholm'
+    context 'when setting ActiveSupport time zone' do
+      time_zone_override 'Stockholm'
 
-        let(:time) do
-          Time.utc(2010, 11, 19, 0, 30)
-        end
+      let(:object) do
+        Time.utc(2010, 11, 19, 0, 30).in_time_zone('UTC')
+      end
 
-        it 'returns utc' do
-          expect(ActiveSupport::TimeWithZone.demongoize(time)).to eq(
-            ActiveSupport::TimeZone['UTC'].local(2010, 11, 19, 0, 30)
-          )
-        end
+      let(:expected) do
+        Time.utc(2010, 11, 19, 0, 30)
+      end
 
-        it 'returns an ActiveSupport::TimeWithZone' do
-          expect(ActiveSupport::TimeWithZone.demongoize(time).class).to eq(
-            ActiveSupport::TimeWithZone
-          )
-        end
+      it 'returns utc' do
+        expect(ActiveSupport::TimeWithZone.demongoize(object)).to eq(expected)
+        expect(ActiveSupport::TimeWithZone.demongoize(object)).to be_a ActiveSupport::TimeWithZone
       end
     end
 
     context 'when time is nil' do
-
       it 'returns nil' do
         expect(ActiveSupport::TimeWithZone.demongoize(nil)).to be_nil
       end
@@ -181,7 +174,9 @@ describe ActiveDocument::Extensions::TimeWithZone do
         end
 
         it 'returns nil' do
-          expect(mongoized).to be_nil
+          # TODO: UncastableType error
+          expect { mongoized }.to raise_error(ArgumentError)
+          # expect(mongoized).to be_nil
         end
       end
 
@@ -332,28 +327,6 @@ describe ActiveDocument::Extensions::TimeWithZone do
 
     it "doesn't strip milli- or microseconds" do
       expect(time.mongoize.to_f).to eq(time.to_f)
-    end
-  end
-
-  describe '__mongoize_time__' do
-
-    let(:time) do
-      ActiveSupport::TimeZone['Magadan'].at(1543331265.123457)
-    end
-    let(:mongoized) do
-      time.__mongoize_time__
-    end
-    let(:expected_time) { time.in_time_zone }
-
-    before do
-      expect(time).to be_a(ActiveSupport::TimeWithZone)
-    end
-
-    context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
-
-      it_behaves_like 'mongoizes to AS::TimeWithZone'
-      it_behaves_like 'maintains precision when mongoized'
     end
   end
 end

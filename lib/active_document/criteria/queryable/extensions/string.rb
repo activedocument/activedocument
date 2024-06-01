@@ -26,7 +26,7 @@ module ActiveDocument
           #
           # @return [ Time ] The string as a time.
           def __evolve_time__
-            __mongoize_time__.utc
+            ActiveDocument::TypeConverters::Time.to_query_cast(self)
           end
 
           # Get the string as a mongo expression, adding $ to the front.

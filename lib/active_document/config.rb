@@ -69,9 +69,6 @@ module ActiveDocument
     # existing method.
     option :scope_overwrite_exception, default: false
 
-    # Return stored times as UTC.
-    option :use_utc, default: false
-
     # Store BigDecimals as Decimal128s instead of strings in the db.
     option :map_big_decimal_to_decimal128, default: true
 
@@ -349,16 +346,6 @@ module ActiveDocument
     # @return [ Hash ] The clients configuration.
     def clients
       @clients ||= {}
-    end
-
-    # Get the time zone to use.
-    #
-    # @example Get the time zone.
-    #   Config.time_zone
-    #
-    # @return [ String ] The time zone.
-    def time_zone
-      use_utc? ? 'UTC' : ::Time.zone
     end
 
     # Defines a field type mapping, for later use in field :type option.
