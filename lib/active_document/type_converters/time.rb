@@ -15,6 +15,7 @@ module ActiveDocument
       # @return [ Time | nil ] The prepared Time object or nil.
       def to_database(time)
         return unless time
+
         ::Time.at(time.to_i, time.subsec * 1_000_000).utc
       end
 
@@ -94,7 +95,7 @@ module ActiveDocument
           ::Time.at(object.seconds) # rubocop:disable Rails/TimeZone
         end
       rescue ArgumentError
-        return ActiveDocument::RawValue(object)
+        ActiveDocument::RawValue(object)
       end
 
       private
