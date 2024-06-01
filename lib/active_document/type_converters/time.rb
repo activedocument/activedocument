@@ -14,6 +14,7 @@ module ActiveDocument
       #
       # @return [ Time | nil ] The prepared Time object or nil.
       def to_database(time)
+        return unless time
         ::Time.at(time.to_i, time.subsec * 1_000_000).utc
       end
 
@@ -26,17 +27,20 @@ module ActiveDocument
       #
       # @return [ Time | nil ] The cast object or nil.
       def to_database_cast(object)
-        time = to_ruby_cast(object, in_zone: false)
+        time = cast(object)
+
         return unless time
 
         # TODO: Handle this generically
         raise ArgumentError if time.is_a?(ActiveDocument::RawValue)
 
-        to_database(time)
+        to_database(time.utc)
       end
 
       def to_query_cast(object)
-        to_ruby_cast(object, in_zone: false)
+        time = cast(object)
+        time = to_database(time.utc) if time.is_a?(::Time)
+        time
       end
 
       # Convert the object from its mongo friendly ruby type to this type.
@@ -47,38 +51,50 @@ module ActiveDocument
       # @param [ Time ] object The time from Mongo.
       #
       # @return [ Time | nil ] The object as a time.
-      def to_ruby_cast(object, in_zone: true)
+      def to_ruby_cast(object)
+        time = cast(object)
+        time = time.in_time_zone if time.is_a?(::Time)
+        time
+      end
+
+      # Mongoize the string for storage.
+      # Neutral about time zone
+      #
+      # @note Returns a local time in the default time zone.
+      #
+      # @example Mongoize the string.
+      #   cast_from_string("2012-01-01")
+      #   # => 2012-01-01 00:00:00 -0500
+      #
+      # @raise [ ArgumentError ] The string is not a valid time string.
+      #
+      # @return [ Time | ActiveSupport::TimeWithZone ] Local time in the
+      #   configured default time zone corresponding to this string.
+      # TODO: make private
+      def cast(object)
         return if object.blank?
 
         # TODO: Handle this generically
         object = object.raw_value if object.is_a?(ActiveDocument::RawValue)
 
-        begin
-          time = case object
-                 when ::Time, ActiveSupport::TimeWithZone
-                   # TODO: Not sure about this...
-                   return object
-                 when DateTime
-                   # TODO: Not sure about this...
-                   return object.to_time
-                 when Date
-                   to_ruby_cast_from_date(object)
-                 when ::Array
-                   to_ruby_cast_from_array(object)
-                 when String
-                   to_ruby_cast_from_string(object)
-                 when Integer, Float, BigDecimal
-                   ::Time.at(object) # rubocop:disable Rails/TimeZone
-                 when BSON::Timestamp
-                   ::Time.at(object.seconds) # rubocop:disable Rails/TimeZone
-                 end
-        rescue ArgumentError
-          return ActiveDocument::RawValue(object)
+        case object
+        when ::Time, ActiveSupport::TimeWithZone
+          object
+        when DateTime
+          object.to_time
+        when Date
+          cast_from_date(object)
+        when ::Array
+          cast_from_array(object)
+        when String
+          cast_from_string(object)
+        when Integer, Float, BigDecimal
+          ::Time.at(object) # rubocop:disable Rails/TimeZone
+        when BSON::Timestamp
+          ::Time.at(object.seconds) # rubocop:disable Rails/TimeZone
         end
-
-        return unless time
-
-        in_zone ? time.in_time_zone : time.utc
+      rescue ArgumentError
+        return ActiveDocument::RawValue(object)
       end
 
       private
@@ -88,14 +104,14 @@ module ActiveDocument
       # @note Returns a local time in the default time zone.
       #
       # @example Mongoize the string.
-      #   to_ruby_cast_from_string("2012-01-01")
+      #   cast_from_string("2012-01-01")
       #   # => 2012-01-01 00:00:00 -0500
       #
       # @raise [ ArgumentError ] The string is not a valid time string.
       #
       # @return [ Time | ActiveSupport::TimeWithZone ] Local time in the
       #   configured default time zone corresponding to this string.
-      def to_ruby_cast_from_string(string)
+      def cast_from_string(string)
         # This extra Time.parse is required to raise an error if the string
         # is not a valid time string. ActiveSupport::TimeZone does not
         # perform this check.
@@ -108,26 +124,26 @@ module ActiveDocument
       # @note Returns a local time in the default time zone.
       #
       # @example Convert the array to a time.
-      #   to_ruby_cast_from_array([2010, 1, 1])
+      #   cast_from_array([2010, 1, 1])
       #   # => 2010-01-01 00:00:00 -0500
       #
       # @return [ Time | ActiveSupport::TimeWithZone ] Local time in the
       #   configured default time zone corresponding to date/time components
       #   in this array.
-      def to_ruby_cast_from_array(array)
+      def cast_from_array(array)
         ::Time.zone.local(*array)
       end
 
       # Convert the date into a time.
       #
       # @example Convert the date to a time.
-      #   to_ruby_cast_from_date(Date.new(2018, 11, 1))
+      #   cast_from_date(Date.new(2018, 11, 1))
       #   # => Thu, 01 Nov 2018 00:00:00 EDT -04:00
       #
       # @return [ Time | ActiveSupport::TimeWithZone ] Local time in the
       #   configured default time zone corresponding to local midnight of
       #   this date.
-      def to_ruby_cast_from_date(date)
+      def cast_from_date(date)
         ::Time.zone.local(date.year, date.month, date.day)
       end
     end

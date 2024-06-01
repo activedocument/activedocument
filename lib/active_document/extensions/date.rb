@@ -31,7 +31,7 @@ module ActiveDocument
           return if object.nil?
 
           if object.is_a?(String)
-            object = TypeConverters::Time.to_ruby_cast(object, in_zone: false)
+            object = TypeConverters::Time.cast(object)
             return object if object.is_a?(RawValue)
           end
 
@@ -61,7 +61,7 @@ module ActiveDocument
                      raise(e) # TODO: RawValue error
                    end
                  else
-                   TypeConverters::Time.to_ruby_cast(object)
+                   TypeConverters::Time.cast(object)
                  end
 
           raise ArgumentError.new if time.is_a?(ActiveDocument::RawValue)
