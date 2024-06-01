@@ -47,8 +47,8 @@ module ActiveDocument
                  elsif object.is_a?(String)
                    begin
                      object.__mongoize_time__
-                   rescue ArgumentError
-                     nil
+                   rescue ArgumentError => e
+                     return ActiveDocument::RawValue(object, 'Time', e)
                    end
                  elsif object.is_a?(BSON::Timestamp)
                    ::Time.at(object.seconds)
@@ -56,7 +56,11 @@ module ActiveDocument
 
           return if time.nil?
 
-          time.in_time_zone(ActiveDocument.time_zone)
+          if time.respond_to?(:in_time_zone)
+            time.in_time_zone(ActiveDocument.time_zone)
+          else
+            ActiveDocument::RawValue(object, 'Time')
+          end
         end
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
@@ -73,18 +77,20 @@ module ActiveDocument
 
           begin
             time = object.try(:__mongoize_time__)
-          rescue ArgumentError
-            return
+          rescue ArgumentError => e
+            return ActiveDocument::RawValue.new(object, 'Time', e)
           end
 
-          return unless time.acts_like?(:time)
-
-          if object.respond_to?(:sec_fraction)
-            ::Time.at(time.to_i, object.sec_fraction * (10**6)).utc
-          elsif time.respond_to?(:subsec)
-            ::Time.at(time.to_i, time.subsec * (10**6)).utc
+          if time.acts_like?(:time)
+            if time.respond_to?(:sec_fraction)
+              ::Time.at(time.to_i, time.sec_fraction * (10**6)).utc
+            elsif time.respond_to?(:subsec)
+              ::Time.at(time.to_i, time.subsec * (10**6)).utc
+            else
+              ::Time.at(time.to_i, time.usec).utc
+            end
           else
-            ::Time.at(time.to_i, time.usec).utc
+            ActiveDocument::RawValue.new(time, 'Time')
           end
         end
       end

@@ -47,6 +47,8 @@ module ActiveDocument
             object.to_big_decimal
           elsif object.numeric?
             object.to_d
+          else
+            ActiveDocument::RawValue(object, 'BigDecimal')
           end
         end
 
@@ -70,13 +72,17 @@ module ActiveDocument
               BSON::Decimal128.new(object)
             elsif object.numeric?
               BSON::Decimal128.new(object.to_s)
-            elsif !object.is_a?(String)
-              object.try(:to_d)
+            elsif !object.is_a?(String) && object.respond_to?(:to_d)
+              object.to_d
+            else
+              ActiveDocument::RawValue(object, 'BigDecimal')
             end
           elsif object.is_a?(BSON::Decimal128) || object.numeric?
             object.to_s
-          elsif !object.is_a?(String)
-            object.try(:to_d)&.to_s
+          elsif !object.is_a?(String) && object.respond_to?(:to_d)
+            object.to_d&.to_s
+          else
+            ActiveDocument::RawValue(object, 'BigDecimal')
           end
         end
       end

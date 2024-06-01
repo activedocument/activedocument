@@ -40,7 +40,7 @@ module ActiveDocument
                       obj.to_s
                     end
                   else
-                    obj
+                    ActiveDocument::RawValue(object, 'BigDecimal')
                   end
                 end
               end

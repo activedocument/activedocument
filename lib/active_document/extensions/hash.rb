@@ -70,6 +70,8 @@ module ActiveDocument
             object.dup.transform_values!(&:mongoize)
           when Hash
             BSON::Document.new(object.transform_values(&:mongoize))
+          else
+            ActiveDocument::RawValue(object, 'Hash')
           end
         end
 

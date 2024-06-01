@@ -57,8 +57,8 @@ module ActiveDocument
             def evolve(object)
               __evolve__(object) do |obj|
                 __numeric__(obj)
-              rescue StandardError
-                obj
+              rescue StandardError => e
+                ActiveDocument::RawValue(object, 'Numeric', e)
               end
             end
           end

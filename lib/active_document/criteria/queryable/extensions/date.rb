@@ -47,10 +47,10 @@ module ActiveDocument
             def evolve(object)
               res = begin
                 object.try(:__evolve_date__)
-              rescue ArgumentError
-                nil
+              rescue ArgumentError => e
+                return ActiveDocument::RawValue(object, 'Date', e)
               end
-              res.nil? ? object : res
+              res.nil? ? ActiveDocument::RawValue(object, 'Date') : res
             end
           end
         end

@@ -23,6 +23,8 @@ module ActiveDocument
           true
         elsif object.to_s&.match?(FALSY_VALUES)
           false
+        else
+          ActiveDocument::RawValue(object, 'Boolean')
         end
       end
       alias_method :demongoize, :mongoize

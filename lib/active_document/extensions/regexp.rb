@@ -21,12 +21,17 @@ module ActiveDocument
           return if object.nil?
 
           case object
-          when String then ::Regexp.new(object)
-          when ::Regexp then object
-          when BSON::Regexp::Raw then object.compile
+          when String
+            ::Regexp.new(object)
+          when ::Regexp
+            object
+          when BSON::Regexp::Raw
+            object.compile
+          else
+            ActiveDocument::RawValue(object, 'Regexp')
           end
-        rescue RegexpError
-          nil
+        rescue RegexpError => e
+          ActiveDocument::RawValue(object, 'Regexp', e)
         end
         alias_method :demongoize, :mongoize
       end

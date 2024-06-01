@@ -44,10 +44,10 @@ module ActiveDocument
             def evolve(object)
               res = begin
                 object.try(:__evolve_time__)
-              rescue ArgumentError
-                nil
+              rescue ArgumentError => e
+                return ActiveDocument::RawValue(object, 'Time', e)
               end
-              res.nil? ? object : res
+              res.nil? ? ActiveDocument::RawValue(object, 'Time') : res
             end
           end
         end

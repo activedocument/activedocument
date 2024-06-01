@@ -19,11 +19,11 @@ module ActiveDocument
       #
       # @api private
       def demongoize(object)
-        if object.nil?
-          object
-        else
-          object.to_s.to_sym
-        end
+        return if object.nil?
+
+        return object.to_s.to_sym if object.respond_to?(:to_s)
+
+        ActiveDocument::RawValue.new(object, 'String')
       end
 
       # Turn the object from the Ruby type into the type
@@ -38,11 +38,11 @@ module ActiveDocument
       #
       # @api private
       def mongoize(object)
-        if object.nil?
-          object
-        else
-          object.to_s
-        end
+        return if object.nil?
+
+        return object.to_s if object.respond_to?(:to_s)
+
+        ActiveDocument::RawValue.new(object, 'String')
       end
 
       # Turn the object from the Ruby type into the type

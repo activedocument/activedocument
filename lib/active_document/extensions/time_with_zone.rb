@@ -53,7 +53,12 @@ module ActiveDocument
         #
         # @return [ TimeWithZone ] The object as a date.
         def demongoize(object)
-          ::Time.demongoize(object).try(:in_time_zone)
+          time = ::Time.demongoize(object)
+          if time.respond_to?(:in_time_zone)
+            time.in_time_zone
+          else
+            ActiveDocument::RawValue(object, 'ActiveSupport::TimeWithZone')
+          end
         end
 
         # Turn the object from the ruby type we deal with to a Mongo friendly
