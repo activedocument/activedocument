@@ -58,6 +58,9 @@ module ActiveDocument
         time
       end
 
+      # Returns a local time in the current time zone,
+      # unless the object is a Time-like value it a zone or offset
+      # already specified.
       # Mongoize the string for storage.
       # Neutral about time zone
       #
@@ -90,9 +93,9 @@ module ActiveDocument
         when String
           cast_from_string(object)
         when Integer, Float, BigDecimal
-          ::Time.at(object) # rubocop:disable Rails/TimeZone
+          ::Time.zone.at(object)
         when BSON::Timestamp
-          ::Time.at(object.seconds) # rubocop:disable Rails/TimeZone
+          ::Time.zone.at(object.seconds)
         end
       rescue ArgumentError
         ActiveDocument::RawValue(object)

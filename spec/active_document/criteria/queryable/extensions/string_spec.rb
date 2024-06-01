@@ -72,7 +72,7 @@ describe String do
     context 'when the string without timezone' do
 
       context 'when setting ActiveSupport time zone' do
-        time_zone_override 'Tokyo'
+        time_zone_override 'Asia/Tokyo'
 
         let(:date) do
           '2010-01-01 5:00:00'

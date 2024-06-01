@@ -26,7 +26,7 @@ describe Date do
   describe '#__evolve_time__' do
 
     context 'when setting ActiveSupport time zone' do
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       let(:date) do
         described_class.new(2010, 1, 1)

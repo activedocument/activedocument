@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-shared_context 'setting ActiveSupport time zone' do
-  time_zone_override 'Tokyo'
-end
-
 shared_examples_for 'mongoizes to AS::TimeWithZone' do
   it 'is an AS::TimeWithZone' do
     expect(mongoized.class).to eq(ActiveSupport::TimeWithZone)

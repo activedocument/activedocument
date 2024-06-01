@@ -35,7 +35,7 @@ describe ActiveDocument::TypeConverters::Time do
 
   describe '.to_database_cast' do
     # TODO: RawValue
-    time_zone_override 'Tokyo'
+    time_zone_override 'Asia/Tokyo'
     subject(:converted) { described_class.to_database_cast(object) }
 
     context 'when Time' do
@@ -147,7 +147,7 @@ describe ActiveDocument::TypeConverters::Time do
   end
 
   describe '.to_ruby_cast' do
-    time_zone_override 'Tokyo'
+    time_zone_override 'Asia/Tokyo'
     subject(:converted) { described_class.to_ruby_cast(object) }
 
     context 'when Time' do
