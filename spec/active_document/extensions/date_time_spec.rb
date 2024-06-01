@@ -22,26 +22,21 @@ describe ActiveDocument::Extensions::DateTime do
       expect(DateTime.demongoize(time)).to eq(time)
     end
 
-    context 'when using utc' do
-      config_override :use_utc, true
+    context 'when setting a utc time' do
+      let(:user) do
+        User.new
+      end
 
-      context 'when setting a utc time' do
+      let(:date) do
+        DateTime.parse('2012-01-23 08:26:14 PM')
+      end
 
-        let(:user) do
-          User.new
-        end
+      before do
+        user.last_login = date
+      end
 
-        let(:date) do
-          DateTime.parse('2012-01-23 08:26:14 PM')
-        end
-
-        before do
-          user.last_login = date
-        end
-
-        it 'does not return the time with time zone applied' do
-          expect(user.last_login).to eq(date)
-        end
+      it 'does not return the time with time zone applied' do
+        expect(user.last_login).to eq(date)
       end
     end
 

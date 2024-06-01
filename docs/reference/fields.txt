@@ -307,8 +307,7 @@ ActiveDocument allows assignment of values of several types to ``:date`` fields:
   of the value is taken in the value's time zone.
 - ``String`` - the date specified in the string is used.
 - ``Integer``, ``Float`` - the value is taken to be a UTC timestamp which is
-  converted to the :ref:`configured time zone <time-zones>` (note that
-  ``ActiveDocument.use_utc`` has no effect on this conversion), then the date is
+  converted to the :ref:`configured time zone <time-zones>`, then the date is
   taken from the resulting time.
 
 In other words, if a date is specified in the value, that date is used without
@@ -362,10 +361,6 @@ returned is defined by the :ref:`configured time zone settings <time-zones>`.
     Time.zone = 'America/New_York'
     ticket.opened_at
     # => Sun, 18 Feb 2018 07:00:08 -0500
-
-    ActiveDocument.use_utc = true
-    ticket.opened_at
-    # => Sun, 18 Feb 2018 12:00:08 +0000
 
 ActiveDocument also supports casting integers and floats to ``DateTime``. When
 doing so, the integers/floats are assumed to be Unix timestamps (in UTC):

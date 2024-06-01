@@ -1,4 +1,15 @@
 
+Removed options
+
+The `use_utc` option has been removed. ActiveDocument always uses the local timezone when loading values from the database.
+If you'd like to ensure values are loaded in UTC, you can do:
+
+```ruby
+  Time.use_zone('UTC') { Band.first.created_at }
+
+  Band.first.created_at.in_time_zone('UTC')
+
+
 Deprecation
 
 In general, anything marked deprecated in Mongoid has been removed in

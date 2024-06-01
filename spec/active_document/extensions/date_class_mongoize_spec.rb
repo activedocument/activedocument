@@ -186,7 +186,7 @@ describe ActiveDocument::Extensions::Date do
       end
     end
 
-    context 'when provided a time' do
+    context 'when provided a Time in UTC' do
       include_context 'setting ActiveSupport time zone'
 
       let(:mongoized) do
@@ -203,7 +203,6 @@ describe ActiveDocument::Extensions::Date do
         end
 
         it 'returns the date specified in the time without regard for local day' do
-          # TODO: need to analyze this more
           expect(mongoized).to eq(expected)
         end
       end
@@ -218,6 +217,44 @@ describe ActiveDocument::Extensions::Date do
         end
 
         it 'returns the date specified in the time without regard for local day' do
+          # TODO: need to analyze this more
+          expect(mongoized).to eq(expected)
+        end
+      end
+    end
+
+    context 'when provided a Time in with an offset' do
+      include_context 'setting ActiveSupport time zone'
+
+      let(:mongoized) do
+        Date.mongoize(object)
+      end
+
+      context 'in the same local day' do
+        let(:expected) do
+          Time.utc(2010, 1, 1, 0, 0, 0)
+        end
+
+        let(:object) do
+          Time.new(2010, 1, 1, 2, 3, 4, 9 * 3600)
+        end
+
+        it 'returns the date specified in the time without regard for local day' do
+          expect(mongoized).to eq(expected)
+        end
+      end
+
+      context 'in another local day' do
+        let(:expected) do
+          Time.utc(2010, 1, 2, 0, 0, 0)
+        end
+
+        let(:object) do
+          Time.new(2010, 1, 2, 22, 3, 4, 9 * 3600)
+        end
+
+        it 'returns the date specified in the time without regard for local day' do
+          # TODO: need to analyze this more
           expect(mongoized).to eq(expected)
         end
       end

@@ -56,9 +56,11 @@ module ActiveDocument
         begin
           time = case object
                  when ::Time, ActiveSupport::TimeWithZone
-                   object
+                   # TODO: Not sure about this...
+                   return object
                  when DateTime
-                   object.to_time
+                   # TODO: Not sure about this...
+                   return object.to_time
                  when Date
                    to_ruby_cast_from_date(object)
                  when ::Array
@@ -76,7 +78,7 @@ module ActiveDocument
 
         return unless time
 
-        in_zone ? time.in_time_zone(ActiveDocument.time_zone) : time.utc
+        in_zone ? time.in_time_zone : time.utc
       end
 
       private

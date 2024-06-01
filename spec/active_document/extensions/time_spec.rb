@@ -11,7 +11,6 @@ describe ActiveDocument::Extensions::Time do
     end
 
     context 'when the time zone is not defined' do
-      config_override :use_utc, false
 
       context 'when the local time is not observing daylight saving' do
 
@@ -107,30 +106,25 @@ describe ActiveDocument::Extensions::Time do
     end
 
     context 'when the time zone is defined as UTC' do
-      config_override :use_utc, true
-
       it 'returns utc' do
         expect(Time.demongoize(time.dup.utc).utc_offset).to eq(0)
       end
+    end
 
-      context 'when setting ActiveSupport time zone' do
-        time_zone_override 'Stockholm'
+    context 'when setting ActiveSupport time zone' do
+      time_zone_override 'Stockholm'
 
-        let(:time) do
-          Time.utc(2010, 11, 19, 0, 30)
-        end
+      let(:object) do
+        Time.utc(2010, 11, 19, 0, 30).in_time_zone('UTC')
+      end
 
-        it 'returns utc' do
-          expect(Time.demongoize(time)).to eq(
-            ActiveSupport::TimeZone['UTC'].local(2010, 11, 19, 0, 30)
-          )
-        end
+      let(:expected) do
+        Time.utc(2010, 11, 19, 0, 30)
+      end
 
-        it 'returns an ActiveSupport::TimeWithZone' do
-          expect(Time.demongoize(time).class).to eq(
-            ActiveSupport::TimeWithZone
-          )
-        end
+      it 'returns utc' do
+        expect(Time.demongoize(object)).to eq(expected)
+        expect(Time.demongoize(object)).to be_a ActiveSupport::TimeWithZone
       end
     end
 
@@ -158,160 +152,77 @@ describe ActiveDocument::Extensions::Time do
 
     context 'when the value is a string' do
 
-      context 'when use_utc is false' do
-        config_override :use_utc, false
+      context 'when setting ActiveSupport time zone' do
+        include_context 'setting ActiveSupport time zone'
 
-        context 'when setting ActiveSupport time zone' do
-          include_context 'setting ActiveSupport time zone'
+        context 'when the string is a valid time with time zone' do
 
-          context 'when the string is a valid time with time zone' do
-
-            let(:string) do
-              # JST is +0900
-              '2010-11-19 00:24:49.123457 +1100'
-            end
-
-            let(:mongoized) do
-              Time.demongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 13:24:49.123457 +0000').in_time_zone }
-
-            it 'converts to the AS time zone' do
-              expect(mongoized.zone).to eq('JST')
-            end
-
-            it_behaves_like 'mongoizes to AS::TimeWithZone'
-            it_behaves_like 'maintains precision when mongoized'
+          let(:string) do
+            # JST is +0900
+            '2010-11-19 00:24:49.123457 +1100'
           end
 
-          context 'when the string is a valid time without time zone' do
-
-            let(:string) do
-              '2010-11-19 00:24:49.123457'
-            end
-
-            let(:mongoized) do
-              Time.demongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 15:24:49.123457 +0000').in_time_zone }
-
-            it 'converts to the AS time zone' do
-              expect(mongoized.zone).to eq('JST')
-            end
-
-            it_behaves_like 'mongoizes to AS::TimeWithZone'
-            it_behaves_like 'maintains precision when mongoized'
+          let(:mongoized) do
+            Time.demongoize(string)
           end
 
-          context 'when the string is a valid time without time' do
+          let(:expected_time) { Time.parse('2010-11-18 13:24:49.123457 +0000').in_time_zone }
 
-            let(:string) do
-              '2010-11-19'
-            end
-
-            let(:mongoized) do
-              Time.demongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 15:00:00 +0000').in_time_zone }
-
-            it 'converts to the AS time zone' do
-              expect(mongoized.zone).to eq('JST')
-            end
-
-            it_behaves_like 'mongoizes to AS::TimeWithZone'
+          it 'converts to the AS time zone' do
+            expect(mongoized.zone).to eq('JST')
           end
 
-          context 'when the string is an invalid time' do
-
-            let(:string) do
-              'bogus'
-            end
-
-            it 'returns nil' do
-              expect(Time.demongoize(string)).to eq ActiveDocument::RawValue('bogus')
-            end
-          end
+          it_behaves_like 'mongoizes to AS::TimeWithZone'
+          it_behaves_like 'maintains precision when mongoized'
         end
-      end
 
-      context 'when use_utc is true' do
-        config_override :use_utc, true
+        context 'when the string is a valid time without time zone' do
 
-        context 'when setting ActiveSupport time zone' do
-          include_context 'setting ActiveSupport time zone'
-
-          context 'when the string is a valid time with time zone' do
-
-            let(:string) do
-              # JST is +0900
-              '2010-11-19 00:24:49.123457 +1100'
-            end
-
-            let(:mongoized) do
-              Time.demongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 13:24:49.123457 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
-
-            it_behaves_like 'mongoizes to AS::TimeWithZone'
-            it_behaves_like 'maintains precision when mongoized'
+          let(:string) do
+            '2010-11-19 00:24:49.123457'
           end
 
-          context 'when the string is a valid time without time zone' do
-
-            let(:string) do
-              '2010-11-19 00:24:49.123457'
-            end
-
-            let(:mongoized) do
-              Time.demongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 15:24:49.123457 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
-
-            it_behaves_like 'mongoizes to AS::TimeWithZone'
-            it_behaves_like 'maintains precision when mongoized'
+          let(:mongoized) do
+            Time.demongoize(string)
           end
 
-          context 'when the string is a valid time without time' do
+          let(:expected_time) { Time.parse('2010-11-18 15:24:49.123457 +0000').in_time_zone }
 
-            let(:string) do
-              '2010-11-19'
-            end
-
-            let(:mongoized) do
-              Time.demongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 15:00:00 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
-
-            it_behaves_like 'mongoizes to AS::TimeWithZone'
+          it 'converts to the AS time zone' do
+            expect(mongoized.zone).to eq('JST')
           end
 
-          context 'when the string is an invalid time' do
+          it_behaves_like 'mongoizes to AS::TimeWithZone'
+          it_behaves_like 'maintains precision when mongoized'
+        end
 
-            let(:string) do
-              'bogus'
-            end
+        context 'when the string is a valid time without time' do
 
-            it 'returns nil' do
-              expect(Time.demongoize(string)).to eq ActiveDocument::RawValue('bogus')
-            end
+          let(:string) do
+            '2010-11-19'
+          end
+
+          let(:mongoized) do
+            Time.demongoize(string)
+          end
+
+          let(:expected_time) { Time.parse('2010-11-18 15:00:00 +0000').in_time_zone }
+
+          it 'converts to the AS time zone' do
+            expect(mongoized.zone).to eq('JST')
+          end
+
+          it_behaves_like 'mongoizes to AS::TimeWithZone'
+        end
+
+        context 'when the string is an invalid time' do
+
+          let(:string) do
+            'bogus'
+          end
+
+          it 'returns nil' do
+            expect(Time.demongoize(string)).to eq ActiveDocument::RawValue('bogus')
           end
         end
       end
@@ -344,155 +255,75 @@ describe ActiveDocument::Extensions::Time do
 
     context 'when the value is a string' do
 
-      context 'when use_utc is false' do
-        config_override :use_utc, false
+      context 'when setting ActiveSupport time zone' do
+        include_context 'setting ActiveSupport time zone'
 
-        context 'when setting ActiveSupport time zone' do
-          include_context 'setting ActiveSupport time zone'
+        context 'when the string is a valid time with time zone' do
 
-          context 'when the string is a valid time with time zone' do
-
-            let(:string) do
-              # JST is +0900
-              '2010-11-19 00:24:49.123457 +1100'
-            end
-
-            let(:mongoized) do
-              Time.mongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 13:24:49.123457 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
-
-            it_behaves_like 'maintains precision when mongoized'
+          let(:string) do
+            # JST is +0900
+            '2010-11-19 00:24:49.123457 +1100'
           end
 
-          context 'when the string is a valid time without time zone' do
-
-            let(:string) do
-              '2010-11-19 00:24:49.123457'
-            end
-
-            let(:mongoized) do
-              Time.mongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 15:24:49.123457 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
-
-            it_behaves_like 'maintains precision when mongoized'
+          let(:mongoized) do
+            Time.mongoize(string)
           end
 
-          context 'when the string is a valid time without time' do
+          let(:expected_time) { Time.parse('2010-11-18 13:24:49.123457 +0000').in_time_zone }
 
-            let(:string) do
-              '2010-11-19'
-            end
-
-            let(:mongoized) do
-              Time.mongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 15:00:00 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
+          it 'converts to UTC' do
+            expect(mongoized.zone).to eq('UTC')
           end
 
-          context 'when the string is an invalid time' do
+          it_behaves_like 'maintains precision when mongoized'
+        end
 
-            let(:string) do
-              'bogus'
-            end
+        context 'when the string is a valid time without time zone' do
 
-            it 'returns nil' do
-              # TODO: UncastableType error
-              expect { Time.mongoize(string) }.to raise_error(ArgumentError)
-              # expect(Time.mongoize(string)).to be_nil
-            end
+          let(:string) do
+            '2010-11-19 00:24:49.123457'
+          end
+
+          let(:mongoized) do
+            Time.mongoize(string)
+          end
+
+          let(:expected_time) { Time.parse('2010-11-18 15:24:49.123457 +0000').in_time_zone }
+
+          it 'converts to UTC' do
+            expect(mongoized.zone).to eq('UTC')
+          end
+
+          it_behaves_like 'maintains precision when mongoized'
+        end
+
+        context 'when the string is a valid time without time' do
+
+          let(:string) do
+            '2010-11-19'
+          end
+
+          let(:mongoized) do
+            Time.mongoize(string)
+          end
+
+          let(:expected_time) { Time.parse('2010-11-18 15:00:00 +0000').in_time_zone }
+
+          it 'converts to UTC' do
+            expect(mongoized.zone).to eq('UTC')
           end
         end
-      end
 
-      context 'when use_utc is true' do
-        config_override :use_utc, true
+        context 'when the string is an invalid time' do
 
-        context 'when setting ActiveSupport time zone' do
-          include_context 'setting ActiveSupport time zone'
-
-          context 'when the string is a valid time with time zone' do
-
-            let(:string) do
-              # JST is +0900
-              '2010-11-19 00:24:49.123457 +1100'
-            end
-
-            let(:mongoized) do
-              Time.mongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 13:24:49.123457 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
-
-            it_behaves_like 'maintains precision when mongoized'
+          let(:string) do
+            'bogus'
           end
 
-          context 'when the string is a valid time without time zone' do
-
-            let(:string) do
-              '2010-11-19 00:24:49.123457'
-            end
-
-            let(:mongoized) do
-              Time.mongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 15:24:49.123457 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
-
-            it_behaves_like 'maintains precision when mongoized'
-          end
-
-          context 'when the string is a valid time without time' do
-
-            let(:string) do
-              '2010-11-19'
-            end
-
-            let(:mongoized) do
-              Time.mongoize(string)
-            end
-
-            let(:expected_time) { Time.parse('2010-11-18 15:00:00 +0000').in_time_zone }
-
-            it 'converts to UTC' do
-              expect(mongoized.zone).to eq('UTC')
-            end
-          end
-
-          context 'when the string is an invalid time' do
-            let(:string) do
-              'bogus'
-            end
-
-            it 'returns nil' do
-              # TODO: UncastableType error
-              expect { Time.mongoize(string) }.to raise_error(ArgumentError)
-              # expect(Time.mongoize(string)).to be_nil
-            end
+          it 'returns nil' do
+            # TODO: UncastableType error
+            expect { Time.mongoize(string) }.to raise_error(ArgumentError)
+            # expect(Time.mongoize(string)).to be_nil
           end
         end
       end

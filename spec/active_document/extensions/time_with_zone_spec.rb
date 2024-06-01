@@ -11,7 +11,6 @@ describe ActiveDocument::Extensions::TimeWithZone do
     end
 
     context 'when the time zone is not defined' do
-      config_override :use_utc, false
 
       context 'when the local time is not observing daylight saving' do
 
@@ -97,35 +96,29 @@ describe ActiveDocument::Extensions::TimeWithZone do
     end
 
     context 'when the time zone is defined as UTC' do
-      config_override :use_utc, true
-
       it 'returns utc' do
         expect(ActiveSupport::TimeWithZone.demongoize(time.dup.utc).utc_offset).to eq(0)
       end
+    end
 
-      context 'when setting ActiveSupport time zone' do
-        time_zone_override 'Stockholm'
+    context 'when setting ActiveSupport time zone' do
+      time_zone_override 'Stockholm'
 
-        let(:time) do
-          Time.utc(2010, 11, 19, 0, 30)
-        end
+      let(:object) do
+        Time.utc(2010, 11, 19, 0, 30).in_time_zone('UTC')
+      end
 
-        it 'returns utc' do
-          expect(ActiveSupport::TimeWithZone.demongoize(time)).to eq(
-            ActiveSupport::TimeZone['UTC'].local(2010, 11, 19, 0, 30)
-          )
-        end
+      let(:expected) do
+        Time.utc(2010, 11, 19, 0, 30)
+      end
 
-        it 'returns an ActiveSupport::TimeWithZone' do
-          expect(ActiveSupport::TimeWithZone.demongoize(time).class).to eq(
-            ActiveSupport::TimeWithZone
-          )
-        end
+      it 'returns utc' do
+        expect(ActiveSupport::TimeWithZone.demongoize(object)).to eq(expected)
+        expect(ActiveSupport::TimeWithZone.demongoize(object)).to be_a ActiveSupport::TimeWithZone
       end
     end
 
     context 'when time is nil' do
-
       it 'returns nil' do
         expect(ActiveSupport::TimeWithZone.demongoize(nil)).to be_nil
       end
