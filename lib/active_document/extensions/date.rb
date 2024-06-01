@@ -61,7 +61,7 @@ module ActiveDocument
                      raise(e) # TODO: RawValue error
                    end
                  else
-                   TypeConverters::Time.to_database_cast(object)
+                   TypeConverters::Time.to_ruby_cast(object)
                  end
 
           raise ArgumentError.new if time.is_a?(ActiveDocument::RawValue)
