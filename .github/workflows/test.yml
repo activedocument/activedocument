@@ -59,15 +59,15 @@ jobs:
             topology: sharded_cluster
           - ruby: ruby-3.0
             gemfile: gemfiles/rails_7.0.gemfile
-            mongodb: '4.4'
+            mongodb: '7.0'
             topology: server
           - ruby: ruby-3.0
             gemfile: gemfiles/rails_6.1.gemfile
-            mongodb: '4.4'
+            mongodb: '6.0'
             topology: replica_set
           - ruby: ruby-2.7
             gemfile: gemfiles/rails_6.1.gemfile
-            mongodb: '4.4'
+            mongodb: '5.0'
             topology: server
 
           # Driver versions
@@ -82,7 +82,7 @@ jobs:
             topology: sharded_cluster
           - ruby: ruby-2.7
             gemfile: gemfiles/driver_min.gemfile
-            mongodb: '4.4'
+            mongodb: '7.0'
             topology: replica_set
 
           # BSON versions
@@ -93,7 +93,7 @@ jobs:
           #   topology: replica_set
           - ruby: ruby-2.7
             gemfile: gemfiles/bson_min.gemfile
-            mongodb: '4.4'
+            mongodb: '7.0'
             topology: replica_set
 
           # JRuby
@@ -115,7 +115,7 @@ jobs:
             fle: helper
           - ruby: ruby-3.1
             gemfile: gemfiles/rails_7.0.gemfile
-            mongodb: '6.0'
+            mongodb: '7.0'
             topology: replica_set
             fle: helper
           - ruby: ruby-2.7

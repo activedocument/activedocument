@@ -78,27 +78,6 @@ describe ActiveDocument::Contextual::MapReduce do
     end
   end
 
-  describe '#counts' do
-    max_server_version '4.2'
-
-    let(:criteria) do
-      Band.all
-    end
-
-    let(:counts) do
-      map_reduce.out(inline: 1).counts
-    end
-
-    it 'returns the map/reduce counts' do
-      expect(counts).to eq({
-        'input' => 2,
-        'emit' => 2,
-        'reduce' => 0,
-        'output' => 2
-      })
-    end
-  end
-
   describe '#each' do
 
     context 'when the map/reduce is inline' do
@@ -150,16 +129,6 @@ describe ActiveDocument::Contextual::MapReduce do
           end.to raise_error(ActiveDocument::Errors::NoMapReduceOutput)
         end
       end
-
-      context 'when the statstics are requested' do
-        max_server_version '4.2'
-
-        it 'raises an error' do
-          expect do
-            map_reduce.counts
-          end.to raise_error(ActiveDocument::Errors::NoMapReduceOutput)
-        end
-      end
     end
 
     context 'when no results are returned' do
@@ -205,18 +174,6 @@ describe ActiveDocument::Contextual::MapReduce do
     end
   end
 
-  describe '#emitted' do
-    max_server_version '4.2'
-
-    let(:emitted) do
-      map_reduce.out(inline: 1).emitted
-    end
-
-    it 'returns the emitted counts' do
-      expect(emitted).to eq(2)
-    end
-  end
-
   describe '#empty?' do
 
     context 'when the map/reduce has results' do
@@ -254,18 +211,6 @@ describe ActiveDocument::Contextual::MapReduce do
 
     it 'sets the finalize command' do
       expect(finalized.command[:finalize]).to eq('testing')
-    end
-  end
-
-  describe '#input' do
-    max_server_version '4.2'
-
-    let(:input) do
-      map_reduce.out(inline: 1).input
-    end
-
-    it 'returns the input counts' do
-      expect(input).to eq(2)
     end
   end
 
@@ -308,26 +253,12 @@ describe ActiveDocument::Contextual::MapReduce do
     end
   end
 
-  describe '#output' do
-    max_server_version '4.2'
-
-    let(:output) do
-      map_reduce.out(inline: 1).output
-    end
-
-    it 'returns the output counts' do
-      expect(output).to eq(2)
-    end
-  end
-
   describe '#raw' do
-
     let(:client) do
       collection.database.client
     end
 
     context 'when not specifying an out' do
-
       it 'raises a NoMapReduceOutput error' do
         expect do
           map_reduce.raw
@@ -336,40 +267,23 @@ describe ActiveDocument::Contextual::MapReduce do
     end
 
     context 'when providing replace' do
-
       let(:replace_map_reduce) do
         map_reduce.out(replace: 'output-collection')
       end
 
       context 'when a read preference is defined' do
         require_topology :replica_set
-        # On 4.4 it seems the server inserts on the primary, not on the server
-        # that executed the map/reduce.
-        max_server_version '4.2'
 
         let(:criteria) do
           Band.all.read(mode: :secondary)
         end
 
-        it 'uses the read preference' do
-
+        it 'fails due to read preference' do
           expect do
             replace_map_reduce.raw
           end.to raise_exception(Mongo::Error::OperationFailure)
         end
       end
-    end
-  end
-
-  describe '#reduced' do
-    max_server_version '4.2'
-
-    let(:reduced) do
-      map_reduce.out(inline: 1).reduced
-    end
-
-    it 'returns the reduce counts' do
-      expect(reduced).to eq(0)
     end
   end
 
@@ -393,20 +307,7 @@ describe ActiveDocument::Contextual::MapReduce do
     end
   end
 
-  describe '#time' do
-    max_server_version '4.2'
-
-    let(:time) do
-      map_reduce.out(inline: 1).time
-    end
-
-    it 'returns the execution time' do
-      expect(time).to_not be_nil
-    end
-  end
-
   describe '#execute' do
-
     let(:execution_results) do
       map_reduce.out(inline: 1).execute
     end

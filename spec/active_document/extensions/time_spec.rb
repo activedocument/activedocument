@@ -153,7 +153,7 @@ describe ActiveDocument::Extensions::Time do
     context 'when the value is a string' do
 
       context 'when setting ActiveSupport time zone' do
-        include_context 'setting ActiveSupport time zone'
+        time_zone_override 'Asia/Tokyo'
 
         context 'when the string is a valid time with time zone' do
 
@@ -256,7 +256,7 @@ describe ActiveDocument::Extensions::Time do
     context 'when the value is a string' do
 
       context 'when setting ActiveSupport time zone' do
-        include_context 'setting ActiveSupport time zone'
+        time_zone_override 'Asia/Tokyo'
 
         context 'when the string is a valid time with time zone' do
 

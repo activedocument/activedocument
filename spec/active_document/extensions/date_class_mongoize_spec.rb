@@ -26,7 +26,7 @@ describe ActiveDocument::Extensions::Date do
 
     context 'when provided a string' do
       # This also configures a non-UTC time zone for AS which we want
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       context 'when the string is a valid date' do
         let(:mongoized) do
@@ -115,7 +115,7 @@ describe ActiveDocument::Extensions::Date do
     end
 
     context 'when Float' do
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       let(:mongoized) do
         Date.mongoize(object)
@@ -151,7 +151,7 @@ describe ActiveDocument::Extensions::Date do
     end
 
     context 'when provided an integer' do
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       let(:mongoized) do
         Date.mongoize(object)
@@ -187,7 +187,7 @@ describe ActiveDocument::Extensions::Date do
     end
 
     context 'when provided a Time in UTC' do
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       let(:mongoized) do
         Date.mongoize(object)
@@ -240,6 +240,44 @@ describe ActiveDocument::Extensions::Date do
         end
 
         it 'returns the date specified in the time without regard for local day' do
+          # TODO: need to analyze this more
+          expect(mongoized).to eq(expected)
+        end
+      end
+    end
+
+    context 'when provided a Time in with an offset' do
+      time_zone_override 'Asia/Tokyo'
+
+      let(:mongoized) do
+        Date.mongoize(object)
+      end
+
+      context 'in the same local day' do
+        let(:expected) do
+          Time.utc(2010, 1, 1, 0, 0, 0)
+        end
+
+        let(:object) do
+          Time.new(2010, 1, 1, 2, 3, 4, 9 * 3600)
+        end
+
+        it 'returns the date specified in the time without regard for local day' do
+          expect(mongoized).to eq(expected)
+        end
+      end
+
+      context 'in another local day' do
+        let(:expected) do
+          Time.utc(2010, 1, 2, 0, 0, 0)
+        end
+
+        let(:object) do
+          Time.new(2010, 1, 2, 22, 3, 4, 9 * 3600)
+        end
+
+        it 'returns the date specified in the time without regard for local day' do
+          # TODO: need to analyze this more
           expect(mongoized).to eq(expected)
         end
       end
@@ -261,7 +299,7 @@ describe ActiveDocument::Extensions::Date do
     end
 
     context 'when provided an AS::TimeWithZone' do
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       let(:mongoized) do
         Date.mongoize(object)
@@ -298,7 +336,7 @@ describe ActiveDocument::Extensions::Date do
     end
 
     context 'when provided a DateTime' do
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       let(:mongoized) do
         Date.mongoize(object)
@@ -335,7 +373,7 @@ describe ActiveDocument::Extensions::Date do
     end
 
     context 'when provided an array' do
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       let(:expected) do
         Time.utc(2010, 1, 1, 0, 0, 0)

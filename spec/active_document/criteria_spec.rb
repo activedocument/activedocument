@@ -3345,18 +3345,6 @@ describe ActiveDocument::Criteria do
         expect(criteria).to eq([match])
       end
     end
-
-    context 'when the code has scope' do
-      max_server_version '4.2'
-
-      let(:criteria) do
-        Band.for_js('this.name == param', param: 'Depeche Mode')
-      end
-
-      it 'returns the matching documents' do
-        expect(criteria).to eq([match])
-      end
-    end
   end
 
   describe '#method_missing' do

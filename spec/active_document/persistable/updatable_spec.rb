@@ -462,36 +462,7 @@ describe ActiveDocument::Persistable::Updatable do
 
     describe "##{method}" do
 
-      context 'when saving with a hash field with invalid keys' do
-        max_server_version '4.9'
-
-        let(:person) do
-          Person.create!
-        end
-
-        it 'raises an error' do
-          expect do
-            person.update!(map: { '$bad.key' => 'value' })
-          end.to raise_error(Mongo::Error::OperationFailure)
-        end
-      end
-
-      context 'when the document has been destroyed' do
-        max_server_version '4.9'
-
-        let(:person) do
-          Person.create!
-        end
-
-        it 'raises an error' do
-          expect do
-            person.send(method, map: { '$bad.key' => 'value' })
-          end.to raise_error(Mongo::Error::OperationFailure)
-        end
-      end
-
       context 'when validation passes' do
-
         let(:person) do
           Person.create!
         end
@@ -514,7 +485,6 @@ describe ActiveDocument::Persistable::Updatable do
       end
 
       context 'when the document has been destroyed' do
-
         let!(:person) do
           Person.create!
         end
@@ -531,10 +501,10 @@ describe ActiveDocument::Persistable::Updatable do
       end
 
       context 'when updating through a one-to-one relation' do
-
         let(:person) do
           Person.create!
         end
+
         let(:from_db) do
           Person.find(person.id)
         end
@@ -554,7 +524,6 @@ describe ActiveDocument::Persistable::Updatable do
       end
 
       context 'on a new record' do
-
         let(:person) do
           Person.new
         end
@@ -571,7 +540,6 @@ describe ActiveDocument::Persistable::Updatable do
       context 'when passing in a relation' do
 
         context 'when providing an embedded child' do
-
           let!(:person) do
             Person.create!
           end
@@ -598,7 +566,6 @@ describe ActiveDocument::Persistable::Updatable do
         end
 
         context 'when providing a parent to a referenced in' do
-
           let!(:person) do
             Person.create!
           end
@@ -608,7 +575,6 @@ describe ActiveDocument::Persistable::Updatable do
           end
 
           context 'when the relation has not yet been touched' do
-
             before do
               post.send(method, person: person)
             end
@@ -627,7 +593,6 @@ describe ActiveDocument::Persistable::Updatable do
           end
 
           context 'when the relation has been touched' do
-
             before do
               person.posts
               post.send(method, person: person)
@@ -649,7 +614,6 @@ describe ActiveDocument::Persistable::Updatable do
       end
 
       context 'when in a deeply nested hierarchy' do
-
         let!(:person) do
           Person.new(title: 'The Boss')
         end
@@ -677,7 +641,6 @@ describe ActiveDocument::Persistable::Updatable do
         end
 
         context 'when updating the first level document' do
-
           let(:phone) do
             person.phone_numbers.first
           end
@@ -717,7 +680,6 @@ describe ActiveDocument::Persistable::Updatable do
   describe '#update!' do
 
     context 'when a callback aborts the callback chain' do
-
       let(:oscar) do
         Oscar.new
       end
@@ -731,7 +693,6 @@ describe ActiveDocument::Persistable::Updatable do
   end
 
   describe '#update_attributes!' do
-
     let(:person) do
       Person.create!
     end
