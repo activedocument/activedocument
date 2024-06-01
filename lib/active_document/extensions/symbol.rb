@@ -18,7 +18,11 @@ module ActiveDocument
         #
         # @return [ Symbol | nil ] The object mongoized or nil.
         def mongoize(object)
-          object.try(:to_sym)
+          return if object.nil?
+
+          return object.to_sym if object.respond_to?(:to_sym)
+
+          ActiveDocument::RawValue.new(object, 'Symbol')
         end
         alias_method :demongoize, :mongoize
       end

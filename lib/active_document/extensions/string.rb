@@ -136,7 +136,11 @@ module ActiveDocument
         #
         # @return [ String ] The object mongoized.
         def mongoize(object)
-          object.try(:to_s)
+          return if object.nil?
+
+          return object.to_s if object.respond_to?(:to_s)
+
+          ActiveDocument::RawValue.new(object, 'String')
         end
         alias_method :demongoize, :mongoize
       end

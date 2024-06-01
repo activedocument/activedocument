@@ -56,7 +56,7 @@ module ActiveDocument
       #
       # @return [ Hash ] The locale with string translation.
       def mongoize(object)
-        { ::I18n.locale.to_s => type.mongoize(object) }
+        { ::I18n.locale.to_s => super(object) }
       end
 
       private

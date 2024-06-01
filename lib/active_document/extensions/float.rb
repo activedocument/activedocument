@@ -42,8 +42,10 @@ module ActiveDocument
 
           if object.is_a?(String)
             object.to_f if object.numeric?
+          elsif object.respond_to?(:to_f)
+            object.to_f
           else
-            object.try(:to_f)
+            ActiveDocument::ActiveDocument(object, 'Float')
           end
         end
         alias_method :demongoize, :mongoize

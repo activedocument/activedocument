@@ -13,7 +13,32 @@ module ActiveDocument
       # Set readers for the instance variables.
       attr_accessor :default_val, :label, :name, :options
 
-      def_delegators :type, :demongoize, :evolve, :mongoize
+      # If type.mongoize returns ActiveDocument::RawValue,
+      # handle according to field or global strict setting
+      def mongoize(object)
+        value = type.mongoize(object)
+        if value.is_a?(ActiveDocument::RawValue)
+          case strict
+          when :error then value.raise_error!
+          when :warn then value.warn and return nil
+          when :suppress then return nil
+          # when :defer, assign the ActiveDocument::RawValue and fail when trying to persist.
+          end
+        end
+        value
+      end
+
+      # If type.demongoize returns ActiveDocument::RawValue,
+      # return the inner value according to Mongoid.wrap_uncastable_values_from_database
+      def demongoize(object)
+        value = type.demongoize(object)
+        if value.is_a?(ActiveDocument::RawValue) && !Mongoid.wrap_uncastable_values_from_database
+          return value.raw_value
+        end
+        value
+      end
+
+      def_delegators :type, :evolve
 
       # Adds the atomic changes for this type of resizable field.
       #
@@ -109,6 +134,29 @@ module ActiveDocument
       # @return [ true | false ] If the field enforces present.
       def localize_present?
         false
+      end
+
+      # Whether or not the field raises an error if a non-castable
+      # type is assignment.
+      #
+      # @example Get the type.
+      #   field.type
+      #
+      # @return [ :error | :warn | :suppress ] The value. True means raise
+      #   an error. False means handle as nil.
+      def strict
+        return @strict if defined?(@strict)
+        if options.key?(:strict)
+          @strict = case options[:strict]
+                    when true, :error then :error
+                    when false, :suppress then :suppress
+                    when :warn then :warn
+                    end
+        end
+        # TODO: add default. Array/Hash should be strict.
+        # Also consider global
+        # Don't memoize default?
+        # Support warn option
       end
 
       # Get the metadata for the field if its a foreign key.

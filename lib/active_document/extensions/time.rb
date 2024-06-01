@@ -73,18 +73,20 @@ module ActiveDocument
 
           begin
             time = object.try(:__mongoize_time__)
-          rescue ArgumentError
-            return
+          rescue ArgumentError => e
+            return ActiveDocument::RawValue.new(object, 'Time', e)
           end
 
-          return unless time.acts_like?(:time)
-
-          if object.respond_to?(:sec_fraction)
-            ::Time.at(time.to_i, object.sec_fraction * (10**6)).utc
-          elsif time.respond_to?(:subsec)
-            ::Time.at(time.to_i, time.subsec * (10**6)).utc
+          if time.acts_like?(:time)
+            if time.respond_to?(:sec_fraction)
+              ::Time.at(time.to_i, time.sec_fraction * (10**6)).utc
+            elsif time.respond_to?(:subsec)
+              ::Time.at(time.to_i, time.subsec * (10**6)).utc
+            else
+              ::Time.at(time.to_i, time.usec).utc
+            end
           else
-            ::Time.at(time.to_i, time.usec).utc
+            ActiveDocument::RawValue.new(time, 'Time')
           end
         end
       end

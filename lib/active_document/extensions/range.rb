@@ -70,6 +70,7 @@ module ActiveDocument
           case object
           when Hash then __mongoize_hash__(object)
           when Range then __mongoize_range__(object)
+          else ActiveDocument::RawValue(object, 'Range')
           end
         end
 

@@ -79,7 +79,7 @@ removed in a future major version of Mongoid.
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     # Deprecated; will log a warning message.
     field :first_name, type: String
@@ -132,10 +132,10 @@ does not correspond to any built-in or custom-defined field type.
 .. code-block:: ruby
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: :bogus
-    #=> raises Mongoid::Errors::UnknownFieldType
+    #=> raises ActiveDocument::Errors::UnknownFieldType
   end
 
 
@@ -159,7 +159,7 @@ recommended to migrate to the Mongoid 9.0 syntax above.
 
 .. code-block:: ruby
 
-  Mongoid::Fields.option :max_length do |model, field, value|
+  ActiveDocument::Fields.option :max_length do |model, field, value|
     model.validates_length_of field.name, maximum: value
   end
 

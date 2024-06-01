@@ -140,18 +140,24 @@ module ActiveDocument
         #
         # @return [ Object ] The serialized object.
         def evolve(serializer, value)
-          case value
-          when ActiveDocument::RawValue
-            value.raw_value
-          when Hash
-            evolve_hash(serializer, value)
-          when Array
-            evolve_array(serializer, value)
-          when Range
-            value.__evolve_range__(serializer: serializer)
-          else
-            (serializer || value.class).evolve(value)
+          converted = case value
+                      when ActiveDocument::RawValue
+                        value.raw_value
+                      when Hash
+                        evolve_hash(serializer, value)
+                      when Array
+                        evolve_array(serializer, value)
+                      when Range
+                        value.__evolve_range__(serializer: serializer)
+                      else
+                        (serializer || value.class).evolve(value)
+                      end
+
+          while converted.is_a?(ActiveDocument::RawValue) do
+            converted = converted.raw_value
           end
+
+          converted
         end
 
         # Evolve a single key selection with array values.

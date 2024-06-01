@@ -75,12 +75,15 @@ module ActiveDocument
             else
               object.try(:__mongoize_time__)
             end
-          rescue ArgumentError
-            nil
+          rescue ArgumentError => e
+            ActiveDocument::RawValue(object, 'Date', e)
           end
-          return unless time.acts_like?(:time)
 
-          ::Time.utc(time.year, time.month, time.day)
+          if time.acts_like?(:time)
+            ::Time.utc(time.year, time.month, time.day)
+          else
+            ActiveDocument::RawValue(object, 'Date')
+          end
         end
       end
     end

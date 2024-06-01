@@ -40,8 +40,10 @@ module ActiveDocument
 
           if object.is_a?(String)
             object.to_i if object.numeric?
+          elsif object.respond_to?(:to_i)
+            object.to_i
           else
-            object.try(:to_i)
+            ActiveDocument::RawValue(object, 'Integer')
           end
         end
         alias_method :demongoize, :mongoize

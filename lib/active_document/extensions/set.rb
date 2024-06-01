@@ -55,8 +55,12 @@ module ActiveDocument
           return if object.nil?
 
           case object
-          when ::Set then ::Array.mongoize(object.to_a).uniq
-          when ::Array then ::Array.mongoize(object).uniq
+          when ::Set
+            ::Array.mongoize(object.to_a).uniq
+          when ::Array
+            ::Array.mongoize(object).uniq
+          else
+            ActiveDocument::RawValue(object, 'Set')
           end
         end
       end

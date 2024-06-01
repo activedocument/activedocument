@@ -95,6 +95,8 @@ module ActiveDocument
           case object
           when ::Array, ::Set
             object.map(&:mongoize)
+          else
+            ActiveDocument::RawValue(object, 'Array')
           end
         end
 

@@ -92,7 +92,7 @@ module ActiveDocument
               when ::Array, ::Set
                 object.map { |obj| obj.class.evolve(obj) }
               else
-                object
+                ActiveDocument::RawValue(object, 'Array')
               end
             end
           end
