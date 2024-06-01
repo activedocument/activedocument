@@ -128,12 +128,7 @@ describe 'mongoize/demongoize/evolve methods' do
 
         it 'raises error' do
           # TODO: UncastableType error
-          expect { catalog.attributes[field_name] }.to raise_error ArgumentError
-        end
-
-        it 'raises error' do
-          # TODO: UncastableType error
-          expect { Catalog.find(catalog._id).attributes[field_name] }.to raise_error ArgumentError
+          expect { catalog }.to raise_error ArgumentError
         end
       end
     end
@@ -150,7 +145,6 @@ describe 'mongoize/demongoize/evolve methods' do
       end
 
       context 'when retrieving an invalid value from the db' do
-
         before do
           Catalog.collection.insert_one(field_name => invalid_value)
         end
