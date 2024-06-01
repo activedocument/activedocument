@@ -278,11 +278,7 @@ describe ActiveDocument::Contextual::MapReduce do
           Band.all.read(mode: :secondary)
         end
 
-        it 'uses the read preference' do
-          # On 4.4 it seems the server inserts on the primary,
-          # not on the server that executed the map/reduce.
-          pending 'To be investigated'
-
+        it 'fails due to read preference' do
           expect do
             replace_map_reduce.raw
           end.to raise_exception(Mongo::Error::OperationFailure)
