@@ -47,6 +47,8 @@ module ActiveDocument
             object.to_big_decimal
           elsif object.numeric?
             object.to_d
+          else
+            ActiveDocument::RawValue(object, 'BigDecimal')
           end
         end
 

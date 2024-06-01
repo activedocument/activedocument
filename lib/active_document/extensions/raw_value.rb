@@ -61,6 +61,11 @@ module ActiveDocument
       Mongoid.logger.warn("Cannot cast #{raw_value.class.name} to #{cast_class_name}; returning nil")
     end
 
+    # Logs a warning that a value cannot be cast.
+    def ==(other)
+      other.is_a?(RawValue) && raw_value == other.raw_value
+    end
+
     # Delegate all missing methods to the raw value.
     #
     # @param [ String, Symbol ] method_name The name of the method.

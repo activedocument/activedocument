@@ -75,7 +75,7 @@ module ActiveDocument
 
     # Indicates whether uncastable values from the database should
     # be returned wrapped by ActiveDocument::RawValue class.
-    option :wrap_uncastable_values_from_database, default: false
+    option :wrap_uncastable_values_from_database, default: true
 
     # Return stored times as UTC.
     option :use_utc, default: false

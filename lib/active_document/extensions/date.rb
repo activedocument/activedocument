@@ -44,16 +44,18 @@ module ActiveDocument
           return if object.nil?
 
           if object.is_a?(String)
-            object = begin
-              object.__mongoize_time__
-            rescue ArgumentError
-              nil
+            begin
+              object = object.__mongoize_time__
+            rescue ArgumentError => e
+              return ActiveDocument::RawValue(object, 'Date', e)
             end
           end
 
-          return unless object.acts_like?(:time) || object.acts_like?(:date)
-
-          ::Date.new(object.year, object.month, object.day)
+          if object.acts_like?(:time) || object.acts_like?(:date)
+            ::Date.new(object.year, object.month, object.day)
+          else
+            ActiveDocument::RawValue(object, 'Date')
+          end
         end
 
         # Turn the object from the ruby type we deal with to a Mongo friendly

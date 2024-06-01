@@ -11,7 +11,7 @@ describe 'mongoize/demongoize/evolve methods' do
     context 'when passing an invalid value' do
       context 'to mongoize' do
         it 'returns nil' do
-          expect(klass.mongoize(invalid_value)).to be_nil
+          expect(klass.mongoize(invalid_value)).to eq ActiveDocument::RawValue(invalid_value)
         end
       end
 
@@ -34,12 +34,11 @@ describe 'mongoize/demongoize/evolve methods' do
     context 'when passing an invalid value' do
       context 'to demongoize' do
         it 'returns nil' do
-          expect(klass.demongoize(invalid_value)).to be_nil
+          expect(klass.demongoize(invalid_value)).to eq ActiveDocument::RawValue(invalid_value)
         end
       end
 
       context 'when retrieving an invalid value from the db' do
-
         before do
           Catalog.collection.insert_one(field_name => invalid_value)
         end
@@ -47,7 +46,7 @@ describe 'mongoize/demongoize/evolve methods' do
         let(:catalog) { Catalog.first }
 
         it 'returns nil' do
-          expect(catalog.send(field_name)).to be_nil
+          expect(catalog.send(field_name)).to eq ActiveDocument::RawValue(invalid_value)
         end
       end
     end
@@ -95,9 +94,8 @@ describe 'mongoize/demongoize/evolve methods' do
   shared_examples 'pushes through unevolvable values' do
 
     context 'when passing an uncastable value to evolve' do
-
       it 'pushes the value through' do
-        expect(klass.evolve(invalid_value)).to eq(mongoized_value)
+        expect(klass.evolve(invalid_value)).to eq ActiveDocument::RawValue(invalid_value)
       end
     end
   end
@@ -162,7 +160,7 @@ describe 'mongoize/demongoize/evolve methods' do
   end
 
   describe Float do
-    let(:invalid_value) { [] }
+    let(:invalid_value) { [:foo] }
     let(:klass) { described_class }
     let(:field_name) { :float_field }
 
@@ -181,7 +179,7 @@ describe 'mongoize/demongoize/evolve methods' do
   end
 
   describe Integer do
-    let(:invalid_value) { [] }
+    let(:invalid_value) { [:foo] }
     let(:klass) { described_class }
     let(:field_name) { :integer_field }
 
@@ -246,7 +244,7 @@ describe 'mongoize/demongoize/evolve methods' do
   end
 
   describe ActiveDocument::StringifiedSymbol do
-    let(:invalid_value) { [] }
+    let(:invalid_value) { [:foo] }
     let(:mongoized_value) { '[]' }
     let(:demongoized_value) { :[] }
     let(:klass) { described_class }

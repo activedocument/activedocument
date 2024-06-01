@@ -45,7 +45,7 @@ module ActiveDocument
           elsif object.respond_to?(:to_f)
             object.to_f
           else
-            ActiveDocument::ActiveDocument(object, 'Float')
+            ActiveDocument::RawValue(object, 'Float')
           end
         end
         alias_method :demongoize, :mongoize

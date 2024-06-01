@@ -32,7 +32,7 @@ module ActiveDocument
       # return the inner value according to Mongoid.wrap_uncastable_values_from_database
       def demongoize(object)
         value = type.demongoize(object)
-        if value.is_a?(ActiveDocument::RawValue) && !Mongoid.wrap_uncastable_values_from_database
+        if value.is_a?(ActiveDocument::RawValue) && !ActiveDocument.wrap_uncastable_values_from_database
           return value.raw_value
         end
         value
