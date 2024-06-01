@@ -16,17 +16,6 @@ module ActiveDocument
         self
       end
 
-      # Mongoize the array into an array of object ids.
-      #
-      # @example Evolve the array to object ids.
-      #   [ id ].__mongoize_object_id__
-      #
-      # @return [ Array<BSON::ObjectId> ] The converted array.
-      def __mongoize_object_id__
-        map!(&:__mongoize_object_id__).compact!
-        self
-      end
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #

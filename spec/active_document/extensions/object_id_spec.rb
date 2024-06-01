@@ -12,17 +12,6 @@ describe ActiveDocument::Extensions::ObjectId do
     '21-jump-street'
   end
 
-  describe '#__evolve_object_id__' do
-
-    it 'returns self' do
-      expect(object_id.__evolve_object_id__).to eq(object_id)
-    end
-
-    it 'returns the same instance' do
-      expect(object_id.__evolve_object_id__).to equal(object_id)
-    end
-  end
-
   describe '.evolve' do
 
     context 'when the class is using object ids' do
@@ -932,17 +921,6 @@ describe ActiveDocument::Extensions::ObjectId do
           end
         end
       end
-    end
-  end
-
-  describe '#__mongoize_object_id__' do
-
-    it 'returns self' do
-      expect(object_id.__mongoize_object_id__).to eq(object_id)
-    end
-
-    it 'returns the same instance' do
-      expect(object_id.__mongoize_object_id__).to equal(object_id)
     end
   end
 end

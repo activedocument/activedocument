@@ -6,26 +6,6 @@ module ActiveDocument
     # Adds type-casting behavior to String class.
     module String
 
-      # Evolve the string into an object id if possible.
-      #
-      # @example Evolve the string.
-      #   "test".__evolve_object_id__
-      #
-      # @return [ String | BSON::ObjectId ] The evolved string.
-      def __evolve_object_id__
-        convert_to_object_id
-      end
-
-      # Mongoize the string into an object id if possible.
-      #
-      # @example Evolve the string.
-      #   "test".__mongoize_object_id__
-      #
-      # @return [ String | BSON::ObjectId | nil ] The mongoized string.
-      def __mongoize_object_id__
-        convert_to_object_id if present?
-      end
-
       # Convert the string to a collection friendly name.
       #
       # @example Collectionize the string.
@@ -87,20 +67,6 @@ module ActiveDocument
       # @return [ true | false ] If the string ends with "_before_type_cast"
       def before_type_cast?
         ends_with?('_before_type_cast')
-      end
-
-      private
-
-      # If the string is a legal object id, convert it.
-      #
-      # @api private
-      #
-      # @example Convert to the object id.
-      #   string.convert_to_object_id
-      #
-      # @return [ String | BSON::ObjectId ] The string or the id.
-      def convert_to_object_id
-        BSON::ObjectId.legal?(self) ? BSON::ObjectId.from_string(self) : self
       end
 
       module ClassMethods
