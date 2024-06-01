@@ -279,7 +279,6 @@ describe Time do
     end
 
     context 'when provided a string' do
-
       let(:time) do
         described_class.parse('1st Jan 2010 12:00:00+01:00')
       end
@@ -298,7 +297,6 @@ describe Time do
     end
 
     context 'when provided a float' do
-
       let(:float) do
         1331890719.8170738
       end
@@ -321,7 +319,6 @@ describe Time do
     end
 
     context 'when provided an integer' do
-
       let(:integer) do
         1331890719
       end
@@ -344,18 +341,16 @@ describe Time do
     end
 
     context 'when provided an invalid string' do
-
       let(:evolved) do
         described_class.evolve('bogus')
       end
 
       it 'returns that string' do
-        expect(evolved).to eq('bogus')
+        expect(evolved).to eq ActiveDocument::RawValue('bogus')
       end
     end
 
     context 'when provided nil' do
-
       it 'returns nil' do
         expect(described_class.evolve(nil)).to be_nil
       end
