@@ -70,8 +70,8 @@ describe ActiveDocument::Extensions::ObjectId do
             BSON::ObjectId.evolve('')
           end
 
-          it 'evolves to an empty string' do
-            expect(evolved).to be_empty
+          it 'evolves to nil' do
+            expect(evolved).to be_nil
           end
         end
       end
@@ -84,8 +84,8 @@ describe ActiveDocument::Extensions::ObjectId do
             BSON::ObjectId.evolve([nil, nil])
           end
 
-          it 'returns the array with nils' do
-            expect(evolved).to eq([nil, nil])
+          it 'returns compacted array' do
+            expect(evolved).to eq([])
           end
         end
 
@@ -95,8 +95,8 @@ describe ActiveDocument::Extensions::ObjectId do
             BSON::ObjectId.evolve(['', ''])
           end
 
-          it 'returns the array with empty strings' do
-            expect(evolved).to eq(['', ''])
+          it 'returns the compacted array' do
+            expect(evolved).to eq([])
           end
         end
 

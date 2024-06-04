@@ -17,7 +17,7 @@ module ActiveDocument
         #
         # @return [ BSON::ObjectId ] The object id.
         def evolve(object)
-          ActiveDocument::TypeConverters::BsonObjectId.to_query_cast(object)
+          ActiveDocument::TypeConverters::BsonObjectIdMulti.to_query_cast(object)
         end
 
         # Convert the object into a mongo-friendly value to store.
@@ -29,7 +29,7 @@ module ActiveDocument
         #
         # @return [ BSON::ObjectId ] The object id.
         def mongoize(object)
-          ActiveDocument::TypeConverters::BsonObjectId.to_database_cast(object)
+          ActiveDocument::TypeConverters::BsonObjectIdMulti.to_database_cast(object)
         end
       end
     end

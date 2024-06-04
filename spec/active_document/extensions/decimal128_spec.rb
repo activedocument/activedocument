@@ -27,20 +27,5 @@ describe ActiveDocument::Extensions::Decimal128 do
         expect(evolved).to be(decimal128)
       end
     end
-
-    context 'when provided an array of decimal128s' do
-
-      let(:other_decimal128) do
-        BSON::Decimal128.new('3.14')
-      end
-
-      let(:evolved) do
-        BSON::ObjectId.evolve([decimal128, other_decimal128])
-      end
-
-      it 'returns the array of decimal128s' do
-        expect(evolved).to eq([decimal128, other_decimal128])
-      end
-    end
   end
 end
