@@ -224,7 +224,7 @@ describe ActiveDocument::Extensions::Date do
     end
 
     context 'when provided a Time in with an offset' do
-      include_context 'setting ActiveSupport time zone'
+      time_zone_override 'Asia/Tokyo'
 
       let(:mongoized) do
         Date.mongoize(object)
