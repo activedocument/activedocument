@@ -9,7 +9,7 @@ module ActiveDocument
 
       # Prepare a BSON::ObjectId to store in the database.
       #
-      # @example Prepare a Time object to store in database.
+      # @example Prepare a BSON::ObjectId to store in database.
       #   TypeConverters::BsonObjectId.to_database(object_id)
       #
       # @return [ BSON::ObjectId | nil ] The prepared BSON::ObjectId or nil.
@@ -17,8 +17,14 @@ module ActiveDocument
         value
       end
 
-      # Doc
-      # TODO: Add doc
+      # Cast an object to BSON::ObjectId to store in the database.
+      #
+      # @example Prepare a BSON::ObjectId to store in database.
+      #   TypeConverters::BsonObjectId.to_database(object_id)
+      #
+      # @return [ BSON::ObjectId | ActiveDocument::RawValue | nil ]
+      #   The prepared BSON::ObjectId, nil, or a raw value if the value
+      #   is uncastable.
       def to_database_cast(value)
         return if value.blank?
 
@@ -35,6 +41,14 @@ module ActiveDocument
       end
       alias_method :to_ruby_cast, :to_database_cast
 
+      # Cast an object to BSON::ObjectId to use in a query.
+      #
+      # @example Prepare a BSON::ObjectId to use in a query.
+      #   TypeConverters::BsonObjectId.to_database(object_id)
+      #
+      # @return [ BSON::ObjectId | ActiveDocument::RawValue | nil ]
+      #   The prepared BSON::ObjectId, nil, or a raw value if the value
+      #   is uncastable.
       def to_query_cast(value)
         # TODO: is this needed?
         return ActiveDocument::RawValue(value) if value == ''
