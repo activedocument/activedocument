@@ -103,7 +103,6 @@ describe ActiveDocument::TypeConverters::BsonObjectIdMulti do
       end
     end
 
-    # TODO: $oid
     context 'when Hash' do
 
       context 'when values have object id strings' do
@@ -115,12 +114,21 @@ describe ActiveDocument::TypeConverters::BsonObjectIdMulti do
         end
       end
 
+      context 'when values have object id strings wrapped in $oid' do
+        let(:object_id) { BSON::ObjectId.new }
+        let(:object) { { field: { '$oid' => object_id.to_s } } }
+
+        it 'converts each value in the hash' do
+          is_expected.to eq(field: object_id)
+        end
+      end
+
       context 'when values have object ids' do
         let(:object_id) { BSON::ObjectId.new }
         let(:object) { { field: object_id } }
 
         it 'converts each value in the hash' do
-          is_expected.to eq(field: object_id)
+          is_expected.to eq(object)
         end
       end
 
@@ -266,12 +274,21 @@ describe ActiveDocument::TypeConverters::BsonObjectIdMulti do
         end
       end
 
+      context 'when values have object id strings wrapped in $oid' do
+        let(:object_id) { BSON::ObjectId.new }
+        let(:object) { { field: { '$oid' => object_id.to_s } } }
+
+        it 'converts each value in the hash' do
+          is_expected.to eq(field: object_id)
+        end
+      end
+
       context 'when values have object ids' do
         let(:object_id) { BSON::ObjectId.new }
         let(:object) { { field: object_id } }
 
         it 'converts each value in the hash' do
-          is_expected.to eq(field: object_id)
+          is_expected.to eq(object)
         end
       end
 

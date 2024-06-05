@@ -54,12 +54,8 @@ describe ActiveDocument::TypeConverters::BsonObjectId do
         let(:other) { 'blah' }
         let(:object) { [object_id.to_s, other] }
 
-        it 'converts the convertible ones to object ids' do
-          is_expected.to eq([object_id, other])
-        end
-
-        it 'returns the same instance' do
-          is_expected.to equal(object)
+        it 'returns a RawValue' do
+          is_expected.to eq(ActiveDocument::RawValue(object))
         end
       end
     end
@@ -70,8 +66,17 @@ describe ActiveDocument::TypeConverters::BsonObjectId do
         let(:object_id) { BSON::ObjectId.new }
         let(:object) { { field: object_id.to_s } }
 
+        it 'returns a RawValue' do
+          is_expected.to eq(ActiveDocument::RawValue(object))
+        end
+      end
+
+      context 'when id string wrapped in $oid' do
+        let(:object_id) { BSON::ObjectId.new }
+        let(:object) { { '$oid' => object_id.to_s } }
+
         it 'converts each value in the hash' do
-          is_expected.to eq(field: object_id)
+          is_expected.to eq(object_id)
         end
       end
     end
@@ -79,12 +84,8 @@ describe ActiveDocument::TypeConverters::BsonObjectId do
     context 'when Object' do
       let(:object) { double('object') }
 
-      it 'returns the same value' do
-        is_expected.to eq(object)
-      end
-
-      it 'returns the same instance' do
-        is_expected.to equal(object)
+      it 'returns a RawValue' do
+        is_expected.to eq(ActiveDocument::RawValue(object))
       end
     end
   end
@@ -109,8 +110,8 @@ describe ActiveDocument::TypeConverters::BsonObjectId do
       context 'when the string is blank' do
         let(:object) { '' }
 
-        it 'returns the empty string' do
-          is_expected.to be_empty
+        it 'returns a RawValue' do
+          is_expected.to eq(ActiveDocument::RawValue(object))
         end
       end
 
@@ -139,25 +140,29 @@ describe ActiveDocument::TypeConverters::BsonObjectId do
         let(:other) { 'blah' }
         let(:object) { [object_id.to_s, other] }
 
-        it 'converts the convertible ones to object ids' do
-          is_expected.to eq([object_id, other])
-        end
-
-        it 'returns the same instance' do
-          is_expected.to equal(object)
+        it 'returns a RawValue' do
+          is_expected.to eq(ActiveDocument::RawValue(object))
         end
       end
     end
 
-    # TODO: $oid
     context 'when Hash' do
 
       context 'when values have object id strings' do
         let(:object_id) { BSON::ObjectId.new }
         let(:object) { { field: object_id.to_s } }
 
+        it 'returns a RawValue' do
+          is_expected.to eq(ActiveDocument::RawValue(object))
+        end
+      end
+
+      context 'when id string wrapped in $oid' do
+        let(:object_id) { BSON::ObjectId.new }
+        let(:object) { { '$oid' => object_id.to_s } }
+
         it 'converts each value in the hash' do
-          is_expected.to eq(field: object_id)
+          is_expected.to eq(object_id)
         end
       end
     end
@@ -165,12 +170,8 @@ describe ActiveDocument::TypeConverters::BsonObjectId do
     context 'when Object' do
       let(:object) { double('object') }
 
-      it 'returns the same value' do
-        is_expected.to eq(object)
-      end
-
-      it 'returns the same instance' do
-        is_expected.to equal(object)
+      it 'returns a RawValue' do
+        is_expected.to eq(ActiveDocument::RawValue(object))
       end
     end
   end

@@ -33,8 +33,14 @@ module ActiveDocument
           cast_object(value)
         end
       end
-      alias_method :to_query_cast, :to_database_cast
       alias_method :to_ruby_cast, :to_database_cast
+
+      def to_query_cast(value)
+        # TODO: is this needed?
+        return ActiveDocument::RawValue('') if value == ''
+
+        to_database_cast(value)
+      end
 
       private
 
