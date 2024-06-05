@@ -47,7 +47,7 @@ module ActiveDocument
       end
 
       def cast_hash(value)
-        if (id = self['$oid']) && BSON::ObjectId.legal?(id)
+        if (id = value['$oid']) && BSON::ObjectId.legal?(id)
           BSON::ObjectId.from_string(id)
         else
           cast_object(value)
