@@ -461,8 +461,8 @@ describe ActiveDocument::TypeConverters::BsonObjectIdMulti do
       end
     end
   end
-
-  describe '.to_ruby_cast' do
-    # TODO
-  end
+  #
+  # describe '.to_ruby_cast' do
+  #   # TODO
+  # end
 end
