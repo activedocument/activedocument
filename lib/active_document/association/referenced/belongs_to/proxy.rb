@@ -12,7 +12,6 @@ module ActiveDocument
         # i.e. the document on the opposite-side collection which must
         # be loaded.
         class Proxy < Association::One
-          include Evolvable
 
           # Instantiate a new belongs_to association proxy.
           #

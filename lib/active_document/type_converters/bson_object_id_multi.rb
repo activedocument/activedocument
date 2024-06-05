@@ -29,6 +29,11 @@ module ActiveDocument
           else
             value # TODO: RawValue?
           end
+        when ActiveDocument::Document,
+             ActiveDocument::Association::Referenced::BelongsTo::Proxy
+          value._id
+        when ActiveDocument::Association::One
+          value._target._id
         else
           value # TODO: RawValue?
         end

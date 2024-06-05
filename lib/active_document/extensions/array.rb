@@ -5,17 +5,6 @@ module ActiveDocument
     # Adds type-casting behavior to Array class.
     module Array
 
-      # Evolve the array into an array of object ids.
-      #
-      # @example Evolve the array to object ids.
-      #   [ id ].__evolve_object_id__
-      #
-      # @return [ Array<BSON::ObjectId> ] The converted array.
-      def __evolve_object_id__
-        map!(&:__evolve_object_id__)
-        self
-      end
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #

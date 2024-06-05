@@ -67,7 +67,7 @@ module ActiveDocument
           elsif object.is_a?(Document) && object.respond_to?(association.primary_key)
             primary_key_field.evolve(object.send(association.primary_key))
           else
-            object.__evolve_object_id__
+            ActiveDocument::TypeConverters::BsonObjectIdMulti.to_query_cast(object)
           end
         else
           related_id_field.evolve(object)

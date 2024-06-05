@@ -41,7 +41,6 @@ module ActiveDocument
     include Clients
     include CollectionConfigurable
     include Attributes
-    include Evolvable
     include Fields
     include Indexable
     include Inspectable
@@ -69,7 +68,6 @@ module ActiveDocument
       Attributes,
       Copyable,
       Changeable,
-      Evolvable,
       Fields,
       Indexable,
       Inspectable,
