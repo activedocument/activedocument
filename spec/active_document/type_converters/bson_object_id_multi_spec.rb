@@ -185,7 +185,7 @@ describe ActiveDocument::TypeConverters::BsonObjectIdMulti do
         let(:object) { '' }
 
         it 'returns the empty string' do
-          is_expected.to be_empty
+          is_expected.to eq(object)
         end
       end
 

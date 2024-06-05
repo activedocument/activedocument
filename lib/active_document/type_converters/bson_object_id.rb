@@ -37,7 +37,7 @@ module ActiveDocument
 
       def to_query_cast(value)
         # TODO: is this needed?
-        return ActiveDocument::RawValue('') if value == ''
+        return ActiveDocument::RawValue(value) if value == ''
 
         to_database_cast(value)
       end

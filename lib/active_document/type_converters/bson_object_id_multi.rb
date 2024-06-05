@@ -14,14 +14,14 @@ module ActiveDocument
 
         case value
         when Array
-          value = value.map { |v| to_database_cast(v) }
+          value = value.map! { |v| to_database_cast(v) }
           value.compact!
           value
         when Hash
           if (id = value['$oid']) && BSON::ObjectId.legal?(id)
             BSON::ObjectId.from_string(id)
           else
-            value.transform_values { |v| to_database_cast(v) }
+            value.transform_values! { |v| to_database_cast(v) }
           end
         when String
           if BSON::ObjectId.legal?(value)
@@ -38,8 +38,14 @@ module ActiveDocument
           value # TODO: RawValue?
         end
       end
-      alias_method :to_query_cast, :to_database_cast
       alias_method :to_ruby_cast, :to_database_cast
+
+      def to_query_cast(value)
+        # TODO: is this needed?
+        return value if value == ''
+
+        to_database_cast(value)
+      end
     end
   end
 end
