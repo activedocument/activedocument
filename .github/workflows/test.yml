@@ -154,3 +154,7 @@ jobs:
         BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
         FLE: "${{matrix.fle || ''}}"
         MONGODB_URI: "${{steps.start-mongodb.outputs.cluster-uri}}"
+
+    - uses: joshmfrankel/simplecov-check-action@main
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}

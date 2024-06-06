@@ -49,3 +49,16 @@ namespace :docs do
     # TODO: generate sphinx docs
   end
 end
+
+# Rakefile
+require 'simplecov'
+
+namespace :simplecov do
+  desc 'Generate coverage report'
+  task :report do # rubocop:disable Rails/RakeEnvironment
+    SimpleCov.start
+    Rake::Task['spec'].invoke
+    coverage_result = SimpleCov.result.format!
+    puts "Coverage Report: #{coverage_result.covered_percent.round(2)}%"
+  end
+end

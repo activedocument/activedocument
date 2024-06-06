@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
   s.add_dependency('concurrent-ruby', ['>= 1.0.5', '< 2.0'])
 
   s.add_development_dependency('bson', ['>= 4.14.0', '< 6.0.0'])
+  s.add_development_dependency('simplecov', '~> 0.22')
 
   s.files = Dir.glob('lib/**/*') + %w[LICENSE README.md Rakefile]
   s.require_path = 'lib'
