@@ -152,6 +152,38 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Eager do
       end
     end
 
+    context 'when the association has deafult scope' do
+      # Query count assertions require that all queries are sent using the
+      # same connection object.
+      require_no_multi_shard
+
+      let!(:p1) { Person.create! }
+      let!(:p2) { Person.create! }
+      let!(:p3) { Person.create! }
+      let!(:people) { [p1, p2, p3] }
+      let!(:people_ids) { people.map(&:_id) }
+      let!(:r1) { Reservation.create! }
+      let!(:r2) { Reservation.create! }
+      let!(:r3) { Reservation.create! } # orphaned
+      let!(:eager) { Person.any_in(id: people_ids).includes(:reservations) }
+
+      before do
+        p1.reservations << [r1, r2]
+      end
+
+      it 'queries twice' do
+        expect_query(2) do
+          result = eager.map { |p| [p.id, p.reservations.map(&:_id)] }
+
+          expect(result).to eq([
+            [p1.id, [r1.id, r2.id]],
+            [p2.id, []],
+            [p3.id, []]
+          ])
+        end
+      end
+    end
+
     context 'when some related documents no longer exist' do
       # Query count assertions require that all queries are sent using the
       # same connection object.
