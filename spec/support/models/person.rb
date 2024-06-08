@@ -108,6 +108,7 @@ class Person
   has_and_belongs_to_many :user_accounts, validate: false
   has_and_belongs_to_many :houses, validate: false
   has_and_belongs_to_many :ordered_preferences, order: { value: :desc }, validate: false
+  has_and_belongs_to_many :reservations, validate: false
 
   has_many :drugs, validate: false
   # Must not have dependent: :destroy
