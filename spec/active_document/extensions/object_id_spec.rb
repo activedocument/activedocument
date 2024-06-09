@@ -38,7 +38,7 @@ describe ActiveDocument::Extensions::ObjectId do
         end
 
         it 'returns the array of object ids' do
-          expect(evolved).to eq([object_id, other_id])
+          expect(evolved).to eq(ActiveDocument::RawValue([object_id, other_id]))
         end
       end
 
@@ -56,11 +56,8 @@ describe ActiveDocument::Extensions::ObjectId do
         end
 
         context 'when the string is not a valid object id' do
-
           it 'returns the key' do
-            expect(BSON::ObjectId.evolve(composite_key)).to eq(
-              composite_key
-            )
+            expect(BSON::ObjectId.evolve(composite_key)).to eq(ActiveDocument::RawValue(composite_key))
           end
         end
 
@@ -71,7 +68,7 @@ describe ActiveDocument::Extensions::ObjectId do
           end
 
           it 'evolves to empty' do
-            expect(evolved).to eq ''
+            expect(evolved).to eq ActiveDocument::RawValue('')
           end
         end
 
@@ -96,7 +93,7 @@ describe ActiveDocument::Extensions::ObjectId do
           end
 
           it 'returns compacted array' do
-            expect(evolved).to eq([])
+            expect(evolved).to eq(ActiveDocument::RawValue([nil, nil]))
           end
         end
 
@@ -107,7 +104,7 @@ describe ActiveDocument::Extensions::ObjectId do
           end
 
           it 'returns the compacted array' do
-            expect(evolved).to eq([])
+            expect(evolved).to eq(ActiveDocument::RawValue(['', '']))
           end
         end
 
@@ -124,7 +121,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'evolves to an array of object ids' do
-              expect(evolved).to eq([object_id, other_id])
+              expect(evolved).to eq(ActiveDocument::RawValue([object_id.to_s, other_id.to_s]))
             end
           end
 
@@ -139,9 +136,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the key' do
-              expect(BSON::ObjectId.evolve(composite_key)).to eq(
-                composite_key
-              )
+              expect(BSON::ObjectId.evolve(composite_key)).to eq(ActiveDocument::RawValue(composite_key))
             end
           end
         end
@@ -162,7 +157,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash' do
-              expect(evolved).to eq(hash)
+              expect(evolved).to eq(ActiveDocument::RawValue(hash))
             end
           end
 
@@ -181,7 +176,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash' do
-              expect(evolved).to eq(hash)
+              expect(evolved).to eq(ActiveDocument::RawValue(hash))
             end
           end
 
@@ -196,7 +191,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash with evolved value' do
-              expect(evolved).to eq({ _id: object_id })
+              expect(evolved).to eq(ActiveDocument::RawValue({ _id: object_id }))
             end
           end
 
@@ -215,7 +210,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash with evolved values' do
-              expect(evolved).to eq({ _id: [object_id, other_id] })
+              expect(evolved).to eq(ActiveDocument::RawValue({ _id: [object_id, other_id] }))
             end
           end
         end
@@ -233,7 +228,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash' do
-              expect(evolved).to eq(hash)
+              expect(evolved).to eq(ActiveDocument::RawValue(hash))
             end
           end
 
@@ -252,7 +247,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash' do
-              expect(evolved).to eq(hash)
+              expect(evolved).to eq(ActiveDocument::RawValue(hash))
             end
           end
 
@@ -267,7 +262,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash with evolved value' do
-              expect(evolved).to eq({ id: object_id })
+              expect(evolved).to eq(ActiveDocument::RawValue({ id: object_id }))
             end
           end
 
@@ -286,7 +281,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash with evolved values' do
-              expect(evolved).to eq({ id: [object_id, other_id] })
+              expect(evolved).to eq(ActiveDocument::RawValue({ id: [object_id, other_id] }))
             end
           end
         end
@@ -304,7 +299,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash' do
-              expect(evolved).to eq(hash)
+              expect(evolved).to eq(ActiveDocument::RawValue(hash))
             end
           end
 
@@ -319,7 +314,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the hash' do
-              expect(evolved).to eq(hash)
+              expect(evolved).to eq(ActiveDocument::RawValue(hash))
             end
           end
         end
@@ -400,7 +395,7 @@ describe ActiveDocument::Extensions::ObjectId do
           end
 
           it 'returns an empty array' do
-            expect(mongoized).to be_empty
+            expect(mongoized).to eq ActiveDocument::RawValue([nil, nil])
           end
         end
 
@@ -657,7 +652,7 @@ describe ActiveDocument::Extensions::ObjectId do
         end
 
         it 'returns the array of object ids' do
-          expect(mongoized).to eq([object_id, other_id])
+          expect(mongoized).to eq(ActiveDocument::RawValue([object_id, other_id]))
         end
       end
 
@@ -677,9 +672,7 @@ describe ActiveDocument::Extensions::ObjectId do
         context 'when the string is not a valid object id' do
 
           it 'returns the key' do
-            expect(BSON::ObjectId.mongoize(composite_key)).to eq(
-              composite_key
-            )
+            expect(BSON::ObjectId.mongoize(composite_key)).to eq(ActiveDocument::RawValue(composite_key))
           end
         end
 
@@ -704,7 +697,7 @@ describe ActiveDocument::Extensions::ObjectId do
           end
 
           it 'returns an empty array' do
-            expect(mongoized).to be_empty
+            expect(mongoized).to eq ActiveDocument::RawValue([nil, nil])
           end
         end
 
@@ -715,7 +708,7 @@ describe ActiveDocument::Extensions::ObjectId do
           end
 
           it 'returns an empty array' do
-            expect(mongoized).to be_empty
+            expect(mongoized).to eq ActiveDocument::RawValue(['', ''])
           end
         end
 
@@ -732,7 +725,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'mongoizes to an array of object ids' do
-              expect(mongoized).to eq([object_id, other_id])
+              expect(mongoized).to eq(ActiveDocument::RawValue([object_id, other_id]))
             end
           end
 
@@ -747,9 +740,7 @@ describe ActiveDocument::Extensions::ObjectId do
             end
 
             it 'returns the key' do
-              expect(BSON::ObjectId.mongoize(composite_key)).to eq(
-                composite_key
-              )
+              expect(BSON::ObjectId.mongoize(composite_key)).to eq(ActiveDocument::RawValue(composite_key))
             end
           end
         end
