@@ -152,7 +152,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Eager do
       end
     end
 
-    context 'when the association has deafult scope' do
+    context 'when the association has default scope' do
       # Query count assertions require that all queries are sent using the
       # same connection object.
       require_no_multi_shard
