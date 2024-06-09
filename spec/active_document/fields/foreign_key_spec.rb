@@ -54,9 +54,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
 
       it 'adds the current to the modifications' do
-        expect(mods['preference_ids']).to eq(
-          [preference_one.id, preference_three.id]
-        )
+        expect(mods['preference_ids']).to eq([preference_one.id, preference_three.id])
       end
     end
   end
@@ -511,7 +509,7 @@ describe ActiveDocument::Fields::ForeignKey do
     end
     let(:association) { Game.relations['person'] }
 
-    context 'when type is Array' do
+    context 'when field type is Array' do
       let(:type) { Array }
 
       context 'when the object is a BSON::ObjectId' do
@@ -614,7 +612,7 @@ describe ActiveDocument::Fields::ForeignKey do
         end
       end
 
-      context 'when foreign key is a String' do
+      context 'when field type is String' do
         before do
           Person.field(:_id, type: :string, overwrite: true)
         end
@@ -654,7 +652,7 @@ describe ActiveDocument::Fields::ForeignKey do
         end
       end
 
-      context 'when foreign key is an Integer' do
+      context 'when field type is Integer' do
         before do
           Person.field(:_id, type: :integer, overwrite: true)
         end
@@ -687,7 +685,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
     end
 
-    context 'when type is Set' do
+    context 'when field type is Set' do
       let(:type) { Set }
 
       context 'when the object is an Array of BSON::ObjectId' do
@@ -707,7 +705,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
     end
 
-    context 'when type is Object' do
+    context 'when field type is Object' do
       let(:type) { Object }
 
       context 'when the object is a BSON::ObjectId' do
@@ -761,12 +759,14 @@ describe ActiveDocument::Fields::ForeignKey do
       context 'when the object is a Set' do
         let(:object) { Set['blah'] }
 
-        it 'returns the set' do
-          expect(mongoized).to eq(Set['blah'])
+        it 'returns an array' do
+          # was previously:
+          # expect(mongoized).to eq(Set['blah'])
+          expect(mongoized).to eq(['blah'])
         end
       end
 
-      context 'when foreign key is a String' do
+      context 'when field type is String' do
         before do
           Person.field(:_id, type: :string, overwrite: true)
         end
@@ -806,7 +806,7 @@ describe ActiveDocument::Fields::ForeignKey do
         end
       end
 
-      context 'when foreign key is an Integer' do
+      context 'when field type is Integer' do
         before do
           Person.field(:_id, type: :integer, overwrite: true)
         end
@@ -842,7 +842,7 @@ describe ActiveDocument::Fields::ForeignKey do
 
   describe '#resizable' do
 
-    context 'when the type is an array' do
+    context 'when field type is array' do
 
       let(:field) do
         described_class.new(:vals, type: :array, default: [])
@@ -853,7 +853,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
     end
 
-    context 'when the type is an object' do
+    context 'when field type is object' do
 
       let(:field) do
         described_class.new(:vals, type: :undefined, default: [])

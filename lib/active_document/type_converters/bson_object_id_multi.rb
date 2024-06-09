@@ -14,7 +14,9 @@ module ActiveDocument
       #
       # @return [ BSON::ObjectId | nil ] The prepared BSON::ObjectId or nil.
       def to_database_cast(value)
-        return if value.blank?
+        return if value.nil? || value == ''
+
+        value = value.to_a if value.is_a?(Set)
 
         case value
         when Array
@@ -54,7 +56,20 @@ module ActiveDocument
         # TODO: is this needed?
         return value if value == ''
 
-        to_database_cast(value)
+        value = value.to_a if value.is_a?(Set)
+
+        case value
+        when Array
+          value.map! { |v| to_query_cast(v) }
+        when Hash
+          if (id = value['$oid']) && BSON::ObjectId.legal?(id)
+            BSON::ObjectId.from_string(id)
+          else
+            value.transform_values! { |v| to_query_cast(v) }
+          end
+        else
+          to_database_cast(value)
+        end
       end
     end
   end
