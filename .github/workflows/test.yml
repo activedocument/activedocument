@@ -125,32 +125,36 @@ jobs:
             fle: helper
 
     steps:
-    - name: repo checkout
-      uses: actions/checkout@v3
-    - id: start-mongodb
-      name: start mongodb
-      uses: mongodb-labs/drivers-evergreen-tools@master
-      with:
-        version: "${{matrix.mongodb || '6.0'}}"
-        topology: "${{matrix.topology || 'server'}}"
-    - name: load ruby
-      uses: ruby/setup-ruby@v1
-      env:
-        BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
-        FLE: "${{matrix.fle || ''}}"
-      with:
-        ruby-version: "${{matrix.ruby}}"
-        bundler: 2
-    - name: bundle
-      run: bundle install --jobs 4 --retry 3
-      env:
-        BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
-        FLE: "${{matrix.fle || ''}}"
-    - name: test
-      timeout-minutes: 60
-      continue-on-error: "${{matrix.experimental || false}}"
-      run: bundle exec rake spec
-      env:
-        BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
-        FLE: "${{matrix.fle || ''}}"
-        MONGODB_URI: "${{steps.start-mongodb.outputs.cluster-uri}}"
+      - name: repo checkout
+        uses: actions/checkout@v3
+      - id: start-mongodb
+        name: start mongodb
+        uses: mongodb-labs/drivers-evergreen-tools@master
+        with:
+          version: "${{matrix.mongodb || '6.0'}}"
+          topology: "${{matrix.topology || 'server'}}"
+      - name: load ruby
+        uses: ruby/setup-ruby@v1
+        env:
+          BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
+          FLE: "${{matrix.fle || ''}}"
+        with:
+          ruby-version: "${{matrix.ruby}}"
+          bundler: 2
+      - name: bundle
+        run: bundle install --jobs 4 --retry 3
+        env:
+          BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
+          FLE: "${{matrix.fle || ''}}"
+      - name: test
+        timeout-minutes: 60
+        continue-on-error: "${{matrix.experimental || false}}"
+        run: bundle exec rake spec
+        env:
+          BUNDLE_GEMFILE: "${{matrix.gemfile || 'Gemfile'}}"
+          FLE: "${{matrix.fle || ''}}"
+          MONGODB_URI: "${{steps.start-mongodb.outputs.cluster-uri}}"
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
