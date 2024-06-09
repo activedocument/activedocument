@@ -38,16 +38,6 @@ module ActiveDocument
       def respond_to?(name, include_private = false)
         _target.respond_to?(name, include_private) || super
       end
-
-      # Evolve the proxy document into an object id.
-      #
-      # @example Evolve the proxy document.
-      #   proxy.__evolve_object_id__
-      #
-      # @return [ Object ] The proxy document's id.
-      def __evolve_object_id__
-        _target._id
-      end
     end
   end
 end

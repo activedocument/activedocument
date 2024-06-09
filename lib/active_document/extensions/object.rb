@@ -8,17 +8,6 @@ module ActiveDocument
         base.extend(ClassMethods)
       end
 
-      # Evolve a plain object into an object id.
-      #
-      # @example Evolve the object.
-      #   object.__evolve_object_id__
-      #
-      # @return [ Object ] self.
-      def __evolve_object_id__
-        self
-      end
-      alias_method :__mongoize_object_id__, :__evolve_object_id__
-
       # Get the value for an instance variable or false if it doesn't exist.
       #
       # @example Get the value for an instance var.

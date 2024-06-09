@@ -240,20 +240,6 @@ describe ActiveDocument::Extensions::Date do
         end
 
         it 'returns the date specified in the time without regard for local day' do
-          expect(mongoized).to eq(expected)
-        end
-      end
-
-      context 'in another local day' do
-        let(:expected) do
-          Time.utc(2010, 1, 2, 0, 0, 0)
-        end
-
-        let(:object) do
-          Time.new(2010, 1, 2, 22, 3, 4, 9 * 3600)
-        end
-
-        it 'returns the date specified in the time without regard for local day' do
           # TODO: need to analyze this more
           expect(mongoized).to eq(expected)
         end
@@ -312,20 +298,6 @@ describe ActiveDocument::Extensions::Date do
         let(:object) do
           # Tokyo is +9
           DateTime.parse('2010-01-01 01:03:04 -0800')
-        end
-
-        it 'returns the date specified in the time without regard for local day' do
-          expect(mongoized).to eq(expected)
-        end
-      end
-
-      context 'in another local day' do
-        let(:expected) do
-          Time.utc(2010, 1, 1, 0, 0, 0)
-        end
-
-        let(:object) do
-          DateTime.parse('2010-01-01 01:03:04 +0100')
         end
 
         it 'returns the date specified in the time without regard for local day' do

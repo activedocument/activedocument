@@ -21,7 +21,7 @@ module ActiveDocument
 
         field = relation_class.fields['_id']
         if relation_class.using_object_ids?
-          BSON::ObjectId.mongoize(object)
+          ActiveDocument::TypeConverters::ForeignKey.to_database_cast(object)
         elsif object.is_a?(::Array)
           object.map! { |obj| field.mongoize(obj) }
         else
@@ -35,7 +35,7 @@ module ActiveDocument
         if object.is_a?(ActiveDocument::Document)
           object._id
         else
-          BSON::ObjectId.mongoize(object)
+          ActiveDocument::TypeConverters::ForeignKey.to_database_cast(object)
         end
       end
     end

@@ -6,30 +6,6 @@ module ActiveDocument
     # Adds type-casting behavior to Hash class.
     module Hash
 
-      # Evolves each value in the hash to an object id if it is convertable.
-      #
-      # @example Convert the hash values.
-      #   { field: id }.__evolve_object_id__
-      #
-      # @return [ Hash ] The converted hash.
-      def __evolve_object_id__
-        transform_values!(&:__evolve_object_id__)
-      end
-
-      # Mongoizes each value in the hash to an object id if it is convertable.
-      #
-      # @example Convert the hash values.
-      #   { field: id }.__mongoize_object_id__
-      #
-      # @return [ Hash ] The converted hash.
-      def __mongoize_object_id__
-        if (id = self['$oid'])
-          BSON::ObjectId.from_string(id)
-        else
-          transform_values!(&:__mongoize_object_id__)
-        end
-      end
-
       # Turn the object from the ruby type we deal with to a Mongo friendly
       # type.
       #

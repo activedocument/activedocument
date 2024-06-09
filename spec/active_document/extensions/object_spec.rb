@@ -8,20 +8,6 @@ describe ActiveDocument::Extensions::Object do
     Object.new
   end
 
-  describe '#__evolve_object_id__' do
-
-    it 'returns self' do
-      expect(object.__evolve_object_id__).to eq(object)
-    end
-  end
-
-  describe '#__mongoize_object_id__' do
-
-    it 'returns self' do
-      expect(object.__mongoize_object_id__).to eq(object)
-    end
-  end
-
   describe '.demongoize' do
 
     let(:object) do

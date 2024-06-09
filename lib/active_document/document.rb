@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_document/positional'
-require 'active_document/evolvable'
 require 'active_document/extensions'
 require 'active_document/errors'
 require 'active_document/threaded'

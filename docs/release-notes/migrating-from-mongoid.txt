@@ -1,4 +1,8 @@
 
+Migrate all type: classes to symbols
+
+Migrate all usage of DateTime to Time
+
 Removed options
 
 The `use_utc` option has been removed. ActiveDocument always uses the local timezone when loading values from the database.

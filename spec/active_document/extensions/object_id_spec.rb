@@ -12,17 +12,6 @@ describe ActiveDocument::Extensions::ObjectId do
     '21-jump-street'
   end
 
-  describe '#__evolve_object_id__' do
-
-    it 'returns self' do
-      expect(object_id.__evolve_object_id__).to eq(object_id)
-    end
-
-    it 'returns the same instance' do
-      expect(object_id.__evolve_object_id__).to equal(object_id)
-    end
-  end
-
   describe '.evolve' do
 
     context 'when the class is using object ids' do
@@ -81,8 +70,19 @@ describe ActiveDocument::Extensions::ObjectId do
             BSON::ObjectId.evolve('')
           end
 
-          it 'evolves to an empty string' do
-            expect(evolved).to be_empty
+          it 'evolves to empty' do
+            expect(evolved).to eq ''
+          end
+        end
+
+        context 'when the string is nil' do
+
+          let(:evolved) do
+            BSON::ObjectId.evolve(nil)
+          end
+
+          it 'evolves to nil' do
+            expect(evolved).to be_nil
           end
         end
       end
@@ -932,17 +932,6 @@ describe ActiveDocument::Extensions::ObjectId do
           end
         end
       end
-    end
-  end
-
-  describe '#__mongoize_object_id__' do
-
-    it 'returns self' do
-      expect(object_id.__mongoize_object_id__).to eq(object_id)
-    end
-
-    it 'returns the same instance' do
-      expect(object_id.__mongoize_object_id__).to equal(object_id)
     end
   end
 end
