@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::TypeConverters::BsonObjectIdMulti do
+describe ActiveDocument::TypeConverters::ForeignKey do
 
   describe '.to_database_cast' do
     subject(:converted) { described_class.to_database_cast(object) }

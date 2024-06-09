@@ -4,7 +4,7 @@ module ActiveDocument
   module TypeConverters
 
     # Type-casting behavior for BSON::ObjectId, allowing arrays and hashes.
-    module BsonObjectIdMulti
+    module ForeignKey
       extend self
 
       # Cast an object to BSON::ObjectId to store in the database.
