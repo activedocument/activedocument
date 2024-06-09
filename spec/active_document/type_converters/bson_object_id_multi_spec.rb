@@ -152,7 +152,7 @@ describe ActiveDocument::TypeConverters::BsonObjectIdMulti do
     end
 
     context 'when Object' do
-      let(:object) { double('object') }
+      let(:object) { Object.new }
 
       it 'returns the same value' do
         is_expected.to eq(object)
@@ -312,7 +312,7 @@ describe ActiveDocument::TypeConverters::BsonObjectIdMulti do
     end
 
     context 'when Object' do
-      let(:object) { double('object') }
+      let(:object) { Object.new }
 
       it 'returns the same value' do
         is_expected.to eq(object)

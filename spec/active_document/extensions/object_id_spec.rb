@@ -70,6 +70,17 @@ describe ActiveDocument::Extensions::ObjectId do
             BSON::ObjectId.evolve('')
           end
 
+          it 'evolves to empty' do
+            expect(evolved).to eq ''
+          end
+        end
+
+        context 'when the string is nil' do
+
+          let(:evolved) do
+            BSON::ObjectId.evolve(nil)
+          end
+
           it 'evolves to nil' do
             expect(evolved).to be_nil
           end

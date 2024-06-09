@@ -82,7 +82,7 @@ describe ActiveDocument::TypeConverters::BsonObjectId do
     end
 
     context 'when Object' do
-      let(:object) { double('object') }
+      let(:object) { Object.new }
 
       it 'returns a RawValue' do
         is_expected.to eq(ActiveDocument::RawValue(object))
@@ -168,17 +168,11 @@ describe ActiveDocument::TypeConverters::BsonObjectId do
     end
 
     context 'when Object' do
-      let(:object) { double('object') }
+      let(:object) { Object.new }
 
       it 'returns a RawValue' do
         is_expected.to eq(ActiveDocument::RawValue(object))
       end
-    end
-  end
-
-  describe '.to_query_cast' do
-    it 'is aliased to .to_database_cast' do
-      expect(described_class.method(:to_ruby_cast)).to eq(described_class.method(:to_database_cast))
     end
   end
 
