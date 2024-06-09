@@ -118,6 +118,26 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Buildable
           expect(documents).to eq(criteria)
         end
       end
+
+      context 'when the object is an empty array' do
+        let(:object) do
+          []
+        end
+
+        let(:criteria) do
+          Preference.none
+        end
+
+        it 'returns the objects' do
+          expect(documents).to eq(object)
+        end
+
+        it 'doesnt execute the query' do
+          expect_query(0) do
+            expect(documents).to eq(object)
+          end
+        end
+      end
     end
 
     context 'when no documents found in the database' do

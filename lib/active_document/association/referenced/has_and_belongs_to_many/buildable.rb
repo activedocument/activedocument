@@ -31,6 +31,8 @@ module ActiveDocument
           private
 
           def query?(object)
+            return false if object == []
+
             object.nil? || Array(object).all? { |d| !d.is_a?(ActiveDocument::Document) }
           end
         end

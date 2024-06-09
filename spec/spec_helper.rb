@@ -3,6 +3,12 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
+require 'simplecov'
+SimpleCov.start
+
+require 'simplecov-cobertura'
+SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+
 autoload :Timecop, 'timecop'
 require 'support/spec_config'
 require 'active_document'

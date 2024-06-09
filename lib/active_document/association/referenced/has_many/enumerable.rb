@@ -506,8 +506,12 @@ module ActiveDocument
           # always produces an empty document set. Note however that return value false
           # is not a guarantee that the condition won't produce an empty document set.
           #
-          # @example Unsatisfiable conditions
+          # @example Unsatisfiable condition #1
           #   unsatisfiable_criteria?({'_id' => {'$in' => []}})
+          #   # => true
+          #
+          # @example Unsatisfiable condition #2
+          #   unsatisfiable_criteria?({'foo' => 'bar', '_id' => {'$in' => []}})
           #   # => true
           #
           # @example Conditions which may be satisfiable
@@ -524,7 +528,7 @@ module ActiveDocument
           #   conditions.
           def unsatisfiable_criteria?(selector)
             unsatisfiable_criteria = { '_id' => { '$in' => [] } }
-            return true if selector == unsatisfiable_criteria
+            return true if selector >= unsatisfiable_criteria
             return false unless selector.length == 1 && selector.keys == %w[$and]
 
             value = selector.values.first
