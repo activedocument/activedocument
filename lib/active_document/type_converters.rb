@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_document/type_converters/bson_object_id'
-require 'active_document/type_converters/bson_object_id_multi'
+require 'active_document/type_converters/foreign_key'
 require 'active_document/type_converters/time'
 # require 'active_document/type_converters/array'
 # require 'active_document/type_converters/big_decimal'
