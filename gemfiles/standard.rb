@@ -24,6 +24,8 @@ def standard_dependencies
     gem 'fuubar'
     gem 'rfc'
     gem 'childprocess'
+    gem 'simplecov'
+    gem 'simplecov-cobertura'
 
     platform :mri do
       gem 'timeout-interrupt'

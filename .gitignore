@@ -5,6 +5,7 @@ sandbox/*
 tmp/*
 data/*
 branches/*
+coverage/*
 *.gem
 .bundle
 Gemfile.lock
