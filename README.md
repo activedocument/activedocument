@@ -3,7 +3,8 @@
 # ActiveDocument
 
 [![Build Status][build-img]][build-url]
-[![Gem Version][rubygems-img]][rubygems-url]🔜
+[![Gem Version][rubygems-img]][rubygems-url]
+[![CodeCov][codecov-img]][codecov-url]
 [![License][license-img]][license-url]
 
 **⚠️ ActiveDocument is currently in alpha**
@@ -276,3 +277,5 @@ Code from the following repos is incorporated into ActiveDocument under the MIT 
 [rubygems-url]: http://badge.fury.io/rb/activedocument
 [license-img]: https://img.shields.io/badge/license-MIT-green.svg
 [license-url]: https://www.opensource.org/licenses/MIT
+[codecov-img]: https://codecov.io/gh/activedocument/activedocument/graph/badge.svg?token=2MDF7F5GZ9
+[codecov-url]: https://codecov.io/gh/activedocument/activedocument
