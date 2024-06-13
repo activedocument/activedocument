@@ -20,11 +20,13 @@ other Ruby frameworks such as [Sinatra](https://sinatrarb.com/) and [Hanami](htt
 
 ### Planned support
 
-🔲 AWS DynamoDB
+🔲 [AWS DynamoDB](https://aws.amazon.com/dynamodb/)
 
-🔲 Google Firestore
+🔲 [Google Firestore](https://firebase.google.com/docs/firestore)
 
-🔲 CouchDB
+🔲 [CouchDB](https://couchdb.apache.org/)
+
+🔲 [ScyllaDB](https://www.scylladb.com/)
 
 🔲 [Start a discussion][github-new-discussion] to suggest others
 
