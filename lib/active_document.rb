@@ -30,6 +30,10 @@ require 'active_document/tasks/encryption'
 require 'active_document/warnings'
 require 'active_document/utils'
 
+require 'active_document/ast'
+require 'active_document/parser'
+require 'active_document/renderer'
+
 # If we are using Rails then we will include the ActiveDocument railtie.
 # This configures initializers required to integrate ActiveDocument with Rails.
 require 'active_document/railtie' if defined?(Rails)
