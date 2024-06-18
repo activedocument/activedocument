@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_document/ast'
 require 'active_document/criteria/queryable/query_normalizer'
 require 'active_document/criteria/queryable/extensions'
 require 'active_document/criteria/queryable/smash'
@@ -8,7 +9,8 @@ require 'active_document/criteria/queryable/pipeline'
 require 'active_document/criteria/queryable/optional'
 require 'active_document/criteria/queryable/options'
 require 'active_document/criteria/queryable/selectable'
-require 'active_document/criteria/queryable/selector'
+require 'active_document/criteria/queryable/selector_ast'
+require 'active_document/criteria/queryable/selector_smash'
 require 'active_document/criteria/queryable/storable'
 
 module ActiveDocument
@@ -45,7 +47,7 @@ module ActiveDocument
       def ==(other)
         return false unless other.is_a?(Queryable)
 
-        selector == other.selector && options == other.options
+        selector == other.selector && ast == other.ast && options == other.options
       end
 
       # Initialize the new queryable. Will yield itself to the block if a block
@@ -65,7 +67,8 @@ module ActiveDocument
         @aliases = aliases
         @serializers = serializers
         @options = Options.new(aliases, serializers, associations, aliased_associations)
-        @selector = Selector.new(aliases, serializers, associations, aliased_associations)
+        @selector = SelectorSmash.new(aliases, serializers, associations, aliased_associations)
+        @ast = SelectorAST.new(@selector)
         @pipeline = Pipeline.new(aliases)
         @aggregating = nil
         yield(self) if block_given?
@@ -80,6 +83,7 @@ module ActiveDocument
       def initialize_copy(other)
         @options = other.options.__deep_copy__
         @selector = other.selector.__deep_copy__
+        @ast = other.ast.__deep_copy__
         @pipeline = other.pipeline.__deep_copy__
       end
     end

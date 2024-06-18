@@ -229,6 +229,7 @@ module ActiveDocument
     #
     # @param [ Class ] klass The model class.
     def initialize(klass)
+      # require 'pry'; require 'pry-nav'; binding.pry
       @klass = klass
       @embedded = nil
       @none = nil
@@ -420,6 +421,7 @@ module ActiveDocument
         end
       end
 
+      # require 'pry'; require 'pry-nav'; binding.pry
       super
     end
 

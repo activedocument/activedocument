@@ -11,7 +11,7 @@ module ActiveDocument
 
         # @attribute [rw] negating If the next expression is negated.
         # @attribute [rw] selector The query selector.
-        attr_accessor :negating, :selector
+        attr_accessor :negating, :selector, :ast
 
         # Clear the current negating flag, used after cloning.
         #
@@ -21,6 +21,11 @@ module ActiveDocument
         # @return [ ActiveDocument::Criteria ] self.
         def reset_state!
           self.negating = nil
+          self
+        end
+
+        def rebuild_ast!
+          self.ast = SelectorAST.new(selector)
           self
         end
 
@@ -36,7 +41,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The cloned selectable.
         def all(*criteria)
-          return clone.tap(&:reset_state!) if criteria.empty?
+          return clone.tap(&:reset_state!).tap(&:rebuild_ast!) if criteria.empty?
 
           raise ArgumentError.new('Use #contains_all instead of #all for to match all array values')
         end
@@ -64,7 +69,7 @@ module ActiveDocument
               v = { '$not' => v } if negating?
               q.add_field_expression(field.to_s, v)
             end
-          end.reset_state!
+          end.reset_state!.rebuild_ast!
         end
 
         # Add the $and criterion.
@@ -105,7 +110,7 @@ module ActiveDocument
               end
             end
             c
-          end
+          end.rebuild_ast!
         end
 
         # Add the range selection.
@@ -132,6 +137,7 @@ module ActiveDocument
               )
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
@@ -211,6 +217,7 @@ module ActiveDocument
               query.selector.merge!(field.to_s => value.deep_stringify_keys)
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
@@ -287,7 +294,7 @@ module ActiveDocument
             v = { '$in' => value }
             v = { '$not' => v } if negating?
             query.add_field_expression(field.to_s, v)
-          end.reset_state!
+          end.reset_state!.rebuild_ast!
         end
         alias_method :contains_any, :any_in
 
@@ -431,7 +438,7 @@ module ActiveDocument
             v = { '$nin' => value }
             v = { '$not' => v } if negating?
             query.add_field_expression(field.to_s, v)
-          end.reset_state!
+          end.reset_state!.rebuild_ast!
         end
         alias_method :contains_none, :not_in
 
@@ -499,9 +506,12 @@ module ActiveDocument
               end
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
+        # Adds the $nor selection to the selectable.
+        #
         # Negate the arguments, constraining the query to only those documents
         # that do NOT match the arguments.
         #
@@ -706,6 +716,7 @@ module ActiveDocument
           end
 
           selectable.reset_state!
+          selectable.rebuild_ast!
         end
 
         private
@@ -726,7 +737,7 @@ module ActiveDocument
             crit.negating = false
             crit = crit.all_of(field => val)
           end
-          crit
+          crit.rebuild_ast!
         end
 
         # Adds $and/$or/$nor criteria to a copy of this selection.
@@ -813,15 +824,19 @@ module ActiveDocument
           normalized = QueryNormalizer.normalize_expr(criterion, negating: negating?)
           clone.tap do |query|
             normalized.each do |field, value|
+              # require 'pry'; require 'pry-nav'; binding.pry
               field_s = field.to_s
               if field_s.start_with?('$')
                 # Query expression-level operator, like $and or $where
                 query.add_operator_expression(field_s, value)
               else
-                query.add_field_expression(field, value)
+                query.selector.store(field, { '$eq' => value })
+                # query.selector.store(operator, op_expr)
+                # query.add_operator_expression(field, {'$eq' => value})
               end
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
@@ -859,6 +874,7 @@ module ActiveDocument
               query.add_operator_expression('$where', criterion)
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
