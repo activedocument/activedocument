@@ -32,6 +32,10 @@ Style/DocumentationMethod:
     - 'gemfiles/**/*'
     - 'spec/**/*'
 
+Layout/LineLength:
+  Exclude:
+    - 'spec/**/*'
+
 # --------------------------------------------------
 # These cops are having CI issues. Enable later.
 
