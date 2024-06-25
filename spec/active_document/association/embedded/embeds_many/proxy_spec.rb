@@ -2160,15 +2160,9 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
             person.addresses.without_postcode.send(method)
           end
 
-          it 'deletes all the documents' do
+          it 'nothing happens' do
             expect(person.addresses.count).to eq(0)
-          end
-
-          it 'deletes all the documents from the db' do
             expect(person.reload.addresses.count).to eq(0)
-          end
-
-          it 'returns the number deleted' do
             expect(deleted).to eq(0)
           end
         end
@@ -2176,21 +2170,12 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         context 'when conditions are provided' do
 
           let!(:deleted) do
-            person.addresses.send(
-              method,
-              conditions: { street: 'Bond' }
-            )
+            person.addresses.send(method, { street: 'Bond' })
           end
 
-          it 'deletes all the documents' do
+          it 'nothing happens' do
             expect(person.addresses.count).to eq(0)
-          end
-
-          it 'deletes all the documents from the db' do
             expect(person.reload.addresses.count).to eq(0)
-          end
-
-          it 'returns the number deleted' do
             expect(deleted).to eq(0)
           end
         end
@@ -2201,15 +2186,9 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
             person.addresses.send(method)
           end
 
-          it 'deletes all the documents' do
+          it 'nothing happens' do
             expect(person.addresses.count).to eq(0)
-          end
-
-          it 'deletes all the documents from the db' do
             expect(person.reload.addresses.count).to eq(0)
-          end
-
-          it 'returns the number deleted' do
             expect(deleted).to eq(0)
           end
         end

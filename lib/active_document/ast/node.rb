@@ -12,9 +12,10 @@ module ActiveDocument
       end
 
       def ==(other)
+        # require 'pry'; require 'pry-nav'; binding.pry
         return false unless self.class == other.class
 
-        children.zip(other.children).all? { |child, other_child| child == other_child }
+        children.sort_by(&:sort_cond).zip(other.children.sort_by(&:sort_cond)).all? { |child, other_child| child == other_child }
       end
 
       def empty?
@@ -29,6 +30,10 @@ module ActiveDocument
 
       def class_name
         self.class.name
+      end
+
+      def sort_cond
+        class_name
       end
 
       def inspect(depth = 1)

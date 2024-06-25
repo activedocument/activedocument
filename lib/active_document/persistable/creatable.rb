@@ -146,6 +146,7 @@ module ActiveDocument
         # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> ] The newly created document(s).
         def create(attributes = nil, &block)
           _creating do
+            # require 'pry'; require 'pry-nav'; binding.pry
             if attributes.is_a?(::Array)
               attributes.map { |attrs| create(attrs, &block) }
             else

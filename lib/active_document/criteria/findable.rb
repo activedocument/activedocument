@@ -40,6 +40,7 @@ module ActiveDocument
       #
       # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> ] The matching document(s).
       def find(*args)
+        # require 'pry'; require 'pry-nav'; binding.pry
         ids = prepare_ids_for_find(args)
         raise_invalid if ids.any?(&:nil?)
         for_ids(ids).execute_or_raise(ids, multi_args?(args))

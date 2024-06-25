@@ -8,3 +8,6 @@ standard_dependencies
 
 gem 'actionpack'
 gem 'activemodel'
+
+gem 'pry'
+gem 'pry-nav'

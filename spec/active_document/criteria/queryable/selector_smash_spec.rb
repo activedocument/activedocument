@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::Criteria::Queryable::Selector do
+describe ActiveDocument::Criteria::Queryable::SelectorSmash do
 
   describe 'merge!' do
 

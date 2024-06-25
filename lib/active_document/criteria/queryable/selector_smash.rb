@@ -4,9 +4,9 @@ module ActiveDocument
   class Criteria
     module Queryable
 
-      # The selector is a special kind of hash that knows how to serialize values
+      # This selector is a special kind of hash that knows how to serialize values
       # coming into it as well as being alias and locale aware for key names.
-      class Selector < Smash
+      class SelectorSmash < Smash
 
         # Merges another selector into this one.
         #

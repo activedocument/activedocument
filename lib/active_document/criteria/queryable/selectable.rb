@@ -11,7 +11,7 @@ module ActiveDocument
 
         # @attribute [rw] negating If the next expression is negated.
         # @attribute [rw] selector The query selector.
-        attr_accessor :negating, :selector
+        attr_accessor :negating, :selector, :ast
 
         # Clear the current negating flag, used after cloning.
         #
@@ -21,6 +21,12 @@ module ActiveDocument
         # @return [ ActiveDocument::Criteria ] self.
         def reset_state!
           self.negating = nil
+          self
+        end
+
+        def rebuild_ast!
+          # require 'pry'; binding.pry
+          self.ast = SelectorAST.new(selector)
           self
         end
 
@@ -36,7 +42,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The cloned selectable.
         def all(*criteria)
-          return clone.tap(&:reset_state!) if criteria.empty?
+          return clone.tap(&:reset_state!).tap(&:rebuild_ast!) if criteria.empty?
 
           raise ArgumentError.new('Use #contains_all instead of #all for to match all array values')
         end
@@ -64,7 +70,7 @@ module ActiveDocument
               v = { '$not' => v } if negating?
               q.add_field_expression(field.to_s, v)
             end
-          end.reset_state!
+          end.reset_state!.rebuild_ast!
         end
 
         # Add the $and criterion.
@@ -82,6 +88,7 @@ module ActiveDocument
             new_s = new_s.selector if new_s.is_a?(Selectable)
             normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
             normalized.each do |k, v|
+              # require 'pry'; require 'pry-nav'; binding.pry
               k = k.to_s
               if c.selector[k]
                 # There is already a condition on k.
@@ -98,14 +105,19 @@ module ActiveDocument
                   merged_v = c.selector[k].merge(v)
                   c.selector.store(k, merged_v)
                 else
-                  c = c.send(:__combine_criteria__, [k => v], '$and')
+                  c =
+                    if v.is_a?(Hash) && v.keys[0].start_with?('$')
+                      c.send(:__combine_criteria__, [k => v], '$and')
+                    else
+                      c.send(:__combine_criteria__, [k => {'$eq' => v}], '$and')
+                    end
                 end
               else
                 c.selector.store(k, v)
               end
             end
             c
-          end
+          end.rebuild_ast!
         end
 
         # Add the range selection.
@@ -132,6 +144,7 @@ module ActiveDocument
               )
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
@@ -211,6 +224,7 @@ module ActiveDocument
               query.selector.merge!(field.to_s => value.deep_stringify_keys)
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
@@ -287,7 +301,7 @@ module ActiveDocument
             v = { '$in' => value }
             v = { '$not' => v } if negating?
             query.add_field_expression(field.to_s, v)
-          end.reset_state!
+          end.reset_state!.rebuild_ast!
         end
         alias_method :contains_any, :any_in
 
@@ -431,7 +445,7 @@ module ActiveDocument
             v = { '$nin' => value }
             v = { '$not' => v } if negating?
             query.add_field_expression(field.to_s, v)
-          end.reset_state!
+          end.reset_state!.rebuild_ast!
         end
         alias_method :contains_none, :not_in
 
@@ -499,9 +513,12 @@ module ActiveDocument
               end
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
+        # Adds the $nor selection to the selectable.
+        #
         # Negate the arguments, constraining the query to only those documents
         # that do NOT match the arguments.
         #
@@ -572,15 +589,31 @@ module ActiveDocument
             # When we have multiple criteria, combine them all with $or
             # and add the result to self.
             exprs = criteria.map do |criterion|
+              # require 'pry'; require 'pry-nav'; binding.pry
               if criterion.is_a?(Selectable)
                 QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
               else
-                criterion.to_h do |k, v|
-                  if k.is_a?(Symbol)
-                    [k.to_s, v]
+                criterion.to_h do |field, value|
+                  field_s = field.to_s
+                  if value.is_a?(Hash)
+                    [field_s, value]
                   else
-                    [k, v]
+                    [field_s, { '$eq' => value }]
                   end
+                  # if field_s.start_with?('$')
+                  #   # Query expression-level operator, like $and or $where
+                  #   query.add_operator_expression(field_s, value)
+                  # else
+                    # query.selector.store(field, { '$eq' => value })
+                    # query.selector.store(operator, op_expr)
+                    # query.add_operator_expression(field, {'$eq' => value})
+                  # end
+
+                  # if k.is_a?(Symbol)
+                  #   [k.to_s, v]
+                  # else
+                  #   [k, v]
+                  # end
                 end
               end
             end
@@ -686,6 +719,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The cloned selectable.
         def where(*criteria)
+          # require 'pry'; require 'pry-nav'; binding.pry
           selectable = clone
 
           criteria.each do |criterion|
@@ -706,6 +740,7 @@ module ActiveDocument
           end
 
           selectable.reset_state!
+          selectable.rebuild_ast!
         end
 
         private
@@ -726,7 +761,7 @@ module ActiveDocument
             crit.negating = false
             crit = crit.all_of(field => val)
           end
-          crit
+          crit.rebuild_ast!
         end
 
         # Adds $and/$or/$nor criteria to a copy of this selection.
@@ -813,15 +848,24 @@ module ActiveDocument
           normalized = QueryNormalizer.normalize_expr(criterion, negating: negating?)
           clone.tap do |query|
             normalized.each do |field, value|
+              # require 'pry'; require 'pry-nav'; binding.pry
               field_s = field.to_s
               if field_s.start_with?('$')
                 # Query expression-level operator, like $and or $where
                 query.add_operator_expression(field_s, value)
               else
-                query.add_field_expression(field, value)
+                if value.is_a?(Hash) && value.keys[0].start_with?('$')
+                  query.add_field_expression(field_s, value)
+                else
+                  query.add_field_expression(field_s, {'$eq' => value})
+                  # query.selector.store(field_s, { '$eq' => value })
+                end
+                # query.selector.store(operator, op_expr)
+                # query.add_operator_expression(field, {'$eq' => value})
               end
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 
@@ -859,6 +903,7 @@ module ActiveDocument
               query.add_operator_expression('$where', criterion)
             end
             query.reset_state!
+            query.rebuild_ast!
           end
         end
 

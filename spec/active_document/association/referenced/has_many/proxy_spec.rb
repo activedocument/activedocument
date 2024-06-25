@@ -1648,7 +1648,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
       it 'includes the type in the criteria' do
         expect(criteria.selector).to eq(
-          { 'ratable_id' => base.id, 'ratable_type' => 'Movie' }
+          { 'ratable_id' => { '$eq' => base.id }, 'ratable_type' => { '$eq' => 'Movie' } }
         )
       end
     end
@@ -1660,7 +1660,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
       let(:criteria) { association.criteria(base) }
 
       it 'does not include the type in the criteria' do
-        expect(criteria.selector).to eq({ 'person_id' => base.id })
+        expect(criteria.selector).to eq({ 'person_id' => { '$eq' => base.id } })
       end
     end
   end
@@ -2775,7 +2775,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     end
 
     it 'returns with an empty selector' do
-      expect(scoped.selector).to eq({ 'person_id' => person.id })
+      expect(scoped.selector).to eq({ 'person_id' => { '$eq' => person.id } })
     end
   end
 

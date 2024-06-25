@@ -30,7 +30,8 @@ module ActiveDocument
       def marshal_load(data)
         @scoping_options, raw_selector, raw_options = data.pop(3)
         @klass, _driver, @inclusions, @documents, @negating = data
-        @selector = load_hash(Queryable::Selector, raw_selector)
+        @selector = load_hash(Queryable::SelectorSmash, raw_selector)
+        @ast = Queryable::SelectorAST.new(@selector)
         @options = load_hash(Queryable::Options, raw_options)
       end
 
