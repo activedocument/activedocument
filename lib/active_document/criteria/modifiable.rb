@@ -38,6 +38,7 @@ module ActiveDocument
       #
       # @return [ ActiveDocument::Document ] A newly created document.
       def create(attrs = {}, &block)
+        # require 'pry'; binding.pry
         create_document(:create, attrs, &block)
       end
 
@@ -171,10 +172,13 @@ module ActiveDocument
       #
       # @return [ ActiveDocument::Document ] The new or saved document.
       def create_document(method, attrs = nil, &block)
+        # require 'pry'; require 'pry-nav'; binding.pry
         attrs = (create_attrs || {}).merge(attrs || {})
         attributes = selector.each_with_object(attrs) do |(key, value), hash|
           next if invalid_key?(hash, key) || invalid_embedded_doc?(value)
 
+          # @todo case when value is a {$eq => obj_id} needs to be
+          # handled differently.
           hash[key] = value
         end
         if embedded?
@@ -228,7 +232,14 @@ module ActiveDocument
         # @todo Change this to BSON::String::ILLEGAL_KEY when ruby driver 2.3.0 is
         # released and active_document is updated to depend on driver >= 2.3.0
         value.is_a?(Hash) && value.any? do |key, v|
-          key.to_s =~ ActiveDocument::Document::ILLEGAL_KEY || invalid_embedded_doc?(v)
+          key_cond =
+            if key == '$eq'
+              false
+            else
+              key.to_s =~ ActiveDocument::Document::ILLEGAL_KEY
+            end
+
+          key_cond || invalid_embedded_doc?(v)
         end
       end
     end

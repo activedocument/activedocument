@@ -25,6 +25,7 @@ module ActiveDocument
         end
 
         def rebuild_ast!
+          # require 'pry'; binding.pry
           self.ast = SelectorAST.new(selector)
           self
         end
@@ -87,6 +88,7 @@ module ActiveDocument
             new_s = new_s.selector if new_s.is_a?(Selectable)
             normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
             normalized.each do |k, v|
+              # require 'pry'; require 'pry-nav'; binding.pry
               k = k.to_s
               if c.selector[k]
                 # There is already a condition on k.
@@ -103,7 +105,12 @@ module ActiveDocument
                   merged_v = c.selector[k].merge(v)
                   c.selector.store(k, merged_v)
                 else
-                  c = c.send(:__combine_criteria__, [k => v], '$and')
+                  c =
+                    if v.is_a?(Hash) && v.keys[0].start_with?('$')
+                      c.send(:__combine_criteria__, [k => v], '$and')
+                    else
+                      c.send(:__combine_criteria__, [k => {'$eq' => v}], '$and')
+                    end
                 end
               else
                 c.selector.store(k, v)
@@ -582,15 +589,31 @@ module ActiveDocument
             # When we have multiple criteria, combine them all with $or
             # and add the result to self.
             exprs = criteria.map do |criterion|
+              # require 'pry'; require 'pry-nav'; binding.pry
               if criterion.is_a?(Selectable)
                 QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
               else
-                criterion.to_h do |k, v|
-                  if k.is_a?(Symbol)
-                    [k.to_s, v]
+                criterion.to_h do |field, value|
+                  field_s = field.to_s
+                  if value.is_a?(Hash)
+                    [field_s, value]
                   else
-                    [k, v]
+                    [field_s, { '$eq' => value }]
                   end
+                  # if field_s.start_with?('$')
+                  #   # Query expression-level operator, like $and or $where
+                  #   query.add_operator_expression(field_s, value)
+                  # else
+                    # query.selector.store(field, { '$eq' => value })
+                    # query.selector.store(operator, op_expr)
+                    # query.add_operator_expression(field, {'$eq' => value})
+                  # end
+
+                  # if k.is_a?(Symbol)
+                  #   [k.to_s, v]
+                  # else
+                  #   [k, v]
+                  # end
                 end
               end
             end
@@ -696,6 +719,7 @@ module ActiveDocument
         #
         # @return [ Selectable ] The cloned selectable.
         def where(*criteria)
+          # require 'pry'; require 'pry-nav'; binding.pry
           selectable = clone
 
           criteria.each do |criterion|
@@ -830,7 +854,12 @@ module ActiveDocument
                 # Query expression-level operator, like $and or $where
                 query.add_operator_expression(field_s, value)
               else
-                query.selector.store(field, { '$eq' => value })
+                if value.is_a?(Hash) && value.keys[0].start_with?('$')
+                  query.add_field_expression(field_s, value)
+                else
+                  query.add_field_expression(field_s, {'$eq' => value})
+                  # query.selector.store(field_s, { '$eq' => value })
+                end
                 # query.selector.store(operator, op_expr)
                 # query.add_operator_expression(field, {'$eq' => value})
               end

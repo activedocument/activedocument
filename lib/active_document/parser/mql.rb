@@ -45,6 +45,7 @@ module ActiveDocument
           # when NilClass
           #   data
           else
+            # require 'pry'; require 'pry-nav'; binding.pry
             raise "unexpected data: #{data}" unless primitive_item?(data)
 
             op = path[-1]
@@ -62,6 +63,7 @@ module ActiveDocument
             if path[-1] == '$not'
               node_klass('$not').new([do_parse(data.values[0], path + [data.keys[0]])])
             else
+              # require 'pry'; require 'pry-nav'; binding.pry if data.values[0].nil?
               do_parse(data.values[0], path + [data.keys[0]])
             end
           else
@@ -94,7 +96,13 @@ module ActiveDocument
           # array of hashes, part of MQL syntax, indicates nested conditions
           if data.all?(Hash)
 
-            if data.size == 1
+            if data == []
+              op = path[-1]
+              field = path[-2]
+              value = data
+
+              node_klass(op).new(field, value)
+            elsif data.size == 1
               do_parse(data[0], path)
             else
               head = data[0]
@@ -108,7 +116,9 @@ module ActiveDocument
             end
 
           # primitive array, indicates terminal node
-          elsif %w[$in $nin].include?(path[-1]) && primitive_items?(data)
+          # TODO: does it matter if we have in/nin in the path? It's a terminal node either way
+          # elsif %w[$in $nin].include?(path[-1]) && primitive_items?(data)
+          elsif primitive_items?(data)
             op = path[-1]
             field = path[-2]
             value = data
@@ -141,7 +151,8 @@ module ActiveDocument
             item.is_a?(ActiveDocument::StringifiedSymbol) ||
             item.is_a?(BSON::Binary) ||
             item.is_a?(BigDecimal) ||
-            item.is_a?(BSON::ObjectId)
+            item.is_a?(BSON::ObjectId) ||
+            item.is_a?(NilClass)
         end
 
         def node_klass(operator)

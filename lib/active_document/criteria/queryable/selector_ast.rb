@@ -12,6 +12,10 @@ module ActiveDocument
           @tree = ActiveDocument::Parser::MQL.parse(mql_hash)
         end
 
+        def ==(other)
+          tree == other.tree
+        end
+
         def inspect
           return '()' unless tree
 
