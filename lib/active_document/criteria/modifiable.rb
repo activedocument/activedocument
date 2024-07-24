@@ -26,6 +26,7 @@ module ActiveDocument
         create_document(:new, attrs, &block)
       end
       alias_method :new, :build
+      # TODO: why build+alias new instead of #initialize ?
 
       # Create a document in the database given the selector and return it.
       # Complex criteria, such as $in and $or operations will get ignored.
@@ -173,9 +174,19 @@ module ActiveDocument
       def create_document(method, attrs = nil, &block)
         attrs = (create_attrs || {}).merge(attrs || {})
         attributes = selector.each_with_object(attrs) do |(key, value), hash|
-          next if invalid_key?(hash, key) || invalid_embedded_doc?(value)
+          if key == '$and'
+            value.each do |v|
+              v.each_pair do |k, val|
+                next if invalid_key?(hash, k) || invalid_embedded_doc?(v)
 
-          hash[key] = value
+                hash[k] = val.key?('$eq') ? val['$eq'] : val
+              end
+            end
+          else
+            next if invalid_key?(hash, key) || invalid_embedded_doc?(value)
+
+            hash[key] = value.key?('$eq') ? value['$eq'] : value
+          end
         end
         if embedded?
           attributes[:_parent] = parent_document
@@ -228,7 +239,14 @@ module ActiveDocument
         # @todo Change this to BSON::String::ILLEGAL_KEY when ruby driver 2.3.0 is
         # released and active_document is updated to depend on driver >= 2.3.0
         value.is_a?(Hash) && value.any? do |key, v|
-          key.to_s =~ ActiveDocument::Document::ILLEGAL_KEY || invalid_embedded_doc?(v)
+          key_cond =
+            if key == '$eq'
+              false
+            else
+              key.to_s =~ ActiveDocument::Document::ILLEGAL_KEY
+            end
+
+          key_cond || invalid_embedded_doc?(v)
         end
       end
     end

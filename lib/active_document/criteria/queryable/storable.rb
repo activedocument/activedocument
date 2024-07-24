@@ -65,8 +65,69 @@ module ActiveDocument
               selector.store(field, new_value)
             elsif selector[field] != value
               # TODO: Yuck! This should be a top-level and
+              if selector[field].is_a?(Hash) && value.is_a?(Hash)
+                dupes = {}
+
+                store_value = selector[field].merge(value) do |k, old_v, new_v|
+                  dupes[k] = new_v
+                  old_v
+                end
+
+                add_operator_expression('$and', [{ field => store_value }, { field => dupes }])
+                selector.delete(field)
+              else
+                add_operator_expression('$and', [{ field => value }])
+              end
+            end
+          elsif selector['$and']&.any? { |restriction| restriction[field] }
+            # We already have a combined restriction by the field we are
+            # trying to restrict, add the restriction to the existing.
+            if selector['$and'][0][field].nil?
+              old_stored_value = selector['$and'].find { |sel| sel[field] }[field]
+              dupes = {}
+
+              new_store_value = old_stored_value.merge(value) do |k, old_v, new_v|
+                dupes[k] = new_v
+                old_v
+              end
+
+              stored_tail = selector['$and'].map { |hs| hs.tap { |h| h.delete(field) if h[field] == old_stored_value } }.reject { |i| i.empty? || i[field] == old_stored_value }
+              selector['$and'] = []
+              store_result = []
+              store_result << { field => new_store_value }
+              store_result += stored_tail
+              add_operator_expression('$and', store_result)
+            elsif selector['$and'][0][field] != value
+              # Working with first (0) element of '$and' array
+              # relies on the fact that it should contain all uniq operators
+              old_stored_value = selector['$and'][0][field]
+              dupes = {}
+
+              new_store_value = old_stored_value.merge(value) do |k, old_v, new_v|
+                dupes[k] = new_v
+                old_v
+              end
+
+              stored_tail = selector['$and'].map { |hs| hs.tap { |h| h.delete(field) if h[field] == old_stored_value } }.reject { |i| i.empty? || i[field] == old_stored_value }
+              selector['$and'] = []
+              store_result = []
+              store_result << { field => new_store_value }
+              store_result += stored_tail
+              store_result << { field => dupes } unless dupes.empty?
+              add_operator_expression('$and', store_result)
+            else
               add_operator_expression('$and', [{ field => value }])
             end
+          elsif selector['$and'].present?
+            # We already have combined restiricions by some otehr fields
+            add_operator_expression('$and', [{ field => value }])
+          elsif selector.present?
+            # We already have some restrictions
+            # but not for current field
+            store_result = []
+            store_result << selector.merge({ field => value })
+            self.selector = {}
+            add_operator_expression('$and', store_result)
           else
             selector.store(field, value)
           end
@@ -114,7 +175,7 @@ module ActiveDocument
         # @param [ Array<Hash> ] op_expr Operator value to add.
         #
         # @return [ Storable ] self.
-        def add_logical_operator_expression(operator, op_expr)
+        def add_logical_operator_expression(operator, op_expr, return_expr: false)
           unless operator.is_a?(String)
             raise ArgumentError.new("Operator must be a string: #{operator}")
           end
@@ -127,26 +188,64 @@ module ActiveDocument
             raise Errors::InvalidQuery.new("#{operator} argument must be an array: #{Errors::InvalidQuery.truncate_expr(op_expr)}")
           end
 
+          expr_result = Smash.new
+
           if selector.length == 1 && selector.keys.first == operator
             new_value = selector.values.first + op_expr
-            selector.store(operator, new_value)
+            return_expr ? expr_result.store(operator, new_value) : selector.store(operator, new_value)
           elsif operator == '$and' || selector.empty?
             # $and can always be added to top level and it will be combined
             # with whatever other conditions exist.
             if (current_value = selector[operator])
               new_value = current_value + op_expr
-              selector.store(operator, new_value)
+              return_expr ? expr_result.store(operator, new_value) : selector.store(operator, new_value)
             else
-              selector.store(operator, op_expr)
+              op_exprs =
+                if operator == '$where'
+                  op_expr
+                else
+                  logical_operators = %w[$and $nor $or]
+
+                  op_expr.map do |expr|
+                    if expr.is_a?(Selectable)
+                      QueryNormalizer.normalize_expr(expr.selector, negating: negating?)
+                    else
+                      expr.to_h do |expr_key, expr_value|
+                        expr_key_s = expr_key.to_s
+
+                        if expr_key == '$where' || expr_value.is_a?(Hash)
+                          [expr_key_s, expr_value]
+                        elsif logical_operators.include?(expr_key_s) && expr_value.is_a?(Array)
+                          store_result = add_logical_operator_expression(expr_key_s, expr_value, return_expr: true)
+                          store_key, store_value = store_result.flatten
+                          [store_key, store_value]
+                        else
+                          op = regex?(expr_value) ? '$regex' : '$eq'
+                          [expr_key_s, { op => expr_value }]
+                        end
+                      end
+
+                    end
+                  end
+                end
+
+              return_expr ? expr_result.store(operator, op_exprs) : selector.store(operator, op_exprs)
             end
           elsif selector[operator]
             # Other operators need to be added separately
             add_logical_operator_expression('$and', [operator => op_expr])
           else
-            selector.store(operator, op_expr)
+            return_expr ? expr_result.store(operator, op_expr) : selector.store(operator, op_expr)
           end
 
-          self
+          return_expr ? expr_result : self
+        end
+
+        def regex?(value)
+          return true if value.is_a?(Regexp)
+          return true if value.is_a?(BSON::Regexp::Raw)
+
+          false
         end
 
         # Adds an operator expression to the selector.

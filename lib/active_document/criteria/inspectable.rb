@@ -17,6 +17,7 @@ module ActiveDocument
       def inspect
         <<~INSPECT
           #<ActiveDocument::Criteria
+            ast:      #{ast.inspect}
             selector: #{selector.inspect}
             options:  #{options.inspect}
             class:    #{klass}

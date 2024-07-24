@@ -24,11 +24,15 @@ module ActiveDocument
     #   document.apply_default_scoping
     #
     # @return [ true | false ] If default scoping was applied.
-    def apply_default_scoping
+    def apply_default_scoping(attrs = nil)
       return unless default_scoping
 
       default_scoping.call.selector.each do |field, value|
-        attributes[field] = value unless value.respond_to?(:each)
+        set_value = value.is_a?(Hash) && value['$eq'].presence ? value['$eq'] : value
+        already_has_attrs = (set_value == attrs&.dig(*field.split('.')))
+        next if already_has_attrs
+
+        attributes[field] = set_value unless set_value.respond_to?(:each)
       end
     end
 

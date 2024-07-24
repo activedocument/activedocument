@@ -4,9 +4,9 @@ module ActiveDocument
   class Criteria
     module Queryable
 
-      # The selector is a special kind of hash that knows how to serialize values
+      # This selector is a special kind of hash that knows how to serialize values
       # coming into it as well as being alias and locale aware for key names.
-      class Selector < Smash
+      class SelectorSmash < Smash
 
         # Merges another selector into this one.
         #
@@ -83,9 +83,11 @@ module ActiveDocument
         # @return [ Array<String, String> ] The store name and store value.
         def store_creds(name, serializer, value)
           store_name = localized_key(name, serializer)
+          store_value = value['$eq'] if value.is_a?(Hash) && value.keys.size == 1 && value.keys.first == '$eq'
+          store_value ||= value
 
-          if value.is_a?(Range)
-            evolve_range(store_name, serializer, value)
+          if store_value.is_a?(Range)
+            evolve_range(store_name, serializer, store_value)
           else
             [store_name, evolve(serializer, value)]
           end
@@ -183,13 +185,28 @@ module ActiveDocument
         #
         # @return [ Object ] The serialized hash.
         def evolve_hash(serializer, value)
+          result = value.dup
+
           value.each_pair do |operator, val|
-            value[operator] = if /exists|type|size/.match?(operator)
-                                val
-                              else
-                                evolve(serializer, val)
-                              end
+            if operator == '$eq' && val.is_a?(Range)
+              result.delete('$eq')
+              evolved = evolve_range('', serializer, val).last
+              result.merge!(evolved)
+            elsif operator == '$ne' && val.is_a?(Range)
+              result.delete('$ne')
+              evolved = evolve_range('', serializer, val).last
+              result.merge!('$not' => evolved)
+            else
+              result[operator] =
+                if /exists|type|size/.match?(operator)
+                  val
+                else
+                  evolve(serializer, val)
+                end
+            end
           end
+
+          result
         end
 
         # Evolve a single key selection with range values. This method traverses
