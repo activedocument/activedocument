@@ -178,7 +178,7 @@ module ActiveDocument
     #
     # @return [ Object ] The id.
     def extract_id
-      selector_render['_id'] || selector_render[:_id] || selector_render['id'] || selector_render[:id]
+      selector_smash['_id'] || selector_smash[:_id] || selector_smash['id'] || selector_smash[:id]
     end
 
     # Adds a criterion to the +Criteria+ that specifies additional options

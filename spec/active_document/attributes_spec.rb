@@ -2034,7 +2034,7 @@ describe ActiveDocument::Attributes do
       end
 
       it 'adds the alias for criteria' do
-        expect(Product.where(cost: 500).selector_render).to eq('price' => 500)
+        expect(Product.where(cost: 500).selector_smash).to eq('price' => 500)
       end
 
       it 'aliases the getter' do

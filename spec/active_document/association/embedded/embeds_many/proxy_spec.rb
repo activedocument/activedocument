@@ -3150,7 +3150,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     end
 
     it 'returns with an empty selector' do
-      expect(scoped.selector_render).to be_empty
+      expect(scoped.selector_smash).to be_empty
     end
   end
 
@@ -3237,7 +3237,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     end
 
     it 'returns with an empty selector' do
-      expect(unscoped.selector_render).to be_empty
+      expect(unscoped.selector_smash).to be_empty
     end
   end
 

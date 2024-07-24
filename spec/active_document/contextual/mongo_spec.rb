@@ -2688,7 +2688,7 @@ describe ActiveDocument::Contextual::Mongo do
     end
 
     it 'sets the view selector' do
-      expect(context.view.selector_render).to eq({ 'name' => 'Depeche Mode' })
+      expect(context.view.selector_smash).to eq({ 'name' => 'Depeche Mode' })
     end
   end
 

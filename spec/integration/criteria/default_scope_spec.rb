@@ -27,7 +27,7 @@ describe 'Criteria and default scope' do
       let(:base) { Appointment.where }
 
       it 'has default scope' do
-        expect(base.selector_render).to eq({ 'active' => true })
+        expect(base.selector_smash).to eq({ 'active' => true })
       end
 
       describe '.any_of with single args' do
@@ -36,7 +36,7 @@ describe 'Criteria and default scope' do
         end
 
         it 'maintains default scope conditions' do
-          expect(criteria.selector_render).to eq({ 'active' => true, 'timed' => true })
+          expect(criteria.selector_smash).to eq({ 'active' => true, 'timed' => true })
         end
       end
 
@@ -46,7 +46,7 @@ describe 'Criteria and default scope' do
         end
 
         it 'adds new condition in parallel to default scope conditions' do
-          expect(criteria.selector_render).to eq({
+          expect(criteria.selector_smash).to eq({
             'active' => true,
             '$or' => [
               { 'foobar' => false },
@@ -66,7 +66,7 @@ describe 'Criteria and default scope' do
         end
 
         it 'adds new condition in parallel to default scope conditions' do
-          expect(criteria.selector_render).to eq({
+          expect(criteria.selector_smash).to eq({
             'active' => true,
             '$or' => [
               { 'foobar' => false },

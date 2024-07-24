@@ -1166,7 +1166,7 @@ describe ActiveDocument::Fields do
         end
 
         it 'properly serializes the aliased field' do
-          expect(criteria.selector_render).to eq({ 'aliased' => true })
+          expect(criteria.selector_smash).to eq({ 'aliased' => true })
         end
       end
     end

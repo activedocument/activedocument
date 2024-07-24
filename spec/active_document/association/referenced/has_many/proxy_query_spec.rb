@@ -9,14 +9,14 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     let(:criteria) { company.emails }
 
     it 'generates correct query' do
-      expect(criteria.selector_render).to eq('f' => 123)
+      expect(criteria.selector_smash).to eq('f' => 123)
     end
 
     context 'unscoped' do
       let(:criteria) { company.emails.unscoped }
 
       it 'generates correct query' do
-        expect(criteria.selector_render).to eq('f' => 123)
+        expect(criteria.selector_smash).to eq('f' => 123)
       end
     end
   end
