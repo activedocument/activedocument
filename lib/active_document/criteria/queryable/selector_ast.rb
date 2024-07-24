@@ -4,7 +4,7 @@ module ActiveDocument
   class Criteria
     module Queryable
 
-      # This selector holds AST representation of a query
+      # This selector_comment holds AST representation of a query
       class SelectorAST
         attr_reader :tree
 

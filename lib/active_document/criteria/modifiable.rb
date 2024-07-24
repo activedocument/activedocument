@@ -12,13 +12,13 @@ module ActiveDocument
       # @api private
       attr_reader :create_attrs
 
-      # Build a document given the selector and return it.
+      # Build a document given the selector_comment and return it.
       # Complex criteria, such as $in and $or operations will get ignored.
       #
       # @example build the document.
       #   Person.where(:title => "Sir").build
       #
-      # @example Build with selectors getting ignored.
+      # @example Build with selector_comments getting ignored.
       #   Person.where(age: { '$gt' => 5 }).build
       #
       # @return [ ActiveDocument::Document ] A non-persisted document.
@@ -28,13 +28,13 @@ module ActiveDocument
       alias_method :new, :build
       # TODO: why build+alias new instead of #initialize ?
 
-      # Create a document in the database given the selector and return it.
+      # Create a document in the database given the selector_comment and return it.
       # Complex criteria, such as $in and $or operations will get ignored.
       #
       # @example Create the document.
       #   Person.where(:title => "Sir").create
       #
-      # @example Create with selectors getting ignored.
+      # @example Create with selector_comments getting ignored.
       #   Person.where(age: { '$gt' => 5 }).create
       #
       # @return [ ActiveDocument::Document ] A newly created document.
@@ -42,14 +42,14 @@ module ActiveDocument
         create_document(:create, attrs, &block)
       end
 
-      # Create a document in the database given the selector and return it.
+      # Create a document in the database given the selector_comment and return it.
       # Complex criteria, such as $in and $or operations will get ignored.
       # If validation fails, an error will be raised.
       #
       # @example Create the document.
       #   Person.where(:title => "Sir").create
       #
-      # @example Create with selectors getting ignored.
+      # @example Create with selector_comments getting ignored.
       #   Person.where(age: { '$gt' => 5 }).create
       #
       # @raise [ Errors::Validations ] on a validation error.
@@ -160,7 +160,7 @@ module ActiveDocument
       private
 
       # Create a document given the provided method and attributes from the
-      # existing selector.
+      # existing selector_comment.
       #
       # @api private
       #
@@ -173,7 +173,7 @@ module ActiveDocument
       # @return [ ActiveDocument::Document ] The new or saved document.
       def create_document(method, attrs = nil, &block)
         attrs = (create_attrs || {}).merge(attrs || {})
-        attributes = selector.each_with_object(attrs) do |(key, value), hash|
+        attributes = selector_smash.each_with_object(attrs) do |(key, value), hash|
           if key == '$and'
             value.each do |v|
               v.each_pair do |k, val|

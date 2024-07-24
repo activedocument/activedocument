@@ -756,7 +756,7 @@ describe ActiveDocument::Criteria::Modifiable do
               criteria.embedded = true
               criteria.association = Band.reflect_on_association(:records)
               criteria.parent_document = band
-              criteria.selector = { 'records' => { 'producers' => { '$in' => ['nonexistent'] } } }
+              criteria.selector_smash = { 'records' => { 'producers' => { '$in' => ['nonexistent'] } } }
             end
           end
 
@@ -1646,7 +1646,7 @@ describe ActiveDocument::Criteria::Modifiable do
       end
 
       it 'does not modify the selector' do
-        expect(Person.create_with(attrs).selector[:username]).to be_nil
+        expect(Person.create_with(attrs).selector_render[:username]).to be_nil
       end
 
       it 'create_attrs is modified' do
@@ -1734,7 +1734,7 @@ describe ActiveDocument::Criteria::Modifiable do
           end
 
           it 'does not modify the selector' do
-            expect(criteria.create_with(attrs).selector).to eq(criteria_selector)
+            expect(criteria.create_with(attrs).selector_render).to eq(criteria_selector)
           end
 
           it 'overwrites all the original attributes' do
@@ -1750,7 +1750,7 @@ describe ActiveDocument::Criteria::Modifiable do
         end
 
         it 'does not modify the selector' do
-          expect(criteria.create_with(attrs).selector).to eq(criteria_selector)
+          expect(criteria.create_with(attrs).selector_render).to eq(criteria_selector)
         end
 
         it 'only overwrites the shared attributes' do

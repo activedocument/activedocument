@@ -7,7 +7,7 @@ describe 'Queries on Date fields' do
     Band.where(founded: arg)
   end
 
-  let(:selector) { query.selector }
+  let(:selector) { query.selector_render }
 
   shared_examples 'converts to beginning of day in UTC' do
     it 'converts to beginning of day in UTC' do

@@ -6,12 +6,12 @@ module ActiveDocument
 
       # An queryable selectable is selectable, in that it has the ability to select
       # document from the database. The selectable module brings all functionality
-      # to the selectable that has to do with building MongoDB selectors.
+      # to the selectable that has to do with building MongoDB selector_comments.
       module Selectable # rubocop:disable Metrics/ModuleLength
 
         # @attribute [rw] negating If the next expression is negated.
-        # @attribute [rw] selector The query selector.
-        attr_accessor :negating, :selector, :ast
+        # @attribute [rw] selector_comment The query selector_comment.
+        attr_accessor :negating, :selector_smash, :selector_ast
 
         # Clear the current negating flag, used after cloning.
         #
@@ -25,7 +25,7 @@ module ActiveDocument
         end
 
         def rebuild_ast!
-          self.ast = SelectorAST.new(selector)
+          self.selector_ast = SelectorAST.new(selector_smash)
           self
         end
 
@@ -84,11 +84,11 @@ module ActiveDocument
         # @return [ Selectable ] The new selectable.
         def all_of(*criteria)
           flatten_args(criteria).inject(clone) do |c, new_s|
-            new_s = new_s.selector if new_s.is_a?(Selectable)
+            new_s = new_s.selector_smash if new_s.is_a?(Selectable)
             normalized = QueryNormalizer.normalize_expr(new_s, negating: negating?)
             normalized.each do |k, v|
               k = k.to_s
-              if c.selector[k]
+              if c.selector_smash[k]
                 # There is already a condition on k.
                 # If v is an operator, and all existing conditions are
                 # also operators, and v isn't present in existing conditions,
@@ -97,11 +97,11 @@ module ActiveDocument
                 if v.is_a?(Hash) &&
                    v.length == 1 &&
                    (new_k = v.keys.first).start_with?('$') &&
-                   (existing_kv = c.selector[k]).is_a?(Hash) &&
+                   (existing_kv = c.selector_smash[k]).is_a?(Hash) &&
                    !existing_kv.key?(new_k) &&
                    existing_kv.keys.all? { |sub_k| sub_k.start_with?('$') }
-                  merged_v = c.selector[k].merge(v)
-                  c.selector.store(k, merged_v)
+                  merged_v = c.selector_smash[k].merge(v)
+                  c.selector_smash.store(k, merged_v)
                 else
                   c =
                     if v.is_a?(Hash) && v.keys[0].start_with?('$')
@@ -118,16 +118,16 @@ module ActiveDocument
                     end
                 end
               elsif v.is_a?(Hash) && v.keys[0].start_with?('$')
-                c.selector.store(k, v)
+                c.selector_smash.store(k, v)
               elsif v.is_a?(Array) && v.all?(Hash)
                 if v.size == 1 && v[0][k].present?
-                  c.selector.store(k, v[0][k])
+                  c.selector_smash.store(k, v[0][k])
                 else
-                  c.selector.store(k, v)
+                  c.selector_smash.store(k, v)
                 end
               else
                 op = regex?(v) ? '$regex' : '$eq'
-                c.selector.store(k, { op => v })
+                c.selector_smash.store(k, { op => v })
               end
             end
             c
@@ -152,7 +152,7 @@ module ActiveDocument
           # TODO: this will override existing conditions on the field
           clone.tap do |query|
             criterion&.each_pair do |field, value|
-              query.selector.store(
+              query.selector_smash.store(
                 field,
                 { '$gte' => value.min, '$lte' => value.max }
               )
@@ -235,14 +235,14 @@ module ActiveDocument
           # TODO: check if this overrides existing conditions on the field
           clone.tap do |query|
             criterion&.each_pair do |field, value|
-              query.selector.merge!(field.to_s => value.deep_stringify_keys)
+              query.selector_smash.merge!(field.to_s => value.deep_stringify_keys)
             end
             query.reset_state!
             query.rebuild_ast!
           end
         end
 
-        # Add the $eq criterion to the selector.
+        # Add the $eq criterion to the selector_comment.
         #
         # @example Add the $eq criterion.
         #   selectable.eq(age: 60)
@@ -259,7 +259,7 @@ module ActiveDocument
           and_with_operator(criterion, '$eq')
         end
 
-        # Add the $gt criterion to the selector.
+        # Add the $gt criterion to the selector_comment.
         #
         # @example Add the $gt criterion.
         #   selectable.gt(age: 60)
@@ -276,7 +276,7 @@ module ActiveDocument
           and_with_operator(criterion, '$gt')
         end
 
-        # Add the $gte criterion to the selector.
+        # Add the $gte criterion to the selector_comment.
         #
         # @example Add the $gte criterion.
         #   selectable.gte(age: 60)
@@ -319,7 +319,7 @@ module ActiveDocument
         end
         alias_method :contains_any, :any_in
 
-        # Add the $lt criterion to the selector.
+        # Add the $lt criterion to the selector_comment.
         #
         # @example Add the $lt criterion.
         #   selectable.lt(age: 60)
@@ -336,7 +336,7 @@ module ActiveDocument
           and_with_operator(criterion, '$lt')
         end
 
-        # Add the $lte criterion to the selector.
+        # Add the $lte criterion to the selector_comment.
         #
         # @example Add the $lte criterion.
         #   selectable.lte(age: 60)
@@ -493,10 +493,10 @@ module ActiveDocument
             dup.tap { |query| query.negating = true }
           else
             criteria.compact.inject(clone) do |c, new_s|
-              new_s = new_s.selector if new_s.is_a?(Selectable)
+              new_s = new_s.selector_smash if new_s.is_a?(Selectable)
               QueryNormalizer.normalize_expr(new_s, negating: negating?).each do |k, v|
                 k = k.to_s
-                if c.selector[k] || k.start_with?('$') || (v.is_a?(Hash) && !v['$eq'])
+                if c.selector_smash[k] || k.start_with?('$') || (v.is_a?(Hash) && !v['$eq'])
                   c = c.send(:__combine_criteria__, [{ '$nor' => [{ k => v }] }], '$and')
                 else
                   negated_operator = regex?(v) ? '$not' : '$ne'
@@ -512,14 +512,14 @@ module ActiveDocument
         def __override__(criterion, operator)
           clone.tap do |query|
             criterion&.each_pair do |field, value|
-              selector = query.selector
+              selector_smash = query.selector_smash
               field = field.to_s
               expression = prepare_for_merging(field, operator, value)
-              existing = selector[field]
+              existing = selector_smash[field]
               if existing.respond_to?(:merge!)
-                selector.store(field, existing.merge!(expression))
+                selector_smash.store(field, existing.merge!(expression))
               else
-                selector.store(field, expression)
+                selector_smash.store(field, expression)
               end
             end
             query.reset_state!
@@ -551,7 +551,7 @@ module ActiveDocument
 
           exprs = criteria.map do |criterion|
             if criterion.is_a?(Selectable)
-              QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
+              QueryNormalizer.normalize_expr(criterion.selector_smash, negating: negating?)
             else
               criterion.to_h do |field, value|
                 field_s = field.to_s
@@ -598,15 +598,15 @@ module ActiveDocument
           criteria = flatten_args(criteria)
           return clone if criteria.empty?
 
-          # When we have a single criteria AND stored selector is empty - any_of behaves like and.
+          # When we have a single criteria AND stored selector_comment is empty - any_of behaves like and.
           # Note: criteria can be a Query object, which #where method does not support.
-          return all_of(*criteria) if selector.empty? && criteria.length == 1
+          return all_of(*criteria) if selector_smash.empty? && criteria.length == 1
 
           # When we have multiple criteria, combine them all with $or
           # and add the result to self.
           exprs = criteria.map do |criterion|
             if criterion.is_a?(Selectable)
-              QueryNormalizer.normalize_expr(criterion.selector, negating: negating?)
+              QueryNormalizer.normalize_expr(criterion.selector_smash, negating: negating?)
             else
               criterion.to_h do |field, value|
                 field_s = field.to_s
@@ -667,12 +667,12 @@ module ActiveDocument
           end
         end
 
-        # Construct a text search selector.
+        # Construct a text search selector_comment.
         #
-        # @example Construct a text search selector.
+        # @example Construct a text search selector_comment.
         #   selectable.text_search("testing")
         #
-        # @example Construct a text search selector with options.
+        # @example Construct a text search selector_comment with options.
         #   selectable.text_search("testing", :$language => "fr")
         #
         # @note Per https://www.mongodb.com/docs/manual/reference/operator/query/text/
@@ -692,16 +692,16 @@ module ActiveDocument
           clone.tap do |query|
             criterion = { '$text' => { '$search' => terms } }
             criterion['$text'].merge!(opts) if opts
-            if query.selector['$text']
+            if query.selector_smash['$text']
               # Per https://www.mongodb.com/docs/manual/reference/operator/query/text/
               # multiple $text expressions are not currently supported by
               # MongoDB server, but build the query correctly instead of
               # overwriting previous text search condition with the currently
               # given one.
               ActiveDocument.logger.warn('Multiple $text expressions per query are not currently supported by the server')
-              query.selector = { '$and' => [query.selector] }.merge(criterion)
+              query.selector_smash = { '$and' => [query.selector] }.merge(criterion)
             else
-              query.selector = query.selector.merge(criterion)
+              query.selector_smash = query.selector.merge(criterion)
             end
           end
         end
@@ -783,13 +783,13 @@ module ActiveDocument
         # @return [ Selectable ] The new selectable.
         def __combine_criteria__(criteria, operator)
           clone.tap do |query|
-            sel = query.selector
+            sel = query.selector_smash
             criteria.flatten.each do |expr|
               next unless expr
 
               result_criteria = sel[operator] || []
               if expr.is_a?(Selectable)
-                expr = expr.selector
+                expr = expr.selector_smash
               end
               normalized = QueryNormalizer.normalize_expr(expr, negating: negating?)
 
@@ -955,7 +955,7 @@ module ActiveDocument
           # @return [ Array<Symbol> ] The names of the forwardable methods.
           def forwardables
             public_instance_methods(false) -
-              %i[negating negating= negating? selector selector=]
+              %i[negating negating= negating? selector_smash selector_smash=]
           end
         end
       end

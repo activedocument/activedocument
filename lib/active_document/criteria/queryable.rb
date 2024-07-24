@@ -35,7 +35,7 @@ module ActiveDocument
       # @attribute [r] serializers The serializers.
       attr_reader :serializers
 
-      # Is this queryable equal to another object? Is true if the selector and
+      # Is this queryable equal to another object? Is true if the selector_comment and
       # options are equal.
       #
       # @example Are the objects equal?
@@ -47,7 +47,7 @@ module ActiveDocument
       def ==(other)
         return false unless other.is_a?(Queryable)
 
-        selector == other.selector && ast == other.ast && options == other.options
+        selector_smash == other.selector_smash && selector_ast == other.selector_ast && options == other.options
       end
 
       # Initialize the new queryable. Will yield itself to the block if a block
@@ -68,6 +68,7 @@ module ActiveDocument
         @serializers = serializers
         @options = Options.new(aliases, serializers, associations, aliased_associations)
 
+        # TODO: troughout the code, replace all instances of _smash call to _ast call
         # TODO: remove when possible
         @selector_smash = SelectorSmash.new(aliases, serializers, associations, aliased_associations)
 
@@ -75,15 +76,16 @@ module ActiveDocument
         # @ast = nil | Node.new | smth else
         # BUT first, we need to make sure that its possible to build AST at all,
         # and parser comes handy to test that programmatically.
-        @ast = SelectorAST.new(@selector_smash)
+        @selector_ast = SelectorAST.new(@selector_smash)
 
         @pipeline = Pipeline.new(aliases)
         @aggregating = nil
         yield(self) if block_given?
       end
 
-      def selector
-        ActiveDocument::Renderer::MQL.render(@ast)
+      # should be used only when passing hash into MongoDB Driver
+      def selector_render
+        ActiveDocument::Renderer::MQL.render(@selector_ast)
       end
 
       # Handle the creation of a copy via #clone or #dup.
@@ -94,8 +96,8 @@ module ActiveDocument
       # @param [ ActiveDocument::Criteria::Queryable ] other The original copy.
       def initialize_copy(other)
         @options = other.options.__deep_copy__
-        @selector = other.selector.__deep_copy__
-        @ast = other.ast.__deep_copy__
+        @selector_smash = other.selector_smash.__deep_copy__
+        @selector_ast = other.selector_ast.__deep_copy__
         @pipeline = other.pipeline.__deep_copy__
       end
     end

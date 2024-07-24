@@ -39,7 +39,7 @@ describe ActiveDocument::Query do
 
       let(:other) do
         described_class.new do |query|
-          query.selector['field'] = 'value'
+          query.selector_render['field'] = 'value'
         end
       end
 
@@ -69,7 +69,7 @@ describe ActiveDocument::Query do
       end
 
       it 'initializes the selector' do
-        expect(query.selector).to eq({})
+        expect(query.selector_render).to eq({})
       end
 
       it 'initializes the options' do
@@ -81,12 +81,12 @@ describe ActiveDocument::Query do
 
       let(:query) do
         described_class.new do |query|
-          query.selector['field'] = 'value'
+          query.selector_render['field'] = 'value'
         end
       end
 
       it 'yields to the block' do
-        expect(query.selector).to eq({ 'field' => 'value' })
+        expect(query.selector_render).to eq({ 'field' => 'value' })
       end
     end
   end
@@ -99,7 +99,7 @@ describe ActiveDocument::Query do
 
     let(:query) do
       described_class.new do |query|
-        query.selector['field'] = 'value'
+        query.selector_render['field'] = 'value'
         query.options['sort'] = { 'field' => sort }
       end
     end
@@ -117,7 +117,7 @@ describe ActiveDocument::Query do
     end
 
     it 'retains the selector values' do
-      expect(cloned.selector).to eq({ 'field' => 'value' })
+      expect(cloned.selector_render).to eq({ 'field' => 'value' })
     end
 
     it 'retains the option values' do
@@ -125,7 +125,7 @@ describe ActiveDocument::Query do
     end
 
     it 'deep copies the selector' do
-      expect(cloned.selector).to_not equal(query.selector)
+      expect(cloned.selector_render).to_not equal(query.selector_render)
     end
 
     it 'deep copies the options' do

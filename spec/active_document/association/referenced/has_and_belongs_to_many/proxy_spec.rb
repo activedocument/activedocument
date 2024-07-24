@@ -3010,7 +3010,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it 'returns with an empty selector' do
-        expect(scoped.selector).to eq('_id' => { '$in' => [] })
+        expect(scoped.selector_render).to eq('_id' => { '$in' => [] })
       end
     end
 
@@ -3021,7 +3021,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
       end
 
       it 'returns with a selector including association element ids' do
-        expect(scoped.selector).to eq('_id' => { '$in' => [123] })
+        expect(scoped.selector_render).to eq('_id' => { '$in' => [123] })
       end
     end
   end

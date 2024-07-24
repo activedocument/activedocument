@@ -88,7 +88,7 @@ module ActiveDocument
 
           clone.tap do |query|
             unless aggregating?
-              query.pipeline.concat(query.selector.to_pipeline)
+              query.pipeline.concat(query.selector_smash.to_pipeline)
               query.pipeline.concat(query.options.to_pipeline)
               query.aggregating = true
             end

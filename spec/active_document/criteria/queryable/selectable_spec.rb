@@ -27,7 +27,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'combines the conditions with $and' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'first' => { operator => [1, 2] },
           '$and' => [{ 'first' => { operator => [3, 4] } }]
         })
@@ -42,7 +42,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'combines the conditions with $and' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           '_id' => { operator => [1, 2] },
           '$and' => [{ '_id' => { operator => [3, 4] } }]
         })
@@ -61,7 +61,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'combines the conditions with $and' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'field' => { operator => [1, 2] },
           '$and' => [{ 'field' => { operator => [3, 4] } }]
         })
@@ -78,7 +78,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'expands range to array' do
-          expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+          expect(selection.selector_render).to eq({ 'foo' => { operator => [2, 3, 4] } })
         end
       end
 
@@ -88,7 +88,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'expands range to array' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'foo' => { operator => [1, 2, 3] },
             '$and' => [{ 'foo' => { operator => [2, 3, 4] } }]
           })
@@ -101,7 +101,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'expands range to array' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'foo' => { operator => [1, 2, 3] },
             '$and' => [{ 'foo' => { operator => [2, 3, 4] } }]
           })
@@ -119,7 +119,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'intersects the conditions' do
-  #       expect(selection.selector).to eq({ 'first' => { operator => [2] } })
+  #       expect(selection.selector_render).to eq({ 'first' => { operator => [2] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -131,7 +131,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'intersects the conditions' do
-  #       expect(selection.selector).to eq({ '_id' => { operator => [2] } })
+  #       expect(selection.selector_render).to eq({ '_id' => { operator => [2] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -147,7 +147,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'intersects the conditions' do
-  #       expect(selection.selector).to eq({ 'field' => { operator => [2] } })
+  #       expect(selection.selector_render).to eq({ 'field' => { operator => [2] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -161,7 +161,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [2, 3, 4] } })
   #       end
   #     end
   #
@@ -171,7 +171,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [2, 3] } })
   #       end
   #     end
   #
@@ -181,7 +181,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [2, 3] } })
   #       end
   #     end
   #   end
@@ -195,7 +195,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'unions the conditions' do
-  #       expect(selection.selector).to eq({ 'first' => { operator => [1, 2, 3, 4] } })
+  #       expect(selection.selector_render).to eq({ 'first' => { operator => [1, 2, 3, 4] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -207,7 +207,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'unions the conditions' do
-  #       expect(selection.selector).to eq({ '_id' => { operator => [1, 2, 3, 4] } })
+  #       expect(selection.selector_render).to eq({ '_id' => { operator => [1, 2, 3, 4] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -223,7 +223,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'intersects the conditions' do
-  #       expect(selection.selector).to eq({ 'field' => { operator => [1, 2, 3] } })
+  #       expect(selection.selector_render).to eq({ 'field' => { operator => [1, 2, 3] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -237,7 +237,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [2, 3, 4] } })
   #       end
   #     end
   #
@@ -248,7 +248,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [1, 2, 3, 4] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [1, 2, 3, 4] } })
   #       end
   #     end
   #
@@ -258,7 +258,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [1, 2, 3, 4] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [1, 2, 3, 4] } })
   #       end
   #     end
   #   end
@@ -272,7 +272,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'overwrites the first condition' do
-  #       expect(selection.selector).to eq({ 'first' => { operator => [3, 4] } })
+  #       expect(selection.selector_render).to eq({ 'first' => { operator => [3, 4] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -284,7 +284,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'overwrites the first condition' do
-  #       expect(selection.selector).to eq({ '_id' => { operator => [3, 4] } })
+  #       expect(selection.selector_render).to eq({ '_id' => { operator => [3, 4] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -300,7 +300,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #     end
   #
   #     it 'intersects the conditions' do
-  #       expect(selection.selector).to eq({ 'field' => { operator => [2, 3] } })
+  #       expect(selection.selector_render).to eq({ 'field' => { operator => [2, 3] } })
   #     end
   #
   #     it_behaves_like 'returns a cloned query'
@@ -315,7 +315,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [2, 3, 4] } })
   #       end
   #     end
   #
@@ -325,7 +325,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [2, 3, 4] } })
   #       end
   #     end
   #
@@ -335,7 +335,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
   #       end
   #
   #       it 'expands range to array' do
-  #         expect(selection.selector).to eq({ 'foo' => { operator => [2, 3, 4] } })
+  #         expect(selection.selector_render).to eq({ 'foo' => { operator => [2, 3, 4] } })
   #       end
   #     end
   #   end
@@ -352,7 +352,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'does not add any criterion' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -369,7 +369,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         query.all(field: [1, 2])
       end
 
-      it { expect { selection.selector }.to raise_error(ArgumentError) }
+      it { expect { selection.selector_render }.to raise_error(ArgumentError) }
     end
   end
 
@@ -382,7 +382,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         query.contains_all
       end
 
-      it { expect { selection.selector }.to raise_error(ActiveDocument::Errors::CriteriaArgumentRequired) }
+      it { expect { selection.selector_render }.to raise_error(ActiveDocument::Errors::CriteriaArgumentRequired) }
     end
 
     it_behaves_like 'requires a non-nil argument'
@@ -397,7 +397,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
+            expect(selection.selector_render).to eq({ 'field' => { '$all' => [1, 2] } })
           end
 
           it 'returns a cloned query' do
@@ -412,7 +412,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector with wrapped value' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1] } })
+            expect(selection.selector_render).to eq({ 'field' => { '$all' => [1] } })
           end
 
           it 'returns a cloned query' do
@@ -449,7 +449,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
+            expect(selection.selector_render).to eq({ 'field' => { '$all' => [1, 2] } })
           end
 
           it 'returns a cloned query' do
@@ -464,7 +464,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all selector with wrapped value' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1] } })
+            expect(selection.selector_render).to eq({ 'field' => { '$all' => [1] } })
           end
 
           it 'returns a cloned query' do
@@ -483,7 +483,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $all selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$all' => [1, 2] },
             'second' => { '$all' => [3, 4] }
           })
@@ -504,7 +504,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $all selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$all' => [1, 2] },
             'second' => { '$all' => [3, 4] }
           })
@@ -535,7 +535,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $gte and $lte selectors' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'field' => { '$gte' => 1, '$lte' => 10 }
         })
       end
@@ -554,7 +554,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $gte and $lte selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$gte' => 1, '$lte' => 10 },
             'key' => { '$gte' => 5, '$lte' => 7 }
           })
@@ -583,7 +583,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $elemMatch expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'users' => { '$elemMatch' => { 'name' => 'value' } }
           })
         end
@@ -604,7 +604,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $elemMatch expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'users' => { '$elemMatch' => { 'time' => { '$gt' => time } } }
           })
         end
@@ -627,7 +627,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $elemMatch expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'users' => { '$elemMatch' => { 'name' => 'value' } },
             'comments' => { '$elemMatch' => { 'text' => 'value' } }
           })
@@ -649,7 +649,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $elemMatch expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'users' => { '$elemMatch' => { 'name' => 'value' } },
             'comments' => { '$elemMatch' => { 'text' => 'value' } }
           })
@@ -668,7 +668,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds an $elemMatch expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'users' => { '$elemMatch' => { 'name' => 'value' } },
             '$and' => [{ 'users' => { '$elemMatch' => { 'state' => 'new' } } }]
           })
@@ -697,7 +697,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $exists expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'users' => { '$exists' => true }
           })
         end
@@ -714,7 +714,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $exists expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'users' => { '$exists' => true }
           })
         end
@@ -739,7 +739,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $exists expression' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'users' => { '$exists' => true },
               'comments' => { '$exists' => true }
             })
@@ -760,7 +760,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $exists expression' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'users' => { '$exists' => true },
               'comments' => { '$exists' => true }
             })
@@ -783,7 +783,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $exists expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'users' => { '$exists' => true },
             'comments' => { '$exists' => true }
           })
@@ -812,7 +812,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $geoIntersects expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => {
               '$geoIntersects' => {
                 '$geometry' => {
@@ -834,7 +834,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $geoIntersects expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => {
               '$geoIntersects' => {
                 '$geometry' => {
@@ -856,7 +856,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $geoIntersects expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => {
               '$geoIntersects' => {
                 '$geometry' => {
@@ -877,7 +877,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $geoIntersects expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => {
               '$geoWithin' => {
                 '$geometry' => {
@@ -895,7 +895,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $geoIntersects expression' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'location' => {
                 '$geoWithin' => {
                   '$box' => [
@@ -926,7 +926,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $gt selector' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'field' => { '$gt' => 10 }
         })
       end
@@ -945,7 +945,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $gt selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$gt' => 10 },
             'second' => { '$gt' => 15 }
           })
@@ -966,7 +966,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $gt selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$gt' => 10 },
             'second' => { '$gt' => 15 }
           })
@@ -984,7 +984,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds a second $gt selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$gt' => 10 },
             '$and' => [{ 'first' => { '$gt' => 15 } }]
           })
@@ -1011,7 +1011,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $gte selector' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'field' => { '$gte' => 10 }
         })
       end
@@ -1030,7 +1030,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $gte selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$gte' => 10 },
             'second' => { '$gte' => 15 }
           })
@@ -1051,7 +1051,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $gte selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$gte' => 10 },
             'second' => { '$gte' => 15 }
           })
@@ -1069,7 +1069,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds a second $gte selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$gte' => 10 },
             '$and' => [{ 'first' => { '$gte' => 15 } }]
           })
@@ -1097,7 +1097,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $in selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$in' => [1, 2] }
           })
         end
@@ -1114,7 +1114,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $in selector with wrapped value' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$in' => [1] }
           })
         end
@@ -1134,7 +1134,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $in selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$in' => [1, 2] },
             'second' => { '$in' => [3, 4] }
           })
@@ -1155,7 +1155,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $in selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$in' => [1, 2] },
             'second' => { '$in' => [3, 4] }
           })
@@ -1187,7 +1187,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $lt selector' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'field' => { '$lt' => 10 }
         })
       end
@@ -1206,7 +1206,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $lt selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$lt' => 10 },
             'second' => { '$lt' => 15 }
           })
@@ -1227,7 +1227,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $lt selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$lt' => 10 },
             'second' => { '$lt' => 15 }
           })
@@ -1245,7 +1245,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds a second $lt selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$lt' => 10 },
             '$and' => [{ 'first' => { '$lt' => 15 } }]
           })
@@ -1272,7 +1272,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $lte selector' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'field' => { '$lte' => 10 }
         })
       end
@@ -1291,7 +1291,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $lte selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$lte' => 10 },
             'second' => { '$lte' => 15 }
           })
@@ -1312,7 +1312,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $lte selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$lte' => 10 },
             'second' => { '$lte' => 15 }
           })
@@ -1330,7 +1330,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds a second $lte selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$lte' => 10 },
             '$and' => [{ 'first' => { '$lte' => 15 } }]
           })
@@ -1359,7 +1359,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $maxDistance expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => { '$near' => [1, 1], '$maxDistance' => 50 }
           })
         end
@@ -1385,7 +1385,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $mod expression' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'value' => { '$mod' => [10, 1] }
         })
       end
@@ -1404,7 +1404,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $mod expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'value' => { '$mod' => [10, 1] },
             'comments' => { '$mod' => [10, 1] }
           })
@@ -1426,7 +1426,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $mod expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'value' => { '$mod' => [10, 1] },
             'result' => { '$mod' => [10, 1] }
           })
@@ -1453,7 +1453,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $ne expression' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'value' => { '$ne' => 10 }
         })
       end
@@ -1475,7 +1475,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $ne expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'value' => { '$ne' => 10 },
             'comments' => { '$ne' => 10 }
           })
@@ -1497,7 +1497,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $ne expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'value' => { '$ne' => 10 },
             'result' => { '$ne' => 10 }
           })
@@ -1524,7 +1524,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $near expression' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'location' => { '$near' => [20, 21] }
         })
       end
@@ -1543,7 +1543,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $near expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => { '$near' => [20, 21] },
             'comments' => { '$near' => [20, 21] }
           })
@@ -1565,7 +1565,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $near expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => { '$near' => [20, 21] },
             'comments' => { '$near' => [20, 21] }
           })
@@ -1592,7 +1592,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $nearSphere expression' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'location' => { '$nearSphere' => [20, 21] }
         })
       end
@@ -1611,7 +1611,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nearSphere expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => { '$nearSphere' => [20, 21] },
             'comments' => { '$nearSphere' => [20, 21] }
           })
@@ -1633,7 +1633,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nearSphere expression' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'location' => { '$nearSphere' => [20, 21] },
             'comments' => { '$nearSphere' => [20, 21] }
           })
@@ -1662,7 +1662,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nin selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$nin' => [1, 2] }
           })
         end
@@ -1679,7 +1679,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nin selector with wrapped value' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$nin' => [1] }
           })
         end
@@ -1699,7 +1699,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nin selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$nin' => [1, 2] },
             'second' => { '$nin' => [3, 4] }
           })
@@ -1720,7 +1720,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nin selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$nin' => [1, 2] },
             'second' => { '$nin' => [3, 4] }
           })
@@ -1753,7 +1753,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $size selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$size' => 10 }
           })
         end
@@ -1770,7 +1770,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $size selector with an integer' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$size' => 10 }
           })
         end
@@ -1792,7 +1792,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $size selectors' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'first' => { '$size' => 10 },
               'second' => { '$size' => 15 }
             })
@@ -1810,7 +1810,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $size selectors' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'first' => { '$size' => 10 },
               'second' => { '$size' => 15 }
             })
@@ -1832,7 +1832,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $size selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$size' => 10 },
             'second' => { '$size' => 15 }
           })
@@ -1850,7 +1850,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'overwrites the first $size selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$size' => 15 }
           })
         end
@@ -1878,7 +1878,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $type selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$type' => 10 }
           })
         end
@@ -1895,7 +1895,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $type selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$type' => 10 }
           })
         end
@@ -1915,7 +1915,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $type selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$type' => 10 },
             'second' => { '$type' => 15 }
           })
@@ -1936,7 +1936,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $type selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$type' => 10 },
             'second' => { '$type' => 15 }
           })
@@ -1954,7 +1954,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'overwrites the first $type selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$type' => 15 }
           })
         end
@@ -1975,7 +1975,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'constructs a text search document' do
-        expect(selection.selector).to eq({ '$text' => { '$search' => 'testing' } })
+        expect(selection.selector_render).to eq({ '$text' => { '$search' => 'testing' } })
       end
 
       it 'returns the cloned selectable' do
@@ -1989,11 +1989,11 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'constructs a text search document' do
-          expect(selection.selector['$text']['$search']).to eq('essais')
+          expect(selection.selector_render['$text']['$search']).to eq('essais')
         end
 
         it 'add the options to the text search document' do
-          expect(selection.selector['$text'][:$language]).to eq('fr')
+          expect(selection.selector_render['$text'][:$language]).to eq('fr')
         end
 
         it_behaves_like 'returns a cloned query'
@@ -2011,7 +2011,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       # a user supplies more than one text condition.
       it 'merges conditions' do
         expect(ActiveDocument.logger).to receive(:warn)
-        expect(selection.selector).to eq(
+        expect(selection.selector_render).to eq(
           '$and' => [
             { '$text' => { '$search' => 'one' } }
           ],
@@ -2029,7 +2029,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'merges the operators on the same field' do
-        expect(selection.selector).to eq(
+        expect(selection.selector_render).to eq(
           'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 }
         )
       end
@@ -2042,8 +2042,8 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       it 'combines conditions' do
         # TODO: this should be the below:
-        # expect(selection.selector).to eq('$and' => [{ 'field' => 5 }, { 'field' => 10 }])
-        expect(selection.selector).to eq('field' => 5, '$and' => [{ 'field' => 10 }])
+        # expect(selection.selector_render).to eq('$and' => [{ 'field' => 5 }, { 'field' => 10 }])
+        expect(selection.selector_render).to eq('field' => 5, '$and' => [{ 'field' => 10 }])
       end
     end
 
@@ -2053,7 +2053,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'merges the strategies on the same field' do
-        expect(selection.selector).to eq(
+        expect(selection.selector_render).to eq(
           'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 }
         )
       end
@@ -2068,14 +2068,14 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       it 'merges the strategies on the same field' do
         # TODO: this should be the below:
-        # expect(selection.selector).to eq(
+        # expect(selection.selector_render).to eq(
         #   '$and' => [
         #     { 'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 } },
         #     { 'field' => { '$gt' => 6 } },
         #     { 'field' => 42 }
         #   ]
         # )
-        expect(selection.selector).to eq(
+        expect(selection.selector_render).to eq(
           'field' => { '$gt' => 5, '$lt' => 10, '$ne' => 7 },
           '$and' => [{ 'field' => { '$gt' => 6 } }, { 'field' => 42 }]
         )
@@ -2107,7 +2107,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'is and-ed with the previous operators' do
-          expect(criteria.selector).to eq({
+          expect(criteria.selector_render).to eq({
             'views' => { op => 1 },
             '$and' => [{ 'views' => { op => 2 } }]
           })

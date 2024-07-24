@@ -2,22 +2,22 @@
 
 module ActiveDocument
 
-  # This module is responsible for taking update selectors and switching out
+  # This module is responsible for taking update selector_comments and switching out
   # the indexes for the $ positional operator where appropriate.
   module Positional
 
-    # Takes the provided selector and atomic operations and replaces the
+    # Takes the provided selector_comment and atomic operations and replaces the
     # indexes of the embedded documents with the positional operator when
     # needed.
     #
     # @note The only time we can accurately know when to use the positional
     #   operator is at the exact time we are going to persist something. So
-    #   we can tell by the selector that we are sending if it is actually
+    #   we can tell by the selector_comment that we are sending if it is actually
     #   possible to use the positional operator at all. For example, if the
-    #   selector is: { "_id" => 1 }, then we could not use the positional
+    #   selector_comment is: { "_id" => 1 }, then we could not use the positional
     #   operator for updating embedded documents since there would never be a
     #   match - we base whether we can based on the number of levels deep the
-    #   selector goes, and if the id values are not nil.
+    #   selector_comment goes, and if the id values are not nil.
     #
     # @example Process the operations.
     #   positionally(
@@ -25,15 +25,15 @@ module ActiveDocument
     #     { "$set" => { "addresses.0.street" => "hobrecht" }}
     #   )
     #
-    # @param [ Hash ] selector The selector.
+    # @param [ Hash ] selector_comment The selector_comment.
     # @param [ Hash ] operations The update operations.
     # @param [ Hash ] processed The processed update operations.
     #
     # @return [ Hash ] The new operations.
-    def positionally(selector, operations, processed = {})
-      return operations if selector.size == 1 || selector.values.any?(&:nil?)
+    def positionally(selector_local, operations, processed = {})
+      return operations if selector_local.size == 1 || selector_local.values.any?(&:nil?)
 
-      keys = selector.keys.map { |m| m.sub('._id', '') } - ['_id']
+      keys = selector_local.keys.map { |m| m.sub('._id', '') } - ['_id']
       keys = keys.sort_by { |s| s.length * -1 }
       process_operations(keys, operations, processed)
     end
@@ -55,7 +55,7 @@ module ActiveDocument
     end
 
     def replace_index(keys, position)
-      # replace index with $ only if that key is in the selector and it is only
+      # replace index with $ only if that key is in the selector_comment and it is only
       # nested a single level deep.
       matches = position.scan(/\.\d+\./)
       if matches.size == 1

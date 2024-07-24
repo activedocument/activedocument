@@ -28,7 +28,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       shared_examples_for 'adds the conditions to top level' do
 
         it 'adds the conditions to top level' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             'field' => [1, 2]
           )
         end
@@ -71,7 +71,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { base.send(tested_method, other) }
 
       it 'combines' do
-        expect(result.selector).to eq(
+        expect(result.selector_render).to eq(
           'hello' => 'world',
           'foo' => 'bar'
         )
@@ -83,7 +83,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       shared_examples_for 'adds the conditions to top level' do
 
         it 'adds the conditions to top level' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$gt' => 3 }
           })
         end
@@ -119,13 +119,13 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the conditions' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$gte' => Time.new(2020, 1, 1) }
           })
         end
 
         it 'keeps argument type' do
-          expect(selection.selector['field']['$gte']).to be_a(Time)
+          expect(selection.selector_render['field']['$gte']).to be_a(Time)
         end
       end
 
@@ -135,13 +135,13 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the conditions' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$gte' => Time.utc(2020, 1, 1) }
           })
         end
 
         it 'converts argument to a time' do
-          expect(selection.selector['field']['$gte']).to be_a(Time)
+          expect(selection.selector_render['field']['$gte']).to be_a(Time)
         end
       end
 
@@ -151,13 +151,13 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the conditions' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'field' => { '$gte' => Time.utc(2020, 1, 1) }
           })
         end
 
         it 'converts argument to a time' do
-          expect(selection.selector['field']['$gte']).to be_a(Time)
+          expect(selection.selector_render['field']['$gte']).to be_a(Time)
         end
       end
     end
@@ -169,7 +169,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'builds the correct selector' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'test' => { '$elemMatch' => { 'field' => { '$in' => [1, 2] } } }
         })
       end
@@ -186,7 +186,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the conditions to top level' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => [1, 2],
             'second' => [3, 4]
           })
@@ -202,7 +202,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'combines via $and operator' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => [1, 2],
             '$and' => [
               { 'first' => [3, 4] }
@@ -227,7 +227,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'does not add any criterion' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -244,7 +244,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'does not add any criterion' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -264,7 +264,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds all conditions' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'first' => [1, 2],
               '$and' => [
                 { 'first' => [1, 2] }
@@ -281,7 +281,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds all conditions' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'first' => [1, 2],
               '$and' => [
                 { 'first' => { '$gt' => 3 } }
@@ -298,7 +298,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds all conditions' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'first' => { '$lt' => 5, '$gt' => 3 }
             })
           end
@@ -314,7 +314,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds all conditions to top level' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => [1, 2],
             'second' => [3, 4]
           })
@@ -331,7 +331,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'combines via $and operator' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'first' => [1, 2],
               '$and' => [
                 { 'first' => [3, 4] }
@@ -352,7 +352,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
             end
 
             it 'combines via $and operator and stringifies all keys' do
-              expect(selection.selector).to eq({
+              expect(selection.selector_render).to eq({
                 'field' => { '$in' => [1, 2] },
                 '$and' => [
                   { 'field' => { '$in' => [3, 4] } }
@@ -380,7 +380,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           shared_examples_for 'adds the conditions to top level' do
 
             it 'adds the conditions to top level' do
-              expect(selection.selector).to eq({
+              expect(selection.selector_render).to eq({
                 'field' => { '$gt' => 3, '$lt' => 5 }
               })
             end
@@ -417,7 +417,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           shared_examples_for 'combines conditions with $and' do
 
             it 'combines conditions with $and' do
-              expect(selection.selector).to eq({
+              expect(selection.selector_render).to eq({
                 'field' => 3,
                 '$and' => ['field' => { '$lt' => 5 }]
               })
@@ -429,7 +429,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           shared_examples_for 'combines conditions with $eq' do
 
             it 'combines conditions with $eq' do
-              expect(selection.selector).to eq({
+              expect(selection.selector_render).to eq({
                 'field' => { '$eq' => 3, '$lt' => 5 }
               })
             end
@@ -440,7 +440,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           shared_examples_for 'combines conditions with $regex' do
 
             it 'combines conditions with $regex' do
-              expect(selection.selector).to eq({
+              expect(selection.selector_render).to eq({
                 'field' => { '$regex' => /t/, '$lt' => 5 }
               })
             end
@@ -461,7 +461,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           shared_examples_for 'combines conditions with $and' do
 
             it 'combines conditions with $and' do
-              expect(selection.selector).to eq({
+              expect(selection.selector_render).to eq({
                 'field' => { '$gt' => 3 },
                 '$and' => ['field' => 5]
               })
@@ -473,7 +473,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           shared_examples_for 'combines conditions with $eq' do
 
             it 'combines conditions with $eq' do
-              expect(selection.selector).to eq({
+              expect(selection.selector_render).to eq({
                 'field' => { '$gt' => 3, '$eq' => 5 }
               })
             end
@@ -484,7 +484,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           shared_examples_for 'combines conditions with $regex' do
 
             it 'combines conditions with $regex' do
-              expect(selection.selector).to eq({
+              expect(selection.selector_render).to eq({
                 'field' => { '$gt' => 3, '$regex' => /t/ }
               })
             end
@@ -525,7 +525,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'combines both fields at top level' do
-          expect(result.selector).to eq('hello' => 'world', 'foo' => 'bar')
+          expect(result.selector_render).to eq('hello' => 'world', 'foo' => 'bar')
         end
       end
 
@@ -536,7 +536,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'combines fields with $and' do
-          expect(result.selector).to eq('hello' => 'world', '$and' => [{ 'hello' => /bar/ }])
+          expect(result.selector_render).to eq('hello' => 'world', '$and' => [{ 'hello' => /bar/ }])
         end
       end
     end
@@ -561,7 +561,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { query.all_of(other1, other2, other3) }
 
       it 'combines' do
-        expect(result.selector).to eq(
+        expect(result.selector_render).to eq(
           'hello' => 'world',
           'foo' => 'bar',
           'bar' => 42,
@@ -582,13 +582,13 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'combines and evolves' do
-        expect(query.selector).to eq(expected)
+        expect(query.selector_render).to eq(expected)
       end
     end
 
     describe 'query shape' do
       shared_examples_for 'adds most recent criterion as $and' do
-        let(:selector) { scope.selector }
+        let(:selector) { scope.selector_render }
 
         it 'adds most recent criterion as $and' do
           expect(selector).to eq('foo' => 1, '$and' => [{ 'foo' => 2 }])
@@ -647,7 +647,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds new conditions to top level' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'foo' => 'bar',
             'hello' => 'world'
           })
@@ -660,7 +660,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds new conditions to top level' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'foo' => 'bar',
             'hello' => 'world'
           })
@@ -673,7 +673,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds new conditions to top level' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'foo' => 'bar',
             '$or' => [
               { 'one' => 'one' },
@@ -690,7 +690,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         it 'adds new conditions to top level' do
           pending '#where should support merging criteria'
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'foo' => 'bar',
             '$or' => [
               { 'one' => 'one' },
@@ -729,7 +729,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { query.any_of(other1, other2, other3) }
 
       it 'combines' do
-        expect(result.selector).to eq(
+        expect(result.selector_render).to eq(
           'hello' => 'world',
           '$or' => [
             { 'foo' => 'bar' },
@@ -749,7 +749,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       it_behaves_like 'returns a cloned query'
 
       it 'does not add any criteria' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -766,7 +766,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       it_behaves_like 'returns a cloned query'
 
       it 'does not add any criteria' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -783,7 +783,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       it_behaves_like 'returns a cloned query'
 
       it 'adds the $or selector' do
-        expect(selection.selector).to eq(
+        expect(selection.selector_render).to eq(
           'field' => [1, 2]
         )
       end
@@ -797,7 +797,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the condition' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             'field' => [1, 2]
           )
         end
@@ -811,7 +811,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           it_behaves_like 'returns a cloned query'
 
           it 'adds the $or selector ignoring the nil element' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               'field' => [1, 2]
             )
           end
@@ -827,7 +827,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the new condition' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               'foo' => 'bar',
               'field' => [1, 2]
             )
@@ -841,7 +841,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the new condition' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               'foo' => 'bar',
               '$or' => [
                 { 'field' => [1, 2] },
@@ -859,7 +859,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the new condition' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$or' => [{ 'field' => [1, 2] }, { 'hello' => 'world' }],
             'foo' => 'bar',
             'test' => 1
@@ -874,7 +874,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the new condition to top level' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$or' => [{ 'field' => [1, 2] }, { 'hello' => 'world' }],
             'foo' => 'bar',
             '$and' => [{ '$or' => [{ 'a' => 1 }, { 'b' => 2 }] }]
@@ -887,7 +887,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the new condition to top level $and' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               '$or' => [{ 'field' => [1, 2] }, { 'hello' => 'world' }],
               '$and' => [{ 'foo' => 'bar' }, { '$or' => [{ 'a' => 1 }, { 'b' => 2 }] }]
             )
@@ -907,7 +907,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the $or selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             '$or' => [
               { 'first' => [1, 2] },
               { 'second' => [3, 4] }
@@ -923,7 +923,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $or selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             '$or' => [
               { 'first' => [1, 2] },
               { 'second' => { '$gt' => 3 } }
@@ -938,7 +938,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         shared_examples_for 'adds conditions with $or' do
 
           it 'adds conditions with $or' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               '$or' => [
                 { 'field' => 3 },
                 { 'field' => { '$lt' => 5 } }
@@ -952,7 +952,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         shared_examples_for 'combines conditions with $eq' do
 
           it 'combines conditions with $eq' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'field' => {
                 '$eq' => 3,
                 '$lt' => 5
@@ -966,7 +966,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         shared_examples_for 'combines conditions with $regex' do
 
           it 'combines conditions with $regex' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               'field' => {
                 '$regex' => /t/,
                 '$lt' => 5
@@ -998,7 +998,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         shared_examples_for 'adds conditions with $or' do
 
           it 'adds conditions with $or' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               '$or' => [
                 { 'field' => { '$gt' => 3 } },
                 { 'field' => 5 }
@@ -1012,7 +1012,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         shared_examples_for 'combines conditions with $eq' do
 
           it 'combines conditions with $eq' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               'field' => { '$gt' => 3, '$eq' => 5 }
             )
           end
@@ -1023,7 +1023,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         shared_examples_for 'combines conditions with $regex' do
 
           it 'combines conditions with $regex' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               'field' => { '$gt' => 3, '$regex' => /t/ }
             )
           end
@@ -1055,7 +1055,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $or selector and aliases the field' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '_id' => 1
           )
         end
@@ -1072,7 +1072,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the $or selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             '$or' => [
               { 'first' => [1, 2] },
               { 'second' => { '$gt' => 3 } }
@@ -1090,7 +1090,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'appends both $or expressions' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             '$or' => [
               { 'first' => [1, 2] },
               { 'first' => [3, 4] }
@@ -1111,7 +1111,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the conditions separately' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             'first' => [1, 2],
             'second' => [3, 4]
           )
@@ -1127,7 +1127,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the conditions separately' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             'first' => [1, 2],
             '$and' => [{ 'first' => [3, 4] }]
           )
@@ -1143,7 +1143,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'generates the expected query' do
-          expect(query.selector).to eq({
+          expect(query.selector_render).to eq({
             '$or' => [
               { 'a' => 1 },
               # Date instance is converted to a Time instance in local time,
@@ -1162,7 +1162,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'generates the expected query' do
-          expect(query.selector).to eq({
+          expect(query.selector_render).to eq({
             '$or' => [
               { 'a' => 1 },
               # Date instance is converted to a Time instance in UTC,
@@ -1185,7 +1185,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'does not add any criterion' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -1209,7 +1209,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'negates the next condition' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$not' => { operator => [1, 2] } } }
           )
         end
@@ -1249,7 +1249,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'negates the gt selection' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'age' => { '$not' => { '$gt' => 50 } } }
           )
         end
@@ -1268,7 +1268,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'negates the gt selection' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$and' => ['$nor' => ['age' => { '$gt' => 50 }]]
           )
         end
@@ -1287,7 +1287,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'negates the selection with an operator' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$ne' => 1 }, 'other' => { '$not' => { '$in' => [1, 2] } } }
           )
         end
@@ -1306,7 +1306,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'negates the selection with an operator' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$ne' => 1 }, 'other' => { '$not' => /test/ } }
           )
         end
@@ -1325,7 +1325,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'negates the selection with an operator' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$and' => [{ '$nor' => [{ '$where' => 'hello world' }] }]
           )
         end
@@ -1346,7 +1346,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'does not add any criterion' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -1363,7 +1363,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $not selector' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'field' => { '$not' => /test/ }
         })
       end
@@ -1381,7 +1381,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'combines the conditions' do
-        expect(selection.selector).to eq({
+        expect(selection.selector_render).to eq({
           'field' => 'foo',
           '$and' => [{ '$nor' => [{ 'field' => 'bar' }] }]
         })
@@ -1399,7 +1399,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $not selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$not' => /1/ },
             'second' => { '$not' => /2/ }
           })
@@ -1415,7 +1415,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $not selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$not' => /1/ },
             'second' => { '$not' => /2/ }
           })
@@ -1434,7 +1434,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $not selectors' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$not' => /1/ },
             'second' => { '$not' => /2/ }
           })
@@ -1450,7 +1450,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'combines conditions' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             'first' => { '$not' => /1/ },
             '$and' => [{ '$nor' => [{ 'first' => /2/ }] }]
           )
@@ -1465,14 +1465,14 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'does not collapse the double $not selector (incorrect behavior)' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$not' => { '$not' => { '$regexp' => /1/ } } }
           })
         end
 
         it 'collapses the double $not selector' do
           pending 'https://github.com/activedocument/activedocument/issues/17'
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'first' => { '$regexp' => /1/ }
           })
         end
@@ -1493,7 +1493,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { query.not(other) }
 
       it 'combines' do
-        expect(result.selector).to eq('hello' => 'world', 'foo' => { '$ne' => 'bar' })
+        expect(result.selector_render).to eq('hello' => 'world', 'foo' => { '$ne' => 'bar' })
       end
     end
 
@@ -1509,7 +1509,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { query.not(other) }
 
       it 'combines fields into top level criteria' do
-        expect(result.selector).to eq(
+        expect(result.selector_render).to eq(
           'hello' => 'world',
           'a' => { '$ne' => 1 },
           'b' => { '$ne' => 2 }
@@ -1529,7 +1529,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { query.not(other) }
 
       it 'combines with $and of $nor' do
-        expect(result.selector).to eq({
+        expect(result.selector_render).to eq({
           'hello' => 'world',
           '$and' => [{ '$nor' => [{ '$nor' => [{ 'a' => 1, 'b' => 2 }] }] }]
         })
@@ -1556,7 +1556,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { query.not(other1, other2, other3) }
 
       it 'combines' do
-        expect(result.selector).to eq(
+        expect(result.selector_render).to eq(
           'hello' => 'world',
           'foo' => { '$ne' => 'bar' },
           'bar' => { '$ne' => 42 },
@@ -1578,7 +1578,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'generates the correct selector' do
-        expect(criteria.selector).to eq({
+        expect(criteria.selector_render).to eq({
           '$or' => [
             { 'published' => { '$exists' => true } },
             { 'published' => nil }
@@ -1596,7 +1596,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the predicate' do
-        expect(query.selector).to eq('$nor' => [{ 'hello' => 'world' }])
+        expect(query.selector_render).to eq('$nor' => [{ 'hello' => 'world' }])
       end
     end
 
@@ -1606,7 +1606,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the predicate' do
-        expect(query.selector).to eq('$nor' => [{ 'hello' => 'world' }])
+        expect(query.selector_render).to eq('$nor' => [{ 'hello' => 'world' }])
       end
     end
 
@@ -1622,7 +1622,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { query.none_of(other) }
 
       it 'combines' do
-        expect(result.selector).to eq('$nor' => [{ 'foo' => 'bar' }], 'hello' => 'world')
+        expect(result.selector_render).to eq('$nor' => [{ 'foo' => 'bar' }], 'hello' => 'world')
       end
     end
 
@@ -1635,7 +1635,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       let(:result) { query.none_of(other1, other2, other3) }
 
       it 'combines' do
-        expect(result.selector).to eq(
+        expect(result.selector_render).to eq(
           'hello' => 'world',
           '$nor' => [
             { 'foo' => 'bar' },
@@ -1652,7 +1652,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       it_behaves_like 'returns a cloned query'
 
       it 'does not add any criteria' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -1666,7 +1666,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       it_behaves_like 'returns a cloned query'
 
       it 'does not add any criteria' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -1680,7 +1680,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       it_behaves_like 'returns a cloned query'
 
       it 'adds the $nor selector' do
-        expect(selection.selector).to eq(
+        expect(selection.selector_render).to eq(
           '$nor' => [{ 'field' => [1, 2] }]
         )
       end
@@ -1691,7 +1691,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the condition' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$nor' => [{ 'field' => [1, 2] }]
           )
         end
@@ -1702,7 +1702,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           it_behaves_like 'returns a cloned query'
 
           it 'adds the $nor selector ignoring the nil element' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               '$nor' => [{ 'field' => [1, 2] }]
             )
           end
@@ -1714,7 +1714,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           let(:selection) { query.where(foo: 'bar').none_of(field: [1, 2]) }
 
           it 'adds the new condition' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               'foo' => 'bar',
               '$nor' => [{ 'field' => [1, 2] }]
             )
@@ -1727,7 +1727,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the new condition' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               'foo' => 'bar',
               '$nor' => [
                 { 'field' => [1, 2] },
@@ -1744,7 +1744,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the new condition' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$nor' => [{ 'field' => [1, 2] }],
             'foo' => 'bar',
             '$and' => [{ '$nor' => [{ 'test' => 1 }] }]
@@ -1758,7 +1758,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the new condition to top level' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             'foo' => 'bar',
             '$nor' => [{ 'field' => [1, 2] }],
             '$and' => [{ '$nor' => [{ 'a' => 1 }, { 'b' => 2 }] }]
@@ -1771,7 +1771,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the new condition to top level $and' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               '$nor' => [{ 'field' => [1, 2] }],
               '$and' => [
                 { 'foo' => 'bar' },
@@ -1792,7 +1792,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the $nor selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             '$nor' => [
               { 'first' => [1, 2] },
               { 'second' => [3, 4] }
@@ -1807,7 +1807,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nor selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             '$nor' => [
               { 'first' => [1, 2] },
               { 'second' => { '$gt' => 3 } }
@@ -1821,7 +1821,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when criteria are simple and handled via Hash' do
         shared_examples_for 'adds conditions with $nor' do
           it 'adds conditions with $nor' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               '$nor' => [
                 { 'field' => 3 },
                 { 'field' => { '$lt' => 5 } }
@@ -1834,7 +1834,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         shared_examples_for 'combines conditions with $eq' do
           it 'combines conditions with $eq' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               '$nor' => [{ 'field' => { '$eq' => 3, '$lt' => 5 } }]
             })
           end
@@ -1844,7 +1844,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         shared_examples_for 'combines conditions with $regex' do
           it 'combines conditions with $regex' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               '$nor' => [{ 'field' => { '$regex' => /t/, '$lt' => 5 } }]
             })
           end
@@ -1868,7 +1868,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       context 'when criteria are handled via Hash and simple' do
         shared_examples_for 'adds conditions with $nor' do
           it 'adds conditions with $nor' do
-            expect(selection.selector).to eq({
+            expect(selection.selector_render).to eq({
               '$nor' => [
                 { 'field' => { '$gt' => 3 } },
                 { 'field' => 5 }
@@ -1881,7 +1881,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         shared_examples_for 'combines conditions with $eq' do
           it 'combines conditions with $eq' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               '$nor' => [{ 'field' => { '$gt' => 3, '$eq' => 5 } }]
             )
           end
@@ -1891,7 +1891,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
         shared_examples_for 'combines conditions with $regex' do
           it 'combines conditions with $regex' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               '$nor' => [{ 'field' => { '$gt' => 3, '$regex' => /t/ } }]
             )
           end
@@ -1916,7 +1916,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         let(:selection) { query.none_of({ id: 1 }) }
 
         it 'adds the $nor selector and aliases the field' do
-          expect(selection.selector).to eq('$nor' => [{ '_id' => 1 }])
+          expect(selection.selector_render).to eq('$nor' => [{ '_id' => 1 }])
         end
 
         it_behaves_like 'returns a cloned query'
@@ -1930,7 +1930,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the $ nor selector' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             '$nor' => [
               { 'first' => [1, 2] },
               { 'second' => { '$gt' => 3 } }
@@ -1947,7 +1947,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'appends both $nor expressions' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             '$nor' => [
               { 'first' => [1, 2] },
               { 'first' => [3, 4] }
@@ -1966,7 +1966,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the conditions separately' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$nor' => [{ 'first' => [1, 2] }],
             '$and' => [{ '$nor' => [{ 'second' => [3, 4] }] }]
           )
@@ -1981,7 +1981,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         it_behaves_like 'returns a cloned query'
 
         it 'adds the conditions separately' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$nor' => [{ 'first' => [1, 2] }],
             '$and' => [{ '$nor' => [{ 'first' => [3, 4] }] }]
           )
@@ -1996,7 +1996,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'generates the expected query' do
-          expect(query.selector).to eq({
+          expect(query.selector_render).to eq({
             '$nor' => [
               { 'a' => 1 },
               # Date instance is converted to a Time instance in local time,
@@ -2014,7 +2014,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'generates the expected query' do
-          expect(query.selector).to eq({
+          expect(query.selector_render).to eq({
             '$nor' => [
               { 'a' => 1 },
               # Date instance is converted to a Time instance in UTC,

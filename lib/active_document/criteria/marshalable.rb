@@ -18,7 +18,7 @@ module ActiveDocument
       # @return [ Array<Object> ] The dumped data.
       def marshal_dump
         data = [klass, :mongo, inclusions, documents, negating]
-        data.push(scoping_options).push(dump_hash(:selector)).push(dump_hash(:options))
+        data.push(scoping_options).push(dump_hash(:selector_smash)).push(dump_hash(:options))
       end
 
       # Resets the criteria object after a Marshal.load
@@ -30,8 +30,8 @@ module ActiveDocument
       def marshal_load(data)
         @scoping_options, raw_selector, raw_options = data.pop(3)
         @klass, _driver, @inclusions, @documents, @negating = data
-        @selector = load_hash(Queryable::SelectorSmash, raw_selector)
-        @ast = Queryable::SelectorAST.new(@selector)
+        @selector_smash = load_hash(Queryable::SelectorSmash, raw_selector)
+        @selector_ast = Queryable::SelectorAST.new(@selector_smash)
         @options = load_hash(Queryable::Options, raw_options)
       end
 

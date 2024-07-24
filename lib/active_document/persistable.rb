@@ -183,7 +183,7 @@ module ActiveDocument
     # @api private
     #
     # @example Prepare the atomic operation.
-    #   document.prepare_atomic_operation do |coll, selector, opts|
+    #   document.prepare_atomic_operation do |coll, selector_comment, opts|
     #     ...
     #   end
     #
@@ -313,8 +313,15 @@ module ActiveDocument
     def persist_atomic_operations(operations)
       return unless persisted? && operations && !operations.empty?
 
-      selector = atomic_selector
-      _root.collection.find(selector).update_one(positionally(selector, operations), session: _session)
+      selector_local = atomic_selector
+
+      _root
+        .collection
+        .find(selector_local)
+        .update_one(
+          positionally(selector_local, operations),
+          session: _session
+        )
     end
   end
 end

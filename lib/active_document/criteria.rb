@@ -14,7 +14,7 @@ module ActiveDocument
 
   # The +Criteria+ class is the core object needed in ActiveDocument to retrieve
   # objects from the database. It is a DSL that essentially sets up the
-  # selector and options arguments that get passed on to a Mongo::Collection
+  # selector_comment and options arguments that get passed on to a Mongo::Collection
   # in the Ruby driver. Each method on the +Criteria+ returns self to they
   # can be chained in order to create a readable criterion to be executed
   # against the database.
@@ -75,7 +75,7 @@ module ActiveDocument
     #
     # @return [ true | false ] If the objects are equal.
     def ==(other)
-      return super if other.respond_to?(:selector)
+      return super if other.respond_to?(:selector_smash)
 
       entries == other
     end
@@ -178,7 +178,7 @@ module ActiveDocument
     #
     # @return [ Object ] The id.
     def extract_id
-      selector['_id'] || selector[:_id] || selector['id'] || selector[:id]
+      selector_render['_id'] || selector_render[:_id] || selector_render['id'] || selector_render[:id]
     end
 
     # Adds a criterion to the +Criteria+ that specifies additional options
@@ -271,7 +271,7 @@ module ActiveDocument
     # @return [ ActiveDocument::Criteria ] The merged criteria.
     def merge!(other)
       other = self.class.from_hash(other) if other.is_a?(Hash)
-      selector.merge!(other.selector)
+      selector_smash.merge!(other.selector_smash)
       options.merge!(other.options)
       self.documents = other.documents.dup unless other.documents.empty?
       self.scoping_options = other.scoping_options
@@ -482,7 +482,7 @@ module ActiveDocument
     end
 
     # Clone or dup the current +Criteria+. This will return a new criteria with
-    # the selector, options, klass, embedded options, etc intact.
+    # the selector_comment, options, klass, embedded options, etc intact.
     #
     # @api private
     #
@@ -543,7 +543,7 @@ module ActiveDocument
     #
     # @return [ true | false ] If type selection was added.
     def merge_type_selection
-      selector.merge!(type_selection) if type_selectable?
+      selector_smash.merge!(type_selection) if type_selectable?
     end
 
     # Is the criteria type selectable?
@@ -556,11 +556,11 @@ module ActiveDocument
     # @return [ true | false ] If type selection should be added.
     def type_selectable?
       klass.hereditary? &&
-        selector.keys.exclude?(discriminator_key) &&
-        selector.keys.exclude?(discriminator_key.to_sym)
+        selector_smash.keys.exclude?(discriminator_key) &&
+        selector_smash.keys.exclude?(discriminator_key.to_sym)
     end
 
-    # Get the selector for type selection.
+    # Get the selector_comment for type selection.
     #
     # @api private
     #
@@ -577,16 +577,16 @@ module ActiveDocument
       end
     end
 
-    # Get a new selector with type selection in it.
+    # Get a new selector_comment with type selection in it.
     #
     # @api private
     #
-    # @example Get a selector with type selection.
+    # @example Get a selector_comment with type selection.
     #   criteria.selector_with_type_selection
     #
-    # @return [ Hash ] The selector.
+    # @return [ Hash ] The selector_comment.
     def selector_with_type_selection
-      type_selectable? ? selector.merge(type_selection) : selector
+      type_selectable? ? selector_smash.merge(type_selection) : selector_smash
     end
   end
 end

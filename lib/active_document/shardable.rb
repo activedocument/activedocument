@@ -47,7 +47,7 @@ module ActiveDocument
       self.class.shard_key_fields
     end
 
-    # Returns the selector that would match the defined shard keys. If
+    # Returns the selector_comment that would match the defined shard keys. If
     # `prefer_persisted` is false (the default), it uses the current values
     # of the specified shard keys, otherwise, it will try to use whatever value
     # was most recently persisted.
@@ -56,23 +56,23 @@ module ActiveDocument
     #   value of the shard key fields, or to use their most recently persisted
     #   values.
     #
-    # @return [ Hash ] The shard key selector.
+    # @return [ Hash ] The shard key selector_comment.
     #
     # @api private
     def shard_key_selector(prefer_persisted: false)
-      shard_key_fields.each_with_object({}) do |field, selector|
-        selector[field.to_s] = shard_key_field_value(field.to_s, prefer_persisted: prefer_persisted)
+      shard_key_fields.each_with_object({}) do |field, selector_local|
+        selector_local[field.to_s] = shard_key_field_value(field.to_s, prefer_persisted: prefer_persisted)
       end
     end
 
-    # Returns the selector that would match the existing version of this
+    # Returns the selector_comment that would match the existing version of this
     # document in the database.
     #
     # If the document is not persisted, this method uses the current values
     # of the shard key fields. If the document is persisted, this method
     # uses the values retrieved from the database.
     #
-    # @return [ Hash ] The shard key selector.
+    # @return [ Hash ] The shard key selector_comment.
     #
     # @api private
     def shard_key_selector_in_db

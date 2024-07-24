@@ -27,7 +27,7 @@ module ActiveDocument
     def apply_default_scoping(attrs = nil)
       return unless default_scoping
 
-      default_scoping.call.selector.each do |field, value|
+      default_scoping.call.selector_smash.each do |field, value|
         set_value = value.is_a?(Hash) && value['$eq'].presence ? value['$eq'] : value
         already_has_attrs = (set_value == attrs&.dig(*field.split('.')))
         next if already_has_attrs

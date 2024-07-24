@@ -50,7 +50,7 @@ describe ActiveDocument::Criteria::Scopable do
       end
 
       it 'merges in the options' do
-        expect(scoped.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(scoped.selector_render).to eq({ 'name' => 'Depeche Mode' })
       end
 
       it 'sets scoped to true' do
@@ -126,7 +126,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'merges the criteria' do
-          expect(result.selector).to eq('name' => 'Black Sabbath', 'member_count' => { '$gt' => 3 })
+          expect(result.selector_render).to eq('name' => 'Black Sabbath', 'member_count' => { '$gt' => 3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -138,7 +138,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'unscoped has no effect' do
-          expect(result.selector).to eq('name' => 'Black Sabbath', 'member_count' => { '$gt' => 3 })
+          expect(result.selector_render).to eq('name' => 'Black Sabbath', 'member_count' => { '$gt' => 3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -153,7 +153,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'adds the scope' do
-          expect(result.selector).to eq('name' => 'Black Sabbath', 'member_count' => { '$gt' => 3 })
+          expect(result.selector_render).to eq('name' => 'Black Sabbath', 'member_count' => { '$gt' => 3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -165,7 +165,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'removes existing scopes then adds the new scope' do
-          expect(result.selector).to eq('member_count' => { '$gt' => 3 })
+          expect(result.selector_render).to eq('member_count' => { '$gt' => 3 })
           expect(result.options).to eq(limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name artists])
         end
@@ -180,7 +180,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'adds the scope' do
-          expect(result.selector).to eq('name' => 'Black Sabbath', 'rating' => { '$gte' => 7 })
+          expect(result.selector_render).to eq('name' => 'Black Sabbath', 'rating' => { '$gte' => 7 })
           expect(result.options).to eq(skip: 20)
           expect(result.inclusions.map(&:name)).to eq(%i[same_name])
         end
@@ -192,7 +192,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'removes existing scopes then adds the new scope' do
-          expect(result.selector).to eq({})
+          expect(result.selector_render).to eq({})
           expect(result.options).to eq({})
           expect(result.inclusions.map(&:name)).to eq(%i[same_name])
         end
@@ -215,7 +215,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'merges the scope' do
-          expect(result.selector).to eq('active' => true, 'name' => 'Black Sabbath', 'member_count' => { '$gt' => 3 })
+          expect(result.selector_render).to eq('active' => true, 'name' => 'Black Sabbath', 'member_count' => { '$gt' => 3 })
           expect(result.options).to eq(skip: 20, limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[records same_name artists])
         end
@@ -227,7 +227,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'removes existing scopes then adds the new scope' do
-          expect(result.selector).to eq('member_count' => { '$gt' => 3 })
+          expect(result.selector_render).to eq('member_count' => { '$gt' => 3 })
           expect(result.options).to eq(limit: 3)
           expect(result.inclusions.map(&:name)).to eq(%i[records same_name artists])
         end
@@ -248,7 +248,7 @@ describe ActiveDocument::Criteria::Scopable do
       end
 
       it 'removes the selection' do
-        expect(criteria.selector).to be_empty
+        expect(criteria.selector_render).to be_empty
       end
     end
 
@@ -284,7 +284,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'does not remove the selector' do
-          expect(criteria.selector).to eq({ 'name' => nil })
+          expect(criteria.selector_render).to eq({ 'name' => nil })
         end
       end
     end
@@ -326,7 +326,7 @@ describe ActiveDocument::Criteria::Scopable do
       end
 
       it 'contains an empty selector' do
-        expect(scoped.selector).to be_empty
+        expect(scoped.selector_render).to be_empty
       end
 
       it 'contains empty options' do
@@ -345,7 +345,7 @@ describe ActiveDocument::Criteria::Scopable do
       end
 
       it 'contains an empty selector' do
-        expect(scoped.selector).to be_empty
+        expect(scoped.selector_render).to be_empty
       end
 
       it 'contains the options' do
@@ -371,7 +371,7 @@ describe ActiveDocument::Criteria::Scopable do
       end
 
       it 'allows the default scope to be added' do
-        expect(scoped.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(scoped.selector_render).to eq({ 'name' => 'Depeche Mode' })
       end
 
       it 'flags as scoped' do
@@ -385,7 +385,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'reapplies the default scope' do
-          expect(scoped.selector).to eq({ 'name' => 'Depeche Mode' })
+          expect(scoped.selector_render).to eq({ 'name' => 'Depeche Mode' })
         end
       end
     end
@@ -450,7 +450,7 @@ describe ActiveDocument::Criteria::Scopable do
       end
 
       it 'removes the default scope from the criteria' do
-        expect(unscoped.selector).to be_empty
+        expect(unscoped.selector_render).to be_empty
       end
 
       context 'when chained after a scoped criteria' do
@@ -460,7 +460,7 @@ describe ActiveDocument::Criteria::Scopable do
         end
 
         it 'removes all scoping' do
-          expect(unscoped.selector).to be_empty
+          expect(unscoped.selector_render).to be_empty
         end
       end
     end
@@ -471,7 +471,7 @@ describe ActiveDocument::Criteria::Scopable do
 
         it 'does not allow default scoping to be added in the block' do
           Band.unscoped do
-            expect(empty.skip(10).selector).to be_empty
+            expect(empty.skip(10).selector_render).to be_empty
           end
         end
       end
@@ -480,7 +480,7 @@ describe ActiveDocument::Criteria::Scopable do
 
         it 'does not allow default scoping to be added in the block' do
           Band.unscoped do
-            expect(empty.scoped.selector).to be_empty
+            expect(empty.scoped.selector_render).to be_empty
           end
         end
       end
@@ -500,7 +500,7 @@ describe ActiveDocument::Criteria::Scopable do
 
         it 'does not allow the default scope to be applied' do
           Band.unscoped do
-            expect(empty.skipped.selector).to be_empty
+            expect(empty.skipped.selector_render).to be_empty
           end
         end
       end
@@ -516,8 +516,8 @@ describe ActiveDocument::Criteria::Scopable do
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['foo']).to be(true)
-        expect(result.selector['hello']).to eq('world')
+        expect(result.selector_render['foo']).to be(true)
+        expect(result.selector_render['hello']).to eq('world')
       end
     end
 
@@ -543,8 +543,8 @@ describe ActiveDocument::Criteria::Scopable do
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['$text']).to eq({ '$search' => 'bar' })
-        expect(result.selector['hello']).to eq('world')
+        expect(result.selector_render['$text']).to eq({ '$search' => 'bar' })
+        expect(result.selector_render['hello']).to eq('world')
       end
     end
 
@@ -570,8 +570,8 @@ describe ActiveDocument::Criteria::Scopable do
 
     shared_examples_for 'restricts to both' do
       it 'restricts to both' do
-        expect(result.selector['$text']).to eq({ '$search' => 'bar' })
-        expect(result.selector['hello']).to eq('world')
+        expect(result.selector_render['$text']).to eq({ '$search' => 'bar' })
+        expect(result.selector_render['hello']).to eq('world')
       end
     end
 

@@ -4,7 +4,7 @@ module ActiveDocument
   class Criteria
     module Queryable
       # This module encapsulates methods that write query expressions into
-      # the Criteria's selector.
+      # the Criteria's selector_comment.
       #
       # The query expressions must have already been expanded as necessary.
       # The methods of this module do not perform processing on expression
@@ -22,7 +22,7 @@ module ActiveDocument
         # code must have converted other field/key types to the simple string
         # form by the time this method is invoked.
         #
-        # +value+ can be of any type, it is written into the selector unchanged.
+        # +value+ can be of any type, it is written into the selector_comment unchanged.
         #
         # This method performs no processing on the provided field value.
         #
@@ -51,39 +51,39 @@ module ActiveDocument
             value = value.to_h { |k, v| [k, typecast_operator_expression(k, v)] }
           end
 
-          if selector[field]
+          if selector_smash[field]
             # We already have a restriction by the field we are trying
             # to restrict, combine the restrictions.
-            if value.is_a?(Hash) && selector[field].is_a?(Hash) &&
+            if value.is_a?(Hash) && selector_smash[field].is_a?(Hash) &&
                value.keys.all? do |key|
                  key_s = key.to_s
-                 key_s.start_with?('$') && selector[field].keys.map(&:to_s).exclude?(key_s)
+                 key_s.start_with?('$') && selector_smash[field].keys.map(&:to_s).exclude?(key_s)
                end
               # Multiple operators can be combined on the same field by
               # adding them to the existing hash.
-              new_value = selector[field].merge(value)
-              selector.store(field, new_value)
-            elsif selector[field] != value
+              new_value = selector_smash[field].merge(value)
+              selector_smash.store(field, new_value)
+            elsif selector_smash[field] != value
               # TODO: Yuck! This should be a top-level and
-              if selector[field].is_a?(Hash) && value.is_a?(Hash)
+              if selector_smash[field].is_a?(Hash) && value.is_a?(Hash)
                 dupes = {}
 
-                store_value = selector[field].merge(value) do |k, old_v, new_v|
+                store_value = selector_smash[field].merge(value) do |k, old_v, new_v|
                   dupes[k] = new_v
                   old_v
                 end
 
                 add_operator_expression('$and', [{ field => store_value }, { field => dupes }])
-                selector.delete(field)
+                selector_smash.delete(field)
               else
                 add_operator_expression('$and', [{ field => value }])
               end
             end
-          elsif selector['$and']&.any? { |restriction| restriction[field] }
+          elsif selector_smash['$and']&.any? { |restriction| restriction[field] }
             # We already have a combined restriction by the field we are
             # trying to restrict, add the restriction to the existing.
-            if selector['$and'][0][field].nil?
-              old_stored_value = selector['$and'].find { |sel| sel[field] }[field]
+            if selector_smash['$and'][0][field].nil?
+              old_stored_value = selector_smash['$and'].find { |sel| sel[field] }[field]
               dupes = {}
 
               new_store_value = old_stored_value.merge(value) do |k, old_v, new_v|
@@ -91,16 +91,16 @@ module ActiveDocument
                 old_v
               end
 
-              stored_tail = selector['$and'].map { |hs| hs.tap { |h| h.delete(field) if h[field] == old_stored_value } }.reject { |i| i.empty? || i[field] == old_stored_value }
-              selector['$and'] = []
+              stored_tail = selector_smash['$and'].map { |hs| hs.tap { |h| h.delete(field) if h[field] == old_stored_value } }.reject { |i| i.empty? || i[field] == old_stored_value }
+              selector_smash['$and'] = []
               store_result = []
               store_result << { field => new_store_value }
               store_result += stored_tail
               add_operator_expression('$and', store_result)
-            elsif selector['$and'][0][field] != value
+            elsif selector_smash['$and'][0][field] != value
               # Working with first (0) element of '$and' array
               # relies on the fact that it should contain all uniq operators
-              old_stored_value = selector['$and'][0][field]
+              old_stored_value = selector_smash['$and'][0][field]
               dupes = {}
 
               new_store_value = old_stored_value.merge(value) do |k, old_v, new_v|
@@ -108,8 +108,8 @@ module ActiveDocument
                 old_v
               end
 
-              stored_tail = selector['$and'].map { |hs| hs.tap { |h| h.delete(field) if h[field] == old_stored_value } }.reject { |i| i.empty? || i[field] == old_stored_value }
-              selector['$and'] = []
+              stored_tail = selector_smash['$and'].map { |hs| hs.tap { |h| h.delete(field) if h[field] == old_stored_value } }.reject { |i| i.empty? || i[field] == old_stored_value }
+              selector_smash['$and'] = []
               store_result = []
               store_result << { field => new_store_value }
               store_result += stored_tail
@@ -118,24 +118,24 @@ module ActiveDocument
             else
               add_operator_expression('$and', [{ field => value }])
             end
-          elsif selector['$and'].present?
+          elsif selector_smash['$and'].present?
             # We already have combined restiricions by some otehr fields
             add_operator_expression('$and', [{ field => value }])
-          elsif selector.present?
+          elsif selector_smash.present?
             # We already have some restrictions
             # but not for current field
             store_result = []
-            store_result << selector.merge({ field => value })
-            self.selector = {}
+            store_result << selector_smash.merge({ field => value })
+            self.selector_smash = {}
             add_operator_expression('$and', store_result)
           else
-            selector.store(field, value)
+            selector_smash.store(field, value)
           end
 
           self
         end
 
-        # Adds a logical operator expression to the selector.
+        # Adds a logical operator expression to the selector_comment.
         #
         # This method only handles logical operators ($and, $nor and $or).
         # It raises ArgumentError if called with another operator. Note that
@@ -146,15 +146,15 @@ module ActiveDocument
         # separately for callers' convenience. It can be considered to
         # handle storing the hash +{operator => op_expr}+.
         #
-        # If the selector consists of a single condition which is the specified
+        # If the selector_comment consists of a single condition which is the specified
         # operator (on the top level), the new condition given in op_expr is
         # added to the existing conditions for the specified operator.
-        # For example, if the selector is currently:
+        # For example, if the selector_comment is currently:
         #
         #     {'$or' => [{'hello' => 'world'}]}
         #
         # ... and operator is '$or' and op_expr is +[{'test' => 123'}]+,
-        # the resulting selector will be:
+        # the resulting selector_comment will be:
         #
         #     {'$or' => [{'hello' => 'world'}, {'test' => 123}]}
         #
@@ -163,9 +163,9 @@ module ActiveDocument
         # where the receiver becomes one of the operands. It is expected that
         # code upstream of this method implements such behavior.
         #
-        # This method does not simplify values (i.e. if the selector is
+        # This method does not simplify values (i.e. if the selector_comment is
         # currently empty and operator is $and, op_expr is written to the
-        # selector with $and even if the $and can in principle be elided).
+        # selector_comment with $and even if the $and can in principle be elided).
         # Such simplification is also expected to have already been performed
         # by the upstream code.
         #
@@ -190,15 +190,15 @@ module ActiveDocument
 
           expr_result = Smash.new
 
-          if selector.length == 1 && selector.keys.first == operator
-            new_value = selector.values.first + op_expr
-            return_expr ? expr_result.store(operator, new_value) : selector.store(operator, new_value)
-          elsif operator == '$and' || selector.empty?
+          if selector_smash.length == 1 && selector_smash.keys.first == operator
+            new_value = selector_smash.values.first + op_expr
+            return_expr ? expr_result.store(operator, new_value) : selector_smash.store(operator, new_value)
+          elsif operator == '$and' || selector_smash.empty?
             # $and can always be added to top level and it will be combined
             # with whatever other conditions exist.
-            if (current_value = selector[operator])
+            if (current_value = selector_smash[operator])
               new_value = current_value + op_expr
-              return_expr ? expr_result.store(operator, new_value) : selector.store(operator, new_value)
+              return_expr ? expr_result.store(operator, new_value) : selector_smash.store(operator, new_value)
             else
               op_exprs =
                 if operator == '$where'
@@ -208,7 +208,7 @@ module ActiveDocument
 
                   op_expr.map do |expr|
                     if expr.is_a?(Selectable)
-                      QueryNormalizer.normalize_expr(expr.selector, negating: negating?)
+                      QueryNormalizer.normalize_expr(expr.selector_smash, negating: negating?)
                     else
                       expr.to_h do |expr_key, expr_value|
                         expr_key_s = expr_key.to_s
@@ -229,13 +229,13 @@ module ActiveDocument
                   end
                 end
 
-              return_expr ? expr_result.store(operator, op_exprs) : selector.store(operator, op_exprs)
+              return_expr ? expr_result.store(operator, op_exprs) : selector_smash.store(operator, op_exprs)
             end
-          elsif selector[operator]
+          elsif selector_smash[operator]
             # Other operators need to be added separately
             add_logical_operator_expression('$and', [operator => op_expr])
           else
-            return_expr ? expr_result.store(operator, op_expr) : selector.store(operator, op_expr)
+            return_expr ? expr_result.store(operator, op_expr) : selector_smash.store(operator, op_expr)
           end
 
           return_expr ? expr_result : self
@@ -248,7 +248,7 @@ module ActiveDocument
           false
         end
 
-        # Adds an operator expression to the selector.
+        # Adds an operator expression to the selector_comment.
         #
         # This method takes the operator and the operator value expression
         # separately for callers' convenience. It can be considered to
@@ -256,34 +256,34 @@ module ActiveDocument
         #
         # The operator value can be of any type.
         #
-        # If the selector already has the specified operator in it (on the
+        # If the selector_comment already has the specified operator in it (on the
         # top level), the new condition given in op_expr is added to the
         # existing conditions for the specified operator. This is
         # straightforward for $and; for other logical operators, the behavior
         # of this method is to add the new conditions to the existing operator.
-        # For example, if the selector is currently:
+        # For example, if the selector_comment is currently:
         #
         #     {'foo' => 'bar', '$or' => [{'hello' => 'world'}]}
         #
         # ... and operator is '$or' and op_expr is +{'test' => 123'}+,
-        # the resulting selector will be:
+        # the resulting selector_comment will be:
         #
         #     {'foo' => 'bar', '$or' => [{'hello' => 'world'}, {'test' => 123}]}
         #
-        # This does not implement an OR between the existing selector and the
+        # This does not implement an OR between the existing selector_comment and the
         # new operator expression - handling this is the job of upstream
-        # methods. This method simply stores op_expr into the selector on the
-        # assumption that the existing selector is the correct left hand side
+        # methods. This method simply stores op_expr into the selector_comment on the
+        # assumption that the existing selector_comment is the correct left hand side
         # of the operation already.
         #
         # For non-logical query-level operators like $where and $text, if
         # there already is a top-level operator with the same name, the
-        # op_expr is added to the selector via a top-level $and operator,
-        # thus producing a selector having both operator values.
+        # op_expr is added to the selector_comment via a top-level $and operator,
+        # thus producing a selector_comment having both operator values.
         #
-        # This method does not simplify values (i.e. if the selector is
+        # This method does not simplify values (i.e. if the selector_comment is
         # currently empty and operator is $and, op_expr is written to the
-        # selector with $and even if the $and can in principle be elided).
+        # selector_comment with $and even if the $and can in principle be elided).
         #
         # This method mutates the receiver.
         #
@@ -307,10 +307,10 @@ module ActiveDocument
           # For other operators, if the operator already exists in the
           # query, add the new condition with $and, otherwise add the
           # new condition to the top level.
-          if selector[operator]
+          if selector_smash[operator]
             add_logical_operator_expression('$and', [{ operator => op_expr }])
           else
-            selector.store(operator, op_expr)
+            selector_smash.store(operator, op_expr)
           end
 
           self

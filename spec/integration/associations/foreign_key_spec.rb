@@ -33,7 +33,7 @@ describe 'Association foreign key configuration' do
 
       criteria = ForeignKeySpec::Email.where(company: company)
 
-      expect(criteria.selector).to eq({ 'c_ref' => '3' })
+      expect(criteria.selector_render).to eq({ 'c_ref' => '3' })
     end
 
     context 'with default scope' do

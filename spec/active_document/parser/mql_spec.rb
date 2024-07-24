@@ -52,7 +52,7 @@ describe ActiveDocument::Parser::MQL do
       subject { described_class.parse(mql) }
 
       let(:criteria) { Person.where }
-      let(:mql) { criteria.selector }
+      let(:mql) { criteria.selector_render }
 
       context 'with single field operator' do
         context 'with eq' do

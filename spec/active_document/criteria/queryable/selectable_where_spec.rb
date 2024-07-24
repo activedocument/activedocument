@@ -20,7 +20,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'does not add any criterion' do
-        expect(selection.selector).to eq({})
+        expect(selection.selector_render).to eq({})
       end
 
       it 'returns the query' do
@@ -41,7 +41,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
       end
 
       it 'adds the $where criterion' do
-        expect(selection.selector).to eq({ '$where' => 'this.value = 10' })
+        expect(selection.selector_render).to eq({ '$where' => 'this.value = 10' })
       end
 
       it 'returns a cloned query' do
@@ -55,7 +55,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'combines conditions' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$where' => 'this.value = 10', '$and' => [{ '$where' => 'foo.bar' }]
           )
         end
@@ -68,7 +68,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'combines conditions' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             '$where' => 'this.value = 10', 'foo' => 'bar'
           )
         end
@@ -81,7 +81,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'combines conditions' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             'foo' => 'bar', '$where' => 'this.value = 10'
           )
         end
@@ -92,7 +92,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           shared_examples 'combines conditions' do
 
             it 'combines conditions' do
-              expect(selection.selector).to eq(
+              expect(selection.selector_render).to eq(
                 'foo' => { '$in' => [1] },
                 '$and' => ['foo' => { '$in' => [2] }]
               )
@@ -147,7 +147,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the criterion to the selection' do
-          expect(selection.selector).to eq({ 'name' => 'Syd' })
+          expect(selection.selector_render).to eq({ 'name' => 'Syd' })
         end
       end
 
@@ -184,7 +184,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'alters the key and value' do
-            expect(selection.selector).to eq({ 'user_id' => document.id })
+            expect(selection.selector_render).to eq({ 'user_id' => document.id })
           end
         end
 
@@ -199,7 +199,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'does not convert the bson raw regexp object to a String' do
-            expect(selection.selector).to eq({ '_id' => raw_regexp })
+            expect(selection.selector_render).to eq({ '_id' => raw_regexp })
           end
         end
       end
@@ -216,7 +216,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $all criterion' do
-            expect(selection.selector).to eq({ 'field' => { '$all' => [1, 2] } })
+            expect(selection.selector_render).to eq({ 'field' => { '$all' => [1, 2] } })
           end
 
           it 'returns a cloned query' do
@@ -234,7 +234,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $elemMatch criterion' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               { 'field' => { '$elemMatch' => { 'key' => 1 } } }
             )
           end
@@ -251,7 +251,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $elemMatch criterion' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               { 'field' => { '$elemMatch' => { 'key' => { '$gt' => 1 } } } }
             )
           end
@@ -271,7 +271,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $exists criterion' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               { 'field' => { '$exists' => true } }
             )
           end
@@ -288,7 +288,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $exists criterion' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               { 'field' => { '$exists' => true } }
             )
           end
@@ -306,7 +306,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $gt criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$gt' => 10 } }
           )
         end
@@ -323,7 +323,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $gte criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$gte' => 10 } }
           )
         end
@@ -340,7 +340,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $in criterion' do
-          expect(selection.selector).to eq({ 'field' => { '$in' => [1, 2] } })
+          expect(selection.selector_render).to eq({ 'field' => { '$in' => [1, 2] } })
         end
 
         it 'returns a cloned query' do
@@ -355,7 +355,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $lt criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$lt' => 10 } }
           )
         end
@@ -372,7 +372,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $lte criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$lte' => 10 } }
           )
         end
@@ -389,7 +389,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $lte criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$mod' => [10, 1] } }
           )
         end
@@ -406,7 +406,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $ne criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$ne' => 10 } }
           )
         end
@@ -423,7 +423,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $near criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$near' => [1, 1] } }
           )
         end
@@ -440,7 +440,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nearSphere criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$nearSphere' => [1, 1] } }
           )
         end
@@ -457,7 +457,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $nin criterion' do
-          expect(selection.selector).to eq({ 'field' => { '$nin' => [1, 2] } })
+          expect(selection.selector_render).to eq({ 'field' => { '$nin' => [1, 2] } })
         end
 
         it 'returns a cloned query' do
@@ -472,7 +472,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $not criterion' do
-          expect(selection.selector).to eq({ 'field' => { '$not' => /test/ } })
+          expect(selection.selector_render).to eq({ 'field' => { '$not' => /test/ } })
         end
 
         it 'returns a cloned query' do
@@ -489,7 +489,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $size criterion' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               { 'field' => { '$size' => 10 } }
             )
           end
@@ -506,7 +506,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
           end
 
           it 'adds the $size criterion' do
-            expect(selection.selector).to eq(
+            expect(selection.selector_render).to eq(
               { 'field' => { '$size' => 10 } }
             )
           end
@@ -524,7 +524,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
         end
 
         it 'adds the $type criterion' do
-          expect(selection.selector).to eq(
+          expect(selection.selector_render).to eq(
             { 'field' => { '$type' => 10 } }
           )
         end
@@ -546,7 +546,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       shared_examples_for 'adds conditions to existing query' do
         it 'adds conditions to existing query' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'test' => 1,
             mql_operator => ['hello' => 'world']
           })
@@ -555,7 +555,7 @@ describe ActiveDocument::Criteria::Queryable::Selectable do
 
       shared_examples_for 'adds conditions to existing query with an extra $and' do
         it 'adds conditions to existing query' do
-          expect(selection.selector).to eq({
+          expect(selection.selector_render).to eq({
             'test' => 1,
             mql_operator => ['hello' => 'world']
           })
