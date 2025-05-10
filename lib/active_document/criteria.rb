@@ -513,13 +513,13 @@ module ActiveDocument
     # @param [ Object... ] *args The arguments.
     #
     # @return [ Object ] The result of the method call.
-    ruby2_keywords def method_missing(name, *args, &block)
+    def method_missing(name, ...)
       if klass.respond_to?(name)
         klass.public_send(:with_scope, self) do
-          klass.public_send(name, *args, &block)
+          klass.public_send(name, ...)
         end
       elsif CHECK.respond_to?(name)
-        entries.public_send(name, *args, &block)
+        entries.public_send(name, ...)
       else
         super
       end
