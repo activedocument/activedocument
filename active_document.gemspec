@@ -26,7 +26,6 @@ Gem::Specification.new do |s|
   }
 
   s.required_ruby_version = '>= 3.1'
-  s.required_rubygems_version = '>= 3.6.8'
 
   # activemodel 7.0.0 cannot be used due to Class#descendants issue
   # See: https://github.com/rails/rails/pull/43951
