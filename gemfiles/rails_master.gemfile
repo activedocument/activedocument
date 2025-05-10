@@ -7,6 +7,6 @@ gemspec path: '..'
 gem 'actionpack', git: 'https://github.com/rails/rails'
 gem 'activemodel', git: 'https://github.com/rails/rails'
 
-require_relative './standard'
+require_relative 'standard'
 
 standard_dependencies
