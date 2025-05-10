@@ -1421,7 +1421,7 @@ describe ActiveDocument::Criteria::Includable do
     end
 
     it 'executes a query for the non-retrieved elements' do
-      expect_query(3, skip_if_sharded: true) do
+      expect_query(3) do
         result.posts.each(&:author)
       end
     end
@@ -1453,7 +1453,7 @@ describe ActiveDocument::Criteria::Includable do
     end
 
     it 'executes a query for the non-retrieved elements' do
-      expect_query(3, skip_if_sharded: true) do
+      expect_query(3) do
         result.posts.each(&:author)
       end
     end
@@ -1466,7 +1466,7 @@ describe ActiveDocument::Criteria::Includable do
         p = IncPerson.create!(name: 'name')
         4.times { IncPost.create!(person: p) }
         criteria
-        expect_query(2, skip_if_sharded: true) do
+        expect_query(2) do
           criteria.each(&:person)
         end
       end
@@ -1479,7 +1479,7 @@ describe ActiveDocument::Criteria::Includable do
       # MONGOID-3942 reported that after iterating the criteria a second time,
       # the posts would not get the eager loaded person.
       it 'eager loads the criteria' do
-        expect_query(2, skip_if_sharded: true) do
+        expect_query(2) do
           criteria.each(&:person)
         end
       end

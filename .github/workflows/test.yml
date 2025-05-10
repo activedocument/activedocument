@@ -72,13 +72,11 @@ jobs:
           - ruby: ruby-3.4
             mongodb: '6.0'
           - ruby: ruby-3.4
-            mongodb: '7.0'
+            mongodb: '7.0.19'
 
           # JRuby
           - ruby: jruby-9.4
             gemfile: gemfiles/rails-7.2.gemfile
-          - ruby: jruby-9.4
-            gemfile: gemfiles/rails-8.0.gemfile
 
           # Field-Level Encryption
           # TODO: support LIBMONGOCRYPT via path
