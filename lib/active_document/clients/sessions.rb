@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
   module Clients
@@ -17,7 +18,7 @@ module ActiveDocument
 
         # Actions that can be used to trigger transactional callbacks.
         # @api private
-        CALLBACK_ACTIONS = %i[create destroy update].freeze
+        CALLBACK_ACTIONS = [:create, :destroy, :update]
 
         # Execute a block within the context of a session.
         #
@@ -42,26 +43,26 @@ module ActiveDocument
           if Threaded.get_session(client: persistence_context.client)
             raise ActiveDocument::Errors::InvalidSessionNesting.new
           end
-
           session = persistence_context.client.start_session(options)
           Threaded.set_session(session, client: persistence_context.client)
           yield(session)
-        rescue Mongo::Error::InvalidSession => e
-          if e.is_a?(Mongo::Error::SessionsNotSupported)
+        rescue Mongo::Error::InvalidSession => ex
+          if Mongo::Error::SessionsNotSupported === ex
             raise ActiveDocument::Errors::SessionsNotSupported.new
+          else
+            raise ex
           end
-
-          raise e
-        rescue Mongo::Error::OperationFailure => e
-          if (e.code == 40415 && e.server_message =~ /startTransaction/) ||
-             (e.code == 20 && e.server_message =~ /Transaction/)
-            raise ActiveDocument::Errors::TransactionsNotSupported
+        rescue Mongo::Error::OperationFailure => ex
+          if (ex.code == 40415 && ex.server_message =~ /startTransaction/) ||
+             (ex.code == 20 && ex.server_message =~ /Transaction/)
+            raise ActiveDocument::Errors::TransactionsNotSupported.new
+          else
+            raise ex
           end
-
-          raise e
         rescue *transactions_not_supported_exceptions
           raise ActiveDocument::Errors::TransactionsNotSupported
         ensure
+          Threaded.clear_modified_documents(session)
           Threaded.clear_session(client: persistence_context.client)
         end
 
@@ -88,22 +89,25 @@ module ActiveDocument
         # @yield Provided block will be executed inside a transaction.
         def transaction(options = {}, session_options: {})
           with_session(session_options) do |session|
-            session.start_transaction(options)
-            yield
-            commit_transaction(session)
-          rescue *transactions_not_supported_exceptions
-            raise ActiveDocument::Errors::TransactionsNotSupported
-          rescue ActiveDocument::Errors::Rollback
-            abort_transaction(session)
-          rescue ActiveDocument::Errors::InvalidSessionNesting
-            # Session should be ended here.
-            raise ActiveDocument::Errors::InvalidTransactionNesting
-          rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => e
-            abort_transaction(session)
-            raise ActiveDocument::Errors::TransactionError(e)
-          rescue StandardError => e
-            abort_transaction(session)
-            raise e
+            begin
+              session.with_transaction(options) do
+                yield
+              end
+              run_commit_callbacks(session)
+            rescue *transactions_not_supported_exceptions
+              raise ActiveDocument::Errors::TransactionsNotSupported
+            rescue ActiveDocument::Errors::Rollback
+              run_abort_callbacks(session)
+            rescue ActiveDocument::Errors::InvalidSessionNesting
+              # Session should be ended here.
+              raise ActiveDocument::Errors::InvalidTransactionNesting.new
+            rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => e
+              run_abort_callbacks(session)
+              raise ActiveDocument::Errors::TransactionError.new(e)
+            rescue StandardError => e
+              run_abort_callbacks(session)
+              raise e
+            end
           end
         end
 
@@ -120,7 +124,7 @@ module ActiveDocument
 
         # Shortcut for +after_commit :hook, on: [ :create, :update ]+
         def after_save_commit(*args, &block)
-          set_options_for_callbacks!(args, on: %i[create update])
+          set_options_for_callbacks!(args, on: [ :create, :update ])
           set_callback(:commit, :after, *args, &block)
         end
 
@@ -187,25 +191,21 @@ module ActiveDocument
           _session&.in_transaction? || false
         end
 
-        # Commits the active transaction on the session, and calls
-        # after_commit callbacks on modified documents.
+        # Runs after_commit callbacks on modified documents.
         #
         # @param [ Mongo::Session ] session Session on which
         #   a transaction is started.
-        def commit_transaction(session)
-          session.commit_transaction
+        def run_commit_callbacks(session)
           Threaded.clear_modified_documents(session).each do |doc|
             doc.run_after_callbacks(:commit)
           end
         end
 
-        # Aborts the active transaction on the session, and calls
-        # after_rollback callbacks on modified documents.
+        # Runs after_rollback callbacks on modified documents.
         #
         # @param [ Mongo::Session ] session Session on which
         #   a transaction is started.
-        def abort_transaction(session)
-          session.abort_transaction
+        def run_abort_callbacks(session)
           Threaded.clear_modified_documents(session).each do |doc|
             doc.run_after_callbacks(:rollback)
           end
@@ -213,18 +213,18 @@ module ActiveDocument
 
         # Transforms custom options for after_commit and after_rollback callbacks
         # into options for +set_callback+.
-        def set_options_for_callbacks!(args) # rubocop:disable Naming/AccessorMethodName
-          options = args.extract_options!
+        def set_options_for_callbacks!(args, enforced_options = {})
+          options = args.extract_options!.merge(enforced_options)
           args << options
 
-          return unless options[:on]
-
-          fire_on = Array(options[:on])
-          assert_valid_transaction_action(fire_on)
-          options[:if] = [
-            -> { transaction_include_any_action?(fire_on) },
-            *options[:if]
-          ]
+          if options[:on]
+            fire_on = Array(options[:on])
+            assert_valid_transaction_action(fire_on)
+            options[:if] = [
+              -> { transaction_include_any_action?(fire_on) },
+              *options[:if]
+            ]
+          end
         end
 
         # Asserts that the given actions are valid for after_commit
@@ -233,9 +233,9 @@ module ActiveDocument
         # @param [ Array<Symbol> ] actions Actions to be checked.
         # @raise [ ArgumentError ] If any of the actions is not valid.
         def assert_valid_transaction_action(actions)
-          return unless (actions - CALLBACK_ACTIONS).any?
-
-          raise ArgumentError.new(":on conditions for after_commit and after_rollback callbacks have to be one of #{CALLBACK_ACTIONS}")
+          if (actions - CALLBACK_ACTIONS).any?
+            raise ArgumentError, ":on conditions for after_commit and after_rollback callbacks have to be one of #{CALLBACK_ACTIONS}"
+          end
         end
 
         def transaction_include_any_action?(actions)
@@ -270,22 +270,22 @@ module ActiveDocument
         # active. let's see if one of them was started with the model's
         # client...
         session = Threaded.get_session(client: persistence_context.client)
-        return unless session.nil?
 
-        # if the session is nil, then we have a case of the programmer trying to use
+        # if not, then we have a case of the programmer trying to use
         # a model within a transaction, where the model is not itself
         # controlled by that transaction. this is potentially a bug, so
         # let's tell them about it.
-        #
-        # This is hacky; we're hijacking ActiveDocument::Errors::BaseError in
-        # order to get the spiffy error message translation. If we later
-        # decide to raise an error instead of just writing a message, we can
-        # subclass BaseError and raise that exception here.
-        message = Errors::BaseError.new.compose_message(
-          'client_session_mismatch',
-          model: self.class.name
-        )
-        logger.info(message)
+        if session.nil?
+          # This is hacky; we're hijacking ActiveDocument::Errors::ActiveDocumentError in
+          # order to get the spiffy error message translation. If we later
+          # decide to raise an error instead of just writing a message, we can
+          # subclass ActiveDocumentError and raise that exception here.
+          message = Errors::ActiveDocumentError.new.compose_message(
+            'client_session_mismatch',
+            model: self.class.name
+          )
+          logger.info(message)
+        end
       end
     end
   end

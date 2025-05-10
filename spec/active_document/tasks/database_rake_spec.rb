@@ -1,16 +1,18 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'rake'
-require 'spec_helper'
-require 'support/feature_sandbox'
+require "rake"
+require "spec_helper"
+require "support/feature_sandbox"
 
-shared_context 'rake task' do
+shared_context "rake task" do
+  min_server_version '4.4'
   let(:task_name) { self.class.top_level_description }
   let(:task) { Rake.application[task_name] }
-  let(:task_file) { 'active_document/tasks/database' }
+  let(:task_file) { "mongoid/tasks/database" }
 
   let(:logger) do
-    Logger.new($stdout, level: :error, formatter: ->(_sev, _dt, _prog, msg) { msg })
+    Logger.new(STDOUT, level: :error, formatter: ->(_sev, _dt, _prog, msg) { msg })
   end
 
   before do
@@ -22,16 +24,16 @@ shared_context 'rake task' do
     allow(ActiveDocument::Tasks::Database).to receive(:logger).and_return(logger)
   end
 
-  shared_examples_for 'create_indexes' do
+  shared_examples_for "create_indexes" do
 
-    it 'receives create_indexes', skip: 'MONGOID-5656' do
+    it "receives create_indexes" do
       expect(ActiveDocument::Tasks::Database).to receive(:create_indexes)
       task.invoke
     end
   end
 
   shared_examples_for 'create_search_indexes' do
-    [nil, '1', 'true', 'yes', 'on'].each do |truthy|
+    [ nil, *%w( 1 true yes on ) ].each do |truthy|
       context "when WAIT_FOR_SEARCH_INDEXES is #{truthy.inspect}" do
         local_env 'WAIT_FOR_SEARCH_INDEXES' => truthy
 
@@ -44,7 +46,7 @@ shared_context 'rake task' do
       end
     end
 
-    %w[0 false no off bogus].each do |falsey|
+    %w( 0 false no off bogus ).each do |falsey|
       context "when WAIT_FOR_SEARCH_INDEXES is #{falsey.inspect}" do
         local_env 'WAIT_FOR_SEARCH_INDEXES' => falsey
 
@@ -58,179 +60,179 @@ shared_context 'rake task' do
     end
   end
 
-  shared_examples_for 'create_collections' do
+  shared_examples_for "create_collections" do
 
-    it 'receives create_collections' do
+    it "receives create_collections" do
       expect(ActiveDocument::Tasks::Database).to receive(:create_collections)
       task.invoke
     end
   end
 
-  shared_examples_for 'force create_collections' do
+  shared_examples_for "force create_collections" do
 
-    it 'receives create_collections' do
+    it "receives create_collections" do
       expect(ActiveDocument::Tasks::Database).to receive(:create_collections).with(force: true)
       task.invoke
     end
   end
 end
 
-shared_context 'rails rake task' do
-  let(:task_file) { 'active_document/railties/database' }
+shared_context "rails rake task" do
+  let(:task_file) { "mongoid/railties/database" }
 
   around do |example|
     FeatureSandbox.quarantine do
-      require 'support/rails_mock'
+      require "support/rails_mock"
       example.run
     end
   end
 end
 
-describe 'db:drop' do
-  include_context 'rake task'
-  include_context 'rails rake task'
+describe "db:drop" do
+  include_context "rake task"
+  include_context "rails rake task"
 
-  it 'calls active_document:drop' do
-    expect(task.prerequisites).to include('active_document:drop')
+  it "calls mongoid:drop" do
+    expect(task.prerequisites).to include("mongoid:drop")
   end
 
-  it 'runs successfully' do
+  it "works" do
     task.invoke
   end
 end
 
-describe 'db:purge' do
-  include_context 'rake task'
-  include_context 'rails rake task'
+describe "db:purge" do
+  include_context "rake task"
+  include_context "rails rake task"
 
-  it 'calls active_document:drop' do
-    expect(task.prerequisites).to include('active_document:purge')
+  it "calls mongoid:drop" do
+    expect(task.prerequisites).to include("mongoid:purge")
   end
 
-  it 'runs successfully' do
+  it "works" do
     task.invoke
   end
 end
 
-describe 'db:seed' do
-  include_context 'rake task'
-  include_context 'rails rake task'
+describe "db:seed" do
+  include_context "rake task"
+  include_context "rails rake task"
 
-  it 'calls environment' do
-    expect(task.prerequisites).to include('environment')
+  it "calls environment" do
+    expect(task.prerequisites).to include("environment")
   end
 
-  it 'runs successfully' do
+  it "works" do
     task.invoke
   end
 end
 
-describe 'db:setup' do
-  include_context 'rake task'
-  include_context 'rails rake task'
+describe "db:setup" do
+  include_context "rake task"
+  include_context "rails rake task"
 
-  it 'calls db:create' do
-    expect(task.prerequisites).to include('db:create')
+  it "calls db:create" do
+    expect(task.prerequisites).to include("db:create")
   end
 
-  it 'calls db:active_document:create_indexes' do
-    expect(task.prerequisites).to include('active_document:create_indexes')
+  it "calls db:mongoid:create_indexes" do
+    expect(task.prerequisites).to include("mongoid:create_indexes")
   end
 
-  it 'calls db:active_document:create_collections' do
-    expect(task.prerequisites).to include('active_document:create_collections')
+  it "calls db:mongoid:create_collections" do
+    expect(task.prerequisites).to include("mongoid:create_collections")
   end
 
-  it 'calls db:seed' do
-    expect(task.prerequisites).to include('db:seed')
+  it "calls db:seed" do
+    expect(task.prerequisites).to include("db:seed")
   end
 
-  it_behaves_like 'create_indexes'
+  it_behaves_like "create_indexes"
 
-  it 'runs successfully' do
+  it "works" do
     expect(ActiveDocument::Tasks::Database).to receive(:create_indexes)
     expect(ActiveDocument::Tasks::Database).to receive(:create_collections)
     task.invoke
   end
 end
 
-describe 'db:reset' do
-  include_context 'rake task'
-  include_context 'rails rake task'
+describe "db:reset" do
+  include_context "rake task"
+  include_context "rails rake task"
 
-  it 'calls db:drop' do
-    expect(task.prerequisites).to include('db:drop')
+  it "calls db:drop" do
+    expect(task.prerequisites).to include("db:drop")
   end
 
-  it 'calls db:seed' do
-    expect(task.prerequisites).to include('db:seed')
+  it "calls db:seed" do
+    expect(task.prerequisites).to include("db:seed")
   end
 
-  it 'runs successfully' do
+  it "works" do
     task.invoke
   end
 end
 
-describe 'db:create' do
-  include_context 'rake task'
-  include_context 'rails rake task'
+describe "db:create" do
+  include_context "rake task"
+  include_context "rails rake task"
 
-  it 'runs successfully' do
+  it "works" do
     task.invoke
   end
 end
 
-describe 'db:migrate' do
-  include_context 'rake task'
-  include_context 'rails rake task'
+describe "db:migrate" do
+  include_context "rake task"
+  include_context "rails rake task"
 
-  it 'runs successfully' do
+  it "works" do
     task.invoke
   end
 end
 
-describe 'db:test:prepare' do
-  include_context 'rake task'
-  include_context 'rails rake task'
+describe "db:test:prepare" do
+  include_context "rake task"
+  include_context "rails rake task"
 
-  it_behaves_like 'create_indexes'
+  it_behaves_like "create_indexes"
 
-  it 'calls active_document:create_indexes' do
-    expect(task.prerequisites).to include('active_document:create_indexes')
+  it "calls mongoid:create_indexes" do
+    expect(task.prerequisites).to include("mongoid:create_indexes")
   end
 
-  it 'calls active_document:create_collections' do
-    expect(task.prerequisites).to include('active_document:create_collections')
+  it "calls mongoid:create_collections" do
+    expect(task.prerequisites).to include("mongoid:create_collections")
   end
 
-  it 'runs successfully' do
+  it "works" do
     expect(ActiveDocument::Tasks::Database).to receive(:create_indexes)
     expect(ActiveDocument::Tasks::Database).to receive(:create_collections)
     task.invoke
   end
 end
 
-describe 'db:active_document:create_indexes' do
-  include_context 'rake task'
+describe "db:mongoid:create_indexes" do
+  include_context "rake task"
 
-  it_behaves_like 'create_indexes'
+  it_behaves_like "create_indexes"
 
-  it 'calls load_models' do
-    expect(task.prerequisites).to include('load_models')
+  it "calls load_models" do
+    expect(task.prerequisites).to include("load_models")
   end
 
-  it 'calls environment' do
-    expect(task.prerequisites).to include('environment')
+  it "calls environment" do
+    expect(task.prerequisites).to include("environment")
   end
 
-  context 'when using rails task' do
-    include_context 'rails rake task'
+  context "when using rails task" do
+    include_context "rails rake task"
 
-    it_behaves_like 'create_indexes'
+    it_behaves_like "create_indexes"
   end
 end
 
-describe 'db:active_document:create_search_indexes' do
+describe 'db:mongoid:create_search_indexes' do
   include_context 'rake task'
 
   it_behaves_like 'create_search_indexes'
@@ -250,91 +252,91 @@ describe 'db:active_document:create_search_indexes' do
   end
 end
 
-describe 'db:active_document:create_collections' do
-  include_context 'rake task'
+describe "db:mongoid:create_collections" do
+  include_context "rake task"
 
-  it_behaves_like 'create_collections'
+  it_behaves_like "create_collections"
 
-  it 'calls load_models' do
-    expect(task.prerequisites).to include('load_models')
+  it "calls load_models" do
+    expect(task.prerequisites).to include("load_models")
   end
 
-  it 'calls environment' do
-    expect(task.prerequisites).to include('environment')
+  it "calls environment" do
+    expect(task.prerequisites).to include("environment")
   end
 
-  context 'when using rails task' do
-    include_context 'rails rake task'
+  context "when using rails task" do
+    include_context "rails rake task"
 
-    it_behaves_like 'create_collections'
-  end
-end
-
-describe 'db:active_document:create_collections:force' do
-  include_context 'rake task'
-
-  it_behaves_like 'force create_collections'
-
-  it 'calls load_models' do
-    expect(task.prerequisites).to include('load_models')
-  end
-
-  it 'calls environment' do
-    expect(task.prerequisites).to include('environment')
-  end
-
-  context 'when using rails task' do
-    include_context 'rails rake task'
-
-    it_behaves_like 'force create_collections'
+    it_behaves_like "create_collections"
   end
 end
 
-describe 'db:active_document:remove_undefined_indexes' do
-  include_context 'rake task'
+describe "db:mongoid:create_collections:force" do
+  include_context "rake task"
 
-  it 'receives remove_undefined_indexes' do
+  it_behaves_like "force create_collections"
+
+  it "calls load_models" do
+    expect(task.prerequisites).to include("load_models")
+  end
+
+  it "calls environment" do
+    expect(task.prerequisites).to include("environment")
+  end
+
+  context "when using rails task" do
+    include_context "rails rake task"
+
+    it_behaves_like "force create_collections"
+  end
+end
+
+describe "db:mongoid:remove_undefined_indexes" do
+  include_context "rake task"
+
+  it "receives remove_undefined_indexes" do
     expect(ActiveDocument::Tasks::Database).to receive(:remove_undefined_indexes)
     task.invoke
   end
 
-  it 'calls environment' do
-    expect(task.prerequisites).to include('environment')
+  it "calls environment" do
+    expect(task.prerequisites).to include("environment")
   end
 
-  context 'when using rails task' do
-    include_context 'rails rake task'
+  context "when using rails task" do
+    include_context "rails rake task"
 
-    it 'receives remove_undefined_indexes' do
+    it "receives remove_undefined_indexes" do
       expect(ActiveDocument::Tasks::Database).to receive(:remove_undefined_indexes)
       task.invoke
     end
   end
 end
 
-describe 'db:active_document:remove_indexes' do
-  include_context 'rake task'
+describe "db:mongoid:remove_indexes" do
+  include_context "rake task"
 
-  it 'receives remove_indexes' do
+  it "receives remove_indexes" do
     expect(ActiveDocument::Tasks::Database).to receive(:remove_indexes)
     task.invoke
   end
 
-  it 'calls environment' do
-    expect(task.prerequisites).to include('environment')
+  it "calls environment" do
+    expect(task.prerequisites).to include("environment")
   end
 
-  context 'when using rails task' do
-    include_context 'rails rake task'
+  context "when using rails task" do
+    include_context "rails rake task"
 
-    it 'receives remove_indexes' do
+    it "receives remove_indexes" do
       expect(ActiveDocument::Tasks::Database).to receive(:remove_indexes)
       task.invoke
     end
   end
 end
 
-describe 'db:active_document:remove_search_indexes' do
+describe 'db:mongoid:remove_search_indexes' do
   include_context 'rake task'
 
   it 'receives remove_search_indexes' do
@@ -356,48 +358,48 @@ describe 'db:active_document:remove_search_indexes' do
   end
 end
 
-describe 'db:active_document:drop' do
-  include_context 'rake task'
+describe "db:mongoid:drop" do
+  include_context "rake task"
 
-  it 'runs successfully' do
+  it "works" do
     task.invoke
   end
 
-  context 'when using rails task' do
-    include_context 'rails rake task'
+  context "when using rails task" do
+    include_context "rails rake task"
 
-    it 'runs successfully' do
+    it "works" do
       task.invoke
     end
   end
 end
 
-describe 'db:active_document:purge' do
-  include_context 'rake task'
+describe "db:mongoid:purge" do
+  include_context "rake task"
 
-  it 'receives a purge' do
+  it "receives a purge" do
     expect(ActiveDocument).to receive(:purge!)
     task.invoke
   end
 
-  context 'when using rails task' do
-    include_context 'rails rake task'
+  context "when using rails task" do
+    include_context "rails rake task"
 
-    it 'receives a purge' do
+    it "receives a purge" do
       expect(ActiveDocument).to receive(:purge!)
       task.invoke
     end
   end
 end
 
-describe 'db:active_document:encryption:create_data_key' do
+describe "db:mongoid:encryption:create_data_key" do
   require_enterprise
   require_libmongocrypt
   include_context 'with encryption'
   restore_config_clients
-  include_context 'rake task'
+  include_context "rake task"
 
-  let(:task_file) { 'active_document/tasks/encryption' }
+  let(:task_file) { "mongoid/tasks/encryption" }
 
   let(:config) do
     {
@@ -424,14 +426,14 @@ describe 'db:active_document:encryption:create_data_key' do
       .and_call_original
   end
 
-  it 'creates the key', skip: 'MONGOID-5656' do
+  it "creates the key" do
     task.invoke
   end
 
-  context 'when using rails task' do
-    include_context 'rails rake task'
+  context "when using rails task" do
+    include_context "rails rake task"
 
-    it 'creates the key', skip: 'MONGOID-5656' do
+    it "creates the key" do
       task.invoke
     end
   end

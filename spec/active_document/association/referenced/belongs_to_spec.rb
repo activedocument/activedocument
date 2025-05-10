@@ -1,7 +1,12 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'spec_helper'
+require "spec_helper"
 require_relative './has_one_models'
+
+BELONGS_TO_RESOLVER_ID__ = :__belongs_to_resolver_id
+BELONGS_TO_RESOLVER = ActiveDocument::ModelResolver.new
+ActiveDocument::ModelResolver.register_resolver BELONGS_TO_RESOLVER, BELONGS_TO_RESOLVER_ID__
 
 describe ActiveDocument::Association::Referenced::BelongsTo do
 
@@ -28,15 +33,15 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   end
 
   let(:options) do
-    {}
+    { }
   end
 
   describe '#relation_complements' do
 
     let(:expected_complements) do
       [
-        ActiveDocument::Association::Referenced::HasMany,
-        ActiveDocument::Association::Referenced::HasOne
+          ActiveDocument::Association::Referenced::HasMany,
+          ActiveDocument::Association::Referenced::HasOne
       ]
     end
 
@@ -78,7 +83,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            autosave: true
+              autosave: true
           }
         end
 
@@ -98,12 +103,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            autosave: false
+              autosave: false
           }
         end
 
         it 'does not set up autosave' do
-          expect(ActiveDocument::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
+          expect(ActiveDocument::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
           association.setup!
         end
       end
@@ -117,7 +122,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up autosave' do
-          expect(ActiveDocument::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
+          expect(ActiveDocument::Association::Referenced::AutoSave).not_to receive(:define_autosave!)
           association.setup!
         end
       end
@@ -129,7 +134,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            counter_cache: true
+              counter_cache: true
           }
         end
 
@@ -149,7 +154,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            counter_cache: 'counts_field'
+              counter_cache: 'counts_field'
           }
         end
 
@@ -169,12 +174,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            counter_cache: false
+              counter_cache: false
           }
         end
 
         it 'does not set up counter cache callbacks' do
-          expect(ActiveDocument::Association::Referenced::CounterCache).to_not receive(:define_callbacks!)
+          expect(ActiveDocument::Association::Referenced::CounterCache).not_to receive(:define_callbacks!)
           association.setup!
         end
       end
@@ -188,7 +193,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up counter cache callbacks' do
-          expect(ActiveDocument::Association::Referenced::CounterCache).to_not receive(:define_callbacks!)
+          expect(ActiveDocument::Association::Referenced::CounterCache).not_to receive(:define_callbacks!)
           association.setup!
         end
       end
@@ -198,17 +203,60 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       context 'when the polymorphic option is provided' do
 
-        context 'when the polymorphic option is true' do
+        [ true, :default ].each do |opt|
+          context "when the polymorphic option is #{opt.inspect}" do
+            let(:options) { { polymorphic: opt } }
+            before { association }
 
-          let(:options) do
-            {
-              polymorphic: true
-            }
+            it 'set the polymorphic attribute on the owner class' do
+              expect(belonging_class.polymorphic).to be(true)
+            end
+
+            it 'sets up a field for the inverse type' do
+              expect(belonging_class.fields.keys).to include(association.inverse_type)
+            end
+
+            it 'uses the default resolver' do
+              expect(association.resolver).to be == ActiveDocument::ModelResolver.instance
+            end
+          end
+        end
+
+        [ false, nil ].each do |opt|
+          context "when the polymorphic option is #{opt.inspect}" do
+            let(:options) { { polymorphic: opt } }
+
+            it 'does not set the polymorphic attribute on the owner class' do
+              expect(belonging_class.polymorphic).to be(false)
+            end
+
+            it 'does not set up a field for the inverse type' do
+              expect(belonging_class.fields.keys).not_to include(association.inverse_type)
+            end
+
+            it 'does not use a resolver' do
+              expect(association.resolver).to be_nil
+            end
+          end
+        end
+
+        context 'when the polymorphic option is set to an unregistered id' do
+          let(:options) { { polymorphic: :bogus } }
+
+          # This behavior is intentional, so that the resolver can be registered after the classes
+          # are loaded.
+          it 'does not immediately raise an exception' do
+            expect { association }.not_to raise_error
           end
 
-          before do
-            association
+          it 'raises error when resolver is accessed' do
+            expect { association.resolver }.to raise_error(ActiveDocument::Errors::UnrecognizedResolver)
           end
+        end
+
+        context 'when the polymorphic option is set to a registered id' do
+          let(:options) { { polymorphic: BELONGS_TO_RESOLVER_ID__ } }
+          before { association }
 
           it 'set the polymorphic attribute on the owner class' do
             expect(belonging_class.polymorphic).to be(true)
@@ -217,34 +265,24 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           it 'sets up a field for the inverse type' do
             expect(belonging_class.fields.keys).to include(association.inverse_type)
           end
-        end
 
-        context 'when the polymorphic option is false' do
-
-          let(:options) do
-            {
-              polymorphic: false
-            }
-          end
-
-          it 'does not set the polymorphic attribute on the owner class' do
-            expect(belonging_class.polymorphic).to be(false)
-          end
-
-          it 'does not set up a field for the inverse type' do
-            expect(belonging_class.fields.keys).to_not include(association.inverse_type)
+          it 'connects the association to the corresponding resolver' do
+            expect(association.resolver).to be == BELONGS_TO_RESOLVER
           end
         end
       end
 
       context 'when the polymorphic option is not provided' do
-
         it 'does not set the polymorphic attribute on the owner class' do
           expect(belonging_class.polymorphic).to be(false)
         end
 
         it 'does not set up a field for the inverse type' do
-          expect(belonging_class.fields.keys).to_not include(association.inverse_type)
+          expect(belonging_class.fields.keys).not_to include(association.inverse_type)
+        end
+
+        it 'does not use a resolver' do
+          expect(association.resolver).to be_nil
         end
       end
     end
@@ -277,7 +315,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              dependent: :destroy
+                dependent: :destroy
             }
           end
 
@@ -297,7 +335,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              dependent: :nullify
+                dependent: :nullify
             }
           end
 
@@ -317,7 +355,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              dependent: :restrict_with_exception
+                dependent: :restrict_with_exception
             }
           end
 
@@ -337,7 +375,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              dependent: :restrict_with_error
+                dependent: :restrict_with_error
             }
           end
 
@@ -357,7 +395,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
       context 'when the dependent option is not provided' do
 
         it 'does not set up the dependency' do
-          expect(ActiveDocument::Association::Depending).to_not receive(:define_dependency!)
+          expect(ActiveDocument::Association::Depending).not_to receive(:define_dependency!)
           association.setup!
         end
       end
@@ -386,13 +424,14 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              polymorphic: true,
-              index: true
+                polymorphic: true,
+                index: true
             }
           end
 
           it 'sets up the index with the key and inverse type' do
-            expect(belonging_class.index_specifications.first.fields).to contain_exactly(association.key.to_sym, association.inverse_type.to_sym)
+            expect(belonging_class.index_specifications.first.fields).to match_array([ association.key.to_sym,
+                                                                                       association.inverse_type.to_sym])
           end
         end
 
@@ -400,12 +439,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              index: true
+                index: true
             }
           end
 
           it 'sets up the index with the key' do
-            expect(belonging_class.index_specifications.first.fields).to eq([association.key.to_sym])
+            expect(belonging_class.index_specifications.first.fields).to match_array([ association.key.to_sym ])
           end
         end
       end
@@ -416,19 +455,19 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              polymorphic: true
+                polymorphic: true
             }
           end
 
           it 'does not set up an index' do
-            expect(belonging_class.index_specifications).to eq([])
+            expect(belonging_class.index_specifications).to eq([ ])
           end
         end
 
         context 'when not polymorphic' do
 
           it 'does not set up an index' do
-            expect(belonging_class.index_specifications).to eq([])
+            expect(belonging_class.index_specifications).to eq([ ])
           end
         end
       end
@@ -440,7 +479,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            touch: true
+              touch: true
           }
         end
 
@@ -460,12 +499,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            touch: false
+              touch: false
           }
         end
 
         it 'does not set up touch' do
-          expect(ActiveDocument::Touchable).to_not receive(:define_touchable!).with(association)
+          expect(ActiveDocument::Touchable).not_to receive(:define_touchable!).with(association)
           association.setup!
         end
       end
@@ -479,7 +518,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up touch' do
-          expect(ActiveDocument::Touchable).to_not receive(:define_touchable!).with(association)
+          expect(ActiveDocument::Touchable).not_to receive(:define_touchable!).with(association)
           association.setup!
         end
       end
@@ -491,7 +530,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            validate: true
+              validate: true
           }
         end
 
@@ -511,12 +550,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            validate: false
+              validate: false
           }
         end
 
         it 'does not set up validation' do
-          expect(belonging_class).to_not receive(:validates_associated)
+          expect(belonging_class).not_to receive(:validates_associated)
           association.setup!
         end
       end
@@ -530,7 +569,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'does not set up the validation because it uses the validation default (false)' do
-          expect(belonging_class).to_not receive(:validates_associated)
+          expect(belonging_class).not_to receive(:validates_associated)
           association.setup!
         end
       end
@@ -551,7 +590,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              required: true
+                required: true
             }
           end
 
@@ -564,8 +603,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                required: true,
-                optional: true
+                  required: true,
+                  optional: true
               }
             end
 
@@ -579,8 +618,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                required: true,
-                optional: false
+                  required: true,
+                  optional: false
               }
             end
 
@@ -595,12 +634,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              required: false
+                required: false
             }
           end
 
           it 'does not set up the presence of validation' do
-            expect(belonging_class).to_not receive(:validates)
+            expect(belonging_class).not_to receive(:validates)
             association.setup!
           end
 
@@ -608,13 +647,13 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                required: false,
-                optional: true
+                  required: false,
+                  optional: true
               }
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).to_not receive(:validates)
+              expect(belonging_class).not_to receive(:validates)
               association.setup!
             end
           end
@@ -623,13 +662,13 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                required: false,
-                optional: false
+                  required: false,
+                  optional: false
               }
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).to_not receive(:validates)
+              expect(belonging_class).not_to receive(:validates)
               association.setup!
             end
           end
@@ -646,12 +685,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                optional: true
+                  optional: true
               }
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).to_not receive(:validates)
+              expect(belonging_class).not_to receive(:validates)
               association.setup!
             end
           end
@@ -660,7 +699,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                optional: false
+                  optional: false
               }
             end
 
@@ -679,7 +718,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              required: true
+                required: true
             }
           end
 
@@ -692,8 +731,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                required: true,
-                optional: true
+                  required: true,
+                  optional: true
               }
             end
 
@@ -707,8 +746,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                required: true,
-                optional: false
+                  required: true,
+                  optional: false
               }
             end
 
@@ -723,12 +762,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
           let(:options) do
             {
-              required: false
+                required: false
             }
           end
 
           it 'does not set up the presence of validation' do
-            expect(belonging_class).to_not receive(:validates)
+            expect(belonging_class).not_to receive(:validates)
             association.setup!
           end
 
@@ -736,13 +775,13 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                required: false,
-                optional: true
+                  required: false,
+                  optional: true
               }
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).to_not receive(:validates)
+              expect(belonging_class).not_to receive(:validates)
               association.setup!
             end
           end
@@ -751,13 +790,13 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                required: false,
-                optional: false
+                  required: false,
+                  optional: false
               }
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).to_not receive(:validates)
+              expect(belonging_class).not_to receive(:validates)
               association.setup!
             end
           end
@@ -766,7 +805,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         context 'when the required option is not provided' do
 
           it 'uses the default and does not set up the presence of validation' do
-            expect(belonging_class).to_not receive(:validates)
+            expect(belonging_class).not_to receive(:validates)
             association.setup!
           end
 
@@ -774,12 +813,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                optional: true
+                  optional: true
               }
             end
 
             it 'does not set up the presence of validation' do
-              expect(belonging_class).to_not receive(:validates)
+              expect(belonging_class).not_to receive(:validates)
               association.setup!
             end
           end
@@ -788,7 +827,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
             let(:options) do
               {
-                optional: false
+                  optional: false
               }
             end
 
@@ -901,7 +940,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            primary_key: :other_primary_key
+              primary_key: :other_primary_key
           }
         end
 
@@ -927,7 +966,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            index: true
+              index: true
           }
         end
 
@@ -940,7 +979,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            index: false
+              index: false
           }
         end
 
@@ -994,7 +1033,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   end
 
   describe '#merge!' do
-    skip 'TODO'
+
   end
 
   describe '#store_as' do
@@ -1009,7 +1048,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
     context 'when :touch is in the options' do
 
       let(:options) do
-        { touch: true }
+        { touch: true}
       end
 
       it 'returns true' do
@@ -1040,7 +1079,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         { scope: -> { unscoped.where(foo: :bar) } }
       end
 
-      it 'returns a Proc' do
+      it 'returns a Criteria Queryable Key' do
         expect(association.scope).to be_a(Proc)
       end
     end
@@ -1100,7 +1139,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :delete_all
+              dependent: :delete_all
           }
         end
 
@@ -1113,7 +1152,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :destroy
+              dependent: :destroy
           }
         end
 
@@ -1126,7 +1165,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :nullify
+              dependent: :nullify
           }
         end
 
@@ -1139,7 +1178,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :restrict_with_exception
+              dependent: :restrict_with_exception
           }
         end
 
@@ -1152,7 +1191,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :restrict_with_error
+              dependent: :restrict_with_error
           }
         end
 
@@ -1183,7 +1222,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-          polymorphic: true
+            polymorphic: true
         }
       end
 
@@ -1210,14 +1249,14 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
+              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
             end
           end
 
           context 'when inverse_of is not specified' do
 
             it 'returns the list of relations whose :as attribute matches the name of this association' do
-              expect(association.inverses(instance_of_other_class)).to eq([:belonging_object])
+              expect(association.inverses(instance_of_other_class)).to match_array([ :belonging_object ])
             end
           end
         end
@@ -1236,14 +1275,15 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
             end
 
             it 'returns the :inverse_of value' do
-              expect(association.inverses(instance_of_other_class)).to eq([:inverse_name])
+              expect(association.inverses(instance_of_other_class)).to eq([ :inverse_name ])
             end
           end
 
           context 'when inverse_of is not specified' do
 
             it 'returns the list of relations whose :as attribute matches the name of this association' do
-              expect(association.inverses(instance_of_other_class)).to contain_exactly(:other_belonging_object, :belonging_object)
+              expect(association.inverses(instance_of_other_class)).to match_array([ :other_belonging_object,
+                                                                                     :belonging_object ])
             end
 
             context 'when the relation class has two associations with the same name' do
@@ -1254,7 +1294,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
               end
 
               it 'returns only the relations whose :as attribute and class match' do
-                expect(association.inverses(instance_of_other_class)).to eq([:belonging_object])
+                expect(association.inverses(instance_of_other_class)).to match_array([ :belonging_object ])
               end
             end
           end
@@ -1270,14 +1310,14 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           end
 
           it 'returns the :inverse_of value' do
-            expect(association.inverses).to eq([:inverse_name])
+            expect(association.inverses).to eq([ :inverse_name ])
           end
         end
 
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverses).to be_nil
+            expect(association.inverses).to eq(nil)
           end
         end
       end
@@ -1292,7 +1332,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'returns the :inverse_of value' do
-          expect(association.inverses).to eq([:inverse_name])
+          expect(association.inverses).to eq([ :inverse_name ])
         end
       end
 
@@ -1303,14 +1343,14 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([:belonging_objects])
+          expect(association.inverses).to eq([ :belonging_objects ])
         end
       end
 
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-          skip 'TODO'
+
         end
       end
 
@@ -1322,9 +1362,9 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'raises a ActiveDocument::Errors::AmbiguousRelationship exception' do
-          expect do
+          expect {
             association.inverses
-          end.to raise_exception(ActiveDocument::Errors::AmbiguousRelationship)
+          }.to raise_exception(ActiveDocument::Errors::AmbiguousRelationship)
         end
       end
 
@@ -1335,7 +1375,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'uses the inverse class to find the inverse name' do
-          expect(association.inverses).to eq([:belonging_objects])
+          expect(association.inverses).to eq([ :belonging_objects ])
         end
       end
     end
@@ -1347,7 +1387,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-          polymorphic: true
+            polymorphic: true
         }
       end
 
@@ -1429,7 +1469,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         context 'when inverse_of is not specified' do
 
           it 'returns nil' do
-            expect(association.inverse).to be_nil
+            expect(association.inverse).to eq(nil)
           end
         end
       end
@@ -1462,7 +1502,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
       context 'when :cyclic is specified' do
 
         it 'returns the cyclic inverse name' do
-          skip 'TODO'
+
         end
       end
 
@@ -1474,9 +1514,9 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         end
 
         it 'raises a ActiveDocument::Errors::AmbiguousRelationship exception' do
-          expect do
+          expect {
             association.inverse
-          end.to raise_exception(ActiveDocument::Errors::AmbiguousRelationship)
+          }.to raise_exception(ActiveDocument::Errors::AmbiguousRelationship)
         end
       end
 
@@ -1494,7 +1534,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   end
 
   describe '#inverse_association' do
-    skip 'TODO'
+
   end
 
   describe '#autosave' do
@@ -1505,7 +1545,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            autosave: true
+              autosave: true
           }
         end
 
@@ -1518,7 +1558,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            autosave: false
+              autosave: false
           }
         end
 
@@ -1542,7 +1582,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-          counter_cache: true
+            counter_cache: true
         }
       end
 
@@ -1555,7 +1595,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-          counter_cache: 'counts_field'
+            counter_cache: 'counts_field'
         }
       end
 
@@ -1568,7 +1608,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-          counter_cache: false
+            counter_cache: false
         }
       end
 
@@ -1591,7 +1631,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-          counter_cache: true
+            counter_cache: true
         }
       end
 
@@ -1604,7 +1644,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       let(:options) do
         {
-          counter_cache: 'counts_field'
+            counter_cache: 'counts_field'
         }
       end
 
@@ -1878,9 +1918,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
     context 'when a block is passed' do
 
-      let(:block) { proc {} }
       let(:association) do
-        belonging_class.belongs_to(name, options) { 1 }
+        belonging_class.belongs_to name, options do; end
       end
 
       it 'defines an extension module' do
@@ -1889,8 +1928,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       it 'returns the extension' do
         expect(association.extension).to eq(
-          "#{belonging_class.name}::#{belonging_class.name}#{name.to_s.camelize}RelationExtension".constantize
-        )
+          "#{belonging_class.name}::#{belonging_class.name}#{name.to_s.camelize}RelationExtension".constantize)
       end
     end
 
@@ -1905,7 +1943,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   describe '#foreign_key_setter' do
 
     it 'returns the foreign key field followed by "="' do
-      expect(association.foreign_key_setter).to eq('owner_object_id=')
+      expect(association.foreign_key_setter).to eq("owner_object_id=")
     end
   end
 
@@ -1917,7 +1955,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :delete_all
+              dependent: :delete_all
           }
         end
 
@@ -1930,7 +1968,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :destroy
+              dependent: :destroy
           }
         end
 
@@ -1943,7 +1981,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :nullify
+              dependent: :nullify
           }
         end
 
@@ -1956,7 +1994,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :restrict_with_exception
+              dependent: :restrict_with_exception
           }
         end
 
@@ -1969,7 +2007,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         let(:options) do
           {
-            dependent: :restrict_with_error
+              dependent: :restrict_with_error
           }
         end
 

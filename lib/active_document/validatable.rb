@@ -1,13 +1,15 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'active_document/validatable/macros'
-require 'active_document/validatable/localizable'
-require 'active_document/validatable/associated'
-require 'active_document/validatable/format'
-require 'active_document/validatable/length'
-require 'active_document/validatable/queryable'
-require 'active_document/validatable/presence'
-require 'active_document/validatable/uniqueness'
+require "mongoid/validatable/macros"
+require "mongoid/validatable/localizable"
+require "mongoid/validatable/associated"
+require "mongoid/validatable/format"
+require "mongoid/validatable/length"
+require "mongoid/validatable/numericality"
+require "mongoid/validatable/queryable"
+require "mongoid/validatable/presence"
+require "mongoid/validatable/uniqueness"
 
 module ActiveDocument
 
@@ -95,7 +97,7 @@ module ActiveDocument
     #
     # @return [ true | false ] True if valid, false if not.
     def valid?(context = nil)
-      super(context || (new_record? ? :create : :update))
+      super context ? context : (new_record? ? :create : :update)
     end
 
     # Used to prevent infinite loops in associated validations.
@@ -128,9 +130,9 @@ module ActiveDocument
       #
       # @param [ ActiveDocument::Association::Relatable ] association The association metadata.
       def validates_relation(association)
-        return unless association.validate?
-
-        validates_associated(association.name)
+        if association.validate?
+          validates_associated(association.name)
+        end
       end
 
       # Add validation with the supplied validators for the provided fields
@@ -148,12 +150,12 @@ module ActiveDocument
       def validates_with(*args, &block)
         if args.first == PresenceValidator
           args.last[:attributes].each do |name|
-            next unless (association = relations[name.to_s])&.autosave?
-
-            Association::Referenced::AutoSave.define_autosave!(association)
+            association = relations[name.to_s]
+            if association && association.autosave?
+              Association::Referenced::AutoSave.define_autosave!(association)
+            end
           end
         end
-
         super
       end
 

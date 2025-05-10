@@ -394,6 +394,84 @@ describe ActiveDocument::Interceptable do
         end
       end
     end
+
+    context 'with embedded grandchildren' do
+      IS = InterceptableSpec
+
+      context 'when creating' do
+        let(:registry) { IS::CallbackRegistry.new(only: %i[ before_save ]) }
+
+        let(:expected_calls) do
+          [
+            # the parent
+            [ IS::CbParent, :before_save ],
+
+            # the immediate child of the parent
+            [ IS::CbCascadedNode, :before_save ],
+
+            # the grandchild of the parent
+            [ IS::CbCascadedNode, :before_save ],
+          ]
+        end
+
+        let!(:parent) do
+          parent = IS::CbParent.new(registry)
+          child = IS::CbCascadedNode.new(registry)
+          grandchild = IS::CbCascadedNode.new(registry)
+
+          child.cb_cascaded_nodes = [ grandchild ]
+          parent.cb_cascaded_nodes = [ child ]
+
+          parent.tap(&:save)
+        end
+
+        it 'should cascade callbacks to grandchildren' do
+          expect(registry.calls).to be == expected_calls
+        end
+      end
+
+      context 'when updating' do
+        let(:registry) { IS::CallbackRegistry.new(only: %i[ before_update ]) }
+
+        let(:expected_calls) do
+          [
+            # the parent
+            [ IS::CbParent, :before_update ],
+
+            # the immediate child of the parent
+            [ IS::CbCascadedNode, :before_update ],
+
+            # the grandchild of the parent
+            [ IS::CbCascadedNode, :before_update ],
+          ]
+        end
+
+        let!(:parent) do
+          parent = IS::CbParent.new(nil)
+          child = IS::CbCascadedNode.new(nil)
+          grandchild = IS::CbCascadedNode.new(nil)
+
+          child.cb_cascaded_nodes = [ grandchild ]
+          parent.cb_cascaded_nodes = [ child ]
+
+          parent.save
+
+          parent.callback_registry = registry
+          child.callback_registry = registry
+          grandchild.callback_registry = registry
+
+          parent.name = 'updated'
+          child.name = 'updated'
+          grandchild.name = 'updated'
+
+          parent.tap(&:save)
+        end
+
+        it 'should cascade callbacks to grandchildren' do
+          expect(registry.calls).to be == expected_calls
+        end
+      end
+    end
   end
 
   describe '.before_destroy' do
@@ -1792,6 +1870,12 @@ describe ActiveDocument::Interceptable do
     context 'with around callbacks' do
       config_override :around_callbacks_for_embeds, true
 
+      after do
+        ActiveDocument::Threaded.stack('interceptable').clear
+      end
+
+      let(:stack) { ActiveDocument::Threaded.stack('interceptable') }
+
       let(:expected) do
         [
           [InterceptableSpec::CbCascadedChild, :before_validation],
@@ -1826,6 +1910,12 @@ describe ActiveDocument::Interceptable do
       it 'calls callbacks in the right order' do
         parent.save!
         expect(registry.calls).to eq expected
+      end
+
+      it 'shows that cascaded callbacks can access ActiveDocument state' do
+        expect(stack).to be_empty
+        parent.save!
+        expect(stack).not_to be_empty
       end
     end
 
@@ -2580,6 +2670,37 @@ describe ActiveDocument::Interceptable do
         expect(ActiveDocument.logger).to receive(:warn).with(/To enable around callbacks for embedded documents/).twice.and_call_original
 
         parent.save!
+      end
+    end
+  end
+
+  context "when around callbacks for embedded children are enabled" do
+    config_override :around_callbacks_for_embeds, true
+
+    context "when around callback is defined without a yield" do
+      class Mother
+        include ActiveDocument::Document
+        embeds_many :daughters, cascade_callbacks: true
+      end
+
+      class Daughter
+        include ActiveDocument::Document
+        embedded_in :mother
+        around_save :log_callback
+
+        private
+
+        def log_callback
+          logger.debug('callback invoked')
+        end
+      end
+
+      let(:mom) { Mother.create(daughters: [ Daughter.new, Daughter.new ]) }
+
+      it "raises an InvalidAroundCallback error" do
+        expect do
+          mom.save
+        end.to raise_error(ActiveDocument::Errors::InvalidAroundCallback)
       end
     end
   end

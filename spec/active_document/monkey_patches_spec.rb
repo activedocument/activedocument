@@ -5,7 +5,7 @@ require 'spec_helper'
 # @note This test ensures that we do not inadvertently introduce new monkey patches
 # to ActiveDocument. Existing monkey patch methods which are marked with +ActiveDocument.deprecated+
 # are excluded from this test.
-RSpec.describe('Do not add monkey patches') do # rubocop:disable RSpec/DescribeClass
+RSpec.describe('Do not add monkey patches') do
   classes = [
     Object,
     Array,

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
 
@@ -18,8 +19,8 @@ module ActiveDocument
       #   person.suppress_touch_callbacks { ... }
       #
       # @api private
-      def suppress_touch_callbacks(&block)
-        Touchable.suppress_touch_callbacks(self.class.name, &block)
+      def suppress_touch_callbacks
+        Touchable.suppress_touch_callbacks(self.class.name) { yield }
       end
 
       # Queries whether touch callbacks are being suppressed for the class
@@ -76,8 +77,8 @@ module ActiveDocument
 
         field = database_field_name(field)
 
-        write_attribute(:updated_at, now) if respond_to?(:updated_at=)
-        write_attribute(field, now) if field
+        write_attribute(:updated_at, now) if respond_to?("updated_at=")
+        write_attribute(field, now) if field.present?
 
         touches = _extract_touches_from_atomic_sets(field) || {}
         touches.merge!(_parent._gather_touch_updates(now) || {}) if _touchable_parent?
@@ -102,7 +103,6 @@ module ActiveDocument
       # @api private
       def _run_touch_callbacks_from_root
         return if touch_callbacks_suppressed?
-
         _parent._run_touch_callbacks_from_root if _touchable_parent?
         run_callbacks(:touch)
       end
@@ -132,9 +132,9 @@ module ActiveDocument
         touchable_keys << field.to_s if field.present?
 
         updates.keys.each_with_object({}) do |key, touches|
-          next unless touchable_keys.include?(key.split('.').last)
-
-          touches[key] = updates.delete(key)
+          if touchable_keys.include?(key.split('.').last)
+            touches[key] = updates.delete(key)
+          end
         end
       end
     end
@@ -168,8 +168,7 @@ module ActiveDocument
     #
     # @api private
     def suppress_touch_callbacks(name)
-      save = touch_callback_statuses[name]
-      touch_callback_statuses[name] = true
+      save, touch_callback_statuses[name] = touch_callback_statuses[name], true
       yield
     ensure
       touch_callback_statuses[name] = save
@@ -188,7 +187,7 @@ module ActiveDocument
     private
 
     # The key to use to store the active touch callback suppression statuses
-    SUPPRESS_TOUCH_CALLBACKS_KEY = '[active_document]:suppress-touch-callbacks'
+    SUPPRESS_TOUCH_CALLBACKS_KEY = "[mongoid]:suppress-touch-callbacks"
 
     # Returns a hash to be used to store and query the various touch callback
     # suppression statuses for different classes.
@@ -196,7 +195,7 @@ module ActiveDocument
     # @return [ Hash ] The hash that contains touch callback suppression
     #   statuses
     def touch_callback_statuses
-      Thread.current[SUPPRESS_TOUCH_CALLBACKS_KEY] ||= {}
+      Threaded.get(SUPPRESS_TOUCH_CALLBACKS_KEY) { {} }
     end
 
     # Define the method that will get called for touching belongs_to
@@ -217,7 +216,7 @@ module ActiveDocument
       association.inverse_class.class_eval do
         define_method(method_name) do
           without_autobuild do
-            if !touch_callbacks_suppressed? && (relation = __send__(name))
+            if !touch_callbacks_suppressed? && relation = __send__(name)
               # This looks up touch_field at runtime, rather than at method definition time.
               # If touch_field is nil, it will only touch the default field (updated_at).
               relation.touch(association.touch_field)

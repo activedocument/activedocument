@@ -1,12 +1,13 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'spec_helper'
+require "spec_helper"
 
 describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
 
-  describe '#==' do
+  describe "#==" do
 
-    context 'when comparing with an enumerable' do
+    context "when comparing with an enumerable" do
 
       let(:person) do
         Person.create!
@@ -16,7 +17,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         Post.create!(person_id: person.id)
       end
 
-      context 'when only a criteria target exists' do
+      context "when only a criteria target exists" do
 
         let(:criteria) do
           Post.where(person_id: person.id)
@@ -26,23 +27,23 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           described_class.new(criteria)
         end
 
-        it 'returns the equality check' do
-          expect(enumerable).to eq([post])
+        it "returns the equality check" do
+          expect(enumerable).to eq([ post ])
         end
       end
 
-      context 'when only an array target exists' do
+      context "when only an array target exists" do
 
         let!(:enumerable) do
-          described_class.new([post])
+          described_class.new([ post ])
         end
 
-        it 'returns the equality check' do
-          expect(enumerable._loaded.values).to eq([post])
+        it "returns the equality check" do
+          expect(enumerable._loaded.values).to eq([ post ])
         end
       end
 
-      context 'when a criteria and added exist' do
+      context "when a criteria and added exist" do
 
         let(:criteria) do
           Post.where(person_id: person.id)
@@ -56,90 +57,90 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           Post.new
         end
 
-        context 'when the added does not contain unloaded docs' do
+        context "when the added does not contain unloaded docs" do
 
           before do
             enumerable << post_two
           end
 
-          it 'returns the equality check' do
-            expect(enumerable).to eq([post, post_two])
+          it "returns the equality check" do
+            expect(enumerable).to eq([ post, post_two ])
           end
         end
 
-        context 'when the added contains unloaded docs' do
+        context "when the added contains unloaded docs" do
 
           before do
             enumerable << post
           end
 
-          it 'returns the equality check' do
-            expect(enumerable).to eq([post])
+          it "returns the equality check" do
+            expect(enumerable).to eq([ post ])
           end
         end
 
-        context 'when the enumerable is loaded' do
+        context "when the enumerable is loaded" do
 
           before do
             enumerable.instance_variable_set(:@executed, true)
           end
 
-          context 'when the loaded has no docs and added is persisted' do
+          context "when the loaded has no docs and added is persisted" do
 
             before do
               post.save!
               enumerable._added[post.id] = post
             end
 
-            it 'returns the equality check' do
-              expect(enumerable).to eq([post])
+            it "returns the equality check" do
+              expect(enumerable).to eq([ post ])
             end
           end
         end
       end
     end
 
-    context 'when comparing with a non enumerable' do
+    context "when comparing with a non enumerable" do
 
       let(:enumerable) do
         described_class.new([])
       end
 
-      it 'returns false' do
-        expect(enumerable).to_not eq('person')
+      it "returns false" do
+        expect(enumerable).to_not eq("person")
       end
     end
   end
 
-  describe '#===' do
+  describe "#===" do
 
     let(:data) { [] }
 
     shared_examples 'standard library-compatible enumerable' do
-      context 'when compared to an array class' do
+      context "when compared to an array class" do
 
-        it 'returns false' do
+        it "returns false" do
           expect(enumerable === Array).to be false
         end
       end
 
-      context 'when compared to an enumerable class' do
+      context "when compared to an enumerable class" do
 
-        it 'returns false' do
+        it "returns false" do
           expect(enumerable === described_class).to be false
         end
       end
 
-      context 'when compared to a different class' do
+      context "when compared to a different class" do
 
-        it 'returns false' do
+        it "returns false" do
           expect(enumerable === ActiveDocument::Document).to be false
         end
       end
 
-      context 'when compared to an array instance' do
+      context "when compared to an array instance" do
 
-        context 'when the entries are equal' do
+        context "when the entries are equal" do
 
           let(:data) do
             [Post.new(id: 2)]
@@ -149,29 +150,29 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
             described_class.new([Post.new(id: 2)])
           end
 
-          it 'returns true' do
+          it "returns true" do
             expect(enumerable === other).to be true
           end
         end
 
-        context 'when the entries are both empty' do
+        context "when the entries are both empty" do
 
           let(:other) do
             described_class.new([])
           end
 
-          it 'returns true' do
+          it "returns true" do
             expect(enumerable === other).to be true
           end
         end
 
-        context 'when the entries are not equal' do
+        context "when the entries are not equal" do
 
           let(:other) do
-            described_class.new([Band.new])
+            described_class.new([ Band.new ])
           end
 
-          it 'returns false' do
+          it "returns false" do
             expect(enumerable === other).to be false
           end
         end
@@ -195,7 +196,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
-  describe '#<<' do
+  describe "#<<" do
 
     let(:person) do
       Person.create!
@@ -209,21 +210,21 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       described_class.new([])
     end
 
-    context 'when the association is empty' do
+    context "when the association is empty" do
 
       let!(:added) do
         enumerable << post
       end
 
-      it 'adds the document to the added target' do
+      it "adds the document to the added target" do
         expect(enumerable._added).to eq({ post.id => post })
       end
 
-      it 'returns the added documents' do
-        expect(added).to eq([post])
+      it "returns the added documents" do
+        expect(added).to eq([ post ])
       end
 
-      it 'sets the base on the new document' do
+      it "sets the base on the new document" do
         expect_query(0) do
           added.collect(&:person)
         end
@@ -231,7 +232,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
-  describe '#empty?' do
+  describe "#empty?" do
 
     let(:person) do
       Person.create!
@@ -245,7 +246,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       Post.create!(person_id: person.id)
     end
 
-    context 'when only a criteria target exists' do
+    context "when only a criteria target exists" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -259,7 +260,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.empty?
       end
 
-      it 'returns false' do
+      it "returns false" do
         expect(empty).to be false
       end
 
@@ -267,32 +268,32 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
 
         before { empty }
 
-        it 'retains the correct length' do
+        it "retains the correct length" do
           expect(enumerable.length).to eq(2)
         end
 
-        it 'retains the correct length when calling to_a' do
+        it "retains the correct length when calling to_a" do
           expect(enumerable.to_a.length).to eq(2)
         end
 
-        context 'when iterating over the association a second time' do
+        context "when iterating over the association a second time" do
 
           before do
-            enumerable.each(&:to_s)
+            enumerable.each { |post| post }
           end
 
-          it 'retains the correct length' do
+          it "retains the correct length" do
             expect(enumerable.length).to eq(2)
           end
 
-          it 'retains the correct length when calling to_a' do
+          it "retains the correct length when calling to_a" do
             expect(enumerable.to_a.length).to eq(2)
           end
         end
       end
     end
 
-    context 'when the documents have been loaded' do
+    context "when the documents have been loaded" do
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -305,17 +306,17 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.load_all!
       end
 
-      it 'is _loaded' do
+      it "is _loaded" do
         expect(enumerable._loaded?).to be true
       end
 
-      it 'does not call #exists? on the unloaded scope' do
+      it "it does not call #exists? on the unloaded scope" do
         expect(enumerable._unloaded).to_not receive(:exists?)
         expect(enumerable.empty?).to be false
       end
     end
 
-    context 'when the documents are not loaded' do
+    context "when the documents are not loaded" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -325,26 +326,26 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         described_class.new(criteria)
       end
 
-      it 'is not _loaded' do
+      it "is not _loaded" do
         expect(enumerable._loaded?).to be false
       end
 
-      it 'calls #exists? on the unloaded scope' do
+      it "it calls #exists? on the unloaded scope" do
         expect(enumerable._unloaded).to receive(:exists?)
         expect(enumerable.empty?).to be true
       end
 
-      context 'when documents are added' do
+      context "when documents are added" do
 
         before do
           enumerable << post_one
         end
 
-        it 'is not _loaded' do
+        it "is not _loaded" do
           expect(enumerable._loaded?).to be false
         end
 
-        it 'does not call #exists? on the unloaded scope' do
+        it "it does not call #exists? on the unloaded scope" do
           expect(enumerable._unloaded).to_not receive(:exists?)
           expect(enumerable.empty?).to be false
         end
@@ -352,7 +353,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
-  describe '#any?' do
+  describe "#any?" do
 
     let(:person) do
       Person.create!
@@ -366,7 +367,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       Post.create!(person_id: person.id)
     end
 
-    context 'when only a criteria target exists' do
+    context "when only a criteria target exists" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -380,7 +381,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.any?
       end
 
-      it 'returns true' do
+      it "returns true" do
         expect(any).to be true
       end
 
@@ -388,32 +389,32 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
 
         before { any }
 
-        it 'retains the correct length' do
+        it "retains the correct length" do
           expect(enumerable.length).to eq(2)
         end
 
-        it 'retains the correct length when calling to_a' do
+        it "retains the correct length when calling to_a" do
           expect(enumerable.to_a.length).to eq(2)
         end
 
-        context 'when iterating over the association a second time' do
+        context "when iterating over the association a second time" do
 
           before do
-            enumerable.each(&:to_s)
+            enumerable.each { |post| post }
           end
 
-          it 'retains the correct length' do
+          it "retains the correct length" do
             expect(enumerable.length).to eq(2)
           end
 
-          it 'retains the correct length when calling to_a' do
+          it "retains the correct length when calling to_a" do
             expect(enumerable.to_a.length).to eq(2)
           end
         end
       end
     end
 
-    context 'when the documents have been loaded' do
+    context "when the documents have been loaded" do
       let(:criteria) do
         Post.where(person_id: person.id)
       end
@@ -426,51 +427,51 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.load_all!
       end
 
-      it 'is _loaded' do
+      it "is _loaded" do
         expect(enumerable._loaded?).to be true
       end
 
-      it 'does not call #exists? on the unloaded scope' do
+      it "it does not call #exists? on the unloaded scope" do
         expect(enumerable._unloaded).to_not receive(:exists?)
         expect(enumerable.any?).to be true
       end
 
-      context 'when a block is given' do
-        it 'returns true when the predicate is true' do
+      context "when a block is given" do
+        it "returns true when the predicate is true" do
           expect(
-            enumerable.any? { true }
+            enumerable.any? { |doc| true }
           ).to be true
         end
 
-        it 'returns false when the predicate is false' do
+        it "returns false when the predicate is false" do
           expect(
-            enumerable.any? { false }
+            enumerable.any? { |doc| false }
           ).to be false
         end
       end
 
-      context 'when an argument is given' do
+      context "when an argument is given" do
 
-        it 'returns true when the argument is true' do
+        it "returns true when the argument is true" do
           expect(enumerable.any?(Post)).to be true
         end
 
-        it 'returns false when the argument is false' do
+        it "returns false when the argument is false" do
           expect(enumerable.any?(Sandwich)).to be false
         end
       end
 
-      context 'when both an argument and a block are given' do
+      context "when both an argument and a block are given" do
 
-        it 'gives precedence to the pattern' do
+        it "gives precedence to the pattern" do
           expect(
-            enumerable.any?(Post) { false }
+            enumerable.any?(Post) { |doc| false }
           ).to be true
         end
       end
     end
 
-    context 'when the documents are not loaded' do
+    context "when the documents are not loaded" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -480,68 +481,68 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         described_class.new(criteria)
       end
 
-      it 'is not _loaded' do
+      it "is not _loaded" do
         expect(enumerable._loaded?).to be false
       end
 
-      it 'calls #exists? on the unloaded scope' do
+      it "it calls #exists? on the unloaded scope" do
         expect(enumerable._unloaded).to receive(:exists?)
         expect(enumerable.any?).to be false
       end
 
-      context 'when documents are added' do
+      context "when documents are added" do
 
         before do
           enumerable << post_one
         end
 
-        it 'is not _loaded' do
+        it "is not _loaded" do
           expect(enumerable._loaded?).to be false
         end
 
-        it 'does not call #exists? on the unloaded scope' do
+        it "it does not call #exists? on the unloaded scope" do
           expect(enumerable._unloaded).to_not receive(:exists?)
           expect(enumerable.any?).to be true
         end
       end
 
-      context 'when a block is given' do
-        it 'returns true when the predicate is true' do
+      context "when a block is given" do
+        it "returns true when the predicate is true" do
           expect(
-            enumerable.any? { true }
+            enumerable.any? { |doc| true }
           ).to be true
         end
 
-        it 'returns false when the predicate is false' do
+        it "returns false when the predicate is false" do
           expect(
-            enumerable.any? { false }
+            enumerable.any? { |doc| false }
           ).to be false
         end
       end
 
-      context 'when an argument is given' do
+      context "when an argument is given" do
 
-        it 'returns true when the argument is true' do
+        it "returns true when the argument is true" do
           expect(enumerable.any?(Post)).to be true
         end
 
-        it 'returns false when the argument is false' do
+        it "returns false when the argument is false" do
           expect(enumerable.any?(Sandwich)).to be false
         end
       end
 
-      context 'when both an argument and a block are given' do
+      context "when both an argument and a block are given" do
 
-        it 'gives precedence to the pattern' do
+        it "gives precedence to the pattern" do
           expect(
-            enumerable.any?(Post) { false }
+            enumerable.any?(Post) { |doc| false }
           ).to be true
         end
       end
     end
   end
 
-  describe '#clear' do
+  describe "#clear" do
 
     let(:person) do
       Person.create!
@@ -574,31 +575,31 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       end
     end
 
-    it 'clears out the loaded docs' do
+    it "clears out the loaded docs" do
       expect(enumerable._loaded).to be_empty
     end
 
-    it 'clears out the added docs' do
+    it "clears out the added docs" do
       expect(enumerable._added).to be_empty
     end
 
-    it 'retains its loaded state' do
+    it "retains its loaded state" do
       expect(enumerable).to_not be__loaded
     end
   end
 
-  describe '#clone' do
+  describe "#clone" do
 
     let(:person) do
       Person.create!
     end
 
     let!(:post) do
-      Post.create!(title: 'one', person_id: person.id)
+      Post.create!(title: "one", person_id: person.id)
     end
 
     let!(:post_two) do
-      Post.create!(title: 'two', person_id: person.id)
+      Post.create!(title: "two", person_id: person.id)
     end
 
     let(:criteria) do
@@ -618,45 +619,45 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       enumerable.clone
     end
 
-    it 'does not retain the first id' do
+    it "does not retain the first id" do
       expect(cloned.first).to_not eq(post)
     end
 
-    it 'does not retain the last id' do
+    it "does not retain the last id" do
       expect(cloned.last).to_not eq(post_two)
     end
   end
 
-  describe '#delete' do
+  describe "#delete" do
 
     let(:person) do
       Person.create!
     end
 
-    context 'when the document is loaded' do
+    context "when the document is loaded" do
 
       let!(:post) do
         Post.create!(person_id: person.id)
       end
 
       let!(:enumerable) do
-        described_class.new([post])
+        described_class.new([ post ])
       end
 
       let!(:deleted) do
         enumerable.delete(post)
       end
 
-      it 'deletes the document from the enumerable' do
+      it "deletes the document from the enumerable" do
         expect(enumerable._loaded).to be_empty
       end
 
-      it 'returns the document' do
+      it "returns the document" do
         expect(deleted).to eq(post)
       end
     end
 
-    context 'when the document is added' do
+    context "when the document is added" do
 
       let!(:post) do
         Post.new
@@ -678,16 +679,16 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.delete(post)
       end
 
-      it 'removes the document from the added docs' do
+      it "removes the document from the added docs" do
         expect(enumerable._added).to be_empty
       end
 
-      it 'returns the document' do
+      it "returns the document" do
         expect(deleted).to eq(post)
       end
     end
 
-    context 'when the document is unloaded' do
+    context "when the document is unloaded" do
 
       let!(:post) do
         Post.create!(person_id: person.id)
@@ -705,16 +706,16 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.delete(post)
       end
 
-      it 'does not load the document' do
+      it "does not load the document" do
         expect(enumerable._loaded).to be_empty
       end
 
-      it 'returns the document' do
+      it "returns the document" do
         expect(deleted).to eq(post)
       end
     end
 
-    context 'when the document is not found' do
+    context "when the document is not found" do
 
       let!(:post) do
         Post.create!(person_id: person.id)
@@ -725,7 +726,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:enumerable) do
-        described_class.new([post])
+        described_class.new([ post ])
       end
 
       let!(:deleted) do
@@ -734,42 +735,42 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         end
       end
 
-      it 'returns nil' do
+      it "returns nil" do
         expect(deleted).to be_nil
       end
     end
   end
 
-  describe '#delete_if' do
+  describe "#delete_if" do
 
     let(:person) do
       Person.create!
     end
 
-    context 'when the document is loaded' do
+    context "when the document is loaded" do
 
       let!(:post) do
         Post.create!(person_id: person.id)
       end
 
       let!(:enumerable) do
-        described_class.new([post])
+        described_class.new([ post ])
       end
 
       let!(:deleted) do
         enumerable.delete_if { |doc| doc == post }
       end
 
-      it 'deletes the document from the enumerable' do
+      it "deletes the document from the enumerable" do
         expect(enumerable._loaded).to be_empty
       end
 
-      it 'returns the remaining docs' do
+      it "returns the remaining docs" do
         expect(deleted).to be_empty
       end
     end
 
-    context 'when the document is added' do
+    context "when the document is added" do
 
       let!(:post) do
         Post.new
@@ -791,16 +792,16 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.delete_if { |doc| doc == post }
       end
 
-      it 'removes the document from the added docs' do
+      it "removes the document from the added docs" do
         expect(enumerable._added).to be_empty
       end
 
-      it 'returns the remaining docs' do
+      it "returns the remaining docs" do
         expect(deleted).to be_empty
       end
     end
 
-    context 'when the document is unloaded' do
+    context "when the document is unloaded" do
 
       let!(:post) do
         Post.create!(person_id: person.id)
@@ -818,11 +819,11 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.delete_if { |doc| doc == post }
       end
 
-      it 'does not load the document' do
+      it "does not load the document" do
         expect(enumerable._loaded).to be_empty
       end
 
-      it 'returns the remaining docs' do
+      it "returns the remaining docs" do
         expect(deleted).to be_empty
       end
     end
@@ -838,27 +839,27 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:enumerable) do
-        described_class.new([post])
+        described_class.new([ post ])
       end
 
       let!(:deleted) do
         enumerable.delete_if { |doc| doc == Post.new }
       end
 
-      it 'returns the remaining docs' do
-        expect(deleted).to eq([post])
+      it "returns the remaining docs" do
+        expect(deleted).to eq([ post ])
       end
     end
   end
 
-  describe '#detect' do
+  describe "#detect" do
 
     let(:person) do
       Person.create!
     end
 
     let!(:post) do
-      Post.create!(person: person, title: 'test')
+      Post.create!(person: person, title: "test")
     end
 
     let(:criteria) do
@@ -869,19 +870,19 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       described_class.new(criteria)
     end
 
-    context 'when setting a value on the matching document' do
+    context "when setting a value on the matching document" do
 
       before do
-        enumerable.detect { |post| post.title = 'test' }.rating = 10
+        enumerable.detect{ |post| post.title = "test" }.rating = 10
       end
 
-      it 'sets the value on the instance' do
-        expect(enumerable.detect { |post| post.title = 'test' }.rating).to eq(10)
+      it "sets the value on the instance" do
+        expect(enumerable.detect{ |post| post.title = "test" }.rating).to eq(10)
       end
     end
   end
 
-  describe '#each' do
+  describe "#each" do
 
     let(:person) do
       Person.create!
@@ -891,7 +892,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       Post.create!(person_id: person.id)
     end
 
-    context 'when only a criteria target exists' do
+    context "when only a criteria target exists" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -907,11 +908,11 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         end
       end
 
-      it 'loads each document' do
+      it "loads each document" do
         expect(enumerable._loaded).to eq({ post.id => post })
       end
 
-      it 'becomes loaded' do
+      it "becomes loaded" do
         expect(enumerable).to be__loaded
       end
 
@@ -932,10 +933,10 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       end
     end
 
-    context 'when only an array target exists' do
+    context "when only an array target exists" do
 
       let!(:enumerable) do
-        described_class.new([post])
+        described_class.new([ post ])
       end
 
       let!(:iterated) do
@@ -944,16 +945,16 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         end
       end
 
-      it 'does not alter the loaded docs' do
+      it "does not alter the loaded docs" do
         expect(enumerable._loaded).to eq({ post.id => post })
       end
 
-      it 'stays loaded' do
+      it "stays loaded" do
         expect(enumerable).to be__loaded
       end
     end
 
-    context 'when a criteria and added exist' do
+    context "when a criteria and added exist" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -967,7 +968,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         Post.new
       end
 
-      context 'when the added does not contain unloaded docs' do
+      context "when the added does not contain unloaded docs" do
 
         before do
           enumerable << post_two
@@ -979,20 +980,20 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           end
         end
 
-        it 'adds the unloaded to the loaded docs' do
+        it "adds the unloaded to the loaded docs" do
           expect(enumerable._loaded).to eq({ post.id => post })
         end
 
-        it 'keeps the appended in the added docs' do
+        it "keeps the appended in the added docs" do
           expect(enumerable._added).to eq({ post_two.id => post_two })
         end
 
-        it 'stays loaded' do
+        it "stays loaded" do
           expect(enumerable).to be__loaded
         end
       end
 
-      context 'when the added contains unloaded docs' do
+      context "when the added contains unloaded docs" do
 
         before do
           enumerable << post
@@ -1004,17 +1005,17 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           end
         end
 
-        it 'adds the persisted added doc to the loaded' do
+        it "adds the persisted added doc to the loaded" do
           expect(enumerable._loaded).to eq({ post.id => post })
         end
 
-        it 'stays loaded' do
+        it "stays loaded" do
           expect(enumerable).to be__loaded
         end
       end
     end
 
-    context 'when no block is passed' do
+    context "when no block is passed" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -1024,14 +1025,14 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         described_class.new(criteria)
       end
 
-      it 'returns an enumerator' do
+      it "returns an enumerator" do
         expect(enumerable.each.class.include?(Enumerable)).to be true
       end
 
     end
   end
 
-  describe '#entries' do
+  describe "#entries" do
 
     let(:person) do
       Person.create!
@@ -1045,7 +1046,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       described_class.new(criteria)
     end
 
-    context 'when the added contains a persisted document' do
+    context "when the added contains a persisted document" do
 
       let!(:post) do
         Post.create!(person_id: person.id)
@@ -1059,19 +1060,19 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.entries
       end
 
-      it 'yields to the in memory documents first' do
+      it "yields to the in memory documents first" do
         expect(entries.first).to equal(post)
       end
     end
   end
 
-  describe '#first' do
+  describe "#first" do
 
     let(:person) do
       Person.create!
     end
 
-    context 'when the enumerable is not loaded' do
+    context "when the enumerable is not loaded" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -1081,9 +1082,9 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         described_class.new(criteria)
       end
 
-      context 'when unloaded is not empty' do
+      context "when unloaded is not empty" do
 
-        context 'when added is empty' do
+        context "when added is empty" do
 
           let!(:post) do
             Post.create!(person_id: person.id)
@@ -1093,21 +1094,21 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
             enumerable.first
           end
 
-          it 'returns the first unloaded doc' do
+          it "returns the first unloaded doc" do
             expect(first).to eq(post)
           end
 
-          it 'does not load the enumerable' do
+          it "does not load the enumerable" do
             expect(enumerable).to_not be__loaded
           end
 
-          it 'receives query only once' do
+          it "receives query only once" do
             expect(criteria).to receive(:first).once
             first
           end
         end
 
-        context 'when added is not empty' do
+        context "when added is not empty" do
 
           let!(:post) do
             Post.create!(person_id: person.id)
@@ -1125,20 +1126,20 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
             enumerable.first
           end
 
-          context 'when a perviously persisted unloaded doc exists' do
+          context "when a previously persisted unloaded doc exists" do
 
-            it 'returns the first added doc' do
+            it "returns the first added doc" do
               expect(first).to eq(post)
             end
 
-            it 'does not load the enumerable' do
+            it "does not load the enumerable" do
               expect(enumerable).to_not be__loaded
             end
           end
         end
       end
 
-      context 'when unloaded is empty' do
+      context "when unloaded is empty" do
 
         let!(:post) do
           Post.new(person_id: person.id)
@@ -1152,53 +1153,53 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.first
         end
 
-        it 'returns the first loaded doc' do
+        it "returns the first loaded doc" do
           expect(first).to eq(post)
         end
 
-        it 'does not load the enumerable' do
+        it "does not load the enumerable" do
           expect(enumerable).to_not be__loaded
         end
       end
 
-      context 'when unloaded and added are empty' do
+      context "when unloaded and added are empty" do
 
         let(:first) do
           enumerable.first
         end
 
-        it 'returns nil' do
+        it "returns nil" do
           expect(first).to be_nil
         end
 
-        it 'does not load the enumerable' do
+        it "does not load the enumerable" do
           expect(enumerable).to_not be__loaded
         end
       end
     end
 
-    context 'when the enumerable is loaded' do
+    context "when the enumerable is loaded" do
 
-      context 'when loaded is not empty' do
+      context "when loaded is not empty" do
 
         let!(:post) do
           Post.create!(person_id: person.id)
         end
 
         let(:enumerable) do
-          described_class.new([post])
+          described_class.new([ post ])
         end
 
         let(:first) do
           enumerable.first
         end
 
-        it 'returns the first loaded doc' do
+        it "returns the first loaded doc" do
           expect(first).to eq(post)
         end
       end
 
-      context 'when loaded is empty' do
+      context "when loaded is empty" do
 
         let!(:post) do
           Post.create!(person_id: person.id)
@@ -1216,12 +1217,12 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.first
         end
 
-        it 'returns the first added doc' do
+        it "returns the first added doc" do
           expect(first).to eq(post)
         end
       end
 
-      context 'when loaded and added are empty' do
+      context "when loaded and added are empty" do
 
         let(:enumerable) do
           described_class.new([])
@@ -1231,7 +1232,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.first
         end
 
-        it 'returns nil' do
+        it "returns nil" do
           expect(first).to be_nil
         end
       end
@@ -1252,11 +1253,11 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:first_post) do
-        person.posts.create!(title: 'One')
+        person.posts.create!(title: "One")
       end
 
       let!(:second_post) do
-        person.posts.create!(title: 'Two')
+        person.posts.create!(title: "Two")
       end
 
       it 'returns the matching document' do
@@ -1279,11 +1280,11 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:first_post) do
-        person.posts.create!(title: 'One')
+        person.posts.create!(title: "One")
       end
 
       let!(:second_post) do
-        person.posts.create!(title: 'Two')
+        person.posts.create!(title: "Two")
       end
 
       it 'uses the sort on id' do
@@ -1292,7 +1293,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
-  describe '#include?' do
+  describe "#include?" do
 
     let(:person) do
       Person.create!
@@ -1306,32 +1307,32 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       Post.create!(person_id: person.id)
     end
 
-    context 'when no criteria exists' do
+    context "when no criteria exists" do
 
-      context 'when the enumerable is loaded' do
+      context "when the enumerable is loaded" do
 
         let!(:enumerable) do
-          described_class.new([post_one, post_two])
+          described_class.new([ post_one, post_two ])
         end
 
         let!(:included) do
           enumerable.include?(post_two)
         end
 
-        it 'returns true' do
+        it "returns true" do
           expect(included).to be true
         end
 
-        it 'retains the correct length' do
+        it "retains the correct length" do
           expect(enumerable.length).to eq(2)
         end
 
-        it 'retains the correct length when calling to_a' do
+        it "retains the correct length when calling to_a" do
           expect(enumerable.to_a.length).to eq(2)
         end
       end
 
-      context 'when the enumerable contains an added document' do
+      context "when the enumerable contains an added document" do
 
         let!(:enumerable) do
           described_class.new([])
@@ -1349,13 +1350,13 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.include?(post_three)
         end
 
-        it 'returns true' do
+        it "returns true" do
           expect(included).to be true
         end
       end
     end
 
-    context 'when the document is present and not the first' do
+    context "when the document is present and not the first" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -1369,42 +1370,42 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.include?(post_two)
       end
 
-      it 'returns true' do
+      it "returns true" do
         expect(included).to be true
       end
 
-      it 'retains the correct length' do
+      it "retains the correct length" do
         expect(enumerable.length).to eq(2)
       end
 
-      it 'retains the correct length when calling to_a' do
+      it "retains the correct length when calling to_a" do
         expect(enumerable.to_a.length).to eq(2)
       end
 
-      context 'when iterating over the association a second time' do
+      context "when iterating over the association a second time" do
 
         before do
-          enumerable.each(&:to_s)
+          enumerable.each { |post| post }
         end
 
-        it 'retains the correct length' do
+        it "retains the correct length" do
           expect(enumerable.length).to eq(2)
         end
 
-        it 'retains the correct length when calling to_a' do
+        it "retains the correct length when calling to_a" do
           expect(enumerable.to_a.length).to eq(2)
         end
       end
     end
   end
 
-  describe '#initialize' do
+  describe "#initialize" do
 
     let(:person) do
       Person.new
     end
 
-    context 'when provided with a criteria' do
+    context "when provided with a criteria" do
 
       let(:criteria) do
         Post.where(person_id: person.id)
@@ -1414,49 +1415,49 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         described_class.new(criteria)
       end
 
-      it 'sets the criteria' do
+      it "sets the criteria" do
         expect(enumerable._unloaded).to eq(criteria)
       end
 
-      it 'is not loaded' do
+      it "is not loaded" do
         expect(enumerable).to_not be__loaded
       end
     end
 
-    context 'when provided an array' do
+    context "when provided an array" do
 
       let(:post) do
         Post.new
       end
 
       let(:enumerable) do
-        described_class.new([post])
+        described_class.new([ post ])
       end
 
-      it 'does not set a criteria' do
+      it "does not set a criteria" do
         expect(enumerable._unloaded).to be_nil
       end
 
-      it 'is loaded' do
+      it "is loaded" do
         expect(enumerable).to be__loaded
       end
     end
   end
 
-  describe '#in_memory' do
+  describe "#in_memory" do
 
     let(:person) do
       Person.new
     end
 
-    context 'when the enumerable is loaded' do
+    context "when the enumerable is loaded" do
 
       let(:post) do
         Post.new
       end
 
       let(:enumerable) do
-        described_class.new([post])
+        described_class.new([ post ])
       end
 
       let(:post_two) do
@@ -1471,12 +1472,12 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.in_memory
       end
 
-      it 'returns the loaded and added docs' do
-        expect(in_memory).to eq([post, post_two])
+      it "returns the loaded and added docs" do
+        expect(in_memory).to eq([ post, post_two ])
       end
     end
 
-    context 'when the enumerable is not loaded' do
+    context "when the enumerable is not loaded" do
 
       let(:post) do
         Post.new(person_id: person.id)
@@ -1498,12 +1499,12 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.in_memory
       end
 
-      it 'returns the added docs' do
-        expect(in_memory).to eq([post_two])
+      it "returns the added docs" do
+        expect(in_memory).to eq([ post_two ])
       end
     end
 
-    context 'when passed a block' do
+    context "when passed a block" do
 
       let(:enumerable) do
         described_class.new(Post.where(person_id: person.id))
@@ -1517,7 +1518,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable << post_two
       end
 
-      it 'yields to each in memory document' do
+      it "yields to each in memory document" do
         enumerable.in_memory do |doc|
           expect(doc).to eq(post_two)
         end
@@ -1525,34 +1526,34 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
-  describe '#is_a?' do
+  describe "#is_a?" do
 
     let(:enumerable) do
       described_class.new(Post.all)
     end
 
-    context 'when checking against enumerable' do
+    context "when checking against enumerable" do
 
-      it 'returns true' do
-        expect(enumerable.is_a?(Enumerable)).to be true
+      it "returns true" do
+        expect(enumerable.is_a?(::Enumerable)).to be true
       end
     end
 
-    context 'when checking against array' do
+    context "when checking against array" do
 
-      it 'returns true' do
+      it "returns true" do
         expect(enumerable.is_a?(Array)).to be true
       end
     end
   end
 
-  describe '#last' do
+  describe "#last" do
 
     let(:person) do
       Person.create!
     end
 
-    context 'when the enumerable is not loaded' do
+    context "when the enumerable is not loaded" do
 
       let(:criteria) do
         Post.asc(:_id).where(person_id: person.id)
@@ -1562,7 +1563,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         described_class.new(criteria)
       end
 
-      context 'when unloaded is not empty' do
+      context "when unloaded is not empty" do
 
         let!(:post) do
           Post.create!(person_id: person.id)
@@ -1572,21 +1573,21 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.last
         end
 
-        it 'returns the last unloaded doc' do
+        it "returns the last unloaded doc" do
           expect(last).to eq(post)
         end
 
-        it 'does not load the enumerable' do
+        it "does not load the enumerable" do
           expect(enumerable).to_not be__loaded
         end
 
-        it 'receives query only once' do
+        it "receives query only once" do
           expect(criteria).to receive(:last).once
           last
         end
       end
 
-      context 'when unloaded is empty' do
+      context "when unloaded is empty" do
 
         let!(:post) do
           Post.new(person_id: person.id)
@@ -1600,31 +1601,31 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.last
         end
 
-        it 'returns the last unloaded doc' do
+        it "returns the last unloaded doc" do
           expect(last).to eq(post)
         end
 
-        it 'does not load the enumerable' do
+        it "does not load the enumerable" do
           expect(enumerable).to_not be__loaded
         end
       end
 
-      context 'when unloaded and added are empty' do
+      context "when unloaded and added are empty" do
 
         let(:last) do
           enumerable.last
         end
 
-        it 'returns nil' do
+        it "returns nil" do
           expect(last).to be_nil
         end
 
-        it 'does not load the enumerable' do
+        it "does not load the enumerable" do
           expect(enumerable).to_not be__loaded
         end
       end
 
-      context 'when added is not empty' do
+      context "when added is not empty" do
 
         let!(:post_one) do
           person.posts.create!
@@ -1638,37 +1639,37 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.last
         end
 
-        context 'when accessing from a reloaded child' do
+        context "when accessing from a reloaded child" do
 
-          it 'returns the last document' do
+          it "returns the last document" do
             expect(post_one.reload.person.posts.asc(:_id).last).to eq(post_two)
           end
         end
       end
     end
 
-    context 'when the enumerable is loaded' do
+    context "when the enumerable is loaded" do
 
-      context 'when loaded is not empty' do
+      context "when loaded is not empty" do
 
         let!(:post) do
           Post.create!(person_id: person.id)
         end
 
         let(:enumerable) do
-          described_class.new([post])
+          described_class.new([ post ])
         end
 
         let(:last) do
           enumerable.last
         end
 
-        it 'returns the last loaded doc' do
+        it "returns the last loaded doc" do
           expect(last).to eq(post)
         end
       end
 
-      context 'when loaded is empty' do
+      context "when loaded is empty" do
 
         let!(:post) do
           Post.create!(person_id: person.id)
@@ -1686,12 +1687,12 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.last
         end
 
-        it 'returns the last added doc' do
+        it "returns the last added doc" do
           expect(last).to eq(post)
         end
       end
 
-      context 'when loaded and added are empty' do
+      context "when loaded and added are empty" do
 
         let(:enumerable) do
           described_class.new([])
@@ -1701,7 +1702,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.last
         end
 
-        it 'returns nil' do
+        it "returns nil" do
           expect(last).to be_nil
         end
       end
@@ -1722,11 +1723,11 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:first_post) do
-        person.posts.create!(title: 'One')
+        person.posts.create!(title: "One")
       end
 
       let!(:second_post) do
-        person.posts.create!(title: 'Two')
+        person.posts.create!(title: "Two")
       end
 
       it 'returns the matching document' do
@@ -1749,11 +1750,11 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       end
 
       let!(:first_post) do
-        person.posts.create!(title: 'One')
+        person.posts.create!(title: "One")
       end
 
       let!(:second_post) do
-        person.posts.create!(title: 'Two')
+        person.posts.create!(title: "Two")
       end
 
       it 'uses the sort on id' do
@@ -1762,7 +1763,28 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
-  describe '#load_all!' do
+  describe "#kind_of?" do
+
+    let(:enumerable) do
+      described_class.new(Post.all)
+    end
+
+    context "when checking against enumerable" do
+
+      it "returns true" do
+        expect(enumerable.kind_of?(::Enumerable)).to be true
+      end
+    end
+
+    context "when checking against array" do
+
+      it "returns true" do
+        expect(enumerable.kind_of?(Array)).to be true
+      end
+    end
+  end
+
+  describe "#load_all!" do
 
     let(:person) do
       Person.create!
@@ -1784,20 +1806,20 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       enumerable.load_all!
     end
 
-    it 'loads all the unloaded documents' do
+    it "loads all the unloaded documents" do
       expect(enumerable._loaded).to eq({ post.id => post })
     end
 
-    it 'returns the object' do
+    it "returns the object" do
       expect(loaded).to eq([post])
     end
 
-    it 'sets loaded to true' do
+    it "sets loaded to true" do
       expect(enumerable).to be__loaded
     end
   end
 
-  describe '#reset' do
+  describe "#reset" do
 
     let(:person) do
       Person.create!
@@ -1812,7 +1834,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
 
     let(:enumerable) do
-      described_class.new([post])
+      described_class.new([ post ])
     end
 
     before do
@@ -1823,26 +1845,26 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       enumerable.reset
     end
 
-    it 'is not loaded' do
+    it "is not loaded" do
       expect(enumerable).to_not be__loaded
     end
 
-    it 'clears out the loaded docs' do
+    it "clears out the loaded docs" do
       expect(enumerable._loaded).to be_empty
     end
 
-    it 'clears out the added docs' do
+    it "clears out the added docs" do
       expect(enumerable._added).to be_empty
     end
   end
 
-  describe '#respond_to?' do
+  describe "#respond_to?" do
 
     let(:enumerable) do
       described_class.new([])
     end
 
-    context 'when checking against array methods' do
+    context "when checking against array methods" do
 
       [].methods.each do |method|
 
@@ -1853,7 +1875,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
-  describe '#size' do
+  describe "#size" do
 
     let(:person) do
       Person.create!
@@ -1863,35 +1885,35 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       Post.create!(person_id: person.id)
     end
 
-    context 'when the base is new' do
+    context "when the base is new" do
 
       let!(:person) do
         Person.new
       end
 
-      context 'when the added contains a persisted document' do
+      context "when the added contains a persisted document" do
 
         let!(:post) do
           Post.create!(person_id: person.id)
         end
 
-        context 'when the enumerable is not loaded' do
+        context "when the enumerable is not loaded" do
 
           let(:enumerable) do
             described_class.new(Post.where(person_id: person.id))
           end
 
-          it 'includes the number of all added documents' do
+          it "includes the number of all added documents" do
             expect(enumerable.size).to eq(1)
           end
         end
       end
     end
 
-    context 'when the enumerable is loaded' do
+    context "when the enumerable is loaded" do
 
       let(:enumerable) do
-        described_class.new([post])
+        described_class.new([ post ])
       end
 
       let(:post_two) do
@@ -1906,22 +1928,22 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         enumerable.size
       end
 
-      it 'returns the loaded size plus added size' do
+      it "returns the loaded size plus added size" do
         expect(size).to eq(2)
       end
 
-      it 'matches the size of the loaded enumerable' do
+      it "matches the size of the loaded enumerable" do
         expect(size).to eq(enumerable.to_a.size)
       end
     end
 
-    context 'when the enumerable is not loaded' do
+    context "when the enumerable is not loaded" do
 
       let(:enumerable) do
         described_class.new(Post.where(person_id: person.id))
       end
 
-      context 'when the added contains new documents' do
+      context "when the added contains new documents" do
 
         let(:post_two) do
           Post.new(person_id: person.id)
@@ -1935,12 +1957,12 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.size
         end
 
-        it 'returns the unloaded count plus added new size' do
+        it "returns the unloaded count plus added new size" do
           expect(size).to eq(2)
         end
       end
 
-      context 'when the added contains persisted documents' do
+      context "when the added contains persisted documents" do
 
         let(:post_two) do
           Post.create!(person_id: person.id)
@@ -1954,21 +1976,21 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           enumerable.size
         end
 
-        it 'returns the unloaded count plus added new size' do
+        it "returns the unloaded count plus added new size" do
           expect(size).to eq(2)
         end
       end
     end
   end
 
-  describe '#to_json' do
+  describe "#to_json" do
 
     let(:person) do
       Person.create!
     end
 
     let!(:post) do
-      Post.create!(title: 'test', person_id: person.id)
+      Post.create!(title: "test", person_id: person.id)
     end
 
     let(:criteria) do
@@ -1987,19 +2009,19 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       enumerable.to_json
     end
 
-    it 'serializes the enumerable' do
+    it "serializes the enumerable" do
       expect(json).to include(post.title)
     end
   end
 
-  describe '#to_json(parameters)' do
+  describe "#to_json(parameters)" do
 
     let(:person) do
       Person.create!
     end
 
     let!(:post) do
-      Post.create!(title: 'test', person_id: person.id)
+      Post.create!(title: "test", person_id: person.id)
     end
 
     let(:criteria) do
@@ -2007,22 +2029,22 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
 
     let!(:json) do
-      person.posts.to_json({ except: 'title' })
+      person.posts.to_json({except: 'title'})
     end
 
-    it 'serializes the enumerable' do
+    it "serializes the enumerable" do
       expect(json).to_not include(post.title)
     end
   end
 
-  describe '#as_json' do
+  describe "#as_json" do
 
     let(:person) do
       Person.create!
     end
 
     let!(:post) do
-      Post.create!(title: 'test', person_id: person.id)
+      Post.create!(title: "test", person_id: person.id)
     end
 
     let(:criteria) do
@@ -2041,20 +2063,20 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       enumerable.as_json
     end
 
-    it 'serializes the enumerable' do
+    it "serializes the enumerable" do
       expect(json.size).to eq(1)
       expect(json[0]['title']).to eq(post.title)
     end
   end
 
-  describe '#as_json(parameters)' do
+  describe "#as_json(parameters)" do
 
     let(:person) do
       Person.create!
     end
 
     let!(:post) do
-      Post.create!(title: 'test', person_id: person.id)
+      Post.create!(title: "test", person_id: person.id)
     end
 
     let(:criteria) do
@@ -2062,19 +2084,19 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
 
     let!(:json) do
-      person.posts.as_json({ except: 'title' })
+      person.posts.as_json({except: "title"})
     end
 
-    it 'serializes the enumerable' do
+    it "serializes the enumerable" do
       expect(json.size).to eq(1)
     end
 
-    it 'includes the proper fields' do
-      expect(json[0].keys).to_not include('title')
+    it "includes the proper fields" do
+      expect(json[0].keys).to_not include("title")
     end
   end
 
-  describe '#uniq' do
+  describe "#uniq" do
 
     let(:person) do
       Person.create!
@@ -2101,35 +2123,12 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       enumerable.uniq
     end
 
-    it 'returns the unique documents' do
-      expect(uniq).to eq([post])
+    it "returns the unique documents" do
+      expect(uniq).to eq([ post ])
     end
 
-    it 'sets loaded to true' do
+    it "sets loaded to true" do
       expect(enumerable).to be__loaded
-    end
-  end
-
-  describe '#respond_to_missing?' do
-
-    let!(:person) do
-      Person.new
-    end
-
-    let(:enumerable) do
-      described_class.new(Post.where(person_id: person.id))
-    end
-
-    context 'when can respond' do
-      it 'returns true' do
-        expect(enumerable.respond_to?(:size)).to be true
-      end
-    end
-
-    context 'when cant respond' do
-      it 'returns false' do
-        expect(enumerable.respond_to?(:nonexistent_method)).to be false
-      end
     end
   end
 

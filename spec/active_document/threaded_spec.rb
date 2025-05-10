@@ -1,6 +1,7 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'spec_helper'
+require "spec_helper"
 
 describe ActiveDocument::Threaded do
 
@@ -8,107 +9,107 @@ describe ActiveDocument::Threaded do
     double
   end
 
-  describe '#begin' do
+  describe "#begin" do
 
     before do
-      described_class.begin_execution('load')
+      described_class.begin_execution("load")
     end
 
     after do
-      described_class.stack('load').clear
+      described_class.stack("load").clear
     end
 
-    it 'adds a boolean to the load stack' do
-      expect(described_class.stack('load')).to eq([true])
+    it "adds a boolean to the load stack" do
+      expect(described_class.stack("load")).to eq([ true ])
     end
   end
 
-  describe '#executing?' do
+  describe "#executing?" do
 
-    context 'when loading is not set' do
+    context "when loading is not set" do
 
-      it 'returns false' do
+      it "returns false" do
         expect(described_class).to_not be_executing(:load)
       end
     end
 
-    context 'when the stack has elements' do
+    context "when the stack has elements" do
 
       before do
-        Thread.current['[active_document]:load-stack'] = [true]
+        described_class.stack('load').push(true)
       end
 
       after do
-        Thread.current['[active_document]:load-stack'] = []
+        described_class.stack('load').clear
       end
 
-      it 'returns true' do
+      it "returns true" do
         expect(described_class).to be_executing(:load)
       end
     end
 
-    context 'when the stack has no elements' do
+    context "when the stack has no elements" do
 
       before do
-        Thread.current['[active_document]:load-stack'] = []
+        described_class.stack('load').clear
       end
 
-      it 'returns false' do
+      it "returns false" do
         expect(described_class).to_not be_executing(:load)
       end
     end
   end
 
-  describe '#stack' do
+  describe "#stack" do
 
-    context 'when no stack has been initialized' do
+    context "when no stack has been initialized" do
 
       let(:loading) do
-        described_class.stack('load')
+        described_class.stack("load")
       end
 
-      it 'returns an empty stack' do
+      it "returns an empty stack" do
         expect(loading).to be_empty
       end
     end
 
-    context 'when a stack has been initialized' do
+    context "when a stack has been initialized" do
 
       before do
-        Thread.current['[active_document]:load-stack'] = [true]
+        described_class.stack('load').push(true)
       end
 
       let(:loading) do
-        described_class.stack('load')
+        described_class.stack("load")
       end
 
       after do
-        Thread.current['[active_document]:load-stack'] = []
+        described_class.stack('load').clear
       end
 
-      it 'returns the stack' do
-        expect(loading).to eq([true])
+      it "returns the stack" do
+        expect(loading).to eq([ true ])
       end
     end
   end
 
-  describe '#exit' do
+  describe "#exit" do
 
     before do
-      described_class.begin_execution('load')
-      described_class.exit_execution('load')
+      described_class.begin_execution("load")
+      described_class.exit_execution("load")
     end
 
     after do
-      described_class.stack('load').clear
+      described_class.stack("load").clear
     end
 
-    it 'removes a boolean from the stack' do
-      expect(described_class.stack('load')).to be_empty
+    it "removes a boolean from the stack" do
+      expect(described_class.stack("load")).to be_empty
     end
   end
 
-  describe '#begin_validate' do
+  describe "#begin_validate" do
 
     let(:person) do
       Person.new
@@ -122,12 +123,12 @@ describe ActiveDocument::Threaded do
       described_class.exit_validate(person)
     end
 
-    it 'marks the document as being validated' do
-      expect(described_class.validations_for(Person)).to eq([person.id])
+    it "marks the document as being validated" do
+      expect(described_class.validations_for(Person)).to eq([ person.id ])
     end
   end
 
-  describe '#exit_validate' do
+  describe "#exit_validate" do
 
     let(:person) do
       Person.new
@@ -138,18 +139,18 @@ describe ActiveDocument::Threaded do
       described_class.exit_validate(person)
     end
 
-    it 'unmarks the document as being validated' do
+    it "unmarks the document as being validated" do
       expect(described_class.validations_for(Person)).to be_empty
     end
   end
 
-  describe '#validated?' do
+  describe "#validated?" do
 
     let(:person) do
       Person.new
     end
 
-    context 'when the document is validated' do
+    context "when the document is validated" do
 
       before do
         described_class.begin_validate(person)
@@ -159,20 +160,20 @@ describe ActiveDocument::Threaded do
         described_class.exit_validate(person)
       end
 
-      it 'returns true' do
+      it "returns true" do
         expect(described_class.validated?(person)).to be true
       end
     end
 
-    context 'when the document is not validated' do
+    context "when the document is not validated" do
 
-      it 'returns false' do
+      it "returns false" do
         expect(described_class.validated?(person)).to be false
       end
     end
   end
 
-  describe '#begin_autosave' do
+  describe "#begin_autosave" do
 
     let(:person) do
       Person.new
@@ -186,12 +187,12 @@ describe ActiveDocument::Threaded do
       described_class.exit_autosave(person)
     end
 
-    it 'marks the document as being autosaved' do
-      expect(described_class.autosaves_for(Person)).to eq([person.id])
+    it "marks the document as being autosaved" do
+      expect(described_class.autosaves_for(Person)).to eq([ person.id ])
     end
   end
 
-  describe '#exit_autosave' do
+  describe "#exit_autosave" do
 
     let(:person) do
       Person.new
@@ -202,18 +203,18 @@ describe ActiveDocument::Threaded do
       described_class.exit_autosave(person)
     end
 
-    it 'unmarks the document as being autosaved' do
+    it "unmarks the document as being autosaved" do
       expect(described_class.autosaves_for(Person)).to be_empty
     end
   end
 
-  describe '#autosaved?' do
+  describe "#autosaved?" do
 
     let(:person) do
       Person.new
     end
 
-    context 'when the document is autosaved' do
+    context "when the document is autosaved" do
 
       before do
         described_class.begin_autosave(person)
@@ -223,20 +224,20 @@ describe ActiveDocument::Threaded do
         described_class.exit_autosave(person)
       end
 
-      it 'returns true' do
+      it "returns true" do
         expect(described_class.autosaved?(person)).to be true
       end
     end
 
-    context 'when the document is not autosaved' do
+    context "when the document is not autosaved" do
 
-      it 'returns false' do
+      it "returns false" do
         expect(described_class.autosaved?(person)).to be false
       end
     end
   end
 
-  describe '#begin_without_default_scope' do
+  describe "#begin_without_default_scope" do
 
     let(:klass) do
       Appointment
@@ -246,14 +247,14 @@ describe ActiveDocument::Threaded do
       described_class.exit_without_default_scope(klass)
     end
 
-    it 'adds the given class to the without_default_scope stack' do
+    it "adds the given class to the without_default_scope stack" do
       described_class.begin_without_default_scope(klass)
 
       expect(described_class.stack(:without_default_scope)).to include(klass)
     end
   end
 
-  describe '#exit_without_default_scope' do
+  describe "#exit_without_default_scope" do
 
     let(:klass) do
       Appointment
@@ -263,20 +264,20 @@ describe ActiveDocument::Threaded do
       described_class.begin_without_default_scope(klass)
     end
 
-    it 'removes the given class from the without_default_scope stack' do
+    it "removes the given class from the without_default_scope stack" do
       described_class.exit_without_default_scope(klass)
 
-      expect(described_class.stack(:without_default_scope)).to_not include(klass)
+      expect(described_class.stack(:without_default_scope)).not_to include(klass)
     end
   end
 
-  describe '#without_default_scope?' do
+  describe "#without_default_scope?" do
 
     let(:klass) do
       Appointment
     end
 
-    context 'when klass has begun without_default_scope' do
+    context "when klass has begun without_default_scope" do
 
       before do
         described_class.begin_without_default_scope(klass)
@@ -286,30 +287,30 @@ describe ActiveDocument::Threaded do
         described_class.exit_without_default_scope(klass)
       end
 
-      it 'returns true' do
+      it "returns true" do
         expect(described_class.without_default_scope?(klass)).to be(true)
       end
     end
 
-    context 'when klass has exited without_default_scope' do
+    context "when klass has exited without_default_scope" do
 
       before do
         described_class.begin_without_default_scope(klass)
         described_class.exit_without_default_scope(klass)
       end
 
-      it 'returns false' do
+      it "returns false" do
         expect(described_class.without_default_scope?(klass)).to be(false)
       end
     end
   end
 
-  describe '#get_session' do
+  describe "#get_session" do
     let(:session) do
       double('session')
     end
 
-    context 'without client specified' do
+    context "without client specified" do
       before do
         described_class.set_session(session)
       end
@@ -337,6 +338,25 @@ describe ActiveDocument::Threaded do
 
       it 'returns session' do
         expect(described_class.get_session(client: client)).to be(client_session)
+      end
+    end
+  end
+
+  describe '#clear_modified_documents' do
+    let(:session) do
+      double(Mongo::Session).tap do |session|
+        allow(session).to receive(:in_transaction?).and_return(true)
+      end
+    end
+
+    context 'when there are modified documents' do
+      before do
+        described_class.add_modified_document(session, Minim.new)
+        described_class.clear_modified_documents(session)
+      end
+
+      it 'removes the documents and keys' do
+        expect(described_class.modified_documents).to be_empty
       end
     end
   end

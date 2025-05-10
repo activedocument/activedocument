@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'active_document/association/constrainable'
-require 'active_document/association/options'
+require 'mongoid/association/constrainable'
+require 'mongoid/association/options'
 
 module ActiveDocument
   module Association
@@ -14,17 +15,17 @@ module ActiveDocument
       # The options shared between all association types.
       #
       # @return [ Array<Symbol> ] The shared options.
-      SHARED_OPTIONS = %i[
-        class_name
-        inverse_of
-        validate
-        extend
-      ].freeze
+      SHARED_OPTIONS = [
+                         :class_name,
+                         :inverse_of,
+                         :validate,
+                         :extend
+                       ].freeze
 
       # The primary key default.
       #
       # @return [ String ] The primary key field default.
-      PRIMARY_KEY_DEFAULT = '_id'
+      PRIMARY_KEY_DEFAULT = '_id'.freeze
 
       # The name of the association.
       #
@@ -38,17 +39,17 @@ module ActiveDocument
 
       # Initialize the Association.
       #
-      # @param [ Class ] klass The class of the model who owns this association.
+      # @param [ Class ] _class The class of the model who owns this association.
       # @param [ Symbol ] name The name of the association.
       # @param [ Hash ] opts The association options.
       # @param [ Block ] block The optional block.
-      def initialize(klass, name, opts = {}, &block)
-        @owner_class = klass
+      def initialize(_class, name, opts = {}, &block)
+        @owner_class = _class
         @name = name
         @options = opts
         @extension = nil
 
-        @module_path = klass.name ? klass.name.split('::')[0..-2].join('::') : ''
+        @module_path = _class.name ? _class.name.split('::')[0..-2].join('::') : ''
         @module_path << '::' unless @module_path.empty?
 
         create_extension!(&block)
@@ -61,8 +62,8 @@ module ActiveDocument
       def ==(other)
         relation_class_name == other.relation_class_name &&
           inverse_class_name == other.inverse_class_name &&
-          name == other.name &&
-          options == other.options
+            name == other.name &&
+              options == other.options
       end
 
       # Get the callbacks for a given type.
@@ -86,12 +87,10 @@ module ActiveDocument
       # Whether trying to bind an object using this association should raise
       # an error.
       #
-      # @param [ ActiveDocument::Document ] doc The document to be bound.
+      # @param [ Document ] doc The document to be bound.
       #
       # @return [ true | false ] Whether the document can be bound.
-      def bindable?(_doc)
-        false
-      end
+      def bindable?(doc); false; end
 
       # Get the inverse names.
       #
@@ -100,7 +99,7 @@ module ActiveDocument
       #
       # @return [ Array<Symbol> ] The list of inverse names.
       def inverses(other = nil)
-        return [inverse_of] if inverse_of
+        return [ inverse_of ] if inverse_of
         return [] if @options.key?(:inverse_of) && !inverse_of
 
         if polymorphic?
@@ -149,7 +148,7 @@ module ActiveDocument
       def relation_class_name
         @class_name ||= @options[:class_name] || ActiveSupport::Inflector.classify(name)
       end
-      alias_method :class_name, :relation_class_name
+      alias :class_name :relation_class_name
 
       # The class of the association object(s).
       #
@@ -171,7 +170,7 @@ module ActiveDocument
           resolve_name(inverse_class, cls_name)
         end
       end
-      alias_method :klass, :relation_class
+      alias :klass :relation_class
 
       # The class name of the object owning this association.
       #
@@ -186,7 +185,7 @@ module ActiveDocument
       def inverse_class
         @owner_class
       end
-      alias_method :inverse_klass, :inverse_class
+      alias :inverse_klass :inverse_class
 
       # The foreign key field if this association stores a foreign key.
       # Otherwise, the primary key.
@@ -207,14 +206,14 @@ module ActiveDocument
       #
       # @return [ String ] The name of the inverse setter.
       def inverse_setter(other = nil)
-        @inverse_setter ||= "#{inverses(other).first}=" if inverses(other).present?
+        @inverse_setter ||= "#{inverses(other).first}=" unless inverses(other).blank?
       end
 
       # The name of the foreign key setter method.
       #
       # @return [ String ] The name of the foreign key setter.
       def foreign_key_setter
-        # NOTE: You can't check if this association stores foreign key
+        # note: You can't check if this association stores foreign key
         # See HasOne and HasMany binding, they referenced foreign_key_setter
         @foreign_key_setter ||= "#{foreign_key}=" if foreign_key
       end
@@ -244,16 +243,16 @@ module ActiveDocument
       #
       # @return [ String ] The foreign key check.
       def foreign_key_check
-        @foreign_key_check ||= "#{foreign_key}_previously_changed?" if stores_foreign_key? && foreign_key
+        @foreign_key_check ||= "#{foreign_key}_previously_changed?" if (stores_foreign_key? && foreign_key)
       end
 
       # Create an association proxy object using the owner and target.
       #
-      # @param [ ActiveDocument::Document ] owner The document this association hangs off of.
-      # @param [ ActiveDocument::Document | Array<ActiveDocument::Document> ] target The target (parent) of the
+      # @param [ Document ] owner The document this association hangs off of.
+      # @param [ Document | Array<Document> ] target The target (parent) of the
       #   association.
       #
-      # @return [ ActiveDocument::Association::Proxy ]
+      # @return [ Proxy ]
       def create_relation(owner, target)
         relation.new(owner, target, self)
       end
@@ -269,12 +268,9 @@ module ActiveDocument
       #
       # @return [ String ] The counter cache column name.
       def counter_cache_column_name
-        @counter_cache_column_name ||= if @options[:counter_cache].is_a?(String) ||
-                                          @options[:counter_cache].is_a?(Symbol)
-                                         @options[:counter_cache]
-                                       else
-                                         "#{inverse || inverse_class_name.demodulize.underscore.pluralize}_count"
-                                       end
+        @counter_cache_column_name ||= (@options[:counter_cache].is_a?(String) ||
+            @options[:counter_cache].is_a?(Symbol)) ?
+            @options[:counter_cache] : "#{inverse || inverse_class_name.demodulize.underscore.pluralize}_count"
       end
 
       # Get the extension.
@@ -289,7 +285,7 @@ module ActiveDocument
       # @return [ Symbol ] The inverse name.
       def inverse(other = nil)
         candidates = inverses(other)
-        candidates&.detect { |c| c }
+        candidates.detect { |c| c } if candidates
       end
 
       # Whether the associated object(s) should be validated.
@@ -304,9 +300,9 @@ module ActiveDocument
                       end
       end
 
-      # Sets the associations above this one in the inclusion tree.
+      # The associations above this one in the inclusion tree.
       #
-      # @param [ Array<String> ] value The associations.
+      # @return [ Array<String> ] The associations.
       attr_writer :parent_inclusions
 
       # The associations above this one in the inclusion tree.
@@ -320,14 +316,14 @@ module ActiveDocument
       #
       # @return [ true | false ] true if it is a *_many association, false if not.
       def many?
-        [Referenced::HasMany, Embedded::EmbedsMany].any? { |a| is_a?(a) }
+        [Referenced::HasMany, Embedded::EmbedsMany].any? { |a| self.is_a?(a) }
       end
 
       # Is this association an embeds_one or has_one association?
       #
       # @return [ true | false ] true if it is a *_one association, false if not.
       def one?
-        [Referenced::HasOne, Embedded::EmbedsOne].any? { |a| is_a?(a) }
+        [Referenced::HasOne, Embedded::EmbedsOne].any? { |a| self.is_a?(a) }
       end
 
       # Is this association an embedded_in or belongs_to association?
@@ -335,7 +331,7 @@ module ActiveDocument
       # @return [ true | false ] true if it is an embedded_in or belongs_to
       #   association, false if not.
       def in_to?
-        [Referenced::BelongsTo, Embedded::EmbeddedIn].any? { |a| is_a?(a) }
+        [Referenced::BelongsTo, Embedded::EmbeddedIn].any? { |a| self.is_a?(a) }
       end
 
       private
@@ -343,23 +339,23 @@ module ActiveDocument
       # Gets the model classes with inverse associations of this model. This is used to determine
       # the classes on the other end of polymorphic associations with models.
       def inverse_association_classes
-        ActiveDocument::Config.models.filter_map { |m| inverse_association(m) }.map(&:inverse_class)
+        ActiveDocument::Config.models.map { |m| inverse_association(m) }.compact.map(&:inverse_class)
       end
 
       def setup_index!
-        @owner_class.index(index_spec) if indexed?
+        @owner_class.index(index_spec, background: true) if indexed?
       end
 
       def define_touchable!
-        return unless touchable?
-
-        Touchable.define_touchable!(self)
+        if touchable?
+          Touchable.define_touchable!(self)
+        end
       end
 
       def define_autosaver!
-        return unless autosave?
-
-        Association::Referenced::AutoSave.define_autosave!(self)
+        if autosave?
+          Association::Referenced::AutoSave.define_autosave!(self)
+        end
       end
 
       def define_builder!
@@ -391,45 +387,45 @@ module ActiveDocument
       end
 
       def define_counter_cache_callbacks!
-        return unless counter_cached?
-
-        Association::Referenced::CounterCache.define_callbacks!(self)
+        if counter_cached?
+          Association::Referenced::CounterCache.define_callbacks!(self)
+        end
       end
 
       def define_dependency!
-        return unless dependent
-
-        Association::Depending.define_dependency!(self)
+        if dependent
+          Association::Depending.define_dependency!(self)
+        end
       end
 
       def validate!
-        @options.each_key do |opt|
-          next if self.class::VALID_OPTIONS.include?(opt)
-
-          raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
+        @options.keys.each do |opt|
+          unless self.class::VALID_OPTIONS.include?(opt)
+            raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
+          end
         end
 
-        [name, :"#{name}?", :"#{name}="].each do |n|
-          next unless ActiveDocument.destructive_fields.include?(n)
-
-          raise Errors::InvalidRelation.new(@owner_class, n)
+        [name, "#{name}?".to_sym, "#{name}=".to_sym].each do |n|
+          if ActiveDocument.destructive_fields.include?(n)
+            raise Errors::InvalidRelation.new(@owner_class, n)
+          end
         end
       end
 
       def polymorph!
-        return unless polymorphic?
-
-        @owner_class.polymorphic = true
+        if polymorphic?
+          @owner_class.polymorphic = true
+        end
       end
 
       def create_extension!(&block)
-        return unless block
-
-        extension_module_name = "#{@owner_class.to_s.demodulize}#{name.to_s.camelize}RelationExtension"
-        silence_warnings do
-          @owner_class.const_set(extension_module_name, Module.new(&block))
+        if block
+          extension_module_name = "#{@owner_class.to_s.demodulize}#{name.to_s.camelize}RelationExtension"
+          silence_warnings do
+            @owner_class.const_set(extension_module_name, Module.new(&block))
+          end
+          @extension = "#{@owner_class}::#{extension_module_name}".constantize
         end
-        @extension = "#{@owner_class}::#{extension_module_name}".constantize
       end
 
       def default_inverse
@@ -445,9 +441,11 @@ module ActiveDocument
         hier = [parent]
 
         # name is not present on anonymous modules
-        mod.name&.split('::')&.each do |part|
-          parent = parent.const_get(part)
-          hier << parent
+        if mod.name
+          mod.name.split('::').each do |part|
+            parent = parent.const_get(part)
+            hier << parent
+          end
         end
 
         hier.reverse
@@ -463,31 +461,33 @@ module ActiveDocument
       def resolve_name(mod, name)
         cls = exc = nil
         parts = name.to_s.split('::')
-
         if parts.first == ''
           parts.shift
           hierarchy = [Object]
         else
           hierarchy = namespace_hierarchy(mod)
         end
-
         hierarchy.each do |ns|
-
-          # Simple const_get sometimes pulls names out of weird scopes,
-          # perhaps confusing the receiver (ns in this case) with the
-          # local scope. Walk the class hierarchy ourselves one node
-          # at a time by specifying false as the second argument.
-          parts.each { |part| ns = ns.const_get(part, false) }
-
-          cls = ns
-          break
-        rescue NameError => e
-          exc = e if exc.nil?
+          begin
+            parts.each do |part|
+              # Simple const_get sometimes pulls names out of weird scopes,
+              # perhaps confusing the receiver (ns in this case) with the
+              # local scope. Walk the class hierarchy ourselves one node
+              # at a time by specifying false as the second argument.
+              ns = ns.const_get(part, false)
+            end
+            cls = ns
+            break
+          rescue NameError => e
+            if exc.nil?
+              exc = e
+            end
+          end
         end
-
-        # Raise the first exception, this is from the most specific namespace
-        raise exc if cls.nil?
-
+        if cls.nil?
+          # Raise the first exception, this is from the most specific namespace
+          raise exc
+        end
         cls
       end
     end

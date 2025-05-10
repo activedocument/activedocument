@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
   module Association
@@ -41,10 +42,13 @@ module ActiveDocument
       #
       # @return [ ActiveDocument::Association::Proxy ] The association.
       def create_relation(object, association, selected_fields = nil)
-        type = @attributes[association.inverse_type]
-        target = if (t = association.build(self, object, type, selected_fields))
-                   association.create_relation(self, t)
-                 end
+        key = @attributes[association.inverse_type]
+        type = key ? association.resolver.model_for(key) : nil
+        target = if t = association.build(self, object, type, selected_fields)
+          association.create_relation(self, t)
+        else
+          nil
+        end
 
         # Only need to do this on embedded associations. The pending callbacks
         # are only added when materializing the documents, which only happens
@@ -67,9 +71,9 @@ module ActiveDocument
       #
       # @param [ Symbol ] name The name of the association.
       def reset_relation_criteria(name)
-        return unless instance_variable_defined?(:"@_#{name}")
-
-        send(name).reset_unloaded
+        if instance_variable_defined?("@_#{name}")
+          send(name).reset_unloaded
+        end
       end
 
       # Set the supplied association to an instance variable on the class with the
@@ -79,181 +83,11 @@ module ActiveDocument
       #   person.set(:addresses, addresses)
       #
       # @param [ String | Symbol ] name The name of the association.
-      # @param [ ActiveDocument::Association::Proxy ] relation The association to set.
+      # @param [ Proxy ] relation The association to set.
       #
-      # @return [ ActiveDocument::Association::Proxy ] The association.
+      # @return [ Proxy ] The association.
       def set_relation(name, relation)
-        instance_variable_set(:"@_#{name}", relation)
-      end
-
-      # Adds the existence check for associations.
-      #
-      # @example Add the existence check.
-      #   Person.define_existence_check!(association)
-      #
-      # @example Check if an association exists.
-      #   person = Person.new
-      #   person.has_game?
-      #   person.game?
-      #
-      # @param [ ActiveDocument::Association::Relatable ] association The association.
-      #
-      # @return [ Class ] The model being set up.
-      def self.define_existence_check!(association)
-        name = association.name
-        association.inverse_class.tap do |klass|
-          klass.module_eval(
-            <<-METHOD, __FILE__, __LINE__ + 1
-              def #{name}?                                        # def game?
-                without_autobuild { !__send__(:#{name}).blank? }  #   without_autobuild { !__send__(:game).blank? }
-              end                                                 # end
-              alias :has_#{name}? :#{name}?                       # alias :has_game? :game?
-            METHOD
-          )
-        end
-      end
-
-      # Defines the getter for the association. Nothing too special here: just
-      # return the instance variable for the association if it exists or build
-      # the thing.
-      #
-      # @example Set up the getter for the association.
-      #   Person.define_getter!(association)
-      #
-      # @param [ ActiveDocument::Association::Relatable ] association The association metadata for the association.
-      #
-      # @return [ Class ] The class being set up.
-      def self.define_getter!(association)
-        name = association.name
-        association.inverse_class.tap do |klass|
-          klass.re_define_method(name) do |reload = false|
-            value = get_relation(name, association, nil, reload)
-            if value.nil? && association.autobuilding? && !without_autobuild?
-              value = send(:"build_#{name}")
-            end
-            value
-          end
-        end
-      end
-
-      # Defines the getter for the ids of documents in the association. Should
-      # be specify only for referenced many associations.
-      #
-      # @example Set up the ids getter for the association.
-      #   Person.define_ids_getter!(association)
-      #
-      # @param [ ActiveDocument::Association::Relatable ] association The association metadata for the association.
-      #
-      # @return [ Class ] The class being set up.
-      def self.define_ids_getter!(association)
-        ids_method = "#{association.name.to_s.singularize}_ids"
-        association.inverse_class.tap do |klass|
-          klass.re_define_method(ids_method) do
-            send(association.name).pluck(:_id)
-          end
-        end
-      end
-
-      # Defines the setter for the association. This does a few things based on
-      # some conditions. If there is an existing association, a target
-      # substitution will take place, otherwise a new association will be
-      # created with the supplied target.
-      #
-      # @example Set up the setter for the association.
-      #   Person.define_setter!(association)
-      #
-      # @param [ ActiveDocument::Association::Relatable ] association The association metadata for the association.
-      #
-      # @return [ Class ] The class being set up.
-      def self.define_setter!(association)
-        name = association.name
-        association.inverse_class.tap do |klass|
-          klass.re_define_method("#{name}=") do |object|
-            without_autobuild do
-              if (value = get_relation(name, association, object))
-                unless value.respond_to?(:substitute)
-                  value = __build__(name, value, association)
-                end
-
-                set_relation(name, value.substitute(object.substitutable))
-              else
-                __build__(name, object.substitutable, association)
-              end
-            end
-          end
-        end
-      end
-
-      # Defines the setter method that allows you to set documents
-      # in this association by their ids. The defined setter, finds
-      # documents with given ids and invokes regular association setter
-      # with found documents. Ids setters should be defined only for
-      # referenced many associations.
-      #
-      # @example Set up the id_setter for the association.
-      #   Person.define_ids_setter!(association)
-      #
-      #  @param [ ActiveDocument::Association::Relatable ] association The association for the association.
-      #
-      #  @return [ Class ] The class being set up.
-      def self.define_ids_setter!(association)
-        ids_method = "#{association.name.to_s.singularize}_ids="
-        association.inverse_class.aliased_associations[ids_method.chop] = association.name.to_s
-        association.inverse_class.tap do |klass|
-          klass.re_define_method(ids_method) do |ids|
-            send(association.setter, association.relation_class.find(ids.reject(&:blank?)))
-          end
-        end
-      end
-
-      # Defines a builder method for an embeds_one association. This is
-      # defined as #build_name.
-      #
-      # @example
-      #   Person.define_builder!(association)
-      #
-      # @param [ ActiveDocument::Association::Relatable ] association The association for the association.
-      #
-      # @return [ Class ] The class being set up.
-      def self.define_builder!(association)
-        name = association.name
-        association.inverse_class.tap do |klass|
-          klass.re_define_method("build_#{name}") do |*args|
-            attributes, _options = parse_args(*args)
-            document = Factory.build(association.relation_class, attributes)
-            _building do
-              child = send(:"#{name}=", document)
-              child.run_callbacks(:build)
-              child
-            end
-          end
-        end
-      end
-
-      # Defines a creator method for an embeds_one association. This is
-      # defined as #create_name. After the object is built it will
-      # immediately save.
-      #
-      # @example
-      #   Person.define_creator!(association)
-      #
-      # @param [ ActiveDocument::Association::Relatable ] association The association for the association.
-      #
-      # @return [ Class ] The class being set up.
-      def self.define_creator!(association)
-        name = association.name
-        association.inverse_class.tap do |klass|
-          klass.re_define_method("create_#{name}") do |*args|
-            attributes, _options = parse_args(*args)
-            document = Factory.build(association.klass, attributes)
-            doc = _assigning do
-              send(:"#{name}=", document)
-            end
-            doc.save
-            save if new_record? && association.stores_foreign_key?
-            doc
-          end
-        end
+        instance_variable_set("@_#{name}", relation)
       end
 
       private
@@ -271,8 +105,8 @@ module ActiveDocument
       # @param [ Object ] object The object used to build the association.
       # @param [ true | false ] reload If the association is to be reloaded.
       #
-      # @return [ ActiveDocument::Association::Proxy ] The association.
-      def get_relation(name, association, object, reload = false) # rubocop:disable Style/OptionalBooleanParameter
+      # @return [ Proxy ] The association.
+      def get_relation(name, association, object, reload = false)
         field_name = database_field_name(name)
 
         # As per the comments under MONGOID-5034, I've decided to only raise on
@@ -283,7 +117,11 @@ module ActiveDocument
         # during binding or when cascading callbacks. Whenever we retrieve
         # associations within the codebase, we use without_autobuild.
         if !without_autobuild? && association.embedded? && attribute_missing?(field_name)
-          raise ActiveDocument::Errors::AttributeNotLoaded.new(self.class, field_name)
+          # We always allow accessing the parent document of an embedded one.
+          try_get_parent = association.is_a?(
+                             ActiveDocument::Association::Embedded::EmbeddedIn
+                           ) && field_name == association.key
+          raise ActiveDocument::Errors::AttributeNotLoaded.new(self.class, field_name) unless try_get_parent
         end
 
         if !reload && (value = ivar(name)) != false
@@ -294,7 +132,7 @@ module ActiveDocument
               if object && needs_no_database_query?(object, association)
                 __build__(name, object, association)
               else
-                selected_fields = _active_document_filter_selected_fields(association.key)
+                selected_fields = _mongoid_filter_selected_fields(association.key)
                 __build__(name, attributes[association.key], association, selected_fields)
               end
             end
@@ -317,14 +155,15 @@ module ActiveDocument
       # @return [ Hash | nil ]
       #
       # @api private
-      def _active_document_filter_selected_fields(assoc_key)
+      def _mongoid_filter_selected_fields(assoc_key)
         return nil unless __selected_fields
 
         # If the list of fields was specified using #without instead of #only
         # and the provided list does not include the association, any of its
         # fields should be allowed.
-        if __selected_fields.values.all?(0) &&
-           __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
+        if __selected_fields.values.all? { |v| v == 0 } &&
+          __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
+        then
           return nil
         end
 
@@ -375,14 +214,16 @@ module ActiveDocument
         # document that the $ is referring to should be retrieved with all
         # fields. See https://www.mongodb.com/docs/manual/reference/operator/projection/positional/
         # and https://jira.mongodb.org/browse/MONGOID-4769.
-        return nil if filtered.keys == %w[$]
+        if filtered.keys == %w($)
+          filtered = nil
+        end
 
         filtered
       end
 
       def needs_no_database_query?(object, association)
         object.is_a?(Document) && !object.embedded? &&
-          object._id == attributes[association.key]
+            object._id == attributes[association.key]
       end
 
       # Is the current code executing without autobuild functionality?
@@ -404,10 +245,10 @@ module ActiveDocument
       #
       # @return [ Object ] The result of the yield.
       def without_autobuild
-        Threaded.begin_execution('without_autobuild')
+        Threaded.begin_execution("without_autobuild")
         yield
       ensure
-        Threaded.exit_execution('without_autobuild')
+        Threaded.exit_execution("without_autobuild")
       end
 
       # Parse out the attributes and the options from the args passed to a
@@ -421,6 +262,174 @@ module ActiveDocument
       # @return [ Array<Hash> ] The attributes and options.
       def parse_args(*args)
         [args.first || {}, args.size > 1 ? args[1] : {}]
+      end
+
+      # Adds the existence check for associations.
+      #
+      # @example Add the existence check.
+      #   Person.define_existence_check!(association)
+      #
+      # @example Check if an association exists.
+      #   person = Person.new
+      #   person.has_game?
+      #   person.game?
+      #
+      # @param [ ActiveDocument::Association::Relatable ] association The association.
+      #
+      # @return [ Class ] The model being set up.
+      def self.define_existence_check!(association)
+        name = association.name
+        association.inverse_class.tap do |klass|
+          klass.module_eval <<-END, __FILE__, __LINE__ + 1
+              def #{name}?
+                without_autobuild { !__send__(:#{name}).blank? }
+              end
+              alias :has_#{name}? :#{name}?
+          END
+        end
+      end
+
+      # Defines the getter for the association. Nothing too special here: just
+      # return the instance variable for the association if it exists or build
+      # the thing.
+      #
+      # @example Set up the getter for the association.
+      #   Person.define_getter!(association)
+      #
+      # @param [ ActiveDocument::Association::Relatable ] association The association metadata for the association.
+      #
+      # @return [ Class ] The class being set up.
+      def self.define_getter!(association)
+        name = association.name
+        association.inverse_class.tap do |klass|
+          klass.re_define_method(name) do |reload = false|
+            value = get_relation(name, association, nil, reload)
+            if value.nil? && association.autobuilding? && !without_autobuild?
+              value = send("build_#{name}")
+            end
+            value
+          end
+        end
+      end
+
+      # Defines the getter for the ids of documents in the association. Should
+      # be specify only for referenced many associations.
+      #
+      # @example Set up the ids getter for the association.
+      #   Person.define_ids_getter!(association)
+      #
+      # @param [ ActiveDocument::Association::Relatable ] association The association metadata for the association.
+      #
+      # @return [ Class ] The class being set up.
+      def self.define_ids_getter!(association)
+        ids_method = "#{association.name.to_s.singularize}_ids"
+        association.inverse_class.tap do |klass|
+          klass.re_define_method(ids_method) do
+            send(association.name).pluck(:_id)
+          end
+        end
+      end
+
+      # Defines the setter for the association. This does a few things based on
+      # some conditions. If there is an existing association, a target
+      # substitution will take place, otherwise a new association will be
+      # created with the supplied target.
+      #
+      # @example Set up the setter for the association.
+      #   Person.define_setter!(association)
+      #
+      # @param [ ActiveDocument::Association::Relatable ] association The association metadata for the association.
+      #
+      # @return [ Class ] The class being set up.
+      def self.define_setter!(association)
+        name = association.name
+        association.inverse_class.tap do |klass|
+          klass.re_define_method("#{name}=") do |object|
+            without_autobuild do
+              if value = get_relation(name, association, object)
+                if !value.respond_to?(:substitute)
+                  value = __build__(name, value, association) 
+                end
+
+                set_relation(name, value.substitute(object.substitutable))
+              else
+                __build__(name, object.substitutable, association)
+              end
+            end
+          end
+        end
+      end
+
+      # Defines the setter method that allows you to set documents
+      # in this association by their ids. The defined setter, finds
+      # documents with given ids and invokes regular association setter
+      # with found documents. Ids setters should be defined only for
+      # referenced many associations.
+      #
+      # @example Set up the id_setter for the association.
+      #   Person.define_ids_setter!(association)
+      #
+      #  @param [ ActiveDocument::Association::Relatable ] association The association for the association.
+      #
+      #  @return [ Class ] The class being set up.
+      def self.define_ids_setter!(association)
+        ids_method = "#{association.name.to_s.singularize}_ids="
+        association.inverse_class.aliased_associations[ids_method.chop] = association.name.to_s
+        association.inverse_class.tap do |klass|
+          klass.re_define_method(ids_method) do |ids|
+            send(association.setter, association.relation_class.find(ids.reject(&:blank?)))
+          end
+        end
+      end
+
+      # Defines a builder method for an embeds_one association. This is
+      # defined as #build_name.
+      #
+      # @example
+      #   Person.define_builder!(association)
+      #
+      # @param [ ActiveDocument::Association::Relatable ] association The association for the association.
+      #
+      # @return [ Class ] The class being set up.
+      def self.define_builder!(association)
+        name = association.name
+        association.inverse_class.tap do |klass|
+          klass.re_define_method("build_#{name}") do |*args|
+            attributes, _options = parse_args(*args)
+            document = Factory.build(association.relation_class, attributes)
+            _building do
+              child = send("#{name}=", document)
+              child.run_callbacks(:build)
+              child
+            end
+          end
+        end
+      end
+
+      # Defines a creator method for an embeds_one association. This is
+      # defined as #create_name. After the object is built it will
+      # immediately save.
+      #
+      # @example
+      #   Person.define_creator!(association)
+      #
+      # @param [ ActiveDocument::Association::Relatable ] association The association for the association.
+      #
+      # @return [ Class ] The class being set up.
+      def self.define_creator!(association)
+        name = association.name
+        association.inverse_class.tap do |klass|
+          klass.re_define_method("create_#{name}") do |*args|
+            attributes, _options = parse_args(*args)
+            document = Factory.build(association.klass, attributes)
+            doc = _assigning do
+              send("#{name}=", document)
+            end
+            doc.save
+            save if new_record? && association.stores_foreign_key?
+            doc
+          end
+        end
       end
     end
   end

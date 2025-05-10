@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
 
@@ -13,11 +14,12 @@ module ActiveDocument
     # @example Compare two documents.
     #   person <=> other_person
     #
-    # @param [ ActiveDocument::Document ] other The document to compare with.
+    # @param [ Document ] other The document to compare with.
     #
     # @return [ Integer ] -1, 0, 1.
     def <=>(other)
-      attributes['_id'].to_s <=> other.attributes['_id'].to_s
+      return super unless other.is_a?(ActiveDocument::Equality)
+      attributes["_id"].to_s <=> other.attributes["_id"].to_s
     end
 
     # Performs equality checking on the document ids. For more robust
@@ -26,12 +28,12 @@ module ActiveDocument
     # @example Compare for equality.
     #   document == other
     #
-    # @param [ ActiveDocument::Document | Object ] other The other object to compare with.
+    # @param [ Document | Object ] other The other object to compare with.
     #
     # @return [ true | false ] True if the ids are equal, false if not.
     def ==(other)
       self.class == other.class &&
-        attributes['_id'] == other.attributes['_id']
+          attributes["_id"] == other.attributes["_id"]
     end
 
     # Delegates to ==. Used when needing checks in hashes.
@@ -39,7 +41,7 @@ module ActiveDocument
     # @example Perform equality checking.
     #   document.eql?(other)
     #
-    # @param [ ActiveDocument::Document | Object ] other The object to check against.
+    # @param [ Document | Object ] other The object to check against.
     #
     # @return [ true | false ] True if equal, false if not.
     def eql?(other)
@@ -52,7 +54,7 @@ module ActiveDocument
       # @example Compare the classes.
       #   document === other
       #
-      # @param [ ActiveDocument::Document | Object ] other The other object to compare with.
+      # @param [ Document | Object ] other The other object to compare with.
       #
       # @return [ true | false ] True if the classes are equal, false if not.
       def ===(other)

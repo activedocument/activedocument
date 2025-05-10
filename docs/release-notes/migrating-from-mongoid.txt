@@ -16,9 +16,9 @@ If you'd like to ensure values are loaded in UTC, you can do:
 
 Deprecation
 
-In general, anything marked deprecated in Mongoid has been removed in
+In general, anything marked deprecated in ActiveDocument has been removed in
 
-We recommend you to have upgrade to Mongoid 9.0 before attempting to migrate to ActiveDocument.
+We recommend you to have upgrade to ActiveDocument 9.0 before attempting to migrate to ActiveDocument.
 
 
 Philosophy:
@@ -51,7 +51,7 @@ These are dangerous and have. ActiveDocument will not attempt to be SQL-like, an
 in active record.
 https://serpapi.com/blog/how-a-routine-gem-update-ended-up-charging/
 
-To avoid accidental confusion with both Mongoid and ActiveRecord's behavior, we are removing the `and`, `or`, and `nor` operators.
+To avoid accidental confusion with both ActiveDocument and ActiveRecord's behavior, we are removing the `and`, `or`, and `nor` operators.
 
 | `#and` | Removed. Chaining operations are removed because they cause confusion. Use non-chaining `#all_of` instead. |
 | `#or` | Removed. Chaining operations are removed because they cause confusion. Use non-chaining `#any_of` instead. |
@@ -87,14 +87,14 @@ Setting Field Type as a Class is Deprecated
 -------------------------------------------
 
 ActiveDocument has historically supported defining the ``field :type`` option
-as either a Symbol or a Class. As of Mongoid 8.0, using a Class is deprecated
+as either a Symbol or a Class. As of ActiveDocument 8.0, using a Class is deprecated
 and Symbol is preferred. Support for ``field :type`` as a Class will be
-removed in a future major version of Mongoid.
+removed in a future major version of ActiveDocument.
 
 .. code-block:: ruby
 
   class Person
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     # Deprecated; will log a warning message.
     field :first_name, type: String
@@ -107,13 +107,13 @@ removed in a future major version of Mongoid.
 Support for Defining Custom Field Type Values
 ---------------------------------------------
 
-Mongoid 8.0 adds the ability to define custom ``field :type`` Symbol values as follows:
+ActiveDocument 8.0 adds the ability to define custom ``field :type`` Symbol values as follows:
 
 .. code-block:: ruby
 
   # in /config/initializers/active_document_custom_fields.rb
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.field_type :point, Point
   end
 
@@ -123,13 +123,13 @@ Refer to the :ref:`docs <http://docs.mongodb.org/manual/reference/fields/#custom
 Support for Defining Custom Field Type Values
 ---------------------------------------------
 
-Mongoid 9.0 adds the ability to define custom ``field :type`` Symbol values as follows:
+ActiveDocument 9.0 adds the ability to define custom ``field :type`` Symbol values as follows:
 
 .. code-block:: ruby
 
   # in /config/initializers/active_document.rb
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.field_type :point, Point
   end
 
@@ -147,34 +147,34 @@ does not correspond to any built-in or custom-defined field type.
 .. code-block:: ruby
 
   class User
-    include Mongoid::Document
+    include ActiveDocument::Document
 
     field :name, type: :bogus
-    #=> raises Mongoid::Errors::UnknownFieldType
+    #=> raises ActiveDocument::Errors::UnknownFieldType
   end
 
 
 Support for Defining Custom Field Options via Top-Level Config
 --------------------------------------------------------------
 
-Mongoid 9.0 adds the ability to define custom ``field`` options as follows:
+ActiveDocument 9.0 adds the ability to define custom ``field`` options as follows:
 
 .. code-block:: ruby
 
   # in /config/initializers/active_document.rb
 
-  Mongoid.configure do |config|
+  ActiveDocument.configure do |config|
     config.field_option :max_length do |model, field, value|
       model.validates_length_of field.name, maximum: value
     end
   end
 
-In Mongoid 8, this was possible with the following legacy syntax. Users are
-recommended to migrate to the Mongoid 9.0 syntax above.
+In ActiveDocument 8, this was possible with the following legacy syntax. Users are
+recommended to migrate to the ActiveDocument 9.0 syntax above.
 
 .. code-block:: ruby
 
-  Mongoid::Fields.option :max_length do |model, field, value|
+  ActiveDocument::Fields.option :max_length do |model, field, value|
     model.validates_length_of field.name, maximum: value
   end
 

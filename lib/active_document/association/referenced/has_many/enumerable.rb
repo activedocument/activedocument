@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
   module Association
@@ -31,7 +32,6 @@ module ActiveDocument
           # @return [ true | false ] If the objects are equal.
           def ==(other)
             return false unless other.respond_to?(:entries)
-
             entries == other.entries
           end
 
@@ -46,7 +46,6 @@ module ActiveDocument
           # @return [ true | false ] If the objects are equal in a case.
           def ===(other)
             return false unless other.respond_to?(:entries)
-
             entries === other.entries
           end
 
@@ -55,15 +54,15 @@ module ActiveDocument
           # @example Append the document.
           #   enumerable << document
           #
-          # @param [ ActiveDocument::Document ] document The document to append.
+          # @param [ Document ] document The document to append.
           #
-          # @return [ ActiveDocument::Document ] The document.
+          # @return [ Document ] The document.
           def <<(document)
             _added[document._id] = document
             self
           end
 
-          alias_method :push, :<<
+          alias :push :<<
 
           # Clears out all the documents in this enumerable. If passed a block it
           # will yield to each document that is in memory.
@@ -76,9 +75,11 @@ module ActiveDocument
           #     doc.unbind
           #   end
           #
-          # @return [ Array<ActiveDocument::Document> ] The cleared out _added docs.
-          def clear(&block)
-            in_memory(&block) if block
+          # @return [ Array<Document> ] The cleared out _added docs.
+          def clear
+            if block_given?
+              in_memory { |doc| yield(doc) }
+            end
             _loaded.clear and _added.clear
           end
 
@@ -89,9 +90,9 @@ module ActiveDocument
           # @example Clone the enumerable.
           #   enumerable.clone
           #
-          # @return [ Array<ActiveDocument::Document> ] An array clone of the enumerable.
+          # @return [ Array<Document> ] An array clone of the enumerable.
           def clone
-            collect(&:clone)
+            collect { |doc| doc.clone }
           end
 
           # Delete the supplied document from the enumerable.
@@ -99,14 +100,16 @@ module ActiveDocument
           # @example Delete the document.
           #   enumerable.delete(document)
           #
-          # @param [ ActiveDocument::Document ] document The document to delete.
+          # @param [ Document ] document The document to delete.
           #
-          # @return [ ActiveDocument::Document ] The deleted document.
+          # @return [ Document ] The deleted document.
           def delete(document)
             doc = (_loaded.delete(document._id) || _added.delete(document._id))
-            if !doc && _unloaded&.where(_id: document._id)&.exists?
-              yield(document) if block_given?
-              return document
+            unless doc
+              if _unloaded && _unloaded.where(_id: document._id).exists?
+                yield(document) if block_given?
+                return document
+              end
             end
             yield(doc) if block_given?
             doc
@@ -122,7 +125,7 @@ module ActiveDocument
           #     dod._id == _id
           #   end
           #
-          # @return [ Array<ActiveDocument::Document> ] The remaining docs.
+          # @return [ Array<Document> ] The remaining docs.
           def delete_if(&block)
             load_all!
             deleted = in_memory.select(&block)
@@ -157,10 +160,11 @@ module ActiveDocument
           #
           # @return [ true ] That the enumerable is now _loaded.
           def each
-            return to_enum unless block_given?
-
+            unless block_given?
+              return to_enum
+            end
             if _loaded?
-              _loaded.each_pair do |_id, doc|
+              _loaded.each_pair do |id, doc|
                 document = _added.delete(doc._id) || doc
                 set_base(document)
                 yield(document)
@@ -173,11 +177,9 @@ module ActiveDocument
                 yield(document)
               end
             end
-
-            _added.each_pair do |_id, doc|
+            _added.each_pair do |id, doc|
               yield(doc)
             end
-
             @executed = true
           end
 
@@ -240,36 +242,33 @@ module ActiveDocument
           #
           # @param [ Integer ] limit The number of documents to return.
           #
-          # @return [ ActiveDocument::Document ] The first document found.
+          # @return [ Document ] The first document found.
           def first(limit = nil)
             _loaded.try(:values).try(:first) ||
-              _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
-              ul ||
-              _added.values.try(:first)
+                _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
+                ul ||
+                _added.values.try(:first)
           end
 
           # Initialize the new enumerable either with a criteria or an array.
           #
           # @example Initialize the enumerable with a criteria.
-          #   Enumberable.new(Post.where(:person_id => id))
+          #   Enumerable.new(Post.where(:person_id => id))
           #
           # @example Initialize the enumerable with an array.
           #   Enumerable.new([ post ])
           #
-          # @param [ ActiveDocument::Criteria | Array<ActiveDocument::Document> ] target The wrapped object.
+          # @param [ Criteria | Array<Document> ] target The wrapped object.
           def initialize(target, base = nil, association = nil)
             @_base = base
             @_association = association
-            @_added = {}
-
             if target.is_a?(Criteria)
-              @executed = false
-              @_loaded = {}
-              @_unloaded = target
+              @_added, @executed, @_loaded, @_unloaded = {}, false, {}, target
             else
-              @executed = true
-              @_loaded = target.each_with_object({}) do |doc, t|
-                t[doc._id] = doc if doc
+              @_added, @executed = {}, true
+              @_loaded = target.inject({}) do |_target, doc|
+                _target[doc._id] = doc if doc
+                _target
               end
             end
           end
@@ -279,13 +278,12 @@ module ActiveDocument
           # @example Does the target include the document?
           #   enumerable.include?(document)
           #
-          # @param [ ActiveDocument::Document ] doc The document to check.
+          # @param [ Document ] doc The document to check.
           #
           # @return [ true | false ] If the document is in the target.
           def include?(doc)
             return super unless _unloaded
-
-            _unloaded.exists?(_id: doc._id) || _added.key?(doc._id)
+            _unloaded.where(_id: doc._id).exists? || _added.has_key?(doc._id)
           end
 
           # Inspection will just inspect the entries for nice array-style
@@ -307,7 +305,7 @@ module ActiveDocument
           # @example Get the in memory docs.
           #   enumerable.in_memory
           #
-          # @return [ Array<ActiveDocument::Document> ] The in memory docs.
+          # @return [ Array<Document> ] The in memory docs.
           def in_memory
             docs = (_loaded.values + _added.values)
             docs.each do |doc|
@@ -329,12 +327,12 @@ module ActiveDocument
           #
           # @param [ Integer ] limit The number of documents to return.
           #
-          # @return [ ActiveDocument::Document ] The last document found.
+          # @return [ Document ] The last document found.
           def last(limit = nil)
             _added.values.try(:last) ||
-              _loaded.try(:values).try(:last) ||
-              _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
-              ul
+                _loaded.try(:values).try(:last) ||
+                _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
+                ul
           end
 
           # Loads all the documents in the enumerable from the database.
@@ -343,7 +341,7 @@ module ActiveDocument
           #   enumerable.load_all!
           #
           # @return [ true ] That the enumerable is _loaded.
-          alias_method :load_all!, :entries
+          alias :load_all! :entries
 
           # Has the enumerable been _loaded? This will be true if the criteria has
           # been executed or we manually load the entire thing.
@@ -394,7 +392,7 @@ module ActiveDocument
           # @example Reset the unloaded documents.
           #   enumerable.reset_unloaded(criteria)
           #
-          # @param [ ActiveDocument::Criteria ] criteria The criteria to replace with.
+          # @param [ Criteria ] criteria The criteria to replace with.
           def reset_unloaded(criteria)
             @_unloaded = criteria if _unloaded.is_a?(Criteria)
           end
@@ -421,15 +419,32 @@ module ActiveDocument
           #
           # @return [ Integer ] The size of the enumerable.
           def size
-            count = (_unloaded ? _unloaded.count : _loaded.count)
-            if count.zero?
-              count + _added.count
+            # If _unloaded is present, then it will match the set of documents
+            # that belong to this association, which have already been persisted
+            # to the database. This set of documents must be considered when
+            # computing the size of the association, along with anything that has
+            # since been added.
+            if _unloaded
+              if _added.any?
+                # Note that _added may include records that _unloaded already
+                # matches. This is the case if the association is assigned an array
+                # of items and some of them were already elements of the association.
+                #
+                # we need to thus make sure _unloaded.count excludes any elements
+                # that already exist in _added.
+
+                count = _unloaded.not(:_id.in => _added.values.map(&:id)).count
+                count + _added.values.count
+              else
+                _unloaded.count
+              end
+
             else
-              count + _added.values.count(&:new_record?)
+              _loaded.count + _added.count
             end
           end
 
-          alias_method :length, :size
+          alias :length :size
 
           # Send #to_json to the entries.
           #
@@ -462,7 +477,7 @@ module ActiveDocument
           # @example Get all the unique documents.
           #   enumerable.uniq
           #
-          # @return [ Array<ActiveDocument::Document> ] The unique documents.
+          # @return [ Array<Document> ] The unique documents.
           def uniq
             entries.uniq
           end
@@ -470,23 +485,13 @@ module ActiveDocument
           private
 
           def set_base(document)
-            return unless @_association.is_a?(Referenced::HasMany)
-
-            document.set_relation(@_association.inverse, @_base)
+            if @_association.is_a?(Referenced::HasMany)
+              document.set_relation(@_association.inverse, @_base) if @_association
+            end
           end
 
           ruby2_keywords def method_missing(name, *args, &block)
-            entries.public_send(name, *args, &block)
-          end
-
-          # Check if the method can be handled by method_missing.
-          #
-          # @param [ Symbol | String ] name The name of the method.
-          # @param [ true | false ] _include_private Whether to include private methods.
-          #
-          # @return [ true | false ] True if method can be handled, false otherwise.
-          def respond_to_missing?(name, _include_private = false)
-            entries.respond_to?(name)
+            entries.send(name, *args, &block)
           end
 
           def unloaded_documents
@@ -506,12 +511,8 @@ module ActiveDocument
           # always produces an empty document set. Note however that return value false
           # is not a guarantee that the condition won't produce an empty document set.
           #
-          # @example Unsatisfiable condition #1
+          # @example Unsatisfiable conditions
           #   unsatisfiable_criteria?({'_id' => {'$in' => []}})
-          #   # => true
-          #
-          # @example Unsatisfiable condition #2
-          #   unsatisfiable_criteria?({'foo' => 'bar', '_id' => {'$in' => []}})
           #   # => true
           #
           # @example Conditions which may be satisfiable
@@ -528,7 +529,7 @@ module ActiveDocument
           #   conditions.
           def unsatisfiable_criteria?(selector)
             unsatisfiable_criteria = { '_id' => { '$in' => [] } }
-            return true if selector >= unsatisfiable_criteria
+            return true if selector == unsatisfiable_criteria
             return false unless selector.length == 1 && selector.keys == %w[$and]
 
             value = selector.values.first

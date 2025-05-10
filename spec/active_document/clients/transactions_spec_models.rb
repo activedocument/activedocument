@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:todo all
 class TransactionsSpecCounter
   def initialize
     @called = 0
@@ -34,13 +33,45 @@ module TransactionsSpecCountable
   def after_rollback_counter=(new_counter)
     @after_rollback_counter = new_counter
   end
+
+  def after_save_commit_counter
+    @after_save_commit_counter ||= TransactionsSpecCounter.new
+  end
+
+  def after_save_commit_counter=(new_counter)
+    @after_save_commit_counter = new_counter
+  end
+
+  def after_create_commit_counter
+    @after_create_commit_counter ||= TransactionsSpecCounter.new
+  end
+
+  def after_create_commit_counter=(new_counter)
+    @after_create_commit_counter = new_counter
+  end
+
+  def after_update_commit_counter
+    @after_update_commit_counter ||= TransactionsSpecCounter.new
+  end
+
+  def after_update_commit_counter=(new_counter)
+    @after_update_commit_counter = new_counter
+  end
+
+  def after_destroy_commit_counter
+    @after_destroy_commit_counter ||= TransactionsSpecCounter.new
+  end
+
+  def after_destroy_commit_counter=(new_counter)
+    @after_destroy_commit_counter = new_counter
+  end
 end
 
 class TransactionsSpecPerson
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :name, type: :string
+  field :name, type: String
 
   after_commit do
     after_commit_counter.inc
@@ -55,9 +86,24 @@ class TransactionsSpecPersonWithOnCreate
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :name, type: :string
+  field :name, type: String
 
   after_commit on: :create do
+    after_commit_counter.inc
+  end
+
+  after_rollback on: :create do
+    after_rollback_counter.inc
+  end
+end
+
+class TransactionsSpecPersonWithAfterCreateCommit
+  include ActiveDocument::Document
+  include TransactionsSpecCountable
+
+  field :name, type: String
+
+  after_create_commit do
     after_commit_counter.inc
   end
 
@@ -70,7 +116,7 @@ class TransactionsSpecPersonWithOnUpdate
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :name, type: :string
+  field :name, type: String
 
   after_commit on: :update do
     after_commit_counter.inc
@@ -81,11 +127,41 @@ class TransactionsSpecPersonWithOnUpdate
   end
 end
 
+class TransactionsSpecPersonWithAfterUpdateCommit
+  include ActiveDocument::Document
+  include TransactionsSpecCountable
+
+  field :name, type: String
+
+  after_update_commit do
+    after_commit_counter.inc
+  end
+
+  after_rollback on: :create do
+    after_rollback_counter.inc
+  end
+end
+
+class TransactionsSpecPersonWithAfterSaveCommit
+  include ActiveDocument::Document
+  include TransactionsSpecCountable
+
+  field :name, type: String
+
+  after_save_commit do
+    after_commit_counter.inc
+  end
+
+  after_rollback on: :create do
+    after_rollback_counter.inc
+  end
+end
+
 class TransactionsSpecPersonWithOnDestroy
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :name, type: :string
+  field :name, type: String
 
   after_commit on: :destroy do
     after_commit_counter.inc
@@ -96,14 +172,29 @@ class TransactionsSpecPersonWithOnDestroy
   end
 end
 
+class TransactionsSpecPersonWithAfterDestroyCommit
+  include ActiveDocument::Document
+  include TransactionsSpecCountable
+
+  field :name, type: String
+
+  after_destroy_commit do
+    after_commit_counter.inc
+  end
+
+  after_rollback on: :create do
+    after_rollback_counter.inc
+  end
+end
+
 class TransactionSpecRaisesBeforeSave
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :attr, type: :string
+  field :attr, type: String
 
   before_save do
-    raise 'I cannot be saved'
+    raise "I cannot be saved"
   end
 
   after_commit do
@@ -119,10 +210,10 @@ class TransactionSpecRaisesAfterSave
   include ActiveDocument::Document
   include TransactionsSpecCountable
 
-  field :attr, type: :string
+  field :attr, type: String
 
   after_save do
-    raise 'I cannot be saved'
+    raise "I cannot be saved"
   end
 
   after_commit do
@@ -145,10 +236,10 @@ class TransactionSpecRaisesBeforeCreate
     @@after_rollback_counter ||= TransactionsSpecCounter.new
   end
 
-  field :attr, type: :string
+  field :attr, type: String
 
   before_create do
-    raise 'I cannot be saved'
+    raise "I cannot be saved"
   end
 
   after_commit do

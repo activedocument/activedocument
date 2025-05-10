@@ -2,26 +2,30 @@
 
 module ActiveDocument
   module Expectations
-
-    def connection_class
-      Mongo::Server::ConnectionBase
-    end
-
-    def expect_query(number, skip_if_sharded: false)
-      if skip_if_sharded && number > 0 && ClusterConfig.instance.topology == :sharded
-        skip 'MONGOID-5599: Sharded clusters do extra read queries, causing expect_query to fail.'
+    # Previously this method used RSpec::Mocks with .exactly.times(n).and_call_original,
+    # which stopped working reliably in Ruby 3.3. Instead, we directly wrap the target method.
+    def expect_query(number)
+      if %i[ sharded load-balanced ].include?(ClusterConfig.instance.topology) && number > 0
+        skip 'This spec requires replica set or standalone topology'
       end
 
-      rv = nil
-      RSpec::Mocks.with_temporary_scope do
-        if number > 0
-          expect_any_instance_of(connection_class).to receive(:command_started).exactly(number).times.and_call_original
-        else
-          expect_any_instance_of(connection_class).to_not receive(:command_started)
+      klass = Mongo::Server::ConnectionBase
+      original_method = klass.instance_method(:command_started)
+      query_count = 0
+
+      begin
+        klass.define_method(:command_started) do |*args, **kwargs|
+          query_count += 1
+          original_method.bind_call(self, *args, **kwargs)
         end
-        rv = yield
+
+        result = yield
+        expect(query_count).to eq(number)
+        result
+      ensure
+        klass.remove_method(:command_started)
+        klass.define_method(:command_started, original_method)
       end
-      rv
     end
 
     def expect_no_queries(&block)

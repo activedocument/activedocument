@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'active_document/contextual/queryable'
-require 'active_document/contextual/mongo'
-require 'active_document/contextual/memory'
-require 'active_document/contextual/none'
+require "mongoid/contextual/queryable"
+require "mongoid/contextual/mongo"
+require "mongoid/contextual/memory"
+require "mongoid/contextual/none"
 
 module ActiveDocument
 
@@ -22,7 +23,7 @@ module ActiveDocument
 
     # The methods in the contexts themselves should all get delegated to,
     # including destructive, modification, and optional methods.
-    def_delegators :context, *(Mongo.public_instance_methods(false) - %i[skip limit])
+    def_delegators :context, *(Mongo.public_instance_methods(false) - [ :skip, :limit, :load_async ])
 
     # This gets blank and empty included.
     def_delegators :context, *Queryable.public_instance_methods(false)
@@ -44,7 +45,7 @@ module ActiveDocument
     # Note that depending on the context and on the ActiveDocument configuration,
     # documents can be loaded synchronously on the caller's thread.
     #
-    # @return [ ActiveDocument::Criteria ] Returns self.
+    # @return [ Criteria ] Returns self.
     def load_async
       context.load_async if context.respond_to?(:load_async)
       self
@@ -63,7 +64,6 @@ module ActiveDocument
     # @return [ Mongo | Memory ] The context.
     def create_context
       return None.new(self) if empty_and_chainable?
-
       embedded ? Memory.new(self) : Mongo.new(self)
     end
   end

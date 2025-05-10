@@ -24,7 +24,7 @@ describe ActiveDocument::Clients::Options, retry: 3 do
       let(:options) { { database: 'other' } }
 
       it 'sets the options on the client' do
-        expect(persistence_context.client.options['database']).to eq(options[:database])
+        expect(persistence_context.client.options['database'].to_s).to eq(options[:database].to_s)
       end
 
       it 'does not set the options on class level' do
@@ -307,7 +307,7 @@ describe ActiveDocument::Clients::Options, retry: 3 do
       end
 
       it 'sets the options on the client' do
-        expect(persistence_context.client.options['database']).to eq(options[:database])
+        expect(persistence_context.client.options['database'].to_s).to eq(options[:database].to_s)
       end
 
       it 'does not set the options on instance level' do
@@ -499,6 +499,131 @@ describe ActiveDocument::Clients::Options, retry: 3 do
       it 'sets the persistence context on the object' do
         Minim.with(persistence_context) do |test_model_class|
           expect(test_model_class.persistence_context.options).to eq(persistence_context.options)
+        end
+      end
+    end
+  end
+
+  context 'with global overrides' do
+    let(:default_subscriber) do
+      Mrss::EventSubscriber.new
+    end
+
+    let(:override_subscriber) do
+      Mrss::EventSubscriber.new
+    end
+
+    context 'when global client is overridden' do
+      before do
+        ActiveDocument.clients['override_client'] = { hosts: SpecConfig.instance.addresses, database: 'default_override_database' }
+        ActiveDocument.override_client('override_client')
+        ActiveDocument.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+        ActiveDocument.client('override_client').subscribe(Mongo::Monitoring::COMMAND, override_subscriber)
+      end
+
+      after do
+        ActiveDocument.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+        ActiveDocument.client('override_client').unsubscribe(Mongo::Monitoring::COMMAND, override_subscriber)
+        ActiveDocument.override_client(nil)
+        ActiveDocument.clients['override_client'] = nil
+      end
+
+      it 'uses the overridden client for create' do
+        Minim.create!
+
+        expect(override_subscriber.single_command_started_event('insert').database_name).to eq('default_override_database')
+        expect(default_subscriber.command_started_events('insert')).to be_empty
+      end
+
+      it 'uses the overridden client for queries' do
+        Minim.where(name: 'Dmitry').to_a
+
+        expect(override_subscriber.single_command_started_event('find').database_name).to eq('default_override_database')
+        expect(default_subscriber.command_started_events('find')).to be_empty
+      end
+
+      context 'when the client is set on the model level' do
+        let(:model_level_subscriber) do
+          Mrss::EventSubscriber.new
+        end
+
+        around(:example) do |example|
+          opts = Minim.storage_options
+          Minim.storage_options = Minim.storage_options.merge( { client: 'model_level_client' } )
+          ActiveDocument.clients['model_level_client'] = { hosts: SpecConfig.instance.addresses, database: 'model_level_database' }
+          ActiveDocument.client('model_level_client').subscribe(Mongo::Monitoring::COMMAND, override_subscriber)
+          example.run
+          ActiveDocument.client('model_level_client').unsubscribe(Mongo::Monitoring::COMMAND, override_subscriber)
+          ActiveDocument.clients['model_level_client'] = nil
+          Minim.storage_options = opts
+        end
+
+        # This behaviour is consistent with 8.x
+        it 'uses the overridden client for create' do
+          Minim.create!
+
+          expect(override_subscriber.single_command_started_event('insert').database_name).to eq('default_override_database')
+          expect(default_subscriber.command_started_events('insert')).to be_empty
+          expect(model_level_subscriber.command_started_events('insert')).to be_empty
+        end
+
+        # This behaviour is consistent with 8.x
+        it 'uses the overridden client for queries' do
+          Minim.where(name: 'Dmitry').to_a
+
+          expect(override_subscriber.single_command_started_event('find').database_name).to eq('default_override_database')
+          expect(default_subscriber.command_started_events('find')).to be_empty
+          expect(model_level_subscriber.command_started_events('find')).to be_empty
+        end
+      end
+    end
+
+    context 'when global database is overridden' do
+      before do
+        ActiveDocument.override_database('override_database')
+        ActiveDocument.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+      end
+
+      after do
+        ActiveDocument.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+        ActiveDocument.override_database(nil)
+      end
+
+      it 'uses the overridden database for create' do
+        Minim.create!
+
+        expect(default_subscriber.single_command_started_event('insert').database_name).to eq('override_database')
+      end
+
+      it 'uses the overridden database for queries' do
+        Minim.where(name: 'Dmitry').to_a
+
+        expect(default_subscriber.single_command_started_event('find').database_name).to eq('override_database')
+      end
+
+      context 'when the database is set on the model level' do
+        around(:example) do |example|
+          opts = Minim.storage_options
+          Minim.storage_options = Minim.storage_options.merge( { database: 'model_level_database' } )
+          ActiveDocument.clients['model_level_client'] = { hosts: SpecConfig.instance.addresses, database: 'model_level_database' }
+          ActiveDocument.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+          example.run
+          ActiveDocument.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+          ActiveDocument.clients['model_level_client'] = nil
+          Minim.storage_options = opts
+        end
+
+        # This behaviour is consistent with 8.x
+        it 'uses the overridden database for create' do
+          Minim.create!
+
+          expect(default_subscriber.single_command_started_event('insert').database_name).to eq('override_database')
+        end
+
+        it 'uses the overridden database for queries' do
+          Minim.where(name: 'Dmitry').to_a
+
+          expect(default_subscriber.single_command_started_event('find').database_name).to eq('override_database')
         end
       end
     end

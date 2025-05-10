@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
 
@@ -15,53 +16,52 @@ module ActiveDocument
     # These are methods defined on the criteria that should also be accessible
     # directly from the class level.
     def_delegators :with_default_scope,
-                   :aggregates,
-                   :avg,
-                   :create_with,
-                   :distinct,
-                   :each,
-                   :each_with_index,
-                   :extras,
-                   :fifth,
-                   :fifth!,
-                   :find_one_and_delete,
-                   :find_one_and_replace,
-                   :find_one_and_update,
-                   :find_or_create_by,
-                   :find_or_create_by!,
-                   :find_or_initialize_by,
-                   :first!,
-                   :first_or_create,
-                   :first_or_create!,
-                   :first_or_initialize,
-                   :for_js,
-                   :fourth,
-                   :fourth!,
-                   :includes,
-                   :last!,
-                   :map_reduce,
-                   :max,
-                   :min,
-                   :none,
-                   :pick,
-                   :pluck,
-                   :pluck_each,
-                   :read,
-                   :second,
-                   :second!,
-                   :second_to_last,
-                   :second_to_last!,
-                   :sum,
-                   :take,
-                   :take!,
-                   :tally,
-                   :text_search,
-                   :third,
-                   :third!,
-                   :third_to_last,
-                   :third_to_last!,
-                   :update,
-                   :update_all
+      :aggregates,
+      :avg,
+      :create_with,
+      :distinct,
+      :each,
+      :each_with_index,
+      :extras,
+      :fifth,
+      :fifth!,
+      :find_one_and_delete,
+      :find_one_and_replace,
+      :find_one_and_update,
+      :find_or_create_by,
+      :find_or_create_by!,
+      :find_or_initialize_by,
+      :first!,
+      :first_or_create,
+      :first_or_create!,
+      :first_or_initialize,
+      :for_js,
+      :fourth,
+      :fourth!,
+      :includes,
+      :last!,
+      :map_reduce,
+      :max,
+      :min,
+      :none,
+      :pick,
+      :pluck,
+      :raw,
+      :read,
+      :second,
+      :second!,
+      :second_to_last,
+      :second_to_last!,
+      :sum,
+      :take,
+      :take!,
+      :tally,
+      :third,
+      :third!,
+      :third_to_last,
+      :third_to_last!,
+      :update,
+      :update_all
 
     # Returns a count of records in the database.
     # If you want to specify conditions use where.
@@ -147,7 +147,7 @@ module ActiveDocument
     # during query construction.
     #
     # If this method is given a block, it delegates to +Enumerable#find+ and
-    # returns the first document of those found by the current Crieria object
+    # returns the first document of those found by the current Criteria object
     # for which the block returns a truthy value. If both a block and ids are
     # given, the block is ignored and the documents for the given ids are
     # returned. If a block and a Proc are given, the method delegates to
@@ -161,13 +161,13 @@ module ActiveDocument
     #
     # @param [ [ Object | Array<Object> ]... ] *args The id(s) to find.
     #
-    # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> | nil ] A document or matching documents.
+    # @return [ Document | Array<Document> | nil ] A document or matching documents.
     #
     # @raise Errors::DocumentNotFound If not all documents are found and
     #   the +raise_not_found_error+ ActiveDocument configuration option is truthy.
     def find(*args, &block)
       empty_or_proc = args.empty? || (args.length == 1 && args.first.is_a?(Proc))
-      if block && empty_or_proc
+      if block_given? && empty_or_proc
         with_default_scope.find(*args, &block)
       else
         with_default_scope.find(*args)
@@ -187,13 +187,12 @@ module ActiveDocument
     # @raise [ Errors::DocumentNotFound ] If no document found
     # and ActiveDocument.raise_not_found_error is true.
     #
-    # @return [ ActiveDocument::Document | nil ] A matching document.
+    # @return [ Document | nil ] A matching document.
     def find_by(attrs = {})
       result = where(attrs).find_first
       if result.nil? && ActiveDocument.raise_not_found_error
         raise(Errors::DocumentNotFound.new(self, attrs))
       end
-
       yield(result) if result && block_given?
       result
     end
@@ -208,11 +207,10 @@ module ActiveDocument
     #
     # @raise [ Errors::DocumentNotFound ] If no document found.
     #
-    # @return [ ActiveDocument::Document ] A matching document.
+    # @return [ Document ] A matching document.
     def find_by!(attrs = {})
       result = where(attrs).find_first
       raise(Errors::DocumentNotFound.new(self, attrs)) unless result
-
       yield(result) if result && block_given?
       result
     end
@@ -224,11 +222,11 @@ module ActiveDocument
     #
     # @param [ Integer ] limit The number of documents to return.
     #
-    # @return [ ActiveDocument::Document ] The first matching document.
+    # @return [ Document ] The first matching document.
     def first(limit = nil)
       with_default_scope.first(limit)
     end
-    alias_method :one, :first
+    alias :one :first
 
     # Find the last +Document+ given the conditions.
     #
@@ -237,7 +235,7 @@ module ActiveDocument
     #
     # @param [ Integer ] limit The number of documents to return.
     #
-    # @return [ ActiveDocument::Document ] The last matching document.
+    # @return [ Document ] The last matching document.
     def last(limit = nil)
       with_default_scope.last(limit)
     end

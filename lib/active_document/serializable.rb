@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
 
@@ -12,13 +13,16 @@ module ActiveDocument
     included do
 
       class << self
-        # Note that this intentionally only delegates :include_root_in_json
-        # and not :include_root_in_json? - delegating the latter produces
-        # wrong behavior.
-        # Also note that this intentionally uses the ActiveSupport delegation
-        # functionality and not the Ruby standard library one.
-        # See https://jira.mongodb.org/browse/MONGOID-4849.
-        delegate :include_root_in_json, to: ::ActiveDocument
+        # These methods are previously defined by ActiveModel which we override to include default behavior.
+        remove_method :include_root_in_json if method_defined?(:include_root_in_json)
+        remove_method :include_root_in_json= if method_defined?(:include_root_in_json=)
+        def include_root_in_json
+          @include_root_in_json.nil? ? ::ActiveDocument.include_root_in_json : @include_root_in_json
+        end
+
+        def include_root_in_json=(new_value)
+          @include_root_in_json = new_value
+        end
       end
     end
 
@@ -49,9 +53,9 @@ module ActiveDocument
 
       names = field_names(options)
 
-      method_names = Array.wrap(options[:methods]).filter_map do |name|
+      method_names = Array.wrap(options[:methods]).map do |name|
         name.to_s if respond_to?(name)
-      end
+      end.compact
 
       (names + method_names).each do |name|
         without_autobuild do
@@ -128,7 +132,7 @@ module ActiveDocument
       inclusions = options[:include]
       relation_names(inclusions).each do |name|
         association = relations[name.to_s]
-        if association && (relation = send(association.name))
+        if association && relation = send(association.name)
           attributes[association.name.to_s] =
             relation.serializable_hash(relation_options(inclusions, options, name))
         end

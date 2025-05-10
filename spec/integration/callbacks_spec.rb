@@ -572,7 +572,7 @@ describe 'callbacks integration tests' do
     end
 
     before do
-      # TODO: Mongoid doesn't require this line
+      # TODO: ActiveDocument doesn't require this line
       allow(logger).to receive(:info).and_return(nil)
       root.logger = logger
       root.embedded_once.first.logger = logger

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
 
@@ -6,34 +7,29 @@ module ActiveDocument
   module Interceptable
     extend ActiveSupport::Concern
 
-    CALLBACKS = %i[
-      after_build
-      after_create
-      after_destroy
-      after_find
-      after_initialize
-      after_save
-      after_touch
-      after_update
-      after_upsert
-      after_validation
-      around_create
-      around_destroy
-      around_save
-      around_update
-      around_upsert
-      before_create
-      before_destroy
-      before_save
-      before_update
-      before_upsert
-      before_validation
+    CALLBACKS = [
+      :after_build,
+      :after_create,
+      :after_destroy,
+      :after_find,
+      :after_initialize,
+      :after_save,
+      :after_touch,
+      :after_update,
+      :after_upsert,
+      :after_validation,
+      :around_create,
+      :around_destroy,
+      :around_save,
+      :around_update,
+      :around_upsert,
+      :before_create,
+      :before_destroy,
+      :before_save,
+      :before_update,
+      :before_upsert,
+      :before_validation,
     ].freeze
-
-    # Callback methods which apply defaults to models.
-    #
-    # @api private
-    APPLY_DEFAULTS = %i[apply_defaults apply_post_processed_defaults].freeze
 
     included do
       extend ActiveModel::Callbacks
@@ -50,7 +46,7 @@ module ActiveDocument
 
       define_callbacks :commit, :rollback,
                        only: :after,
-                       scope: %i[kind name]
+                       scope: [:kind, :name]
 
       attr_accessor :before_callback_halted
     end
@@ -64,7 +60,7 @@ module ActiveDocument
     #
     # @return [ true | false ] If the callback can be executed.
     def callback_executable?(kind)
-      respond_to?(:"_#{kind}_callbacks")
+      respond_to?("_#{kind}_callbacks")
     end
 
     # Is the document currently in a state that could potentially require
@@ -77,7 +73,7 @@ module ActiveDocument
     #
     # @return [ true | false ] If the document is in a callback state.
     def in_callback_state?(kind)
-      %i[create destroy].include?(kind) || new_record? || flagged_for_destroy? || changed?
+      [ :create, :destroy ].include?(kind) || new_record? || flagged_for_destroy? || changed?
     end
 
     # Run only the after callbacks for the specific event.
@@ -129,8 +125,9 @@ module ActiveDocument
     # @param [ Proc | nil ] skip_if If this proc returns true, the callbacks
     #   will not be triggered, while the given block will be still called.
     def run_callbacks(kind, with_children: true, skip_if: nil, &block)
-      return block&.call if skip_if&.call
-
+      if skip_if&.call
+        return block&.call
+      end
       if with_children
         cascadable_children(kind).each do |child|
           if child.run_callbacks(child_callback_type(kind, child), with_children: with_children) == false
@@ -148,26 +145,25 @@ module ActiveDocument
     # Run the callbacks for embedded documents.
     #
     # @param [ Symbol ] kind The type of callback to execute.
-    # @param [ Array<ActiveDocument::Document> ] children Children to execute callbacks on. If
+    # @param [ Array<Document> ] children Children to execute callbacks on. If
     #   nil, callbacks will be executed on all cascadable children of
     #   the document.
     #
     # @api private
-    def _active_document_run_child_callbacks(kind, children: nil, &block)
+    def _mongoid_run_child_callbacks(kind, children: nil, &block)
       if ActiveDocument::Config.around_callbacks_for_embeds
-        _active_document_run_child_callbacks_with_around(kind, children: children, &block)
+        _mongoid_run_child_callbacks_with_around(kind,
+                                                 children: children,
+                                                 &block)
       else
-        _active_document_run_child_callbacks_without_around(kind, children: children, &block)
+        _mongoid_run_child_callbacks_without_around(kind,
+                                                    children: children,
+                                                    &block)
       end
     end
 
     # Execute the callbacks of given kind for embedded documents including
     # around callbacks.
-    #
-    # @note This method is prone to stack overflow errors if the document
-    #   has a large number of embedded documents. It is recommended to avoid
-    #   using around callbacks for embedded documents until a proper solution
-    #   is implemented.
     #
     # @param [ Symbol ] kind The type of callback to execute.
     # @param [ Array<Document> ] children Children to execute callbacks on. If
@@ -175,18 +171,28 @@ module ActiveDocument
     #  the document.
     #
     #  @api private
-    def _active_document_run_child_callbacks_with_around(kind, children: nil, &block)
-      child, *tail = children || cascadable_children(kind)
+    def _mongoid_run_child_callbacks_with_around(kind, children: nil, &block)
+      children = (children || cascadable_children(kind))
       with_children = !ActiveDocument::Config.prevent_multiple_calls_of_embedded_callbacks
-      if child.nil?
-        block&.call
-      elsif tail.empty?
-        child.run_callbacks(child_callback_type(kind, child), with_children: with_children, &block)
-      else
-        child.run_callbacks(child_callback_type(kind, child), with_children: with_children) do
-          _active_document_run_child_callbacks_with_around(kind, children: tail, &block)
+
+      return block&.call if children.empty?
+
+      fibers = children.map do |child|
+        Fiber.new do
+          child.run_callbacks(child_callback_type(kind, child), with_children: with_children) do
+            Fiber.yield
+          end
         end
       end
+
+      fibers.each do |fiber|
+        fiber.resume
+        raise ActiveDocument::Errors::InvalidAroundCallback unless fiber.alive?
+      end
+
+      block&.call
+
+      fibers.reverse.each(&:resume)
     end
 
     # Execute the callbacks of given kind for embedded documents without
@@ -198,16 +204,15 @@ module ActiveDocument
     #   the document.
     #
     # @api private
-    def _active_document_run_child_callbacks_without_around(kind, children: nil, &block)
-      children ||= cascadable_children(kind)
-      callback_list = _active_document_run_child_before_callbacks(kind, children: children)
+    def _mongoid_run_child_callbacks_without_around(kind, children: nil, &block)
+      children = (children || cascadable_children(kind))
+      callback_list = _mongoid_run_child_before_callbacks(kind, children: children)
       return false if callback_list == false
-
       value = block&.call
-      callback_list.each do |_next_sequence, env| # rubocop:disable Style/HashEachMethods
+      callback_list.each do |_next_sequence, env|
         env.value &&= value
       end
-      return false if _active_document_run_child_after_callbacks(callback_list: callback_list) == false
+      return false if _mongoid_run_child_after_callbacks(callback_list: callback_list) == false
 
       value
     end
@@ -221,23 +226,19 @@ module ActiveDocument
     #   to execute after callbacks in reverse order.
     #
     # @api private
-    def _active_document_run_child_before_callbacks(kind, children: [], callback_list: [])
+    def _mongoid_run_child_before_callbacks(kind, children: [], callback_list: [])
       children.each do |child|
         chain = child.__callbacks[child_callback_type(kind, child)]
         env = ActiveSupport::Callbacks::Filters::Environment.new(child, false, nil)
         next_sequence = compile_callbacks(chain)
         unless next_sequence.final?
           ActiveDocument.logger.warn("Around callbacks are disabled for embedded documents. Skipping around callbacks for #{child.class.name}.")
-          ActiveDocument.logger.warn('To enable around callbacks for embedded documents, set ActiveDocument::Config.around_callbacks_for_embeds to true.')
+          ActiveDocument.logger.warn("To enable around callbacks for embedded documents, set ActiveDocument::Config.around_callbacks_for_embeds to true.")
         end
         next_sequence.invoke_before(env)
         return false if env.halted
-
         env.value = !env.halted
         callback_list << [next_sequence, env]
-        if (grandchildren = child.send(:cascadable_children, kind))
-          _active_document_run_child_before_callbacks(kind, children: grandchildren, callback_list: callback_list)
-        end
       end
       callback_list
     end
@@ -246,7 +247,7 @@ module ActiveDocument
     #
     # @param [ Array<ActiveSupport::Callbacks::CallbackSequence, ActiveSupport::Callbacks::Filters::Environment> ] callback_list List of
     #   pairs of callback sequence and environment.
-    def _active_document_run_child_after_callbacks(callback_list: [])
+    def _mongoid_run_child_after_callbacks(callback_list: [])
       callback_list.reverse_each do |next_sequence, env|
         next_sequence.invoke_after(env)
         return false if env.halted
@@ -283,10 +284,10 @@ module ActiveDocument
     # @api private
     def run_pending_callbacks
       pending_callbacks.each do |cb|
-        if APPLY_DEFAULTS.include?(cb)
+        if [:apply_defaults, :apply_post_processed_defaults].include?(cb)
           send(cb)
         else
-          run_callbacks(cb, with_children: false)
+          self.run_callbacks(cb, with_children: false)
         end
       end
       pending_callbacks.clear
@@ -314,11 +315,10 @@ module ActiveDocument
     #
     # @param [ Symbol ] kind The type of callback.
     #
-    # @return [ Array<ActiveDocument::Document> ] The children.
+    # @return [ Array<Document> ] The children.
     def cascadable_children(kind, children = Set.new)
       embedded_relations.each_pair do |name, association|
         next unless association.cascading_callbacks?
-
         without_autobuild do
           delayed_pulls = delayed_atomic_pulls[name]
           delayed_unsets = delayed_atomic_unsets[name]
@@ -327,7 +327,6 @@ module ActiveDocument
           relation = send(name)
           Array.wrap(relation).each do |child|
             next if children.include?(child)
-
             children.add(child) if cascadable_child?(kind, child, association)
             child.send(:cascadable_children, kind, children)
           end
@@ -342,13 +341,12 @@ module ActiveDocument
     #   document.cascadable_child?(:update, doc)
     #
     # @param [ Symbol ] kind The type of callback.
-    # @param [ ActiveDocument::Document ] child The child document.
+    # @param [ Document ] child The child document.
     #
     # @return [ true | false ] If the child should fire the callback.
     def cascadable_child?(kind, child, association)
-      return false if %i[initialize find touch].include?(kind)
+      return false if kind == :initialize || kind == :find || kind == :touch
       return false if kind == :validate && association.validate?
-
       child.callback_executable?(kind) ? child.in_callback_state?(kind) : false
     end
 
@@ -361,15 +359,17 @@ module ActiveDocument
     #   document.child_callback_type(:update, doc)
     #
     # @param [ Symbol ] kind The type of callback.
-    # @param [ ActiveDocument::Document ] child The child document
+    # @param [ Document ] child The child document
     #
     # @return [ Symbol ] The name of the callback.
     def child_callback_type(kind, child)
       if kind == :update
         return :create if child.new_record?
         return :destroy if child.flagged_for_destroy?
+        kind
+      else
+        kind
       end
-      kind
     end
 
     # We need to hook into this for autosave, since we don't want it firing if
@@ -380,10 +380,10 @@ module ActiveDocument
     # @example Hook into the halt.
     #   document.halted_callback_hook(filter)
     #
-    # @param [ Symbol ] _filter The callback that halted.
-    # @param [ Symbol ] _name The name of the callback that was halted
+    # @param [ Symbol ] filter The callback that halted.
+    # @param [ Symbol ] name The name of the callback that was halted
     #   (requires Rails 6.1+)
-    def halted_callback_hook(_filter, _name = nil)
+    def halted_callback_hook(filter, name = nil)
       @before_callback_halted = true
     end
 
@@ -401,7 +401,7 @@ module ActiveDocument
       name = "_run__#{place}__#{kind}__callbacks"
       unless respond_to?(name)
         chain = ActiveSupport::Callbacks::CallbackChain.new(name, {})
-        send(:"_#{kind}_callbacks").each do |callback|
+        send("_#{kind}_callbacks").each do |callback|
           chain.append(callback) if callback.kind == place
         end
         self.class.send :define_method, name do

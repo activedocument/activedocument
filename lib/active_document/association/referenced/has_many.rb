@@ -1,10 +1,12 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'active_document/association/referenced/has_many/binding'
-require 'active_document/association/referenced/has_many/buildable'
-require 'active_document/association/referenced/has_many/proxy'
-require 'active_document/association/referenced/has_many/enumerable'
-require 'active_document/association/referenced/has_many/eager'
+require 'mongoid/association/referenced/has_many/binding'
+require 'mongoid/association/referenced/has_many/buildable'
+require 'mongoid/association/referenced/has_many/proxy'
+require 'mongoid/association/referenced/has_many/enumerable'
+require 'mongoid/association/referenced/has_many/eager'
+require 'mongoid/association/referenced/with_polymorphic_criteria'
 
 module ActiveDocument
   module Association
@@ -14,23 +16,24 @@ module ActiveDocument
       class HasMany
         include Relatable
         include Buildable
+        include WithPolymorphicCriteria
 
         # The options available for this type of association, in addition to the
         # common ones.
         #
         # @return [ Array<Symbol> ] The extra valid options.
-        ASSOCIATION_OPTIONS = %i[
-          after_add
-          after_remove
-          as
-          autosave
-          before_add
-          before_remove
-          dependent
-          foreign_key
-          order
-          primary_key
-          scope
+        ASSOCIATION_OPTIONS = [
+            :after_add,
+            :after_remove,
+            :as,
+            :autosave,
+            :before_add,
+            :before_remove,
+            :dependent,
+            :foreign_key,
+            :order,
+            :primary_key,
+            :scope,
         ].freeze
 
         # The complete list of valid options for this association, including
@@ -42,13 +45,13 @@ module ActiveDocument
         # The default foreign key suffix.
         #
         # @return [ String ] '_id'
-        FOREIGN_KEY_SUFFIX = '_id'
+        FOREIGN_KEY_SUFFIX = '_id'.freeze
 
         # The list of association complements.
         #
         # @return [ Array<ActiveDocument::Association::Relatable> ] The association complements.
         def relation_complements
-          @relation_complements ||= [Referenced::BelongsTo].freeze
+          @relation_complements ||= [ Referenced::BelongsTo ].freeze
         end
 
         # Setup the instance methods, fields, etc. on the association owning class.
@@ -75,38 +78,30 @@ module ActiveDocument
           self
         end
 
+
         # Get the foreign key field on the inverse for saving the association reference.
         #
         # @return [ String ] The foreign key field on the inverse for saving the
         #   association reference.
         def foreign_key
-          @foreign_key ||= if @options[:foreign_key]
-                             @options[:foreign_key].to_s
-                           else
+          @foreign_key ||= @options[:foreign_key] ? @options[:foreign_key].to_s :
                              default_foreign_key_field
-                           end
         end
 
         # Is this association type embedded?
         #
         # @return [ false ] Always false.
-        def embedded?
-          false
-        end
+        def embedded?; false; end
 
         # The default for validation the association object.
         #
         # @return [ true ] Always true.
-        def validation_default
-          true
-        end
+        def validation_default; true; end
 
         # Does this association type store the foreign key?
         #
         # @return [ true ] Always true.
-        def stores_foreign_key?
-          false
-        end
+        def stores_foreign_key?; false; end
 
         # Get the association proxy class for this association type.
         #
@@ -138,6 +133,12 @@ module ActiveDocument
         # @param [ Class ] object_class The object class.
         #
         # @return [ ActiveDocument::Criteria ] The criteria object.
+        #
+        # @deprecated in 9.0.x
+        #
+        # It appears as if this method is an artifact left over from a refactoring that renamed it
+        # `with_polymorphic_criterion`, and made it private. Regardless, this method isn't referenced
+        # anywhere else, and is unlikely to be useful to external clients. We should remove it.
         def add_polymorphic_criterion(criteria, object_class)
           if polymorphic?
             criteria.where(type => object_class.name)
@@ -145,6 +146,7 @@ module ActiveDocument
             criteria
           end
         end
+        ActiveDocument.deprecate(self, :add_polymorphic_criterion)
 
         # Is this association polymorphic?
         #
@@ -156,11 +158,11 @@ module ActiveDocument
         # Whether trying to bind an object using this association should raise
         # an error.
         #
-        # @param [ ActiveDocument::Document ] doc The document to be bound.
+        # @param [ Document ] doc The document to be bound.
         #
         # @return [ true | false ] Whether the document can be bound.
         def bindable?(doc)
-          forced_nil_inverse? || (!!inverse && doc.fields.key?(foreign_key))
+          forced_nil_inverse? || (!!inverse && doc.fields.keys.include?(foreign_key))
         end
 
         # The nested builder object.
@@ -178,7 +180,7 @@ module ActiveDocument
         # @example Get the path calculator.
         #   Proxy.path(document)
         #
-        # @param [ ActiveDocument::Document ] document The document to calculate on.
+        # @param [ Document ] document The document to calculate on.
         #
         # @return [ Root ] The root atomic path calculator.
         def path(document)
@@ -198,24 +200,21 @@ module ActiveDocument
           @default_foreign_key_field ||= "#{inverse}#{FOREIGN_KEY_SUFFIX}"
         end
 
-        def polymorphic_inverses(_other)
-          [as]
+        def polymorphic_inverses(other)
+          [ as ]
         end
 
         def determine_inverses(other)
           matches = (other || relation_class).relations.values.select do |rel|
             relation_complements.include?(rel.class) &&
-              rel.relation_class_name == inverse_class_name
+                rel.relation_class_name == inverse_class_name
 
           end
-
           if matches.size > 1
-            return [default_inverse.name] if default_inverse
-
+            return [ default_inverse.name ] if default_inverse
             raise Errors::AmbiguousRelationship.new(relation_class, @owner_class, name, matches)
           end
-
-          matches.collect(&:name) if matches.present?
+          matches.collect { |m| m.name } unless matches.blank?
         end
 
         def default_primary_key
@@ -230,14 +229,6 @@ module ActiveDocument
           crit.association = self
           crit.parent_document = base
           with_ordering(crit)
-        end
-
-        def with_polymorphic_criterion(criteria, base)
-          if polymorphic?
-            criteria.where(type => base.class.name)
-          else
-            criteria
-          end
         end
 
         def with_ordering(criteria)
