@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      TESTOPTS: "-v"
+      TESTOPTS: '-v'
     steps:
       - uses: actions/checkout@v3
       - name: Set up Ruby 3.2
@@ -23,107 +23,74 @@ jobs:
 
   test:
     name: "${{matrix.ruby}}
-      ${{matrix.gemfile || 'Gemfile'}}
-      db:${{matrix.mongodb || '6.0'}}
+      rails:${{matrix.rails}}
+      mongodb:${{matrix.mongodb || '8.0'}}
       fle:${{matrix.fle && 'fle=' || ''}}${{matrix.fle || ''}}
       top:${{matrix.topology || 'server'}}
       os:${{matrix.os || 'ubuntu-20.04'}}"
     env:
       CI: true
       TESTOPTS: '-v'
-    runs-on: ${{matrix.os || 'ubuntu-20.04'}}
+    runs-on: ${{matrix.os || 'ubuntu-latest'}}
     continue-on-error: "${{matrix.experimental || false}}"
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ruby-2.7, ruby-3.0, ruby-3.1, ruby-3.2]
-        # TODO: Use ubuntu-latest when supported.
-        # See: https://github.com/mongodb-labs/drivers-evergreen-tools/issues/283
-        os: ['ubuntu-20.04']
-        topology: [server, replica_set, sharded_cluster]
+        ruby:
+          - ruby-3.1
+          - ruby-3.2
+          - ruby-3.3
+          - ruby-3.4
+        os:
+          - ubuntu-latest
+        topology:
+          - server
+          - replica_set
+          - sharded_cluster
         include:
-          # TODO: OS versions
-          # - os: macos-latest
-          #   ruby: ruby-3.2
-          # - os: windows-latest
-          #   ruby: ruby-3.2
-
           # Rails versions
-          - ruby: ruby-3.2
-            gemfile: gemfiles/rails_7.1.gemfile
-            mongodb: '6.0'
-            topology: replica_set
           - ruby: ruby-3.1
-            gemfile: gemfiles/rails_7.1.gemfile
-            mongodb: '5.0'
-            topology: sharded_cluster
-          - ruby: ruby-3.0
-            gemfile: gemfiles/rails_7.0.gemfile
-            mongodb: '7.0'
-            topology: server
-          - ruby: ruby-3.0
-            gemfile: gemfiles/rails_6.1.gemfile
+            rails: '6.1'
+            gemfile: gemfiles/rails-6.1.gemfile
+          - ruby: ruby-3.4
+            rails: '7.0'
+            gemfile: gemfiles/rails-7.0.gemfile
+          - ruby: ruby-3.4
+            rails: '7.1'
+            gemfile: gemfiles/rails-7.1.gemfile
+          - ruby: ruby-3.4
+            rails: '7.2'
+            gemfile: gemfiles/rails-7.2.gemfile
+          - ruby: ruby-3.4
+            rails: '8.0'
+            gemfile: gemfiles/rails-8.0.gemfile
+
+          # TODO: Test driver versions
+          # TODO: Test BSON versions
+
+          # Older MongoDB Server versions
+          - ruby: ruby-3.4
             mongodb: '6.0'
-            topology: replica_set
-          - ruby: ruby-2.7
-            gemfile: gemfiles/rails_6.1.gemfile
-            mongodb: '5.0'
-            topology: server
-
-          # Driver versions
-          # TODO: driver_master is broken
-          # - ruby: ruby-3.2
-          #   gemfile: gemfiles/driver_master.gemfile
-          #   mongodb: '6.0'
-          #   topology: replica_set
-          - ruby: ruby-3.0
-            gemfile: gemfiles/driver_stable.gemfile
-            mongodb: '5.0'
-            topology: sharded_cluster
-          - ruby: ruby-2.7
-            gemfile: gemfiles/driver_min.gemfile
+          - ruby: ruby-3.4
             mongodb: '7.0'
-            topology: replica_set
-
-          # BSON versions
-          # TODO: bson_master is broken
-          # - ruby: ruby-3.2
-          #   gemfile: gemfiles/bson_master.gemfile
-          #   mongodb: '6.0'
-          #   topology: replica_set
-          - ruby: ruby-2.7
-            gemfile: gemfiles/bson_min.gemfile
-            mongodb: '7.0'
-            topology: replica_set
 
           # JRuby
           - ruby: jruby-9.4
-            gemfile: gemfiles/rails_7.1.gemfile
-            mongodb: '6.0'
-            topology: replica_set
+            gemfile: gemfiles/rails-7.2.gemfile
           - ruby: jruby-9.4
-            gemfile: gemfiles/rails_6.1.gemfile
-            mongodb: '5.0'
-            topology: server
+            gemfile: gemfiles/rails-8.0.gemfile
 
           # Field-Level Encryption
           # TODO: support LIBMONGOCRYPT via path
-          - ruby: ruby-3.2
-            gemfile: gemfiles/rails_7.1.gemfile
-            mongodb: '6.0'
+          - ruby: ruby-3.4
             topology: sharded_cluster
             fle: helper
-          - ruby: ruby-3.1
-            gemfile: gemfiles/rails_7.0.gemfile
-            mongodb: '7.0'
+          - ruby: ruby-3.4
             topology: replica_set
             fle: helper
-          - ruby: ruby-2.7
-            gemfile: gemfiles/rails_6.1.gemfile
-            mongodb: '6.0'
+          - ruby: ruby-3.4
             topology: server
             fle: helper
-
     steps:
       - name: repo checkout
         uses: actions/checkout@v3
@@ -131,8 +98,8 @@ jobs:
         name: start mongodb
         uses: mongodb-labs/drivers-evergreen-tools@master
         with:
-          version: "${{matrix.mongodb || '6.0'}}"
-          topology: "${{matrix.topology || 'server'}}"
+          version: "${{matrix.mongodb || '8.0'}}"
+          topology: "${{matrix.topology || 'replica_set'}}"
       - name: load ruby
         uses: ruby/setup-ruby@v1
         env:
