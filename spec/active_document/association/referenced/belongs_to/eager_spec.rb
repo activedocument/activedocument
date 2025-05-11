@@ -309,7 +309,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo::Eager do
         end
 
         it 'loads all associations eagerly' do
-          expect_query(4, skip_if_sharded: true) do
+          expect_query(4) do
             eager
           end
 

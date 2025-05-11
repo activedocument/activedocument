@@ -471,12 +471,12 @@ module ActiveDocument
           # @param &block Optional block to pass.
           #
           # @return [ ActiveDocument::Criteria | Object ] A Criteria or return value from the target.
-          ruby2_keywords def method_missing(name, *args, &block)
+          def method_missing(name, ...)
             if _target.respond_to?(name)
-              _target.send(name, *args, &block)
+              _target.send(name, ...)
             else
               klass.send(:with_scope, criteria) do
-                criteria.public_send(name, *args, &block)
+                criteria.public_send(name, ...)
               end
             end
           end

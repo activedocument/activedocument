@@ -495,7 +495,6 @@ describe ActiveDocument::Serializable do
             end
 
             it 'does not generate new ids' do
-              skip
               expect(hash['addresses'].first['_id']).to be_nil
             end
           end
@@ -507,13 +506,15 @@ describe ActiveDocument::Serializable do
             end
 
             it 'includes the first relation' do
-              expect(relation_hash[0]).to include
-              { '_id' => 'kudamm', 'street' => 'Kudamm' }
+              expect(relation_hash[0]).to include(
+                { '_id' => 'kudamm', 'street' => 'Kudamm' }
+              )
             end
 
             it 'includes the second relation' do
-              expect(relation_hash[1]).to include
-              { '_id' => 'tauentzienstr', 'street' => 'Tauentzienstr' }
+              expect(relation_hash[1]).to include(
+                { '_id' => 'tauentzienstr', 'street' => 'Tauentzienstr' }
+              )
             end
           end
 
@@ -524,13 +525,15 @@ describe ActiveDocument::Serializable do
             end
 
             it 'includes the first relation' do
-              expect(relation_hash[0]).to include
-              { '_id' => 'kudamm', 'street' => 'Kudamm' }
+              expect(relation_hash[0]).to include(
+                { '_id' => 'kudamm', 'street' => 'Kudamm' }
+              )
             end
 
             it 'includes the second relation' do
-              expect(relation_hash[1]).to include
-              { '_id' => 'tauentzienstr', 'street' => 'Tauentzienstr' }
+              expect(relation_hash[1]).to include(
+                { '_id' => 'tauentzienstr', 'street' => 'Tauentzienstr' }
+              )
             end
           end
 
@@ -559,9 +562,11 @@ describe ActiveDocument::Serializable do
 
               let(:hash) do
                 person.serializable_hash(
-                  include: { addresses: {
-                    except: :_id, include: { locations: { except: :_id } }
-                  } }
+                  include: {
+                    addresses: {
+                      except: :_id, include: { locations: { except: :_id } }
+                    }
+                  }
                 )
               end
 
@@ -645,8 +650,9 @@ describe ActiveDocument::Serializable do
             end
 
             it 'includes the specified relation' do
-              expect(relation_hash).to include
-              { '_id' => 'leo-marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
+              expect(relation_hash).to include(
+                { '_id' => 'Leo-Marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
+              )
             end
           end
 
@@ -657,8 +663,9 @@ describe ActiveDocument::Serializable do
             end
 
             it 'includes the specified relation' do
-              expect(relation_hash).to include
-              { '_id' => 'leo-marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
+              expect(relation_hash).to include(
+                { '_id' => 'Leo-Marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
+              )
             end
           end
 
@@ -669,8 +676,9 @@ describe ActiveDocument::Serializable do
             end
 
             it 'includes the specified relation sans exceptions' do
-              expect(relation_hash).to include
-              { 'first_name' => 'Leo', 'last_name' => 'Marvin' }
+              expect(relation_hash).to include(
+                { 'first_name' => 'Leo', 'last_name' => 'Marvin' }
+              )
             end
           end
         end
@@ -853,9 +861,6 @@ describe ActiveDocument::Serializable do
 
     let(:account) do
       Account.new
-    end
-    let(:person) do
-      Person.new
     end
 
     let(:person) do

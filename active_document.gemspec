@@ -25,16 +25,13 @@ Gem::Specification.new do |s|
     'source_code_uri' => 'https://github.com/activedocument/activedocument'
   }
 
-  s.required_ruby_version = '>= 2.7'
-  s.required_rubygems_version = '>= 1.3.6'
+  s.required_ruby_version = '>= 3.1'
 
   # activemodel 7.0.0 cannot be used due to Class#descendants issue
   # See: https://github.com/rails/rails/pull/43951
-  s.add_dependency('activemodel', ['>=5.1', '<7.2', '!= 7.0.0'])
-  s.add_dependency('mongo', ['>=2.18.0', '<3.0.0'])
-  s.add_dependency('concurrent-ruby', ['>= 1.0.5', '< 2.0'])
-
-  s.add_development_dependency('bson', ['>= 4.14.0', '< 6.0.0'])
+  s.add_dependency('activemodel', ['>=6.1', '!= 7.0.0'])
+  s.add_dependency('mongo', ['>=2.18.0'])
+  s.add_dependency('concurrent-ruby', ['>= 1.0.5'])
 
   s.files = Dir.glob('lib/**/*') + %w[LICENSE README.md Rakefile]
   s.require_path = 'lib'

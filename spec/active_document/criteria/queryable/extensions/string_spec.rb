@@ -181,7 +181,7 @@ describe String do
     subject(:evolved) { described_class.evolve(object) }
 
     context 'when provided a Regexp' do
-      let(:object) { /\A[123]/.freeze }
+      let(:object) { /\A[123]/ }
 
       it 'returns the regexp' do
         expect(evolved).to eq(/\A[123]/)

@@ -4,8 +4,8 @@ module ActiveDocument
 
   # Adds type-casting behavior to ActiveDocument::Boolean class.
   class Boolean
-    TRUTHY_VALUES = /\A(true|t|yes|y|on|1|1.0)\z/i.freeze
-    FALSY_VALUES = /\A(false|f|no|n|off|0|0.0)\z/i.freeze
+    TRUTHY_VALUES = /\A(true|t|yes|y|on|1|1.0)\z/i
+    FALSY_VALUES = /\A(false|f|no|n|off|0|0.0)\z/i
 
     class << self
 

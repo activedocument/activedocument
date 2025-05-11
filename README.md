@@ -41,11 +41,11 @@ gem 'activedocument', git: 'https://github.com/activedocument/activedocument.git
 ### Compatibility
 
 - Ruby
-  - Ruby (MRI) 2.7+
-  - Rails 6.0+
+  - Ruby (MRI) 3.1+
   - JRuby 9.4+
+- Rails 6.1+
 - MongoDB
-  - MongoDB server 5.0+
+  - MongoDB server 6.0+
   - MongoDB driver 2.18+
 
 ## OK, show me the code!

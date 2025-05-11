@@ -475,8 +475,8 @@ module ActiveDocument
             document.set_relation(@_association.inverse, @_base)
           end
 
-          ruby2_keywords def method_missing(name, *args, &block)
-            entries.public_send(name, *args, &block)
+          def method_missing(name, ...)
+            entries.public_send(name, ...)
           end
 
           # Check if the method can be handled by method_missing.

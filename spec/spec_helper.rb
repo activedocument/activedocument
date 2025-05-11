@@ -17,7 +17,7 @@ require 'support/spec_config'
 require 'active_document'
 
 # require all shared examples
-Dir['./spec/support/shared/*.rb'].sort.each { |file| require file }
+Dir['./spec/support/shared/*.rb'].each { |file| require(file) }
 
 MODELS = File.join(File.dirname(__FILE__), 'support/models')
 $LOAD_PATH.unshift(MODELS)
@@ -105,7 +105,7 @@ ActiveDocument.configure do |config|
 end
 
 # Autoload every model for the test suite that sits in spec/support/models.
-Dir[File.join(MODELS, '*.rb')].sort.each do |file|
+Dir[File.join(MODELS, '*.rb')].each do |file|
   name = File.basename(file, '.rb')
   autoload name.camelize.to_sym, name
 end
