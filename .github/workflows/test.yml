@@ -72,7 +72,8 @@ jobs:
           - ruby: ruby-3.4
             mongodb: '6.0'
           - ruby: ruby-3.4
-            mongodb: '7.0.19'
+            os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
+            mongodb: '7.0'
 
           # JRuby
           - ruby: jruby-9.4
