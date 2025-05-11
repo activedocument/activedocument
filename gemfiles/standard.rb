@@ -35,10 +35,9 @@ def standard_dependencies
   # If platform :windows fails, please update your Bundler version
   platform :windows do
     gem 'tzinfo-data'
-    gem 'wdm'
   end
 
   if ENV['FLE'] == 'helper'
-    gem 'libmongocrypt-helper', '~> 1.8.0'
+    gem 'libmongocrypt-helper', '~> 1.12.0'
   end
 end

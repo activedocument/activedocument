@@ -374,7 +374,7 @@ module ActiveDocument
       args = args.flatten
       return clone if args.empty?
 
-      args.unshift(:_id) if (args & Fields::IDS).empty?
+      args.unshift(:_id) unless args.intersect?(Fields::IDS)
       args.push(klass.discriminator_key.to_sym) if klass.hereditary?
 
       super(*args)
@@ -576,13 +576,13 @@ module ActiveDocument
     # @param [ Object... ] *args The arguments.
     #
     # @return [ Object ] The result of the method call.
-    ruby2_keywords def method_missing(name, *args, &block)
+    def method_missing(name, ...)
       if klass.respond_to?(name)
         klass.public_send(:with_scope, self) do
-          klass.public_send(name, *args, &block)
+          klass.public_send(name, ...)
         end
       elsif CHECK.respond_to?(name)
-        entries.public_send(name, *args, &block)
+        entries.public_send(name, ...)
       else
         super
       end

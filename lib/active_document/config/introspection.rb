@@ -126,7 +126,7 @@ module ActiveDocument
           default:\s+(.*?)   # match the default value for the option
           (?:,.*?)?          # skip any other configuration
         \n)                  # end with a newline
-      /x.freeze
+      /x
 
       # The full path to the source file of the ActiveDocument::Config module.
       CONFIG_RB_PATH = File.absolute_path(File.join(

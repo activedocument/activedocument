@@ -5,7 +5,7 @@ module ActiveDocument
     # Previously this method used RSpec::Mocks with .exactly.times(n).and_call_original,
     # which stopped working reliably in Ruby 3.3. Instead, we directly wrap the target method.
     def expect_query(number)
-      if %i[ sharded load-balanced ].include?(ClusterConfig.instance.topology) && number > 0
+      if %i[sharded load-balanced].include?(ClusterConfig.instance.topology) && number > 0
         skip 'This spec requires replica set or standalone topology'
       end
 

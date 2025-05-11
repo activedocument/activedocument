@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: consider refactoring this Proxy class, to satisfy the following
-# cops...
-# rubocop:disable Metrics/ClassLength
 module ActiveDocument
   module Association
     module Referenced
@@ -460,21 +457,26 @@ module ActiveDocument
           # @param [ Object... ] *args The method args
           # @param &block Optional block to pass.
           #
-          # @return [ Criteria | Object ] A Criteria or return value from the target.
-          #
-          # TODO: make sure we are consistently using respond_to_missing
-          #   anywhere we define method_missing.
-          # rubocop:disable Style/MissingRespondToMissing
-          ruby2_keywords def method_missing(name, *args, &block)
+          # @return [ ActiveDocument::Criteria | Object ] A Criteria or return value from the target.
+          def method_missing(name, ...)
             if _target.respond_to?(name)
-              _target.send(name, *args, &block)
+              _target.send(name, ...)
             else
               klass.send(:with_scope, criteria) do
-                criteria.public_send(name, *args, &block)
+                criteria.public_send(name, ...)
               end
             end
           end
-          # rubocop:enable Style/MissingRespondToMissing
+
+          # Check if the method can be handled by method_missing.
+          #
+          # @param [ Symbol | String ] name The name of the method.
+          # @param [ true | false ] _include_private Whether to include private methods.
+          #
+          # @return [ true | false ] True if method can be handled, false otherwise.
+          def respond_to_missing?(name, _include_private = false)
+            _target.respond_to?(name) || criteria.respond_to?(name)
+          end
 
           # Persist all the delayed batch inserts.
           #
@@ -483,7 +485,7 @@ module ActiveDocument
           # @example Persist the delayed batch inserts.
           #   relation.persist_delayed([ doc ])
           #
-          # @param [ Array<Document> ] docs The delayed inserts.
+          # @param [ Array<ActiveDocument::Document> ] docs The delayed inserts.
           # @param [ Array<Hash> ] inserts The raw insert document.
           def persist_delayed(docs, inserts)
             return if docs.empty?
@@ -554,7 +556,7 @@ module ActiveDocument
           # If the association is destructive, the matching documents will
           # be removed. Otherwise, their foreign keys will be set to nil.
           #
-          # @param [ Criteria ] removed The criteria for the documents to
+          # @param [ ActiveDocument::Criteria ] removed The criteria for the documents to
           #   remove.
           def update_or_delete_all(removed)
             if _association.destructive?
@@ -572,8 +574,8 @@ module ActiveDocument
           # @example Save or delay the document.
           #   relation.save_or_delay(doc, [])
           #
-          # @param [ Document ] doc The document.
-          # @param [ Array<Document> ] inserts The inserts.
+          # @param [ ActiveDocument::Document ] doc The document.
+          # @param [ Array<ActiveDocument::Document> ] inserts The inserts.
           def save_or_delay(doc, docs, inserts)
             if doc.new_record? && doc.valid?(:create)
               doc.run_before_callbacks(:save, :create)
@@ -588,4 +590,3 @@ module ActiveDocument
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

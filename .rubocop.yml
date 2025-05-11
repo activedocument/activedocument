@@ -7,7 +7,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.1
   NewCops: enable
   Exclude:
     - 'perf/**/*'
@@ -49,6 +49,15 @@ Performance/RegexpMatch:
 Style/FrozenStringLiteralComment:
   Exclude:
     - 'Gemfile'
+
+# --------------------------------------------------
+# TODO: Enable these in the future.
+
+Naming/BlockForwarding:
+  Enabled: false
+
+Style/ArgumentsForwarding:
+  Enabled: false
 
 # --------------------------------------------------
 # Cops with specific files skipped. These can be inlined later.
@@ -239,6 +248,9 @@ Style/GuardClause:
   Exclude:
     - 'Gemfile'
     - 'gemfiles/**/*'
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
 
 Style/ModuleFunction:
   EnforcedStyle: extend_self

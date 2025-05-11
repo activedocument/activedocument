@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'mongoid/association/embedded/batchable'
+require 'active_document/association/embedded/batchable'
 
 module ActiveDocument
   module Association
@@ -482,19 +482,24 @@ module ActiveDocument
           # @param [ Object... ] *args The method args.
           # @param &block Optional block to pass.
           #
-          # @return [ Criteria | Object ] A Criteria or return value from the target.
-          #
-          # TODO: make sure we are consistently using respond_to_missing
-          #   anywhere we define method_missing.
-          # rubocop:disable Style/MissingRespondToMissing
-          ruby2_keywords def method_missing(name, *args, &block)
+          # @return [ ActiveDocument::Criteria | Object ] A Criteria or return value from the target.
+          def method_missing(name, ...)
             return super if _target.respond_to?(name)
 
             klass.send(:with_scope, criteria) do
-              criteria.public_send(name, *args, &block)
+              criteria.public_send(name, ...)
             end
           end
-          # rubocop:enable Style/MissingRespondToMissing
+
+          # Check if the method can be handled by method_missing.
+          #
+          # @param [ Symbol | String ] name The name of the method.
+          # @param [ true | false ] _include_private Whether to include private methods.
+          #
+          # @return [ true | false ] True if method can be handled, false otherwise.
+          def respond_to_missing?(name, _include_private = false)
+            _target.respond_to?(name) || criteria.respond_to?(name)
+          end
 
           # Are we able to persist this association?
           #

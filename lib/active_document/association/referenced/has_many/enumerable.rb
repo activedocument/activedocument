@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 module ActiveDocument
   module Association
@@ -490,8 +489,18 @@ module ActiveDocument
             end
           end
 
-          ruby2_keywords def method_missing(name, *args, &block)
-            entries.send(name, *args, &block)
+          def method_missing(name, ...)
+            entries.public_send(name, ...)
+          end
+
+          # Check if the method can be handled by method_missing.
+          #
+          # @param [ Symbol | String ] name The name of the method.
+          # @param [ true | false ] _include_private Whether to include private methods.
+          #
+          # @return [ true | false ] True if method can be handled, false otherwise.
+          def respond_to_missing?(name, _include_private = false)
+            entries.respond_to?(name)
           end
 
           def unloaded_documents

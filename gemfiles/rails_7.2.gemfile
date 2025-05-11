@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
+
 gemspec path: '..'
 
-gem 'bson', '4.14.1'
-gem 'mongo'
-gem 'actionpack', '>= 6.0'
-gem 'activemodel', '>= 6.0'
+gem 'actionpack', '~> 7.2.0'
+gem 'activemodel', '~> 7.2.0'
 
 require_relative 'standard'
 
