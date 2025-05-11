@@ -3,15 +3,37 @@
 require 'active_document/fields/validators/macro'
 
 module ActiveDocument
-
   # Mixin module included in ActiveDocument::Document to provide behavior
   # around traversing the document graph.
   module Traversable
     extend ActiveSupport::Concern
 
+    # This code is extracted from ActiveSupport so that we do not depend on
+    # their private API that may change at any time.
+    # This code should be reviewed and maybe removed when implementing
+    # https://jira.mongodb.org/browse/MONGOID-5832
+    class << self
+      # @api private
+      def __redefine(owner, name, value)
+        if owner.singleton_class?
+          owner.redefine_method(name) { value }
+          owner.send(:public, name)
+        end
+        owner.redefine_singleton_method(name) { value }
+        owner.singleton_class.send(:public, name)
+        owner.redefine_singleton_method(:"#{name}=") do |new_value|
+          if owner.equal?(self)
+            value = new_value
+          else
+            ::ActiveDocument::Traversable.redefine(self, name, new_value)
+          end
+        end
+        owner.singleton_class.send(:public, :"#{name}=")
+      end
+    end
+
     # Class-level methods for the Traversable behavior.
     module ClassMethods
-
       # Determines if the document is a subclass of another document.
       #
       # @example Check if the document is a subclass.
@@ -98,7 +120,7 @@ module ActiveDocument
         if value
           ActiveDocument::Fields::Validators::Macro.validate_field_name(self, value)
           value = value.to_s
-          super
+          ::ActiveDocument::Traversable.__redefine(self, :discriminator_key, value)
         else
           # When discriminator key is set to nil, replace the class's definition
           # of the discriminator key reader (provided by class_attribute earlier)
@@ -112,7 +134,7 @@ module ActiveDocument
         # an existing field.
         # This condition also checks if the class has any descendants, because
         # if it doesn't then it doesn't need a discriminator key.
-        return unless !fields.key?(discriminator_key) && !descendants.empty?
+        return if fields.key?(discriminator_key) || descendants.empty?
 
         default_proc = -> { self.class.discriminator_value }
         field(discriminator_key, default: default_proc, type: :string)
@@ -150,6 +172,8 @@ module ActiveDocument
       class_attribute :discriminator_key, instance_accessor: false
 
       class << self
+        # The class attribute declaration above creates a default getter which we override with our custom method.
+        remove_method :discriminator_key
         delegate :discriminator_key, to: ::ActiveDocument
         prepend DiscriminatorAssignment
         include DiscriminatorRetrieval

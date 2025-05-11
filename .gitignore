@@ -33,3 +33,4 @@ examples
 .env.private*
 .tool-versions
 build
+rspec.xml

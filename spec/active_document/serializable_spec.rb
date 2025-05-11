@@ -495,7 +495,6 @@ describe ActiveDocument::Serializable do
             end
 
             it 'does not generate new ids' do
-              skip
               expect(hash['addresses'].first['_id']).to be_nil
             end
           end
@@ -652,7 +651,7 @@ describe ActiveDocument::Serializable do
 
             it 'includes the specified relation' do
               expect(relation_hash).to include(
-                { '_id' => 'leo-marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
+                { '_id' => 'Leo-Marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
               )
             end
           end
@@ -665,7 +664,7 @@ describe ActiveDocument::Serializable do
 
             it 'includes the specified relation' do
               expect(relation_hash).to include(
-                { '_id' => 'leo-marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
+                { '_id' => 'Leo-Marvin', 'first_name' => 'Leo', 'last_name' => 'Marvin' }
               )
             end
           end
@@ -862,9 +861,6 @@ describe ActiveDocument::Serializable do
 
     let(:account) do
       Account.new
-    end
-    let(:person) do
-      Person.new
     end
 
     let(:person) do
