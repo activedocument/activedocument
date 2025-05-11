@@ -65,11 +65,11 @@ describe ActiveDocument::Errors::DocumentNotFound do
       it 'contains the problem in the message' do
         if RUBY_VERSION >= '3.4.0'
           expect(error.message).to include(
-            "Document not found for class Person with attributes {name: \"syd\"}."
+            'Document not found for class Person with attributes {name: "syd"}.'
           )
         else
           expect(error.message).to include(
-            "Document not found for class Person with attributes {:name=>\"syd\"}."
+            'Document not found for class Person with attributes {:name=>"syd"}.'
           )
         end
       end
