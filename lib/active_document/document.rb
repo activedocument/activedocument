@@ -39,7 +39,7 @@ module ActiveDocument
     # that should be used instead.
     # When ruby driver 2.3.0 is released and ActiveDocument can be updated
     # to require >= 2.3.0, the BSON constant can be used.
-    ILLEGAL_KEY = /(\A[$])|(\.)/.freeze
+    ILLEGAL_KEY = /(\A[$])|(\.)/
 
     # Freezes the internal attributes of the document.
     #

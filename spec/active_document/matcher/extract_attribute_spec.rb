@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe 'Matcher.extract_attribute' do
-  Dir[File.join(File.dirname(__FILE__), 'extract_attribute_data', '*.yml')].sort.each do |path|
+  Dir[File.join(File.dirname(__FILE__), 'extract_attribute_data', '*.yml')].each do |path|
     context File.basename(path) do
-      specs = YAML.safe_load(File.read(path), aliases: true)
+      specs = YAML.safe_load_file(path, aliases: true)
 
       specs.each do |spec|
         context spec['name'] do

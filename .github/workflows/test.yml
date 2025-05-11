@@ -51,19 +51,19 @@ jobs:
           # Rails versions
           - ruby: ruby-3.1
             rails: '6.1'
-            gemfile: gemfiles/rails-6.1.gemfile
+            gemfile: gemfiles/rails_6.1.gemfile
           - ruby: ruby-3.4
             rails: '7.0'
-            gemfile: gemfiles/rails-7.0.gemfile
+            gemfile: gemfiles/rails_7.0.gemfile
           - ruby: ruby-3.4
             rails: '7.1'
-            gemfile: gemfiles/rails-7.1.gemfile
+            gemfile: gemfiles/rails_7.1.gemfile
           - ruby: ruby-3.4
             rails: '7.2'
-            gemfile: gemfiles/rails-7.2.gemfile
+            gemfile: gemfiles/rails_7.2.gemfile
           - ruby: ruby-3.4
             rails: '8.0'
-            gemfile: gemfiles/rails-8.0.gemfile
+            gemfile: gemfiles/rails_8.0.gemfile
 
           # TODO: Test driver versions
           # TODO: Test BSON versions
@@ -76,7 +76,7 @@ jobs:
 
           # JRuby
           - ruby: jruby-9.4
-            gemfile: gemfiles/rails-7.2.gemfile
+            gemfile: gemfiles/rails_7.2.gemfile
 
           # Field-Level Encryption
           # TODO: support LIBMONGOCRYPT via path

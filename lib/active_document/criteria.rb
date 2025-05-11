@@ -312,7 +312,7 @@ module ActiveDocument
       args = args.flatten
       return clone if args.empty?
 
-      args.unshift(:_id) if (args & Fields::IDS).empty?
+      args.unshift(:_id) unless args.intersect?(Fields::IDS)
       args.push(klass.discriminator_key.to_sym) if klass.hereditary?
 
       super(*args)

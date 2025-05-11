@@ -50,7 +50,7 @@ module ActiveDocument
   extend Clients::Sessions::ClassMethods
 
   # A string added to the platform details of Ruby driver client handshake documents.
-  PLATFORM_DETAILS = "active_document-#{VERSION}".freeze # rubocop:disable Style/RedundantFreeze
+  PLATFORM_DETAILS = "active_document-#{VERSION}".freeze
 
   # The minimum MongoDB version supported.
   MONGODB_VERSION = '2.6.0'
