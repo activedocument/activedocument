@@ -71,9 +71,10 @@ jobs:
           # Older MongoDB Server versions
           - ruby: ruby-3.4
             mongodb: '6.0'
-          - ruby: ruby-3.4
             os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
+          - ruby: ruby-3.4
             mongodb: '7.0'
+            os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
 
           # JRuby
           - ruby: jruby-9.4
