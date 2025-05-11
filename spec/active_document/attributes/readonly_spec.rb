@@ -1,7 +1,6 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
-require "spec_helper"
+require 'spec_helper'
 
 describe ActiveDocument::Attributes::Readonly do
 
@@ -11,111 +10,111 @@ describe ActiveDocument::Attributes::Readonly do
 
   after do
     Person.readonly_attributes.reject! do |a|
-      [ attributes ].flatten.include?(a.to_sym) ||
-        [ attributes ].flatten.include?(Person.aliased_fields.key(a).to_sym)
+      [attributes].flatten.include?(a.to_sym) ||
+        [attributes].flatten.include?(Person.aliased_fields.key(a).to_sym)
     end
   end
 
-  describe ".attr_readonly" do
+  describe '.attr_readonly' do
 
-    context "when providing a single field" do
+    context 'when providing a single field' do
 
       let(:attributes) do
         :title
       end
 
-      it "adds the field to readonly attributes" do
-        expect(Person.readonly_attributes.to_a).to include("title")
+      it 'adds the field to readonly attributes' do
+        expect(Person.readonly_attributes.to_a).to include('title')
       end
     end
 
-    context "when providing a field alias" do
+    context 'when providing a field alias' do
 
       let(:attributes) do
         :aliased_timestamp
       end
 
-      it "adds the database field name to readonly attributes" do
-        expect(Person.readonly_attributes.to_a).to include("at")
+      it 'adds the database field name to readonly attributes' do
+        expect(Person.readonly_attributes.to_a).to include('at')
       end
     end
 
-    context "when providing multiple fields" do
+    context 'when providing multiple fields' do
 
       let(:attributes) do
-        [ :title, :terms ]
+        %i[title terms]
       end
 
-      it "adds the fields to readonly attributes" do
-        expect(Person.readonly_attributes.to_a).to include("title", "terms")
+      it 'adds the fields to readonly attributes' do
+        expect(Person.readonly_attributes.to_a).to include('title', 'terms')
       end
     end
 
-    context "when creating a new document with a readonly field" do
+    context 'when creating a new document with a readonly field' do
 
       let(:attributes) do
-        [ :title, :terms, :aliased_timestamp ]
+        %i[title terms aliased_timestamp]
       end
 
       let(:person) do
-        Person.create!(title: "sir", terms: true, aliased_timestamp: Time.at(42))
+        Person.create!(title: 'sir', terms: true, aliased_timestamp: Time.at(42))
       end
 
-      it "sets the first readonly value" do
-        expect(person.title).to eq("sir")
+      it 'sets the first readonly value' do
+        expect(person.title).to eq('sir')
       end
 
-      it "sets the second readonly value" do
+      it 'sets the second readonly value' do
         expect(person.terms).to be true
       end
 
-      it "sets the third readonly value" do
+      it 'sets the third readonly value' do
         expect(person.aliased_timestamp).to eq(Time.at(42))
       end
 
-      it "persists the first readonly value" do
-        expect(person.reload.title).to eq("sir")
+      it 'persists the first readonly value' do
+        expect(person.reload.title).to eq('sir')
       end
 
-      it "persists the second readonly value" do
+      it 'persists the second readonly value' do
         expect(person.reload.terms).to be true
       end
 
-      it "persists the third readonly value" do
+      it 'persists the third readonly value' do
         expect(person.reload.aliased_timestamp).to eq(Time.at(42))
       end
     end
 
-    context "when updating an existing readonly field" do
+    context 'when updating an existing readonly field' do
 
       let(:attributes) do
-        [ :title, :terms, :score, :aliased_timestamp ]
+        %i[title terms score aliased_timestamp]
       end
 
       let(:person) do
-        Person.create!(title: "sir", terms: true, score: 1, aliased_timestamp: Time.at(42))
+        Person.create!(title: 'sir', terms: true, score: 1, aliased_timestamp: Time.at(42))
       end
 
-      context "when updating via the setter" do
+      context 'when updating via the setter' do
 
-        it "does not update the first field" do
+        it 'does not update the first field' do
           person.title = 'mr'
           person.save!
-          expect(person.reload.title).to eq("sir")
+          expect(person.reload.title).to eq('sir')
         end
 
-        it "does not update the second field" do
+        it 'does not update the second field' do
           person.aliased_timestamp = Time.at(43)
           person.save!
           expect(person.reload.aliased_timestamp).to eq(Time.at(42))
         end
       end
 
-      context "when updating via inc" do
+      context 'when updating via inc' do
 
         context 'with single field operation' do
 
-          it "updates the field" do
+          it 'updates the field' do
             person.inc(score: 1)
             person.save!
             expect(person.reload.score).to eq(2)
@@ -124,7 +123,7 @@ describe ActiveDocument::Attributes::Readonly do
 
         context 'with multiple fields operation' do
 
-          it "updates the fields" do
+          it 'updates the fields' do
             person.inc(score: 1, age: 1)
             person.save!
             expect(person.reload.score).to eq(2)
@@ -133,11 +132,11 @@ describe ActiveDocument::Attributes::Readonly do
         end
       end
 
-      context "when updating via bit" do
+      context 'when updating via bit' do
 
         context 'with single field operation' do
 
-          it "does the update" do
+          it 'does the update' do
             person.bit(score: { or: 13 })
             person.save!
             expect(person.reload.score).to eq(13)
@@ -146,8 +145,8 @@ describe ActiveDocument::Attributes::Readonly do
 
         context 'with multiple fields operation' do
 
-          it "updates the attribute" do
-            person.bit(age: {and: 13}, score: {or: 13})
+          it 'updates the attribute' do
+            person.bit(age: { and: 13 }, score: { or: 13 })
             person.save!
             expect(person.reload.score).to eq(13)
             expect(person.reload.age).to eq(4)
@@ -155,81 +154,81 @@ describe ActiveDocument::Attributes::Readonly do
         end
       end
 
-      context "when updating via []=" do
+      context 'when updating via []=' do
 
-        it "does not update the first field" do
-          person[:title] = "mr"
+        it 'does not update the first field' do
+          person[:title] = 'mr'
           person.save!
-          expect(person.reload.title).to eq("sir")
+          expect(person.reload.title).to eq('sir')
         end
 
-        it "does not update the second field" do
+        it 'does not update the second field' do
           person[:aliased_timestamp] = Time.at(43)
           person.save!
           expect(person.reload.aliased_timestamp).to eq(Time.at(42))
         end
       end
 
-      context "when updating via write_attribute" do
+      context 'when updating via write_attribute' do
 
-        it "does not update the first field" do
-          person.write_attribute(:title, "mr")
+        it 'does not update the first field' do
+          person.write_attribute(:title, 'mr')
           person.save!
-          expect(person.reload.title).to eq("sir")
+          expect(person.reload.title).to eq('sir')
         end
 
-        it "does not update the second field" do
+        it 'does not update the second field' do
           person.write_attribute(:aliased_timestamp, Time.at(43))
           person.save!
           expect(person.reload.aliased_timestamp).to eq(Time.at(42))
         end
       end
 
-      context "when updating via update_attributes" do
+      context 'when updating via update_attributes' do
 
-        it "does not update the first field" do
-          person.update_attributes!(title: "mr", aliased_timestamp: Time.at(43))
+        it 'does not update the first field' do
+          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
           person.save!
-          expect(person.reload.title).to eq("sir")
+          expect(person.reload.title).to eq('sir')
         end
 
-        it "does not update the second field" do
-          person.update_attributes!(title: "mr", aliased_timestamp: Time.at(43))
-          person.save!
-          expect(person.reload.aliased_timestamp).to eq(Time.at(42))
-        end
-      end
-
-      context "when updating via update_attributes!" do
-
-        it "does not update the first field" do
-          person.update_attributes!(title: "mr", aliased_timestamp: Time.at(43))
-          person.save!
-          expect(person.reload.title).to eq("sir")
-        end
-
-        it "does not update the second field" do
-          person.update_attributes!(title: "mr", aliased_timestamp: Time.at(43))
+        it 'does not update the second field' do
+          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
           person.save!
           expect(person.reload.aliased_timestamp).to eq(Time.at(42))
         end
       end
 
-      context "when updating via update_attribute" do
+      context 'when updating via update_attributes!' do
 
-        it "raises an error" do
-          expect {
-            person.update_attribute(:title, "mr")
-          }.to raise_exception(ActiveDocument::Errors::ReadonlyAttribute)
+        it 'does not update the first field' do
+          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.save!
+          expect(person.reload.title).to eq('sir')
+        end
+
+        it 'does not update the second field' do
+          person.update!(title: 'mr', aliased_timestamp: Time.at(43))
+          person.save!
+          expect(person.reload.aliased_timestamp).to eq(Time.at(42))
         end
       end
 
-      context "when updating via remove_attribute" do
+      context 'when updating via update_attribute' do
 
-        it "raises an error" do
-          expect {
+        it 'raises an error' do
+          expect do
+            person.update_attribute(:title, 'mr')
+          end.to raise_exception(ActiveDocument::Errors::ReadonlyAttribute)
+        end
+      end
+
+      context 'when updating via remove_attribute' do
+
+        it 'raises an error' do
+          expect do
             person.remove_attribute(:title)
-          }.to raise_exception(ActiveDocument::Errors::ReadonlyAttribute)
+          end.to raise_exception(ActiveDocument::Errors::ReadonlyAttribute)
         end
       end
     end
@@ -268,9 +267,9 @@ describe ActiveDocument::Attributes::Readonly do
       end
     end
 
-    context "when a subclass inherits readonly fields" do
+    context 'when a subclass inherits readonly fields' do
       let(:attributes) do
-        [:title, :terms]
+        %i[title terms]
       end
 
       before do
@@ -279,12 +278,12 @@ describe ActiveDocument::Attributes::Readonly do
         end
       end
 
-      it "ensures subclass inherits the readonly attributes from parent" do
-        expect(OldPerson.readonly_attributes.to_a).to include("title","terms")
+      it 'ensures subclass inherits the readonly attributes from parent' do
+        expect(OldPerson.readonly_attributes.to_a).to include('title', 'terms')
       end
 
       it "ensures subclass does not modify parent's readonly attributes" do
-        expect(Person.readonly_attributes.to_a).not_to include("age")
+        expect(Person.readonly_attributes.to_a).to_not include('age')
       end
     end
   end

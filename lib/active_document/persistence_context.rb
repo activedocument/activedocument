@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 module ActiveDocument
 
@@ -24,16 +23,15 @@ module ActiveDocument
     #
     # @return [ Array<Symbol> ] The list of extra options besides client options
     #   that determine the persistence context.
-    EXTRA_OPTIONS = [ :client,
-                      :collection,
-                      :collection_options
-                    ].freeze
+    EXTRA_OPTIONS = %i[client
+                       collection
+                       collection_options].freeze
 
     # The full list of valid persistence context options.
     #
     # @return [ Array<Symbol> ] The full list of options defining the persistence
     #   context.
-    VALID_OPTIONS = ( Mongo::Client::VALID_OPTIONS + EXTRA_OPTIONS ).freeze
+    VALID_OPTIONS = (Mongo::Client::VALID_OPTIONS + EXTRA_OPTIONS).freeze
 
     # Initialize the persistence context object.
     #
@@ -60,9 +58,9 @@ module ActiveDocument
       if document.is_a?(Class)
         return self if document == (@object.is_a?(Class) ? @object : @object.class)
       elsif document.is_a?(ActiveDocument::Document)
-        return self if document.class == (@object.is_a?(Class) ? @object : @object.class)
+        return self if document.instance_of?((@object.is_a?(Class) ? @object : @object.class))
       else
-        raise ArgumentError, 'must specify a class or a document instance'
+        raise ArgumentError.new('must specify a class or a document instance')
       end
 
       PersistenceContext.new(document, options.merge(document.storage_options))
@@ -79,9 +77,11 @@ module ActiveDocument
     # @return [ Mongo::Collection ] The collection for this persistence
     #   context.
     def collection(parent = nil)
-      parent ?
-        parent.collection.with(client_options.except(:database, "database")) :
+      if parent
+        parent.collection.with(client_options.except(:database, 'database'))
+      else
         client[collection_name.to_sym]
+      end
     end
 
     # Get the collection name for this persistence context.
@@ -92,8 +92,8 @@ module ActiveDocument
     # @return [ String ] The collection name for this persistence
     #   context.
     def collection_name
-      @collection_name ||= (__evaluate__(options[:collection] ||
-                             storage_options[:collection]))
+      @collection_name ||= __evaluate__(options[:collection] ||
+                             storage_options[:collection])
     end
 
     # Get the database name for this persistence context.
@@ -139,8 +139,8 @@ module ActiveDocument
     #   context.
     def client_name
       @client_name ||= __evaluate__(options[:client]) ||
-                         Threaded.client_override ||
-                         __evaluate__(storage_options[:client])
+                       Threaded.client_override ||
+                       __evaluate__(storage_options[:client])
     end
 
     # Determine if this persistence context is equal to another.
@@ -153,6 +153,7 @@ module ActiveDocument
     # @return [ true | false ] Whether the two persistence contexts are equal.
     def ==(other)
       return false unless other.is_a?(PersistenceContext)
+
       options == other.options
     end
 
@@ -186,26 +187,28 @@ module ActiveDocument
     private
 
     def set_options!(opts)
-      @options ||= opts.each.reduce({}) do |_options, (key, value)|
-                     unless VALID_OPTIONS.include?(key.to_sym)
-                       raise Errors::InvalidPersistenceOption.new(key.to_sym, VALID_OPTIONS)
-                     end
-                     value ? _options.merge!(key => value) : _options
-                   end
+      @set_options ||= opts.each.reduce({}) do |_options, (key, value)|
+        unless VALID_OPTIONS.include?(key.to_sym)
+          raise Errors::InvalidPersistenceOption.new(key.to_sym, VALID_OPTIONS)
+        end
+
+        value ? _options.merge!(key => value) : _options
+      end
     end
 
     def __evaluate__(name)
       return nil unless name
+
       name.respond_to?(:call) ? name.call.to_sym : name.to_sym
     end
 
     def client_options
       @client_options ||= begin
-        opts = options.select do |k, v|
-                              Mongo::Client::VALID_OPTIONS.include?(k.to_sym)
-                            end
+        opts = options.select do |k, _v|
+          Mongo::Client::VALID_OPTIONS.include?(k.to_sym)
+        end
         if opts[:read].is_a?(Symbol)
-          opts[:read] = {mode: opts[:read]}
+          opts[:read] = { mode: opts[:read] }
         end
         opts
       end
@@ -213,8 +216,8 @@ module ActiveDocument
 
     def database_name_option
       @database_name_option ||= options[:database] ||
-                                  Threaded.database_override ||
-                                  storage_options[:database]
+                                Threaded.database_override ||
+                                storage_options[:database]
     end
 
     class << self
@@ -235,10 +238,10 @@ module ActiveDocument
       def set(object, options_or_context)
         existing_context = get_context(object)
         existing_options = if existing_context
-          existing_context.options
-        else
-          {}
-        end
+                             existing_context.options
+                           else
+                             {}
+                           end
         if options_or_context.is_a?(PersistenceContext)
           options_or_context = options_or_context.options
         end
@@ -269,10 +272,8 @@ module ActiveDocument
       # @param [ ActiveDocument::PersistenceContext ] original_context The original persistence
       #   context that was set before this context was used.
       def clear(object, cluster = nil, original_context = nil)
-        if context = get(object)
-          unless cluster.nil? || context.cluster.equal?(cluster)
-            context.client.close unless context.reusable_client?
-          end
+        if (context = get(object)) && !(cluster.nil? || context.cluster.equal?(cluster)) && !context.reusable_client?
+          context.client.close
         end
       ensure
         store_context(object, original_context)
@@ -283,7 +284,7 @@ module ActiveDocument
       # Key to store persistence contexts in the thread local storage.
       #
       # @api private
-      PERSISTENCE_CONTEXT_KEY = :"[mongoid]:persistence_context"
+      PERSISTENCE_CONTEXT_KEY = :'[mongoid]:persistence_context'
 
       def context_store
         Threaded.get(PERSISTENCE_CONTEXT_KEY) { {} }

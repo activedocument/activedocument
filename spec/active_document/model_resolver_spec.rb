@@ -102,7 +102,7 @@ describe ActiveDocument::ModelResolver do
 
       let(:model_class) { ActiveDocument::Specs::DefaultInstance::AliasedMultiple }
 
-      it_behaves_like 'a resolver', with_aliases: %w[ aliased alias2 alias3 ]
+      it_behaves_like 'a resolver', with_aliases: %w[aliased alias2 alias3]
     end
   end
 
@@ -110,7 +110,7 @@ describe ActiveDocument::ModelResolver do
     let(:resolver) { described_class.resolver(MONGOID_MODEL_RESOLVER_KEY__) }
 
     it 'does not refer to the default instance' do
-      expect(resolver).not_to eq described_class.instance
+      expect(resolver).to_not eq described_class.instance
     end
 
     context 'when an alias is not specified' do
@@ -161,7 +161,7 @@ describe ActiveDocument::ModelResolver do
 
       let(:model_class) { ActiveDocument::Specs::SeparateInstance::AliasedMultiple }
 
-      it_behaves_like 'a resolver', with_aliases: %w[ aliased alias2 alias3 ]
+      it_behaves_like 'a resolver', with_aliases: %w[aliased alias2 alias3]
     end
   end
 end

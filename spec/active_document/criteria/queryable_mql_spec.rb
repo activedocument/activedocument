@@ -37,7 +37,7 @@ describe ActiveDocument::Criteria::Queryable do
     context 'with storage field name' do
       let(:criteria) do
         Band.where(:origin.ne => 'UK')
-            .in(years: [ 1995, 1996 ])
+            .in(years: [1995, 1996])
       end
 
       let(:mql) do
@@ -46,7 +46,7 @@ describe ActiveDocument::Criteria::Queryable do
           find: collection,
           filter: {
             'origin' => { '$ne' => 'UK' },
-            'y' => { '$in' => [ 1995, 1996 ] }
+            'y' => { '$in' => [1995, 1996] }
           }
         }
       end

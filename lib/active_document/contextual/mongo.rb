@@ -1,13 +1,12 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
-require 'mongoid/atomic_update_preparer'
-require "mongoid/contextual/mongo/documents_loader"
-require "mongoid/contextual/atomic"
-require "mongoid/contextual/aggregable/mongo"
-require "mongoid/contextual/command"
-require "mongoid/contextual/map_reduce"
-require "mongoid/association/eager_loadable"
+require 'active_document/atomic_update_preparer'
+require 'active_document/contextual/mongo/documents_loader'
+require 'active_document/contextual/atomic'
+require 'active_document/contextual/aggregable/mongo'
+require 'active_document/contextual/command'
+require 'active_document/contextual/map_reduce'
+require 'active_document/association/eager_loadable'
 
 module ActiveDocument
   module Contextual
@@ -24,19 +23,18 @@ module ActiveDocument
       include Queryable
 
       # Options constant.
-      OPTIONS = [ :hint,
-                  :limit,
-                  :skip,
-                  :sort,
-                  :batch_size,
-                  :max_scan,
-                  :max_time_ms,
-                  :snapshot,
-                  :comment,
-                  :read,
-                  :cursor_type,
-                  :collation
-                ].freeze
+      OPTIONS = %i[hint
+                   limit
+                   skip
+                   sort
+                   batch_size
+                   max_scan
+                   max_time_ms
+                   snapshot
+                   comment
+                   read
+                   cursor_type
+                   collation].freeze
 
       # @attribute [r] view The Mongo collection view.
       attr_reader :view
@@ -71,7 +69,7 @@ module ActiveDocument
       #
       # @return [ Integer ] The number of matches.
       def count(options = {}, &block)
-        return super(&block) if block_given?
+        return super(&block) if block
 
         if valid_for_count_documents?
           view.count_documents(options)
@@ -95,12 +93,12 @@ module ActiveDocument
       #
       # @return [ Integer ] The number of matches.
       def estimated_count(options = {})
-        unless self.criteria.selector.empty?
-          if klass.default_scoping?
-            raise ActiveDocument::Errors::InvalidEstimatedCountScoping.new(self.klass)
-          else
-            raise ActiveDocument::Errors::InvalidEstimatedCountCriteria.new(self.klass)
-          end
+        unless criteria.selector.empty?
+          raise ActiveDocument::Errors::InvalidEstimatedCountScoping.new(klass) if klass.default_scoping?
+
+
+          raise ActiveDocument::Errors::InvalidEstimatedCountCriteria.new(klass)
+
         end
         view.estimated_document_count(options)
       end
@@ -114,7 +112,7 @@ module ActiveDocument
       def delete
         view.delete_many.deleted_count
       end
-      alias :delete_all :delete
+      alias_method :delete_all, :delete
 
       # Destroy all documents in the database that match the selector.
       #
@@ -129,7 +127,7 @@ module ActiveDocument
           count
         end
       end
-      alias :destroy_all :destroy
+      alias_method :destroy_all, :destroy
 
       # Get the distinct values in the db for the provided field.
       #
@@ -158,7 +156,7 @@ module ActiveDocument
       #
       # @return [ Enumerator ] The enumerator.
       def each(&block)
-        if block_given?
+        if block
           documents_for_iteration.each do |doc|
             yield_document(doc, &block)
           end
@@ -188,9 +186,10 @@ module ActiveDocument
       # @return [ true | false ] If the count is more than zero.
       #   Always false if passed nil or false.
       def exists?(id_or_conditions = :none)
-        return false if self.view.limit == 0
+        return false if view.limit == 0
+
         case id_or_conditions
-        when :none then !!(view.projection(_id: 1).limit(1).first)
+        when :none then !!view.projection(_id: 1).limit(1).first
         when nil, false then false
         when Hash then Mongo.new(criteria.where(id_or_conditions)).exists?
         else Mongo.new(criteria.where(_id: id_or_conditions)).exists?
@@ -212,9 +211,9 @@ module ActiveDocument
       #
       # @return [ Document ] The result of the command.
       def find_one_and_update(update, options = {})
-        if doc = view.find_one_and_update(update, options)
-          Factory.from_db(klass, doc)
-        end
+        return unless (doc = view.find_one_and_update(update, options))
+
+        Factory.from_db(klass, doc)
       end
 
       # Execute the find and modify command, used for MongoDB's
@@ -232,9 +231,9 @@ module ActiveDocument
       #
       # @return [ Document ] The result of the command.
       def find_one_and_replace(replacement, options = {})
-        if doc = view.find_one_and_replace(replacement, options)
-          Factory.from_db(klass, doc)
-        end
+        return unless (doc = view.find_one_and_replace(replacement, options))
+
+        Factory.from_db(klass, doc)
       end
 
       # Execute the find and modify command, used for MongoDB's
@@ -245,19 +244,19 @@ module ActiveDocument
       #
       # @return [ Document ] The result of the command.
       def find_one_and_delete
-        if doc = view.find_one_and_delete
-          Factory.from_db(klass, doc)
-        end
+        return unless (doc = view.find_one_and_delete)
+
+        Factory.from_db(klass, doc)
       end
 
       # Return the first result without applying sort
       #
       # @api private
       def find_first
-        if raw_doc = view.first
-          doc = Factory.from_db(klass, raw_doc, criteria)
-          eager_load([doc]).first
-        end
+        return unless (raw_doc = view.first)
+
+        doc = Factory.from_db(klass, raw_doc, criteria)
+        eager_load([doc]).first
       end
 
       # Create the new Mongo context. This delegates operations to the
@@ -268,7 +267,8 @@ module ActiveDocument
       #
       # @param [ Criteria ] criteria The criteria.
       def initialize(criteria)
-        @criteria, @klass = criteria, criteria.klass
+        @criteria = criteria
+        @klass = criteria.klass
         @collection = @klass.collection
         criteria.send(:merge_type_selection)
         @view = collection.find(criteria.selector, session: _session)
@@ -285,9 +285,9 @@ module ActiveDocument
       #
       # @return [ Integer ] The number of documents.
       def length
-        self.count
+        count
       end
-      alias :size :length
+      alias_method :size, :length
 
       # Limits the number of documents that are returned from the database.
       #
@@ -335,11 +335,10 @@ module ActiveDocument
         # a field and its _translations field map to the same field in the database.
         # because of this, we need to keep track of the fields requested.
         normalized_field_names = []
-        normalized_select = fields.inject({}) do |hash, f|
+        normalized_select = fields.each_with_object({}) do |f, hash|
           db_fn = klass.database_field_name(f)
           normalized_field_names.push(db_fn)
           hash[klass.cleanse_localized_field_names(f)] = true
-          hash
         end
 
         view.projection(normalized_select).reduce([]) do |plucked, doc|
@@ -393,11 +392,9 @@ module ActiveDocument
       def take!
         # Do to_a first so that the Mongo#first method is not used and the
         # result is not sorted.
-        if fst = limit(1).to_a.first
-          fst
-        else
-          raise Errors::DocumentNotFound.new(klass, nil, nil)
-        end
+        raise Errors::DocumentNotFound.new(klass, nil, nil) unless (fst = limit(1).to_a.first)
+
+        fst
       end
 
       # Get a hash of counts for the values of a single field. For example,
@@ -441,20 +438,20 @@ module ActiveDocument
         name = klass.cleanse_localized_field_names(field)
 
         fld = klass.traverse_association_tree(name)
-        pipeline = [ { "$group" => { _id: "$#{name}", counts: { "$sum": 1 } } } ]
-        pipeline.unshift("$match" => view.filter) unless view.filter.blank?
+        pipeline = [{ '$group' => { _id: "$#{name}", counts: { '$sum': 1 } } }]
+        pipeline.unshift('$match' => view.filter) if view.filter.present?
 
-        collection.aggregate(pipeline).reduce({}) do |tallies, doc|
+        collection.aggregate(pipeline).each_with_object({}) do |doc, tallies|
           is_translation = "#{name}_translations" == field.to_s
-          val = doc["_id"]
+          val = doc['_id']
 
           key = if val.is_a?(Array)
-            val.map do |v|
-              demongoize_with_field(fld, v, is_translation)
-            end
-          else
-            demongoize_with_field(fld, val, is_translation)
-          end
+                  val.map do |v|
+                    demongoize_with_field(fld, v, is_translation)
+                  end
+                else
+                  demongoize_with_field(fld, val, is_translation)
+                end
 
           # The only time where a key will already exist in the tallies hash
           # is when the values are stored differently in the database, but
@@ -464,8 +461,7 @@ module ActiveDocument
           # demongoized value is just the translation in the current locale,
           # which can be the same across multiple of those unequal hashes.
           tallies[key] ||= 0
-          tallies[key] += doc["counts"]
-          tallies
+          tallies[key] += doc['counts']
         end
       end
 
@@ -491,7 +487,7 @@ module ActiveDocument
       #
       # @return [ Mongo ] The context.
       def sort(values = nil, &block)
-        if block_given?
+        if block
           super(&block)
         else
           # update the criteria
@@ -554,7 +550,7 @@ module ActiveDocument
           retrieve_nth_with_limit(0, limit)
         end
       end
-      alias :one :first
+      alias_method :one, :first
 
       # Get the first document in the database for the criteria's selector or
       # raise an error if none is found.
@@ -774,7 +770,7 @@ module ActiveDocument
       #
       # @api private
       def load_async
-        @documents_loader ||= DocumentsLoader.new(view, klass, criteria)
+        @load_async ||= DocumentsLoader.new(view, klass, criteria)
       end
 
       private
@@ -803,9 +799,9 @@ module ActiveDocument
       # @example Apply the field limitations.
       #   context.apply_fields
       def apply_fields
-        if spec = criteria.options[:fields]
-          @view = view.projection(spec)
-        end
+        return unless (spec = criteria.options[:fields])
+
+        @view = view.projection(spec)
       end
 
       # Apply the options.
@@ -819,9 +815,9 @@ module ActiveDocument
         OPTIONS.each do |name|
           apply_option(name)
         end
-        if criteria.options[:timeout] == false
-          @view = view.no_cursor_timeout
-        end
+        return unless criteria.options[:timeout] == false
+
+        @view = view.no_cursor_timeout
       end
 
       # Apply an option.
@@ -831,9 +827,9 @@ module ActiveDocument
       # @example Apply the skip option.
       #   context.apply_option(:skip)
       def apply_option(name)
-        if spec = criteria.options[name]
-          @view = view.send(name, spec)
-        end
+        return unless (spec = criteria.options[name])
+
+        @view = view.send(name, spec)
       end
 
       # Map the inverse sort symbols to the correct MongoDB values.
@@ -841,7 +837,7 @@ module ActiveDocument
       # @api private
       def inverse_sorting
         sort = view.sort || { _id: 1 }
-        Hash[sort.map{|k, v| [k, -1*v]}]
+        sort.transform_values { |v| -1 * v }
       end
 
       # Get the documents the context should iterate.
@@ -862,6 +858,7 @@ module ActiveDocument
           end
         else
           return view unless eager_loadable?
+
           docs = view.map do |doc|
             Factory.from_db(klass, doc, criteria)
           end
@@ -879,7 +876,7 @@ module ActiveDocument
       #   end
       #
       # @param [ Document ] document The document to yield to.
-      def yield_document(document, &block)
+      def yield_document(document)
         doc = if document.respond_to?(:_id)
                 document
               elsif criteria.raw_results?
@@ -956,19 +953,19 @@ module ActiveDocument
           #    value so the full hash is returned.
           # 4. Otherwise, fetch and demongoize the value for the key meth.
           curr = if curr.is_a? Array
-            res = fetch_and_demongoize(curr, meth, field)
-            res.empty? ? nil : res
-          elsif !is_translation && field&.localized?
-            if i < num_meths
-              curr.try(:fetch, meth, nil)
-            else
-              fetch_and_demongoize(curr, meth, field)
-            end
-          elsif is_translation
-            curr.try(:fetch, meth, nil)
-          else
-            fetch_and_demongoize(curr, meth, field)
-          end
+                   res = fetch_and_demongoize(curr, meth, field)
+                   res.empty? ? nil : res
+                 elsif !is_translation && field&.localized?
+                   if i < num_meths
+                     curr.try(:fetch, meth, nil)
+                   else
+                     fetch_and_demongoize(curr, meth, field)
+                   end
+                 elsif is_translation
+                   curr.try(:fetch, meth, nil)
+                 else
+                   fetch_and_demongoize(curr, meth, field)
+                 end
 
           i += 1
         end
@@ -1020,11 +1017,11 @@ module ActiveDocument
 
           # does the key represent an embedded relation on the document?
           aliased_name = klass.aliased_associations[key] || key
-          if (assoc = klass.relations[aliased_name])
-            case value
-            when Array then value.each { |h| demongoize_hash(assoc.klass, h) }
-            when Hash then demongoize_hash(assoc.klass, value)
-            end
+          next unless (assoc = klass.relations[aliased_name])
+
+          case value
+          when Array then value.each { |h| demongoize_hash(assoc.klass, h) }
+          when Hash then demongoize_hash(assoc.klass, value)
           end
         end
 
@@ -1092,7 +1089,7 @@ module ActiveDocument
         # Note that `view.filter` is a BSON::Document, and all keys in a
         # BSON::Document are strings; we don't need to worry about symbol
         # representations of `$where`.
-        hash.keys.each do |key|
+        hash.each_key do |key|
           return false if key == '$where'
           return false if hash[key].is_a?(Hash) && !valid_for_count_documents?(hash[key])
         end
@@ -1112,7 +1109,7 @@ module ActiveDocument
         sort = view.sort || { _id: 1 }
         v = view.sort(sort).limit(limit || 1)
         v = v.skip(n) if n > 0
-        if raw_docs = v.to_a
+        if (raw_docs = v.to_a)
           process_raw_docs(raw_docs, limit)
         end
       end

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 module ActiveDocument
   module Timestamps
@@ -16,7 +15,7 @@ module ActiveDocument
       #
       # @return [ true ] True.
       def clear_timeless_option
-        if self.persisted?
+        if persisted?
           self.class.clear_timeless_option_on_update
         else
           self.class.clear_timeless_option
@@ -46,7 +45,7 @@ module ActiveDocument
       class << self
         extend Forwardable
 
-        # The key to use to store the timeless table 
+        # The key to use to store the timeless table
         TIMELESS_TABLE_KEY = '[mongoid]:timeless'
 
         # Returns the in-memory thread cache of classes
@@ -56,13 +55,12 @@ module ActiveDocument
         #
         # @api private
         def timeless_table
-          Threaded.get(TIMELESS_TABLE_KEY) { Hash.new }
+          Threaded.get(TIMELESS_TABLE_KEY) { {} }
         end
 
         def_delegators :timeless_table, :[]=, :[]
       end
 
-      private
 
       module ClassMethods
 
@@ -84,7 +82,7 @@ module ActiveDocument
         #
         # @return [ true ] Always true.
         def clear_timeless_option
-          if counter = Timeless[name]
+          if (counter = Timeless[name])
             counter -= 1
             set_timeless_counter(counter)
           end
@@ -96,11 +94,11 @@ module ActiveDocument
         #
         # @return [ true ] Always true.
         def clear_timeless_option_on_update
-          if counter = Timeless[name]
-            counter -= 1 if self < ActiveDocument::Timestamps::Created
-            counter -= 1 if self < ActiveDocument::Timestamps::Updated
-            set_timeless_counter(counter)
-          end
+          return unless (counter = Timeless[name])
+
+          counter -= 1 if self < ActiveDocument::Timestamps::Created
+          counter -= 1 if self < ActiveDocument::Timestamps::Updated
+          set_timeless_counter(counter)
         end
 
         # Clears the timeless counter for the current class
@@ -111,7 +109,7 @@ module ActiveDocument
         # @return [ Integer | nil ] The counter value, or nil
         #   if the counter was cleared.
         def set_timeless_counter(counter)
-          Timeless[name] = (counter == 0) ? nil : counter
+          Timeless[name] = counter == 0 ? nil : counter
         end
 
         # Returns whether the current class should skip timestamping.

@@ -1,30 +1,29 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
-require "spec_helper"
-require_relative "./includable_spec_models.rb"
+require 'spec_helper'
+require_relative './includable_spec_models'
 
 describe ActiveDocument::Criteria::Includable do
 
-  describe "#includes" do
+  describe '#includes' do
 
     let!(:person) do
       Person.create!(age: 1)
     end
 
-    context "when providing a name that is not a relation" do
+    context 'when providing a name that is not a relation' do
 
-      it "raises an error" do
-        expect {
+      it 'raises an error' do
+        expect do
           Person.includes(:members)
-        }.to raise_error(ActiveDocument::Errors::InvalidIncludes)
+        end.to raise_error(ActiveDocument::Errors::InvalidIncludes)
       end
     end
 
-    context "when providing one association" do
+    context 'when providing one association' do
 
       let!(:user) do
-        User.create!(posts: [ post1 ])
+        User.create!(posts: [post1])
       end
 
       let!(:post1) do
@@ -35,19 +34,19 @@ describe ActiveDocument::Criteria::Includable do
         User.includes(:posts).first
       end
 
-      it "executes the query" do
+      it 'executes the query' do
         expect(result).to eq(user)
       end
 
-      it "includes the related objects" do
-        expect(result.posts).to eq([ post1 ])
+      it 'includes the related objects' do
+        expect(result.posts).to eq([post1])
       end
     end
 
-    context "when providing a list of associations" do
+    context 'when providing a list of associations' do
 
       let!(:user) do
-        User.create!(posts: [ post1 ], descriptions: [ description1 ])
+        User.create!(posts: [post1], descriptions: [description1])
       end
 
       let!(:post1) do
@@ -62,58 +61,58 @@ describe ActiveDocument::Criteria::Includable do
         User.includes(:posts, :descriptions).first
       end
 
-      it "executes the query" do
+      it 'executes the query' do
         expect(result).to eq(user)
       end
 
-      it "includes the related objects" do
-        expect(result.posts).to eq([ post1 ])
-        expect(result.descriptions).to eq([ description1 ])
+      it 'includes the related objects' do
+        expect(result.posts).to eq([post1])
+        expect(result.descriptions).to eq([description1])
       end
     end
 
-    context "when providing a nested association" do
+    context 'when providing a nested association' do
 
       let!(:user) do
         User.create!
       end
 
       before do
-        p = Post.create!(alerts: [ Alert.create! ])
-        user.posts = [ p ]
+        p = Post.create!(alerts: [Alert.create!])
+        user.posts = [p]
         user.save!
       end
 
       let(:result) do
-        User.includes(:posts => [:alerts]).first
+        User.includes(posts: [:alerts]).first
       end
 
-      it "executes the query" do
+      it 'executes the query' do
         expect(result).to eq(user)
       end
 
-      it "includes the related objects" do
+      it 'includes the related objects' do
         expect(result.posts.size).to eq(1)
         expect(result.posts.first.alerts.size).to eq(1)
       end
     end
 
-    context "when providing a deeply nested association" do
+    context 'when providing a deeply nested association' do
 
       let!(:user) do
         User.create!
       end
 
       let(:results) do
-        User.includes(:posts => [{ :alerts => :items }]).to_a
+        User.includes(posts: [{ alerts: :items }]).to_a
       end
 
-      it "executes the query" do
+      it 'executes the query' do
         expect(results.first).to eq(user)
       end
     end
 
-    context "when the models are inherited" do
+    context 'when the models are inherited' do
 
       before(:all) do
         class A
@@ -136,7 +135,7 @@ describe ActiveDocument::Criteria::Includable do
         Object.send(:remove_const, :C)
       end
 
-      context "when the includes is on the subclass" do
+      context 'when the includes is on the subclass' do
 
         let!(:c_one) do
           C.create!
@@ -156,11 +155,11 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        it "returns the correct documents" do
+        it 'returns the correct documents' do
           expect(results).to eq(c_two)
         end
 
-        it "does not query the db" do
+        it 'does not query the db' do
           expect_query(0) do
             results.b
           end
@@ -168,9 +167,9 @@ describe ActiveDocument::Criteria::Includable do
       end
     end
 
-    context "when the models are inherited from another one model" do
+    context 'when the models are inherited from another one model' do
 
-      context "when the relation is a has_one" do
+      context 'when the relation is a has_one' do
 
         before(:all) do
           class A
@@ -199,7 +198,7 @@ describe ActiveDocument::Criteria::Includable do
           Object.send(:remove_const, :D)
         end
 
-        context "when the includes is on the several relations" do
+        context 'when the includes is on the several relations' do
 
           let!(:d_one) do
             D.create!
@@ -223,17 +222,17 @@ describe ActiveDocument::Criteria::Includable do
             end
           end
 
-          it "returns the correct documents" do
+          it 'returns the correct documents' do
             expect(results).to eq(d_two)
           end
 
-          it "does not query the db on b" do
+          it 'does not query the db on b' do
             expect_query(0) do
               results.b
             end
           end
 
-          it "does not query the db on c" do
+          it 'does not query the db on c' do
             expect_query(0) do
               results.b
             end
@@ -241,7 +240,7 @@ describe ActiveDocument::Criteria::Includable do
         end
       end
 
-      context "when the relation is a has_many" do
+      context 'when the relation is a has_many' do
 
         before(:all) do
           class A
@@ -270,7 +269,7 @@ describe ActiveDocument::Criteria::Includable do
           Object.send(:remove_const, :D)
         end
 
-        context "when the includes is on the several relations" do
+        context 'when the includes is on the several relations' do
 
           let!(:d_one) do
             D.create!
@@ -281,11 +280,11 @@ describe ActiveDocument::Criteria::Includable do
           end
 
           let!(:bs) do
-            2.times.map { B.create!(d: d_two) }
+            Array.new(2) { B.create!(d: d_two) }
           end
 
           let!(:cs) do
-            2.times.map { C.create!(d: d_two) }
+            Array.new(2) { C.create!(d: d_two) }
           end
 
           let!(:results) do
@@ -294,17 +293,17 @@ describe ActiveDocument::Criteria::Includable do
             end
           end
 
-          it "returns the correct documents" do
+          it 'returns the correct documents' do
             expect(results).to eq(d_two)
           end
 
-          it "does not query the db on b" do
+          it 'does not query the db on b' do
             expect_query(0) do
               results.b
             end
           end
 
-          it "does not query the db on c" do
+          it 'does not query the db on c' do
             expect_query(0) do
               results.b
             end
@@ -313,7 +312,7 @@ describe ActiveDocument::Criteria::Includable do
       end
     end
 
-    context "when including the same association multiple times" do
+    context 'when including the same association multiple times' do
 
       let(:criteria) do
         Person.all.includes(:posts, :posts).includes(:posts)
@@ -323,15 +322,15 @@ describe ActiveDocument::Criteria::Includable do
         Person.reflect_on_association(:posts)
       end
 
-      it "does not duplicate the association in the inclusions" do
-        expect(criteria.inclusions).to eq([ association ])
+      it 'does not duplicate the association in the inclusions' do
+        expect(criteria.inclusions).to eq([association])
       end
     end
 
-    context "when mapping the results more than once" do
+    context 'when mapping the results more than once' do
 
       let!(:post) do
-        person.posts.create!(title: "one")
+        person.posts.create!(title: 'one')
       end
 
       let(:criteria) do
@@ -343,28 +342,28 @@ describe ActiveDocument::Criteria::Includable do
         criteria.map { |doc| doc }
       end
 
-      it "returns the proper results" do
-        expect(results.first.title).to eq("one")
+      it 'returns the proper results' do
+        expect(results.first.title).to eq('one')
       end
     end
 
-    context "when including a belongs to relation" do
+    context 'when including a belongs to relation' do
 
-      context "when the criteria is from the root" do
+      context 'when the criteria is from the root' do
 
         let!(:person_two) do
           Person.create!(age: 2)
         end
 
         let!(:post_one) do
-          person.posts.create!(title: "one")
+          person.posts.create!(title: 'one')
         end
 
         let!(:post_two) do
-          person_two.posts.create!(title: "two")
+          person_two.posts.create!(title: 'two')
         end
 
-        context "when calling first" do
+        context 'when calling first' do
 
           let(:criteria) do
             Post.includes(:person)
@@ -374,18 +373,18 @@ describe ActiveDocument::Criteria::Includable do
             criteria.first
           end
 
-          it "eager loads the first document" do
+          it 'eager loads the first document' do
             expect_query(0) do
               expect(document.person).to eq(person)
             end
           end
 
-          it "returns the first document" do
+          it 'returns the first document' do
             expect(document).to eq(post_one)
           end
         end
 
-        context "when calling last" do
+        context 'when calling last' do
 
           let!(:criteria) do
             Post.asc(:_id).includes(:person)
@@ -395,38 +394,38 @@ describe ActiveDocument::Criteria::Includable do
             criteria.last
           end
 
-          it "eager loads the last document" do
+          it 'eager loads the last document' do
             expect_query(0) do
               expect(document.person).to eq(person_two)
             end
           end
 
-          it "returns the last document" do
+          it 'returns the last document' do
             expect(document).to eq(post_two)
           end
         end
       end
 
-      context "when the criteria is from an embedded relation" do
+      context 'when the criteria is from an embedded relation' do
 
         let(:peep) do
           Person.create!
         end
 
         let!(:address_one) do
-          peep.addresses.create!(street: "rosenthaler")
+          peep.addresses.create!(street: 'rosenthaler')
         end
 
         let!(:address_two) do
-          peep.addresses.create!(street: "weinmeister")
+          peep.addresses.create!(street: 'weinmeister')
         end
 
         let!(:depeche) do
-          Band.create!(name: "Depeche Mode")
+          Band.create!(name: 'Depeche Mode')
         end
 
         let!(:tool) do
-          Band.create!(name: "Tool")
+          Band.create!(name: 'Tool')
         end
 
         before do
@@ -436,7 +435,7 @@ describe ActiveDocument::Criteria::Includable do
           address_two.save!
         end
 
-        context "when calling first" do
+        context 'when calling first' do
 
           let(:criteria) do
             peep.reload.addresses.includes(:band)
@@ -450,18 +449,18 @@ describe ActiveDocument::Criteria::Includable do
             criteria.first
           end
 
-          it "eager loads the first document" do
+          it 'eager loads the first document' do
             expect_query(0) do
               expect(document.band).to eq(depeche)
             end
           end
 
-          it "returns the document" do
+          it 'returns the document' do
             expect(document).to eq(address_one)
           end
         end
 
-        context "when calling last" do
+        context 'when calling last' do
 
           let(:criteria) do
             peep.reload.addresses.includes(:band)
@@ -475,18 +474,18 @@ describe ActiveDocument::Criteria::Includable do
             criteria.last
           end
 
-          it "eager loads the last document" do
+          it 'eager loads the last document' do
             expect_query(0) do
               expect(document.band).to eq(tool)
             end
           end
 
-          it "returns the document" do
+          it 'returns the document' do
             expect(document).to eq(address_two)
           end
         end
 
-        context "when iterating all documents" do
+        context 'when iterating all documents' do
 
           let(:criteria) do
             peep.reload.addresses.includes(:band)
@@ -500,29 +499,29 @@ describe ActiveDocument::Criteria::Includable do
             criteria.to_a
           end
 
-          it "eager loads the first document" do
+          it 'eager loads the first document' do
             expect_query(0) do
               expect(documents.first.band).to eq(depeche)
             end
           end
 
-          it "eager loads the last document" do
+          it 'eager loads the last document' do
             expect_query(0) do
               expect(documents.last.band).to eq(tool)
             end
           end
 
-          it "returns the documents" do
-            expect(documents).to eq([ address_one, address_two ])
+          it 'returns the documents' do
+            expect(documents).to eq([address_one, address_two])
           end
         end
       end
     end
 
-    context "when providing inclusions to the default scope" do
+    context 'when providing inclusions to the default scope' do
 
       before do
-        Person.default_scope(->{ Person.includes(:posts) })
+        Person.default_scope(-> { Person.includes(:posts) })
       end
 
       after do
@@ -530,14 +529,14 @@ describe ActiveDocument::Criteria::Includable do
       end
 
       let!(:post_one) do
-        person.posts.create!(title: "one")
+        person.posts.create!(title: 'one')
       end
 
       let!(:post_two) do
-        person.posts.create!(title: "two")
+        person.posts.create!(title: 'two')
       end
 
-      context "when the criteria has no options" do
+      context 'when the criteria has no options' do
 
         let!(:criteria) do
           Person.asc(:age).all
@@ -547,23 +546,23 @@ describe ActiveDocument::Criteria::Includable do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+        it 'returns the correct documents' do
+          expect(documents).to eq([person])
         end
 
-        it "eager loads the first document" do
+        it 'eager loads the first document' do
           expect_query(0) do
             expect(documents.first.posts.first).to eq(post_one)
           end
         end
 
-        it "eager loads the last document" do
+        it 'eager loads the last document' do
           expect_query(0) do
             expect(documents.first.posts.last).to eq(post_two)
           end
         end
 
-        context "when executing the query twice" do
+        context 'when executing the query twice' do
 
           let!(:new_criteria) do
             Person.where(id: person.id)
@@ -581,13 +580,13 @@ describe ActiveDocument::Criteria::Includable do
             new_criteria.first
           end
 
-          it "does not duplicate documents in the relation" do
+          it 'does not duplicate documents in the relation' do
             expect(person.posts.size).to eq(2)
           end
         end
       end
 
-      context "when calling first on the criteria" do
+      context 'when calling first on the criteria' do
 
         let(:criteria) do
           Person.asc(:age).all
@@ -597,24 +596,24 @@ describe ActiveDocument::Criteria::Includable do
           criteria.first
         end
 
-        it "returns the correct documents" do
+        it 'returns the correct documents' do
           expect(from_db).to eq(person)
         end
 
-        it "eager loads the first document" do
+        it 'eager loads the first document' do
           expect_query(0) do
             expect(from_db.posts.first).to eq(post_one)
           end
         end
 
-        it "eager loads the last document" do
+        it 'eager loads the last document' do
           expect_query(0) do
             expect(from_db.posts.last).to eq(post_two)
           end
         end
       end
 
-      context "when calling last on the criteria" do
+      context 'when calling last on the criteria' do
 
         let(:criteria) do
           Person.asc(:age).all
@@ -632,31 +631,31 @@ describe ActiveDocument::Criteria::Includable do
           criteria.last
         end
 
-        it "returns the correct documents" do
+        it 'returns the correct documents' do
           expect(from_db).to eq(person)
         end
 
-        it "eager loads the first document" do
+        it 'eager loads the first document' do
           expect_query(0) do
             expect(from_db.posts.first).to eq(post_one)
           end
         end
 
-        it "eager loads the last document" do
+        it 'eager loads the last document' do
           expect_query(0) do
             expect(from_db.posts.last).to eq(post_two)
           end
         end
       end
 
-      context "when the criteria has limiting options" do
+      context 'when the criteria has limiting options' do
 
         let!(:person_two) do
           Person.create!
         end
 
         let!(:post_three) do
-          person_two.posts.create!(title: "three")
+          person_two.posts.create!(title: 'three')
         end
 
         let!(:criteria) do
@@ -667,17 +666,17 @@ describe ActiveDocument::Criteria::Includable do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(criteria).to eq([ person ])
+        it 'returns the correct documents' do
+          expect(criteria).to eq([person])
         end
 
-        it "eager loads the first document" do
+        it 'eager loads the first document' do
           expect_query(0) do
             expect(documents.first.posts.first).to eq(post_one)
           end
         end
 
-        it "eager loads the second document" do
+        it 'eager loads the second document' do
           expect_query(0) do
             expect(documents.first.posts.last).to eq(post_two)
           end
@@ -685,20 +684,20 @@ describe ActiveDocument::Criteria::Includable do
       end
     end
 
-    context "when including a has and belongs to many" do
+    context 'when including a has and belongs to many' do
 
       let!(:preference_one) do
-        person.preferences.create!(name: "one")
+        person.preferences.create!(name: 'one')
       end
 
       let!(:preference_two) do
-        person.preferences.create!(name: "two")
+        person.preferences.create!(name: 'two')
       end
 
-      context "when one of the related items is deleted" do
+      context 'when one of the related items is deleted' do
 
         before do
-          person.preferences = [ preference_one, preference_two ]
+          person.preferences = [preference_one, preference_two]
           preference_two.delete
         end
 
@@ -706,12 +705,12 @@ describe ActiveDocument::Criteria::Includable do
           Person.where(id: person.id).includes(:preferences)
         end
 
-        it "only loads the existing related items" do
-          expect(criteria.entries.first.preferences).to eq([ preference_one ])
+        it 'only loads the existing related items' do
+          expect(criteria.entries.first.preferences).to eq([preference_one])
         end
       end
 
-      context "when the criteria has no options" do
+      context 'when the criteria has no options' do
 
         let!(:criteria) do
           Person.asc(:age).includes(:preferences)
@@ -721,24 +720,24 @@ describe ActiveDocument::Criteria::Includable do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+        it 'returns the correct documents' do
+          expect(documents).to eq([person])
         end
 
-        it "eager loads the first document" do
+        it 'eager loads the first document' do
           expect_query(0) do
             expect(documents.first.preferences.first).to eq(preference_one)
           end
         end
 
-        it "eager loads the last document" do
+        it 'eager loads the last document' do
           expect_query(0) do
             expect(documents.first.preferences.last).to eq(preference_two)
           end
         end
       end
 
-      context "when calling first on the criteria" do
+      context 'when calling first on the criteria' do
 
         let!(:criteria) do
           Person.asc(:age).includes(:preferences)
@@ -748,24 +747,24 @@ describe ActiveDocument::Criteria::Includable do
           criteria.first
         end
 
-        it "returns the correct documents" do
+        it 'returns the correct documents' do
           expect(from_db).to eq(person)
         end
 
-        it "eager loads the first document" do
+        it 'eager loads the first document' do
           expect_query(0) do
             expect(from_db.preferences.first).to eq(preference_one)
           end
         end
 
-        it "eager loads the last document" do
+        it 'eager loads the last document' do
           expect_query(0) do
             expect(from_db.preferences.last).to eq(preference_two)
           end
         end
       end
 
-      context "when calling last on the criteria" do
+      context 'when calling last on the criteria' do
 
         let!(:criteria) do
           Person.asc(:age).includes(:preferences)
@@ -775,17 +774,17 @@ describe ActiveDocument::Criteria::Includable do
           criteria.last
         end
 
-        it "returns the correct documents" do
+        it 'returns the correct documents' do
           expect(from_db).to eq(person)
         end
 
-        it "eager loads the first document" do
+        it 'eager loads the first document' do
           expect_query(0) do
             expect(from_db.preferences.first).to eq(preference_one)
           end
         end
 
-        it "eager loads the last document" do
+        it 'eager loads the last document' do
           expect_query(0) do
             expect(from_db.preferences.last).to eq(preference_two)
           end
@@ -793,17 +792,17 @@ describe ActiveDocument::Criteria::Includable do
       end
     end
 
-    context "when including a has many" do
+    context 'when including a has many' do
 
       let!(:post_one) do
-        person.posts.create!(title: "one")
+        person.posts.create!(title: 'one')
       end
 
       let!(:post_two) do
-        person.posts.create!(title: "two")
+        person.posts.create!(title: 'two')
       end
 
-      context "when the criteria has no options" do
+      context 'when the criteria has no options' do
 
         let!(:criteria) do
           Person.asc(:age).includes(:posts)
@@ -813,24 +812,24 @@ describe ActiveDocument::Criteria::Includable do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+        it 'returns the correct documents' do
+          expect(documents).to eq([person])
         end
 
-        it "eager loads the first document" do
+        it 'eager loads the first document' do
           expect_query(0) do
             expect(documents.first.posts.first).to eq(post_one)
           end
         end
 
-        it "eager loads the last document" do
+        it 'eager loads the last document' do
           expect_query(0) do
             expect(documents.first.posts.last).to eq(post_two)
           end
         end
       end
 
-      context "when calling first on the criteria" do
+      context 'when calling first on the criteria' do
 
         let!(:criteria) do
           Person.asc(:age).includes(:posts)
@@ -840,23 +839,23 @@ describe ActiveDocument::Criteria::Includable do
           criteria.first
         end
 
-        it "returns the correct documents" do
+        it 'returns the correct documents' do
           expect(from_db).to eq(person)
         end
 
-        context "when subsequently getting all documents" do
+        context 'when subsequently getting all documents' do
 
           let!(:documents) do
             criteria.entries
           end
 
-          it "returns the correct documents" do
-            expect(documents).to eq([ person ])
+          it 'returns the correct documents' do
+            expect(documents).to eq([person])
           end
         end
       end
 
-      context "when calling last on the criteria" do
+      context 'when calling last on the criteria' do
 
         let!(:criteria) do
           Person.asc(:age).includes(:posts)
@@ -866,30 +865,30 @@ describe ActiveDocument::Criteria::Includable do
           criteria.last
         end
 
-        it "returns the correct documents" do
+        it 'returns the correct documents' do
           expect(from_db).to eq(person)
         end
 
-        context "when subsequently getting all documents" do
+        context 'when subsequently getting all documents' do
 
           let!(:documents) do
             criteria.entries
           end
 
-          it "returns the correct documents" do
-            expect(documents).to eq([ person ])
+          it 'returns the correct documents' do
+            expect(documents).to eq([person])
           end
         end
       end
 
-      context "when the criteria has limiting options" do
+      context 'when the criteria has limiting options' do
 
         let!(:person_two) do
           Person.create!
         end
 
         let!(:post_three) do
-          person_two.posts.create!(title: "three")
+          person_two.posts.create!(title: 'three')
         end
 
         let!(:criteria) do
@@ -901,30 +900,30 @@ describe ActiveDocument::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+        it 'returns the correct documents' do
+          expect(documents).to eq([person])
         end
       end
     end
 
-    context "when including a has one" do
+    context 'when including a has one' do
 
       let!(:game_one) do
-        person.create_game(name: "one")
+        person.create_game(name: 'one')
       end
 
       let!(:game_two) do
-        person.create_game(name: "two")
+        person.create_game(name: 'two')
       end
 
-      context "when the criteria has no options" do
+      context 'when the criteria has no options' do
 
         let!(:criteria) do
           Person.asc(:age).includes(:game)
@@ -935,26 +934,26 @@ describe ActiveDocument::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+        it 'returns the correct documents' do
+          expect(documents).to eq([person])
         end
       end
 
-      context "when the criteria has limiting options" do
+      context 'when the criteria has limiting options' do
 
         let!(:person_two) do
           Person.create!(age: 2)
         end
 
         let!(:game_three) do
-          person_two.create_game(name: "Skyrim")
+          person_two.create_game(name: 'Skyrim')
         end
 
         let!(:criteria) do
@@ -966,34 +965,34 @@ describe ActiveDocument::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ person ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([person]).once.and_call_original
         end
 
         let!(:documents) do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(documents).to eq([ person ])
+        it 'returns the correct documents' do
+          expect(documents).to eq([person])
         end
       end
     end
 
-    context "when including a belongs to" do
+    context 'when including a belongs to' do
 
       let(:person_two) do
         Person.create!(age: 2)
       end
 
       let!(:game_one) do
-        person.create_game(name: "one")
+        person.create_game(name: 'one')
       end
 
       let!(:game_two) do
-        person_two.create_game(name: "two")
+        person_two.create_game(name: 'two')
       end
 
-      context "when providing no options" do
+      context 'when providing no options' do
 
         let!(:criteria) do
           Game.includes(:person)
@@ -1011,12 +1010,12 @@ describe ActiveDocument::Criteria::Includable do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(criteria).to eq([ game_one, game_two ])
+        it 'returns the correct documents' do
+          expect(criteria).to eq([game_one, game_two])
         end
       end
 
-      context "when the criteria has limiting options" do
+      context 'when the criteria has limiting options' do
 
         let!(:criteria) do
           Game.where(id: game_one.id).includes(:person).asc(:_id).limit(1)
@@ -1027,35 +1026,35 @@ describe ActiveDocument::Criteria::Includable do
         end
 
         before do
-          expect(context).to receive(:eager_load).with([ game_one ]).once.and_call_original
+          expect(context).to receive(:eager_load).with([game_one]).once.and_call_original
         end
 
         let!(:documents) do
           criteria.entries
         end
 
-        it "returns the correct documents" do
-          expect(documents).to eq([ game_one ])
+        it 'returns the correct documents' do
+          expect(documents).to eq([game_one])
         end
       end
     end
 
-    context "when including multiples in the same criteria" do
+    context 'when including multiples in the same criteria' do
 
       let!(:post_one) do
-        person.posts.create!(title: "one")
+        person.posts.create!(title: 'one')
       end
 
       let!(:post_two) do
-        person.posts.create!(title: "two")
+        person.posts.create!(title: 'two')
       end
 
       let!(:game_one) do
-        person.create_game(name: "one")
+        person.create_game(name: 'one')
       end
 
       let!(:game_two) do
-        person.create_game(name: "two")
+        person.create_game(name: 'two')
       end
 
       let!(:criteria) do
@@ -1074,14 +1073,14 @@ describe ActiveDocument::Criteria::Includable do
         criteria.entries
       end
 
-      it "returns the correct documents" do
-        expect(criteria).to eq([ person ])
+      it 'returns the correct documents' do
+        expect(criteria).to eq([person])
       end
     end
 
-    context "when including nested referenced associations" do
+    context 'when including nested referenced associations' do
 
-      context "when using a has_one association" do
+      context 'when using a has_one association' do
         before(:all) do
           class A
             include ActiveDocument::Document
@@ -1135,83 +1134,83 @@ describe ActiveDocument::Criteria::Includable do
           a.b = b
         end
 
-        context "when including the belongs_to association" do
+        context 'when including the belongs_to association' do
           let!(:result) do
             C.includes(b: :a).first
           end
 
-          it "finds the right document" do
+          it 'finds the right document' do
             expect(result).to eq(c)
             expect(result.b).to eq(c.b)
             expect(result.b.a).to eq(c.b.a)
           end
 
-          it "does not execute a query" do
+          it 'does not execute a query' do
             expect_no_queries do
               result.b.a
             end
           end
         end
 
-        context "when including a doubly-nested belongs_to association" do
+        context 'when including a doubly-nested belongs_to association' do
           let!(:result) do
             D.includes(c: { b: :a }).first
           end
 
-          it "finds the right document" do
+          it 'finds the right document' do
             expect(result).to eq(d)
             expect(result.c).to eq(d.c)
             expect(result.c.b).to eq(d.c.b)
             expect(result.c.b.a).to eq(d.c.b.a)
           end
 
-          it "does not execute a query" do
+          it 'does not execute a query' do
             expect_no_queries do
               result.c.b.a
             end
           end
         end
 
-        context "when including the has_many association" do
+        context 'when including the has_many association' do
           let!(:result) do
             A.includes(b: :c).first
           end
 
-          it "finds the right document" do
+          it 'finds the right document' do
             expect(result).to eq(a)
             expect(result.b).to eq(a.b)
             expect(result.b.c).to eq(a.b.c)
           end
 
-          it "does not executes a query" do
+          it 'does not executes a query' do
             expect_no_queries do
               result.b.c
             end
           end
         end
 
-        context "when including a doubly-nested has_many association" do
+        context 'when including a doubly-nested has_many association' do
           let!(:result) do
             A.includes(b: { c: :d }).first
           end
 
-          it "finds the right document" do
+          it 'finds the right document' do
             expect(result).to eq(a)
             expect(result.b).to eq(a.b)
             expect(result.b.c).to eq(a.b.c)
             expect(result.b.c.d).to eq(a.b.c.d)
           end
 
-          it "does not execute a query" do
+          it 'does not execute a query' do
             expect_no_queries do
               result.b.c.d
             end
           end
         end
 
-        context "when there are multiple documents" do
+        context 'when there are multiple documents' do
           let!(:as) do
-            res = 9.times.map do |i|
+            res = Array.new(9) do |_i|
               A.create!.tap do |a|
                 a.b = B.create!.tap do |b|
                   b.c = C.create!
@@ -1225,7 +1224,7 @@ describe ActiveDocument::Criteria::Includable do
             A.includes(b: :c).entries.sort
           end
 
-          it "finds the right document" do
+          it 'finds the right document' do
             as.length.times do |i|
               expect(as[i]).to eq(results[i])
               expect(as[i].b).to eq(results[i].b)
@@ -1233,7 +1232,7 @@ describe ActiveDocument::Criteria::Includable do
             end
           end
 
-          it "does not execute a query" do
+          it 'does not execute a query' do
             expect_no_queries do
               results.each do |a|
                 a.b.c
@@ -1242,7 +1241,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        context "when there are multiple associations" do
+        context 'when there are multiple associations' do
           before(:all) do
             class A
               has_one :c
@@ -1265,7 +1264,7 @@ describe ActiveDocument::Criteria::Includable do
             A.includes(b: { c: :d }, c: :d).first
           end
 
-          it "finds the right document" do
+          it 'finds the right document' do
             expect(results).to eq(a)
             expect(results.b).to eq(a.b)
             expect(results.b.c).to eq(a.b.c)
@@ -1274,7 +1273,7 @@ describe ActiveDocument::Criteria::Includable do
             expect(results.c.d).to eq(a.c.d)
           end
 
-          it "does not execute a query" do
+          it 'does not execute a query' do
             expect_no_queries do
               results.c.d
               results.b.c.d
@@ -1284,30 +1283,30 @@ describe ActiveDocument::Criteria::Includable do
       end
     end
 
-    context "when using a has_many association" do
+    context 'when using a has_many association' do
 
       let!(:user) do
         IncUser.create!(posts: posts, comments: user_comments)
       end
 
       let!(:posts) do
-        [ IncPost.create!(comments: post_comments) ]
+        [IncPost.create!(comments: post_comments)]
       end
 
       let!(:user_comments) do
-        2.times.map{ IncComment.create! }
+        Array.new(2) { IncComment.create! }
       end
 
       let!(:post_comments) do
-        2.times.map{ IncComment.create! }
+        Array.new(2) { IncComment.create! }
       end
 
-      context "when including the same class twice" do
+      context 'when including the same class twice' do
         let!(:results) do
           IncPost.includes({ user: :comments }, :comments).entries.sort
         end
 
-        it "finds the right documents" do
+        it 'finds the right documents' do
           posts.length.times do |i|
             expect(posts[i]).to eq(results[i])
             expect(posts[i].user).to eq(results[i].user)
@@ -1316,7 +1315,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        it "does not execute a query" do
+        it 'does not execute a query' do
           expect_no_queries do
             results.each do |res|
               res.user
@@ -1327,14 +1326,14 @@ describe ActiveDocument::Criteria::Includable do
         end
       end
 
-      context "when the association chain has a class name twice" do
+      context 'when the association chain has a class name twice' do
         let!(:thread) { IncThread.create!(comments: user_comments) }
 
         let!(:result) do
           IncThread.includes(comments: { user: { posts: :comments } }).first
         end
 
-        it "finds the right document" do
+        it 'finds the right document' do
           expect(result).to eq(thread)
           result.comments.length.times do |i|
             c1 = result.comments[i]
@@ -1351,7 +1350,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        it "does not execute a query" do
+        it 'does not execute a query' do
           expect_no_queries do
             result.comments.each do |comment|
               comment.user.posts.each do |post|
@@ -1364,47 +1363,47 @@ describe ActiveDocument::Criteria::Includable do
     end
   end
 
-  describe "#inclusions" do
+  describe '#inclusions' do
 
     let(:criteria) do
       Band.includes(:records)
     end
 
     let(:association) do
-      Band.relations["records"]
+      Band.relations['records']
     end
 
-    it "returns the inclusions" do
-      expect(criteria.inclusions).to eq([ association ])
+    it 'returns the inclusions' do
+      expect(criteria.inclusions).to eq([association])
     end
   end
 
-  describe "#inclusions=" do
+  describe '#inclusions=' do
 
     let(:criteria) do
       Band.all
     end
 
     let(:association) do
-      Band.relations["records"]
+      Band.relations['records']
     end
 
     before do
-      criteria.inclusions = [ association ]
+      criteria.inclusions = [association]
     end
 
-    it "sets the inclusions" do
-      expect(criteria.inclusions).to eq([ association ])
+    it 'sets the inclusions' do
+      expect(criteria.inclusions).to eq([association])
     end
   end
 
-  context "When multiple associations reference the same class" do
+  context 'When multiple associations reference the same class' do
     before do
       IncBlog.create(
         posts: [
           IncBlogPost.create(author: IncAuthor.create),
           IncBlogPost.create(author: IncAuthor.create),
-          IncBlogPost.create(author: IncAuthor.create),
+          IncBlogPost.create(author: IncAuthor.create)
         ],
         highlighted_post: IncBlogPost.create(author: IncAuthor.create)
       )
@@ -1414,29 +1413,27 @@ describe ActiveDocument::Criteria::Includable do
       IncBlog.includes(:posts, highlighted_post: :author).first
     end
 
-    it "does not execute a query" do
+    it 'does not execute a query' do
       expect_no_queries do
         result.posts.to_a
         result.highlighted_post
       end
     end
 
-    it "executes a query for the non-retrieved elements" do
+    it 'executes a query for the non-retrieved elements' do
       expect_query(3) do
-        result.posts.each do |post|
-          post.author
-        end
+        result.posts.each(&:author)
       end
     end
   end
 
-  context "When multiple parent_inclusions for the same association" do
+  context 'When multiple parent_inclusions for the same association' do
     before do
       IncBlog.create(
         posts: [
           IncBlogPost.create(author: IncAuthor.create),
           IncBlogPost.create(author: IncAuthor.create),
-          IncBlogPost.create(author: IncAuthor.create),
+          IncBlogPost.create(author: IncAuthor.create)
         ],
         highlighted_post: IncBlogPost.create(author: IncAuthor.create),
         pinned_post: IncBlogPost.create(author: IncAuthor.create)
@@ -1447,7 +1444,7 @@ describe ActiveDocument::Criteria::Includable do
       IncBlog.includes(:posts, highlighted_post: :author, pinned_post: :author).first
     end
 
-    it "does not execute a query" do
+    it 'does not execute a query' do
       expect_no_queries do
         result.posts.to_a
         result.highlighted_post
@@ -1455,21 +1452,19 @@ describe ActiveDocument::Criteria::Includable do
       end
     end
 
-    it "executes a query for the non-retrieved elements" do
+    it 'executes a query for the non-retrieved elements' do
       expect_query(3) do
-        result.posts.each do |post|
-          post.author
-        end
+        result.posts.each(&:author)
       end
     end
 
-    context "when including an association and using each twice on a criteria" do
+    context 'when including an association and using each twice on a criteria' do
 
       let(:criteria) { IncPost.all.includes(:person) }
 
       before do
-        p = IncPerson.create!(name: "name")
-        4.times { IncPost.create!(person: p)}
+        p = IncPerson.create!(name: 'name')
+        4.times { IncPost.create!(person: p) }
         criteria
         expect_query(2) do
           criteria.each(&:person)
@@ -1483,7 +1478,7 @@ describe ActiveDocument::Criteria::Includable do
       # trying to retrieve their person.
       # MONGOID-3942 reported that after iterating the criteria a second time,
       # the posts would not get the eager loaded person.
-      it "eager loads the criteria" do
+      it 'eager loads the criteria' do
         expect_query(2) do
           criteria.each(&:person)
         end

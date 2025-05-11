@@ -1,7 +1,6 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
-require 'mongoid/association/referenced/with_polymorphic_criteria'
+require 'active_document/association/referenced/with_polymorphic_criteria'
 
 module ActiveDocument
   module Association
@@ -22,9 +21,9 @@ module ActiveDocument
           # @param [ nil ] selected_fields Must be nil.
           #
           # @return [ Document ] A single document.
-          def build(base, object, type = nil, selected_fields = nil)
+          def build(base, object, _type = nil, _selected_fields = nil)
             if query?(object)
-              if !base.new_record?
+              unless base.new_record?
                 execute_query(object, base)
               end
             else
@@ -38,10 +37,10 @@ module ActiveDocument
           def clear_associated(object)
             unless inverse
               raise Errors::InverseNotFound.new(
-                  @owner_class,
-                  name,
-                  object.class,
-                  foreign_key,
+                @owner_class,
+                name,
+                object.class,
+                foreign_key
               )
             end
             if object && (associated = object.send(inverse))

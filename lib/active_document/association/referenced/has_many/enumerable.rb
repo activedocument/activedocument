@@ -31,6 +31,7 @@ module ActiveDocument
           # @return [ true | false ] If the objects are equal.
           def ==(other)
             return false unless other.respond_to?(:entries)
+
             entries == other.entries
           end
 
@@ -45,6 +46,7 @@ module ActiveDocument
           # @return [ true | false ] If the objects are equal in a case.
           def ===(other)
             return false unless other.respond_to?(:entries)
+
             entries === other.entries
           end
 
@@ -61,7 +63,7 @@ module ActiveDocument
             self
           end
 
-          alias :push :<<
+          alias_method :push, :<<
 
           # Clears out all the documents in this enumerable. If passed a block it
           # will yield to each document that is in memory.
@@ -75,9 +77,9 @@ module ActiveDocument
           #   end
           #
           # @return [ Array<Document> ] The cleared out _added docs.
-          def clear
-            if block_given?
-              in_memory { |doc| yield(doc) }
+          def clear(&block)
+            if block
+              in_memory(&block)
             end
             _loaded.clear and _added.clear
           end
@@ -91,7 +93,7 @@ module ActiveDocument
           #
           # @return [ Array<Document> ] An array clone of the enumerable.
           def clone
-            collect { |doc| doc.clone }
+            collect(&:clone)
           end
 
           # Delete the supplied document from the enumerable.
@@ -104,11 +106,9 @@ module ActiveDocument
           # @return [ Document ] The deleted document.
           def delete(document)
             doc = (_loaded.delete(document._id) || _added.delete(document._id))
-            unless doc
-              if _unloaded && _unloaded.where(_id: document._id).exists?
-                yield(document) if block_given?
-                return document
-              end
+            if !doc && _unloaded&.where(_id: document._id)&.exists?
+              yield(document) if block_given?
+              return document
             end
             yield(doc) if block_given?
             doc
@@ -162,8 +162,9 @@ module ActiveDocument
             unless block_given?
               return to_enum
             end
+
             if _loaded?
-              _loaded.each_pair do |id, doc|
+              _loaded.each_pair do |_id, doc|
                 document = _added.delete(doc._id) || doc
                 set_base(document)
                 yield(document)
@@ -176,7 +177,7 @@ module ActiveDocument
                 yield(document)
               end
             end
-            _added.each_pair do |id, doc|
+            _added.each_pair do |_id, doc|
               yield(doc)
             end
             @executed = true
@@ -244,9 +245,9 @@ module ActiveDocument
           # @return [ Document ] The first document found.
           def first(limit = nil)
             _loaded.try(:values).try(:first) ||
-                _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
-                ul ||
-                _added.values.try(:first)
+              _added[(ul = _unloaded.try(:first, limit)).try(:_id)] ||
+              ul ||
+              _added.values.try(:first)
           end
 
           # Initialize the new enumerable either with a criteria or an array.
@@ -261,13 +262,15 @@ module ActiveDocument
           def initialize(target, base = nil, association = nil)
             @_base = base
             @_association = association
+            @_added = {}
             if target.is_a?(Criteria)
-              @_added, @executed, @_loaded, @_unloaded = {}, false, {}, target
+              @executed = false
+              @_loaded = {}
+              @_unloaded = target
             else
-              @_added, @executed = {}, true
-              @_loaded = target.inject({}) do |_target, doc|
+              @executed = true
+              @_loaded = target.each_with_object({}) do |doc, _target|
                 _target[doc._id] = doc if doc
-                _target
               end
             end
           end
@@ -282,7 +285,8 @@ module ActiveDocument
           # @return [ true | false ] If the document is in the target.
           def include?(doc)
             return super unless _unloaded
-            _unloaded.where(_id: doc._id).exists? || _added.has_key?(doc._id)
+
+            _unloaded.where(_id: doc._id).exists? || _added.key?(doc._id)
           end
 
           # Inspection will just inspect the entries for nice array-style
@@ -329,9 +333,9 @@ module ActiveDocument
           # @return [ Document ] The last document found.
           def last(limit = nil)
             _added.values.try(:last) ||
-                _loaded.try(:values).try(:last) ||
-                _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
-                ul
+              _loaded.try(:values).try(:last) ||
+              _added[(ul = _unloaded.try(:last, limit)).try(:_id)] ||
+              ul
           end
 
           # Loads all the documents in the enumerable from the database.
@@ -340,7 +344,7 @@ module ActiveDocument
           #   enumerable.load_all!
           #
           # @return [ true ] That the enumerable is _loaded.
-          alias :load_all! :entries
+          alias_method :load_all!, :entries
 
           # Has the enumerable been _loaded? This will be true if the criteria has
           # been executed or we manually load the entire thing.
@@ -443,7 +447,7 @@ module ActiveDocument
             end
           end
 
-          alias :length :size
+          alias_method :length, :size
 
           # Send #to_json to the entries.
           #
@@ -484,9 +488,9 @@ module ActiveDocument
           private
 
           def set_base(document)
-            if @_association.is_a?(Referenced::HasMany)
-              document.set_relation(@_association.inverse, @_base) if @_association
-            end
+            return unless @_association.is_a?(Referenced::HasMany)
+
+            document.set_relation(@_association.inverse, @_base) if @_association
           end
 
           def method_missing(name, ...)

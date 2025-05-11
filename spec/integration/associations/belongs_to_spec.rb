@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 require 'spec_helper'
 require 'support/feature_sandbox'
@@ -16,7 +15,7 @@ def quarantine(context, polymorphic:, dept_aliases:, team_aliases:)
     # inside a method.
     #
     # I know the scissors are sharp! But I want to run with them anyway!
-    Object.class_eval <<-RUBY
+    Object.class_eval <<-RUBY, __FILE__, __LINE__ + 1
       class SandboxManager; include ActiveDocument::Document; end
       class SandboxDepartment; include ActiveDocument::Document; end
       class SandboxTeam; include ActiveDocument::Document; end
@@ -24,10 +23,10 @@ def quarantine(context, polymorphic:, dept_aliases:, team_aliases:)
 
     SandboxManager.belongs_to :unit, polymorphic: polymorphic
 
-    SandboxDepartment.identify_as *dept_aliases, resolver: polymorphic
+    SandboxDepartment.identify_as(*dept_aliases, resolver: polymorphic)
     SandboxDepartment.has_many :sandbox_managers, as: :unit
 
-    SandboxTeam.identify_as *team_aliases, resolver: polymorphic
+    SandboxTeam.identify_as(*team_aliases, resolver: polymorphic)
     SandboxTeam.has_one :sandbox_manager, as: :unit
   end
 
@@ -70,21 +69,22 @@ describe 'belongs_to associations' do
     let(:department) { SandboxDepartment.create }
     let(:team) { SandboxTeam.create }
 
-    shared_context 'it finds the associated records' do
+    shared_examples 'it finds the associated records' do
       it 'successfully finds the manager\'s unit' do
-        expect(dept_manager.reload.unit).to be == department
-        expect(team_manager.reload.unit).to be == team
+        expect(dept_manager.reload.unit).to eq department
+        expect(team_manager.reload.unit).to eq team
       end
 
       it 'successfully finds the unit\'s manager' do
-        dept_manager; team_manager # make sure these are created first...
+        dept_manager
+        team_manager # make sure these are created first...
 
-        expect(department.reload.sandbox_managers).to be == [ dept_manager ]
-        expect(team.reload.sandbox_manager).to be == team_manager
+        expect(department.reload.sandbox_managers).to eq [dept_manager]
+        expect(team.reload.sandbox_manager).to eq team_manager
       end
     end
 
-    shared_context 'it searches for alternative aliases' do
+    shared_examples 'it searches for alternative aliases' do
       it 'successfully finds the corresponding unit when unit_type is a different alias' do
         dept_manager.update unit_type: 'sandbox_dept'
         dept_manager.reload
@@ -92,11 +92,11 @@ describe 'belongs_to associations' do
         team_manager.update unit_type: 'group'
         team_manager.reload
 
-        expect(dept_manager.reload.unit_type).to be == 'sandbox_dept'
-        expect(dept_manager.unit).to be == department
+        expect(dept_manager.reload.unit_type).to eq 'sandbox_dept'
+        expect(dept_manager.unit).to eq department
 
-        expect(team_manager.reload.unit_type).to be == 'group'
-        expect(team_manager.unit).to be == team
+        expect(team_manager.reload.unit_type).to eq 'group'
+        expect(team_manager.unit).to eq team
       end
     end
 
@@ -105,19 +105,19 @@ describe 'belongs_to associations' do
         quarantine(self, polymorphic: true, dept_aliases: [], team_aliases: [])
 
         it 'populates the unit_type with the class name' do
-          expect(dept_manager.unit_type).to be == 'SandboxDepartment'
-          expect(team_manager.unit_type).to be == 'SandboxTeam'
+          expect(dept_manager.unit_type).to eq 'SandboxDepartment'
+          expect(team_manager.unit_type).to eq 'SandboxTeam'
         end
 
         it_behaves_like 'it finds the associated records'
       end
 
       context 'when there are multiple aliases given' do
-        quarantine(self, polymorphic: true, dept_aliases: %w[ dept sandbox_dept ], team_aliases: %w[ team group ])
+        quarantine(self, polymorphic: true, dept_aliases: %w[dept sandbox_dept], team_aliases: %w[team group])
 
         it 'populates the unit_type with the first alias' do
-          expect(dept_manager.unit_type).to be == 'dept'
-          expect(team_manager.unit_type).to be == 'team'
+          expect(dept_manager.unit_type).to eq 'dept'
+          expect(team_manager.unit_type).to eq 'team'
         end
 
         it_behaves_like 'it finds the associated records'
@@ -127,15 +127,16 @@ describe 'belongs_to associations' do
 
     context 'when the association uses a registered resolver' do
       before(:context) { ActiveDocument::ModelResolver.register_resolver ActiveDocument::ModelResolver.new, :sandbox }
-      quarantine(self, polymorphic: :sandbox, dept_aliases: %w[ dept sandbox_dept ], team_aliases: %w[ team group ])
+
+      quarantine(self, polymorphic: :sandbox, dept_aliases: %w[dept sandbox_dept], team_aliases: %w[team group])
 
       it 'does not include the aliases in the default resolver' do
-        expect(ActiveDocument::ModelResolver.instance.keys_for(SandboxDepartment.new)).not_to include('dept')
+        expect(ActiveDocument::ModelResolver.instance.keys_for(SandboxDepartment.new)).to_not include('dept')
       end
 
       it 'populates the unit_type with the first alias' do
-        expect(dept_manager.unit_type).to be == 'dept'
-        expect(team_manager.unit_type).to be == 'team'
+        expect(dept_manager.unit_type).to eq 'dept'
+        expect(team_manager.unit_type).to eq 'team'
       end
 
       it_behaves_like 'it finds the associated records'
@@ -144,16 +145,16 @@ describe 'belongs_to associations' do
 
     context 'when the association uses an unregistered resolver' do
       quarantine(self, polymorphic: ActiveDocument::ModelResolver.new,
-        dept_aliases: %w[ dept sandbox_dept ],
-        team_aliases: %w[ team group ])
+                       dept_aliases: %w[dept sandbox_dept],
+                       team_aliases: %w[team group])
 
       it 'does not include the aliases in the default resolver' do
-        expect(ActiveDocument::ModelResolver.instance.keys_for(SandboxDepartment.new)).not_to include('dept')
+        expect(ActiveDocument::ModelResolver.instance.keys_for(SandboxDepartment.new)).to_not include('dept')
       end
 
       it 'populates the unit_type with the first alias' do
-        expect(dept_manager.unit_type).to be == 'dept'
-        expect(team_manager.unit_type).to be == 'team'
+        expect(dept_manager.unit_type).to eq 'dept'
+        expect(team_manager.unit_type).to eq 'team'
       end
 
       it_behaves_like 'it finds the associated records'

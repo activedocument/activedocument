@@ -547,9 +547,9 @@ describe ActiveDocument::Clients::Options, retry: 3 do
           Mrss::EventSubscriber.new
         end
 
-        around(:example) do |example|
+        around do |example|
           opts = Minim.storage_options
-          Minim.storage_options = Minim.storage_options.merge( { client: 'model_level_client' } )
+          Minim.storage_options = Minim.storage_options.merge({ client: 'model_level_client' })
           ActiveDocument.clients['model_level_client'] = { hosts: SpecConfig.instance.addresses, database: 'model_level_database' }
           ActiveDocument.client('model_level_client').subscribe(Mongo::Monitoring::COMMAND, override_subscriber)
           example.run
@@ -602,9 +602,9 @@ describe ActiveDocument::Clients::Options, retry: 3 do
       end
 
       context 'when the database is set on the model level' do
-        around(:example) do |example|
+        around do |example|
           opts = Minim.storage_options
-          Minim.storage_options = Minim.storage_options.merge( { database: 'model_level_database' } )
+          Minim.storage_options = Minim.storage_options.merge({ database: 'model_level_database' })
           ActiveDocument.clients['model_level_client'] = { hosts: SpecConfig.instance.addresses, database: 'model_level_database' }
           ActiveDocument.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
           example.run

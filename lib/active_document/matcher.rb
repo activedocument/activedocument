@@ -1,4 +1,5 @@
-# rubocop:todo all
+# frozen_string_literal: true
+
 module ActiveDocument
 
   # Utility module containing methods which assist in performing
@@ -6,6 +7,25 @@ module ActiveDocument
   #
   # @api private
   module Matcher
+
+    extend self
+
+    # Indifferent string or symbol key lookup, returning the exact key.
+    #
+    # @param [ Hash ] hash The input hash.
+    # @param [ String | Symbol ] key The key to perform indifferent lookups with.
+    #
+    # @return [ String | Symbol | nil ] The exact key (with the correct type) that exists in the hash, or nil if the key does not exist.
+    def find_exact_key(hash, key)
+      key_s = key.to_s
+      return key_s if hash.key?(key_s)
+
+      key_sym = key.to_sym
+      hash.key?(key_sym) ? key_sym : nil
+    end
+
+    extend self
+
     # Extracts field values in the document at the specified key.
     #
     # The document can be a Hash or a model instance.
@@ -43,7 +63,7 @@ module ActiveDocument
     # @param [ String ] key The key path to extract.
     #
     # @return [ Object | Array ] Field value or values.
-    module_function def extract_attribute(document, key)
+    def extract_attribute(document, key)
       # The matcher system will wind up sending atomic values to this as well,
       # when attempting to match more complex types. If anything other than a
       # Document or a Hash is given, we'll short-circuit the logic and just
@@ -55,7 +75,7 @@ module ActiveDocument
       unless key.include?('.')
         hash = document.respond_to?(:attributes) ? document.attributes : document
         key = find_exact_key(hash, key)
-        return key ? [ hash[key] ] : []
+        return key ? [hash[key]] : []
       end
 
       if document.respond_to?(:as_attributes, true)
@@ -73,21 +93,19 @@ module ActiveDocument
           case doc
           when Hash
             actual_key = find_exact_key(doc, field)
-            if !actual_key.nil?
+            unless actual_key.nil?
               new << doc[actual_key]
             end
           when Array
-            if (index = field.to_i).to_s == field
-              if doc.length > index
-                new << doc[index]
-              end
+            if (index = field.to_i).to_s == field && (doc.length > index)
+              new << doc[index]
             end
             doc.each do |subdoc|
-              if Hash === subdoc
-                actual_key = find_exact_key(subdoc, field)
-                if !actual_key.nil?
-                  new << subdoc[actual_key]
-                end
+              next unless subdoc.is_a?(Hash)
+
+              actual_key = find_exact_key(subdoc, field)
+              unless actual_key.nil?
+                new << subdoc[actual_key]
               end
             end
           end
@@ -98,51 +116,37 @@ module ActiveDocument
 
       current
     end
-
-    # Indifferent string or symbol key lookup, returning the exact key.
-    #
-    # @param [ Hash ] hash The input hash.
-    # @param [ String | Symbol ] key The key to perform indifferent lookups with.
-    #
-    # @return [ String | Symbol | nil ] The exact key (with the correct type) that exists in the hash, or nil if the key does not exist.
-    module_function def find_exact_key(hash, key)
-      key_s = key.to_s
-      return key_s if hash.key?(key_s)
-
-      key_sym = key.to_sym
-      hash.key?(key_sym) ? key_sym : nil
-    end
   end
 end
 
-require 'mongoid/matcher/all'
-require 'mongoid/matcher/and'
-require 'mongoid/matcher/bits'
-require 'mongoid/matcher/bits_all_clear'
-require 'mongoid/matcher/bits_all_set'
-require 'mongoid/matcher/bits_any_clear'
-require 'mongoid/matcher/bits_any_set'
-require 'mongoid/matcher/elem_match'
-require 'mongoid/matcher/elem_match_expression'
-require 'mongoid/matcher/eq'
-require 'mongoid/matcher/eq_impl'
-require 'mongoid/matcher/eq_impl_with_regexp'
-require 'mongoid/matcher/exists'
-require 'mongoid/matcher/expression'
-require 'mongoid/matcher/field_expression'
-require 'mongoid/matcher/gt'
-require 'mongoid/matcher/gte'
-require 'mongoid/matcher/in'
-require 'mongoid/matcher/lt'
-require 'mongoid/matcher/lte'
-require 'mongoid/matcher/mod'
-require 'mongoid/matcher/ne'
-require 'mongoid/matcher/nin'
-require 'mongoid/matcher/nor'
-require 'mongoid/matcher/not'
-require 'mongoid/matcher/or'
-require 'mongoid/matcher/regex'
-require 'mongoid/matcher/size'
-require 'mongoid/matcher/type'
-require 'mongoid/matcher/expression_operator'
-require 'mongoid/matcher/field_operator'
+require 'active_document/matcher/all'
+require 'active_document/matcher/and'
+require 'active_document/matcher/bits'
+require 'active_document/matcher/bits_all_clear'
+require 'active_document/matcher/bits_all_set'
+require 'active_document/matcher/bits_any_clear'
+require 'active_document/matcher/bits_any_set'
+require 'active_document/matcher/elem_match'
+require 'active_document/matcher/elem_match_expression'
+require 'active_document/matcher/eq'
+require 'active_document/matcher/eq_impl'
+require 'active_document/matcher/eq_impl_with_regexp'
+require 'active_document/matcher/exists'
+require 'active_document/matcher/expression'
+require 'active_document/matcher/field_expression'
+require 'active_document/matcher/gt'
+require 'active_document/matcher/gte'
+require 'active_document/matcher/in'
+require 'active_document/matcher/lt'
+require 'active_document/matcher/lte'
+require 'active_document/matcher/mod'
+require 'active_document/matcher/ne'
+require 'active_document/matcher/nin'
+require 'active_document/matcher/nor'
+require 'active_document/matcher/not'
+require 'active_document/matcher/or'
+require 'active_document/matcher/regex'
+require 'active_document/matcher/size'
+require 'active_document/matcher/type'
+require 'active_document/matcher/expression_operator'
+require 'active_document/matcher/field_operator'

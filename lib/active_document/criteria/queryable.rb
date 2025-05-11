@@ -88,7 +88,7 @@ module ActiveDocument
       # @return [ Hash ] The command.
       def to_mql
         {
-          :'$db' => database_name,
+          '$db': database_name,
           find: collection.name,
           filter: selector
         }.merge(options)

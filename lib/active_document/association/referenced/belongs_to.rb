@@ -115,7 +115,7 @@ module ActiveDocument
         # class objects, and vice versa. This is obtained via the `:polymorphic` option
         # that was given when the association was defined.
         #
-        # See ActiveDocument::ModelResolver.resolver for how the `:polymorphic` option is 
+        # See ActiveDocument::ModelResolver.resolver for how the `:polymorphic` option is
         # interpreted here.
         #
         # @raise KeyError if no such resolver has been registered under the given

@@ -1,24 +1,19 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
-require "spec_helper"
+require 'spec_helper'
 
 describe ActiveDocument::Reloadable do
 
-  describe "#reload" do
+  describe '#reload' do
 
     context 'when persistence options are set' do
 
       let(:person) do
-        Person.with(collection: 'other') do |person_class|
-          person_class.create!
-        end
+        Person.with(collection: 'other', &:create!)
       end
 
       let(:reloaded) do
-        Person.with(collection: 'other') do |person_class|
-          person_class.first
-        end
+        Person.with(collection: 'other', &:first)
       end
 
       it 'applies the persistence options' do
@@ -26,7 +21,7 @@ describe ActiveDocument::Reloadable do
       end
     end
 
-    context "when using bson ids" do
+    context 'when using bson ids' do
 
       let(:person) do
         Person.create!
@@ -39,43 +34,43 @@ describe ActiveDocument::Reloadable do
         end
       end
 
-      it "reloads the object attributes from the db" do
+      it 'reloads the object attributes from the db' do
         person.reload
         expect(person.age).to eq(35)
       end
 
-      it "reload should return self" do
+      it 'reload should return self' do
         expect(person.reload).to eq(from_db)
       end
     end
 
-    context "when using string ids" do
+    context 'when using string ids' do
 
       let(:account) do
-        Account.create!(name: "bank", number: "1000")
+        Account.create!(name: 'bank', number: '1000')
       end
 
       let!(:from_db) do
         Account.find(account.id).tap do |acc|
-          acc.number = "1001"
+          acc.number = '1001'
           acc.save!
         end
       end
 
-      it "reloads the object attributes from the db" do
+      it 'reloads the object attributes from the db' do
         account.reload
-        expect(account.number).to eq("1001")
+        expect(account.number).to eq('1001')
       end
 
-      it "reload should return self" do
+      it 'reload should return self' do
         expect(account.reload).to eq(from_db)
       end
     end
 
-    context "when an after initialize callback is defined" do
+    context 'when an after initialize callback is defined' do
 
       let!(:book) do
-        Book.create!(title: "Snow Crash")
+        Book.create!(title: 'Snow Crash')
       end
 
       before do
@@ -83,39 +78,39 @@ describe ActiveDocument::Reloadable do
         book.reload
       end
 
-      it "runs the callback" do
+      it 'runs the callback' do
         expect(book.chapters).to eq(5)
       end
     end
 
-    context "when the document was dirty" do
+    context 'when the document was dirty' do
 
       let(:person) do
         Person.create!
       end
 
       before do
-        person.title = "Sir"
+        person.title = 'Sir'
         person.reload
       end
 
-      it "resets the dirty modifications" do
+      it 'resets the dirty modifications' do
         expect(person.changes).to be_empty
       end
 
-      it "resets attributes_before_type_cast" do
+      it 'resets attributes_before_type_cast' do
         expect(person.attributes_before_type_cast).to eq(person.attributes)
       end
     end
 
-    context "when document not saved" do
+    context 'when document not saved' do
 
-      context "when there is no document matching our id" do
+      context 'when there is no document matching our id' do
 
-        it "raises an error" do
-          expect {
+        it 'raises an error' do
+          expect do
             Person.new.reload
-          }.to raise_error(ActiveDocument::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
+          end.to raise_error(ActiveDocument::Errors::DocumentNotFound, /Document\(s\) not found for class Person with id\(s\)/)
         end
       end
 
@@ -126,7 +121,7 @@ describe ActiveDocument::Reloadable do
         let(:agent) { Agent.new(id: previous.id) }
 
         it 'loads the existing document' do
-          agent.title.should be nil
+          agent.title.should be_nil
 
           lambda do
             agent.reload
@@ -137,159 +132,157 @@ describe ActiveDocument::Reloadable do
       end
     end
 
-    context "when the document is embedded" do
+    context 'when the document is embedded' do
 
       let(:person) do
         Person.create!
       end
 
-      context "when embedded a single level" do
+      context 'when embedded a single level' do
 
         context 'when persistence options are set' do
 
           let(:person) do
-            Person.with(collection: 'other') do |person_class|
-              person_class.create!
-            end
+            Person.with(collection: 'other', &:create!)
           end
 
           let!(:address) do
             person.with(collection: 'other') do |person_object|
-              person_object.addresses.create!(street: "Abbey Road", number: 4)
+              person_object.addresses.create!(street: 'Abbey Road', number: 4)
             end
           end
 
           before do
             Person.mongo_client[:other].find(
-                { "_id" => person.id }
-            ).update_one({ "$set" => { "addresses.0.number" => 3 }})
+              { '_id' => person.id }
+            ).update_one({ '$set' => { 'addresses.0.number' => 3 } })
           end
 
           let!(:reloaded) do
-            person.with(collection: 'other') do |person_class|
+            person.with(collection: 'other') do |_person_class|
               person.addresses.first.reload
             end
           end
 
-          it "reloads the embedded document attributes" do
+          it 'reloads the embedded document attributes' do
             expect(reloaded.number).to eq(3)
           end
 
         end
 
-        context "when the relation is an embeds many" do
+        context 'when the relation is an embeds many' do
 
           let!(:address) do
-            person.addresses.create!(street: "Abbey Road", number: 4)
+            person.addresses.create!(street: 'Abbey Road', number: 4)
           end
 
           before do
             Person.collection.find(
-              { "_id" => person.id }
-            ).update_one({ "$set" => { "addresses.0.number" => 3 }})
+              { '_id' => person.id }
+            ).update_one({ '$set' => { 'addresses.0.number' => 3 } })
           end
 
           let!(:reloaded) do
             address.reload
           end
 
-          it "reloads the embedded document attributes" do
+          it 'reloads the embedded document attributes' do
             expect(reloaded.number).to eq(3)
           end
 
-          it "reloads the reference on the parent" do
+          it 'reloads the reference on the parent' do
             expect(person.addresses.first).to eq(reloaded)
           end
 
-          it "retains the relation to the parent" do
+          it 'retains the relation to the parent' do
             expect(reloaded.addressable).to eq(person)
           end
         end
 
-        context "when the relation is an embeds one" do
+        context 'when the relation is an embeds one' do
 
           let!(:name) do
-            person.create_name(first_name: "Syd")
+            person.create_name(first_name: 'Syd')
           end
 
           before do
-            Person.collection.find({ "_id" => person.id }).
-              update_one({ "$set" => { "name.last_name" => "Vicious" }})
+            Person.collection.find({ '_id' => person.id })
+                  .update_one({ '$set' => { 'name.last_name' => 'Vicious' } })
           end
 
           let!(:reloaded) do
             name.reload
           end
 
-          it "reloads the embedded document attributes" do
-            expect(reloaded.last_name).to eq("Vicious")
+          it 'reloads the embedded document attributes' do
+            expect(reloaded.last_name).to eq('Vicious')
           end
 
-          it "reloads the reference on the parent" do
+          it 'reloads the reference on the parent' do
             expect(person.name).to eq(reloaded)
           end
 
-          it "retains the relation to the parent" do
+          it 'retains the relation to the parent' do
             expect(reloaded.namable).to eq(person)
           end
         end
       end
 
-      context "when the relation is embedded multiple levels" do
+      context 'when the relation is embedded multiple levels' do
 
         let!(:address) do
-          person.addresses.create!(street: "Abbey Road", number: 3)
+          person.addresses.create!(street: 'Abbey Road', number: 3)
         end
 
         let!(:location) do
-          address.locations.create!(name: "home")
+          address.locations.create!(name: 'home')
         end
 
         before do
-          Person.collection.find({ "_id" => person.id }).
-            update_one({ "$set" => { "addresses.0.locations.0.name" => "work" }})
+          Person.collection.find({ '_id' => person.id })
+                .update_one({ '$set' => { 'addresses.0.locations.0.name' => 'work' } })
         end
 
         let!(:reloaded) do
           location.reload
         end
 
-        it "reloads the embedded document attributes" do
-          expect(reloaded.name).to eq("work")
+        it 'reloads the embedded document attributes' do
+          expect(reloaded.name).to eq('work')
         end
 
-        it "reloads the reference on the parent" do
+        it 'reloads the reference on the parent' do
           expect(address.locations.first).to eq(reloaded)
         end
 
-        it "reloads the reference on the root" do
+        it 'reloads the reference on the root' do
           expect(person.addresses.first.locations.first).to eq(reloaded)
         end
       end
     end
 
-    context "when embedded documents change" do
+    context 'when embedded documents change' do
 
       let(:person) do
         Person.create!
       end
 
       let!(:address) do
-        person.addresses.create!(number: 27, street: "Maiden Lane")
+        person.addresses.create!(number: 27, street: 'Maiden Lane')
       end
 
       before do
-        Person.collection.find({ "_id" => person.id }).
-          update_one({ "$set" => { "addresses" => [] }})
+        Person.collection.find({ '_id' => person.id })
+              .update_one({ '$set' => { 'addresses' => [] } })
         person.reload
       end
 
-      it "reloads the association" do
+      it 'reloads the association' do
         expect(person.addresses).to be_empty
       end
     end
 
-    context "when embedded documents are unassigned and reassigned" do
+    context 'when embedded documents are unassigned and reassigned' do
 
       let(:palette) do
         Palette.new
@@ -307,12 +300,12 @@ describe ActiveDocument::Reloadable do
         canvas.reload
       end
 
-      it "reloads the embedded document correctly" do
+      it 'reloads the embedded document correctly' do
         expect(canvas.palette).to eq(palette)
       end
     end
 
-    context "when embeds_many documents are cleared and reassigned" do
+    context 'when embeds_many documents are cleared and reassigned' do
 
       let(:contractor) do
         Contractor.new(name: 'contractor')
@@ -322,7 +315,7 @@ describe ActiveDocument::Reloadable do
         Building.create!
       end
 
-      it "persists an embedded document correctly the second time" do
+      it 'persists an embedded document correctly the second time' do
         building.contractors << contractor
         expect(building.contractors).to eq([contractor])
 
@@ -340,10 +333,10 @@ describe ActiveDocument::Reloadable do
       let(:contractor2) { Contractor.new(name: 'c') }
 
       let(:building) do
-        Building.create!(name: 'a', contractors: [ contractor1 ])
+        Building.create!(name: 'a', contractors: [contractor1])
       end
 
-      let(:more_contractors) { building.contractors + [ contractor2 ] }
+      let(:more_contractors) { building.contractors + [contractor2] }
 
       let(:modified_building) do
         building.tap do
@@ -354,12 +347,12 @@ describe ActiveDocument::Reloadable do
       let(:reloaded_building) { modified_building.reload }
 
       it 'resets delayed_atomic_sets' do
-        expect(modified_building.delayed_atomic_sets).not_to be_empty
+        expect(modified_building.delayed_atomic_sets).to_not be_empty
         expect(reloaded_building.delayed_atomic_sets).to be_empty
       end
     end
 
-    context "when embedded document is nil" do
+    context 'when embedded document is nil' do
 
       let(:palette) do
         Palette.new
@@ -377,58 +370,58 @@ describe ActiveDocument::Reloadable do
         palette.reload
       end
 
-      it "raises a document not found error" do
+      it 'raises a document not found error' do
         expect do
           reload
         end.to raise_error(ActiveDocument::Errors::DocumentNotFound, /Document\(s\) not found for class Palette with id\(s\)/)
       end
     end
 
-    context "with relational associations" do
+    context 'with relational associations' do
 
       let(:person) do
         Person.create!
       end
 
-      context "for a has_one" do
+      context 'for a has_one' do
 
         let!(:game) do
           person.create_game(score: 50)
         end
 
         before do
-          Game.collection.find({ "_id" => game.id }).
-            update_one({ "$set" => { "score" => 75 }})
+          Game.collection.find({ '_id' => game.id })
+              .update_one({ '$set' => { 'score' => 75 } })
           person.reload
         end
 
-        it "reloads the association" do
+        it 'reloads the association' do
           expect(person.game.score).to eq(75)
         end
       end
 
-      context "for a belongs_to" do
+      context 'for a belongs_to' do
 
-        context "when the relation type does not change" do
+        context 'when the relation type does not change' do
 
           let!(:game) do
             person.create_game(score: 50)
           end
 
           before do
-            Person.collection.find({ "_id" => person.id }).
-              update_one({ "$set" => { "title" => "Mam" }})
+            Person.collection.find({ '_id' => person.id })
+                  .update_one({ '$set' => { 'title' => 'Mam' } })
             game.reload
           end
 
-          it "reloads the association" do
-            expect(game.person.title).to eq("Mam")
+          it 'reloads the association' do
+            expect(game.person.title).to eq('Mam')
           end
         end
       end
     end
 
-    context "when overriding #id alias" do
+    context 'when overriding #id alias' do
 
       let!(:object) do
         IdKey.create!(key: 'foo')
@@ -441,12 +434,12 @@ describe ActiveDocument::Reloadable do
         end
       end
 
-      it "reloads the object attributes from the db" do
+      it 'reloads the object attributes from the db' do
         object.reload
         expect(object.key).to eq('bar')
       end
 
-      it "reload should return self" do
+      it 'reload should return self' do
         expect(object.reload).to eq(from_db)
       end
     end
@@ -457,7 +450,7 @@ describe ActiveDocument::Reloadable do
         Person.create!
       end
 
-      context "when legacy_readonly is on" do
+      context 'when legacy_readonly is on' do
         config_override :legacy_readonly, true
 
         let(:reloaded) do
@@ -469,7 +462,7 @@ describe ActiveDocument::Reloadable do
         end
       end
 
-      context "when legacy_readonly is off" do
+      context 'when legacy_readonly is off' do
         config_override :legacy_readonly, false
 
         let(:reloaded) do
@@ -492,7 +485,7 @@ describe ActiveDocument::Reloadable do
       before(:all) do
         CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
         CONFIG[:clients][:other][:database] = 'other'
-        ActiveDocument::Clients.clients.values.each(&:close)
+        ActiveDocument::Clients.clients.each_value(&:close)
         ActiveDocument::Config.send(:clients=, CONFIG[:clients])
         ActiveDocument::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
       end
@@ -500,13 +493,13 @@ describe ActiveDocument::Reloadable do
       let(:subscriber) do
         client = ActiveDocument::Clients.with_name(:other)
         monitoring = client.send(:monitoring)
-        subscriber = monitoring.subscribers['Command'].find do |s|
+        monitoring.subscribers['Command'].find do |s|
           s.is_a?(EventSubscriber)
         end
       end
 
       let(:find_events) do
-        find_events = subscriber.started_events.select { |event| event.command_name.to_s == 'find' }
+        subscriber.started_events.select { |event| event.command_name.to_s == 'find' }
       end
 
       before do
@@ -515,9 +508,7 @@ describe ActiveDocument::Reloadable do
 
       context 'without embedded document' do
         let(:profile) do
-          Profile.with(client: :other) do |klass|
-            klass.create!
-          end
+          Profile.with(client: :other, &:create!)
         end
 
         before do
@@ -527,7 +518,7 @@ describe ActiveDocument::Reloadable do
         end
 
         it 'uses the shard key to reload the document' do
-          expect(find_events.length). to eq(1)
+          expect(find_events.length).to eq(1)
 
           event = find_events.first
           expect(event.command['filter'].keys).to include('name')
@@ -550,7 +541,7 @@ describe ActiveDocument::Reloadable do
         end
 
         it 'uses the shard key to reload the embedded document' do
-          expect(find_events.length). to eq(1)
+          expect(find_events.length).to eq(1)
 
           event = find_events.first
           expect(event.command['filter'].keys).to include('name')
@@ -569,7 +560,7 @@ describe ActiveDocument::Reloadable do
         end
 
         it 'reloads the document' do
-          band.name.should == 'test'
+          band.name.should
 
           band.reload
 
@@ -586,12 +577,12 @@ describe ActiveDocument::Reloadable do
 
         it 'creates a new document with default values' do
           original_id = band.id
-          band.name.should == 'test'
+          band.name.should
 
           band.reload
 
-          band.name.should be nil
-          band.id.should_not be nil
+          band.name.should be_nil
+          band.id.should_not be_nil
           # _id changes
           band.id.should_not == original_id
         end
@@ -608,7 +599,7 @@ describe ActiveDocument::Reloadable do
       end
 
       it 'resets the associations' do
-        church.acolytes.first.name.should == 'test'
+        church.acolytes.first.name.should
 
         church.reload
 
@@ -630,9 +621,9 @@ describe ActiveDocument::Reloadable do
           person.reload
         end
 
-        it "resets previous changes" do
+        it 'resets previous changes' do
           expect(person.title_previously_was).to be_nil
-          expect(person).not_to be_previously_persisted
+          expect(person).to_not be_previously_persisted
         end
       end
 
@@ -645,8 +636,8 @@ describe ActiveDocument::Reloadable do
           person.reload
         end
 
-        it "resets previous changes" do
-          expect(person).not_to be_previously_new_record
+        it 'resets previous changes' do
+          expect(person).to_not be_previously_new_record
         end
       end
     end

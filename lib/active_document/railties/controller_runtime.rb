@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 module ActiveDocument
   module Railties
@@ -44,7 +43,7 @@ module ActiveDocument
           def log_process_action(payload)
             messages = super
             mongoid_runtime = payload[:mongoid_runtime]
-            messages << ("MongoDB: %.1fms" % mongoid_runtime.to_f) if mongoid_runtime
+            messages << (format('MongoDB: %.1fms', mongoid_runtime.to_f)) if mongoid_runtime
             messages
           end
         end
@@ -56,23 +55,23 @@ module ActiveDocument
       # MongoDB operations from background threads.
       class Collector
 
-        VARIABLE_NAME = "ActiveDocument.controller_runtime".freeze
+        VARIABLE_NAME = 'ActiveDocument.controller_runtime'
 
         # Call when event started. Does nothing.
         #
         # @return [ nil ] Nil.
-        def started _; end
+        def started(_); end
 
         # Call when event completed. Updates the runtime value.
         #
         # @param [ Mongo::Event::Base ] e The monitoring event.
         #
         # @return [ Integer ] The current runtime value.
-        def _completed e
+        def _completed(e)
           Collector.runtime += e.duration * 1000
         end
-        alias :succeeded :_completed
-        alias :failed :_completed
+        alias_method :succeeded, :_completed
+        alias_method :failed, :_completed
 
         # Get the runtime value on the current thread.
         #
@@ -86,7 +85,7 @@ module ActiveDocument
         # @param [ Integer ] value The runtime value.
         #
         # @return [ Integer ] The runtime value.
-        def self.runtime= value
+        def self.runtime=(value)
           Threaded.set(VARIABLE_NAME, value)
         end
 

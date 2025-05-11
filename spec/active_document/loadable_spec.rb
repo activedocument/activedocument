@@ -25,7 +25,7 @@ describe ActiveDocument::Loadable do
     context 'when explicitly set' do
       include_context 'with ignore_patterns'
 
-      let(:ignore_patterns) { %w[ pattern1 pattern2 ] }
+      let(:ignore_patterns) { %w[pattern1 pattern2] }
 
       it 'equals the list of specified patterns' do
         expect(ActiveDocument.ignore_patterns).to eq ignore_patterns
@@ -48,17 +48,17 @@ describe ActiveDocument::Loadable do
     end
 
     context 'when ignore_patterns is not empty' do
-      let(:ignore_patterns) { %w[ */rails/* ] }
+      let(:ignore_patterns) { %w[*/rails/*] }
 
       it 'omits the ignored paths' do
         expect(results.length).to be > 10 # should be a bunch of them
-        expect(results).not_to include('rails/mongoid')
+        expect(results).to_not include('rails/mongoid')
       end
     end
   end
 
   describe '#files_under_paths' do
-    let(:paths) { [ lib_dir.join('mongoid'), lib_dir.join('rails') ] }
+    let(:paths) { [lib_dir.join('mongoid'), lib_dir.join('rails')] }
     let(:results) { ActiveDocument.files_under_paths(paths) }
 
     include_context 'with ignore_patterns'
@@ -74,12 +74,12 @@ describe ActiveDocument::Loadable do
     end
 
     context 'when ignore_patterns is not empty' do
-      let(:ignore_patterns) { %w[ */model/* */fields/* ] }
+      let(:ignore_patterns) { %w[*/model/* */fields/*] }
 
       it 'returns all ruby files' do
         expect(results.length).to be > 10 # should be a bunch
-        expect(results).not_to include('generators/mongoid/model/model_generator')
-        expect(results).not_to include('fields/encrypted')
+        expect(results).to_not include('generators/mongoid/model/model_generator')
+        expect(results).to_not include('fields/encrypted')
       end
     end
   end

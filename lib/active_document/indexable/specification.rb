@@ -46,8 +46,8 @@ module ActiveDocument
       #   specification matches the criteria, and false otherwise.
       def superficial_match?(key: {}, name: nil)
         (name && name == self.name) ||
-          self.fields == key.keys &&
-          self.key == key
+          (fields == key.keys &&
+            self.key == key)
       end
 
       # Instantiate a new index specification.

@@ -23,7 +23,9 @@ module ActiveDocument
       # @return [ Array<ActiveDocument::Document> ] The given documents.
       def eager_load(docs)
         docs.tap do |d|
-          preload(criteria.inclusions, d) if eager_loadable?
+          if eager_loadable?
+            preload(criteria.inclusions, d)
+          end
         end
       end
 
@@ -38,6 +40,9 @@ module ActiveDocument
         assoc_map = associations.group_by(&:inverse_class_name)
         docs_map = {}
         queue = [klass.to_s]
+
+        # account for single-collection inheritance
+        queue.push(klass.root_class.to_s) if klass != klass.root_class
 
         while (klass = queue.shift)
           next unless (as = assoc_map.delete(klass))

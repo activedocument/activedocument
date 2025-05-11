@@ -54,7 +54,11 @@ module ActiveDocument
               str = str.chop if str.end_with?('.')
               return 0 if str.empty?
 
-              result = Integer(str) rescue Float(object)
+              result = begin
+                Integer(str)
+              rescue StandardError
+                Float(object)
+              end
 
               integer = result.to_i
               integer == result ? integer : result

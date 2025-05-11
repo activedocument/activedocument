@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-require 'mongoid/positional'
-require 'mongoid/evolvable'
-require 'mongoid/extensions'
-require 'mongoid/errors'
-require 'mongoid/threaded'
-require 'mongoid/atomic'
-require 'mongoid/attributes'
-require 'mongoid/contextual'
-require 'mongoid/copyable'
-require 'mongoid/equality'
-require 'mongoid/criteria'
-require 'mongoid/factory'
-require 'mongoid/fields'
-require 'mongoid/timestamps'
-require 'mongoid/association'
-require 'mongoid/composable'
-require 'mongoid/touchable'
-require 'mongoid/model_resolver'
+require 'active_document/positional'
+require 'active_document/evolvable'
+require 'active_document/extensions'
+require 'active_document/errors'
+require 'active_document/threaded'
+require 'active_document/atomic'
+require 'active_document/attributes'
+require 'active_document/contextual'
+require 'active_document/copyable'
+require 'active_document/equality'
+require 'active_document/criteria'
+require 'active_document/factory'
+require 'active_document/fields'
+require 'active_document/timestamps'
+require 'active_document/association'
+require 'active_document/composable'
+require 'active_document/touchable'
+require 'active_document/model_resolver'
 
 module ActiveDocument
   # This is the base module for all domain objects that need to be persisted to
@@ -85,7 +85,7 @@ module ActiveDocument
     #
     # @return [ Array ] An array containing [document.class, document._id]
     def identity
-      [ self.class, _id ]
+      [self.class, _id]
     end
 
     # Instantiate a new +Document+, setting the Document's attributes if
@@ -122,7 +122,7 @@ module ActiveDocument
     #
     # @return [ String ] The id of the document or nil if new.
     def to_key
-      (persisted? || destroyed?) ? [ _id.to_s ] : nil
+      persisted? || destroyed? ? [_id.to_s] : nil
     end
 
     # Return a hash of the entire document hierarchy from this document and
@@ -191,7 +191,7 @@ module ActiveDocument
         run_callbacks(:initialize) unless _initialize_callbacks.empty?
       else
         yield self if block_given?
-        self.pending_callbacks += %i[ apply_defaults find initialize ]
+        self.pending_callbacks += %i[apply_defaults find initialize]
       end
     end
 
@@ -281,8 +281,9 @@ module ActiveDocument
     # @param name [ String | Symbol ] the name of the relation to add
     # @param meta [ ActiveDocument::Assocation::Relatable ] the relation object
     def add_attributes_for_relation(name, meta)
-      relation, stored = send(name), meta.store_as
-      return unless attributes.key?(stored) || !relation.blank?
+      relation = send(name)
+      stored = meta.store_as
+      return unless attributes.key?(stored) || relation.present?
 
       if relation.nil?
         attributes.delete(stored)
@@ -300,7 +301,7 @@ module ActiveDocument
     def mongoid_document_check!(klass)
       return if klass.include?(ActiveDocument::Document)
 
-      raise ArgumentError, 'A class which includes ActiveDocument::Document is expected'
+      raise ArgumentError.new('A class which includes ActiveDocument::Document is expected')
     end
 
     # Constructs a hash representing the internal state of this object,
@@ -365,8 +366,8 @@ module ActiveDocument
       # @param [ true | false ] execute_callbacks Whether callbacks should be
       #   suppressed or not.
       def with_callbacks(execute_callbacks)
-        saved, Threaded.execute_callbacks =
-          Threaded.execute_callbacks?, execute_callbacks
+        saved = Threaded.execute_callbacks?
+        Threaded.execute_callbacks = execute_callbacks
         yield
       ensure
         Threaded.execute_callbacks = saved
@@ -409,7 +410,7 @@ module ActiveDocument
       # @api private
       def instantiate_document(attrs = nil, selected_fields = nil, options = {}, &block)
         execute_callbacks = options.fetch(:execute_callbacks, Threaded.execute_callbacks?)
-        attributes = attrs&.to_h || {}
+        attributes = attrs.to_h
 
         doc = allocate
         doc.__selected_fields = selected_fields
@@ -450,19 +451,19 @@ module ActiveDocument
       #
       # @return [ Array<Class> ] All subclasses of the current document.
       def _types
-        @_types ||= (descendants + [ self ]).uniq.map(&:discriminator_value)
+        @_types ||= (descendants + [self]).uniq.map(&:discriminator_value)
       end
 
       # Clear the @_type cache. This is generally called when changing the discriminator
       # key/value on a class.
       #
       # @example Get the types.
-      #   document._mongoid_clear_types
+      #   document._active_document_clear_types
       #
       # @api private
-      def _mongoid_clear_types
+      def _active_document_clear_types
         @_types = nil
-        superclass._mongoid_clear_types if hereditary?
+        superclass._active_document_clear_types if hereditary?
       end
 
       # Set the i18n scope to overwrite ActiveModel.

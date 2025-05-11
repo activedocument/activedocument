@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'mongoid/model_resolver'
+require 'active_document/model_resolver'
 
 module ActiveDocument
   # Implements the "identify_as" interface (for specifying type aliases

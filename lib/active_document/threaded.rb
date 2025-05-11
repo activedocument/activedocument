@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'mongoid/threaded/lifecycle'
+require 'active_document/threaded/lifecycle'
 
 module ActiveDocument
   # This module contains logic for easy access to objects that have a lifecycle

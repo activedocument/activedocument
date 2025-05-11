@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 module ActiveDocument
   module Attributes
@@ -23,18 +22,16 @@ module ActiveDocument
       # @return [ true | false ] If the document is new, or if the field is not
       #   readonly.
       def attribute_writable?(name)
-        new_record? || (!self.class.readonly_attributes.include?(name) && _loaded?(name))
+        new_record? || (self.class.readonly_attributes.exclude?(name) && _loaded?(name))
       end
 
       private
 
       def as_writable_attribute!(name, value = :nil)
         normalized_name = database_field_name(name)
-        if attribute_writable?(normalized_name)
-          yield(normalized_name)
-        else
-          raise Errors::ReadonlyAttribute.new(name, value)
-        end
+        raise Errors::ReadonlyAttribute.new(name, value) unless attribute_writable?(normalized_name)
+
+        yield(normalized_name)
       end
 
       def _loaded?(name)
@@ -68,9 +65,9 @@ module ActiveDocument
         # parent's readonly attributes at the time of its creation.
         # Updating the parent does not propagate down to child classes after wards.
         def attr_readonly(*names)
-          self.readonly_attributes = self.readonly_attributes.dup
+          self.readonly_attributes = readonly_attributes.dup
           names.each do |name|
-            self.readonly_attributes << database_field_name(name)
+            readonly_attributes << database_field_name(name)
           end
         end
       end

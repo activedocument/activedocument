@@ -44,14 +44,14 @@ describe ActiveDocument::Timestamps::Created do
     end
   end
 
-  context "when the document is destroyed" do
+  context 'when the document is destroyed' do
     let(:book) do
       Book.create!
     end
 
     before do
       Cover.before_save do
-        destroy if title == "delete me"
+        destroy if title == 'delete me'
       end
     end
 
@@ -59,11 +59,11 @@ describe ActiveDocument::Timestamps::Created do
       Cover.reset_callbacks(:save)
     end
 
-    it "does not set the created_at timestamp" do
-      book.covers << Cover.new(title: "delete me")
-      expect {
+    it 'does not set the created_at timestamp' do
+      book.covers << Cover.new(title: 'delete me')
+      expect do
         book.save
-      }.not_to raise_error
+      end.to_not raise_error
     end
   end
 end

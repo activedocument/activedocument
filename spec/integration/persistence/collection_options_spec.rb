@@ -29,7 +29,7 @@ describe 'Collection options' do
   end
 
   it 'creates a document' do
-    expect { CollectionOptionsCapped.create! }.not_to raise_error
+    expect { CollectionOptionsCapped.create! }.to_not raise_error
   end
 end
 # rubocop:enable Lint/ConstantDefinitionInBlock

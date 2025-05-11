@@ -1,4 +1,5 @@
-# rubocop:todo all
+# frozen_string_literal: true
+
 class TransactionsSpecCounter
   def initialize
     @called = 0
@@ -194,7 +195,7 @@ class TransactionSpecRaisesBeforeSave
   field :attr, type: String
 
   before_save do
-    raise "I cannot be saved"
+    raise 'I cannot be saved'
   end
 
   after_commit do
@@ -213,7 +214,7 @@ class TransactionSpecRaisesAfterSave
   field :attr, type: String
 
   after_save do
-    raise "I cannot be saved"
+    raise 'I cannot be saved'
   end
 
   after_commit do
@@ -239,7 +240,7 @@ class TransactionSpecRaisesBeforeCreate
   field :attr, type: String
 
   before_create do
-    raise "I cannot be saved"
+    raise 'I cannot be saved'
   end
 
   after_commit do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'mongoid/fields/validators/macro'
-require 'mongoid/model_resolver'
+require 'active_document/fields/validators/macro'
+require 'active_document/model_resolver'
 
 module ActiveDocument
   # Mixin module included in ActiveDocument::Document to provide behavior
@@ -65,7 +65,6 @@ module ActiveDocument
       #
       # @param [ Class ] subclass The inheriting class.
       #
-      # rubocop:disable Metrics/AbcSize
       def inherited(subclass)
         super
 
@@ -92,7 +91,6 @@ module ActiveDocument
         default_proc = -> { self.class.discriminator_value }
         field(discriminator_key, default: default_proc, type: String)
       end
-      # rubocop:enable Metrics/AbcSize
     end
 
     # `_parent` is intentionally not implemented via attr_accessor because
@@ -131,11 +129,10 @@ module ActiveDocument
       # @param [ String ] value The discriminator key to set.
       #
       # @api private
-      # rubocop:disable Metrics/AbcSize
       def discriminator_key=(value)
         raise Errors::InvalidDiscriminatorKeyTarget.new(self, superclass) if hereditary?
 
-        _mongoid_clear_types
+        _active_document_clear_types
 
         if value
           ActiveDocument::Fields::Validators::Macro.validate_field_name(self, value)
@@ -159,7 +156,6 @@ module ActiveDocument
         default_proc = -> { self.class.discriminator_value }
         field(discriminator_key, default: default_proc, type: String)
       end
-      # rubocop:enable Metrics/AbcSize
 
       # Returns the discriminator key.
       #
@@ -168,7 +164,7 @@ module ActiveDocument
       # @api private
       def discriminator_value=(value)
         value ||= name
-        _mongoid_clear_types
+        _active_document_clear_types
         add_discriminator_mapping(value)
         @discriminator_value = value
       end

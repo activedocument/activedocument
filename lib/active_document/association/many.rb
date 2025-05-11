@@ -221,13 +221,18 @@ module ActiveDocument
       def compute_cache_version(timestamp_column)
         timestamp_column = timestamp_column.to_s
 
-        loaded = _target.respond_to?(:_loaded?) ?
-                    _target._loaded? :   # has_many
-                    true                 # embeds_many
+        # has_many
+        loaded = if _target.respond_to?(:_loaded?)
+                   _target._loaded?
+                 else
+                   true
+                 end
 
-        size, timestamp = loaded ?
-          analyze_loaded_target(timestamp_column) :
-          analyze_unloaded_target(timestamp_column)
+        size, timestamp = if loaded
+                            analyze_loaded_target(timestamp_column)
+                          else
+                            analyze_unloaded_target(timestamp_column)
+                          end
 
         if timestamp
           "#{size}-#{timestamp.utc.to_formatted_s(klass.cache_timestamp_format)}"
@@ -241,7 +246,7 @@ module ActiveDocument
       def analyze_loaded_target(timestamp_column)
         newest = _target.select { |elem| elem.respond_to?(timestamp_column) }
                         .max { |a, b| a[timestamp_column] <=> b[timestamp_column] }
-        [ _target.length, newest ? newest[timestamp_column] : nil ]
+        [_target.length, newest ? newest[timestamp_column] : nil]
       end
 
       # Returns a 2-tuple of the number of elements in the relation, and the
@@ -249,14 +254,14 @@ module ActiveDocument
       # $sum and a $max.
       def analyze_unloaded_target(timestamp_column)
         pipeline = criteria
-          .group(_id: nil,
-                 count: { '$sum' => 1 },
-                 latest: { '$max' => "$#{timestamp_column}" })
-          .pipeline
+                   .group(_id: nil,
+                          count: { '$sum' => 1 },
+                          latest: { '$max' => "$#{timestamp_column}" })
+                   .pipeline
 
         result = klass.collection.aggregate(pipeline).to_a.first
 
-        result ? [ result["count"], result["latest"] ] : [ 0 ]
+        result ? [result['count'], result['latest']] : [0]
       end
     end
   end

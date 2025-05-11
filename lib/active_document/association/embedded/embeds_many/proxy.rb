@@ -99,7 +99,7 @@ module ActiveDocument
             self
           end
 
-          alias push <<
+          alias_method :push, :<<
 
           # Get this association as as its representation in the database.
           #
@@ -146,7 +146,7 @@ module ActiveDocument
             end
           end
 
-          alias new build
+          alias_method :new, :build
 
           # Clear the association. Will delete the documents from the db
           # if they are already persisted.
@@ -225,7 +225,7 @@ module ActiveDocument
 
           # ActiveDocument::Extensions::Array defines Array#delete_one, so we need
           # to make sure that method behaves reasonably on proxies, too.
-          alias delete_one delete
+          alias_method :delete_one, :delete
 
           # Removes a single document from the collection *in memory only*.
           # It will *not* persist the change.
@@ -347,7 +347,7 @@ module ActiveDocument
           #   relation.in_memory
           #
           # @return [ Array<Document> ] The documents in memory.
-          alias in_memory _target
+          alias_method :in_memory, :_target
 
           # Pop documents off the association. This can be a single document or
           # multiples, and will automatically persist the changes.
@@ -366,7 +366,7 @@ module ActiveDocument
             return [] if count&.zero?
 
             docs = _target.last(count || 1).each { |doc| delete(doc) }
-            (count.nil? || docs.empty?) ? docs.first : docs
+            count.nil? || docs.empty? ? docs.first : docs
           end
 
           # Shift documents off the association. This can be a single document or
@@ -386,7 +386,7 @@ module ActiveDocument
             return [] if count&.zero?
 
             docs = _target.first(count || 1).each { |doc| delete(doc) }
-            (count.nil? || docs.empty?) ? docs.first : docs
+            count.nil? || docs.empty? ? docs.first : docs
           end
 
           # Substitutes the supplied target documents for the existing documents
@@ -435,7 +435,7 @@ module ActiveDocument
           # @param [ Document ] document The document to append to the target.
           def append(document)
             execute_callback :before_add, document
-            _target.push(*scope([ document ])) unless object_already_related?(document)
+            _target.push(*scope([document])) unless object_already_related?(document)
             _unscoped.push(document)
             integrate(document)
             update_attributes_hash

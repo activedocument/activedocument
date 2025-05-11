@@ -78,7 +78,7 @@ module ActiveDocument
             self
           end
 
-          alias push <<
+          alias_method :push, :<<
 
           # Appends an array of documents to the association. Performs a batch
           # insert of the documents instead of persisting one at a time.
@@ -90,7 +90,8 @@ module ActiveDocument
           #
           # @return [ Array<Document> ] The documents.
           def concat(documents)
-            docs, inserts = [], []
+            docs = []
+            inserts = []
             documents.each do |doc|
               next unless doc
 
@@ -122,7 +123,7 @@ module ActiveDocument
             end
           end
 
-          alias new build
+          alias_method :new, :build
 
           # Delete the document from the association. This will set the foreign key
           # on the document to nil. If the dependent options on the association are
@@ -149,7 +150,7 @@ module ActiveDocument
 
           # ActiveDocument::Extensions::Array defines Array#delete_one, so we need
           # to make sure that method behaves reasonably on proxies, too.
-          alias delete_one delete
+          alias_method :delete_one, :delete
 
           # Deletes all related documents from the database given the supplied
           # conditions.
@@ -279,7 +280,7 @@ module ActiveDocument
             end
           end
 
-          alias nullify_all nullify
+          alias_method :nullify_all, :nullify
 
           # Clear the association. Will delete the documents from the db if they are
           # already persisted.
@@ -309,7 +310,7 @@ module ActiveDocument
             many
           end
 
-          alias clear purge
+          alias_method :clear, :purge
 
           # Substitutes the supplied target documents for the existing documents
           # in the association. If the new target is nil, perform the necessary
@@ -323,7 +324,8 @@ module ActiveDocument
           # @return [ Many ] The association.
           def substitute(replacement)
             if replacement
-              new_docs, docs = replacement.compact, []
+              new_docs = replacement.compact
+              docs = []
               new_ids = new_docs.map(&:_id)
               remove_not_in(new_ids)
               new_docs.each do |doc|

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
-require "mongoid/indexable/specification"
-require "mongoid/indexable/validators/options"
-require "ostruct"
+require 'active_document/indexable/specification'
+require 'active_document/indexable/validators/options'
+require 'ostruct'
 
 module ActiveDocument
 
@@ -27,11 +26,12 @@ module ActiveDocument
       def create_indexes
         return unless index_specifications
 
-        default_options = {background: Config.background_indexing}
+        default_options = { background: Config.background_indexing }
 
         index_specifications.each do |spec|
-          key, options = spec.key, default_options.merge(spec.options)
-          if database = options[:database]
+          key = spec.key
+          options = default_options.merge(spec.options)
+          if (database = options[:database])
             with(database: database) do |klass|
               klass.collection.indexes(session: _session).create_one(key, options.except(:database))
             end
@@ -51,17 +51,17 @@ module ActiveDocument
       def remove_indexes
         indexed_database_names.each do |database|
           with(database: database) do |klass|
-            begin
-              klass.collection.indexes(session: _session).each do |spec|
-                unless spec["name"] == "_id_"
-                  klass.collection.indexes(session: _session).drop_one(spec["key"])
-                  logger.info(
-                    "MONGOID: Removed index '#{spec["name"]}' on collection " +
-                    "'#{klass.collection.name}' in database '#{database}'."
-                  )
-                end
-              end
-            rescue Mongo::Error::OperationFailure; end
+
+            klass.collection.indexes(session: _session).each do |spec|
+              next if spec['name'] == '_id_'
+
+              klass.collection.indexes(session: _session).drop_one(spec['key'])
+              logger.info(
+                "MONGOID: Removed index '#{spec['name']}' on collection " \
+                "'#{klass.collection.name}' in database '#{database}'."
+              )
+            end
+          rescue Mongo::Error::OperationFailure
           end
         end and true
       end
@@ -74,8 +74,8 @@ module ActiveDocument
       #
       # @return [ true ] If the operation succeeded.
       def add_indexes
-        if hereditary? && !index_keys.include?(self.discriminator_key.to_sym => 1)
-          index({ self.discriminator_key.to_sym => 1 }, unique: false, background: true)
+        if hereditary? && index_keys.exclude?(discriminator_key.to_sym => 1)
+          index({ discriminator_key.to_sym => 1 }, unique: false, background: true)
         end
         true
       end
@@ -101,9 +101,9 @@ module ActiveDocument
         # that an index with different options from another, and a different
         # name, will be silently ignored unless duplicate index declarations
         # are allowed.
-        if ActiveDocument.allow_duplicate_index_declarations || !index_specifications.include?(specification)
-          index_specifications.push(specification)
-        end
+        return unless ActiveDocument.allow_duplicate_index_declarations || index_specifications.exclude?(specification)
+
+        index_specifications.push(specification)
       end
 
       # Get an index specification for the provided key.

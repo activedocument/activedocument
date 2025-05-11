@@ -1,11 +1,10 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 require 'spec_helper'
 
 begin
   require 'active_job'
-  require 'mongoid/railties/bson_object_id_serializer'
+  require 'active_document/railties/bson_object_id_serializer'
 
 
   describe 'ActiveDocument::Railties::ActiveJobSerializers::BsonObjectIdSerializer' do

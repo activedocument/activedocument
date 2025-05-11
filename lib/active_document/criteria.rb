@@ -194,7 +194,7 @@ module ActiveDocument
       typed = !raw_results if typed.nil?
 
       if !typed && !raw_results
-        raise ArgumentError, 'instantiated results must be typecast'
+        raise ArgumentError.new('instantiated results must be typecast')
       end
 
       clone.tap do |criteria|
@@ -337,7 +337,7 @@ module ActiveDocument
       self.documents = other.documents.dup unless other.documents.empty?
       self.scoping_options = other.scoping_options
       self.inclusions = (inclusions + other.inclusions).uniq
-      self._raw_results = self._raw_results || other._raw_results
+      self._raw_results = _raw_results || other._raw_results
       self
     end
 

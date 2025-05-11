@@ -566,13 +566,13 @@ describe ActiveDocument::Contextual::Aggregable::Memory do
       end
     end
 
-    context "when provided a block with initial value" do
+    context 'when provided a block with initial value' do
 
       let(:sum) do
         context.sum(500, &:likes)
       end
 
-      it "returns the sum for the provided block starting from initial value" do
+      it 'returns the sum for the provided block starting from initial value' do
         expect(sum).to eq(2000)
       end
     end

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 require 'spec_helper'
 
@@ -2532,9 +2531,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     let(:post_two) { Post.create!(rating: 10) }
 
     let(:max) do
-      person.posts.max do |a, b|
-        a.rating <=> b.rating
-      end
+      person.posts.max_by(&:rating)
     end
 
     before do
@@ -2619,9 +2616,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     let(:post_two) { Post.create!(rating: 10) }
 
     let(:min) do
-      person.posts.min do |a, b|
-        a.rating <=> b.rating
-      end
+      person.posts.min_by(&:rating)
     end
 
     before do
@@ -3241,12 +3236,12 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
       shared_examples_for 'a cache_version generator' do
         it 'produces a trivial cache_version' do
-          expect(posts.cache_version).to be == "#{posts.length}"
+          expect(posts.cache_version).to eq posts.length.to_s
         end
       end
 
       context 'when the relation is already loaded' do
-        let(:posts) { root.posts.tap { |r| r.to_a } }
+        let(:posts) { root.posts.tap(&:to_a) }
 
         context 'when the relation is empty' do
           it_behaves_like 'a cache_version generator'
@@ -3289,13 +3284,13 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
       shared_examples_for 'a cache_version generator' do
         it 'produces a consistent cache_version' do
-          expect(child_pages.cache_version).not_to be_nil
-          expect(child_pages.cache_version).to be == child_pages.cache_version
+          expect(child_pages.cache_version).to_not be_nil
+          expect(child_pages.cache_version).to eq child_pages.cache_version
         end
       end
 
       context 'when the relation is already loaded' do
-        let(:child_pages) { root.child_pages.tap { |r| r.to_a } }
+        let(:child_pages) { root.child_pages.tap(&:to_a) }
 
         context 'when the relation is empty' do
           it_behaves_like 'a cache_version generator'
@@ -3303,6 +3298,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
         context 'when the relation is not empty' do
           let(:root) { prepopulated_root }
+
           it_behaves_like 'a cache_version generator'
         end
       end
@@ -3316,6 +3312,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
         context 'when the relation is not empty' do
           let(:root) { prepopulated_root }
+
           it_behaves_like 'a cache_version generator'
         end
       end
@@ -3329,7 +3326,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
 
@@ -3342,7 +3339,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
 
@@ -3355,7 +3352,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
     end

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 module ActiveDocument
   module Association
@@ -44,11 +43,9 @@ module ActiveDocument
       def create_relation(object, association, selected_fields = nil)
         key = @attributes[association.inverse_type]
         type = key ? association.resolver.model_for(key) : nil
-        target = if t = association.build(self, object, type, selected_fields)
-          association.create_relation(self, t)
-        else
-          nil
-        end
+        target = if (t = association.build(self, object, type, selected_fields))
+                   association.create_relation(self, t)
+                 end
 
         # Only need to do this on embedded associations. The pending callbacks
         # are only added when materializing the documents, which only happens
@@ -71,9 +68,9 @@ module ActiveDocument
       #
       # @param [ Symbol ] name The name of the association.
       def reset_relation_criteria(name)
-        if instance_variable_defined?("@_#{name}")
-          send(name).reset_unloaded
-        end
+        return unless instance_variable_defined?(:"@_#{name}")
+
+        send(name).reset_unloaded
       end
 
       # Set the supplied association to an instance variable on the class with the
@@ -87,7 +84,7 @@ module ActiveDocument
       #
       # @return [ Proxy ] The association.
       def set_relation(name, relation)
-        instance_variable_set("@_#{name}", relation)
+        instance_variable_set(:"@_#{name}", relation)
       end
 
       private
@@ -119,8 +116,8 @@ module ActiveDocument
         if !without_autobuild? && association.embedded? && attribute_missing?(field_name)
           # We always allow accessing the parent document of an embedded one.
           try_get_parent = association.is_a?(
-                             ActiveDocument::Association::Embedded::EmbeddedIn
-                           ) && field_name == association.key
+            ActiveDocument::Association::Embedded::EmbeddedIn
+          ) && field_name == association.key
           raise ActiveDocument::Errors::AttributeNotLoaded.new(self.class, field_name) unless try_get_parent
         end
 
@@ -132,7 +129,7 @@ module ActiveDocument
               if object && needs_no_database_query?(object, association)
                 __build__(name, object, association)
               else
-                selected_fields = _mongoid_filter_selected_fields(association.key)
+                selected_fields = _active_document_filter_selected_fields(association.key)
                 __build__(name, attributes[association.key], association, selected_fields)
               end
             end
@@ -155,15 +152,14 @@ module ActiveDocument
       # @return [ Hash | nil ]
       #
       # @api private
-      def _mongoid_filter_selected_fields(assoc_key)
+      def _active_document_filter_selected_fields(assoc_key)
         return nil unless __selected_fields
 
         # If the list of fields was specified using #without instead of #only
         # and the provided list does not include the association, any of its
         # fields should be allowed.
-        if __selected_fields.values.all? { |v| v == 0 } &&
-          __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
-        then
+        if __selected_fields.values.all?(0) &&
+           __selected_fields.keys.none? { |k| k.split('.', 2).first == assoc_key }
           return nil
         end
 
@@ -214,7 +210,7 @@ module ActiveDocument
         # document that the $ is referring to should be retrieved with all
         # fields. See https://www.mongodb.com/docs/manual/reference/operator/projection/positional/
         # and https://jira.mongodb.org/browse/MONGOID-4769.
-        if filtered.keys == %w($)
+        if filtered.keys == %w[$]
           filtered = nil
         end
 
@@ -223,7 +219,7 @@ module ActiveDocument
 
       def needs_no_database_query?(object, association)
         object.is_a?(Document) && !object.embedded? &&
-            object._id == attributes[association.key]
+          object._id == attributes[association.key]
       end
 
       # Is the current code executing without autobuild functionality?
@@ -245,10 +241,10 @@ module ActiveDocument
       #
       # @return [ Object ] The result of the yield.
       def without_autobuild
-        Threaded.begin_execution("without_autobuild")
+        Threaded.begin_execution('without_autobuild')
         yield
       ensure
-        Threaded.exit_execution("without_autobuild")
+        Threaded.exit_execution('without_autobuild')
       end
 
       # Parse out the attributes and the options from the args passed to a
@@ -305,7 +301,7 @@ module ActiveDocument
           klass.re_define_method(name) do |reload = false|
             value = get_relation(name, association, nil, reload)
             if value.nil? && association.autobuilding? && !without_autobuild?
-              value = send("build_#{name}")
+              value = send(:"build_#{name}")
             end
             value
           end
@@ -346,9 +342,9 @@ module ActiveDocument
         association.inverse_class.tap do |klass|
           klass.re_define_method("#{name}=") do |object|
             without_autobuild do
-              if value = get_relation(name, association, object)
-                if !value.respond_to?(:substitute)
-                  value = __build__(name, value, association) 
+              if (value = get_relation(name, association, object))
+                unless value.respond_to?(:substitute)
+                  value = __build__(name, value, association)
                 end
 
                 set_relation(name, value.substitute(object.substitutable))
@@ -398,7 +394,7 @@ module ActiveDocument
             attributes, _options = parse_args(*args)
             document = Factory.build(association.relation_class, attributes)
             _building do
-              child = send("#{name}=", document)
+              child = send(:"#{name}=", document)
               child.run_callbacks(:build)
               child
             end
@@ -423,7 +419,7 @@ module ActiveDocument
             attributes, _options = parse_args(*args)
             document = Factory.build(association.klass, attributes)
             doc = _assigning do
-              send("#{name}=", document)
+              send(:"#{name}=", document)
             end
             doc.save
             save if new_record? && association.stores_foreign_key?

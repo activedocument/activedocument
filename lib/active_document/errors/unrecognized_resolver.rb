@@ -18,7 +18,7 @@ module ActiveDocument
           compose_message(
             'unrecognized_resolver',
             resolver: resolver.inspect,
-            resolvers: [ :default, *ActiveDocument::ModelResolver.resolvers.keys ].inspect
+            resolvers: [:default, *ActiveDocument::ModelResolver.resolvers.keys].inspect
           )
         )
       end
