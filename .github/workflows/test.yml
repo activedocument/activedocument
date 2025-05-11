@@ -85,12 +85,18 @@ jobs:
           - ruby: ruby-3.4
             topology: sharded_cluster
             fle: helper
+            mongodb: '7.0' # see https://github.com/mongodb/libmongocrypt-helper-ruby/issues/16
+            os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
           - ruby: ruby-3.4
             topology: replica_set
             fle: helper
+            mongodb: '7.0' # see https://github.com/mongodb/libmongocrypt-helper-ruby/issues/16
+            os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
           - ruby: ruby-3.4
             topology: server
             fle: helper
+            mongodb: '7.0' # see https://github.com/mongodb/libmongocrypt-helper-ruby/issues/16
+            os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
     steps:
       - name: repo checkout
         uses: actions/checkout@v3
