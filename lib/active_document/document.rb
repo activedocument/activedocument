@@ -217,7 +217,7 @@ module ActiveDocument
 
       self._parent = nil
       _building do
-        prepare_to_process_attributes
+        prepare_to_process_attributes(attrs)
 
         process_attributes(attrs) do
           yield(self) if block_given?
@@ -231,11 +231,11 @@ module ActiveDocument
 
     # Initializes the object state prior to attribute processing; this is
     # called only from #construct_document.
-    def prepare_to_process_attributes
+    def prepare_to_process_attributes(attrs)
       @new_record = true
       @attributes ||= {}
       apply_pre_processed_defaults
-      apply_default_scoping
+      apply_default_scoping(attrs)
     end
 
     # Returns the logger

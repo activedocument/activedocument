@@ -87,6 +87,9 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Buildable
       end
 
       it 'returns the criteria' do
+        # expect(criteria.selector_smash).to eq({ '$and' => [documents.selector_smash] })
+        # documents.selector_smash_smash = nil
+        # criteria.selector_smash_smash = nil
         expect(documents).to eq(criteria)
       end
     end

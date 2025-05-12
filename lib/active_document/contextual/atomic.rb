@@ -241,20 +241,20 @@ module ActiveDocument
         end
       end
 
-      # Builds the selector an atomic $unset operation from arguments.
+      # Builds the selector_comment an atomic $unset operation from arguments.
       #
-      # @example Prepare selector from array.
+      # @example Prepare selector_comment from array.
       #   context.collect_unset_operations([:name, :age])
       #   #=> { "name" => true, "age" => true }
       #
-      # @example Prepare selector from hash.
+      # @example Prepare selector_comment from hash.
       #   context.collect_unset_operations({ name: 1 }, { age: 1 })
       #   #=> { "name" => true, "age" => true }
       #
       # @param [ String | Symbol | Array<String | Symbol> | Hash ] ops
       #   The name(s) of the field(s) to unset.
       #
-      # @return [ Hash ] The selector for the atomic $unset operation.
+      # @return [ Hash ] The selector_comment for the atomic $unset operation.
       def collect_unset_operations(ops)
         ops.map { |op| op.is_a?(Hash) ? op.keys : op }.flatten
            .to_h { |field| [database_field_name(field), true] }

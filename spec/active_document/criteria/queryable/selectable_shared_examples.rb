@@ -16,7 +16,7 @@ shared_examples_for 'requires an argument' do
 
     it 'raises ArgumentError' do
       expect do
-        selection.selector
+        selection.selector_smash
       end.to raise_error(ArgumentError)
     end
   end
@@ -31,7 +31,7 @@ shared_examples_for 'requires a non-nil argument' do
 
     it 'raises CriteriaArgumentRequired' do
       expect do
-        selection.selector
+        selection.selector_smash
       end.to raise_error(ActiveDocument::Errors::CriteriaArgumentRequired, /#{query_method}/)
     end
   end

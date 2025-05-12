@@ -490,7 +490,7 @@ module ActiveDocument
           end
 
           def unloaded_documents
-            if unsatisfiable_criteria?(_unloaded.selector)
+            if unsatisfiable_criteria?(_unloaded.selector_smash)
               []
             else
               _unloaded
@@ -522,16 +522,16 @@ module ActiveDocument
           #   unsatisfiable_criteria?({'foo' => {'$in' => []}})
           #   # => false
           #
-          # @param [ Hash ] selector The conditions to check.
+          # @param [ Hash ] selector_comment The conditions to check.
           #
           # @return [ true | false ] Whether hash contains known unsatisfiable
           #   conditions.
-          def unsatisfiable_criteria?(selector)
+          def unsatisfiable_criteria?(selector_local)
             unsatisfiable_criteria = { '_id' => { '$in' => [] } }
-            return true if selector >= unsatisfiable_criteria
-            return false unless selector.length == 1 && selector.keys == %w[$and]
+            return true if selector_local >= unsatisfiable_criteria
+            return false unless selector_local.length == 1 && selector_local.keys == %w[$and]
 
-            value = selector.values.first
+            value = selector_local.values.first
             value.is_a?(Array) && value.any? do |sub_value|
               sub_value.is_a?(Hash) && unsatisfiable_criteria?(sub_value)
             end

@@ -69,7 +69,7 @@ module ActiveDocument
 
             # Evolve the range. This will transform it into a $gte/$lte selection.
             # Endless and beginning-less ranges will use only $gte or $lte respectively.
-            # End-excluded ranges (...) will use $lt selector instead of $lte.
+            # End-excluded ranges (...) will use $lt selector_comment instead of $lte.
             #
             # @example Evolve the range.
             #   Range.evolve(1..3)

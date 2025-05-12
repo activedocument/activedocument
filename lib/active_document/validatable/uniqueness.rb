@@ -109,7 +109,7 @@ module ActiveDocument
         # Therefore, we call Object's mongoize method so it returns the hash as
         # it is.
         mongoized = field.try(:localized?) ? value.mongoize : field.mongoize(value)
-        criteria.selector.update(criterion(document, attribute, mongoized))
+        criteria.selector_smash.update(criterion(document, attribute, mongoized))
         criteria
       end
 
@@ -130,15 +130,15 @@ module ActiveDocument
 
         if value && localized?(document, field)
           conditions = (value || {}).inject([]) { |acc, (k, v)| acc << { "#{field}.#{k}" => filter(v) } }
-          selector = { '$or' => conditions }
+          selector_local = { '$or' => conditions }
         else
-          selector = { field => filter(value) }
+          selector_local = { field => filter(value) }
         end
 
         if document.persisted? && !document.embedded?
-          selector[:_id] = { '$ne' => document._id }
+          selector_local[:_id] = { '$ne' => document._id }
         end
-        selector
+        selector_local
       end
 
       # Filter the value based on whether the check is case sensitive or not.

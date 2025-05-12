@@ -17,7 +17,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
         end
 
         it 'adds to top level' do
-          expect(modified.selector).to eq({ '$and' => [{ 'foo' => 'bar' }] })
+          expect(modified.selector_smash).to eq({ '$and' => [{ 'foo' => 'bar' }] })
         end
       end
 
@@ -31,7 +31,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
         end
 
         it 'adds to top level' do
-          expect(modified.selector).to eq({
+          expect(modified.selector_smash).to eq({
             'zoom' => 'zoom',
             '$and' => [{ 'foo' => 'bar' }]
           })
@@ -48,7 +48,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
         end
 
         it 'adds to existing $and' do
-          expect(modified.selector).to eq({
+          expect(modified.selector_smash).to eq({
             '$and' => [{ 'zoom' => 'zoom' }, { 'foo' => 'bar' }]
           })
         end
@@ -64,7 +64,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
         end
 
         it 'adds to existing $and' do
-          expect(modified.selector).to eq({
+          expect(modified.selector_smash).to eq({
             '$and' => [{ 'foo' => 'zoom' }, { 'foo' => 'bar' }]
           })
         end
@@ -80,7 +80,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
         end
 
         it 'adds to existing $and' do
-          expect(modified.selector).to eq({ '$and' => [{ 'zoom' => 'zoom' }, { 'foo' => 'bar' }], 'foo' => 'baz' })
+          expect(modified.selector_smash).to eq({ '$and' => [{ 'zoom' => 'zoom' }, { 'foo' => 'bar' }], 'foo' => 'baz' })
         end
       end
     end
@@ -92,7 +92,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
         end
 
         it 'adds to top level' do
-          expect(modified.selector).to eq({ '$or' => [{ 'foo' => 'bar' }] })
+          expect(modified.selector_smash).to eq({ '$or' => [{ 'foo' => 'bar' }] })
         end
       end
 
@@ -106,7 +106,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
         end
 
         it 'adds the new conditions' do
-          expect(modified.selector).to eq({
+          expect(modified.selector_smash).to eq({
             'zoom' => 'zoom',
             '$or' => ['foo' => 'bar']
           })
@@ -123,7 +123,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
         end
 
         it 'adds to existing $or' do
-          expect(modified.selector).to eq({
+          expect(modified.selector_smash).to eq({
             '$or' => [{ 'zoom' => 'zoom' }, { 'foo' => 'bar' }]
           })
         end
@@ -139,7 +139,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
       end
 
       it 'adds the condition' do
-        expect(modified.selector).to eq({
+        expect(modified.selector_smash).to eq({
           'foo' => 'bar'
         })
       end
@@ -167,7 +167,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
       end
 
       it 'adds the condition' do
-        expect(modified.selector).to eq({
+        expect(modified.selector_smash).to eq({
           'foo' => 'bar',
           'zoom' => 'zoom'
         })
@@ -184,7 +184,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
       end
 
       it 'adds the new condition using $and' do
-        expect(modified.selector).to eq({
+        expect(modified.selector_smash).to eq({
           'foo' => 'bar',
           '$and' => ['foo' => 'zoom']
         })
@@ -201,7 +201,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
       end
 
       it 'combines the conditions using $and' do
-        expect(modified.selector).to eq({
+        expect(modified.selector_smash).to eq({
           'foo' => {
             '$in' => ['bar'],
             '$nin' => ['zoom']
@@ -220,7 +220,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
       end
 
       it 'combines the conditions using $and' do
-        expect(modified.selector).to eq({
+        expect(modified.selector_smash).to eq({
           'foo' => {
             :$in => ['bar'],
             :$nin => ['zoom']
@@ -239,7 +239,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
       end
 
       it 'adds the new condition using $and' do
-        expect(modified.selector).to eq({
+        expect(modified.selector_smash).to eq({
           'foo' => { '$in' => ['bar'] },
           '$and' => ['foo' => { '$in' => ['zoom'] }]
         })
@@ -256,7 +256,7 @@ describe ActiveDocument::Criteria::Queryable::Storable do
       end
 
       it 'adds the new condition using $and' do
-        expect(modified.selector).to eq({
+        expect(modified.selector_smash).to eq({
           'foo' => { :$in => ['bar'] },
           '$and' => ['foo' => { :$in => ['zoom'] }]
         })

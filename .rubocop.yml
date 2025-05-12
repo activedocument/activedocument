@@ -161,7 +161,7 @@ Performance/CollectionLiteralInLoop:
     - 'spec/active_document/association/referenced/has_many/proxy_spec.rb'
     - 'spec/active_document/attributes_spec.rb'
     - 'spec/active_document/criteria/queryable/selectable_spec.rb'
-    - 'spec/active_document/criteria/queryable/selector_spec.rb'
+    - 'spec/active_document/criteria/queryable/selector_smash_spec.rb'
 
 Style/IfUnlessModifier:
   Enabled: false
@@ -272,5 +272,5 @@ Style/WhileUntilModifier:
 # See: https://github.com/rubocop/rubocop/issues/11802
 Style/SymbolArray:
   Exclude:
-    - 'spec/active_document/criteria/queryable/selector_spec.rb'
+    - 'spec/active_document/criteria/queryable/selector_smash_spec.rb'
     - 'spec/active_document/criteria/queryable/options_spec.rb'

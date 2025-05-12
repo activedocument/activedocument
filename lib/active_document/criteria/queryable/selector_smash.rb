@@ -4,18 +4,19 @@ module ActiveDocument
   class Criteria
     module Queryable
 
-      # The selector is a special kind of hash that knows how to serialize values
+      # TODO: AST
+      # This selector_comment is a special kind of hash that knows how to serialize values
       # coming into it as well as being alias and locale aware for key names.
-      class Selector < Smash
+      class SelectorSmash < Smash
 
-        # Merges another selector into this one.
+        # Merges another selector_comment into this one.
         #
-        # @example Merge in another selector.
-        #   selector.merge!(name: "test")
+        # @example Merge in another selector_comment.
+        #   selector_comment.merge!(name: "test")
         #
         # @param [ Hash | Selector ] other The object to merge in.
         #
-        # @return [ Selector ] The selector.
+        # @return [ Selector ] The selector_comment.
         def merge!(other)
           other.each_pair do |key, value|
             if value.is_a?(Hash) && self[key.to_s].is_a?(Hash)
@@ -36,11 +37,11 @@ module ActiveDocument
           end
         end
 
-        # Store the value in the selector for the provided key. The selector will
+        # Store the value in the selector_comment for the provided key. The selector_comment will
         # handle all necessary serialization and localization in this step.
         #
-        # @example Store a value in the selector.
-        #   selector.store(:key, "testing")
+        # @example Store a value in the selector_comment.
+        #   selector_comment.store(:key, "testing")
         #
         # @param [ String | Symbol ] key The name of the attribute.
         # @param [ Object ] value The value to add.
@@ -58,12 +59,12 @@ module ActiveDocument
         end
         alias_method :[]=, :store
 
-        # Convert the selector to an aggregation pipeline entry.
+        # Convert the selector_comment to an aggregation pipeline entry.
         #
-        # @example Convert the selector to a pipeline.
-        #   selector.to_pipeline
+        # @example Convert the selector_comment to a pipeline.
+        #   selector_comment.to_pipeline
         #
-        # @return [ Array<Hash> ] The pipeline entry for the selector.
+        # @return [ Array<Hash> ] The pipeline entry for the selector_comment.
         def to_pipeline
           pipeline = []
           pipeline.push({ '$match' => self }) unless empty?
@@ -83,9 +84,11 @@ module ActiveDocument
         # @return [ Array<String, String> ] The store name and store value.
         def store_creds(name, serializer, value)
           store_name = localized_key(name, serializer)
+          store_value = value['$eq'] if value.is_a?(Hash) && value.keys.size == 1 && value.keys.first == '$eq'
+          store_value ||= value
 
-          if value.is_a?(Range)
-            evolve_range(store_name, serializer, value)
+          if store_value.is_a?(Range)
+            evolve_range(store_name, serializer, store_value)
           else
             [store_name, evolve(serializer, value)]
           end
@@ -95,7 +98,7 @@ module ActiveDocument
         # performs the necessary serialization.
         #
         # @example Evolve the multi-selection.
-        #   selector.evolve_multi([{ field: "value" }])
+        #   selector_comment.evolve_multi([{ field: "value" }])
         #
         # @param [ Array<Hash> ] specs The multi-selection.
         #
@@ -133,7 +136,7 @@ module ActiveDocument
         # @api private
         #
         # @example Evolve a simple selection.
-        #   selector.evolve(field, 5)
+        #   selector_comment.evolve(field, 5)
         #
         # @param [ Object ] serializer The optional serializer for the field.
         # @param [ Object ] value The value to serialize.
@@ -159,7 +162,7 @@ module ActiveDocument
         # @api private
         #
         # @example Evolve a simple selection.
-        #   selector.evolve(field, [ 1, 2, 3 ])
+        #   selector_comment.evolve(field, [ 1, 2, 3 ])
         #
         # @param [ Object ] serializer The optional serializer for the field.
         # @param [ Array<Object> ] value The array to serialize.
@@ -176,20 +179,35 @@ module ActiveDocument
         # @api private
         #
         # @example Evolve a simple selection.
-        #   selector.evolve(field, { "$gt" => 5 })
+        #   selector_comment.evolve(field, { "$gt" => 5 })
         #
         # @param [ Object ] serializer The optional serializer for the field.
         # @param [ Hash ] value The hash to serialize.
         #
         # @return [ Object ] The serialized hash.
         def evolve_hash(serializer, value)
+          result = value.dup
+
           value.each_pair do |operator, val|
-            value[operator] = if /exists|type|size/.match?(operator)
-                                val
-                              else
-                                evolve(serializer, val)
-                              end
+            if operator == '$eq' && val.is_a?(Range)
+              result.delete('$eq')
+              evolved = evolve_range('', serializer, val).last
+              result.merge!(evolved)
+            elsif operator == '$ne' && val.is_a?(Range)
+              result.delete('$ne')
+              evolved = evolve_range('', serializer, val).last
+              result.merge!('$not' => evolved)
+            else
+              result[operator] =
+                if /exists|type|size/.match?(operator)
+                  val
+                else
+                  evolve(serializer, val)
+                end
+            end
           end
+
+          result
         end
 
         # Evolve a single key selection with range values. This method traverses
@@ -265,7 +283,7 @@ module ActiveDocument
         # @api private
         #
         # @example Is the selection a multi-select?
-        #   selector.multi_selection?("$and")
+        #   selector_comment.multi_selection?("$and")
         #
         # @param [ String ] key The key to check.
         #

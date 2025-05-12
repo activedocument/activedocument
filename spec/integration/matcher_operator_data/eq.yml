@@ -128,9 +128,10 @@
         end: 20
         excl: false
   # https://jira.mongodb.org/browse/MONGOID-4908
-  error: [matcher, driver]
-  # Server does not match because the query is bogus
-  matches: false
+  error: [driver]
+  # Driver does not match because the query is bogus
+  # but DSL will generate correct selector {"age"=>{"$gte"=>1, "$lte"=>20}}
+  matches: true
 
 - name: not matching range
   document:
@@ -142,7 +143,7 @@
         end: 20
         excl: false
   # https://jira.mongodb.org/browse/MONGOID-4908
-  error: [matcher, driver]
+  error: [driver]
   matches: false
 
 - name: matching range against array
@@ -156,9 +157,10 @@
         end: 20
         excl: false
   # https://jira.mongodb.org/browse/MONGOID-4908
-  error: [matcher, driver]
-  # Server does not match because the query is bogus
-  matches: false
+  error: [driver]
+  # Driver does not match because the query is bogus
+  # but DSL will generate correct selector {"age"=>{"$gte"=>1, "$lte"=>20}}
+  matches: true
 
 - name: not matching range against array
   document:
@@ -171,7 +173,7 @@
         end: 20
         excl: false
   # https://jira.mongodb.org/browse/MONGOID-4908
-  error: [matcher, driver]
+  error: [driver]
   matches: false
 
 - name: nil argument
