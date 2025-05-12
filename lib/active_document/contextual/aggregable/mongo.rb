@@ -60,7 +60,7 @@ module ActiveDocument
         #
         # @param [ Symbol ] field The field to max.
         #
-        # @return [ Numeric | ActiveDocument::Document ] The max value or document with the max
+        # @return [ Float | Document ] The max value or document with the max
         #   value.
         def max(field = nil)
           block_given? ? super() : aggregates(field)['max']
@@ -80,7 +80,7 @@ module ActiveDocument
         #
         # @param [ Symbol ] field The field to min.
         #
-        # @return [ Numeric | ActiveDocument::Document ] The min value or document with the min
+        # @return [ Float | Document ] The min value or document with the min
         #   value.
         def min(field = nil)
           block_given? ? super() : aggregates(field)['min']
@@ -95,11 +95,14 @@ module ActiveDocument
         # @example Get the sum for the provided block.
         #   aggregable.sum(&:likes)
         #
-        # @param [ Symbol ] field The field to sum.
+        # @param [ Symbol | Numeric ] field The field to sum, or the initial
+        #    value of the sum when a block is given.
         #
         # @return [ Float ] The sum value.
         def sum(field = nil)
-          block_given? ? super() : aggregates(field)['sum'] || 0
+          return super(field || 0) if block_given?
+
+          aggregates(field)['sum'] || 0
         end
 
         private

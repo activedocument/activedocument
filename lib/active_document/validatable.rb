@@ -5,6 +5,7 @@ require 'active_document/validatable/localizable'
 require 'active_document/validatable/associated'
 require 'active_document/validatable/format'
 require 'active_document/validatable/length'
+require 'active_document/validatable/numericality'
 require 'active_document/validatable/queryable'
 require 'active_document/validatable/presence'
 require 'active_document/validatable/uniqueness'
@@ -148,12 +149,12 @@ module ActiveDocument
       def validates_with(*args, &block)
         if args.first == PresenceValidator
           args.last[:attributes].each do |name|
-            next unless (association = relations[name.to_s])&.autosave?
-
-            Association::Referenced::AutoSave.define_autosave!(association)
+            association = relations[name.to_s]
+            if association&.autosave?
+              Association::Referenced::AutoSave.define_autosave!(association)
+            end
           end
         end
-
         super
       end
 

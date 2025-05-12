@@ -6,7 +6,7 @@ module ActiveDocument
   module Factory
     extend self
 
-    # A helper class for instantiating a model using either it's type
+    # A helper class for instantiating a model using either its type
     # class directly, or via a type class specified via a discriminator
     # key.
     #
@@ -100,7 +100,7 @@ module ActiveDocument
         )
       end
 
-      # Retreive the `Class` instance of the requested type, either by finding it
+      # Retrieve the `Class` instance of the requested type, either by finding it
       # in the `klass` discriminator mapping, or by otherwise finding a
       # Document model with the given name.
       #

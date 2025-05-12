@@ -14,9 +14,9 @@ module ActiveDocument
 
       module ClassMethods
 
-        REJECT_ALL_BLANK_PROC = lambda do |attributes|
+        REJECT_ALL_BLANK_PROC = lambda { |attributes|
           attributes.all? { |key, value| key == '_destroy' || value.blank? }
-        end
+        }
 
         # Used when needing to update related models from a parent association. Can
         # be used on embedded or referenced associations.
@@ -60,7 +60,8 @@ module ActiveDocument
             re_define_method(meth) do |attrs|
               _assigning do
                 if association.polymorphic? && association.inverse_type
-                  options[:class_name] = send(association.inverse_type)
+                  klass = association.resolver.model_for(send(association.inverse_type))
+                  options[:class_name] = klass
                 end
                 association.nested_builder(attrs, options).build(self)
               end
@@ -79,12 +80,12 @@ module ActiveDocument
         #
         # @param [ ActiveDocument::Association::Relatable ] association The existing association metadata.
         def autosave_nested_attributes(association)
-          return unless association.autosave? || (association.options[:autosave].nil? && !association.embedded?)
-
           # In order for the autosave functionality to work properly, the association needs to be
           # marked as autosave despite the fact that the option isn't present. Because the method
           # Association#autosave? is implemented by checking the autosave option, this is the most
           # straightforward way to mark it.
+          return unless association.autosave? || (association.options[:autosave].nil? && !association.embedded?)
+
           association.options[:autosave] = true
           Association::Referenced::AutoSave.define_autosave!(association)
         end

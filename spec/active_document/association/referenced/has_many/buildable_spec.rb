@@ -41,7 +41,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Buildable do
 
       let(:options) do
         {
-          order: { rating: :asc }
+          order: :rating.asc
         }
       end
 
@@ -97,6 +97,10 @@ describe ActiveDocument::Association::Referenced::HasMany::Buildable do
 
       let(:criteria) do
         Post.where(association.foreign_key => object, 'ratable_type' => 'Rating')
+      end
+
+      before do
+        Post.belongs_to :ratable, polymorphic: true
       end
 
       it 'adds the type to the criteria' do

@@ -113,14 +113,14 @@ describe ActiveDocument::Equality do
     context 'when the comparable is a subclass' do
 
       it 'returns false' do
-        expect(Doctor.is_a?(Person)).to be false
+        expect(Person === Doctor).to be false
       end
     end
 
     context 'when the comparable is an instance of a subclass' do
 
       it 'returns true' do
-        expect(Doctor.new.is_a?(Person)).to be true
+        expect(Person === Doctor.new).to be true
       end
     end
   end
@@ -187,6 +187,12 @@ describe ActiveDocument::Equality do
 
     it 'compares based on the document id' do
       expect(first <=> second).to eq(-1)
+    end
+
+    it "doesn't break if one isn't a document" do
+      expect do
+        first <=> 'Foo'
+      end.to_not raise_error
     end
   end
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_document/positional'
+require 'active_document/evolvable'
 require 'active_document/extensions'
 require 'active_document/errors'
 require 'active_document/threaded'
@@ -16,10 +17,9 @@ require 'active_document/timestamps'
 require 'active_document/association'
 require 'active_document/composable'
 require 'active_document/touchable'
-require 'active_document/type_converters'
+require 'active_document/model_resolver'
 
 module ActiveDocument
-
   # This is the base module for all domain objects that need to be persisted to
   # the database as documents.
   module Document
@@ -32,6 +32,7 @@ module ActiveDocument
 
     included do
       ActiveDocument.register_model(self)
+      ActiveDocument::ModelResolver.register(self)
     end
 
     # Regex for matching illegal BSON keys.
@@ -46,7 +47,7 @@ module ActiveDocument
     # @example Freeze the document
     #   document.freeze
     #
-    # @return [ ActiveDocument::Document ] The document.
+    # @return [ Document ] The document.
     def freeze
       as_attributes.freeze and self
     end
@@ -99,7 +100,7 @@ module ActiveDocument
     #
     # @param [ Hash ] attrs The attributes to set up the document with.
     #
-    # @return [ ActiveDocument::Document ] A new document.
+    # @return [ Document ] A new document.
     def initialize(attrs = nil, &block)
       construct_document(attrs, &block)
     end
@@ -146,9 +147,9 @@ module ActiveDocument
     #
     # @param [ Class ] klass The class to become.
     #
-    # @return [ ActiveDocument::Document ] An instance of the specified class.
+    # @return [ Document ] An instance of the specified class.
     def becomes(klass)
-      active_document_document_check!(klass)
+      mongoid_document_check!(klass)
 
       became = klass.new(clone_document)
       became.internal_state = internal_state
@@ -204,7 +205,7 @@ module ActiveDocument
     # @option options [ true | false ] :execute_callbacks Flag specifies
     #   whether callbacks should be run.
     #
-    # @return [ ActiveDocument::Document ] A new document.
+    # @return [ Document ] A new document.
     #
     # @note A Ruby 2.x bug prevents the options hash from being keyword
     #   arguments. Once we drop support for Ruby 2.x, we can reimplement
@@ -297,7 +298,7 @@ module ActiveDocument
     #
     # @raise [ ArgumentError ] if the class does not include
     #   ActiveDocument::Document.
-    def active_document_document_check!(klass)
+    def mongoid_document_check!(klass)
       return if klass.include?(ActiveDocument::Document)
 
       raise ArgumentError.new('A class which includes ActiveDocument::Document is expected')
@@ -382,7 +383,7 @@ module ActiveDocument
       # @param [ Integer ] selected_fields The selected fields from the
       #   criteria.
       #
-      # @return [ ActiveDocument::Document ] A new document.
+      # @return [ Document ] A new document.
       def instantiate(attrs = nil, selected_fields = nil, &block)
         instantiate_document(attrs, selected_fields, &block)
       end
@@ -400,7 +401,7 @@ module ActiveDocument
       # @yield [ ActiveDocument::Document ] If a block is given, yields the newly
       #   instantiated document to it.
       #
-      # @return [ ActiveDocument::Document ] A new document.
+      # @return [ Document ] A new document.
       #
       # @note A Ruby 2.x bug prevents the options hash from being keyword
       #   arguments. Once we drop support for Ruby 2.x, we can reimplement
@@ -435,7 +436,7 @@ module ActiveDocument
       #   the options hash as keyword arguments.
       #   See https://bugs.ruby-lang.org/issues/15753
       #
-      # @return [ ActiveDocument::Document ] A new document.
+      # @return [ Document ] A new document.
       #
       # @api private
       def construct_document(attrs = nil, options = {})
@@ -467,9 +468,9 @@ module ActiveDocument
 
       # Set the i18n scope to overwrite ActiveModel.
       #
-      # @return [ Symbol ] :active_document
+      # @return [ Symbol ] :mongoid
       def i18n_scope
-        :active_document
+        :mongoid
       end
 
       # Returns the logger
@@ -485,4 +486,4 @@ module ActiveDocument
   end
 end
 
-ActiveSupport.run_load_hooks(:active_document, ActiveDocument::Document)
+ActiveSupport.run_load_hooks(:mongoid, ActiveDocument::Document)

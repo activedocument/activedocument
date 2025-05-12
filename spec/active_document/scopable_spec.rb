@@ -2,6 +2,19 @@
 
 require 'spec_helper'
 
+# Retrieve the singleton class for the given class.
+def singleton_class_for(klass)
+  class << klass; self; end
+end
+
+# Helper method for removing a declared scope
+def remove_scope(klass, scope)
+  return unless klass._declared_scopes[scope]
+
+  singleton_class_for(klass).remove_method(scope)
+  klass._declared_scopes.delete(scope)
+end
+
 describe ActiveDocument::Scopable do
 
   describe '.default_scope' do
@@ -348,6 +361,10 @@ describe ActiveDocument::Scopable do
           Band.create!(name: 'testing')
         end
 
+        after do
+          remove_scope(Band, :tests)
+        end
+
         it 'applies the collation' do
           expect(Band.tests.first['name']).to eq('testing')
         end
@@ -364,10 +381,7 @@ describe ActiveDocument::Scopable do
         end
 
         after do
-          class << Band
-            undef_method :active
-          end
-          Band._declared_scopes.clear
+          remove_scope(Band, :active)
         end
 
         let(:scope) do
@@ -384,15 +398,12 @@ describe ActiveDocument::Scopable do
         before do
           Record.scope(
             :tool,
-            -> { Record.where(name: { '$in' => %w[undertow aenima lateralus] }) }
+            -> { Record.where(:name.in => %w[undertow aenima lateralus]) }
           )
         end
 
         after do
-          class << Record
-            undef_method :tool
-          end
-          Record._declared_scopes.clear
+          remove_scope(Record, :tool)
         end
 
         context 'when calling the scope' do
@@ -422,10 +433,7 @@ describe ActiveDocument::Scopable do
         end
 
         after do
-          class << Band
-            undef_method :active
-          end
-          Band._declared_scopes.clear
+          remove_scope(Band, :active)
         end
 
         it 'adds a method for the scope' do
@@ -460,10 +468,7 @@ describe ActiveDocument::Scopable do
             end
 
             after do
-              class << Band
-                undef_method :english
-              end
-              Band._declared_scopes.clear
+              remove_scope(Band, :english)
             end
 
             let(:scope) do
@@ -526,10 +531,7 @@ describe ActiveDocument::Scopable do
           config_override :scope_overwrite_exception, true
 
           after do
-            class << Band
-              undef_method :active
-            end
-            Band._declared_scopes.clear
+            remove_scope(Band, :active)
           end
 
           it 'raises an exception' do
@@ -544,10 +546,7 @@ describe ActiveDocument::Scopable do
           config_override :scope_overwrite_exception, false
 
           after do
-            class << Band
-              undef_method :active
-            end
-            Band._declared_scopes.clear
+            remove_scope(Band, :active)
           end
 
           it 'raises no exception' do
@@ -564,9 +563,9 @@ describe ActiveDocument::Scopable do
 
         context 'when with optional and keyword arguments' do
           before do
-            Band.scope(:named_by, lambda do |name, deleted: false|
+            Band.scope(:named_by, lambda { |name, deleted: false|
               Band.where(name: name, deleted: deleted)
-            end)
+            })
           end
 
           let(:scope) do
@@ -574,7 +573,7 @@ describe ActiveDocument::Scopable do
           end
 
           it 'sets the conditions from keyword arguments' do
-            expect(scope.selector).to eq({ 'name' => 'Emily', 'deleted' => true })
+            scope.selector.should == { 'name' => 'Emily', 'deleted' => true }
           end
         end
 
@@ -588,10 +587,7 @@ describe ActiveDocument::Scopable do
           end
 
           after do
-            class << Band
-              undef_method :active
-            end
-            Band._declared_scopes.clear
+            remove_scope(Band, :active)
           end
 
           let(:scope) do
@@ -651,11 +647,8 @@ describe ActiveDocument::Scopable do
         end
 
         after do
-          class << Band
-            undef_method :active
-            undef_method :named_by
-          end
-          Band._declared_scopes.clear
+          remove_scope(Band, :active)
+          remove_scope(Band, :named_by)
         end
 
         it 'adds a method for the scope' do
@@ -697,10 +690,7 @@ describe ActiveDocument::Scopable do
             end
 
             after do
-              class << Band
-                undef_method :english
-              end
-              Band._declared_scopes.clear
+              remove_scope(Band, :english)
             end
 
             let(:scope) do
@@ -760,10 +750,10 @@ describe ActiveDocument::Scopable do
             before do
               Author.scope(:author, -> { where(author: true) })
               Article.scope(:is_public, -> { where(public: true) })
-              Article.scope(:authored, lambda do
+              Article.scope(:authored, lambda {
                 author_ids = Author.author.pluck(:id)
-                where(author_id: { '$in' => author_ids })
-              end)
+                where(:author_id.in => author_ids)
+              })
 
               Author.create!(author: true, id: 1)
               Author.create!(author: true, id: 2)
@@ -774,15 +764,9 @@ describe ActiveDocument::Scopable do
             end
 
             after do
-              class << Article
-                undef_method :is_public
-                undef_method :authored
-              end
-              Article._declared_scopes.clear
-              class << Author
-                undef_method :author
-              end
-              Author._declared_scopes.clear
+              remove_scope(Article, :is_public)
+              remove_scope(Article, :authored)
+              remove_scope(Author, :author)
             end
 
             context "when calling another model's scope from within a scope" do
@@ -815,10 +799,7 @@ describe ActiveDocument::Scopable do
           config_override :scope_overwrite_exception, true
 
           after do
-            class << Band
-              undef_method :active
-            end
-            Band._declared_scopes.clear
+            remove_scope(Band, :active)
           end
 
           it 'raises an exception' do
@@ -833,10 +814,7 @@ describe ActiveDocument::Scopable do
           config_override :scope_overwrite_exception, false
 
           after do
-            class << Band
-              undef_method :active
-            end
-            Band._declared_scopes.clear
+            remove_scope(Band, :active)
           end
 
           it 'raises no exception' do
@@ -861,16 +839,13 @@ describe ActiveDocument::Scopable do
       context 'when both scopes are or queries' do
 
         before do
-          Band.scope(:xxx, -> { Band.any_of({ aaa: { '$gt' => 0 } }, { bbb: { '$gt' => 0 } }) })
-          Band.scope(:yyy, -> { Band.any_of({ ccc: nil }, { ccc: { '$gt' => 1 } }) })
+          Band.scope(:xxx, -> { Band.any_of({ :aaa.gt => 0 }, { :bbb.gt => 0 }) })
+          Band.scope(:yyy, -> { Band.any_of({ ccc: nil }, { :ccc.gt => 1 }) })
         end
 
         after do
-          class << Band
-            undef_method :xxx
-            undef_method :yyy
-          end
-          Band._declared_scopes.clear
+          remove_scope(Band, :xxx)
+          remove_scope(Band, :yyy)
         end
 
         let(:criteria) do
@@ -900,15 +875,8 @@ describe ActiveDocument::Scopable do
       end
 
       after do
-        class << Shape
-          undef_method :located_at
-        end
-        Shape._declared_scopes.clear
-
-        class << Circle
-          undef_method :with_radius
-        end
-        Circle._declared_scopes.clear
+        remove_scope(Shape, :located_at)
+        remove_scope(Circle, :with_radius)
       end
 
       let(:shape_scope_keys) do
@@ -924,7 +892,7 @@ describe ActiveDocument::Scopable do
       end
 
       it "doesn't include subclass scopes in superclass scope list" do
-        expect(shape_scope_keys).to eq([:located_at])
+        expect(shape_scope_keys).to contain_exactly(:located_at)
       end
 
       it 'includes superclass scope methods on subclass' do
@@ -932,7 +900,7 @@ describe ActiveDocument::Scopable do
       end
 
       it 'includes superclass scopes in subclass scope list' do
-        expect(circle_scope_keys).to contain_exactly(:located_at, :with_radius)
+        expect(circle_scope_keys).to match_array(%i[located_at with_radius])
       end
     end
 
@@ -949,16 +917,9 @@ describe ActiveDocument::Scopable do
       end
 
       after do
-        class << Shape
-          undef_method :visible
-          undef_method :large
-        end
-        Shape._declared_scopes.clear
-
-        class << Circle
-          undef_method :large
-        end
-        Circle._declared_scopes.clear
+        remove_scope(Shape, :visible)
+        remove_scope(Shape, :large)
+        remove_scope(Circle, :large)
       end
 
       it 'uses subclass context for all the other used scopes' do
@@ -1098,9 +1059,7 @@ describe ActiveDocument::Scopable do
           end
 
           after do
-            class << Band
-              undef_method :active
-            end
+            remove_scope(Band, :active)
           end
 
           let(:unscoped) do
@@ -1142,10 +1101,7 @@ describe ActiveDocument::Scopable do
         end
 
         after do
-          class << Band
-            undef_method :skipped
-          end
-          Band._declared_scopes.clear
+          remove_scope(Band, :skipped)
         end
 
         it 'does not allow the default scope to be applied' do
@@ -1218,7 +1174,9 @@ describe ActiveDocument::Scopable do
     context 'when using #current_scope' do
 
       it 'pops the criteria off the stack' do
-        Band.with_scope(criteria) {}
+        Band.with_scope(criteria) do
+
+        end
         expect(ActiveDocument::Threaded.current_scope).to be_nil
       end
     end
@@ -1226,7 +1184,9 @@ describe ActiveDocument::Scopable do
     context 'when using #current_scope(klass)' do
 
       it 'pops the criteria off the stack' do
-        Band.with_scope(criteria) {}
+        Band.with_scope(criteria) do
+
+        end
         expect(ActiveDocument::Threaded.current_scope(Band)).to be_nil
       end
     end
@@ -1236,18 +1196,17 @@ describe ActiveDocument::Scopable do
       let(:c2) { Band.where(active: false) }
 
       it 'restores previous scope' do
-        Band.with_scope(c1) do
-          Band.with_scope(c2) do
-
-            expect(ActiveDocument::Threaded.current_scope(Band).selector).to eq({
+        Band.with_scope(c1) do |_crit|
+          Band.with_scope(c2) do |_crit2|
+            ActiveDocument::Threaded.current_scope(Band).selector.should == {
               'active' => true,
               '$and' => ['active' => false]
-            })
+            }
           end
 
-          expect(ActiveDocument::Threaded.current_scope(Band).selector).to eq({
+          ActiveDocument::Threaded.current_scope(Band).selector.should == {
             'active' => true
-          })
+          }
         end
       end
     end
@@ -1256,14 +1215,14 @@ describe ActiveDocument::Scopable do
       let(:c1) { Band.where(active: true) }
 
       it 'restores previous scope' do
-        Band.with_scope(c1) do
-          Band.unscoped do
-            expect(ActiveDocument::Threaded.current_scope(Band)).to be_nil
+        Band.with_scope(c1) do |_crit|
+          Band.unscoped do |_crit2|
+            ActiveDocument::Threaded.current_scope(Band).should be_nil
           end
 
-          expect(ActiveDocument::Threaded.current_scope(Band).selector).to eq({
+          ActiveDocument::Threaded.current_scope(Band).selector.should == {
             'active' => true
-          })
+          }
         end
       end
     end
@@ -1287,6 +1246,53 @@ describe ActiveDocument::Scopable do
     it "does not affect other models' default scopes within the given block" do
       Appointment.without_default_scope do
         expect(Audio.all.selector).to_not be_empty
+      end
+    end
+  end
+
+  describe 'scoped queries' do
+    context 'with a default scope' do
+      let(:criteria) do
+        Band.where(name: 'Depeche Mode')
+      end
+
+      before do
+        Band.default_scope -> { criteria }
+        Band.scope :unscoped_everyone, -> { unscoped }
+        Band.scope :removed_default, -> { scoped.remove_scoping(all) }
+
+        Band.create name: 'Depeche Mode'
+        Band.create name: 'They Might Be Giants'
+      end
+
+      after do
+        Band.default_scoping = nil
+        remove_scope Band, :unscoped_everyone
+        remove_scope Band, :removed_default
+      end
+
+      context 'when allow_scopes_to_unset_default_scope == false' do # default for <= 9
+        config_override :allow_scopes_to_unset_default_scope, false
+
+        it 'merges the default scope into the query with unscoped' do
+          expect(Band.unscoped_everyone.selector).to include('name' => 'Depeche Mode')
+        end
+
+        it 'merges the default scope into the query with remove_scoping' do
+          expect(Band.removed_default.selector).to include('name' => 'Depeche Mode')
+        end
+      end
+
+      context 'when allow_scopes_to_unset_default_scope == true' do # default for >= 10
+        config_override :allow_scopes_to_unset_default_scope, true
+
+        it 'does not merge the default scope into the query with unscoped' do
+          expect(Band.unscoped_everyone.selector).to_not include('name' => 'Depeche Mode')
+        end
+
+        it 'does not merge merges the default scope into the query with remove_scoping' do
+          expect(Band.removed_default.selector).to_not include('name' => 'Depeche Mode')
+        end
       end
     end
   end

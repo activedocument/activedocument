@@ -6,7 +6,6 @@ require 'active_document/contextual/atomic'
 require 'active_document/contextual/aggregable/mongo'
 require 'active_document/contextual/command'
 require 'active_document/contextual/map_reduce'
-require 'active_document/contextual/mongo/pluck_enumerator'
 require 'active_document/association/eager_loadable'
 
 module ActiveDocument
@@ -29,6 +28,7 @@ module ActiveDocument
                    skip
                    sort
                    batch_size
+                   max_scan
                    max_time_ms
                    snapshot
                    comment
@@ -48,6 +48,8 @@ module ActiveDocument
       #
       # @return [ Hash ] The explain result.
       def_delegator :view, :explain
+
+      attr_reader :documents_loader
 
       # Get the number of documents matching the query.
       #
@@ -81,7 +83,7 @@ module ActiveDocument
       # Get the estimated number of documents matching the query.
       #
       # Unlike count, estimated_count does not take a block because it is not
-      # traditionally defined (with a block) on Enumarable like count is.
+      # traditionally defined (with a block) on Enumerable like count is.
       #
       # @example Get the estimated number of matching documents.
       #   context.estimated_count
@@ -94,9 +96,10 @@ module ActiveDocument
         unless criteria.selector.empty?
           raise ActiveDocument::Errors::InvalidEstimatedCountScoping.new(klass) if klass.default_scoping?
 
-          raise ActiveDocument::Errors::InvalidEstimatedCountCriteria.new(klass)
-        end
 
+          raise ActiveDocument::Errors::InvalidEstimatedCountCriteria.new(klass)
+
+        end
         view.estimated_document_count(options)
       end
 
@@ -206,7 +209,7 @@ module ActiveDocument
       #   from before or after update.
       # @option options [ true | false ] :upsert Create the document if it doesn't exist.
       #
-      # @return [ ActiveDocument::Document ] The result of the command.
+      # @return [ Document ] The result of the command.
       def find_one_and_update(update, options = {})
         return unless (doc = view.find_one_and_update(update, options))
 
@@ -226,7 +229,7 @@ module ActiveDocument
       #   from before or after update.
       # @option options [ true | false ] :upsert Create the document if it doesn't exist.
       #
-      # @return [ ActiveDocument::Document ] The result of the command.
+      # @return [ Document ] The result of the command.
       def find_one_and_replace(replacement, options = {})
         return unless (doc = view.find_one_and_replace(replacement, options))
 
@@ -239,7 +242,7 @@ module ActiveDocument
       # @example Execute the command.
       #   context.find_one_and_delete
       #
-      # @return [ ActiveDocument::Document ] The result of the command.
+      # @return [ Document ] The result of the command.
       def find_one_and_delete
         return unless (doc = view.find_one_and_delete)
 
@@ -262,7 +265,7 @@ module ActiveDocument
       # @example Create the new context.
       #   Mongo.new(criteria)
       #
-      # @param [ ActiveDocument::Criteria ] criteria The criteria.
+      # @param [ Criteria ] criteria The criteria.
       def initialize(criteria)
         @criteria = criteria
         @klass = criteria.klass
@@ -328,27 +331,22 @@ module ActiveDocument
       #   in the array will be a single value. Otherwise, each
       #   result in the array will be an array of values.
       def pluck(*fields)
-        pluck_each(*fields).to_a
-      end
+        # Multiple fields can map to the same field name. For example, plucking
+        # a field and its _translations field map to the same field in the database.
+        # because of this, we need to keep track of the fields requested.
+        normalized_field_names = []
+        normalized_select = fields.each_with_object({}) do |f, hash|
+          db_fn = klass.database_field_name(f)
+          normalized_field_names.push(db_fn)
+          hash[klass.cleanse_localized_field_names(f)] = true
+        end
 
-      # Iterate through plucked field value(s) from the database
-      # for the context. Yields result values progressively as they are
-      # read from the database. The yielded results are normalized
-      # according to their ActiveDocument field types.
-      #
-      # @example Iterate through the plucked values from the database.
-      #   context.pluck_each(:name) { |name| puts name }
-      #
-      # @param [ [ String | Symbol ]... ] *fields Field(s) to pluck,
-      #   which may include nested fields using dot-notation.
-      # @param [ Proc ] &block The block to call once for each plucked
-      #   result.
-      #
-      # @return [ Enumerator | ActiveDocument::Contextual::Mongo ] The enumerator,
-      #   or the context if a block was given.
-      def pluck_each(*fields, &block)
-        enum = PluckEnumerator.new(klass, view, fields).each(&block)
-        block ? self : enum
+        view.projection(normalized_select).reduce([]) do |plucked, doc|
+          values = normalized_field_names.map do |n|
+            extract_value(doc, n)
+          end
+          plucked << (values.size == 1 ? values.first : values)
+        end
       end
 
       # Pick the single field values from the database.
@@ -370,7 +368,7 @@ module ActiveDocument
       #
       # @param [ Integer | nil ] limit The number of documents to return or nil.
       #
-      # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> ] The list of documents, or one
+      # @return [ Document | Array<Document> ] The list of documents, or one
       #   document if no value was given.
       def take(limit = nil)
         if limit
@@ -387,16 +385,16 @@ module ActiveDocument
       # @example Take a document
       #   context.take!
       #
-      # @return [ ActiveDocument::Document ] The document.
+      # @return [ Document ] The document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents to take.
       def take!
         # Do to_a first so that the Mongo#first method is not used and the
         # result is not sorted.
-        raise Errors::DocumentNotFound.new(klass, nil, nil) unless (first_result = limit(1).to_a.first)
+        raise Errors::DocumentNotFound.new(klass, nil, nil) unless (fst = limit(1).to_a.first)
 
-        first_result
+        fst
       end
 
       # Get a hash of counts for the values of a single field. For example,
@@ -434,29 +432,23 @@ module ActiveDocument
       #   # => { [ 1, 2 ] => 1 }
       #
       # @param [ String | Symbol ] field The field name.
-      # @param [ Boolean ] :unwind Whether to tally array
-      #   member values individually. Default false.
       #
       # @return [ Hash ] The hash of counts.
-      def tally(field, unwind: false)
+      def tally(field)
         name = klass.cleanse_localized_field_names(field)
-        is_translation = "#{name}_translations" == field.to_s
-
-        # Must add a $project stage when using $unwind with nested fields
-        # due to a bug in MongoDB. See: https://jira.mongodb.org/browse/SERVER-59713
-        projected = 'p' if unwind && (is_translation || name.include?('.'))
 
         fld = klass.traverse_association_tree(name)
-        pipeline = []
-        pipeline << { '$match' => view.filter } if view.filter.present?
-        pipeline << { '$project' => { projected.to_s => "$#{name}" } } if projected
-        pipeline << { '$unwind' => "$#{projected || name}" } if unwind
-        pipeline << { '$group' => { _id: "$#{projected || name}", counts: { '$sum': 1 } } }
+        pipeline = [{ '$group' => { _id: "$#{name}", counts: { '$sum': 1 } } }]
+        pipeline.unshift('$match' => view.filter) if view.filter.present?
 
         collection.aggregate(pipeline).each_with_object({}) do |doc, tallies|
+          is_translation = "#{name}_translations" == field.to_s
           val = doc['_id']
+
           key = if val.is_a?(Array)
-                  val.map { |v| demongoize_with_field(fld, v, is_translation) }
+                  val.map do |v|
+                    demongoize_with_field(fld, v, is_translation)
+                  end
                 else
                   demongoize_with_field(fld, val, is_translation)
                 end
@@ -550,7 +542,7 @@ module ActiveDocument
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ ActiveDocument::Document | nil ] The first document or nil if none is found.
+      # @return [ Document | nil ] The first document or nil if none is found.
       def first(limit = nil)
         if limit.nil?
           retrieve_nth(0)
@@ -572,7 +564,7 @@ module ActiveDocument
       #   and have no sort defined on the criteria, use #take! instead.
       #   Be aware that #take! won't guarantee order.
       #
-      # @return [ ActiveDocument::Document ] The first document.
+      # @return [ Document ] The first document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
@@ -593,7 +585,7 @@ module ActiveDocument
       #
       # @param [ Integer ] limit The number of documents to return.
       #
-      # @return [ ActiveDocument::Document | nil ] The last document or nil if none is found.
+      # @return [ Document | nil ] The last document or nil if none is found.
       def last(limit = nil)
         if limit.nil?
           retrieve_nth_to_last(0)
@@ -614,7 +606,7 @@ module ActiveDocument
       #   and have no sort defined on the criteria, use #take! instead.
       #   Be aware that #take! won't guarantee order.
       #
-      # @return [ ActiveDocument::Document ] The last document.
+      # @return [ Document ] The last document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
@@ -627,7 +619,7 @@ module ActiveDocument
       # @example Get the second document.
       #   context.second
       #
-      # @return [ ActiveDocument::Document | nil ] The second document or nil if none is found.
+      # @return [ Document | nil ] The second document or nil if none is found.
       def second
         retrieve_nth(1)
       end
@@ -638,7 +630,7 @@ module ActiveDocument
       # @example Get the second document.
       #   context.second!
       #
-      # @return [ ActiveDocument::Document ] The second document.
+      # @return [ Document ] The second document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
@@ -651,7 +643,7 @@ module ActiveDocument
       # @example Get the third document.
       #   context.third
       #
-      # @return [ ActiveDocument::Document | nil ] The third document or nil if none is found.
+      # @return [ Document | nil ] The third document or nil if none is found.
       def third
         retrieve_nth(2)
       end
@@ -662,7 +654,7 @@ module ActiveDocument
       # @example Get the third document.
       #   context.third!
       #
-      # @return [ ActiveDocument::Document ] The third document.
+      # @return [ Document ] The third document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
@@ -675,7 +667,7 @@ module ActiveDocument
       # @example Get the fourth document.
       #   context.fourth
       #
-      # @return [ ActiveDocument::Document | nil ] The fourth document or nil if none is found.
+      # @return [ Document | nil ] The fourth document or nil if none is found.
       def fourth
         retrieve_nth(3)
       end
@@ -686,7 +678,7 @@ module ActiveDocument
       # @example Get the fourth document.
       #   context.fourth!
       #
-      # @return [ ActiveDocument::Document ] The fourth document.
+      # @return [ Document ] The fourth document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
@@ -699,7 +691,7 @@ module ActiveDocument
       # @example Get the fifth document.
       #   context.fifth
       #
-      # @return [ ActiveDocument::Document | nil ] The fifth document or nil if none is found.
+      # @return [ Document | nil ] The fifth document or nil if none is found.
       def fifth
         retrieve_nth(4)
       end
@@ -710,7 +702,7 @@ module ActiveDocument
       # @example Get the fifth document.
       #   context.fifth!
       #
-      # @return [ ActiveDocument::Document ] The fifth document.
+      # @return [ Document ] The fifth document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
@@ -724,7 +716,7 @@ module ActiveDocument
       # @example Get the second to last document.
       #   context.second_to_last
       #
-      # @return [ ActiveDocument::Document | nil ] The second to last document or nil if none
+      # @return [ Document | nil ] The second to last document or nil if none
       # is found.
       def second_to_last
         retrieve_nth_to_last(1)
@@ -736,7 +728,7 @@ module ActiveDocument
       # @example Get the second to last document.
       #   context.second_to_last!
       #
-      # @return [ ActiveDocument::Document ] The second to last document.
+      # @return [ Document ] The second to last document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
@@ -750,7 +742,7 @@ module ActiveDocument
       # @example Get the third to last document.
       #   context.third_to_last
       #
-      # @return [ ActiveDocument::Document | nil ] The third to last document or nil if none
+      # @return [ Document | nil ] The third to last document or nil if none
       # is found.
       def third_to_last
         retrieve_nth_to_last(2)
@@ -762,7 +754,7 @@ module ActiveDocument
       # @example Get the third to last document.
       #   context.third_to_last!
       #
-      # @return [ ActiveDocument::Document ] The third to last document.
+      # @return [ Document ] The third to last document.
       #
       # @raise [ ActiveDocument::Errors::DocumentNotFound ] raises when there are no
       #   documents available.
@@ -776,25 +768,12 @@ module ActiveDocument
       # immediately on the caller's thread, or can be scheduled for an
       # asynchronous execution.
       #
-      # @return [ ActiveDocument::Contextual::Mongo::DocumentsLoader ] The memoized
-      #   documents loader.
-      #
       # @api private
       def load_async
-        documents_loader
+        @load_async ||= DocumentsLoader.new(view, klass, criteria)
       end
 
       private
-
-      # Returns a memoized documents loader.
-      #
-      # @return [ ActiveDocument::Contextual::Mongo::DocumentsLoader ] The memoized
-      #   documents loader.
-      #
-      # @api private
-      def documents_loader
-        @documents_loader ||= DocumentsLoader.new(view, klass, criteria)
-      end
 
       # Update the documents for the provided method.
       #
@@ -866,7 +845,7 @@ module ActiveDocument
       # If the documents have been already preloaded by `Document::Loader`
       # instance, they will be used.
       #
-      # @return [ Array<ActiveDocument::Document> | Mongo::Collection::View ] The docs to iterate.
+      # @return [ Array<Document> | Mongo::Collection::View ] The docs to iterate.
       #
       # @api private
       def documents_for_iteration
@@ -896,13 +875,20 @@ module ActiveDocument
       #     ...
       #   end
       #
-      # @param [ ActiveDocument::Document ] document The document to yield to.
+      # @param [ Document ] document The document to yield to.
       def yield_document(document)
         doc = if document.respond_to?(:_id)
                 document
+              elsif criteria.raw_results?
+                if criteria.typecast_results?
+                  demongoize_hash(klass, document)
+                else
+                  document
+                end
               else
                 Factory.from_db(klass, document, criteria)
               end
+
         yield(doc)
       end
 
@@ -912,6 +898,78 @@ module ActiveDocument
 
       def acknowledged_write?
         collection.write_concern.nil? || collection.write_concern.acknowledged?
+      end
+
+      # Fetch the element from the given hash and demongoize it using the
+      # given field. If the obj is an array, map over it and call this method
+      # on all of its elements.
+      #
+      # @param [ Hash | Array<Hash> ] obj The hash or array of hashes to fetch from.
+      # @param [ String ] meth The key to fetch from the hash.
+      # @param [ Field ] field The field to use for demongoization.
+      #
+      # @return [ Object ] The demongoized value.
+      #
+      # @api private
+      def fetch_and_demongoize(obj, meth, field)
+        if obj.is_a?(Array)
+          obj.map { |doc| fetch_and_demongoize(doc, meth, field) }
+        else
+          res = obj.try(:fetch, meth, nil)
+          field ? field.demongoize(res) : res.class.demongoize(res)
+        end
+      end
+
+      # Extracts the value for the given field name from the given attribute
+      # hash.
+      #
+      # @param [ Hash ] attrs The attributes hash.
+      # @param [ String ] field_name The name of the field to extract.
+      #
+      # @param [ Object ] The value for the given field name
+      def extract_value(attrs, field_name)
+        i = 1
+        num_meths = field_name.count('.') + 1
+        curr = attrs.dup
+
+        klass.traverse_association_tree(field_name) do |meth, obj, is_field|
+          field = obj if is_field
+          is_translation = false
+          # If no association or field was found, check if the meth is an
+          # _translations field.
+          if obj.nil? & tr = meth.match(/(.*)_translations\z/)&.captures&.first
+            is_translation = true
+            meth = tr
+          end
+
+          # 1. If curr is an array fetch from all elements in the array.
+          # 2. If the field is localized, and is not an _translations field
+          #    (_translations fields don't show up in the fields hash).
+          #    - If this is the end of the methods, return the translation for
+          #      the current locale.
+          #    - Otherwise, return the whole translations hash so the next method
+          #      can select the language it wants.
+          # 3. If the meth is an _translations field, do not demongoize the
+          #    value so the full hash is returned.
+          # 4. Otherwise, fetch and demongoize the value for the key meth.
+          curr = if curr.is_a? Array
+                   res = fetch_and_demongoize(curr, meth, field)
+                   res.empty? ? nil : res
+                 elsif !is_translation && field&.localized?
+                   if i < num_meths
+                     curr.try(:fetch, meth, nil)
+                   else
+                     fetch_and_demongoize(curr, meth, field)
+                   end
+                 elsif is_translation
+                   curr.try(:fetch, meth, nil)
+                 else
+                   fetch_and_demongoize(curr, meth, field)
+                 end
+
+          i += 1
+        end
+        curr
       end
 
       # Recursively demongoize the given value. This method recursively traverses
@@ -926,6 +984,48 @@ module ActiveDocument
       def recursive_demongoize(field_name, value, is_translation)
         field = klass.traverse_association_tree(field_name)
         demongoize_with_field(field, value, is_translation)
+      end
+
+      # Demongoizes (converts from database to Ruby representation) the values
+      # of the given hash as if it were the raw representation of a document of
+      # the given klass.
+      #
+      # @note this method will modify the given hash, in-place, for performance
+      # reasons. If you wish to preserve the original hash, duplicate it before
+      # passing it to this method.
+      #
+      # @param [ Document ] klass the Document class that the given hash ought
+      #   to represent
+      # @param [ Hash | nil ] hash the Hash instance containing the values to
+      #   demongoize.
+      #
+      # @return [ Hash | nil ] the demongoized result (nil if the input Hash
+      #   was nil)
+      #
+      # @api private
+      def demongoize_hash(klass, hash)
+        return nil unless hash
+
+        hash.each_key do |key|
+          value = hash[key]
+
+          # does the key represent a declared field on the document?
+          if (field = klass.fields[key])
+            hash[key] = field.demongoize(value)
+            next
+          end
+
+          # does the key represent an embedded relation on the document?
+          aliased_name = klass.aliased_associations[key] || key
+          next unless (assoc = klass.relations[aliased_name])
+
+          case value
+          when Array then value.each { |h| demongoize_hash(assoc.klass, h) }
+          when Hash then demongoize_hash(assoc.klass, value)
+          end
+        end
+
+        hash
       end
 
       # Demongoize the value for the given field. If the field is nil or the
@@ -959,13 +1059,20 @@ module ActiveDocument
 
       # Process the raw documents retrieved for #first/#last.
       #
-      # @return [ Array<ActiveDocument::Document> | ActiveDocument::Document ] The list of documents or a
+      # @return [ Array<Document> | Document ] The list of documents or a
       #   single document.
       def process_raw_docs(raw_docs, limit)
-        docs = raw_docs.map do |d|
-          Factory.from_db(klass, d, criteria)
-        end
-        docs = eager_load(docs)
+        docs = if criteria.raw_results?
+                 if criteria.typecast_results?
+                   raw_docs.map { |doc| demongoize_hash(klass, doc) }
+                 else
+                   raw_docs
+                 end
+               else
+                 mapped = raw_docs.map { |doc| Factory.from_db(klass, doc, criteria) }
+                 eager_load(mapped)
+               end
+
         limit ? docs : docs.first
       end
 
@@ -994,7 +1101,6 @@ module ActiveDocument
         raise Errors::DocumentNotFound.new(klass, nil, nil)
       end
 
-      # rubocop:disable Naming/MethodParameterName
       def retrieve_nth(n)
         retrieve_nth_with_limit(n, 1).first
       end
@@ -1003,9 +1109,9 @@ module ActiveDocument
         sort = view.sort || { _id: 1 }
         v = view.sort(sort).limit(limit || 1)
         v = v.skip(n) if n > 0
-        return unless (raw_docs = v.to_a)
-
-        process_raw_docs(raw_docs, limit)
+        if (raw_docs = v.to_a)
+          process_raw_docs(raw_docs, limit)
+        end
       end
 
       def retrieve_nth_to_last(n)
@@ -1018,7 +1124,6 @@ module ActiveDocument
         raw_docs = v.to_a.reverse
         process_raw_docs(raw_docs, limit)
       end
-      # rubocop:enable Naming/MethodParameterName
     end
   end
 end

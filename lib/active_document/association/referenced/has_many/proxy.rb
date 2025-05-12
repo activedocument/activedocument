@@ -13,18 +13,8 @@ module ActiveDocument
         class Proxy < Association::Many
           extend Forwardable
 
-          # Class-level methods for HasMany::Proxy
+          # class-level methods for HasMany::Proxy
           module ClassMethods
-
-            # Get the eager loader object for this type of association.
-            #
-            # @example Get the eager loader object
-            #
-            # @param [ Association ] association The association object.
-            # @param [ Array<Document> ] docs The array of documents.
-            #
-            # @return [ ActiveDocument::Association::Referenced::HasMany::Eager ]
-            #   The eager loader.
             def eager_loader(association, docs)
               Eager.new(association, docs)
             end
@@ -52,8 +42,8 @@ module ActiveDocument
           # @example Create the new association.
           #   Referenced::Many.new(base, target, association)
           #
-          # @param [ ActiveDocument::Document ] base The document this association hangs off of.
-          # @param [ Array<ActiveDocument::Document> ] target The target of the association.
+          # @param [ Document ] base The document this association hangs off of.
+          # @param [ Array<Document> ] target The target of the association.
           # @param [ ActiveDocument::Association::Relatable ] association The association metadata.
           def initialize(base, target, association)
             enum = HasMany::Enumerable.new(target, base, association)
@@ -74,9 +64,9 @@ module ActiveDocument
           # @example Concat with other documents.
           #   person.posts.concat([ post_one, post_two ])
           #
-          # @param [ ActiveDocument::Document... ] *args Any number of documents.
+          # @param [ Document... ] *args Any number of documents.
           #
-          # @return [ Array<ActiveDocument::Document> ] The loaded docs.
+          # @return [ Array<Document> ] The loaded docs.
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
@@ -96,9 +86,9 @@ module ActiveDocument
           # @example Concat with other documents.
           #   person.posts.concat([ post_one, post_two ])
           #
-          # @param [ Array<ActiveDocument::Document> ] documents The docs to add.
+          # @param [ Array<Document> ] documents The docs to add.
           #
-          # @return [ Array<ActiveDocument::Document> ] The documents.
+          # @return [ Array<Document> ] The documents.
           def concat(documents)
             docs = []
             inserts = []
@@ -122,15 +112,15 @@ module ActiveDocument
           # @param [ Hash ] attributes The attributes of the new document.
           # @param [ Class ] type The optional subclass to build.
           #
-          # @return [ ActiveDocument::Document ] The new document.
+          # @return [ Document ] The new document.
           def build(attributes = {}, type = nil)
-            doc = Factory.execute_build(type || klass, attributes, execute_callbacks: false)
-            append(doc)
-            doc.apply_post_processed_defaults
-            yield(doc) if block_given?
-            doc.run_pending_callbacks
-            doc.run_callbacks(:build) { doc }
-            doc
+            Factory.execute_build(type || klass, attributes, execute_callbacks: false).tap do |doc|
+              append(doc)
+              doc.apply_post_processed_defaults
+              yield doc if block_given?
+              doc.run_pending_callbacks
+              doc.run_callbacks(:build) { doc }
+            end
           end
 
           alias_method :new, :build
@@ -142,9 +132,9 @@ module ActiveDocument
           # @example Delete the document.
           #   person.posts.delete(post)
           #
-          # @param [ ActiveDocument::Document ] document The document to remove.
+          # @param [ Document ] document The document to remove.
           #
-          # @return [ ActiveDocument::Document ] The matching document.
+          # @return [ Document ] The matching document.
           def delete(document)
             execute_callbacks_around(:remove, document) do
               result = _target.delete(document) do |doc|
@@ -154,8 +144,7 @@ module ActiveDocument
                 end
               end
 
-              reset_unloaded
-              result
+              result.tap { reset_unloaded }
             end
           end
 
@@ -169,7 +158,7 @@ module ActiveDocument
           # @example Delete all documents in the association.
           #   person.posts.delete_all
           #
-          # @example Conditonally delete all documents in the association.
+          # @example Conditionally delete all documents in the association.
           #   person.posts.delete_all({ :title => "Testing" })
           #
           # @param [ Hash ] conditions Optional conditions to delete with.
@@ -205,7 +194,7 @@ module ActiveDocument
           #     post.save
           #   end
           #
-          # @return [ Array<ActiveDocument::Document> ] The loaded docs.
+          # @return [ Array<Document> ] The loaded docs.
           def each(&block)
             if block
               _target.each(&block)
@@ -270,7 +259,7 @@ module ActiveDocument
           # @param &block Optional block to pass.
           # @yield [ Object ] Yields each enumerable element to the block.
           #
-          # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> | nil ] A document or matching documents.
+          # @return [ Document | Array<Document> | nil ] A document or matching documents.
           def find(*args, &block)
             matching = criteria.find(*args, &block)
             Array(matching).each { |doc| _target.push(doc) }
@@ -330,7 +319,7 @@ module ActiveDocument
           # @example Replace the association.
           #   person.posts.substitute([ new_post ])
           #
-          # @param [ Array<ActiveDocument::Document> ] replacement The replacement target.
+          # @param [ Array<Document> ] replacement The replacement target.
           #
           # @return [ Many ] The association.
           def substitute(replacement)
@@ -355,7 +344,7 @@ module ActiveDocument
           # @example Get the unscoped criteria.
           #   person.posts.unscoped
           #
-          # @return [ ActiveDocument::Criteria ] The unscoped criteria.
+          # @return [ Criteria ] The unscoped criteria.
           def unscoped
             klass.unscoped.where(foreign_key => _base.send(_association.primary_key))
           end
@@ -368,7 +357,7 @@ module ActiveDocument
           # @example Append the document to the association.
           #   relation.append(document)
           #
-          # @param [ ActiveDocument::Document ] document The document to append to the target.
+          # @param [ Document ] document The document to append to the target.
           def append(document)
             with_add_callbacks(document, already_related?(document)) do
               _target.push(document)
@@ -383,7 +372,7 @@ module ActiveDocument
           # @example Execute before/after add callbacks around the block.
           #   relation.with_add_callbacks(document, false)
           #
-          # @param [ ActiveDocument::Document ] document The document to append to the target.
+          # @param [ Document ] document The document to append to the target.
           # @param [ true | false ] already_related Whether the document is already related
           #   to the target.
           def with_add_callbacks(document, already_related)
@@ -397,7 +386,7 @@ module ActiveDocument
           # @example Is the document already related to the base.
           #   relation.already_related?(document)
           #
-          # @param [ ActiveDocument::Document ] document The document to possibly append to the target.
+          # @param [ Document ] document The document to possibly append to the target.
           #
           # @return [ true | false ] Whether the document is already related to the base and the
           #   association is persisted.
@@ -434,7 +423,7 @@ module ActiveDocument
           # @example Get a criteria for the association.
           #   relation.criteria
           #
-          # @return [ ActiveDocument::Criteria ] A new criteria.
+          # @return [ Criteria ] A new criteria.
           def criteria
             @criteria ||= _association.criteria(_base)
           end
@@ -445,7 +434,7 @@ module ActiveDocument
           # @example Cascade the change.
           #   relation.cascade!(document)
           #
-          # @param [ ActiveDocument::Document ] document The document to cascade on.
+          # @param [ Document ] document The document to cascade on.
           #
           # @return [ true | false ] If the association is destructive.
           def cascade!(document)
@@ -527,7 +516,7 @@ module ActiveDocument
           # @example Delete all documents in the association.
           #   person.posts.delete_all
           #
-          # @example Conditonally delete all documents in the association.
+          # @example Conditionally delete all documents in the association.
           #   person.posts.delete_all({ :title => "Testing" })
           #
           # @param [ Hash ] conditions Optional conditions to delete with.

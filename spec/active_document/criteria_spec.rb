@@ -233,60 +233,47 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#all' do
+  %i[all all_in].each do |method|
 
-    let!(:match1) do
-      Band.create!(genres: %w[electro dub])
-    end
+    describe "##{method}" do
 
-    let!(:match2) do
-      Band.create!(genres: ['house'])
-    end
+      let!(:match) do
+        Band.create!(genres: %w[electro dub])
+      end
 
-    let(:criteria) do
-      Band.all
-    end
+      let!(:non_match) do
+        Band.create!(genres: ['house'])
+      end
 
-    it 'returns the matching documents' do
-      expect(criteria).to eq([match1, match2])
-    end
-  end
+      let(:criteria) do
+        Band.send(method, genres: %w[electro dub])
+      end
 
-  describe '#contains_all' do
-
-    let!(:match) do
-      Band.create!(genres: %w[electro dub])
-    end
-
-    let!(:non_match) do
-      Band.create!(genres: ['house'])
-    end
-
-    let(:criteria) do
-      Band.contains_all(genres: %w[electro dub])
-    end
-
-    it 'returns the matching documents' do
-      expect(criteria).to eq([match])
+      it 'returns the matching documents' do
+        expect(criteria).to eq([match])
+      end
     end
   end
 
-  describe '#all_of' do
+  %i[and all_of].each do |method|
 
-    let!(:match) do
-      Band.create!(name: 'Depeche Mode', genres: ['electro'])
-    end
+    describe "##{method}" do
 
-    let!(:non_match) do
-      Band.create!(genres: ['house'])
-    end
+      let!(:match) do
+        Band.create!(name: 'Depeche Mode', genres: ['electro'])
+      end
 
-    let(:criteria) do
-      Band.all_of({ genres: 'electro' }, { name: 'Depeche Mode' })
-    end
+      let!(:non_match) do
+        Band.create!(genres: ['house'])
+      end
 
-    it 'returns the matching documents' do
-      expect(criteria).to eq([match])
+      let(:criteria) do
+        Band.send(method, { genres: 'electro' }, { name: 'Depeche Mode' })
+      end
+
+      it 'returns the matching documents' do
+        expect(criteria).to eq([match])
+      end
     end
   end
 
@@ -441,6 +428,7 @@ describe ActiveDocument::Criteria do
         criteria.documents = [band]
         criteria.context
       end
+
 
       it 'contains an equal selector' do
         expect(clone.selector).to eq({ 'name' => 'Depeche Mode' })
@@ -829,10 +817,10 @@ describe ActiveDocument::Criteria do
 
     context 'when given a Proc without a block' do
       it 'raises an error' do
-        expect do
+        lambda do
           criteria.find(-> { 'default' })
           # Proc is not serializable to a BSON type
-        end.to raise_error(BSON::Error::UnserializableClass)
+        end.should raise_error(BSON::Error::UnserializableClass)
       end
     end
 
@@ -1098,65 +1086,43 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#any_in' do
+  %i[in any_in].each do |method|
 
-    context 'when querying on a normal field' do
+    describe "##{method}" do
 
-      let!(:match) do
-        Band.create!(genres: %w[electro dub])
-      end
+      context 'when querying on a normal field' do
 
-      let!(:non_match) do
-        Band.create!(genres: ['house'])
-      end
+        let!(:match) do
+          Band.create!(genres: %w[electro dub])
+        end
 
-      let(:criteria) do
-        Band.any_in(genres: ['dub'])
-      end
-
-      it 'returns the matching documents' do
-        expect(criteria).to eq([match])
-      end
-    end
-
-    context 'when querying on a foreign key' do
-
-      let(:id) do
-        BSON::ObjectId.new
-      end
-
-      let!(:match_one) do
-        Person.create!(preference_ids: [id])
-      end
-
-      context 'when providing valid ids' do
+        let!(:non_match) do
+          Band.create!(genres: ['house'])
+        end
 
         let(:criteria) do
-          Person.any_in(preference_ids: [id])
+          Band.send(method, genres: ['dub'])
         end
 
         it 'returns the matching documents' do
-          expect(criteria).to eq([match_one])
+          expect(criteria).to eq([match])
         end
       end
 
-      context 'when providing empty strings' do
+      context 'when querying on a foreign key' do
 
-        let(:criteria) do
-          Person.any_in(preference_ids: [id, ''])
+        let(:id) do
+          BSON::ObjectId.new
         end
 
-        it 'returns the matching documents' do
-          expect(criteria).to eq([match_one])
+        let!(:match_one) do
+          Person.create!(preference_ids: [id])
         end
-      end
 
-      context 'when providing nils' do
-
-        context 'when the relation is a many to many' do
+        context 'when providing valid ids' do
 
           let(:criteria) do
-            Person.any_in(preference_ids: [id, nil])
+            Person.send(method, preference_ids: [id])
           end
 
           it 'returns the matching documents' do
@@ -1164,18 +1130,43 @@ describe ActiveDocument::Criteria do
           end
         end
 
-        context 'when the relation is a one to one' do
-
-          let!(:game) do
-            Game.create!
-          end
+        context 'when providing empty strings' do
 
           let(:criteria) do
-            Game.any_in(person_id: [nil])
+            Person.send(method, preference_ids: [id, ''])
           end
 
           it 'returns the matching documents' do
-            expect(criteria).to eq([game])
+            expect(criteria).to eq([match_one])
+          end
+        end
+
+        context 'when providing nils' do
+
+          context 'when the relation is a many to many' do
+
+            let(:criteria) do
+              Person.send(method, preference_ids: [id, nil])
+            end
+
+            it 'returns the matching documents' do
+              expect(criteria).to eq([match_one])
+            end
+          end
+
+          context 'when the relation is a one to one' do
+
+            let!(:game) do
+              Game.create!
+            end
+
+            let(:criteria) do
+              Game.send(method, person_id: [nil])
+            end
+
+            it 'returns the matching documents' do
+              expect(criteria).to eq([game])
+            end
           end
         end
       end
@@ -1242,23 +1233,21 @@ describe ActiveDocument::Criteria do
   describe '#map_reduce' do
 
     let(:map) do
-      <<~JAVASCRIPT
-        function() {
-          emit(this.name, { likes: this.likes });
-        }
-      JAVASCRIPT
+      %{
+      function() {
+        emit(this.name, { likes: this.likes });
+      }}
     end
 
     let(:reduce) do
-      <<~JAVASCRIPT
-        function(key, values) {
-          var result = { likes: 0 };
-          values.forEach(function(value) {
-            result.likes += value.likes;
-          });
-          return result;
-        }
-      JAVASCRIPT
+      %{
+      function(key, values) {
+        var result = { likes: 0 };
+        values.forEach(function(value) {
+          result.likes += value.likes;
+        });
+        return result;
+      }}
     end
 
     let!(:depeche_mode) do
@@ -1441,6 +1430,7 @@ describe ActiveDocument::Criteria do
     let(:criteria) { Band.scoped.where(name: 'Depeche Mode').asc(:name) }
     let(:association) { Band.relations['records'] }
 
+
     context 'when merging a Criteria' do
       let(:other) do
         { klass: Band, includes: [:records] }
@@ -1616,7 +1606,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#not_in' do
+  describe '#nin' do
 
     let!(:match) do
       Band.create!(name: 'Depeche Mode')
@@ -1627,7 +1617,7 @@ describe ActiveDocument::Criteria do
     end
 
     let(:criteria) do
-      Band.not_in(name: ['Tool'])
+      Band.nin(name: ['Tool'])
     end
 
     it 'returns the matching documents' do
@@ -1635,7 +1625,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#none_of' do
+  describe '#nor' do
 
     let!(:match) do
       Band.create!(name: 'Depeche Mode')
@@ -1646,7 +1636,7 @@ describe ActiveDocument::Criteria do
     end
 
     let(:criteria) do
-      Band.none_of({ name: 'Tool' }, { name: 'New Order' })
+      Band.nor({ name: 'Tool' }, { name: 'New Order' })
     end
 
     it 'returns the matching documents' do
@@ -1654,35 +1644,38 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#any_of' do
+  %i[or any_of].each do |method|
 
-    let!(:match) do
-      Band.create!(name: 'Depeche Mode')
-    end
+    describe "##{method}" do
 
-    let!(:non_match) do
-      Band.create!(name: 'Tool')
-    end
-
-    context 'when sending a normal $or criterion' do
-
-      let(:criteria) do
-        Band.any_of({ name: 'Depeche Mode' }, { name: 'New Order' })
+      let!(:match) do
+        Band.create!(name: 'Depeche Mode')
       end
 
-      it 'returns the matching documents' do
-        expect(criteria).to eq([match])
-      end
-    end
-
-    context 'when matching against an id or other parameter' do
-
-      let(:criteria) do
-        Band.any_of({ id: match.id }, { name: 'New Order' })
+      let!(:non_match) do
+        Band.create!(name: 'Tool')
       end
 
-      it 'returns the matching documents' do
-        expect(criteria).to eq([match])
+      context 'when sending a normal $or criterion' do
+
+        let(:criteria) do
+          Band.send(method, { name: 'Depeche Mode' }, { name: 'New Order' })
+        end
+
+        it 'returns the matching documents' do
+          expect(criteria).to eq([match])
+        end
+      end
+
+      context 'when matching against an id or other parameter' do
+
+        let(:criteria) do
+          Band.send(method, { id: match.id }, { name: 'New Order' })
+        end
+
+        it 'returns the matching documents' do
+          expect(criteria).to eq([match])
+        end
       end
     end
   end
@@ -1732,7 +1725,7 @@ describe ActiveDocument::Criteria do
       context 'when there are no duplicate values' do
 
         let(:criteria) do
-          Band.where(name: { '$exists' => true })
+          Band.where(:name.exists => true)
         end
 
         let!(:plucked) do
@@ -1805,7 +1798,7 @@ describe ActiveDocument::Criteria do
       context 'when plucking multi-fields' do
 
         let(:plucked) do
-          Band.where(name: { '$exists' => true }).pluck(:name, :likes)
+          Band.where(:name.exists => true).pluck(:name, :likes)
         end
 
         it 'returns the values' do
@@ -1816,7 +1809,7 @@ describe ActiveDocument::Criteria do
       context 'when there are duplicate values' do
 
         let(:plucked) do
-          Band.where(name: { '$exists' => true }).pluck(:likes)
+          Band.where(:name.exists => true).pluck(:likes)
         end
 
         it 'returns the duplicates' do
@@ -1943,7 +1936,7 @@ describe ActiveDocument::Criteria do
       end
 
       context 'when fallbacks are enabled with a locale list' do
-        with_i18n_fallbacks
+        require_fallbacks
 
         before do
           I18n.fallbacks[:he] = [:en]
@@ -1957,7 +1950,7 @@ describe ActiveDocument::Criteria do
           I18n.locale = :en
           Dictionary.create!(description: 'english-text')
           I18n.locale = :he
-          expect(plucked).to eq('english-text')
+          plucked.should == 'english-text'
         end
       end
 
@@ -2071,410 +2064,9 @@ describe ActiveDocument::Criteria do
       end
 
       it 'returns the correct hash' do
-        expect(plucked).to eq([[[1, 2]], [[1, 2]], [[1, 3]]])
-      end
-    end
-  end
-
-  describe '#pluck_each' do
-
-    let!(:depeche) do
-      Band.create!(name: 'Depeche Mode', likes: 3)
-    end
-
-    let!(:tool) do
-      Band.create!(name: 'Tool', likes: 3)
-    end
-
-    let!(:photek) do
-      Band.create!(name: 'Photek', likes: 1)
-    end
-
-    let(:maniacs) do
-      Band.create!(name: '10,000 Maniacs', likes: 1, sales: '1E2')
-    end
-
-    context 'when block given' do
-
-      let!(:plucked_values) { [] }
-
-      let!(:plucked) do
-        Band.pluck_each(:name) { |value| plucked_values << value }
-      end
-
-      it 'returns the context' do
-        expect(plucked).to be_a ActiveDocument::Contextual::Mongo
-      end
-
-      it 'yields values to the block' do
-        expect(plucked_values).to eq(['Depeche Mode', 'Tool', 'Photek'])
-      end
-    end
-
-    context 'when block not given' do
-
-      let!(:plucked) do
-        Band.pluck_each(:name)
-      end
-
-      it 'returns an Enumerator' do
-        expect(plucked).to be_an Enumerator
-      end
-
-      it 'can yield the values' do
-        expect(plucked.map { |value| value }).to eq(['Depeche Mode', 'Tool', 'Photek'])
-      end
-    end
-
-    context 'when the field is aliased' do
-
-      let!(:expensive) do
-        Product.create!(price: 100000)
-      end
-
-      let!(:cheap) do
-        Product.create!(price: 1)
-      end
-
-      context 'when using alias_attribute' do
-
-        let!(:plucked) { [] }
-        let!(:pluck_each) { Product.pluck_each(:price) { |v| plucked << v } }
-
-        it 'uses the aliases' do
-          expect(plucked).to eq([100000, 1])
-        end
-      end
-    end
-
-    context 'when the criteria matches' do
-
-      context 'when there are no duplicate values' do
-
-        let(:criteria) do
-          Band.where(name: { '$exists' => true })
-        end
-
-        let!(:plucked) { [] }
-        let!(:pluck_each) { criteria.pluck_each(:name) { |v| plucked << v } }
-
-        it 'returns the values' do
-          expect(plucked).to contain_exactly('Depeche Mode', 'Tool', 'Photek')
-        end
-
-        context 'when subsequently executing the criteria without a pluck' do
-          it 'does not limit the fields' do
-            expect(criteria.first.likes).to eq(3)
-          end
-        end
-
-        context 'when the field is a subdocument' do
-
-          let(:criteria) do
-            Band.where(name: 'FKA Twigs')
-          end
-
-          context 'when a top-level field and a subdocument field are plucked' do
-            before do
-              Band.create!(name: 'FKA Twigs')
-              Band.create!(name: 'FKA Twigs', records: [Record.new(name: 'LP1')])
-            end
-
-            let(:expected) do
-              [
-                ['FKA Twigs', nil],
-                ['FKA Twigs', ['LP1']]
-              ]
-            end
-
-            it 'returns the list of top-level field and subdocument values' do
-              plucked = []
-              criteria.pluck_each(:name, 'records.name') { |v| plucked << v }
-              expect(plucked).to eq(expected)
-            end
-          end
-
-          context 'when only a subdocument field is plucked' do
-
-            before do
-              Band.create!(name: 'FKA Twigs')
-              Band.create!(name: 'FKA Twigs', records: [Record.new(name: 'LP1')])
-            end
-
-            let(:expected) do
-              [
-                nil,
-                ['LP1']
-              ]
-            end
-
-            it 'returns the list of subdocument values' do
-              plucked = []
-              criteria.pluck_each('records.name') { |v| plucked << v }
-              expect(plucked).to eq(expected)
-            end
-          end
-        end
-      end
-
-      context 'when plucking multi-fields' do
-
-        let!(:plucked) { [] }
-        let!(:pluck_each) { Band.where(name: { '$exists' => true }).pluck_each(:name, :likes) { |v| plucked << v } }
-
-        it 'returns the values' do
-          expect(plucked).to contain_exactly(['Depeche Mode', 3], ['Tool', 3], ['Photek', 1])
-        end
-      end
-
-      context 'when there are duplicate values' do
-
-        let!(:plucked) { [] }
-        let!(:pluck_each) { Band.where(name: { '$exists' => true }).pluck_each(:likes) { |v| plucked << v } }
-
-        it 'returns the duplicates' do
-          expect(plucked).to contain_exactly(3, 3, 1)
-        end
-      end
-    end
-
-    context 'when the criteria does not match' do
-
-      let!(:plucked) { [] }
-      let!(:pluck_each) { Band.where(name: 'New Order').pluck_each(:_id) { |v| plucked << v } }
-
-      it 'returns an empty array' do
-        expect(plucked).to be_empty
-      end
-    end
-
-    context 'when plucking an aliased field' do
-
-      let!(:plucked) { [] }
-      let!(:pluck_each) { Band.all.pluck_each(:id) { |v| plucked << v } }
-
-      it 'returns the field values' do
-        expect(plucked).to eq([depeche.id, tool.id, photek.id])
-      end
-    end
-
-    context 'when plucking existent and non-existent fields' do
-
-      let!(:plucked) { [] }
-      let!(:pluck_each) { Band.all.pluck_each(:id, :fooz) { |v| plucked << v } }
-
-      it 'returns nil for the field that doesnt exist' do
-        expect(plucked).to eq([[depeche.id, nil], [tool.id, nil], [photek.id, nil]])
-      end
-    end
-
-    context 'when plucking a field that doesnt exist' do
-
-      context 'when pluck one field' do
-
-        let!(:plucked) { [] }
-        let!(:pluck_each) { Band.all.pluck_each(:foo) { |v| plucked << v } }
-
-        it 'returns a array with nil values' do
-          expect(plucked).to eq([nil, nil, nil])
-        end
-      end
-
-      context 'when pluck multiple fields' do
-
-        let!(:plucked) { [] }
-        let!(:pluck_each) { Band.all.pluck_each(:foo, :bar) { |v| plucked << v } }
-
-        it 'returns a nil arrays' do
-          expect(plucked).to eq([[nil, nil], [nil, nil], [nil, nil]])
-        end
-      end
-    end
-
-    context 'when plucking a localized field' do
-
-      before do
-        I18n.locale = :en
-        d = Dictionary.create!(description: 'english-text')
-        I18n.locale = :de
-        d.description = 'deutsch-text'
-        d.save!
-      end
-
-      after do
-        I18n.locale = :en
-      end
-
-      context 'when plucking the entire field' do
-
-        let!(:plucked) { [] }
-        let!(:plucked_translations) { [] }
-        let!(:plucked_translations_both) { [] }
-
-        let!(:pluck_each) do
-          Dictionary.all.pluck_each(:description) { |v| plucked << v }
-        end
-
-        let!(:pluck_each_translations) do
-          Dictionary.all.pluck_each(:description_translations) { |v| plucked_translations << v }
-        end
-
-        let!(:pluck_each_translations_both) do
-          Dictionary.all.pluck_each(:description_translations, :description) { |v| plucked_translations_both << v }
-        end
-
-        it 'returns the demongoized translations' do
-          expect(plucked.first).to eq('deutsch-text')
-        end
-
-        it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
-        end
-
-        it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text'])
-        end
-      end
-
-      context 'when plucking a specific locale' do
-
-        let(:plucked) do
-          Dictionary.all.pluck_each(:'description.de')
-        end
-
-        it 'returns the specific translations' do
-          expect(plucked.first).to eq('deutsch-text')
-        end
-      end
-
-      context 'when plucking a specific locale from _translations field' do
-
-        let(:plucked) do
-          Dictionary.all.pluck_each(:'description_translations.de')
-        end
-
-        it 'returns the specific translations' do
-          expect(plucked.first).to eq('deutsch-text')
-        end
-      end
-
-      context 'when fallbacks are enabled with a locale list' do
-        with_i18n_fallbacks
-
-        around(:all) do |example|
-          prev_fallbacks = I18n.fallbacks.dup
-          I18n.fallbacks[:he] = [:en]
-          example.run
-          I18n.fallbacks = prev_fallbacks
-        end
-
-        let(:plucked) do
-          Dictionary.all.pluck_each(:description).first
-        end
-
-        it 'correctly uses the fallback' do
-          I18n.locale = :en
-          Dictionary.create!(description: 'english-text')
-          I18n.locale = :he
-          expect(plucked).to eq 'english-text'
-        end
-      end
-
-      context 'when the localized field is embedded' do
-        before do
-          p = Passport.new
-          I18n.locale = :en
-          p.name = 'Neil'
-          I18n.locale = :he
-          p.name = 'Nissim'
-
-          Person.create!(passport: p, employer_id: 12345)
-        end
-
-        let(:plucked) do
-          Person.where(employer_id: 12345).pluck_each('pass.name').first
-        end
-
-        let(:plucked_translations) do
-          Person.where(employer_id: 12345).pluck_each('pass.name_translations').first
-        end
-
-        let(:plucked_translations_field) do
-          Person.where(employer_id: 12345).pluck_each('pass.name_translations.en').first
-        end
-
-        it 'returns the translation for the current locale' do
-          expect(plucked).to eq('Nissim')
-        end
-
-        it 'returns the full _translation hash' do
-          expect(plucked_translations).to eq({ 'en' => 'Neil', 'he' => 'Nissim' })
-        end
-
-        it 'returns the translation for the requested locale' do
-          expect(plucked_translations_field).to eq('Neil')
-        end
-      end
-    end
-
-    context 'when plucking a field to be demongoized' do
-
-      let(:plucked) do
-        Band.where(name: maniacs.name).pluck_each(:sales)
-      end
-
-      context 'when value is stored as string' do
-        config_override :map_big_decimal_to_decimal128, false
-
-        it 'demongoizes the field' do
-          expect(plucked.first).to be_a(BigDecimal)
-          expect(plucked.first).to eq(BigDecimal('1E2'))
-        end
-      end
-
-      context 'when value is stored as decimal128' do
-        config_override :map_big_decimal_to_decimal128, true
-
-        it 'demongoizes the field' do
-          expect(plucked.first).to be_a(BigDecimal)
-          expect(plucked.first).to eq(BigDecimal('1E2'))
-        end
-      end
-    end
-
-    context 'when plucking an embedded field' do
-      let(:label) { Label.new(sales: '1E2') }
-      let!(:band) { Band.create!(label: label) }
-
-      let!(:plucked) { [] }
-      let!(:pluck_each) { Band.where(_id: band.id).pluck_each('label.sales') { |v| plucked << v } }
-
-      it 'demongoizes the field' do
-        expect(plucked.first).to eq(BigDecimal('1E2'))
-      end
-    end
-
-    context 'when plucking an embeds_many field' do
-      let(:label) { Label.new(sales: '1E2') }
-      let!(:band) { Band.create!(labels: [label]) }
-
-      let!(:plucked) { [] }
-      let!(:pluck_each) { Band.where(_id: band.id).pluck_each('labels.sales') { |v| plucked << v } }
-
-      it 'demongoizes the field' do
-        expect(plucked.first).to eq([BigDecimal('1E2')])
-      end
-    end
-
-    context 'when plucking a nonexistent embedded field' do
-      let(:label) { Label.new(sales: '1E2') }
-      let!(:band) { Band.create!(label: label) }
-
-      let!(:plucked) { [] }
-      let!(:pluck_each) { Band.where(_id: band.id).pluck_each('label.qwerty') { |v| plucked << v } }
-
-      it 'returns nil' do
-        expect(plucked.first).to be_nil
+        expect(plucked).to eq([
+          [[1, 2]], [[1, 2]], [[1, 3]]
+        ])
       end
     end
   end
@@ -2528,9 +2120,7 @@ describe ActiveDocument::Criteria do
 
     before do
       class Person
-        def self.ages
-          self
-        end
+        def self.ages = self
       end
     end
 
@@ -2676,6 +2266,197 @@ describe ActiveDocument::Criteria do
     end
   end
 
+  describe '#raw' do
+    let(:result) { results[0] }
+
+    context 'when the parameters are inconsistent' do
+      let(:results) { criteria.raw(false, typed: false).to_a }
+      let(:criteria) { Person }
+
+      it 'raises an ArgumentError' do
+        expect { result }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when returning untyped results' do
+      let(:results) { criteria.raw.to_a }
+
+      context 'without associations' do
+        before do
+          Band.create(name: 'the band',
+                      active: true,
+                      genres: %w[abc def],
+                      member_count: 112,
+                      rating: 4.2,
+                      created: Time.zone.now,
+                      updated: Time.zone.now,
+                      sales: 1_234_567.89,
+                      decimal: 9_876_543.21,
+                      decibels: 140..170,
+                      deleted: false,
+                      mojo: Math::PI,
+                      tags: { 'one' => 1, 'two' => 2 },
+                      location: LatLng.new(41.74, -111.83))
+        end
+
+        let(:criteria) { Band.where(name: 'the band') }
+
+        it 'returns a hash' do
+          expect(result).to be_a(Hash)
+        end
+
+        it 'does not demongoize the result' do
+          expect(result['genres']).to be_a(Array)
+          expect(result['decibels']).to eq({ 'min' => 140, 'max' => 170 })
+          expect(result['location']).to eq [-111.83, 41.74]
+        end
+      end
+
+      context 'with associations' do
+        before do
+          Person.create({
+            addresses: [Address.new(end_date: 2.months.from_now)],
+            passport: Passport.new(exp: 1.year.from_now)
+          })
+        end
+
+        let(:criteria) { Person }
+
+        it 'demongoizes the embedded relation' do
+          expect(result['addresses']).to be_a(Array)
+          expect(result['addresses'][0]['end_date']).to be_a(Time)
+
+          # `pass` is how it is stored, `passport` is how it is aliased
+          expect(result['pass']).to be_a(Hash)
+          expect(result['pass']['exp']).to be_a(Time)
+        end
+      end
+
+      context 'with projections' do
+        before { Person.create(title: 'sir', dob: Date.new(1980, 1, 1)) }
+
+        context 'using #only' do
+          let(:criteria) { Person.only(:dob) }
+
+          it 'produces a hash with only the _id and the requested key' do
+            expect(result).to be_a(Hash)
+            expect(result.keys).to eq %w[_id dob]
+            expect(result['dob']).to eq Date.new(1980, 1, 1)
+          end
+        end
+
+        context 'using #without' do
+          let(:criteria) { Person.without(:dob) }
+
+          it 'produces a hash that excludes requested key' do
+            expect(result).to be_a(Hash)
+            expect(result.keys).to_not include('dob')
+            expect(result.keys).to be_present
+          end
+        end
+      end
+    end
+
+    context 'when returning typed results' do
+      let(:results) { criteria.raw(typed: true).to_a }
+
+      context 'without associations' do
+        before do
+          Band.create(name: 'the band',
+                      active: true,
+                      genres: %w[abc def],
+                      member_count: 112,
+                      rating: 4.2,
+                      created: Time.zone.now,
+                      updated: Time.zone.now,
+                      sales: 1_234_567.89,
+                      decimal: 9_876_543.21,
+                      decibels: 140..170,
+                      deleted: false,
+                      mojo: Math::PI,
+                      tags: { 'one' => 1, 'two' => 2 },
+                      location: LatLng.new(41.74, -111.83))
+        end
+
+        let(:criteria) { Band.where(name: 'the band') }
+
+        it 'returns a hash' do
+          expect(result).to be_a(Hash)
+        end
+
+        it 'demongoizes the result' do
+          expect(result['genres']).to be_a(Array)
+          expect(result['decibels']).to be_a(Range)
+          expect(result['location']).to be_a(LatLng)
+        end
+      end
+
+      context 'with associations' do
+        before do
+          Person.create({
+            addresses: [Address.new(end_date: 2.months.from_now)],
+            passport: Passport.new(exp: 1.year.from_now)
+          })
+        end
+
+        let(:criteria) { Person }
+
+        it 'demongoizes the embedded relation' do
+          expect(result['addresses']).to be_a(Array)
+          expect(result['addresses'][0]['end_date']).to be_a(Date)
+
+          # `pass` is how it is stored, `passport` is how it is aliased
+          expect(result['pass']).to be_a(Hash)
+          expect(result['pass']['exp']).to be_a(Date)
+        end
+      end
+
+      context 'with projections' do
+        before { Person.create(title: 'sir', dob: Date.new(1980, 1, 1)) }
+
+        context 'using #only' do
+          let(:criteria) { Person.only(:dob) }
+
+          it 'produces a hash with only the _id and the requested key' do
+            expect(result).to be_a(Hash)
+            expect(result.keys).to eq %w[_id dob]
+            expect(result['dob']).to eq Date.new(1980, 1, 1)
+          end
+        end
+
+        context 'using #without' do
+          let(:criteria) { Person.without(:dob) }
+
+          it 'produces a hash that excludes requested key' do
+            expect(result).to be_a(Hash)
+            expect(result.keys).to_not include('dob')
+            expect(result.keys).to be_present
+          end
+        end
+      end
+    end
+  end
+
+  describe '#max_scan' do
+    max_server_version '4.0'
+
+    let!(:band) do
+      Band.create!(name: 'Depeche Mode')
+    end
+
+    let!(:band2) do
+      Band.create!(name: 'Tool')
+    end
+
+    let(:criteria) do
+      Band.where({}).max_scan(1)
+    end
+
+    it 'executes the criteria while properly giving the max scan to Mongo' do
+      expect(criteria.to_ary).to eq [band]
+    end
+  end
+
   describe '#to_proc' do
 
     let(:criteria) do
@@ -2778,13 +2559,13 @@ describe ActiveDocument::Criteria do
     context 'when provided no arguments' do
       context 'on a model class' do
         it 'returns an empty criteria' do
-          expect(Band.where.selector).to eq({})
+          Band.where.selector.should == {}
         end
       end
 
       context 'on an association' do
         it 'returns an empty criteria' do
-          expect(match.records.where.selector).to eq({})
+          match.records.where.selector.should == {}
         end
       end
     end
@@ -2792,17 +2573,17 @@ describe ActiveDocument::Criteria do
     context 'when provided multiple arguments' do
       context 'on a model class' do
         it 'raises ArgumentError' do
-          expect do
+          lambda do
             Band.where({ foo: 1 }, { bar: 2 })
-          end.to raise_error(ArgumentError, /where requires zero or one arguments/)
+          end.should raise_error(ArgumentError, /where requires zero or one arguments/)
         end
       end
 
       context 'on an association' do
         it 'raises ArgumentError' do
-          expect do
+          lambda do
             match.records.where({ foo: 1 }, { bar: 2 })
-          end.to raise_error(ArgumentError, /where requires zero or one arguments/)
+          end.should raise_error(ArgumentError, /where requires zero or one arguments/)
         end
       end
     end
@@ -3289,12 +3070,14 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly combines the conditions' do
-          expect(criteria.selector).to eq({
-            '$or' => [
-              { 'labels' => { '$elemMatch' => { 'age' => { '$gte' => 10, '$lte' => 15 } } } },
-              { 'labels' => 8 }
-            ]
-          })
+          expect(criteria.selector).to eq('$or' => [
+            { 'labels' => {
+              '$elemMatch' => {
+                'age' => { '$gte' => 10, '$lte' => 15 }
+              }
+            } },
+            { 'labels' => 8 }
+          ])
         end
       end
 
@@ -3335,10 +3118,28 @@ describe ActiveDocument::Criteria do
       Band.create!(name: 'Depeche Mode')
     end
 
+    it 'is deprecated' do
+      expect(ActiveDocument.logger).to receive(:warn).with(/for_js is deprecated/).and_call_original
+
+      Band.for_js("this.name == 'Depeche Mode'")
+    end
+
     context 'when the code has no scope' do
 
       let(:criteria) do
         Band.for_js("this.name == 'Depeche Mode'")
+      end
+
+      it 'returns the matching documents' do
+        expect(criteria).to eq([match])
+      end
+    end
+
+    context 'when the code has scope' do
+      max_server_version '4.2'
+
+      let(:criteria) do
+        Band.for_js('this.name == param', param: 'Depeche Mode')
       end
 
       it 'returns the matching documents' do
@@ -3404,38 +3205,6 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#respond_to_missing?' do
-
-    let(:criteria) do
-      Person.all
-    end
-
-    context 'when the method exists on the class' do
-      it 'returns true' do
-        expect(criteria.respond_to?(:minor)).to be true
-        expect(criteria.respond_to?(:older_than)).to be true
-      end
-    end
-
-    context 'when the method exists on the criteria' do
-      it 'returns true' do
-        expect(criteria.respond_to?(:embedded?)).to be true
-      end
-    end
-
-    context 'when the method exists on array' do
-      it 'returns true' do
-        expect(criteria.respond_to?(:at)).to be true
-      end
-    end
-
-    context 'when the method does not exist' do
-      it 'returns false' do
-        expect(criteria.respond_to?(:to_hash)).to be false
-      end
-    end
-  end
-
   describe '#uniq' do
 
     let!(:band_one) do
@@ -3497,7 +3266,7 @@ describe ActiveDocument::Criteria do
 
       let(:criteria) do
         Bar.geo_spatial(
-          location: { '$geoWithin' => { '$polygon' => [[50, 10], [50, 20], [60, 20], [60, 10], [50, 10]] } }
+          :location.within_polygon => [[[50, 10], [50, 20], [60, 20], [60, 10], [50, 10]]]
         )
       end
 
@@ -3507,7 +3276,7 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#size_of' do
+  describe '#with_size' do
 
     let!(:match) do
       Band.create!(genres: %w[electro dub])
@@ -3518,7 +3287,7 @@ describe ActiveDocument::Criteria do
     end
 
     let(:criteria) do
-      Band.size_of(genres: 2)
+      Band.with_size(genres: 2)
     end
 
     it 'returns the matching documents' do
@@ -3526,14 +3295,14 @@ describe ActiveDocument::Criteria do
     end
   end
 
-  describe '#type_of' do
+  describe '#with_type' do
 
     let!(:match) do
       Band.create!(name: 'Depeche Mode')
     end
 
     let(:criteria) do
-      Band.type_of(name: 2)
+      Band.with_type(name: 2)
     end
 
     it 'returns the matching documents' do

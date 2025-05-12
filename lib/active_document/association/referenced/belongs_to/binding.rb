@@ -22,8 +22,14 @@ module ActiveDocument
             binding do
               check_polymorphic_inverses!(_target)
               bind_foreign_key(_base, record_id(_target))
-              bind_polymorphic_inverse_type(_base, _target.class.name)
-              if (inverse = _association.inverse(_target)) && set_base_association
+
+              # set the inverse type (e.g. "#{name}_type") for new polymorphic associations
+              if _association.inverse_type && !_base.frozen?
+                key = _association.resolver.default_key_for(_target)
+                bind_polymorphic_inverse_type(_base, key)
+              end
+
+              if ((inverse = _association.inverse(_target))) && set_base_association
                 if _base.referenced_many?
                   _target.__send__(inverse).push(_base)
                 else
@@ -65,7 +71,7 @@ module ActiveDocument
           # @example Check for inverses errors.
           #   binding.check_inverses!(doc)
           #
-          # @param [ ActiveDocument::Document ] doc The document to check.
+          # @param [ Document ] doc The document to check.
           def check_polymorphic_inverses!(doc)
             inverses = _association.inverses(doc)
             return unless inverses.length > 1 && _base.send(_association.foreign_key).nil?

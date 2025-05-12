@@ -10,7 +10,7 @@ describe ActiveDocument::Fields::ForeignKey do
       described_class.new(
         :vals,
         association: Person.relations['preferences'],
-        type: :array,
+        type: Array,
         default: [],
         identity: true
       )
@@ -54,7 +54,9 @@ describe ActiveDocument::Fields::ForeignKey do
       end
 
       it 'adds the current to the modifications' do
-        expect(mods['preference_ids']).to eq([preference_one.id, preference_three.id])
+        expect(mods['preference_ids']).to eq(
+          [preference_one.id, preference_three.id]
+        )
       end
     end
   end
@@ -69,7 +71,7 @@ describe ActiveDocument::Fields::ForeignKey do
       described_class.new(
         :vals,
         association: Person.relations['posts'],
-        type: :array,
+        type: Array,
         default: default,
         identity: true
       )
@@ -90,7 +92,7 @@ describe ActiveDocument::Fields::ForeignKey do
       described_class.new(
         :vals,
         association: Person.relations['posts'],
-        type: :array,
+        type: Array,
         default: [],
         identity: true
       )
@@ -110,7 +112,7 @@ describe ActiveDocument::Fields::ForeignKey do
     context 'when provided a document' do
 
       let(:field) do
-        described_class.new(:person_id, type: :undefined, association: association)
+        described_class.new(:person_id, type: Object, association: association)
       end
 
       let(:game) do
@@ -129,7 +131,7 @@ describe ActiveDocument::Fields::ForeignKey do
     context 'when the type is an array' do
 
       let(:field) do
-        described_class.new(:preference_ids, type: :array, default: [], association: association)
+        described_class.new(:preference_ids, type: Array, default: [], association: association)
       end
 
       context 'when providing a single value' do
@@ -202,7 +204,7 @@ describe ActiveDocument::Fields::ForeignKey do
             end
 
             let!(:field) do
-              described_class.new(:account_ids, type: :array, default: [], association: association)
+              described_class.new(:account_ids, type: Array, default: [], association: association)
             end
 
             let(:id_one) do
@@ -265,7 +267,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
 
       let(:field) do
-        described_class.new(:person_id, type: :undefined, association: association)
+        described_class.new(:person_id, type: Object, association: association)
       end
 
       context 'when providing a single value' do
@@ -317,7 +319,7 @@ describe ActiveDocument::Fields::ForeignKey do
           end
 
           let(:field) do
-            described_class.new(:person_id, type: :undefined, association: association)
+            described_class.new(:person_id, type: Object, association: association)
           end
 
           context 'when the value is an id string' do
@@ -389,7 +391,7 @@ describe ActiveDocument::Fields::ForeignKey do
             end
 
             let(:field) do
-              described_class.new(:person_id, type: :undefined, association: association)
+              described_class.new(:person_id, type: Object, association: association)
             end
 
             let(:id_one) do
@@ -445,14 +447,14 @@ describe ActiveDocument::Fields::ForeignKey do
       end
     end
 
-    context 'when the association is polymoprhic' do
+    context 'when the association is polymorphic' do
 
       let(:association) do
         Agent.reflect_on_association(:names)
       end
 
       let(:field) do
-        described_class.new(:nameable_id, type: :undefined, association: association)
+        described_class.new(:nameable_id, type: Object, association: association)
       end
 
       let(:value) do
@@ -474,7 +476,7 @@ describe ActiveDocument::Fields::ForeignKey do
     context 'when the key is resizable' do
 
       let(:field) do
-        described_class.new(:test, type: :array, overwrite: true)
+        described_class.new(:test, type: Array, overwrite: true)
       end
 
       it 'returns true' do
@@ -485,7 +487,7 @@ describe ActiveDocument::Fields::ForeignKey do
     context 'when the key is not resizable' do
 
       let(:field) do
-        described_class.new(:test, type: :bson_object_id, overwrite: true)
+        described_class.new(:test, type: BSON::ObjectId, overwrite: true)
       end
 
       it 'returns false' do
@@ -509,7 +511,8 @@ describe ActiveDocument::Fields::ForeignKey do
     end
     let(:association) { Game.relations['person'] }
 
-    context 'when field type is Array' do
+
+    context 'type is Array' do
       let(:type) { Array }
 
       context 'when the object is a BSON::ObjectId' do
@@ -612,15 +615,15 @@ describe ActiveDocument::Fields::ForeignKey do
         end
       end
 
-      context 'when field type is String' do
+      context 'when foreign key is a String' do
         before do
-          Person.field(:_id, type: :string, overwrite: true)
+          Person.field(:_id, type: String, overwrite: true)
         end
 
         after do
           Person.field(
             :_id,
-            type: :bson_object_id,
+            type: BSON::ObjectId,
             pre_processed: true,
             default: -> { BSON::ObjectId.new },
             overwrite: true
@@ -652,15 +655,15 @@ describe ActiveDocument::Fields::ForeignKey do
         end
       end
 
-      context 'when field type is Integer' do
+      context 'when foreign key is an Integer' do
         before do
-          Person.field(:_id, type: :integer, overwrite: true)
+          Person.field(:_id, type: Integer, overwrite: true)
         end
 
         after do
           Person.field(
             :_id,
-            type: :bson_object_id,
+            type: BSON::ObjectId,
             pre_processed: true,
             default: -> { BSON::ObjectId.new },
             overwrite: true
@@ -685,7 +688,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
     end
 
-    context 'when field type is Set' do
+    context 'type is Set' do
       let(:type) { Set }
 
       context 'when the object is an Array of BSON::ObjectId' do
@@ -705,7 +708,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
     end
 
-    context 'when field type is Object' do
+    context 'type is Object' do
       let(:type) { Object }
 
       context 'when the object is a BSON::ObjectId' do
@@ -741,7 +744,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
 
       context 'when the object is nil' do
-        let(:object) { nil }
+        let(:object) { '' }
 
         it 'returns nil' do
           expect(mongoized).to be_nil
@@ -759,22 +762,20 @@ describe ActiveDocument::Fields::ForeignKey do
       context 'when the object is a Set' do
         let(:object) { Set['blah'] }
 
-        it 'returns an array' do
-          # was previously:
-          # expect(mongoized).to eq(Set['blah'])
-          expect(mongoized).to eq(['blah'])
+        it 'returns the set' do
+          expect(mongoized).to eq(Set['blah'])
         end
       end
 
-      context 'when field type is String' do
+      context 'when foreign key is a String' do
         before do
-          Person.field(:_id, type: :string, overwrite: true)
+          Person.field(:_id, type: String, overwrite: true)
         end
 
         after do
           Person.field(
             :_id,
-            type: :bson_object_id,
+            type: BSON::ObjectId,
             pre_processed: true,
             default: -> { BSON::ObjectId.new },
             overwrite: true
@@ -806,15 +807,15 @@ describe ActiveDocument::Fields::ForeignKey do
         end
       end
 
-      context 'when field type is Integer' do
+      context 'when foreign key is an Integer' do
         before do
-          Person.field(:_id, type: :integer, overwrite: true)
+          Person.field(:_id, type: Integer, overwrite: true)
         end
 
         after do
           Person.field(
             :_id,
-            type: :bson_object_id,
+            type: BSON::ObjectId,
             pre_processed: true,
             default: -> { BSON::ObjectId.new },
             overwrite: true
@@ -842,10 +843,10 @@ describe ActiveDocument::Fields::ForeignKey do
 
   describe '#resizable' do
 
-    context 'when field type is array' do
+    context 'when the type is an array' do
 
       let(:field) do
-        described_class.new(:vals, type: :array, default: [])
+        described_class.new(:vals, type: Array, default: [])
       end
 
       it 'returns true' do
@@ -853,10 +854,10 @@ describe ActiveDocument::Fields::ForeignKey do
       end
     end
 
-    context 'when field type is object' do
+    context 'when the type is an object' do
 
       let(:field) do
-        described_class.new(:vals, type: :undefined, default: [])
+        described_class.new(:vals, type: Object, default: [])
       end
 
       it 'returns false' do

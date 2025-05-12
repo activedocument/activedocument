@@ -59,8 +59,8 @@ module ActiveDocument
           # @example Create the new association.
           #   Many.new(person, addresses, association)
           #
-          # @param [ ActiveDocument::Document ] base The document this association hangs off of.
-          # @param [ Array<ActiveDocument::Document> ] target The child documents of the association.
+          # @param [ Document ] base The document this association hangs off of.
+          # @param [ Array<Document> ] target The child documents of the association.
           # @param [ ActiveDocument::Association::Relatable ] association The association metadata.
           #
           # @return [ Many ] The proxy.
@@ -85,13 +85,13 @@ module ActiveDocument
           # @example Push a document.
           #   person.addresses.push(address)
           #
-          # @param [ ActiveDocument::Document... ] *args Any number of documents.
+          # @param [ Document... ] *args Any number of documents.
           def <<(*args)
             docs = args.flatten
             return unless docs.any?
             return concat(docs) if docs.size > 1
 
-            if (doc = docs.first)
+            docs.first.tap do |doc|
               append(doc)
               doc.save if persistable? && !_assigning?
             end
@@ -117,9 +117,9 @@ module ActiveDocument
           # @example Concat with other documents.
           #   person.addresses.concat([ address_one, address_two ])
           #
-          # @param [ Array<ActiveDocument::Document> ] docs The docs to add.
+          # @param [ Array<Document> ] docs The docs to add.
           #
-          # @return [ Array<ActiveDocument::Document> ] The documents.
+          # @return [ Array<Document> ] The documents.
           def concat(docs)
             batch_insert(docs) unless docs.empty?
             self
@@ -134,16 +134,16 @@ module ActiveDocument
           # @param [ Hash ] attributes The attributes to build the document with.
           # @param [ Class ] type Optional class to build the document with.
           #
-          # @return [ ActiveDocument::Document ] The new document.
+          # @return [ Document ] The new document.
           def build(attributes = {}, type = nil)
-            doc = Factory.execute_build(type || _association.klass, attributes, execute_callbacks: false)
-            append(doc)
-            doc.apply_post_processed_defaults
-            yield(doc) if block_given?
-            doc.run_pending_callbacks
-            doc.run_callbacks(:build) { doc }
-            _base._reset_memoized_descendants!
-            doc
+            Factory.execute_build(type || _association.klass, attributes, execute_callbacks: false).tap do |doc|
+              append(doc)
+              doc.apply_post_processed_defaults
+              yield doc if block_given?
+              doc.run_pending_callbacks
+              doc.run_callbacks(:build) { doc }
+              _base._reset_memoized_descendants!
+            end
           end
 
           alias_method :new, :build
@@ -202,24 +202,24 @@ module ActiveDocument
           # @example Delete the document from the association.
           #   person.addresses.delete(address)
           #
-          # @param [ ActiveDocument::Document ] document The document to be deleted.
+          # @param [ Document ] document The document to be deleted.
           #
-          # @return [ ActiveDocument::Document | nil ] The deleted document or nil if nothing deleted.
+          # @return [ Document | nil ] The deleted document or nil if nothing deleted.
           def delete(document)
             execute_callbacks_around(:remove, document) do
-              doc = _target.delete_one(document)
-              if doc && !_binding?
-                _unscoped.delete_one(doc)
-                if _assigning?
-                  _base.add_atomic_pull(doc)
-                else
-                  doc.delete(suppress: true)
-                  unbind_one(doc)
+              _target.delete_one(document).tap do |doc|
+                if doc && !_binding?
+                  _unscoped.delete_one(doc)
+                  if _assigning?
+                    _base.add_atomic_pull(doc)
+                  else
+                    doc.delete(suppress: true)
+                    unbind_one(doc)
+                  end
+                  update_attributes_hash
                 end
-                update_attributes_hash
+                reindex
               end
-              reindex
-              doc
             end
           end
 
@@ -336,7 +336,7 @@ module ActiveDocument
           # @param &block Optional block to pass.
           # @yield [ Object ] Yields each enumerable element to the block.
           #
-          # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> | nil ] A document or matching documents.
+          # @return [ Document | Array<Document> | nil ] A document or matching documents.
           def find(...)
             criteria.find(...)
           end
@@ -346,7 +346,7 @@ module ActiveDocument
           # @example Get the in memory documents.
           #   relation.in_memory
           #
-          # @return [ Array<ActiveDocument::Document> ] The documents in memory.
+          # @return [ Array<Document> ] The documents in memory.
           alias_method :in_memory, :_target
 
           # Pop documents off the association. This can be a single document or
@@ -361,7 +361,7 @@ module ActiveDocument
           # @param [ Integer ] count The number of documents to pop, or 1 if not
           #   provided.
           #
-          # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> | nil ] The popped document(s).
+          # @return [ Document | Array<Document> | nil ] The popped document(s).
           def pop(count = nil)
             return [] if count&.zero?
 
@@ -381,7 +381,7 @@ module ActiveDocument
           # @param [ Integer ] count The number of documents to shift, or 1 if not
           #   provided.
           #
-          # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> | nil ] The shifted document(s).
+          # @return [ Document | Array<Document> | nil ] The shifted document(s).
           def shift(count = nil)
             return [] if count&.zero?
 
@@ -395,7 +395,7 @@ module ActiveDocument
           # @example Substitute the association's target.
           #   person.addresses.substitute([ address ])
           #
-          # @param [ Array<ActiveDocument::Document> | Array<Hash> ] docs The replacement docs.
+          # @param [ Array<Document> | Array<Hash> ] docs The replacement docs.
           #
           # @return [ Many ] The proxied association.
           def substitute(docs)
@@ -410,7 +410,7 @@ module ActiveDocument
           # @example Get the unscoped documents.
           #   person.addresses.unscoped
           #
-          # @return [ ActiveDocument::Criteria ] The unscoped association.
+          # @return [ Criteria ] The unscoped association.
           def unscoped
             criterion = klass.unscoped
             criterion.embedded = true
@@ -420,11 +420,6 @@ module ActiveDocument
 
           private
 
-          # The internal unscoped documents.
-          #
-          # @param [ Array<ActiveDocument::Document> ] docs The documents.
-          #
-          # @return [ Array<ActiveDocument::Document> ] The unscoped docs.
           attr_accessor :_unscoped
 
           def object_already_related?(document)
@@ -437,7 +432,7 @@ module ActiveDocument
           # @example Append to the document.
           #   relation.append(document)
           #
-          # @param [ ActiveDocument::Document ] document The document to append to the target.
+          # @param [ Document ] document The document to append to the target.
           def append(document)
             execute_callback :before_add, document
             _target.push(*scope([document])) unless object_already_related?(document)
@@ -461,7 +456,7 @@ module ActiveDocument
           # Returns the +Criteria+ object for the target class with its
           # documents set to the list of target documents in the association.
           #
-          # @return [ ActiveDocument::Criteria ] A new criteria.
+          # @return [ Criteria ] A new criteria.
           def criteria
             _association.criteria(_base, _target)
           end
@@ -472,7 +467,7 @@ module ActiveDocument
           # @example Integrate the document.
           #   relation.integrate(document)
           #
-          # @param [ ActiveDocument::Document ] document The document to integrate.
+          # @param [ Document ] document The document to integrate.
           def integrate(document)
             characterize_one(document)
             bind_one(document)
@@ -534,9 +529,9 @@ module ActiveDocument
           # @example Apply scoping.
           #   person.addresses.scope(target)
           #
-          # @param [ Array<ActiveDocument::Document> ] docs The documents to scope.
+          # @param [ Array<Document> ] docs The documents to scope.
           #
-          # @return [ Array<ActiveDocument::Document> ] The scoped docs.
+          # @return [ Array<Document> ] The scoped docs.
           def scope(docs)
             return docs unless _association.order || _association.klass.default_scoping?
 
@@ -558,10 +553,10 @@ module ActiveDocument
           # @return [ Integer ] The number of documents removed.
           def remove_all(conditions = {}, method = :delete)
             criteria = where(conditions || {})
-            removed = criteria.size
-            batch_remove(criteria, method)
-            update_attributes_hash
-            removed
+            criteria.size.tap do
+              batch_remove(criteria, method)
+              update_attributes_hash
+            end
           end
 
           # Returns a list of attributes hashes for each document.

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'support/models/canvas'
 require_relative '../belongs_to_models'
 
 describe ActiveDocument::Association::Referenced::BelongsTo::Proxy do
@@ -133,11 +134,11 @@ describe ActiveDocument::Association::Referenced::BelongsTo::Proxy do
             # have a way to distinguish how method_missing was invoked
             # (i.e. via an explicit send or method call).
             # See https://jira.mongodb.org/browse/MONGOID-5009
-            expect(game.person.secret_name).to eq('secret')
+            game.person.secret_name.should == 'secret'
           end
 
           it 'allows private methods to be invoked' do
-            expect(game.person.send(:secret_name)).to eq('secret')
+            game.person.send(:secret_name).should == 'secret'
           end
 
           it 'properly exposes delegated methods visibility' do
@@ -314,6 +315,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo::Proxy do
               end
             end
           end
+
+
 
           it 'applies the persistence options when saving the child' do
             expect(other_people_count).to eq(1)
@@ -743,6 +746,10 @@ describe ActiveDocument::Association::Referenced::BelongsTo::Proxy do
           person.save!
         end
 
+        # NOTE: there as a bad interdependency here, with the auto_save_spec.rb
+        # file. If auto_save_spec.rb runs before this, the following specs fail
+        # with "undefined method `nullify' for an instance of Person".
+
         context 'when parent exists' do
 
           context 'when child is destroyed' do
@@ -755,7 +762,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo::Proxy do
               expect(drug).to be_destroyed
             end
 
-            it "doesn't delete parent" do
+            it "doesn't deletes parent" do
               expect(person).to_not be_destroyed
             end
 

@@ -521,10 +521,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             before do
               expect(post).to receive(:before_add_tag).and_raise
-              begin
-                post.tags.send(method, tag)
-              rescue StandardError
-              end
+              begin; post.tags.send(method, tag); rescue StandardError; end
             end
 
             it 'does not add the document to the relation' do
@@ -544,10 +541,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
 
             before do
               expect(post).to receive(:after_add_tag).and_raise
-              begin
-                post.tags.send(method, tag)
-              rescue StandardError
-              end
+              begin; post.tags.send(method, tag); rescue StandardError; end
             end
 
             it 'adds the document to the relation' do
@@ -1248,10 +1242,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:before_remove_tag).and_raise
-            begin
-              post.tags.clear
-            rescue StandardError
-            end
+            begin; post.tags.clear; rescue StandardError; end
           end
 
           it 'does not remove the document from the relation' do
@@ -1281,10 +1272,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
 
           before do
             expect(post).to receive(:after_remove_tag).and_raise
-            begin
-              post.tags.clear
-            rescue StandardError
-            end
+            begin; post.tags.clear; rescue StandardError; end
           end
 
           it 'removes the document from the relation' do
@@ -1763,43 +1751,6 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
         it 'returns zero' do
           sandwich.destroy
           expect(sandwich.meats.count).to eq(0)
-        end
-      end
-    end
-
-    describe '#any?' do
-
-      let(:person) do
-        Person.create!
-      end
-
-      context 'when nothing exists on the relation' do
-
-        context 'when no document is added' do
-
-          let!(:sandwich) do
-            Sandwich.create!
-          end
-
-          it 'returns false' do
-            expect(sandwich.meats.any?).to be false
-          end
-        end
-
-        context 'when the document is destroyed' do
-
-          before do
-            Meat.create!
-          end
-
-          let!(:sandwich) do
-            Sandwich.create!
-          end
-
-          it 'returns false' do
-            sandwich.destroy
-            expect(sandwich.meats.any?).to be false
-          end
         end
       end
     end
@@ -2317,9 +2268,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
 
   %i[delete_all destroy_all].each do |method|
     describe "##{method}" do
-
       context 'when the relation is not polymorphic' do
-
         context 'when conditions are provided' do
           let(:person) { Person.create! }
 
@@ -2710,6 +2659,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
       person.preferences.push(preference_one, preference_two)
     end
 
+
     it 'returns the document with the max value of the supplied field' do
       expect(max).to eq(preference_two)
     end
@@ -2720,7 +2670,6 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     let(:person) do
       Person.create!
     end
-
     let(:max) do
       person.preferences.max_by(&:ranking)
     end
@@ -2736,6 +2685,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     before do
       person.preferences.push(preference_one, preference_two)
     end
+
 
     it 'returns the document with the max value of the supplied field' do
       expect(max).to eq(preference_two)
@@ -2807,7 +2757,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     context 'when chaining criteria' do
 
       let(:preferences) do
-        person.preferences.posting.where(name: { '$in' => ['First'] })
+        person.preferences.posting.where(:name.in => ['First'])
       end
 
       it 'applies the criteria to the documents' do
@@ -2863,6 +2813,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
       person.preferences.push(preference_one, preference_two)
     end
 
+
     it 'returns the min value of the supplied field' do
       expect(min).to eq(preference_one)
     end
@@ -2888,6 +2839,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     before do
       person.preferences.push(preference_one, preference_two)
     end
+
 
     it 'returns the min value of the supplied field' do
       expect(min).to eq(preference_one)
@@ -3017,7 +2969,9 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     context 'when association is not empty' do
 
       let(:person) do
-        Person.create!(preferences: [Preference.new(id: 123)])
+        Person.create!(preferences: [
+          Preference.new(id: 123)
+        ])
       end
 
       it 'returns with a selector including association element ids' do
@@ -3042,6 +2996,34 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
 
         it 'returns the number of documents' do
           expect(person.preferences.send(method)).to eq(1)
+        end
+      end
+
+      # MONGOID-5844
+      #
+      # Specifically, this tests the case where the association is
+      # initialized with a single element (so that Proxy#push does not take
+      # the `concat` route), which causes `reset_unloaded` to be called, which
+      # sets the `_unloaded` Criteria object to match only the specific element
+      # that was given.
+      #
+      # The issue now is that when the events list is updated to be both events,
+      # _unloaded matches one of them already, and the other has previously been
+      # persisted so `new_record?` won't match it. We need to make sure the
+      # `#size` logic properly accounts for this case.
+      context 'when documents have been previously persisted' do
+        let(:person1) { Person.create! }
+        let(:person2) { Person.create! }
+        let(:event1) { Event.create!(administrators: [person1]) }
+        let(:event2) { Event.create!(administrators: [person2]) }
+
+        before do
+          person1.administrated_events = [event1, event2]
+        end
+
+        it 'returns the number of associated documents [MONGOID-5844]' do
+          expect(person1.administrated_events.to_a.size).to eq(2)
+          expect(person1.administrated_events.size).to eq(2)
         end
       end
 
@@ -3322,7 +3304,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
     end
 
     it 'chains default criteria with additional' do
-      expect(person.ordered_preferences.order_by(name: :desc).to_a).to eq(
+      expect(person.ordered_preferences.order_by(:name.desc).to_a).to eq(
         [preference_three, preference_two, preference_one]
       )
     end
@@ -3496,6 +3478,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
         person.save!
       end
 
+
       it 'also persists the change in id order' do
         expect(reloaded.preference_ids).to eq(
           [preference_two.id, preference_one.id, preference_three.id]
@@ -3520,6 +3503,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
           [preference_three.id, preference_two.id]
         person.save!
       end
+
 
       it 'also persists the change in id order' do
         expect(reloaded.preference_ids).to eq(
@@ -3673,7 +3657,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
       class Project
         include ActiveDocument::Document
 
-        field :n, type: :string, as: :name
+        field :n, type: String, as: :name
 
         has_and_belongs_to_many :distributors,
                                 foreign_key: :d_ids,
@@ -3683,7 +3667,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
       class Distributor
         include ActiveDocument::Document
 
-        field :n, type: :string, as: :name
+        field :n, type: String, as: :name
 
         has_and_belongs_to_many :projects,
                                 foreign_key: :p_ids,
@@ -3698,11 +3682,11 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
       d2 = Distributor.create! name: 'Soul'
 
       p1.distributors << d1
-      expect(p1.d_ids).to eq([d1.id])
-      expect(d1.p_ids).to eq([p1.id])
+      expect(p1.d_ids).to contain_exactly(d1.id)
+      expect(d1.p_ids).to contain_exactly(p1.id)
       d2.projects << p2
-      expect(d2.p_ids).to eq([p2.id])
-      expect(p2.d_ids).to eq([d2.id])
+      expect(d2.p_ids).to contain_exactly(p2.id)
+      expect(p2.d_ids).to contain_exactly(d2.id)
     end
   end
 

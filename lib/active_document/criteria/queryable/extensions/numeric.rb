@@ -43,7 +43,25 @@ module ActiveDocument
             #
             # @return [ Object ] The converted number.
             def __numeric__(object)
-              object.to_s.match?(/\A[-+]?[0-9]*[0-9.]0*\z/) ? object.to_i : Float(object)
+              str = object.to_s
+              raise ArgumentError if str.empty?
+
+              # These requirements seem a bit odd, but they're explicitly specified in the tests,
+              # so we're obligated to keep them, for now. (This code was rewritten from a one-line
+              # regex, due to security concerns with a polynomial regex being used on uncontrolled
+              # data).
+
+              str = str.chop if str.end_with?('.')
+              return 0 if str.empty?
+
+              result = begin
+                Integer(str)
+              rescue StandardError
+                Float(object)
+              end
+
+              integer = result.to_i
+              integer == result ? integer : result
             end
 
             # Evolve the object to an integer.

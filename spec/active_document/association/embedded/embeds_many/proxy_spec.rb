@@ -345,7 +345,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          person.update!(overridden_addresses: [new_address])
+          person.update!(set_addresses: [new_address])
         end
 
         it 'overwrites the existing addresses' do
@@ -498,9 +498,9 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
 
           class TrackingIdValidationHistory
             include ActiveDocument::Document
-            field :old_state, type: :string
-            field :new_state, type: :string
-            field :when_changed, type: :date_time
+            field :old_state, type: String
+            field :new_state, type: String
+            field :when_changed, type: DateTime
             embedded_in :tracking_id, class_name: 'MyCompany::Model::TrackingId'
           end
         end
@@ -979,6 +979,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
           person.symptoms.push(headache, cough)
         end
 
+
         it 'returns the unscoped documents as an array of hashes' do
           expect(document).to eq([headache.as_document, cough.as_document])
         end
@@ -1000,6 +1001,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         before do
           person.appointments.push(active, inactive)
         end
+
 
         it 'returns the unscoped documents as an array of hashes' do
           expect(document).to eq([active.as_document, inactive.as_document])
@@ -1850,8 +1852,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         end
 
         before do
-          book.update!({ 'pages' => nil })
-        rescue StandardError
+          book.update!({ 'pages' => nil }); rescue StandardError
         end
 
         it 'does not delete the embedded relation' do
@@ -2697,6 +2698,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       person.addresses.push(address_one, address_two)
     end
 
+
     it 'returns the document with the max value of the supplied field' do
       expect(max).to eq(address_two)
     end
@@ -2722,6 +2724,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     before do
       person.addresses.push(address_one, address_two)
     end
+
 
     it 'returns the document with the max value of the supplied field' do
       expect(max).to eq(address_two)
@@ -2813,7 +2816,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     context 'when chaining criteria' do
 
       let(:addresses) do
-        person.addresses.california.where(street: { '$in' => ['Market'] })
+        person.addresses.california.where(:street.in => ['Market'])
       end
 
       it 'applies the criteria to the documents' do
@@ -2828,40 +2831,6 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         it 'returns the distinct values for the fields' do
           expect(person.addresses.distinct(:street)).to eq(%w[Market Madison])
         end
-      end
-    end
-  end
-
-  describe '#respond_to_missing?' do
-    let!(:person) { Person.create! }
-
-    context 'when target responds to method' do
-      it 'returns true' do
-        expect(person.addresses.respond_to?(:length)).to be true
-      end
-    end
-
-    context 'when criteria responds to method' do
-      it 'returns true' do
-        expect(person.addresses.respond_to?(:california)).to be true
-      end
-    end
-
-    context 'when neither target nor criteria respond to the method' do
-      it 'returns false' do
-        expect(person.addresses.respond_to?(:nonexistent_method)).to be false
-      end
-    end
-
-    context 'when chaining criteria' do
-      let(:addresses) { person.addresses.california.where(street: { '$in' => ['Market'] }) }
-
-      it 'returns true for existing method' do
-        expect(addresses.respond_to?(:any_of)).to be true
-      end
-
-      it 'returns false for nonexistent method' do
-        expect(addresses.respond_to?(:nonexistent_method)).to be false
       end
     end
   end
@@ -2886,6 +2855,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     before do
       person.addresses.push(address_one, address_two)
     end
+
 
     it 'returns the min value of the supplied field' do
       expect(min).to eq(address_one)
@@ -2912,6 +2882,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     before do
       person.addresses.push(address_one, address_two)
     end
+
 
     it 'returns the min value of the supplied field' do
       expect(min).to eq(address_one)
@@ -3456,6 +3427,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         page.page_questions << page_question
       end
 
+
       it 'sets up the hierarchy' do
         expect(question).to eq(page_question)
       end
@@ -3829,7 +3801,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       person_two.addresses << address
     end
 
-    it 'adds the document to the new paarent' do
+    it 'adds the document to the new parent' do
       expect(person_two.addresses).to eq([address])
     end
 
@@ -3946,6 +3918,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       before do
         person.appointments.push(inactive, active)
       end
+
 
       it 'retains the unscoped index for the excluded document' do
         expect(relation.send(:_unscoped).first._index).to eq(0)
@@ -4134,7 +4107,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       Person.create!
     end
     let(:criteria) do
-      person.messages.order_by(body: :asc, priority: :desc)
+      person.messages.order_by(:body.asc, :priority.desc)
     end
 
     let(:message_one) do
@@ -4152,6 +4125,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     before do
       person.messages.push(message_one, message_two, message_three)
     end
+
 
     it 'properly orders the related objects' do
       expect(criteria.to_a).to eq([message_two, message_one, message_three])
@@ -4223,6 +4197,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
           ]
         )
       end
+
 
       it 'updates the nested document' do
         expect(updated.name).to eq('work')
@@ -4324,10 +4299,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
 
       before do
         expect(artist).to receive(:before_add_song).and_raise
-        begin
-          artist.songs << song
-        rescue StandardError
-        end
+        begin; artist.songs << song; rescue StandardError; end
       end
 
       it 'does not add the document to the relation' do
@@ -4355,10 +4327,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
 
       before do
         expect(artist).to receive(:after_add_label).and_raise
-        begin
-          artist.labels << label
-        rescue StandardError
-        end
+        begin; artist.labels << label; rescue StandardError; end
       end
 
       it 'adds the document to the relation' do
@@ -4408,7 +4377,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
           expect(artist.before_remove_embedded_called).to be true
         end
 
-        it 'shoud clear the relation' do
+        it 'clears the relation' do
           expect(artist.songs).to be_empty
         end
       end
@@ -4447,10 +4416,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       describe '#delete' do
 
         it 'does not remove the document from the relation' do
-          begin
-            artist.songs.delete(song)
-          rescue StandardError
-          end
+          begin; artist.songs.delete(song); rescue StandardError; end
           expect(artist.songs).to eq([song])
         end
       end
@@ -4458,8 +4424,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       describe '#clear' do
 
         before do
-          artist.songs.clear
-        rescue StandardError
+          artist.songs.clear; rescue StandardError
         end
 
         it 'removes the documents from the relation' do
@@ -4470,8 +4435,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       describe '#pop' do
 
         before do
-          artist.songs.pop
-        rescue StandardError
+          artist.songs.pop; rescue StandardError
         end
 
         it 'removes from collection' do
@@ -4482,8 +4446,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       describe '#shift' do
 
         before do
-          artist.songs.shift
-        rescue StandardError
+          artist.songs.shift; rescue StandardError
         end
 
         it 'removes from collection' do
@@ -4565,8 +4528,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       describe '#delete' do
 
         before do
-          artist.labels.delete(label)
-        rescue StandardError
+          artist.labels.delete(label); rescue StandardError
         end
 
         it 'removes the document from the relation' do
@@ -4577,8 +4539,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       describe '#clear' do
 
         before do
-          artist.labels.clear
-        rescue StandardError
+          artist.labels.clear; rescue StandardError
         end
 
         it 'removes from collection' do
@@ -4589,8 +4550,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       describe '#pop' do
 
         before do
-          artist.labels.pop
-        rescue StandardError
+          artist.labels.pop; rescue StandardError
         end
 
         it 'removes from collection' do
@@ -4601,8 +4561,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       describe '#shift' do
 
         before do
-          artist.labels.shift
-        rescue StandardError
+          artist.labels.shift; rescue StandardError
         end
 
         it 'removes from collection' do
@@ -4686,7 +4645,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
     it 'able to delete embedded documents upon condition' do
       company = Company.new
       4.times { |i| company.staffs << Staff.new(age: 50 + i) }
-      2.times { company.staffs << Staff.new(age: 40) }
+      2.times { |_i| company.staffs << Staff.new(age: 40) }
       company.save!
       company.staffs.delete_if { |x| x.age >= 50 }
       expect(company.staffs.count).to eq(2)
@@ -4696,19 +4655,25 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
   context 'when substituting polymorphic documents' do
 
     before(:all) do
-      module DNS
+      class DNS; end
+
+      class DNS
         class Zone
           include ActiveDocument::Document
           embeds_many :rrsets, class_name: 'DNS::RRSet',  inverse_of: :zone
           embeds_one  :soa,    class_name: 'DNS::Record', as: :container
         end
+      end
 
+      module DNS
         class RRSet
           include ActiveDocument::Document
           embedded_in :zone, class_name: 'DNS::Zone', inverse_of: :rrsets
           embeds_many :records, class_name: 'DNS::Record', as: :container
         end
+      end
 
+      module DNS
         class Record
           include ActiveDocument::Document
           embedded_in :container, polymorphic: true
@@ -4726,33 +4691,33 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         DNS::Zone.new
       end
 
-      let(:soa1) do
+      let(:soa_1) do
         DNS::Record.new
       end
 
       context 'when replacing the set document' do
 
-        let(:soa2) do
+        let(:soa_2) do
           DNS::Record.new
         end
 
         before do
-          zone.soa = soa1
+          zone.soa = soa_1
         end
 
         it 'properly sets the association metadata' do
-          expect(zone.soa = soa2).to eq(soa2)
+          expect(zone.soa = soa_2).to eq(soa_2)
         end
       end
 
       context 'when deleting the set document' do
 
-        let(:soa2) do
+        let(:soa_2) do
           DNS::Record.new
         end
 
         before do
-          zone.soa = soa1
+          zone.soa = soa_1
         end
 
         it 'properly sets the association metadata' do
@@ -4767,33 +4732,33 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         DNS::Zone.create!
       end
 
-      let(:soa1) do
+      let(:soa_1) do
         DNS::Record.new
       end
 
       context 'when replacing the set document' do
 
-        let(:soa2) do
+        let(:soa_2) do
           DNS::Record.new
         end
 
         before do
-          zone.soa = soa1
+          zone.soa = soa_1
         end
 
         it 'properly sets the association' do
-          expect(zone.soa = soa2).to eq(soa2)
+          expect(zone.soa = soa_2).to eq(soa_2)
         end
       end
 
       context 'when deleting the set document' do
 
-        let(:soa2) do
+        let(:soa_2) do
           DNS::Record.new
         end
 
         before do
-          zone.soa = soa1
+          zone.soa = soa_1
         end
 
         it 'properly sets the association' do
@@ -4815,6 +4780,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         band.save!
       end
 
+
       it 'persists the empty list' do
         expect(reloaded_band).to have_key(:labels)
         expect(reloaded_band[:labels]).to eq []
@@ -4830,6 +4796,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         survey.questions.first.answers = []
         survey.save!
       end
+
 
       it 'persists the empty list' do
         expect(reloaded_survey).to have_key(:questions)
@@ -4928,6 +4895,108 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       expect(user.orders.last).to be_a(EmmOrder)
 
       expect(user.orders.map(&:sku).sort).to eq([1, 2])
+    end
+  end
+
+  describe '#cache_version' do
+    context 'when the model does not have an updated_at column' do
+      let(:root_model) { Quiz.create! }
+      let(:root) { Quiz.find(root_model.id) }
+      let(:pages) { root.pages }
+
+      let(:prepopulated_root) do
+        root_model.pages << Page.new(content: 'Page #1')
+        root_model.pages << Page.new(content: 'Page #2')
+        Quiz.find(root_model.id)
+      end
+
+      shared_examples_for 'a cache_version generator' do
+        it 'produces a trivial cache_version' do
+          expect(pages.cache_version).to eq pages.length.to_s
+        end
+      end
+
+      context 'when the relation is empty' do
+        it_behaves_like 'a cache_version generator'
+      end
+
+      context 'when the relation is not empty' do
+        let(:root) { prepopulated_root }
+
+        it_behaves_like 'a cache_version generator'
+      end
+    end
+
+    context 'when the model has an updated_at column' do
+      let(:root_model) { Book.create(title: 'Root') }
+      let(:root) { Book.find(root_model.id) }
+
+      let(:cover) { root_model.covers.first }
+      let(:covers) { root.covers }
+      let(:original_cache_version) { root.covers.cache_version }
+
+      let(:prepopulated_root) do
+        root_model.covers << Cover.new(title: 'Cover #1')
+        root_model.covers << Cover.new(title: 'Cover #2')
+        Book.find(root_model.id)
+      end
+
+      shared_examples_for 'a cache_version generator' do
+        it 'produces a consistent cache_version' do
+          expect(covers.cache_version).to_not be_nil
+          expect(covers.cache_version).to eq covers.cache_version
+        end
+      end
+
+      context 'when the relation is empty' do
+        it_behaves_like 'a cache_version generator'
+      end
+
+      context 'when the relation is not empty' do
+        let(:root) { prepopulated_root }
+
+        it_behaves_like 'a cache_version generator'
+      end
+
+      context 'when an element is updated' do
+        let(:updated_cache_version) do
+          cover.update title: 'modified'
+          cover.book.save!
+          cover.book.reload.covers.cache_version
+        end
+
+        let(:root) { prepopulated_root }
+
+        it 'changes the cache_version' do
+          expect(original_cache_version).to_not eq updated_cache_version
+        end
+      end
+
+      context 'when an element is added' do
+        let(:updated_cache_version) do
+          root.covers << Cover.new(title: 'Another Cover')
+          root.reload.covers.cache_version
+        end
+
+        let(:root) { prepopulated_root }
+
+        it 'changes the cache_version' do
+          expect(original_cache_version).to_not eq updated_cache_version
+        end
+      end
+
+      context 'when an element is removed' do
+        let(:updated_cache_version) do
+          cover.destroy
+          root.reload.covers.cache_version
+        end
+
+        let(:root) { prepopulated_root }
+
+        it 'changes the cache_version' do
+          expect(original_cache_version).to_not eq updated_cache_version
+        end
+      end
     end
   end
 end

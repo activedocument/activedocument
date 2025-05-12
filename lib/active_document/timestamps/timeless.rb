@@ -28,7 +28,7 @@ module ActiveDocument
       # @example Save a document but don't timestamp.
       #   person.timeless.save
       #
-      # @return [ ActiveDocument::Document ] The document this was called on.
+      # @return [ Document ] The document this was called on.
       def timeless
         self.class.timeless
         self
@@ -45,6 +45,9 @@ module ActiveDocument
       class << self
         extend Forwardable
 
+        # The key to use to store the timeless table
+        TIMELESS_TABLE_KEY = '[mongoid]:timeless'
+
         # Returns the in-memory thread cache of classes
         # for which to skip timestamping.
         #
@@ -52,11 +55,12 @@ module ActiveDocument
         #
         # @api private
         def timeless_table
-          Thread.current['[active_document]:timeless'] ||= {}
+          Threaded.get(TIMELESS_TABLE_KEY) { {} }
         end
 
         def_delegators :timeless_table, :[]=, :[]
       end
+
 
       module ClassMethods
 

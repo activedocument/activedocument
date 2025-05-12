@@ -288,6 +288,22 @@ describe ActiveDocument::Attributes do
         end
       end
 
+      context 'when given nil' do
+
+        it 'returns nil' do
+          expect(person[nil]).to be_nil
+        end
+
+      end
+
+      context 'when given an empty string' do
+
+        it 'returns nil' do
+          expect(person['']).to be_nil
+        end
+
+      end
+
       context 'when the field was not explicitly defined' do
 
         context 'when excluding with only and the field was not excluded' do
@@ -323,7 +339,7 @@ describe ActiveDocument::Attributes do
           end
 
           it 'returns nil' do
-            expect(from_db[:undefined_field]).to be_nil
+            from_db[:undefined_field].should be_nil
           end
         end
       end
@@ -427,6 +443,7 @@ describe ActiveDocument::Attributes do
       end
     end
 
+
     context 'when setting the attribute to nil' do
 
       let!(:age) do
@@ -465,11 +482,11 @@ describe ActiveDocument::Attributes do
       end
 
       it 'writes the value into attributes' do
-        expect(bar.attributes).to eq({ '_id' => bar.id, 'missing_field' => 42 })
+        bar.attributes.should == { '_id' => bar.id, 'missing_field' => 42 }
       end
 
       it 'makes the attribute accessible via []' do
-        expect(bar['missing_field']).to eq(42)
+        bar['missing_field'].should == 42
       end
 
       context 'when writing fields on a document with projection' do
@@ -512,7 +529,7 @@ describe ActiveDocument::Attributes do
 
           it 'writes the value' do
             from_db[:undefined_field] = 'x'
-            expect(from_db[:undefined_field]).to eq('x')
+            from_db[:undefined_field].should == 'x'
           end
         end
       end
@@ -546,7 +563,7 @@ describe ActiveDocument::Attributes do
     after(:all) do
       Person.field(
         :_id,
-        type: :bson_object_id,
+        type: BSON::ObjectId,
         pre_processed: true,
         default: -> { BSON::ObjectId.new },
         overwrite: true
@@ -558,7 +575,7 @@ describe ActiveDocument::Attributes do
       before(:all) do
         Person.field(
           :_id,
-          type: :bson_object_id,
+          type: BSON::ObjectId,
           pre_processed: true,
           default: -> { BSON::ObjectId.new },
           overwrite: true
@@ -625,7 +642,7 @@ describe ActiveDocument::Attributes do
       before(:all) do
         Person.field(
           :_id,
-          type: :string,
+          type: String,
           pre_processed: true,
           default: -> { BSON::ObjectId.new.to_s },
           overwrite: true
@@ -677,7 +694,7 @@ describe ActiveDocument::Attributes do
     context 'when using integer ids' do
 
       before(:all) do
-        Person.field(:_id, type: :integer, overwrite: true)
+        Person.field(:_id, type: Integer, overwrite: true)
       end
 
       let(:person) do
@@ -1120,7 +1137,7 @@ describe ActiveDocument::Attributes do
         end
 
         it 'returns nil' do
-          expect(from_db.read_attribute(:undefined_field)).to be_nil
+          from_db.read_attribute(:undefined_field).should be_nil
         end
       end
     end
@@ -1597,10 +1614,10 @@ describe ActiveDocument::Attributes do
     end
 
     context 'when attribute is an Array' do
-      let(:person) { Person.new aliases: [:alias1] }
+      let(:person) { Person.new aliases: [:alias_1] }
 
       it 'can set an Array Value' do
-        expect(person.aliases).to eq([:alias1])
+        expect(person.aliases).to eq([:alias_1])
       end
 
       it 'writes nil when trying to set a value of invalid type - hash' do
@@ -1667,7 +1684,7 @@ describe ActiveDocument::Attributes do
 
         it 'writes the value' do
           from_db.write_attribute(:undefined_field, 'x')
-          expect(from_db.read_attribute(:undefined_field)).to eq('x')
+          from_db.read_attribute(:undefined_field).should == 'x'
         end
       end
     end
@@ -1723,7 +1740,7 @@ describe ActiveDocument::Attributes do
 
     context 'when the key has been specified as a field' do
 
-      it 'retuns the typed value' do
+      it 'returns the typed value' do
         person.send(:typed_value_for, 'age', '51')
       end
     end
@@ -2640,6 +2657,7 @@ describe ActiveDocument::Attributes do
           expect(doc.attributes['cover']).to eq(attrs.merge('_id' => doc.cover.id))
         end
 
+
         it 'has the same attributes after reloading' do
           expect(doc.attributes).to eq(doc.reload.attributes)
         end
@@ -2699,7 +2717,7 @@ describe ActiveDocument::Attributes do
     end
   end
 
-  context 'when modifiying a hash referenced with the [] notation' do
+  context 'when modifying a hash referenced with the [] notation' do
     let(:church) { Church.create!(location: { x: 1 }) }
 
     before do
@@ -2709,11 +2727,11 @@ describe ActiveDocument::Attributes do
     end
 
     it 'persists the updated hash' do
-      expect(church.location).to eq({ 'x' => 1, 'y' => 2 })
+      church.location.should == { 'x' => 1, 'y' => 2 }
     end
   end
 
-  context 'when modifiying a set referenced with the [] notation' do
+  context 'when modifying a set referenced with the [] notation' do
     let(:catalog) { Catalog.create!(set_field: [1].to_set) }
 
     before do
@@ -2724,7 +2742,7 @@ describe ActiveDocument::Attributes do
 
     it 'persists the updated hash' do
       pending 'MONGOID-2951'
-      expect(catalog.set_field).to eq(Set.new([1, 2]))
+      catalog.set_field.should == Set.new([1, 2])
     end
   end
 

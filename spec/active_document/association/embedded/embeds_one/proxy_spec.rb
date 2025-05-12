@@ -77,7 +77,7 @@ describe ActiveDocument::Association::Embedded::EmbedsOne::Proxy do
             end
           end
 
-          it 'sets the target without an invinite recursion' do
+          it 'sets the target without an infinite recursion' do
             person.name = name
             expect(person.name).to be_present
           end
@@ -933,7 +933,7 @@ describe ActiveDocument::Association::Embedded::EmbedsOne::Proxy do
       person.addresses.create!(street: 'kreuzberg')
     end
 
-    context 'when a parent was removed outside of active_document' do
+    context 'when a parent was removed outside of mongoid' do
 
       before do
         person.collection.find(_id: person.id).update_one(

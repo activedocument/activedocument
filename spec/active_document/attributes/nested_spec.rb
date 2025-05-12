@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'support/models/sandwich'
 require_relative '../association/referenced/has_many_models'
 require_relative '../association/referenced/has_and_belongs_to_many_models'
 require_relative './nested_spec_models'
@@ -289,6 +290,7 @@ describe ActiveDocument::Attributes::Nested do
             end
           end
         end
+
 
         context 'when a reject proc is specified' do
 
@@ -1091,6 +1093,9 @@ describe ActiveDocument::Attributes::Nested do
             end
           end
         end
+
+
+
 
         context 'when a limit is specified' do
 
@@ -3011,9 +3016,9 @@ describe ActiveDocument::Attributes::Nested do
 
                 it 'raises a document not found error' do
                   expect do
-                    person.posts_attributes = {
-                      '0' => { 'id' => BSON::ObjectId.new.to_s, 'title' => 'Rogue' }
-                    }
+                    person.posts_attributes =
+                      { '0' =>
+                        { 'id' => BSON::ObjectId.new.to_s, 'title' => 'Rogue' } }
                   end.to raise_error(ActiveDocument::Errors::DocumentNotFound, /Document\(s\) not found for class Post with id\(s\)/)
                 end
               end
@@ -3036,7 +3041,7 @@ describe ActiveDocument::Attributes::Nested do
                   person.save!
                 end
 
-                it 'does not perist the invalid value' do
+                it 'does not persist the invalid value' do
                   expect(post_two.reload.title).to eq('First response')
                 end
               end
@@ -4329,14 +4334,14 @@ describe ActiveDocument::Attributes::Nested do
       context 'when adding a new embedded document' do
 
         let(:attributes) do
-          {
-            servers_attributes: {
-              '0' => {
+          { servers_attributes:
+            { '0' =>
+              {
                 _id: server.id,
-                filesystems_attributes: { '0' => { name: 'NFS' } }
-              }
-            }
-          }
+                filesystems_attributes: {
+                  '0' => { name: 'NFS' }
+                }
+              } } }
         end
 
         before do
@@ -4364,7 +4369,9 @@ describe ActiveDocument::Attributes::Nested do
       end
 
       let(:attributes) do
-        { services_attributes: { '0' => { _id: service.id, sid: service.sid, _destroy: 1 } } }
+        { services_attributes:
+          { '0' =>
+            { _id: service.id, sid: service.sid, _destroy: 1 } } }
       end
 
       before do
@@ -4451,14 +4458,12 @@ describe ActiveDocument::Attributes::Nested do
         context 'when destroying a second level document' do
 
           let(:attributes) do
-            {
-              addresses_attributes: {
-                '0' => {
+            { addresses_attributes:
+              { '0' =>
+                {
                   _id: address_one.id,
                   locations_attributes: { '0' => { _id: location_one.id, _destroy: true } }
-                }
-              }
-            }
+                } } }
           end
 
           before do
@@ -4501,14 +4506,12 @@ describe ActiveDocument::Attributes::Nested do
             end
 
             let(:attributes) do
-              {
-                records_attributes: {
-                  '0' => {
+              { records_attributes:
+                { '0' =>
+                  {
                     _id: record.id,
                     tracks_attributes: { '0' => { _id: track.id, _destroy: true } }
-                  }
-                }
-              }
+                  } } }
             end
 
             before do
@@ -4534,14 +4537,12 @@ describe ActiveDocument::Attributes::Nested do
           context 'when no documents has previously existed' do
 
             let(:attributes) do
-              {
-                addresses_attributes: {
-                  '0' => {
+              { addresses_attributes:
+                { '0' =>
+                  {
                     street: 'Alexanderstr',
                     locations_attributes: { '0' => { name: 'Home' } }
-                  }
-                }
-              }
+                  } } }
             end
             let(:address) do
               person.addresses.first
@@ -4553,6 +4554,8 @@ describe ActiveDocument::Attributes::Nested do
             before do
               person.update!(attributes)
             end
+
+
 
             it 'adds the new first level embedded document' do
               expect(address.street).to eq('Alexanderstr')
@@ -4603,14 +4606,12 @@ describe ActiveDocument::Attributes::Nested do
         context 'when the nested document is new' do
 
           let(:attributes) do
-            {
-              addresses_attributes: {
-                '0' => {
+            { addresses_attributes:
+              { '0' =>
+                {
                   street: 'Alexanderstr',
                   code_attributes: { name: 'Home' }
-                }
-              }
-            }
+                } } }
           end
           let(:address) do
             person.addresses.first
@@ -4622,6 +4623,8 @@ describe ActiveDocument::Attributes::Nested do
           before do
             person.update!(attributes)
           end
+
+
 
           it 'adds the new first level embedded document' do
             expect(address.street).to eq('Alexanderstr')
@@ -4646,18 +4649,16 @@ describe ActiveDocument::Attributes::Nested do
           end
 
           let(:attributes) do
-            {
-              addresses_attributes: {
-                '0' => {
+            { addresses_attributes:
+              { '0' =>
+                {
                   _id: address.id,
                   number: 45,
                   code_attributes: {
                     _id: code.id,
                     name: 'Work'
                   }
-                }
-              }
-            }
+                } } }
           end
 
           before do
@@ -4686,18 +4687,16 @@ describe ActiveDocument::Attributes::Nested do
             end
 
             let(:attributes) do
-              {
-                addresses_attributes: {
-                  '0' => {
+              { addresses_attributes:
+                { '0' =>
+                  {
                     _id: address.id,
                     number: 45,
                     target_attributes: {
                       _id: target.id,
                       name: 'updated'
                     }
-                  }
-                }
-              }
+                  } } }
             end
 
             before do
@@ -4726,14 +4725,13 @@ describe ActiveDocument::Attributes::Nested do
               end
 
               let(:attributes) do
-                {
-                  name_attributes: {
+                { name_attributes:
+                  {
                     language_attributes: {
                       _id: language.id.to_s,
                       name: 'deutsch'
                     }
-                  }
-                }
+                  } }
               end
 
               before do
@@ -4759,8 +4757,10 @@ describe ActiveDocument::Attributes::Nested do
         let(:post) do
           user.posts.first
         end
+
         let(:params) do
-          { posts_attributes: { '0' => { title: 'Testing' } } }
+          { posts_attributes:
+            { '0' => { title: 'Testing' } } }
         end
 
         before do
@@ -4773,6 +4773,7 @@ describe ActiveDocument::Attributes::Nested do
           example.run
           user.relations = original_relations
         end
+
 
         it 'adds the new document to the relation' do
           expect(post.title).to eq('Testing')
@@ -4876,7 +4877,8 @@ describe ActiveDocument::Attributes::Nested do
       context 'when no additional validation is set' do
 
         let(:params) do
-          { divisions_attributes: { '0' => { id: division.id.to_s, name: 'New Name' } } }
+          { divisions_attributes:
+            { '0' => { id: division.id.to_s, name: 'New Name' } } }
         end
 
         before do
@@ -4894,7 +4896,8 @@ describe ActiveDocument::Attributes::Nested do
           end
 
           let(:new_params) do
-            { divisions_attributes: { '0' => { id: division.id.to_s, name: 'Name' } } }
+            { divisions_attributes:
+              { '0' => { id: division.id.to_s, name: 'Name' } } }
           end
 
           before do

@@ -1134,7 +1134,7 @@ describe ActiveDocument::Criteria::Includable do
           a.b = b
         end
 
-        context 'when including the belongs_to assocation' do
+        context 'when including the belongs_to association' do
           let!(:result) do
             C.includes(b: :a).first
           end
@@ -1152,7 +1152,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        context 'when including a doubly-nested belongs_to assocation' do
+        context 'when including a doubly-nested belongs_to association' do
           let!(:result) do
             D.includes(c: { b: :a }).first
           end
@@ -1171,7 +1171,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        context 'when including the has_many assocation' do
+        context 'when including the has_many association' do
           let!(:result) do
             A.includes(b: :c).first
           end
@@ -1189,7 +1189,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        context 'when including a doubly-nested has_many assocation' do
+        context 'when including a doubly-nested has_many association' do
           let!(:result) do
             A.includes(b: { c: :d }).first
           end
@@ -1210,7 +1210,7 @@ describe ActiveDocument::Criteria::Includable do
 
         context 'when there are multiple documents' do
           let!(:as) do
-            res = Array.new(9) do
+            res = Array.new(9) do |_i|
               A.create!.tap do |a|
                 a.b = B.create!.tap do |b|
                   b.c = C.create!
@@ -1335,14 +1335,14 @@ describe ActiveDocument::Criteria::Includable do
 
         it 'finds the right document' do
           expect(result).to eq(thread)
-          result.comments.length.times do |ci|
-            c1 = result.comments[ci]
-            c2 = thread.comments[ci]
+          result.comments.length.times do |i|
+            c1 = result.comments[i]
+            c2 = thread.comments[i]
             expect(c1).to eq(c2)
             expect(c1.user).to eq(c2.user)
-            c1.user.posts.length.times do |pi|
-              p1 = c1.user.posts[pi]
-              p2 = c2.user.posts[pi]
+            c1.user.posts.length.times do |i|
+              p1 = c1.user.posts[i]
+              p2 = c2.user.posts[i]
 
               expect(p1).to eq(p2)
               expect(p1.comments).to eq(p2.comments)

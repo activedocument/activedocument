@@ -121,13 +121,13 @@ describe ActiveDocument::Reloadable do
         let(:agent) { Agent.new(id: previous.id) }
 
         it 'loads the existing document' do
-          expect(agent.title).to be_nil
+          agent.title.should be_nil
 
-          expect do
+          lambda do
             agent.reload
-          end.to_not raise_error
+          end.should_not raise_error
 
-          expect(agent.title).to eq('007')
+          agent.title.should == '007'
         end
       end
     end
@@ -159,7 +159,7 @@ describe ActiveDocument::Reloadable do
           end
 
           let!(:reloaded) do
-            person.with(collection: 'other') do
+            person.with(collection: 'other') do |_person_class|
               person.addresses.first.reload
             end
           end
@@ -282,7 +282,7 @@ describe ActiveDocument::Reloadable do
       end
     end
 
-    context 'when embedded documents are unasssigned and reassigned' do
+    context 'when embedded documents are unassigned and reassigned' do
 
       let(:palette) do
         Palette.new
@@ -493,7 +493,9 @@ describe ActiveDocument::Reloadable do
       let(:subscriber) do
         client = ActiveDocument::Clients.with_name(:other)
         monitoring = client.send(:monitoring)
-        monitoring.subscribers['Command'].find { |s| s.is_a?(EventSubscriber) }
+        monitoring.subscribers['Command'].find do |s|
+          s.is_a?(EventSubscriber)
+        end
       end
 
       let(:find_events) do
@@ -522,6 +524,7 @@ describe ActiveDocument::Reloadable do
           expect(event.command['filter'].keys).to include('name')
         end
       end
+
 
       context 'with embedded document' do
         let(:profile_image) do
@@ -557,11 +560,11 @@ describe ActiveDocument::Reloadable do
         end
 
         it 'reloads the document' do
-          expect(band.name).to eq('test')
+          band.name.should
 
           band.reload
 
-          expect(band.name).to eq('Sun Project')
+          band.name.should == 'Sun Project'
         end
       end
 
@@ -574,14 +577,14 @@ describe ActiveDocument::Reloadable do
 
         it 'creates a new document with default values' do
           original_id = band.id
-          expect(band.name).to eq('test')
+          band.name.should
 
           band.reload
 
-          expect(band.name).to be_nil
-          expect(band.id).to_not be_nil
+          band.name.should be_nil
+          band.id.should_not be_nil
           # _id changes
-          expect(band.id).to_not eq(original_id)
+          band.id.should_not == original_id
         end
       end
     end
@@ -596,13 +599,13 @@ describe ActiveDocument::Reloadable do
       end
 
       it 'resets the associations' do
-        expect(church.acolytes.first.name).to eq('test')
+        church.acolytes.first.name.should
 
         church.reload
 
-        expect(church.acolytes._loaded?).to be false
+        church.acolytes._loaded?.should be false
 
-        expect(church.acolytes.first.name).to eq('Borg')
+        church.acolytes.first.name.should == 'Borg'
       end
     end
 

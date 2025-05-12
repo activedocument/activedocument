@@ -38,17 +38,17 @@ module ActiveDocument
 
       # Initialize the Association.
       #
-      # @param [ Class ] klass The class of the model who owns this association.
+      # @param [ Class ] _class The class of the model who owns this association.
       # @param [ Symbol ] name The name of the association.
       # @param [ Hash ] opts The association options.
       # @param [ Block ] block The optional block.
-      def initialize(klass, name, opts = {}, &block)
-        @owner_class = klass
+      def initialize(_class, name, opts = {}, &block)
+        @owner_class = _class
         @name = name
         @options = opts
         @extension = nil
 
-        @module_path = klass.name ? klass.name.split('::')[0..-2].join('::') : ''
+        @module_path = _class.name ? _class.name.split('::')[0..-2].join('::') : ''
         @module_path << '::' unless @module_path.empty?
 
         create_extension!(&block)
@@ -86,12 +86,10 @@ module ActiveDocument
       # Whether trying to bind an object using this association should raise
       # an error.
       #
-      # @param [ ActiveDocument::Document ] doc The document to be bound.
+      # @param [ Document ] doc The document to be bound.
       #
       # @return [ true | false ] Whether the document can be bound.
-      def bindable?(_doc)
-        false
-      end
+      def bindable?(_doc) = false
 
       # Get the inverse names.
       #
@@ -249,11 +247,11 @@ module ActiveDocument
 
       # Create an association proxy object using the owner and target.
       #
-      # @param [ ActiveDocument::Document ] owner The document this association hangs off of.
-      # @param [ ActiveDocument::Document | Array<ActiveDocument::Document> ] target The target (parent) of the
+      # @param [ Document ] owner The document this association hangs off of.
+      # @param [ Document | Array<Document> ] target The target (parent) of the
       #   association.
       #
-      # @return [ ActiveDocument::Association::Proxy ]
+      # @return [ Proxy ]
       def create_relation(owner, target)
         relation.new(owner, target, self)
       end
@@ -304,9 +302,9 @@ module ActiveDocument
                       end
       end
 
-      # Sets the associations above this one in the inclusion tree.
+      # The associations above this one in the inclusion tree.
       #
-      # @param [ Array<String> ] value The associations.
+      # @return [ Array<String> ] The associations.
       attr_writer :parent_inclusions
 
       # The associations above this one in the inclusion tree.
@@ -347,7 +345,7 @@ module ActiveDocument
       end
 
       def setup_index!
-        @owner_class.index(index_spec) if indexed?
+        @owner_class.index(index_spec, background: true) if indexed?
       end
 
       def define_touchable!
@@ -404,15 +402,15 @@ module ActiveDocument
 
       def validate!
         @options.each_key do |opt|
-          next if self.class::VALID_OPTIONS.include?(opt)
-
-          raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
+          unless self.class::VALID_OPTIONS.include?(opt)
+            raise Errors::InvalidRelationOption.new(@owner_class, name, opt, self.class::VALID_OPTIONS)
+          end
         end
 
         [name, :"#{name}?", :"#{name}="].each do |n|
-          next unless ActiveDocument.destructive_fields.include?(n)
-
-          raise Errors::InvalidRelation.new(@owner_class, n)
+          if ActiveDocument.destructive_fields.include?(n)
+            raise Errors::InvalidRelation.new(@owner_class, n)
+          end
         end
       end
 
@@ -463,30 +461,33 @@ module ActiveDocument
       def resolve_name(mod, name)
         cls = exc = nil
         parts = name.to_s.split('::')
-
         if parts.first == ''
           parts.shift
           hierarchy = [Object]
         else
           hierarchy = namespace_hierarchy(mod)
         end
-
         hierarchy.each do |ns|
 
-          # Simple const_get sometimes pulls names out of weird scopes,
-          # perhaps confusing the receiver (ns in this case) with the
-          # local scope. Walk the class hierarchy ourselves one node
-          # at a time by specifying false as the second argument.
-          parts.each { |part| ns = ns.const_get(part, false) }
-
+          parts.each do |part|
+            # Simple const_get sometimes pulls names out of weird scopes,
+            # perhaps confusing the receiver (ns in this case) with the
+            # local scope. Walk the class hierarchy ourselves one node
+            # at a time by specifying false as the second argument.
+            ns = ns.const_get(part, false)
+          end
           cls = ns
           break
         rescue NameError => e
-          exc = e if exc.nil?
-        end
+          if exc.nil?
+            exc = e
+          end
 
-        # Raise the first exception, this is from the most specific namespace
-        raise exc if cls.nil?
+        end
+        if cls.nil?
+          # Raise the first exception, this is from the most specific namespace
+          raise exc
+        end
 
         cls
       end

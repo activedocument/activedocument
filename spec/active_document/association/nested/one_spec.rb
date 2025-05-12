@@ -77,6 +77,8 @@ describe ActiveDocument::Association::Nested::One do
       end
     end
 
+
+
     context 'when attributes are updatable' do
 
       let(:name) do
@@ -103,7 +105,7 @@ describe ActiveDocument::Association::Nested::One do
       end
     end
 
-    context 'when attributes are replacable' do
+    context 'when attributes are replaceable' do
 
       let(:options) do
         {}

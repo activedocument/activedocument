@@ -10,6 +10,22 @@ module ActiveDocument
 
     extend self
 
+    # Indifferent string or symbol key lookup, returning the exact key.
+    #
+    # @param [ Hash ] hash The input hash.
+    # @param [ String | Symbol ] key The key to perform indifferent lookups with.
+    #
+    # @return [ String | Symbol | nil ] The exact key (with the correct type) that exists in the hash, or nil if the key does not exist.
+    def find_exact_key(hash, key)
+      key_s = key.to_s
+      return key_s if hash.key?(key_s)
+
+      key_sym = key.to_sym
+      hash.key?(key_sym) ? key_sym : nil
+    end
+
+    extend self
+
     # Extracts field values in the document at the specified key.
     #
     # The document can be a Hash or a model instance.
@@ -43,11 +59,25 @@ module ActiveDocument
     # from and behaves identically to association traversal for the purposes
     # of, for example, subsequent array element retrieval.
     #
-    # @param [ ActiveDocument::Document | Hash ] document The document to extract from.
+    # @param [ Document | Hash | String ] document The document to extract from.
     # @param [ String ] key The key path to extract.
     #
     # @return [ Object | Array ] Field value or values.
     def extract_attribute(document, key)
+      # The matcher system will wind up sending atomic values to this as well,
+      # when attempting to match more complex types. If anything other than a
+      # Document or a Hash is given, we'll short-circuit the logic and just
+      # return an empty array.
+      return [] unless document.is_a?(Hash) || document.is_a?(Document)
+
+      # Performance optimization; if the key does not include a '.' character,
+      # it must reference an immediate attribute of the document.
+      unless key.include?('.')
+        hash = document.respond_to?(:attributes) ? document.attributes : document
+        key = find_exact_key(hash, key)
+        return key ? [hash[key]] : []
+      end
+
       if document.respond_to?(:as_attributes, true)
         # If a document has hash fields, as_attributes would keep those fields
         # as Hash instances which do not offer indifferent access.
@@ -70,7 +100,6 @@ module ActiveDocument
             if (index = field.to_i).to_s == field && (doc.length > index)
               new << doc[index]
             end
-
             doc.each do |subdoc|
               next unless subdoc.is_a?(Hash)
 
@@ -86,20 +115,6 @@ module ActiveDocument
       end
 
       current
-    end
-
-    # Indifferent string or symbol key lookup, returning the exact key.
-    #
-    # @param [ Hash ] hash The input hash.
-    # @param [ String | Symbol ] key The key to perform indifferent lookups with.
-    #
-    # @return [ String | Symbol | nil ] The exact key (with the correct type) that exists in the hash, or nil if the key does not exist.
-    def find_exact_key(hash, key)
-      key_s = key.to_s
-      return key_s if hash.key?(key_s)
-
-      key_sym = key.to_sym
-      hash.key?(key_sym) ? key_sym : nil
     end
   end
 end

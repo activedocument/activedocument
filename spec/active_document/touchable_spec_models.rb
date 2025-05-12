@@ -6,7 +6,7 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :title, type: :string
+      field :title, type: String
 
       embeds_many :entrances, class_name: 'TouchableSpec::Embedded::Entrance'
       embeds_many :floors, class_name: 'TouchableSpec::Embedded::Floor'
@@ -16,8 +16,8 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :last_used_at, type: :time
-      field :level, type: :integer
+      field :last_used_at, type: Time
+      field :level, type: Integer
 
       embedded_in :building, touch: false, class_name: 'TouchableSpec::Embedded::Building'
 
@@ -29,8 +29,8 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :level, type: :integer
-      field :last_used_at, type: :time
+      field :level, type: Integer
+      field :last_used_at, type: Time
 
       embedded_in :building, touch: true, class_name: 'TouchableSpec::Embedded::Building'
 
@@ -80,7 +80,7 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :level, type: :integer
+      field :level, type: Integer
 
       belongs_to :building, touch: false, class_name: 'TouchableSpec::Referenced::Building'
 
@@ -95,7 +95,7 @@ module TouchableSpec
       include ActiveDocument::Document
       include ActiveDocument::Timestamps
 
-      field :level, type: :integer
+      field :level, type: Integer
 
       belongs_to :building, touch: true, class_name: 'TouchableSpec::Referenced::Building'
 
@@ -149,5 +149,21 @@ module TouchableSpec
 
       embedded_in :floor, touch: true, class_name: 'TouchableSpec::Referenced::Floor'
     end
+
+    class Label
+      include ActiveDocument::Document
+      include ActiveDocument::Timestamps
+
+      field :bands_updated_at, type: DateTime
+      has_many :bands, class_name: 'TouchableSpec::Referenced::Band'
+    end
+
+    class Band
+      include ActiveDocument::Document
+      include ActiveDocument::Timestamps
+
+      belongs_to :label, touch: :bands_updated_at, class_name: 'TouchableSpec::Referenced::Label'
+    end
+
   end
 end

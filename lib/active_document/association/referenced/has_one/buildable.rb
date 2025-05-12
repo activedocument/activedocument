@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_document/association/referenced/with_polymorphic_criteria'
+
 module ActiveDocument
   module Association
     module Referenced
@@ -7,6 +9,7 @@ module ActiveDocument
 
         # The Builder behavior for has_one associations.
         module Buildable
+          include WithPolymorphicCriteria
 
           # This method either takes an _id or an object and queries for the
           # inverse side using the id or sets the object after clearing the
@@ -14,13 +17,15 @@ module ActiveDocument
           #
           # @param [ Object ] base The base object.
           # @param [ Object ] object The object to use to build the association.
-          # @param [ String ] _type The type of the association.
-          # @param [ nil ] _selected_fields Must be nil.
+          # @param [ String ] type The type of the association.
+          # @param [ nil ] selected_fields Must be nil.
           #
-          # @return [ ActiveDocument::Document ] A single document.
+          # @return [ Document ] A single document.
           def build(base, object, _type = nil, _selected_fields = nil)
             if query?(object)
-              execute_query(object, base) unless base.new_record?
+              unless base.new_record?
+                execute_query(object, base)
+              end
             else
               clear_associated(object)
               object
@@ -38,10 +43,9 @@ module ActiveDocument
                 foreign_key
               )
             end
-
-            return unless object && (associated = object.send(inverse))
-
-            associated.substitute(nil)
+            if object && (associated = object.send(inverse))
+              associated.substitute(nil)
+            end
           end
 
           def query_criteria(object, base)
@@ -53,14 +57,6 @@ module ActiveDocument
 
           def execute_query(object, base)
             query_criteria(object, base).take
-          end
-
-          def with_polymorphic_criterion(criteria, base)
-            if polymorphic?
-              criteria.where(type => base.class.name)
-            else
-              criteria
-            end
           end
 
           def query?(object)

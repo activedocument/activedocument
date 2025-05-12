@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe ActiveDocument::Fields do
 
-  describe '{field}_translations' do
+  describe "#\{field}_translations" do
 
     let(:product) do
       Product.new
@@ -56,7 +56,7 @@ describe ActiveDocument::Fields do
         end
       end
 
-      it 'has alias method {field}_t' do
+      it "has alias method #{field}_t" do
         expect(product.method(:name_t)).to eq product.method(:name_translations)
       end
     end
@@ -73,7 +73,7 @@ describe ActiveDocument::Fields do
     end
   end
 
-  describe '{field}_translations=' do
+  describe "#\{field}_translations=" do
 
     let(:product) do
       Product.new
@@ -169,7 +169,7 @@ describe ActiveDocument::Fields do
         end
       end
 
-      it 'has alias method {field}_t=' do
+      it "has alias method #{field}_t=" do
         expect(product.method(:name_t=)).to eq product.method(:name_translations=)
       end
     end
@@ -314,7 +314,7 @@ describe ActiveDocument::Fields do
       end
 
       it 'converts to ActiveDocument::Boolean' do
-        expect(klass.field(:test, type: :boolean).type).to be(ActiveDocument::Boolean)
+        expect(klass.field(:test, type: ActiveDocument::Boolean).type).to be(ActiveDocument::Boolean)
       end
     end
 
@@ -326,54 +326,83 @@ describe ActiveDocument::Fields do
         end
       end
 
-      {
-        array: Array,
-        bigdecimal: BigDecimal,
-        big_decimal: BigDecimal,
-        binary: BSON::Binary,
-        boolean: ActiveDocument::Boolean,
-        bson_object_id: BSON::ObjectId,
-        date: Date,
-        datetime: DateTime,
-        date_time: DateTime,
-        double: Float,
-        float: Float,
-        hash: Hash,
-        integer: Integer,
-        object: Object,
-        range: Range,
-        regexp: Regexp,
-        set: Set,
-        string: String,
-        stringified_symbol: ActiveDocument::StringifiedSymbol,
-        symbol: Symbol,
-        time: Time,
-        timestamp: BSON::Timestamp,
-        undefined: Object
-      }.each do |field_type, field_klass|
+      it 'converts :array to Array' do
+        expect(klass.field(:test, type: :array).type).to be(Array)
+      end
 
-        it "converts Symbol :#{field_type} to #{field_klass}" do
-          expect(klass.field(:test, type: field_type).type).to be(field_klass)
-        end
+      it 'converts :big_decimal to BigDecimal' do
+        expect(klass.field(:test, type: :big_decimal).type).to be(BigDecimal)
+      end
 
-        it "converts String \"#{field_type}\" to #{field_klass}" do
-          expect(klass.field(:test, type: field_type.to_s).type).to be(field_klass)
-        end
+      it 'converts :binary to BSON::Binary' do
+        expect(klass.field(:test, type: :binary).type).to be(BSON::Binary)
+      end
+
+      it 'converts :boolean to ActiveDocument::Boolean' do
+        expect(klass.field(:test, type: :boolean).type).to be(ActiveDocument::Boolean)
+      end
+
+      it 'converts :date to Date' do
+        expect(klass.field(:test, type: :date).type).to be(Date)
+      end
+
+      it 'converts :date_time to DateTime' do
+        expect(klass.field(:test, type: :date_time).type).to be(DateTime)
+      end
+
+      it 'converts :float to Float' do
+        expect(klass.field(:test, type: :float).type).to be(Float)
+      end
+
+      it 'converts :hash to Hash' do
+        expect(klass.field(:test, type: :hash).type).to be(Hash)
+      end
+
+      it 'converts :integer to Integer' do
+        expect(klass.field(:test, type: :integer).type).to be(Integer)
+      end
+
+      it 'converts :object_id to BSON::ObjectId' do
+        expect(klass.field(:test, type: :object_id).type).to be(BSON::ObjectId)
+      end
+
+      it 'converts :range to Range' do
+        expect(klass.field(:test, type: :range).type).to be(Range)
+      end
+
+      it 'converts :regexp to Regexp' do
+        expect(klass.field(:test, type: :regexp).type).to be(Regexp)
+      end
+
+      it 'converts :set to Set' do
+        expect(klass.field(:test, type: :set).type).to be(Set)
+      end
+
+      it 'converts :string to String' do
+        expect(klass.field(:test, type: :string).type).to be(String)
+      end
+
+      it 'converts :symbol to Symbol' do
+        expect(klass.field(:test, type: :symbol).type).to be(Symbol)
+      end
+
+      it 'converts :time to Time' do
+        expect(klass.field(:test, type: :time).type).to be(Time)
       end
 
       context 'when using an unknown symbol' do
-        it 'raises UnknownFieldType' do
-          expect do
-            klass.field(:test, type: :bogus)
-          end.to raise_error(ActiveDocument::Errors::UnknownFieldType, /declares a field :test with an unknown :type value :bogus/)
+        it 'raises InvalidFieldType' do
+          lambda do
+            klass.field(:test, type:  :bogus)
+          end.should raise_error(ActiveDocument::Errors::InvalidFieldType, /defines a field 'test' with an unknown type value :bogus/)
         end
       end
 
       context 'when using an unknown string' do
-        it 'raises UnknownFieldType' do
-          expect do
-            klass.field(:test, type: 'bogus')
-          end.to raise_error(ActiveDocument::Errors::UnknownFieldType, /declares a field :test with an unknown :type value "bogus"/)
+        it 'raises InvalidFieldType' do
+          lambda do
+            klass.field(:test, type:  'bogus')
+          end.should raise_error(ActiveDocument::Errors::InvalidFieldType, /defines a field 'test' with an unknown type value "bogus"/)
         end
       end
     end
@@ -383,7 +412,7 @@ describe ActiveDocument::Fields do
       context 'when the options are all standard' do
 
         before do
-          Band.field :acceptable, type: :boolean
+          Band.field :acceptable, type: ActiveDocument::Boolean
         end
 
         after do
@@ -398,11 +427,49 @@ describe ActiveDocument::Fields do
       context 'when a custom option is provided' do
 
         before do
-          Band.field :acceptable, type: :boolean, custom: true
+          Band.field :acceptable, type: ActiveDocument::Boolean, custom: true
         end
 
         it 'adds the field to the model' do
           expect(Band.fields['acceptable']).to_not be_nil
+        end
+      end
+    end
+
+    context 'when the Symbol type is used' do
+
+      before do
+        ActiveDocument::Warnings.class_eval do
+          @symbol_type_deprecated = false
+        end
+      end
+
+      after do
+        Label.fields.delete('should_warn')
+      end
+
+      it 'warns that the BSON symbol type is deprecated' do
+        expect(ActiveDocument.logger).to receive(:warn)
+
+        Label.field :should_warn, type: Symbol
+      end
+
+      it 'warns on first use of Symbol type only' do
+        expect(ActiveDocument.logger).to receive(:warn).once
+
+        Label.field :should_warn, type: Symbol
+      end
+
+      context 'when using Symbol field type in multiple classes' do
+        after do
+          Truck.fields.delete('should_warn')
+        end
+
+        it 'warns on first use of Symbol type only' do
+          expect(ActiveDocument.logger).to receive(:warn).once
+
+          Label.field :should_warn, type: Symbol
+          Truck.field :should_warn, type: Symbol
         end
       end
     end
@@ -491,6 +558,49 @@ describe ActiveDocument::Fields do
         end
       end
     end
+
+    context 'when the field is declared as BSON::Decimal128' do
+      let(:document) { Mop.create!(decimal128_field: BSON::Decimal128.new(Math::PI.to_s)).reload }
+
+      shared_examples 'BSON::Decimal128 is BigDecimal' do
+        it 'returns a BigDecimal' do
+          expect(document.decimal128_field).to be_a BigDecimal
+        end
+      end
+
+      shared_examples 'BSON::Decimal128 is BSON::Decimal128' do
+        it 'returns a BSON::Decimal128' do
+          expect(document.decimal128_field).to be_a BSON::Decimal128
+        end
+      end
+
+      it 'is declared as BSON::Decimal128' do
+        expect(Mop.fields['decimal128_field'].type).to eq BSON::Decimal128
+      end
+
+      context 'when BSON version <= 4' do
+        max_bson_version '4.99.99'
+        it_behaves_like 'BSON::Decimal128 is BSON::Decimal128'
+      end
+
+      context 'when BSON version >= 5' do
+        min_bson_version '5.0.0'
+
+        context 'when allow_bson5_decimal128 is false' do
+          config_override :allow_bson5_decimal128, false
+          it_behaves_like 'BSON::Decimal128 is BigDecimal'
+        end
+
+        context 'when allow_bson5_decimal128 is true' do
+          config_override :allow_bson5_decimal128, true
+          it_behaves_like 'BSON::Decimal128 is BSON::Decimal128'
+        end
+
+        context 'when allow_bson5_decimal128 is default' do
+          it_behaves_like 'BSON::Decimal128 is BigDecimal'
+        end
+      end
+    end
   end
 
   describe '#getter_before_type_cast' do
@@ -500,7 +610,7 @@ describe ActiveDocument::Fields do
 
     context 'when the attribute has not been assigned' do
 
-      it 'delgates to the getter' do
+      it 'delegates to the getter' do
         expect(person.age_before_type_cast).to eq(person.age)
       end
     end
@@ -857,7 +967,7 @@ describe ActiveDocument::Fields do
       context 'when provided a default array' do
 
         before do
-          Person.field(:array_testing, type: :array, default: [], overwrite: true)
+          Person.field(:array_testing, type: Array, default: [], overwrite: true)
         end
 
         after do
@@ -875,7 +985,7 @@ describe ActiveDocument::Fields do
       context 'when provided a default hash' do
 
         before do
-          Person.field(:hash_testing, type: :hash, default: {}, overwrite: true)
+          Person.field(:hash_testing, type: Hash, default: {}, overwrite: true)
         end
 
         after do
@@ -896,7 +1006,7 @@ describe ActiveDocument::Fields do
           before do
             Person.field(
               :generated_testing,
-              type: :float,
+              type: Float,
               default: -> { Time.now.to_f },
               overwrite: true
             )
@@ -919,7 +1029,7 @@ describe ActiveDocument::Fields do
           before do
             Person.field(
               :rank,
-              type: :integer,
+              type: Integer,
               default: -> { title? ? 1 : 2 },
               overwrite: true
             )
@@ -968,7 +1078,7 @@ describe ActiveDocument::Fields do
       expect(Person.field(:testing)).to eq(Person.fields['testing'])
     end
 
-    context "when the field name conflicts with ActiveDocument's internals" do
+    context "when the field name conflicts with mongoid's internals" do
 
       %i[_association invalid].each do |meth|
         context "when the field is named #{meth}" do
@@ -1094,7 +1204,7 @@ describe ActiveDocument::Fields do
       end
 
       before do
-        Person.field :aliased, as: :alias, type: :boolean, overwrite: true
+        Person.field :aliased, as: :alias, type: ActiveDocument::Boolean, overwrite: true
       end
 
       it 'uses the alias to write the attribute' do
@@ -1273,7 +1383,7 @@ describe ActiveDocument::Fields do
   describe '.replace_field' do
 
     let!(:original) do
-      Person.field(:id_test, type: :bson_object_id, label: 'id')
+      Person.field(:id_test, type: BSON::ObjectId, label: 'id')
     end
     let(:new_field) do
       Person.fields['id_test']
@@ -1286,6 +1396,7 @@ describe ActiveDocument::Fields do
     after do
       Person.fields.delete('id_test')
     end
+
 
     it 'sets the new type on the field' do
       expect(new_field.type).to eq(String)
@@ -1328,7 +1439,7 @@ describe ActiveDocument::Fields do
   context 'when a setter accesses a field with a default' do
 
     let(:person) do
-      Person.new(overridden_map_with_default: 'testing')
+      Person.new(set_on_map_with_default: 'testing')
     end
 
     it 'sets the default value pre process' do
@@ -1565,7 +1676,7 @@ describe ActiveDocument::Fields do
       let(:shape) { Shape.new }
 
       it 'is correctly set' do
-        expect(shape.attributes['_type']).to eq('Shape')
+        shape.attributes['_type'].should == 'Shape'
       end
     end
 
@@ -1573,7 +1684,7 @@ describe ActiveDocument::Fields do
       let(:circle) { Circle.new }
 
       it 'is correctly set' do
-        expect(circle.attributes['_type']).to eq('Circle')
+        circle.attributes['_type'].should == 'Circle'
       end
     end
   end
@@ -1795,13 +1906,13 @@ describe ActiveDocument::Fields do
     context 'given nil' do
       subject { Person.database_field_name(nil) }
 
-      it { is_expected.to be_nil }
+      it { is_expected.to eq '' }
     end
 
     context 'given an empty String' do
       subject { Person.database_field_name('') }
 
-      it { is_expected.to be_nil }
+      it { is_expected.to eq '' }
     end
 
     context 'given a String' do

@@ -4,9 +4,153 @@ require 'spec_helper'
 
 describe ActiveDocument::Extensions::String do
 
+  describe '#__evolve_object_id__' do
+
+    context 'when the string is blank' do
+
+      it 'returns the empty string' do
+        expect(''.__evolve_object_id__).to be_empty
+      end
+    end
+
+    context 'when the string is a legal object id' do
+
+      let(:object_id) do
+        BSON::ObjectId.new
+      end
+
+      it 'returns the object id' do
+        expect(object_id.to_s.__evolve_object_id__).to eq(object_id)
+      end
+    end
+
+    context 'when the string is not a legal object id' do
+
+      let(:string) do
+        'testing'
+      end
+
+      it 'returns the string' do
+        expect(string.__evolve_object_id__).to eq(string)
+      end
+    end
+  end
+
+  describe '#__mongoize_object_id__' do
+
+    context 'when the string is blank' do
+
+      it 'returns nil' do
+        expect(''.__mongoize_object_id__).to be_nil
+      end
+    end
+
+    context 'when the string is a legal object id' do
+
+      let(:object_id) do
+        BSON::ObjectId.new
+      end
+
+      it 'returns the object id' do
+        expect(object_id.to_s.__mongoize_object_id__).to eq(object_id)
+      end
+    end
+
+    context 'when the string is not a legal object id' do
+
+      let(:string) do
+        'testing'
+      end
+
+      it 'returns the string' do
+        expect(string.__mongoize_object_id__).to eq(string)
+      end
+    end
+  end
+
+  describe '#__mongoize_time__' do
+
+    context 'when setting ActiveSupport time zone' do
+      include_context 'setting ActiveSupport time zone'
+
+      context 'when the string is a valid time with time zone' do
+
+        let(:string) do
+          # JST is +0900
+          '2010-11-19 00:24:49.123457 +1100'
+        end
+
+        let(:mongoized) do
+          string.__mongoize_time__
+        end
+
+        let(:expected_time) { Time.parse('2010-11-18 13:24:49.123457 +0000').in_time_zone }
+
+        it 'converts to the AS time zone' do
+          expect(mongoized.zone).to eq('JST')
+        end
+
+        it_behaves_like 'mongoizes to AS::TimeWithZone'
+        it_behaves_like 'maintains precision when mongoized'
+      end
+
+      context 'when the string is a valid time without time zone' do
+
+        let(:string) do
+          '2010-11-19 00:24:49.123457'
+        end
+
+        let(:mongoized) do
+          string.__mongoize_time__
+        end
+
+        let(:expected_time) { Time.parse('2010-11-18 15:24:49.123457 +0000').in_time_zone }
+
+        it 'converts to the AS time zone' do
+          expect(mongoized.zone).to eq('JST')
+        end
+
+        it_behaves_like 'mongoizes to AS::TimeWithZone'
+        it_behaves_like 'maintains precision when mongoized'
+      end
+
+      context 'when the string is a valid time without time' do
+
+        let(:string) do
+          '2010-11-19'
+        end
+
+        let(:mongoized) do
+          string.__mongoize_time__
+        end
+
+        let(:expected_time) { Time.parse('2010-11-18 15:00:00 +0000').in_time_zone }
+
+        it 'converts to the AS time zone' do
+          expect(mongoized.zone).to eq('JST')
+        end
+
+        it_behaves_like 'mongoizes to AS::TimeWithZone'
+      end
+
+      context 'when the string is an invalid time' do
+
+        let(:string) do
+          'shitty string'
+        end
+
+        it 'raises an error' do
+          expect do
+            string.__mongoize_time__
+          end.to raise_error(ArgumentError)
+        end
+      end
+    end
+  end
+
   describe '#collectionize' do
 
-    context 'when class is namepaced' do
+    context 'when class is namespaced' do
 
       module Medical
         class Patient

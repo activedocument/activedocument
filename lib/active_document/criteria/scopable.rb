@@ -65,7 +65,7 @@ module ActiveDocument
         self
       end
 
-      # Forces the criteria to be scoped, unless its inside an unscoped block.
+      # Forces the criteria to be scoped, unless it's inside an unscoped block.
       #
       # @example Force the criteria to be scoped.
       #   criteria.scoped(skip: 10)

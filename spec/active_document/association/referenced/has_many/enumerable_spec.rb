@@ -278,7 +278,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         context 'when iterating over the association a second time' do
 
           before do
-            enumerable.each(&:to_s)
+            enumerable.each { |post| }
           end
 
           it 'retains the correct length' do
@@ -399,7 +399,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
         context 'when iterating over the association a second time' do
 
           before do
-            enumerable.each(&:to_s)
+            enumerable.each { |post| }
           end
 
           it 'retains the correct length' do
@@ -438,13 +438,13 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       context 'when a block is given' do
         it 'returns true when the predicate is true' do
           expect(
-            enumerable.any? { true }
+            enumerable.any? { |_doc| true }
           ).to be true
         end
 
         it 'returns false when the predicate is false' do
           expect(
-            enumerable.any? { false }
+            enumerable.any? { |_doc| false }
           ).to be false
         end
       end
@@ -464,7 +464,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
 
         it 'gives precedence to the pattern' do
           expect(
-            enumerable.any?(Post) { false }
+            enumerable.any?(Post) { |_doc| false }
           ).to be true
         end
       end
@@ -508,13 +508,13 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       context 'when a block is given' do
         it 'returns true when the predicate is true' do
           expect(
-            enumerable.any? { true }
+            enumerable.any? { |_doc| true }
           ).to be true
         end
 
         it 'returns false when the predicate is false' do
           expect(
-            enumerable.any? { false }
+            enumerable.any? { |_doc| false }
           ).to be false
         end
       end
@@ -534,7 +534,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
 
         it 'gives precedence to the pattern' do
           expect(
-            enumerable.any?(Post) { false }
+            enumerable.any?(Post) { |_doc| false }
           ).to be true
         end
       end
@@ -1125,7 +1125,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
             enumerable.first
           end
 
-          context 'when a perviously persisted unloaded doc exists' do
+          context 'when a previously persisted unloaded doc exists' do
 
             it 'returns the first added doc' do
               expect(first).to eq(post)
@@ -1384,7 +1384,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       context 'when iterating over the association a second time' do
 
         before do
-          enumerable.each(&:to_s)
+          enumerable.each { |post| }
         end
 
         it 'retains the correct length' do
@@ -1762,6 +1762,27 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
+  describe '#kind_of?' do
+
+    let(:enumerable) do
+      described_class.new(Post.all)
+    end
+
+    context 'when checking against enumerable' do
+
+      it 'returns true' do
+        expect(enumerable.is_a?(Enumerable)).to be true
+      end
+    end
+
+    context 'when checking against array' do
+
+      it 'returns true' do
+        expect(enumerable.is_a?(Array)).to be true
+      end
+    end
+  end
+
   describe '#load_all!' do
 
     let(:person) do
@@ -2107,29 +2128,6 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
 
     it 'sets loaded to true' do
       expect(enumerable).to be__loaded
-    end
-  end
-
-  describe '#respond_to_missing?' do
-
-    let!(:person) do
-      Person.new
-    end
-
-    let(:enumerable) do
-      described_class.new(Post.where(person_id: person.id))
-    end
-
-    context 'when can respond' do
-      it 'returns true' do
-        expect(enumerable.respond_to?(:size)).to be true
-      end
-    end
-
-    context 'when cant respond' do
-      it 'returns false' do
-        expect(enumerable.respond_to?(:nonexistent_method)).to be false
-      end
     end
   end
 

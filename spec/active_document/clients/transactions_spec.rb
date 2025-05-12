@@ -4,23 +4,29 @@ require 'spec_helper'
 require_relative './transactions_spec_models'
 
 def capture_exception
-  error = nil
+  e = nil
   begin
     yield
   rescue StandardError => e
-    error = e
+    e = e
   end
-  error
+  e
 end
 
 describe ActiveDocument::Clients::Sessions do
   before(:all) do
-    CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
-    CONFIG[:clients][:other][:database] = 'other'
-    ActiveDocument::Clients.clients.each_value(&:close)
-    ActiveDocument::Config.send(:clients=, CONFIG[:clients])
-    ActiveDocument::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
+    if Gem::Version.new(Mongo::VERSION) < Gem::Version.new('2.6')
+      skip 'Driver does not support transactions'
+    end
+    if Gem::Version.new(Mongo::VERSION) >= Gem::Version.new('2.6')
+      CONFIG[:clients][:other] = CONFIG[:clients][:default].dup
+      CONFIG[:clients][:other][:database] = 'other'
+      ActiveDocument::Clients.clients.each_value(&:close)
+      ActiveDocument::Config.send(:clients=, CONFIG[:clients])
+      ActiveDocument::Clients.with_name(:other).subscribe(Mongo::Monitoring::COMMAND, EventSubscriber.new)
+    end
   end
+
 
   after(:all) do
     if Gem::Version.new(Mongo::VERSION) >= Gem::Version.new('2.6')
@@ -52,8 +58,7 @@ describe ActiveDocument::Clients::Sessions do
   end
 
   let(:other_events) do
-    skip_commands = %w[insert update]
-    subscriber.started_events.reject { |event| skip_commands.include?(event.command_name) }
+    subscriber.started_events.reject { |event| %w[insert update].include?(event.command_name) }
   end
 
   context 'when a transaction is used on a model class' do
@@ -274,7 +279,7 @@ describe ActiveDocument::Clients::Sessions do
               end
             end
 
-            include_examples 'it aborts the transaction', ActiveDocument::Errors::InvalidTransactionNesting
+            include_examples 'it aborts the transaction', ActiveDocument::Errors::TransactionError
           end
         end
       end
@@ -335,6 +340,45 @@ describe ActiveDocument::Clients::Sessions do
           expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
           expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
         end
+      end
+    end
+
+    context 'when sessions are supported but transactions are not' do
+      min_server_version '3.6'
+      # Could also test 4.0 in sharded cluster
+      max_server_version '3.6.99'
+
+      shared_examples 'it raises a transactions not supported error' do
+        it do
+          expect(Person.count).to eq(0)
+          expect(error).to be_a(ActiveDocument::Errors::TransactionsNotSupported)
+        end
+      end
+
+      context 'using #with_session' do
+        let!(:error) do
+          capture_exception do
+            Person.with_session do |s|
+              s.start_transaction
+              Person.create!
+              s.commit_transaction
+            end
+          end
+        end
+
+        include_examples 'it raises a transactions not supported error'
+      end
+
+      context 'using #transaction' do
+        let!(:error) do
+          capture_exception do
+            Person.transaction do
+              Person.create!
+            end
+          end
+        end
+
+        include_examples 'it raises a transactions not supported error'
       end
     end
 
@@ -542,7 +586,7 @@ describe ActiveDocument::Clients::Sessions do
             end
 
             it 'raises an error' do
-              expect(error).to be_a(ActiveDocument::Errors::InvalidTransactionNesting)
+              expect(error).to be_a(ActiveDocument::Errors::TransactionError)
             end
 
             it 'does not execute any operations' do
@@ -573,6 +617,60 @@ describe ActiveDocument::Clients::Sessions do
         it 'aborts the transaction' do
           expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(1)
           expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(0)
+        end
+      end
+    end
+
+    context 'when sessions are supported but transactions are not' do
+      min_server_version '3.6'
+      # Could also test 4.0 in sharded cluster
+      max_server_version '3.6.99'
+
+      around do |example|
+        ActiveDocument::Clients.with_name(:other).database.collections.each(&:drop)
+        ActiveDocument::Clients.with_name(:other).command(create: :people)
+
+        begin
+          subscriber.clear_events!
+          person.with(client: :other) do
+            example.run
+          end
+        ensure
+          ActiveDocument::Clients.with_name(:other).database.collections.each(&:drop)
+        end
+      end
+
+      context 'using #with_session' do
+        let!(:error) do
+          capture_exception do
+            person.with_session do |s|
+              s.start_transaction
+              person.username = 'Emily'
+              person.save!
+              s.commit_transaction
+            end
+          end
+        end
+
+        it 'raises a transactions not supported error' do
+          expect(person.reload.username).to_not be('Emily')
+          expect(error).to be_a(ActiveDocument::Errors::TransactionsNotSupported)
+        end
+      end
+
+      context 'using #transaction' do
+        let!(:error) do
+          capture_exception do
+            person.transaction do
+              person.username = 'Emily'
+              person.save!
+            end
+          end
+        end
+
+        it 'raises a transactions not supported error' do
+          expect(person.reload.username).to_not be('Emily')
+          expect(error).to be_a(ActiveDocument::Errors::TransactionsNotSupported)
         end
       end
     end
@@ -619,7 +717,7 @@ describe ActiveDocument::Clients::Sessions do
           end
         end
 
-        it 'commits the transacrion' do
+        it 'commits the transaction' do
           expect(other_events.count { |e| e.command_name == 'abortTransaction' }).to be(0)
           expect(other_events.count { |e| e.command_name == 'commitTransaction' }).to be(1)
         end
@@ -684,8 +782,12 @@ describe ActiveDocument::Clients::Sessions do
         ActiveDocument::Clients.with_name(:default).database.collections.each(&:drop)
         TransactionsSpecPerson.collection.create
         TransactionsSpecPersonWithOnCreate.collection.create
+        TransactionsSpecPersonWithAfterCreateCommit.collection.create
         TransactionsSpecPersonWithOnUpdate.collection.create
+        TransactionsSpecPersonWithAfterUpdateCommit.collection.create
+        TransactionsSpecPersonWithAfterSaveCommit.collection.create
         TransactionsSpecPersonWithOnDestroy.collection.create
+        TransactionsSpecPersonWithAfterDestroyCommit.collection.create
         TransactionSpecRaisesBeforeSave.collection.create
         TransactionSpecRaisesAfterSave.collection.create
       end
@@ -709,6 +811,18 @@ describe ActiveDocument::Clients::Sessions do
               person = nil
               TransactionsSpecPersonWithOnCreate.transaction do
                 person = TransactionsSpecPersonWithOnCreate.create!(name: 'James Bond')
+              end
+              person
+            end
+
+            it_behaves_like 'commit callbacks are called'
+          end
+
+          context 'when callback is after_create_commit' do
+            let!(:subject) do
+              person = nil
+              TransactionsSpecPersonWithAfterCreateCommit.transaction do
+                person = TransactionsSpecPersonWithAfterCreateCommit.create!(name: 'James Bond')
               end
               person
             end
@@ -783,6 +897,94 @@ describe ActiveDocument::Clients::Sessions do
               it_behaves_like 'commit callbacks are called'
             end
           end
+
+          context 'with after_update_commit callback' do
+            let(:subject) do
+              TransactionsSpecPersonWithAfterUpdateCommit.create!(name: 'James Bond').tap do |subject|
+                subject.after_commit_counter.reset
+                subject.after_rollback_counter.reset
+              end
+            end
+
+            context 'when modified once' do
+              before do
+                subject.transaction do
+                  subject.name = 'Austin Powers'
+                  subject.save!
+                end
+              end
+
+              it_behaves_like 'commit callbacks are called'
+            end
+
+            context 'when modified multiple times' do
+              before do
+                subject.transaction do
+                  subject.name = 'Austin Powers'
+                  subject.save!
+                  subject.name = 'Jason Bourne'
+                  subject.save!
+                end
+              end
+
+              it_behaves_like 'commit callbacks are called'
+            end
+          end
+
+          context 'with after_save_commit callback' do
+            let(:subject) do
+              TransactionsSpecPersonWithAfterSaveCommit.create!(name: 'James Bond').tap do |subject|
+                subject.after_commit_counter.reset
+                subject.after_rollback_counter.reset
+              end
+            end
+
+            context 'when modified once' do
+              before do
+                subject.transaction do
+                  subject.name = 'Austin Powers'
+                  subject.save!
+                end
+              end
+
+              it_behaves_like 'commit callbacks are called'
+            end
+
+            context 'when created' do
+              before do
+                TransactionsSpecPersonWithAfterSaveCommit.transaction do
+                  subject
+                end
+              end
+
+              it_behaves_like 'commit callbacks are called'
+            end
+
+            context 'when modified multiple times' do
+              before do
+                subject.transaction do
+                  subject.name = 'Austin Powers'
+                  subject.save!
+                  subject.name = 'Jason Bourne'
+                  subject.save!
+                end
+              end
+
+              it_behaves_like 'commit callbacks are called'
+            end
+
+            context 'when created and modified' do
+              before do
+                TransactionsSpecPersonWithAfterSaveCommit.transaction do
+                  subject
+                  subject.name = 'Jason Bourne'
+                  subject.save!
+                end
+              end
+
+              it_behaves_like 'commit callbacks are called'
+            end
+          end
         end
 
         context 'update_attributes' do
@@ -810,6 +1012,34 @@ describe ActiveDocument::Clients::Sessions do
 
             before do
               TransactionsSpecPersonWithOnUpdate.transaction do
+                subject.update!(name: 'Foma Kiniaev')
+              end
+            end
+
+            it_behaves_like 'commit callbacks are called'
+          end
+
+          context 'when callback is after_update_commit' do
+            let(:subject) do
+              TransactionsSpecPersonWithAfterUpdateCommit.create!(name: 'Jason Bourne')
+            end
+
+            before do
+              TransactionsSpecPersonWithAfterUpdateCommit.transaction do
+                subject.update!(name: 'Foma Kiniaev')
+              end
+            end
+
+            it_behaves_like 'commit callbacks are called'
+          end
+
+          context 'when callback is after_save_commit' do
+            let(:subject) do
+              TransactionsSpecPersonWithAfterSaveCommit.create!(name: 'Jason Bourne')
+            end
+
+            before do
+              TransactionsSpecPersonWithAfterSaveCommit.transaction do
                 subject.update!(name: 'Foma Kiniaev')
               end
             end
@@ -868,6 +1098,31 @@ describe ActiveDocument::Clients::Sessions do
 
             it_behaves_like 'commit callbacks are called'
           end
+
+          context 'with after_destroy_commit' do
+            let(:after_commit_counter) do
+              TransactionsSpecCounter.new
+            end
+
+            let(:after_rollback_counter) do
+              TransactionsSpecCounter.new
+            end
+
+            let(:subject) do
+              TransactionsSpecPersonWithAfterDestroyCommit.create!(name: 'James Bond').tap do |p|
+                p.after_commit_counter = after_commit_counter
+                p.after_rollback_counter = after_rollback_counter
+              end
+            end
+
+            before do
+              subject.transaction do
+                subject.destroy
+              end
+            end
+
+            it_behaves_like 'commit callbacks are called'
+          end
         end
       end
 
@@ -910,6 +1165,7 @@ describe ActiveDocument::Clients::Sessions do
 
           context 'when modified once' do
             before do
+
               subject.transaction do
                 subject.name = 'Austin Powers'
                 subject.save!
@@ -942,6 +1198,7 @@ describe ActiveDocument::Clients::Sessions do
               end
 
               before do
+
                 subject.transaction do
                   subject.save!
                 end
@@ -961,6 +1218,7 @@ describe ActiveDocument::Clients::Sessions do
               end
 
               before do
+
                 subject.transaction do
                   subject.save!
                 end

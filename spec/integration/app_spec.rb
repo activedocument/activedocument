@@ -7,7 +7,7 @@ TMP_BASE = File.join(BASE, 'tmp')
 
 def check_call(cmd, **opts)
   puts "Executing #{cmd.join(' ')}"
-  ChildProcessHelper.check_call(cmd, **opts)
+  Mrss::ChildProcessHelper.check_call(cmd, **opts)
 end
 
 def gem_version_argument(version)
@@ -26,8 +26,8 @@ describe 'ActiveDocument application tests' do
     end
 
     require 'fileutils'
+    require 'mrss/child_process_helper'
     require 'open-uri'
-    require 'support/child_process_helper'
 
     FileUtils.mkdir_p(TMP_BASE)
   end
@@ -35,8 +35,10 @@ describe 'ActiveDocument application tests' do
   context 'demo application' do
     context 'sinatra' do
       it 'runs' do
+        skip 'https://jira.mongodb.org/browse/MONGOID-5826'
+
         clone_application(
-          'https://github.com/active_document/active_document-demo',
+          'https://github.com/mongoid/mongoid-demo',
           subdir: 'sinatra-minimal'
         ) do
 
@@ -45,7 +47,7 @@ describe 'ActiveDocument application tests' do
             uri = URI.parse('http://localhost:4567/posts')
             resp = JSON.parse(uri.open.read)
 
-            expect(resp).to eq([])
+            resp.should == []
 
           end
         end
@@ -54,8 +56,10 @@ describe 'ActiveDocument application tests' do
 
     context 'rails-api' do
       it 'runs' do
+        skip 'https://jira.mongodb.org/browse/MONGOID-5826'
+
         clone_application(
-          'https://github.com/active_document/active_document-demo',
+          'https://github.com/mongoid/mongoid-demo',
           subdir: 'rails-api'
         ) do
 
@@ -64,7 +68,7 @@ describe 'ActiveDocument application tests' do
             uri = URI.parse('http://localhost:3000/posts')
             resp = JSON.parse(uri.open.read)
 
-            expect(resp).to eq([])
+            resp.should == []
           end
         end
       end
@@ -99,7 +103,7 @@ describe 'ActiveDocument application tests' do
       # Puma on JRuby exits with status 1 when it receives a TERM signal.
       allowed_statuses << 1
     end
-    expect(allowed_statuses).to include(status)
+    allowed_statuses.should include(status)
 
     rv
   end
@@ -122,29 +126,35 @@ describe 'ActiveDocument application tests' do
   end
 
   context 'new application - rails' do
+    before(:all) do
+      if SpecConfig.instance.rails_version < '7.1'
+        skip '`rails new` with rails < 7.1 fails because modern concurrent-ruby removed logger dependency'
+      end
+    end
+
     it 'creates' do
-      prepare_new_rails_app 'active_document-test' do
+      prepare_new_rails_app 'mongoid-test' do
         check_call(%w[rails g model post], env: clean_env)
         check_call(%w[rails g model comment post:belongs_to], env: clean_env)
 
         # https://jira.mongodb.org/browse/MONGOID-4885
         comment_text = File.read('app/models/comment.rb')
-        expect(comment_text).to match(/belongs_to :post/)
-        expect(comment_text).to_not match(/embedded_in :post/)
+        comment_text.should =~ /belongs_to :post/
+        comment_text.should_not =~ /embedded_in :post/
       end
     end
 
     it 'generates ActiveDocument config' do
-      prepare_new_rails_app 'active_document-test-config' do
-        active_document_config_file = File.join(TMP_BASE, 'active_document-test-config/config/active_document.yml')
+      prepare_new_rails_app 'mongoid-test-config' do
+        mongoid_config_file = File.join(TMP_BASE, 'mongoid-test-config/config/mongoid.yml')
 
-        expect(File.exist?(active_document_config_file)).to be false
-        check_call(%w[rails g active_document:config], env: clean_env)
-        expect(File.exist?(active_document_config_file)).to be true
+        File.exist?(mongoid_config_file).should be false
+        check_call(%w[rails g mongoid:config], env: clean_env)
+        File.exist?(mongoid_config_file).should be true
 
-        config_text = File.read(active_document_config_file)
-        expect(config_text).to match(/active_document_test_config_development/)
-        expect(config_text).to match(/active_document_test_config_test/)
+        config_text = File.read(mongoid_config_file)
+        expect(config_text).to match(/mongoid_test_config_development/)
+        expect(config_text).to match(/mongoid_test_config_test/)
 
         ActiveDocument::Config::Introspection.options(include_deprecated: true).each do |opt|
           if opt.deprecated?
@@ -160,23 +170,22 @@ describe 'ActiveDocument application tests' do
     end
 
     it 'generates ActiveDocument initializer' do
-      prepare_new_rails_app 'active_document-test-init' do
-        active_document_initializer = File.join(TMP_BASE, 'active_document-test-init/config/initializers/active_document.rb')
+      prepare_new_rails_app 'mongoid-test-init' do
+        mongoid_initializer = File.join(TMP_BASE, 'mongoid-test-init/config/initializers/mongoid.rb')
 
-        expect(File.exist?(active_document_initializer)).to be false
-        check_call(%w[rails g active_document:config], env: clean_env)
-        expect(File.exist?(active_document_initializer)).to be true
+        File.exist?(mongoid_initializer).should be false
+        check_call(%w[rails g mongoid:config], env: clean_env)
+        File.exist?(mongoid_initializer).should be true
       end
     end
   end
 
   def install_rails
     check_call(%w[gem uni rails -a])
-    rails_version = SpecConfig.instance.rails_version
-    return if rails_version == 'master'
+    return if (rails_version = SpecConfig.instance.rails_version) == 'master'
 
     check_call(%w[gem list])
-    check_call(%w[gem install rails --no-document -v] + ["~> #{rails_version}.0"])
+    check_call(%w[gem install rails --no-document --force -v] + ["~> #{rails_version}.0"])
   end
 
   context 'local test applications' do
@@ -186,12 +195,10 @@ describe 'ActiveDocument application tests' do
 
       APP_PATH = File.join(File.dirname(__FILE__), '../../test-apps/rails-api')
 
-      autoloaders = %w[classic zeitwerk]
-
       %w[development production].each do |rails_env|
         context "in #{rails_env}" do
 
-          autoloaders.each do |autoloader|
+          %w[classic zeitwerk].each do |autoloader|
             context "with #{autoloader} autoloader" do
 
               let(:env) do
@@ -218,19 +225,18 @@ describe 'ActiveDocument application tests' do
               end
 
               it 'creates an index' do
-                index = client['posts'].indexes.detect do |idx|
-                  idx['key'] == { 'subject' => 1 }
+                index = client['posts'].indexes.detect do |index|
+                  index['key'] == { 'subject' => 1 }
                 end
-                expect(index).to be_nil
+                index.should be_nil
 
-                check_call(%w[bundle exec rake db:active_document:create_indexes -t],
-                           cwd: APP_PATH,
-                           env: env)
+                check_call(%w[bundle exec rake db:mongoid:create_indexes -t],
+                           cwd: APP_PATH, env: env)
 
-                index = client['posts'].indexes.detect do |idx|
-                  idx['key'] == { 'subject' => 1 }
+                index = client['posts'].indexes.detect do |index|
+                  index['key'] == { 'subject' => 1 }
                 end
-                expect(index).to be_a(Hash)
+                index.should be_a(Hash)
               end
             end
           end
@@ -258,16 +264,25 @@ describe 'ActiveDocument application tests' do
 
   def parse_mongodb_uri(uri)
     pre, query = uri.split('?', 2)
+    raise ArgumentError.new("Invalid MongoDB URI: #{uri}") unless pre =~ %r{\A(mongodb(?:.*?))://([^/]+)(?:/(.*))?\z}
 
-    unless pre =~ %r{\A(mongodb(?:.*?))://([^/]+)(?:/(.*))?\z}
-      raise ArgumentError.new("Invalid MongoDB URI: #{uri}")
+    protocol = Regexp.last_match(1)
+    hosts = Regexp.last_match(2)
+    database = Regexp.last_match(3)
+    if database == ''
+      database = nil
     end
 
+
+
+    if query == ''
+      query = nil
+    end
     {
-      protocol: Regexp.last_match(1),
-      hosts: Regexp.last_match(2),
-      database: Regexp.last_match(3).presence,
-      query: query.presence
+      protocol: protocol,
+      hosts: hosts,
+      database: database,
+      query: query
     }
   end
 
@@ -279,15 +294,16 @@ describe 'ActiveDocument application tests' do
     # HACK: the driver does not provide a MongoDB URI parser and assembler,
     # and the Ruby standard library URI module doesn't handle multiple hosts.
     parts = parse_mongodb_uri(SpecConfig.instance.uri_str)
-    parts[:database] = 'active_document_test'
+    parts[:database] = 'mongoid_test'
     uri = build_mongodb_uri(parts)
     p uri
     env_config = { 'clients' => { 'default' => {
-      # TODO: massive hack, will fail if uri specifies a database name or any uri options
+      # TODO: massive hack, will fail if uri specifies a database name or
+      # any uri options
       'uri' => uri
     } } }
     config = { 'development' => env_config, 'production' => env_config }
-    File.open('config/active_document.yml', 'w') do |f|
+    File.open('config/mongoid.yml', 'w') do |f|
       f << YAML.dump(config)
     end
   end
@@ -297,9 +313,9 @@ describe 'ActiveDocument application tests' do
 
     gemfile_lines = File.readlines('Gemfile')
     gemfile_lines.delete_if do |line|
-      line =~ /active_document/
+      line =~ /mongoid/
     end
-    gemfile_lines << "gem 'active_document', path: '#{File.expand_path(BASE)}'\n"
+    gemfile_lines << "gem 'mongoid', path: '#{File.expand_path(BASE)}'\n"
     if rails_version
       gemfile_lines.delete_if do |line|
         line =~ /gem ['"]rails['"]/
@@ -316,15 +332,18 @@ describe 'ActiveDocument application tests' do
   end
 
   def adjust_rails_defaults(rails_version: SpecConfig.instance.rails_version)
-    return unless File.exist?('config/application.rb')
-
-    lines = File.readlines('config/application.rb')
-    lines.each do |line|
-      line.gsub!(/config.load_defaults \d\.\d/, "config.load_defaults #{rails_version}")
+    unless rails_version.match?(/^\d+\.\d+$/)
+      # This must be pre-release version, we trim it
+      rails_version = rails_version.split('.')[0..1].join('.')
     end
-
-    File.open('config/application.rb', 'w') do |f|
-      f << lines.join
+    if File.exist?('config/application.rb')
+      lines = File.readlines('config/application.rb')
+      lines.each do |line|
+        line.gsub!(/config.load_defaults \d\.\d/, "config.load_defaults #{rails_version}")
+      end
+      File.open('config/application.rb', 'w') do |f|
+        f << lines.join
+      end
     end
   end
 
@@ -332,7 +351,7 @@ describe 'ActiveDocument application tests' do
     return unless File.file?('Gemfile.lock')
 
     # TODO: Remove this method completely when we get rid of .lock files in
-    # active_document-demo apps.
+    # mongoid-demo apps.
     lock_lines = File.readlines('Gemfile.lock')
     # Get rid of the bundled with line so that whatever bundler is installed
     # on the system is usable with the application.
@@ -360,13 +379,18 @@ describe 'ActiveDocument application tests' do
   def wait_for_port(port, timeout, process)
     deadline = ActiveDocument::Utils.monotonic_time + timeout
     loop do
+
       Socket.tcp('localhost', port, nil, nil, connect_timeout: 0.5) do |_socket|
-        break
+        return
       end
     rescue IOError, SystemCallError
-      raise "Process #{process} died while waiting for port #{port}" unless process.alive?
+      unless process.alive?
+        raise "Process #{process} died while waiting for port #{port}"
+      end
+      if ActiveDocument::Utils.monotonic_time > deadline
+        raise
+      end
 
-      raise if ActiveDocument::Utils.monotonic_time > deadline
     end
   end
 end

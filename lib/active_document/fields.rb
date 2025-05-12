@@ -5,7 +5,6 @@ require 'active_document/fields/encrypted'
 require 'active_document/fields/foreign_key'
 require 'active_document/fields/localized'
 require 'active_document/fields/validators'
-require 'active_document/fields/field_types'
 
 module ActiveDocument
 
@@ -15,6 +14,27 @@ module ActiveDocument
 
     StringifiedSymbol = ActiveDocument::StringifiedSymbol
     Boolean = ActiveDocument::Boolean
+
+    # For fields defined with symbols use the correct class.
+    TYPE_MAPPINGS = {
+      array: Array,
+      big_decimal: BigDecimal,
+      binary: BSON::Binary,
+      boolean: ActiveDocument::Boolean,
+      date: Date,
+      date_time: DateTime,
+      float: Float,
+      hash: Hash,
+      integer: Integer,
+      object_id: BSON::ObjectId,
+      range: Range,
+      regexp: Regexp,
+      set: Set,
+      string: String,
+      stringified_symbol: StringifiedSymbol,
+      symbol: Symbol,
+      time: Time
+    }.with_indifferent_access
 
     # Constant for all names of the _id field in a document.
     #
@@ -26,7 +46,12 @@ module ActiveDocument
     # BSON classes that are not supported as field types
     #
     # @api private
-    UNSUPPORTED_BSON_TYPES = [BSON::Decimal128, BSON::Int32, BSON::Int64].freeze
+    INVALID_BSON_CLASSES = [BSON::Decimal128, BSON::Int32, BSON::Int64].freeze
+
+    # The suffix for generated translated fields.
+    #
+    # @api private
+    TRANSLATIONS_SFX = '_translations'
 
     module ClassMethods
       # Returns the list of id fields for this model class, as both strings
@@ -80,8 +105,8 @@ module ActiveDocument
           ar.each_with_index do |fn, i|
             key = fn
             unless klass.fields.key?(fn) || klass.relations.key?(fn)
-              key = if (tr = fn.match(/(.*)_translations\z/)&.captures&.first)
-                      tr
+              key = if fn.end_with?(TRANSLATIONS_SFX)
+                      fn.delete_suffix(TRANSLATIONS_SFX)
                     else
                       fn
                     end
@@ -117,7 +142,7 @@ module ActiveDocument
         :_id,
         default: -> { BSON::ObjectId.new },
         pre_processed: true,
-        type: :bson_object_id
+        type: BSON::ObjectId
       )
 
       alias_attribute(:id, :_id)
@@ -253,27 +278,6 @@ module ActiveDocument
 
     class << self
 
-      # DSL method used for configuration readability, typically in
-      # an initializer.
-      #
-      # @example
-      #   ActiveDocument::Fields.configure do
-      #     # do configuration
-      #   end
-      def configure(&block)
-        instance_exec(&block)
-      end
-
-      # Defines a field type mapping, for later use in field :type option.
-      #
-      # @example
-      #   ActiveDocument::Fields.configure do
-      #     type :point, Point
-      #   end
-      def type(symbol, klass)
-        Fields::FieldTypes.define(symbol, klass)
-      end
-
       # Stores the provided block to be run when the option name specified is
       # defined on a field.
       #
@@ -283,7 +287,7 @@ module ActiveDocument
       #
       # @example
       #   ActiveDocument::Fields.option :required do |model, field, value|
-      #     model.validates_presence_of field.name if value
+      #     model.validates_presence_of field if value
       #   end
       #
       # @param [ Symbol ] option_name the option name to match against
@@ -317,7 +321,7 @@ module ActiveDocument
       # @param [ String ] key The key used to search the association tree.
       # @param [ Hash ] fields The fields to begin the search with.
       # @param [ Hash ] associations The associations to begin the search with.
-      # @param [ Hash ] aliased_associations The alaised associations to begin
+      # @param [ Hash ] aliased_associations The aliased associations to begin
       #   the search with.
       # @param &block The block.
       # @yieldparam [ Symbol ] The current method.
@@ -406,7 +410,7 @@ module ActiveDocument
       #
       # @api private
       def database_field_name(name, relations, aliased_fields, aliased_associations)
-        return nil if name.blank?
+        return '' if name.blank?
 
         key = name.to_s
         segment, remaining = key.split('.', 2)
@@ -463,7 +467,7 @@ module ActiveDocument
       # added as an instance method to the Document.
       #
       # @example Define a field.
-      #   field :score, type: :integer, default: 0
+      #   field :score, type: Integer, default: 0
       #
       # @param [ Symbol ] name The name of the field.
       # @param [ Hash ] options The options to pass to the field.
@@ -593,9 +597,9 @@ module ActiveDocument
         field_options = field.options
 
         Fields.options.each_pair do |option_name, handler|
-          next unless field_options.key?(option_name)
-
-          handler.call(self, field, field_options[option_name])
+          if field_options.key?(option_name)
+            handler.call(self, field, field_options[option_name])
+          end
         end
       end
 
@@ -688,7 +692,9 @@ module ActiveDocument
         generated_methods.module_eval do
           re_define_method("#{meth}=") do |value|
             val = write_attribute(name, value)
-            remove_ivar(field.association.name) if field.foreign_key?
+            if field.foreign_key?
+              remove_ivar(field.association.name)
+            end
             val
           end
         end
@@ -723,11 +729,11 @@ module ActiveDocument
       # @api private
       def create_translations_getter(name, meth)
         generated_methods.module_eval do
-          re_define_method("#{meth}_translations") do
+          re_define_method("#{meth}#{TRANSLATIONS_SFX}") do
             attributes[name] ||= {}
             attributes[name].with_indifferent_access
           end
-          alias_method :"#{meth}_t", :"#{meth}_translations"
+          alias_method :"#{meth}_t", :"#{meth}#{TRANSLATIONS_SFX}"
         end
       end
 
@@ -743,14 +749,14 @@ module ActiveDocument
       # @api private
       def create_translations_setter(name, meth, field)
         generated_methods.module_eval do
-          re_define_method("#{meth}_translations=") do |value|
+          re_define_method("#{meth}#{TRANSLATIONS_SFX}=") do |value|
             attribute_will_change!(name)
-            value&.transform_values! do |val|
-              field.type.mongoize(val)
+            value&.transform_values! do |_value|
+              field.type.mongoize(_value)
             end
             attributes[name] = value
           end
-          alias_method :"#{meth}_t=", :"#{meth}_translations="
+          alias_method :"#{meth}_t=", :"#{meth}#{TRANSLATIONS_SFX}="
         end
       end
 
@@ -793,7 +799,7 @@ module ActiveDocument
       # @api private
       def field_for(name, options)
         opts = options.merge(klass: self)
-        opts[:type] = get_field_type(name, options[:type])
+        opts[:type] = retrieve_and_validate_type(name, options[:type])
         return Fields::Localized.new(name, opts) if options[:localize]
         return Fields::ForeignKey.new(name, opts) if options[:identity]
         return Fields::Encrypted.new(name, opts) if options[:encrypt]
@@ -803,39 +809,60 @@ module ActiveDocument
 
       # Get the class for the given type.
       #
-      # @param [ Symbol ] field_name The name of the field.
-      # @param [ Symbol | Class ] raw_type The type of the field.
+      # @param [ Symbol ] name The name of the field.
+      # @param [ Symbol | Class ] type The type of the field.
       #
       # @return [ Class ] The type of the field.
       #
-      # @raises [ ActiveDocument::Errors::UnknownFieldType ] if given an invalid field
+      # @raise [ ActiveDocument::Errors::InvalidFieldType ] if given an invalid field
       #   type.
       #
       # @api private
-      def get_field_type(field_name, raw_type)
-        type = raw_type ? Fields::FieldTypes.get(raw_type) : Object
-        raise ActiveDocument::Errors::UnknownFieldType.new(name, field_name, raw_type) unless type
+      def retrieve_and_validate_type(name, type)
+        result = TYPE_MAPPINGS[type] || unmapped_type(type)
+        raise Errors::InvalidFieldType.new(self, name, type) unless result.is_a?(Class)
 
-        warn_if_unsupported_bson_type(type)
-        type
+        if unsupported_type?(result)
+          warn_message = "Using #{result} as the field type is not supported. "
+          if result == BSON::Decimal128
+            warn_message += 'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+. To use literal BSON::Decimal128 fields with BSON 5, set ActiveDocument.allow_bson5_decimal128 to true.'
+          else
+            warn_message += 'Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type.'
+          end
+          ActiveDocument.logger.warn(warn_message)
+        end
+
+        result
       end
 
-      # Logs a warning message if the given type cannot be represented
-      # by BSON.
+      # Returns the type of the field if the type was not in the TYPE_MAPPINGS
+      # hash.
       #
-      # @param [ Class ] type The type of the field.
+      # @param [ Symbol | Class ] type The type of the field.
+      #
+      # @return [ Class ] The type of the field.
       #
       # @api private
-      def warn_if_unsupported_bson_type(type)
-        return unless UNSUPPORTED_BSON_TYPES.include?(type)
+      def unmapped_type(type)
+        if type.to_s == 'Boolean'
+          ActiveDocument::Boolean
+        else
+          type || Object
+        end
+      end
 
-        warn_message = "Using #{type} as the field type is not supported. "
-        warn_message += if type == BSON::Decimal128
-                          'In BSON <= 4, the BSON::Decimal128 type will work as expected for both storing and querying, but will return a BigDecimal on query in BSON 5+.'
-                        else
-                          'Saving values of this type to the database will work as expected, however, querying them will return a value of the native Ruby Integer type.'
-                        end
-        ActiveDocument.logger.warn(warn_message)
+      # Queries whether or not the given type is permitted as a declared field
+      # type.
+      #
+      # @param [ Class ] type The type to query
+      #
+      # @return [ true | false ] whether or not the type is supported
+      #
+      # @api private
+      def unsupported_type?(type)
+        return !ActiveDocument::Config.allow_bson5_decimal128? if type == BSON::Decimal128
+
+        INVALID_BSON_CLASSES.include?(type)
       end
     end
   end

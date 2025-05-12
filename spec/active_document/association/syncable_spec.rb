@@ -43,7 +43,7 @@ describe 'Syncable Association' do
       Object.send(:remove_const, :TestModel)
     end
 
-    it 'prohibits the use of :_sycned as an attribute' do
+    it 'prohibits the use of :_synced as an attribute' do
       expect do
         model_synced
       end.to raise_exception(ActiveDocument::Errors::InvalidField)

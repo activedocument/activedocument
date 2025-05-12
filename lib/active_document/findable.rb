@@ -45,7 +45,7 @@ module ActiveDocument
                    :none,
                    :pick,
                    :pluck,
-                   :pluck_each,
+                   :raw,
                    :read,
                    :second,
                    :second!,
@@ -55,7 +55,6 @@ module ActiveDocument
                    :take,
                    :take!,
                    :tally,
-                   :text_search,
                    :third,
                    :third!,
                    :third_to_last,
@@ -147,7 +146,7 @@ module ActiveDocument
     # during query construction.
     #
     # If this method is given a block, it delegates to +Enumerable#find+ and
-    # returns the first document of those found by the current Crieria object
+    # returns the first document of those found by the current Criteria object
     # for which the block returns a truthy value. If both a block and ids are
     # given, the block is ignored and the documents for the given ids are
     # returned. If a block and a Proc are given, the method delegates to
@@ -161,7 +160,7 @@ module ActiveDocument
     #
     # @param [ [ Object | Array<Object> ]... ] *args The id(s) to find.
     #
-    # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> | nil ] A document or matching documents.
+    # @return [ Document | Array<Document> | nil ] A document or matching documents.
     #
     # @raise Errors::DocumentNotFound If not all documents are found and
     #   the +raise_not_found_error+ ActiveDocument configuration option is truthy.
@@ -187,7 +186,7 @@ module ActiveDocument
     # @raise [ Errors::DocumentNotFound ] If no document found
     # and ActiveDocument.raise_not_found_error is true.
     #
-    # @return [ ActiveDocument::Document | nil ] A matching document.
+    # @return [ Document | nil ] A matching document.
     def find_by(attrs = {})
       result = where(attrs).find_first
       if result.nil? && ActiveDocument.raise_not_found_error
@@ -208,7 +207,7 @@ module ActiveDocument
     #
     # @raise [ Errors::DocumentNotFound ] If no document found.
     #
-    # @return [ ActiveDocument::Document ] A matching document.
+    # @return [ Document ] A matching document.
     def find_by!(attrs = {})
       result = where(attrs).find_first
       raise(Errors::DocumentNotFound.new(self, attrs)) unless result
@@ -224,7 +223,7 @@ module ActiveDocument
     #
     # @param [ Integer ] limit The number of documents to return.
     #
-    # @return [ ActiveDocument::Document ] The first matching document.
+    # @return [ Document ] The first matching document.
     def first(limit = nil)
       with_default_scope.first(limit)
     end
@@ -237,7 +236,7 @@ module ActiveDocument
     #
     # @param [ Integer ] limit The number of documents to return.
     #
-    # @return [ ActiveDocument::Document ] The last matching document.
+    # @return [ Document ] The last matching document.
     def last(limit = nil)
       with_default_scope.last(limit)
     end

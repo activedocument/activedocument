@@ -79,14 +79,14 @@ describe ActiveDocument::Atomic do
           end
 
           it 'returns a $set and $push with $each for modifications' do
-            expect(person.atomic_updates).to eq({
-              '$set' => { 'title' => 'Sir' },
-              '$push' => {
-                'addresses' => {
-                  '$each' => [{ '_id' => 'oxford-st', 'street' => 'Oxford St' }]
-                }
+            expect(person.atomic_updates).to eq(
+              {
+                '$set' => { 'title' => 'Sir' },
+                '$push' => { 'addresses' => { '$each' => [
+                  { '_id' => 'oxford-st', 'street' => 'Oxford St' }
+                ] } }
               }
-            })
+            )
           end
         end
 
@@ -149,34 +149,36 @@ describe ActiveDocument::Atomic do
             context 'when asking for the updates from the root' do
 
               it 'returns the $set with correct positions and modifications' do
-                expect(person.atomic_updates).to eq({
-                  '$set' => {
+                expect(person.atomic_updates).to eq(
+                  { '$set' => {
                     'title' => 'Sir',
                     'addresses.0.street' => 'Bond St',
                     'addresses.0.locations.0.name' => 'Work'
-                  }
-                })
+                  } }
+                )
               end
             end
 
             context 'when asking for the updates from the 1st level child' do
 
               it 'returns the $set with correct positions and modifications' do
-                expect(address.atomic_updates).to eq({
-                  '$set' => {
+                expect(address.atomic_updates).to eq(
+                  { '$set' => {
                     'addresses.0.street' => 'Bond St',
                     'addresses.0.locations.0.name' => 'Work'
-                  }
-                })
+                  } }
+                )
               end
             end
 
             context 'when asking for the updates from the 2nd level child' do
 
               it 'returns the $set with correct positions and modifications' do
-                expect(location.atomic_updates).to eq({
-                  '$set' => { 'addresses.0.locations.0.name' => 'Work' }
-                })
+                expect(location.atomic_updates).to eq(
+                  { '$set' => {
+                    'addresses.0.locations.0.name' => 'Work'
+                  } }
+                )
               end
             end
           end
@@ -256,40 +258,40 @@ describe ActiveDocument::Atomic do
             context 'when asking for the updates from the root document' do
 
               it 'returns the $set for 1st level and other for the 2nd level' do
-                expect(person.atomic_updates).to eq({
-                  '$set' => {
-                    'title' => 'Sir',
-                    'addresses.0.street' => 'Bond St'
-                  },
-                  conflicts: {
-                    '$push' => {
-                      'addresses' => {
-                        '$each' => [{
+                expect(person.atomic_updates).to eq(
+                  {
+                    '$set' => {
+                      'title' => 'Sir',
+                      'addresses.0.street' => 'Bond St'
+                    },
+                    conflicts: {
+                      '$push' => {
+                        'addresses' => { '$each' => [{
                           '_id' => new_address.id,
                           'street' => 'Another',
                           'locations' => [
                             '_id' => location.id,
                             'name' => 'Home'
                           ]
-                        }]
+                        }] }
                       }
                     }
                   }
-                })
+                )
               end
             end
 
             context 'when asking for the updates from the 1st level document' do
 
               it 'returns the $set for 1st level and other for the 2nd level' do
-                expect(address.atomic_updates).to eq({
-                  '$set' => { 'addresses.0.street' => 'Bond St' }
-                })
+                expect(address.atomic_updates).to eq(
+                  { '$set' => { 'addresses.0.street' => 'Bond St' } }
+                )
               end
             end
           end
 
-          context 'when adding a new child beetween two existing and updating one of them' do
+          context 'when adding a new child between two existing and updating one of them' do
 
             let!(:new_address) do
               person.addresses.build(street: 'Ipanema')
@@ -373,13 +375,13 @@ describe ActiveDocument::Atomic do
           it 'correctly distributes the operations' do
             pending 'https://jira.mongodb.org/browse/MONGOID-4982'
 
-            expect(truck.atomic_updates).to eq({
+            truck.atomic_updates.should == {
               '$set' => { 'crates.0.volume' => 2 },
               '$push' => { 'crates.0.toys' => { '$each' => [crate.toys.first.attributes] } },
               conflicts: {
                 '$push' => { 'crates' => { '$each' => [truck.crates.last.attributes] } }
               }
-            })
+            }
           end
         end
       end
@@ -394,7 +396,7 @@ describe ActiveDocument::Atomic do
       end
 
       it 'has the correct updates' do
-        expect(account.atomic_updates).to eq({
+        account.atomic_updates.should == {
           '$push' => {
             'memberships' => {
               '$each' => [
@@ -403,7 +405,7 @@ describe ActiveDocument::Atomic do
               ]
             }
           }
-        })
+        }
       end
     end
   end

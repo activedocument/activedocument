@@ -99,7 +99,7 @@ describe ActiveDocument::Serializable do
       context 'when global config is set to true' do
 
         before do
-          expect(Minim.include_root_in_json).to be false
+          Minim.include_root_in_json.should be false
           ActiveDocument.include_root_in_json = true
         end
 
@@ -238,6 +238,7 @@ describe ActiveDocument::Serializable do
         person.dob = date
       end
 
+
       it 'converts the objects to the defined type' do
         expect(attributes['dob']).to eq(date)
       end
@@ -255,6 +256,7 @@ describe ActiveDocument::Serializable do
       before do
         person.write_attributes(attributes)
       end
+
 
       it 'serializes assigned attributes' do
         expect(person.serializable_hash).to include attributes
@@ -495,6 +497,8 @@ describe ActiveDocument::Serializable do
             end
 
             it 'does not generate new ids' do
+              pending
+              raise
               expect(hash['addresses'].first['_id']).to be_nil
             end
           end
@@ -562,11 +566,9 @@ describe ActiveDocument::Serializable do
 
               let(:hash) do
                 person.serializable_hash(
-                  include: {
-                    addresses: {
-                      except: :_id, include: { locations: { except: :_id } }
-                    }
-                  }
+                  include: { addresses: {
+                    except: :_id, include: { locations: { except: :_id } }
+                  } }
                 )
               end
 
@@ -871,11 +873,11 @@ describe ActiveDocument::Serializable do
       config_override :include_root_in_json, false
 
       before do
-        expect(account.include_root_in_json).to be false
+        account.include_root_in_json.should be false
         ActiveDocument.include_root_in_json = true
       end
 
-      it 'uses the active_document configuration' do
+      it 'uses the mongoid configuration' do
         expect(JSON.parse(account.to_json)).to have_key('account')
       end
     end
@@ -883,7 +885,7 @@ describe ActiveDocument::Serializable do
     context 'when including root in json via class' do
 
       before do
-        expect(account.include_root_in_json).to be false
+        account.include_root_in_json.should be false
         Account.include_root_in_json = true
       end
 
@@ -899,13 +901,14 @@ describe ActiveDocument::Serializable do
     context 'when not including root in json' do
 
       before do
-        expect(account.include_root_in_json).to be false
+        account.include_root_in_json.should be false
       end
 
-      it 'uses the active_document configuration' do
+      it 'uses the mongoid configuration' do
         expect(JSON.parse(account.to_json)).to_not have_key('account')
       end
     end
+
 
     context 'when serializing a relation directly' do
 

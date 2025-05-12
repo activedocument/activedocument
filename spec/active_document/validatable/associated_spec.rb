@@ -37,12 +37,18 @@ describe ActiveDocument::Validatable::AssociatedValidator do
           User.new(name: 'test')
         end
 
-        let(:description) do
+        let(:description1) do
+          Description.new
+        end
+
+        let(:description2) do
           Description.new
         end
 
         before do
-          user.descriptions << description
+          user.descriptions << description1
+          user.descriptions << description2
+          user.valid?
         end
 
         it 'only validates the parent once' do
@@ -50,12 +56,16 @@ describe ActiveDocument::Validatable::AssociatedValidator do
         end
 
         it 'adds the errors from the relation' do
-          user.valid?
           expect(user.errors[:descriptions]).to_not be_nil
         end
 
+        it 'reports all failed validations' do
+          errors = user.descriptions.flat_map { |d| d.errors[:details] }
+          expect(errors.length).to eq 2
+        end
+
         it 'only validates the child once' do
-          expect(description).to_not be_valid
+          expect(description1).to_not be_valid
         end
       end
 
@@ -77,7 +87,9 @@ describe ActiveDocument::Validatable::AssociatedValidator do
         it 'does not run validation on them' do
           expect(user).to be_valid
         end
+
       end
+
     end
   end
 

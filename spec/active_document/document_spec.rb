@@ -667,7 +667,7 @@ describe ActiveDocument::Document do
 
   describe '.logger' do
 
-    it 'returns the active_document logger' do
+    it 'returns the mongoid logger' do
       expect(Person.logger).to eq(ActiveDocument.logger)
     end
   end
@@ -678,7 +678,7 @@ describe ActiveDocument::Document do
       Person.new
     end
 
-    it 'returns the active_document logger' do
+    it 'returns the mongoid logger' do
       expect(person.send(:logger)).to eq(ActiveDocument.logger)
     end
   end
@@ -694,7 +694,7 @@ describe ActiveDocument::Document do
     end
   end
 
-  context 'when a model name conflicts with a active_document internal' do
+  context 'when a model name conflicts with a mongoid internal' do
 
     let(:scheduler) do
       Scheduler.new
@@ -779,7 +779,7 @@ describe ActiveDocument::Document do
       Person.validates_format_of(:ssn, without: /\$\$\$/)
 
       class Manager < Person
-        field :level, type: :integer, default: 1
+        field :level, type: Integer, default: 1
       end
     end
 
@@ -852,7 +852,7 @@ describe ActiveDocument::Document do
 
       context 'when the document has embedded documents' do
 
-        context 'when the attribtues are protected' do
+        context 'when the attributes are protected' do
 
           let!(:appointment) do
             manager.appointments.build

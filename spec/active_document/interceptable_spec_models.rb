@@ -2,12 +2,15 @@
 
 module InterceptableSpec
   class CallbackRegistry
-    def initialize
+    def initialize(only: [])
       @calls = []
+      @only = only
     end
 
-    def record_call(klass, callback)
-      @calls << [klass, callback]
+    def record_call(cls, cb)
+      return unless @only.empty? || @only.any?(cb)
+
+      @calls << [cls, cb]
     end
 
     attr_reader :calls
@@ -17,9 +20,12 @@ module InterceptableSpec
     extend ActiveSupport::Concern
 
     included do
-      whens = %i[before after]
-      %i[validation save create update].each do |what|
-        whens.each do |whn|
+      field :name, type: String
+
+      %i[
+        validation save create update
+      ].each do |what|
+        %i[before after].each do |whn|
           send(:"#{whn}_#{what}", :"#{whn}_#{what}_stub")
           define_method(:"#{whn}_#{what}_stub") do
             callback_registry&.record_call(self.class, :"#{whn}_#{what}")
@@ -35,196 +41,128 @@ module InterceptableSpec
         end
       end
     end
+
+    attr_accessor :callback_registry
+
+    def initialize(callback_registry, *args, **kwargs)
+      @callback_registry = callback_registry
+      super(*args, **kwargs)
+    end
+  end
+
+  module RootInsertable
+    def insert_as_root
+      @callback_registry&.record_call(self.class, :insert_into_database)
+      super
+    end
   end
 
   class CbHasOneParent
     include ActiveDocument::Document
+    include CallbackTracking
+    include RootInsertable
 
     has_one :child, autosave: true, class_name: 'CbHasOneChild', inverse_of: :parent
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
-
-    def insert_as_root
-      @callback_registry&.record_call(self.class, :insert_into_database)
-      super
-    end
-
-    include CallbackTracking
   end
 
   class CbHasOneChild
     include ActiveDocument::Document
+    include CallbackTracking
 
     belongs_to :parent, class_name: 'CbHasOneParent', inverse_of: :child
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
-
-    include CallbackTracking
   end
 
   class CbHasManyParent
     include ActiveDocument::Document
+    include CallbackTracking
+    include RootInsertable
 
     has_many :children, autosave: true, class_name: 'CbHasManyChild', inverse_of: :parent
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
-
-    def insert_as_root
-      @callback_registry&.record_call(self.class, :insert_into_database)
-      super
-    end
-
-    include CallbackTracking
   end
 
   class CbHasManyChild
     include ActiveDocument::Document
+    include CallbackTracking
 
     belongs_to :parent, class_name: 'CbHasManyParent', inverse_of: :children
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
-
-    include CallbackTracking
   end
 
   class CbEmbedsOneParent
     include ActiveDocument::Document
+    include CallbackTracking
+    include RootInsertable
 
     field :name
 
     embeds_one :child, cascade_callbacks: true, class_name: 'CbEmbedsOneChild', inverse_of: :parent
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
-
-    def insert_as_root
-      @callback_registry&.record_call(self.class, :insert_into_database)
-      super
-    end
-
-    include CallbackTracking
   end
 
   class CbEmbedsOneChild
     include ActiveDocument::Document
+    include CallbackTracking
 
     field :age
 
     embedded_in :parent, class_name: 'CbEmbedsOneParent', inverse_of: :child
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
-
-    include CallbackTracking
   end
 
   class CbEmbedsManyParent
     include ActiveDocument::Document
+    include CallbackTracking
+    include RootInsertable
 
     embeds_many :children, cascade_callbacks: true, class_name: 'CbEmbedsManyChild', inverse_of: :parent
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
-
-    def insert_as_root
-      @callback_registry&.record_call(self.class, :insert_into_database)
-      super
-    end
-
-    include CallbackTracking
   end
 
   class CbEmbedsManyChild
     include ActiveDocument::Document
+    include CallbackTracking
 
     embedded_in :parent, class_name: 'CbEmbedsManyParent', inverse_of: :children
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
-
-    include CallbackTracking
   end
 
   class CbParent
     include ActiveDocument::Document
-
-    def initialize(callback_registry)
-      @callback_registry = callback_registry
-      super()
-    end
-
-    attr_accessor :callback_registry
+    include CallbackTracking
 
     embeds_many :cb_children
     embeds_many :cb_cascaded_children, cascade_callbacks: true
-
-    include CallbackTracking
+    embeds_many :cb_cascaded_nodes, cascade_callbacks: true, as: :parent
   end
 
   class CbChild
     include ActiveDocument::Document
+    include CallbackTracking
 
     embedded_in :cb_parent
-
-    def initialize(callback_registry, options)
-      @callback_registry = callback_registry
-      super(options)
-    end
-
-    attr_accessor :callback_registry
-
-    include CallbackTracking
   end
 
   class CbCascadedChild
     include ActiveDocument::Document
+    include CallbackTracking
 
     embedded_in :cb_parent
 
-    def initialize(callback_registry, options)
-      @callback_registry = callback_registry
-      super(options)
+    before_save :test_active_document_state
+
+    private
+
+    # Helps test that cascading child callbacks have access to the ActiveDocument
+    # state objects; if the implementation uses fiber-local (instead of truly
+    # thread-local) variables, the related tests will fail because the
+    # cascading child callbacks use fibers to linearize the recursion.
+    def test_active_document_state
+      ActiveDocument::Threaded.stack('interceptable').push(self)
     end
+  end
 
-    attr_accessor :callback_registry
-
+  class CbCascadedNode
+    include ActiveDocument::Document
     include CallbackTracking
+
+    embedded_in :parent, polymorphic: true
+
+    embeds_many :cb_cascaded_nodes, cascade_callbacks: true, as: :parent
   end
 end
 
@@ -255,10 +193,10 @@ class InterceptableWing
   belongs_to :plane, class_name: 'InterceptablePlane'
   has_one :engine, autobuild: true, class_name: 'InterceptableEngine'
 
-  field :_id, type: :string, default: -> { 'hello-wing' }
+  field :_id, type: String, default: -> { 'hello-wing' }
 
-  field :p_id, type: :string, default: -> { plane&.id }
-  field :e_id, type: :string, default: -> { engine&.id }
+  field :p_id, type: String, default: -> { plane&.id }
+  field :e_id, type: String, default: -> { engine&.id }
 end
 
 class InterceptableEngine
@@ -266,7 +204,7 @@ class InterceptableEngine
 
   belongs_to :wing, class_name: 'InterceptableWing'
 
-  field :_id, type: :string, default: -> { "hello-engine-#{wing&.id}" }
+  field :_id, type: String, default: -> { "hello-engine-#{wing&.id}" }
 end
 
 class InterceptableCompany
@@ -299,9 +237,9 @@ class InterceptableUser
 
   belongs_to :company, class_name: 'InterceptableCompany'
 
-  validate :break_active_document
+  validate :break_mongoid
 
-  def break_active_document
+  def break_mongoid
     company.shop_ids
   end
 end

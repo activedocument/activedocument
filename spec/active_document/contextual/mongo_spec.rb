@@ -255,11 +255,14 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       it 'does not raise an error on unscoped' do
-        pending 'looks like an actual bug to fix'
-        expect(Band.unscoped.estimated_count).to eq(5)
+        expect do
+          expect(Band.unscoped.estimated_count).to eq(5)
+        end
       end
     end
   end
+
+
 
   %i[delete delete_all].each do |method|
 
@@ -273,7 +276,7 @@ describe ActiveDocument::Contextual::Mongo do
         Band.create!(name: 'New Order')
       end
 
-      context 'when the selector is contraining' do
+      context 'when the selector is constraining' do
 
         let(:criteria) do
           Band.where(name: 'Depeche Mode')
@@ -327,7 +330,7 @@ describe ActiveDocument::Contextual::Mongo do
         end
       end
 
-      context 'when the selector is not contraining' do
+      context 'when the selector is not constraining' do
 
         let(:criteria) do
           Band.all
@@ -377,7 +380,7 @@ describe ActiveDocument::Contextual::Mongo do
         Band.create!(name: 'New Order')
       end
 
-      context 'when the selector is contraining' do
+      context 'when the selector is constraining' do
 
         let(:criteria) do
           Band.where(name: 'Depeche Mode')
@@ -431,7 +434,7 @@ describe ActiveDocument::Contextual::Mongo do
         end
       end
 
-      context 'when the selector is not contraining' do
+      context 'when the selector is not constraining' do
 
         let(:criteria) do
           Band.all
@@ -616,7 +619,7 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       context 'when fallbacks are enabled with a locale list' do
-        with_i18n_fallbacks
+        require_fallbacks
         with_default_i18n_configs
 
         before do
@@ -631,7 +634,7 @@ describe ActiveDocument::Contextual::Mongo do
           I18n.locale = :en
           Dictionary.create!(description: 'english-text')
           I18n.locale = :he
-          expect(distinct).to eq('english-text')
+          distinct.should == 'english-text'
         end
       end
 
@@ -698,7 +701,6 @@ describe ActiveDocument::Contextual::Mongo do
   describe '#tally' do
     let(:fans1) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
     let(:criteria) { Band.where(origin: 'tally') }
-    let(:unwind) { false }
     let(:fans2) { [Fanatic.new(age: 1), Fanatic.new(age: 2)] }
     let(:fans3) { [Fanatic.new(age: 1), Fanatic.new(age: 3)] }
 
@@ -719,160 +721,91 @@ describe ActiveDocument::Contextual::Mongo do
       Band.create!(origin: 'tally2', fanatics: fans3, genres: [1, 3])
     end
 
-    shared_examples_for 'scalar value examples' do
 
-      context 'when tallying a string' do
-        let(:tally) do
-          criteria.tally(:name, unwind: unwind)
-        end
-
-        it 'returns the correct hash' do
-          expect(tally).to eq('Depeche Mode' => 1, 'New Order' => 1, '10,000 Maniacs' => 1)
-        end
+    context 'when tallying a string' do
+      let(:tally) do
+        criteria.tally(:name)
       end
 
-      context 'using an aliased field' do
-        let(:tally) do
-          criteria.tally(:years, unwind: unwind)
-        end
-
-        it 'returns the correct hash' do
-          expect(tally).to eq(30 => 3)
-        end
-      end
-
-      context 'when tallying a demongoizable field' do
-        let(:tally) do
-          criteria.tally(:sales, unwind: unwind)
-        end
-
-        it 'returns the correct hash' do
-          expect(tally).to eq(BigDecimal('1E2') => 2, BigDecimal('2E3') => 1)
-        end
-      end
-
-      context 'when tallying a localized field' do
-        with_default_i18n_configs
-
-        before do
-          I18n.locale = :en
-          d1 = Dictionary.create!(description: 'en1')
-          d2 = Dictionary.create!(description: 'en1')
-          d3 = Dictionary.create!(description: 'en1')
-          d4 = Dictionary.create!(description: 'en2')
-          I18n.locale = :de
-          d1.description = 'de1'
-          d2.description = 'de1'
-          d3.description = 'de2'
-          d4.description = 'de3'
-          d1.save!
-          d2.save!
-          d3.save!
-          d4.save!
-          I18n.locale = :en
-        end
-
-        context 'when getting the demongoized field' do
-          let(:tallied) do
-            Dictionary.tally(:description, unwind: unwind)
-          end
-
-          it 'returns the translation for the current locale' do
-            expect(tallied).to eq('en1' => 3, 'en2' => 1)
-          end
-        end
-
-        context 'when getting a specific locale' do
-          let(:tallied) do
-            Dictionary.tally('description.de', unwind: unwind)
-          end
-
-          it 'returns the translation for the the specific locale' do
-            expect(tallied).to eq('de1' => 2, 'de2' => 1, 'de3' => 1)
-          end
-        end
-
-        context 'when getting the full hash' do
-          let(:tallied) do
-            Dictionary.tally('description_translations', unwind: unwind)
-          end
-
-          it 'returns the correct hash' do
-            expect(tallied).to eq(
-              { 'de' => 'de1', 'en' => 'en1' } => 2,
-              { 'de' => 'de2', 'en' => 'en1' } => 1,
-              { 'de' => 'de3', 'en' => 'en2' } => 1
-            )
-          end
-        end
-      end
-
-      context 'when tallying an embedded field' do
-        let(:tally) do
-          criteria.tally('label.name', unwind: unwind)
-        end
-
-        it 'returns the correct hash' do
-          expect(tally).to eq('Atlantic' => 2, 'Columbia' => 1)
-        end
-      end
-
-      context 'when some keys are missing' do
-        before do
-          3.times { Band.create!(origin: 'tally', unwind: unwind) }
-        end
-
-        let(:tally) do
-          criteria.tally(:name)
-        end
-
-        it 'returns the correct hash' do
-          expect(tally).to eq('Depeche Mode' => 1,
-                              'New Order' => 1,
-                              '10,000 Maniacs' => 1,
-                              nil => 3)
-        end
-      end
-
-      context 'when tallying demongoizable values from typeless fields' do
-        let!(:person1) { Person.create!(ssn: /hello/) }
-        let!(:person2) { Person.create!(ssn: BSON::Decimal128.new('1')) }
-        let(:tally) { Person.tally('ssn', unwind: unwind) }
-
-        context '< BSON 5' do
-          max_bson_version '4.99.99'
-
-          it 'stores the correct types in the database' do
-            expect(Person.find(person1.id).attributes['ssn']).to be_a BSON::Regexp::Raw
-            expect(Person.find(person2.id).attributes['ssn']).to be_a BSON::Decimal128
-          end
-
-          it 'tallies the correct type' do
-            expect(tally.keys.map(&:class).sort_by(&:to_s)).to eq([BSON::Decimal128, BSON::Regexp::Raw])
-          end
-        end
-
-        context '>= BSON 5' do
-          min_bson_version '5.0'
-
-          it 'stores the correct types in the database' do
-            expect(Person.find(person1.id).ssn).to be_a BSON::Regexp::Raw
-            expect(Person.find(person2.id).ssn).to be_a BigDeimal
-          end
-
-          it 'tallies the correct type' do
-            expect(tally.keys.map(&:class).sort_by(&:to_s)).to eq([BigDecimal, BSON::Regexp::Raw])
-          end
-        end
+      it 'returns the correct hash' do
+        expect(tally).to eq('Depeche Mode' => 1, 'New Order' => 1, '10,000 Maniacs' => 1)
       end
     end
 
-    it_behaves_like 'scalar value examples'
+    context 'using an aliased field' do
+      let(:tally) do
+        criteria.tally(:years)
+      end
 
-    context 'when :unwind is true' do
-      let(:unwind) { true }
+      it 'returns the correct hash' do
+        expect(tally).to eq(30 => 3)
+      end
+    end
 
-      it_behaves_like 'scalar value examples'
+    context 'when tallying a demongoizable field' do
+      let(:tally) do
+        criteria.tally(:sales)
+      end
+
+      it 'returns the correct hash' do
+        expect(tally).to eq(BigDecimal('1E2') => 2, BigDecimal('2E3') => 1)
+      end
+    end
+
+    context 'when tallying a localized field' do
+      with_default_i18n_configs
+
+      before do
+        I18n.locale = :en
+        d1 = Dictionary.create!(description: 'en1')
+        d2 = Dictionary.create!(description: 'en1')
+        d3 = Dictionary.create!(description: 'en1')
+        d4 = Dictionary.create!(description: 'en2')
+        I18n.locale = :de
+        d1.description = 'de1'
+        d2.description = 'de1'
+        d3.description = 'de2'
+        d4.description = 'de3'
+        d1.save!
+        d2.save!
+        d3.save!
+        d4.save!
+        I18n.locale = :en
+      end
+
+      context 'when getting the demongoized field' do
+        let(:tallied) do
+          Dictionary.tally(:description)
+        end
+
+        it 'returns the translation for the current locale' do
+          expect(tallied).to eq('en1' => 3, 'en2' => 1)
+        end
+      end
+
+      context 'when getting a specific locale' do
+        let(:tallied) do
+          Dictionary.tally('description.de')
+        end
+
+        it 'returns the translation for the the specific locale' do
+          expect(tallied).to eq('de1' => 2, 'de2' => 1, 'de3' => 1)
+        end
+      end
+
+      context 'when getting the full hash' do
+        let(:tallied) do
+          Dictionary.tally('description_translations')
+        end
+
+        it 'returns the correct hash' do
+          expect(tallied).to eq(
+            { 'de' => 'de1', 'en' => 'en1' } => 2,
+            { 'de' => 'de2', 'en' => 'en1' } => 1,
+            { 'de' => 'de3', 'en' => 'en2' } => 1
+          )
+        end
+      end
     end
 
     context 'when tallying an embedded localized field' do
@@ -896,7 +829,7 @@ describe ActiveDocument::Contextual::Mongo do
 
       context 'when getting the demongoized field' do
         let(:tallied) do
-          Person.tally('addresses.name', unwind: unwind)
+          Person.tally('addresses.name')
         end
 
         it 'returns the translation for the current locale' do
@@ -905,21 +838,11 @@ describe ActiveDocument::Contextual::Mongo do
             %w[en1 en3] => 1
           )
         end
-
-        context 'when :unwind true' do
-          let(:unwind) { true }
-
-          it 'returns the correct hash' do
-            expect(tallied).to eq({ 'en1' => 2,
-                                    'en2' => 1,
-                                    'en3' => 1 })
-          end
-        end
       end
 
       context 'when getting a specific locale' do
         let(:tallied) do
-          Person.tally('addresses.name.de', unwind: unwind)
+          Person.tally('addresses.name.de')
         end
 
         it 'returns the translation for the the specific locale' do
@@ -928,21 +851,11 @@ describe ActiveDocument::Contextual::Mongo do
             %w[de1 de3] => 1
           )
         end
-
-        context 'when :unwind true' do
-          let(:unwind) { true }
-
-          it 'returns the correct hash' do
-            expect(tallied).to eq({ 'de1' => 2,
-                                    'de2' => 1,
-                                    'de3' => 1 })
-          end
-        end
       end
 
       context 'when getting the full hash' do
         let(:tallied) do
-          Person.tally('addresses.name_translations', unwind: unwind)
+          Person.tally('addresses.name_translations')
         end
 
         it 'returns the correct hash' do
@@ -951,16 +864,17 @@ describe ActiveDocument::Contextual::Mongo do
             [{ 'de' => 'de1', 'en' => 'en1' }, { 'de' => 'de3', 'en' => 'en3' }] => 1
           )
         end
+      end
 
-        context 'when :unwind true' do
-          let(:unwind) { true }
+    end
 
-          it 'returns the correct hash' do
-            expect(tallied).to eq({ { 'de' => 'de1', 'en' => 'en1' } => 2,
-                                    { 'de' => 'de2', 'en' => 'en2' } => 1,
-                                    { 'de' => 'de3', 'en' => 'en3' } => 1 })
-          end
-        end
+    context 'when tallying an embedded field' do
+      let(:tally) do
+        criteria.tally('label.name')
+      end
+
+      it 'returns the correct hash' do
+        expect(tally).to eq('Atlantic' => 2, 'Columbia' => 1)
       end
     end
 
@@ -968,7 +882,7 @@ describe ActiveDocument::Contextual::Mongo do
       let(:criteria) { Band.where(origin: 'tally2') }
 
       let(:tally) do
-        criteria.tally('fanatics.age', unwind: unwind)
+        criteria.tally('fanatics.age')
       end
 
       it 'returns the correct hash' do
@@ -976,16 +890,6 @@ describe ActiveDocument::Contextual::Mongo do
           [1, 2] => 2,
           [1, 3] => 1
         )
-      end
-
-      context 'when :unwind true' do
-        let(:unwind) { true }
-
-        it 'returns the correct hash' do
-          expect(tally).to eq(1 => 3,
-                              2 => 2,
-                              3 => 1)
-        end
       end
     end
 
@@ -993,21 +897,15 @@ describe ActiveDocument::Contextual::Mongo do
       let(:criteria) { Band.where(origin: 'tally2') }
 
       let(:tally) do
-        criteria.tally('fanatics', unwind: unwind)
+        criteria.tally('fanatics')
       end
 
       it 'returns the correct hash' do
-        exp = [fans1, fans2, fans3].map { |f| f.map(&:attributes) }.index_with(1)
-        expect(tally).to eq(exp)
-      end
-
-      context 'when :unwind true' do
-        let(:unwind) { true }
-
-        it 'returns the correct hash' do
-          exp = [fans1, fans2, fans3].flatten.map(&:attributes).index_with(1)
-          expect(tally).to eq(exp)
-        end
+        expect(tally).to eq(
+          fans1.map(&:attributes) => 1,
+          fans2.map(&:attributes) => 1,
+          fans3.map(&:attributes) => 1
+        )
       end
     end
 
@@ -1015,7 +913,7 @@ describe ActiveDocument::Contextual::Mongo do
       let(:criteria) { Band.where(origin: 'tally2') }
 
       let(:tally) do
-        criteria.tally('genres', unwind: unwind)
+        criteria.tally('genres')
       end
 
       it 'returns the correct hash' do
@@ -1024,23 +922,13 @@ describe ActiveDocument::Contextual::Mongo do
           [1, 3] => 1
         )
       end
-
-      context 'when :unwind true' do
-        let(:unwind) { true }
-
-        it 'returns the correct hash' do
-          expect(tally).to eq(1 => 3,
-                              2 => 2,
-                              3 => 1)
-        end
-      end
     end
 
     context 'when tallying an element from an array of hashes' do
       let(:criteria) { Band.where(origin: 'tally') }
 
       let(:tally) do
-        criteria.tally('genres.x', unwind: unwind)
+        criteria.tally('genres.x')
       end
 
       it 'returns the correct hash without the nil keys' do
@@ -1048,16 +936,6 @@ describe ActiveDocument::Contextual::Mongo do
           [1, 2] => 2,
           [1, 3] => 1
         )
-      end
-
-      context 'when :unwind true' do
-        let(:unwind) { true }
-
-        it 'returns the correct hash' do
-          expect(tally).to eq(1 => 3,
-                              2 => 2,
-                              3 => 1)
-        end
       end
     end
 
@@ -1070,7 +948,7 @@ describe ActiveDocument::Contextual::Mongo do
       let(:criteria) { Band.where(origin: 'tally') }
 
       let(:tally) do
-        criteria.tally('genres.x', unwind: unwind)
+        criteria.tally('genres.x')
       end
 
       it 'returns the correct hash without the nil keys' do
@@ -1079,16 +957,6 @@ describe ActiveDocument::Contextual::Mongo do
           [1, 3] => 1,
           [1, 1] => 1
         )
-      end
-
-      context 'when :unwind true' do
-        let(:unwind) { true }
-
-        it 'returns the correct hash without the nil keys' do
-          expect(tally).to eq(1 => 5,
-                              2 => 2,
-                              3 => 1)
-        end
       end
     end
 
@@ -1100,7 +968,7 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       let(:tally) do
-        Person.tally('array', unwind: unwind)
+        Person.tally('array')
       end
 
       it 'returns the correct hash' do
@@ -1109,23 +977,13 @@ describe ActiveDocument::Contextual::Mongo do
           [1, 3] => 1
         )
       end
-
-      context 'when :unwind true' do
-        let(:unwind) { true }
-
-        it 'returns the correct hash without the nil keys' do
-          expect(tally).to eq(1 => 2,
-                              2 => 1,
-                              3 => 1)
-        end
-      end
     end
 
-    context 'when going multiple levels deep in an array' do
+    context 'when going multiple levels deep in arrays' do
       let(:criteria) { Band.where(origin: 'tally') }
 
       let(:tally) do
-        criteria.tally('genres.y.z', unwind: unwind)
+        criteria.tally('genres.y.z')
       end
 
       it 'returns the correct hash' do
@@ -1134,19 +992,25 @@ describe ActiveDocument::Contextual::Mongo do
           [1, 3] => 1
         )
       end
+    end
 
-      context 'when :unwind true' do
-        let(:unwind) { true }
+    context 'when going multiple levels deep in an array' do
+      let(:criteria) { Band.where(origin: 'tally') }
 
-        it 'returns the correct hash without the nil keys' do
-          expect(tally).to eq(1 => 3,
-                              2 => 2,
-                              3 => 1)
-        end
+      let(:tally) do
+        criteria.tally('genres.y.z')
+      end
+
+      it 'returns the correct hash' do
+        expect(tally).to eq(
+          [1, 2] => 2,
+          [1, 3] => 1
+        )
       end
     end
 
     context 'when tallying deeply nested arrays/embedded associations' do
+
       before do
         Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
         Person.create!(addresses: [Address.new(code: Code.new(deepest: Deepest.new(array: [{ y: { z: 1 } }, { y: { z: 2 } }])))])
@@ -1154,21 +1018,14 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       let(:tally) do
-        Person.tally('addresses.code.deepest.array.y.z', unwind: unwind)
+        Person.tally('addresses.code.deepest.array.y.z')
       end
 
       it 'returns the correct hash' do
-        expect(tally).to eq([[1, 2]] => 2,
-                            [[1, 3]] => 1)
-      end
-
-      context 'when :unwind true' do
-        let(:unwind) { true }
-
-        it 'returns the correct hash without the nil keys' do
-          expect(tally).to eq([1, 2] => 2,
-                              [1, 3] => 1)
-        end
+        expect(tally).to eq(
+          [[1, 2]] => 2,
+          [[1, 3]] => 1
+        )
       end
     end
 
@@ -1184,7 +1041,7 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       let(:tally) do
-        Person.tally('addresses.code.deepest.array.y.z', unwind: unwind)
+        Person.tally('addresses.code.deepest.array.y.z')
       end
 
       it 'returns the correct hash' do
@@ -1193,14 +1050,24 @@ describe ActiveDocument::Contextual::Mongo do
           [[1, 3], [1, 3]] => 1
         )
       end
+    end
 
-      context 'when :unwind true' do
-        let(:unwind) { true }
+    context 'when some keys are missing' do
+      before do
+        3.times { Band.create!(origin: 'tally') }
+      end
 
-        it 'returns the correct hash without the nil keys' do
-          expect(tally).to eq([1, 2] => 4,
-                              [1, 3] => 2)
-        end
+      let(:tally) do
+        criteria.tally(:name)
+      end
+
+      it 'returns the correct hash' do
+        expect(tally).to eq(
+          'Depeche Mode' => 1,
+          'New Order' => 1,
+          '10,000 Maniacs' => 1,
+          nil => 3
+        )
       end
     end
 
@@ -1212,7 +1079,7 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       let(:tally) do
-        Person.tally('name.translations.language', unwind: unwind)
+        Person.tally('name.translations.language')
       end
 
       it 'returns the correct hash' do
@@ -1221,14 +1088,57 @@ describe ActiveDocument::Contextual::Mongo do
           [1, 3] => 1
         )
       end
+    end
 
-      context 'when :unwind true' do
-        let(:unwind) { true }
+    context 'when tallying demongoizable values from typeless fields' do
 
-        it 'returns the correct hash without the nil keys' do
-          expect(tally).to eq(1 => 3,
-                              2 => 2,
-                              3 => 1)
+      let!(:person1) { Person.create!(ssn: /hello/) }
+      let!(:person2) { Person.create!(ssn: BSON::Decimal128.new('1')) }
+      let(:tally) { Person.tally('ssn') }
+
+      let(:tallied_classes) do
+        tally.keys.map(&:class).sort do |a, b|
+          a.to_s.casecmp(b.to_s)
+        end
+      end
+
+      context '< BSON 5' do
+        max_bson_version '4.99.99'
+
+        it 'stores the correct types in the database' do
+          expect(Person.find(person1.id).attributes['ssn']).to be_a BSON::Regexp::Raw
+          expect(Person.find(person2.id).attributes['ssn']).to be_a BSON::Decimal128
+        end
+
+        it 'tallies the correct type' do
+          expect(tallied_classes).to eq [BSON::Decimal128, BSON::Regexp::Raw]
+        end
+      end
+
+      context '>= BSON 5' do
+        min_bson_version '5.0'
+
+        it 'stores the correct types in the database' do
+          expect(Person.find(person1.id).ssn).to be_a BSON::Regexp::Raw
+          expect(Person.find(person2.id).ssn).to be_a BigDecimal
+        end
+
+        it 'tallies the correct type' do
+          expect(tallied_classes).to eq [BigDecimal, BSON::Regexp::Raw]
+        end
+      end
+
+      context '>= BSON 5 with decimal128 allowed' do
+        min_bson_version '5.0'
+        config_override :allow_bson5_decimal128, true
+
+        it 'stores the correct types in the database' do
+          expect(Person.find(person1.id).ssn).to be_a BSON::Regexp::Raw
+          expect(Person.find(person2.id).ssn).to be_a BSON::Decimal128
+        end
+
+        it 'tallies the correct type' do
+          expect(tallied_classes).to eq [BSON::Decimal128, BSON::Regexp::Raw]
         end
       end
     end
@@ -1254,7 +1164,7 @@ describe ActiveDocument::Contextual::Mongo do
         Band.where(name: 'DEPECHE MODE').collation(locale: 'en_US', strength: 2)
       end
 
-      it 'yields active_document documents to the block' do
+      it 'yields mongoid documents to the block' do
         context.each do |doc|
           expect(doc).to be_a(ActiveDocument::Document)
         end
@@ -1273,7 +1183,7 @@ describe ActiveDocument::Contextual::Mongo do
 
     context 'when providing a block' do
 
-      it 'yields active_document documents to the block' do
+      it 'yields mongoid documents to the block' do
         context.each do |doc|
           expect(doc).to be_a(ActiveDocument::Document)
         end
@@ -1304,7 +1214,7 @@ describe ActiveDocument::Contextual::Mongo do
 
         context 'when iterating with each' do
 
-          it 'yields active_document documents to the block' do
+          it 'yields mongoid documents to the block' do
             enum.each do |doc|
               expect(doc).to be_a(ActiveDocument::Document)
             end
@@ -1321,24 +1231,33 @@ describe ActiveDocument::Contextual::Mongo do
             Band.batch_size(5)
           end
 
-          it 'yields active_document documents' do
+          it 'yields mongoid documents' do
             expect(enum.next).to be_a(ActiveDocument::Document)
           end
 
           it 'does not load all documents' do
-            subscriber = EventSubscriber.new
+            subscriber = Mrss::EventSubscriber.new
             context.view.client.subscribe(Mongo::Monitoring::COMMAND, subscriber)
 
-            enum.next
+            # first batch
+            5.times { enum.next }
 
             find_events = subscriber.all_events.select do |evt|
               evt.command_name == 'find'
             end
-            expect(find_events.length).to be(2)
+            expect(find_events.length).to be > 0
             get_more_events = subscriber.all_events.select do |evt|
               evt.command_name == 'getMore'
             end
-            expect(get_more_events.length).to be(0)
+            expect(get_more_events.length).to eq 0
+
+            # force the second batch to be loaded
+            enum.next
+
+            get_more_events = subscriber.all_events.select do |evt|
+              evt.command_name == 'getMore'
+            end
+            expect(get_more_events.length).to be > 0
           ensure
             context.view.client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
           end
@@ -2055,6 +1974,7 @@ describe ActiveDocument::Contextual::Mongo do
           described_class.new(criteria)
         end
 
+
         it 'applies a sort on _id' do
           expect(context.send(method)).to eq(depeche_mode)
         end
@@ -2214,6 +2134,7 @@ describe ActiveDocument::Contextual::Mongo do
               context.first(before_limit)
             end
 
+
             context 'when getting all of the documents before' do
               let(:before_limit) { 3 }
 
@@ -2306,6 +2227,7 @@ describe ActiveDocument::Contextual::Mongo do
         before do
           context.first(before_limit)
         end
+
 
         context 'when getting one from the beginning and one from the end' do
           let(:before_limit) { 2 }
@@ -2418,6 +2340,7 @@ describe ActiveDocument::Contextual::Mongo do
       let(:context) do
         described_class.new(criteria)
       end
+
 
       it 'applies the criteria sort' do
         expect(context.last).to eq(depeche_mode)
@@ -2555,6 +2478,7 @@ describe ActiveDocument::Contextual::Mongo do
             context.last(before_limit)
           end
 
+
           context 'when getting all of the documents before' do
             let(:before_limit) { 3 }
 
@@ -2647,6 +2571,7 @@ describe ActiveDocument::Contextual::Mongo do
       before do
         context.last(before_limit)
       end
+
 
       context 'when getting one from the beginning and one from the end' do
         let(:before_limit) { 2 }
@@ -2926,23 +2851,21 @@ describe ActiveDocument::Contextual::Mongo do
     end
 
     let(:map) do
-      <<~JAVASCRIPT
-        function() {
-          emit(this.name, { likes: this.likes });
-        }
-      JAVASCRIPT
+      %{
+      function() {
+        emit(this.name, { likes: this.likes });
+      }}
     end
 
     let(:reduce) do
-      <<~JAVASCRIPT
-        function(key, values) {
-          var result = { likes: 0 };
-          values.forEach(function(value) {
-            result.likes += value.likes;
-          });
-          return result;
-        }
-      JAVASCRIPT
+      %{
+      function(key, values) {
+        var result = { likes: 0 };
+        values.forEach(function(value) {
+          result.likes += value.likes;
+        });
+        return result;
+      }}
     end
 
     let(:ordered_results) do
@@ -2985,6 +2908,36 @@ describe ActiveDocument::Contextual::Mongo do
           { '_id' => 'Tool', 'value' => { 'likes' => 100 } }
         ])
       end
+
+      context 'when statistics are available' do
+        max_server_version '4.2'
+
+        it 'contains the execution time' do
+          expect(results.time).to_not be_nil
+        end
+
+        it 'contains the count statistics' do
+          expect(results['counts']).to eq({
+            'input' => 2, 'emit' => 2, 'reduce' => 0, 'output' => 2
+          })
+        end
+
+        it 'contains the input count' do
+          expect(results.input).to eq(2)
+        end
+
+        it 'contains the emitted count' do
+          expect(results.emitted).to eq(2)
+        end
+
+        it 'contains the reduced count' do
+          expect(results.reduced).to eq(0)
+        end
+
+        it 'contains the output count' do
+          expect(results.output).to eq(2)
+        end
+      end
     end
 
     context 'when selection is provided' do
@@ -3015,6 +2968,36 @@ describe ActiveDocument::Contextual::Mongo do
         expect(ordered_results).to eq([
           { '_id' => 'Depeche Mode', 'value' => { 'likes' => 200 } }
         ])
+      end
+
+      context 'when statistics are available' do
+        max_server_version '4.2'
+
+        it 'contains the execution time' do
+          expect(results.time).to_not be_nil
+        end
+
+        it 'contains the count statistics' do
+          expect(results['counts']).to eq({
+            'input' => 1, 'emit' => 1, 'reduce' => 0, 'output' => 1
+          })
+        end
+
+        it 'contains the input count' do
+          expect(results.input).to eq(1)
+        end
+
+        it 'contains the emitted count' do
+          expect(results.emitted).to eq(1)
+        end
+
+        it 'contains the reduced count' do
+          expect(results.reduced).to eq(0)
+        end
+
+        it 'contains the output count' do
+          expect(results.output).to eq(1)
+        end
       end
     end
 
@@ -3263,12 +3246,11 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       let(:finalize) do
-        <<~JAVASCRIPT
-          function(key, value) {
-            value.extra = true;
-            return value;
-          }
-        JAVASCRIPT
+        %{
+        function(key, value) {
+          value.extra = true;
+          return value;
+        }}
       end
 
       let(:results) do
@@ -3524,6 +3506,7 @@ describe ActiveDocument::Contextual::Mongo do
         b.save!
       end
 
+
       let(:criteria) do
         Band.where(name: 'Depeche Mode')
       end
@@ -3534,11 +3517,11 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       it 'applies the array filters' do
-        expect(Band.where(name: 'Depeche Mode').first.labels.collect(&:name)).to match_array(%w[Warner Sony Sony])
+        expect(Band.where(name: 'Depeche Mode').first.labels.collect(&:name)).to contain_exactly('Warner', 'Sony', 'Sony')
       end
 
       it 'does not affect other documents' do
-        expect(Band.where(name: 'FKA Twigs').first.labels.collect(&:name)).to match_array(%w[Warner Cbs])
+        expect(Band.where(name: 'FKA Twigs').first.labels.collect(&:name)).to contain_exactly('Warner', 'Cbs')
       end
     end
   end
@@ -3652,6 +3635,7 @@ describe ActiveDocument::Contextual::Mongo do
           end
 
           context 'when operation is $addToSet' do
+
             before do
               context.update_all('$addToSet' => { genres: 'electronic' })
             end
@@ -3666,7 +3650,6 @@ describe ActiveDocument::Contextual::Mongo do
           end
 
           context 'when operation is $pull' do
-
             context 'when pulling single element' do
 
               before do
@@ -3751,20 +3734,7 @@ describe ActiveDocument::Contextual::Mongo do
         end
 
         context 'when the attributes must be mongoized' do
-          before do
-            context.update_all('$set' => { member_count: '1' })
-          end
 
-          it 'updates the first matching document' do
-            expect(depeche_mode.reload.member_count).to eq(1)
-          end
-
-          it 'updates the last matching document' do
-            expect(new_order.reload.member_count).to eq(1)
-          end
-        end
-
-        context 'when the attributes must be mongoized using complex type' do
           before do
             context.update_all('$set' => { location: LatLng.new(52.30, 13.25) })
           end
@@ -3826,6 +3796,7 @@ describe ActiveDocument::Contextual::Mongo do
         b.save!
       end
 
+
       let(:criteria) do
         Band.all
       end
@@ -3836,11 +3807,11 @@ describe ActiveDocument::Contextual::Mongo do
       end
 
       it 'applies the array filters' do
-        expect(Band.where(name: 'Depeche Mode').first.labels.collect(&:name)).to match_array(%w[Warner Sony Sony])
+        expect(Band.where(name: 'Depeche Mode').first.labels.collect(&:name)).to contain_exactly('Warner', 'Sony', 'Sony')
       end
 
       it 'updates all documents' do
-        expect(Band.where(name: 'FKA Twigs').first.labels.collect(&:name)).to match_array(%w[Warner Sony])
+        expect(Band.where(name: 'FKA Twigs').first.labels.collect(&:name)).to contain_exactly('Warner', 'Sony')
       end
     end
   end
@@ -4659,8 +4630,8 @@ describe ActiveDocument::Contextual::Mongo do
       config_override :async_query_executor, :global_thread_pool
 
       it 'preloads the documents' do
-        documents_loader = context.load_async
-        documents_loader.wait
+        context.load_async
+        context.documents_loader.wait
 
         expect(context.view).to_not receive(:map)
         expect(context.to_a).to eq([band])
@@ -4672,8 +4643,8 @@ describe ActiveDocument::Contextual::Mongo do
           .at_least(:once)
           .and_raise(Mongo::Error::OperationFailure)
 
-        documents_loader = context.load_async
-        documents_loader.wait
+        context.load_async
+        context.documents_loader.wait
 
         expect do
           context.to_a
@@ -4685,8 +4656,8 @@ describe ActiveDocument::Contextual::Mongo do
       config_override :async_query_executor, :immediate
 
       it 'preloads the documents' do
-        documents_loader = context.load_async
-        documents_loader.wait
+        context.load_async
+        context.documents_loader.wait
 
         expect(context.view).to_not receive(:map)
         expect(context.to_a).to eq([band])
@@ -4698,8 +4669,8 @@ describe ActiveDocument::Contextual::Mongo do
           .at_least(:once)
           .and_raise(Mongo::Error::OperationFailure)
 
-        documents_loader = context.load_async
-        documents_loader.wait
+        context.load_async
+        context.documents_loader.wait
 
         expect do
           context.to_a

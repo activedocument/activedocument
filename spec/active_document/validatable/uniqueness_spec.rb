@@ -227,7 +227,8 @@ describe ActiveDocument::Validatable::UniquenessValidator do
                 context 'when multiple localizations' do
 
                   before do
-                    Dictionary.create(description_translations: { 'en' => 'english', 'de' => 'german' })
+                    Dictionary
+                      .create(description_translations: { 'en' => 'english', 'de' => 'german' })
                   end
 
                   let(:dictionary) do
@@ -267,7 +268,8 @@ describe ActiveDocument::Validatable::UniquenessValidator do
                   context 'when multiple localizations' do
 
                     before do
-                      Dictionary.create(description_translations: { 'en' => 'english', 'de' => 'german' })
+                      Dictionary
+                        .create(description_translations: { 'en' => 'english', 'de' => 'german' })
                     end
 
                     let(:dictionary) do
@@ -334,7 +336,7 @@ describe ActiveDocument::Validatable::UniquenessValidator do
 
                 context 'when the document is not the match' do
 
-                  context 'when signle localization' do
+                  context 'when single localization' do
 
                     before do
                       Dictionary.create!(description: 'english')
@@ -357,7 +359,8 @@ describe ActiveDocument::Validatable::UniquenessValidator do
                   context 'when multiple localizations' do
 
                     before do
-                      Dictionary.create(description_translations: { 'en' => 'english', 'de' => 'german' })
+                      Dictionary
+                        .create(description_translations: { 'en' => 'english', 'de' => 'german' })
                     end
 
                     let(:dictionary) do
@@ -404,7 +407,8 @@ describe ActiveDocument::Validatable::UniquenessValidator do
               context 'when the document is not the match' do
 
                 before do
-                  Dictionary.create(description: 'english', name: 'test')
+                  Dictionary
+                    .create(description: 'english', name: 'test')
                 end
 
                 let(:dictionary) do
@@ -534,7 +538,7 @@ describe ActiveDocument::Validatable::UniquenessValidator do
             Dictionary.reset_callbacks(:validate)
           end
 
-          context 'when the document with the unqiue attribute is not in default scope' do
+          context 'when the document with the unique attribute is not in default scope' do
 
             context 'when the attribute is not unique' do
 
@@ -716,6 +720,7 @@ describe ActiveDocument::Validatable::UniquenessValidator do
               public_folder.folder_items << FolderItem.new(name: 'non-unique')
             end
 
+
             it 'sets an error for associated object not being unique' do
               item.update(folder_id: personal_folder.id)
               expect(item.errors.messages[:name].first).to eq('has already been taken')
@@ -818,10 +823,8 @@ describe ActiveDocument::Validatable::UniquenessValidator do
         context 'when a range condition is provided' do
 
           before do
-            Dictionary.validates_uniqueness_of(
-              :name,
-              conditions: -> { Dictionary.where(year: { '$gte' => 1900, '$lt' => 2000 }) }
-            )
+            Dictionary.validates_uniqueness_of(:name,
+                                               conditions: -> { Dictionary.where(:year.gte => 1900, :year.lt => 2000) })
           end
 
           after do
@@ -1671,7 +1674,7 @@ describe ActiveDocument::Validatable::UniquenessValidator do
             expect(crit.options[:read]).to eq({ mode: :primary })
             crit
           end
-          Definition.with(read: { mode: :secondary }) do
+          Definition.with(read: { mode: :secondary }) do |_klass|
             word.definitions.create!
           end
         end

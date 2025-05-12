@@ -26,9 +26,11 @@ module ActiveDocument
       def create_indexes
         return unless index_specifications
 
+        default_options = { background: Config.background_indexing }
+
         index_specifications.each do |spec|
           key = spec.key
-          options = spec.options
+          options = default_options.merge(spec.options)
           if (database = options[:database])
             with(database: database) do |klass|
               klass.collection.indexes(session: _session).create_one(key, options.except(:database))
@@ -59,8 +61,7 @@ module ActiveDocument
                 "'#{klass.collection.name}' in database '#{database}'."
               )
             end
-          rescue Mongo::Error::OperationFailure => e
-            logger.info("MONGOID: Failed to remove indexes on #{klass}: #{e.message}")
+          rescue Mongo::Error::OperationFailure
           end
         end and true
       end
@@ -74,7 +75,7 @@ module ActiveDocument
       # @return [ true ] If the operation succeeded.
       def add_indexes
         if hereditary? && index_keys.exclude?(discriminator_key.to_sym => 1)
-          index({ discriminator_key.to_sym => 1 }, unique: false)
+          index({ discriminator_key.to_sym => 1 }, unique: false, background: true)
         end
         true
       end
@@ -84,8 +85,8 @@ module ActiveDocument
       # @example Create a basic index.
       #   class Person
       #     include ActiveDocument::Document
-      #     field :name, type: :string
-      #     index({ name: 1 }, { unique: true })
+      #     field :name, type: String
+      #     index({ name: 1 }, { background: true })
       #   end
       #
       # @param [ Hash ] spec The index spec.
@@ -94,7 +95,13 @@ module ActiveDocument
       # @return [ Hash ] The index options.
       def index(spec, options = nil)
         specification = Specification.new(self, spec, options)
-        return if index_specifications.include?(specification)
+
+        # the equality test for Indexable::Specification instances does not
+        # consider any options, which means names are not compared. This means
+        # that an index with different options from another, and a different
+        # name, will be silently ignored unless duplicate index declarations
+        # are allowed.
+        return unless ActiveDocument.allow_duplicate_index_declarations || index_specifications.exclude?(specification)
 
         index_specifications.push(specification)
       end
@@ -109,9 +116,8 @@ module ActiveDocument
       #
       # @return [ Specification ] The found specification.
       def index_specification(index_hash, index_name = nil)
-        index = OpenStruct.new(fields: index_hash.keys, key: index_hash)
         index_specifications.detect do |spec|
-          spec == index || (index_name && index_name == spec.name)
+          spec.superficial_match?(key: index_hash, name: index_name)
         end
       end
 
