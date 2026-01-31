@@ -2612,7 +2612,7 @@ describe ActiveDocument::Interceptable do
       it 'raises an InvalidAroundCallback error' do
         expect do
           mom.save
-        end.to raise_error(Mongoid::Errors::InvalidAroundCallback)
+        end.to raise_error(ActiveDocument::Errors::InvalidAroundCallback)
       end
     end
   end
