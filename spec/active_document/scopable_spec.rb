@@ -4,15 +4,17 @@ require 'spec_helper'
 
 # Retrieve the singleton class for the given class.
 def singleton_class_for(klass)
-  class <<klass; self; end
+  class << klass
+    self
+  end
 end
 
 # Helper method for removing a declared scope
 def remove_scope(klass, scope)
-  if klass._declared_scopes[scope]
-    singleton_class_for(klass).remove_method(scope)
-    klass._declared_scopes.delete(scope)
-  end
+  return unless klass._declared_scopes[scope]
+
+  singleton_class_for(klass).remove_method(scope)
+  klass._declared_scopes.delete(scope)
 end
 
 describe ActiveDocument::Scopable do
@@ -1341,11 +1343,11 @@ describe ActiveDocument::Scopable do
         config_override :allow_scopes_to_unset_default_scope, true
 
         it 'does not merge the default scope into the query with unscoped' do
-          expect(Band.unscoped_everyone.selector).not_to include('name' => 'Depeche Mode')
+          expect(Band.unscoped_everyone.selector).to_not include('name' => 'Depeche Mode')
         end
 
         it 'does not merge the default scope into the query with remove_scoping' do
-          expect(Band.removed_default.selector).not_to include('name' => 'Depeche Mode')
+          expect(Band.removed_default.selector).to_not include('name' => 'Depeche Mode')
         end
       end
     end

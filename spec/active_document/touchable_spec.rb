@@ -728,7 +728,7 @@ describe ActiveDocument::Touchable do
       end
     end
 
-    context "when a custom field is specified" do
+    context 'when a custom field is specified' do
 
       shared_examples "updates the child's updated_at" do
 
@@ -794,9 +794,10 @@ describe ActiveDocument::Touchable do
 
       end
 
-      [:save, :destroy, :touch].each do |meth|
+      %i[save destroy touch].each do |meth|
         context "with #{meth} on referenced associations" do
           let(:meth) { meth }
+
           include_examples "updates the child's updated_at" unless meth == :destroy
           include_examples "updates the parent's custom field and updated_at"
         end

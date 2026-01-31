@@ -18,12 +18,12 @@ describe ActiveDocument::Association do
     context 'when loading' do
       it 'does not raise an exception' do
         expect do
-          class AssocationSpecModel
+          Class.new do
             include ActiveDocument::Document
 
             embedded_in :parent, class_name: 'SomethingBogusThatDoesNotExistYet'
           end
-        end.not_to raise_exception
+        end.to_not raise_exception
       end
     end
   end

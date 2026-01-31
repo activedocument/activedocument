@@ -2584,30 +2584,32 @@ describe ActiveDocument::Interceptable do
     end
   end
 
-  context "when around callbacks for embedded children are enabled" do
+  context 'when around callbacks for embedded children are enabled' do
     config_override :around_callbacks_for_embeds, true
 
-    context "when around callback is defined without a yield" do
-      class Mother
-        include Mongoid::Document
-        embeds_many :daughters, cascade_callbacks: true
+    context 'when around callback is defined without a yield' do
+      before do
+        stub_const('Mother', Class.new do
+          include ActiveDocument::Document
+          embeds_many :daughters, cascade_callbacks: true
+        end)
+
+        stub_const('Daughter', Class.new do
+          include ActiveDocument::Document
+          embedded_in :mother
+          around_save :log_callback
+
+          private
+
+          def log_callback
+            logger.debug('callback invoked')
+          end
+        end)
       end
 
-      class Daughter
-        include Mongoid::Document
-        embedded_in :mother
-        around_save :log_callback
+      let(:mom) { Mother.create(daughters: [Daughter.new, Daughter.new]) }
 
-        private
-
-        def log_callback
-          logger.debug('callback invoked')
-        end
-      end
-
-      let(:mom) { Mother.create(daughters: [ Daughter.new, Daughter.new ]) }
-
-      it "raises an InvalidAroundCallback error" do
+      it 'raises an InvalidAroundCallback error' do
         expect do
           mom.save
         end.to raise_error(Mongoid::Errors::InvalidAroundCallback)

@@ -171,7 +171,7 @@ module ActiveDocument
     #
     #  @api private
     def _active_document_run_child_callbacks_with_around(kind, children: nil, &block)
-      children = (children || cascadable_children(kind))
+      children ||= cascadable_children(kind)
       with_children = !ActiveDocument::Config.prevent_multiple_calls_of_embedded_callbacks
 
       return block&.call if children.empty?
