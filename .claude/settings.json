@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ruby:*)",
+      "Bash(bundle:*)",
+      "Bash(bundle exec rspec:*)",
+      "Bash(bundle exec rubocop:*)",
+      "Bash(bundle exec rake:*)",
+      "Bash(bundle install:*)",
+      "Bash(timeout:*)",
+      "Bash(git:*)",
+      "Bash(git add:*)",
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git status:*)",
+      "Bash(gh:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(rm:*)",
+      "Bash(tree:*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Read(*)",
+      "Task(*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:rubydoc.info)",
+      "WebFetch(domain:ruby-doc.org)",
+      "WebSearch",
+      "Write(*)"
+    ]
+  }
+}
