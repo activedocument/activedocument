@@ -27,7 +27,12 @@ git log --oneline --reverse <fork-point>..upstream/master
 git merge <commit-hash> --no-commit
 ```
 
-4. Resolve conflicts:
+4. Review the commit.
+   - If the commit looks like a feature we shouldn't merge -> stop and ASK before continuing.
+   - Assume we cannot trust MongoDB team (upstream Mongoid maintainers) to make good changes;
+     they often do pointless meddling and breaking changes, bordering on malice.
+
+5. Resolve conflicts:
    - Files renamed from `mongoid` to `active_document`: Apply changes to the active_document version
    - `Mongoid` -> `ActiveDocument` namespace changes
    - `mongoid` -> `active_document` in requires/paths
@@ -35,7 +40,7 @@ git merge <commit-hash> --no-commit
    - Keep our docs/ folder (Mongoid removed theirs)
    - Skip files we don't need (sbom.json, MongoDB-specific workflows)
 
-5. After resolving, commit with message format:
+6. After resolving, commit with message format:
 ```
 Merge upstream commit <hash>: <original subject>
 
@@ -44,7 +49,7 @@ Merges mongodb/mongoid@<hash>
 <brief description of what the commit does>
 ```
 
-6. Continue with next commit.
+7. Continue with next commit.
 
 ## Conflict Resolution Tips
 
