@@ -14,6 +14,20 @@ describe ActiveDocument::Association do
     )
   end
 
+  context 'when class_name references an unknown class' do
+    context 'when loading' do
+      it 'does not raise an exception' do
+        expect do
+          class AssocationSpecModel
+            include ActiveDocument::Document
+
+            embedded_in :parent, class_name: 'SomethingBogusThatDoesNotExistYet'
+          end
+        end.not_to raise_exception
+      end
+    end
+  end
+
   describe '#embedded?' do
 
     let(:person) do

@@ -2,6 +2,19 @@
 
 require 'spec_helper'
 
+# Retrieve the singleton class for the given class.
+def singleton_class_for(klass)
+  class <<klass; self; end
+end
+
+# Helper method for removing a declared scope
+def remove_scope(klass, scope)
+  if klass._declared_scopes[scope]
+    singleton_class_for(klass).remove_method(scope)
+    klass._declared_scopes.delete(scope)
+  end
+end
+
 describe ActiveDocument::Scopable do
 
   describe '.default_scope' do
@@ -1287,6 +1300,53 @@ describe ActiveDocument::Scopable do
     it "does not affect other models' default scopes within the given block" do
       Appointment.without_default_scope do
         expect(Audio.all.selector).to_not be_empty
+      end
+    end
+  end
+
+  describe 'scoped queries' do
+    context 'with a default scope' do
+      let(:criteria) do
+        Band.where(name: 'Depeche Mode')
+      end
+
+      before do
+        Band.default_scope -> { criteria }
+        Band.scope :unscoped_everyone, -> { unscoped }
+        Band.scope :removed_default, -> { scoped.remove_scoping(all) }
+
+        Band.create name: 'Depeche Mode'
+        Band.create name: 'They Might Be Giants'
+      end
+
+      after do
+        Band.default_scoping = nil
+        remove_scope Band, :unscoped_everyone
+        remove_scope Band, :removed_default
+      end
+
+      context 'when allow_scopes_to_unset_default_scope == false' do # default for <= 9
+        config_override :allow_scopes_to_unset_default_scope, false
+
+        it 'merges the default scope into the query with unscoped' do
+          expect(Band.unscoped_everyone.selector).to include('name' => 'Depeche Mode')
+        end
+
+        it 'merges the default scope into the query with remove_scoping' do
+          expect(Band.removed_default.selector).to include('name' => 'Depeche Mode')
+        end
+      end
+
+      context 'when allow_scopes_to_unset_default_scope == true' do # default for >= 10
+        config_override :allow_scopes_to_unset_default_scope, true
+
+        it 'does not merge the default scope into the query with unscoped' do
+          expect(Band.unscoped_everyone.selector).not_to include('name' => 'Depeche Mode')
+        end
+
+        it 'does not merge the default scope into the query with remove_scoping' do
+          expect(Band.removed_default.selector).not_to include('name' => 'Depeche Mode')
+        end
       end
     end
   end

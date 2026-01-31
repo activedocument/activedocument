@@ -34,3 +34,5 @@ examples
 .tool-versions
 build
 rspec.xml
+*.local
+*.local.*
