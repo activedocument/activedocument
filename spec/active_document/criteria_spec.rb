@@ -3824,5 +3824,196 @@ describe ActiveDocument::Criteria do
         expect(criteria.selector).to eq({ 'name' => 'Songs Ohia' })
       end
     end
+
+    context 'with allowed methods' do
+      context 'when using multiple query methods' do
+        let(:hash) do
+          {
+            klass: Band,
+            where: { active: true },
+            limit: 10,
+            skip: 5,
+            order_by: { name: 1 }
+          }
+        end
+
+        it 'applies all methods successfully' do
+          expect(criteria.selector).to eq({ 'active' => true })
+          expect(criteria.options[:limit]).to eq(10)
+          expect(criteria.options[:skip]).to eq(5)
+          expect(criteria.options[:sort]).to eq({ 'name' => 1 })
+        end
+      end
+
+      context 'when using query selector methods' do
+        let(:hash) do
+          {
+            klass: Band,
+            gt: { members: 2 },
+            any_in: { genre: %w[rock metal] }
+          }
+        end
+
+        it 'applies selector methods' do
+          expect(criteria.selector['members']).to eq({ '$gt' => 2 })
+          expect(criteria.selector['genre']).to eq({ '$in' => %w[rock metal] })
+        end
+      end
+
+      context 'when using aggregation methods' do
+        let(:hash) do
+          {
+            klass: Band,
+            project: { name: 1, members: 1 }
+          }
+        end
+
+        it 'applies aggregation methods' do
+          expect { criteria }.to_not raise_error
+        end
+      end
+    end
+
+    context 'with disallowed methods' do
+      context 'when attempting to call create' do
+        let(:hash) do
+          { klass: Band, create: { name: 'Malicious' } }
+        end
+
+        it 'raises ArgumentError' do
+          expect { criteria }.to raise_error(ArgumentError, "Method 'create' is not allowed in from_hash")
+        end
+      end
+
+      context 'when attempting to call create!' do
+        let(:hash) do
+          { klass: Band, 'create!': { name: 'Malicious' } }
+        end
+
+        it 'raises ArgumentError' do
+          expect { criteria }.to raise_error(ArgumentError, "Method 'create!' is not allowed in from_hash")
+        end
+      end
+
+      context 'when attempting to call build' do
+        let(:hash) do
+          { klass: Band, build: { name: 'Malicious' } }
+        end
+
+        it 'raises ArgumentError' do
+          expect { criteria }.to raise_error(ArgumentError, "Method 'build' is not allowed in from_hash")
+        end
+      end
+
+      context 'when attempting to call find' do
+        let(:hash) do
+          { klass: Band, find: 'some_id' }
+        end
+
+        it 'raises ArgumentError' do
+          expect { criteria }.to raise_error(ArgumentError, "Method 'find' is not allowed in from_hash")
+        end
+      end
+
+      context 'when attempting to call execute_or_raise' do
+        let(:hash) do
+          { klass: Band, execute_or_raise: %w[id1 id2] }
+        end
+
+        it 'raises ArgumentError' do
+          expect { criteria }.to raise_error(ArgumentError, "Method 'execute_or_raise' is not allowed in from_hash")
+        end
+      end
+
+      context 'when attempting to call new' do
+        let(:hash) do
+          { klass: Band, new: { name: 'Test' } }
+        end
+
+        it 'raises ArgumentError' do
+          expect { criteria }.to raise_error(ArgumentError, "Method 'new' is not allowed in from_hash")
+        end
+      end
+
+      context 'when allowed method is combined with disallowed method' do
+        let(:hash) do
+          {
+            klass: Band,
+            where: { active: true },
+            create: { name: 'Malicious' }
+          }
+        end
+
+        it 'raises ArgumentError before executing any methods' do
+          expect { criteria }.to raise_error(ArgumentError, "Method 'create' is not allowed in from_hash")
+        end
+      end
+    end
+
+    context 'security validation' do
+      it 'blocks all dangerous public methods' do
+        dangerous_methods = %i[
+          build create create! new
+          find find_or_create_by find_or_create_by! find_or_initialize_by
+          first_or_create first_or_create! first_or_initialize
+          execute_or_raise multiple_from_db for_ids
+          documents= inclusions= scoping_options=
+          initialize freeze as_json
+        ]
+
+        dangerous_methods.each do |method|
+          hash = { klass: Band, method => 'arg' }
+          expect { described_class.from_hash(hash) }.to raise_error(
+            ArgumentError,
+            "Method '#{method}' is not allowed in from_hash"
+          ), "Expected method '#{method}' to be blocked but it was allowed"
+        end
+      end
+
+      it 'blocks dangerous inherited methods from Object' do
+        inherited_dangerous = %i[
+          send __send__ instance_eval instance_exec
+          instance_variable_set method
+        ]
+
+        inherited_dangerous.each do |method|
+          hash = { klass: Band, method => 'arg' }
+          expect { described_class.from_hash(hash) }.to raise_error(
+            ArgumentError,
+            "Method '#{method}' is not allowed in from_hash"
+          ), "Expected inherited method '#{method}' to be blocked"
+        end
+      end
+
+      it 'blocks Enumerable execution methods' do
+        enumerable_methods = %i[each map select count sum]
+
+        enumerable_methods.each do |method|
+          hash = { klass: Band, method => 'arg' }
+          expect { described_class.from_hash(hash) }.to raise_error(
+            ArgumentError,
+            "Method '#{method}' is not allowed in from_hash"
+          ), "Expected Enumerable method '#{method}' to be blocked"
+        end
+      end
+
+      it 'allows all whitelisted methods' do
+        allowed_sample = {
+          where: { name: 'Test' },
+          limit: 10,
+          skip: 5,
+          gt: { age: 18 },
+          any_in: { status: ['active'] },
+          ascending: :name,
+          includes: :notes,
+          merge: { klass: Band }
+        }
+
+        allowed_sample.each do |method, args|
+          hash = { klass: Band, method => args }
+          expect { described_class.from_hash(hash) }.to_not raise_error
+        end
+      end
+    end
   end
 end
