@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_document/atomic_update_preparer'
+require 'active_document/pluckable'
 require 'active_document/contextual/mongo/documents_loader'
 require 'active_document/contextual/atomic'
 require 'active_document/contextual/aggregable/mongo'
@@ -22,6 +23,7 @@ module ActiveDocument
       include Atomic
       include Association::EagerLoadable
       include Queryable
+      include Pluckable
 
       # Options constant.
       OPTIONS = %i[hint
