@@ -194,6 +194,9 @@ Layout/FirstArrayElementIndentation:
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
 
+RSpec/DescribeClass:
+  Enabled: false
+
 Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/active_document/association/referenced/has_many/proxy_spec.rb'

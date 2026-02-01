@@ -24,7 +24,8 @@ module ActiveDocument
     # @return [ Array<Symbol> ] The list of extra options besides client options
     #   that determine the persistence context.
     EXTRA_OPTIONS = %i[client
-                       collection].freeze
+                       collection
+                       collection_options].freeze
 
     # The full list of valid persistence context options.
     #
