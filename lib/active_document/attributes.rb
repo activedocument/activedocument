@@ -268,7 +268,7 @@ module ActiveDocument
     #
     # @return [ true | false ] If the string contains a "."
     def hash_dot_syntax?(string)
-      string.include?('.')
+      string&.include?('.')
     end
 
     # Return the typecasted value for a field.
