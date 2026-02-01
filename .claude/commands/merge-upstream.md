@@ -12,10 +12,11 @@ git fetch upstream
 
 ## Process
 
-Firstly, if at any point during this process the user asks you to stop/pause, don't
-automatically revert in-progress work. If the working dir state is messy, ask the user
-how to proceed. If you are in the middle of resolving conflicts, ask user if you should
-finish resolving conflicts and pause merge making the merge commit.
+Unless the user specifies a branch, merge from the upstream/master branch.
+Do NOT get distracted and merging from branches which you weren't asked.
+
+If the user asks to stop/pause, don't automatically revert in-progress work.
+Ask how to proceed--especially if the working directory is messy or you're mid-conflict resolution.
 
 1. Find the fork point:
 ```bash
@@ -27,10 +28,13 @@ git merge-base master upstream/master
 git log --oneline --reverse <fork-point>..upstream/master
 ```
 
-3. For each commit, merge one at a time:
+3. For each commit, merge one at a time (not cherry-pick):
 ```bash
 git merge <commit-hash> --no-commit
 ```
+
+Avoid cherry-pick because it does not preserve commit history. Always merge actual commits individually.
+If using cherry-pick tactically for complex cases, immediately resume proper merging.
 
 4. Review the commit. BE SKEPTICAL.
    - If the commit looks like a feature we shouldn't merge -> stop and ASK before continuing.
