@@ -89,11 +89,11 @@ module ActiveDocument
         validates_with(PresenceValidator, _merge_attributes(args))
       end
 
-      # Validates whether or not a field contains a numeric value.
+      # Validates whether a field contains a numeric value.
       #
       # @example
       #   class Person
-      #     include Mongoid::Document
+      #     include ActiveDocument::Document
       #     field :cost
       #
       #     validates_numericality_of :cost

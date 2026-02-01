@@ -1871,10 +1871,10 @@ describe ActiveDocument::Interceptable do
       config_override :around_callbacks_for_embeds, true
 
       after do
-        Mongoid::Threaded.stack('interceptable').clear
+        ActiveDocument::Threaded.stack('interceptable').clear
       end
 
-      let(:stack) { Mongoid::Threaded.stack('interceptable') }
+      let(:stack) { ActiveDocument::Threaded.stack('interceptable') }
 
       let(:expected) do
         [

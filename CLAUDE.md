@@ -79,3 +79,4 @@ gemfiles/                    # Gemfile variants for CI
 - **Empty lines**: Add empty line after final `let` before examples
 - **Shared examples**: Use `shared_examples` (not `shared_context`) when not defining context
 - **Identical assertions**: Don't compare expression to itself; store in variable first
+- Mongoid .in --> .any_in, Mongoid .nin --> .not_in

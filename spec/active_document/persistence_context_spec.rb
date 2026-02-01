@@ -591,7 +591,7 @@ describe ActiveDocument::PersistenceContext do
         let(:options) { { client: -> { :alternative } } }
 
         it 'evaluates the proc' do
-          expect(persistence_context.client).to eq(Mongoid::Clients.with_name(:alternative))
+          expect(persistence_context.client).to eq(ActiveDocument::Clients.with_name(:alternative))
         end
       end
 
