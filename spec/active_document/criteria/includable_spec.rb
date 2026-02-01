@@ -1134,7 +1134,7 @@ describe ActiveDocument::Criteria::Includable do
           a.b = b
         end
 
-        context 'when including the belongs_to assocation' do
+        context 'when including the belongs_to association' do
           let!(:result) do
             C.includes(b: :a).first
           end
@@ -1152,7 +1152,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        context 'when including a doubly-nested belongs_to assocation' do
+        context 'when including a doubly-nested belongs_to association' do
           let!(:result) do
             D.includes(c: { b: :a }).first
           end
@@ -1171,7 +1171,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        context 'when including the has_many assocation' do
+        context 'when including the has_many association' do
           let!(:result) do
             A.includes(b: :c).first
           end
@@ -1189,7 +1189,7 @@ describe ActiveDocument::Criteria::Includable do
           end
         end
 
-        context 'when including a doubly-nested has_many assocation' do
+        context 'when including a doubly-nested has_many association' do
           let!(:result) do
             A.includes(b: { c: :d }).first
           end

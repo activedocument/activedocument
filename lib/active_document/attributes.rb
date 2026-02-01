@@ -135,7 +135,7 @@ module ActiveDocument
     # @param [ String | Symbol ] name The name of the attribute to remove.
     #
     # @raise [ Errors::ReadonlyAttribute ] If the field cannot be removed due
-    #   to being flagged as reaodnly.
+    #   to being flagged as readonly.
     def remove_attribute(name)
       validate_writable_field_name!(name.to_s)
       as_writable_attribute!(name) do |access|

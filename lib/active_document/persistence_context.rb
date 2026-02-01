@@ -293,7 +293,7 @@ module ActiveDocument
       # Get the persistence context for a given object from the thread local
       #   storage.
       #
-      # @param [ Object ] object Object to get the persistance context for.
+      # @param [ Object ] object Object to get the persistence context for.
       #
       # @return [ ActiveDocument::PersistenceContext | nil ] The persistence context
       #   for the object if previously stored, otherwise nil.
@@ -306,7 +306,7 @@ module ActiveDocument
       # Store persistence context for a given object in the thread local
       #   storage.
       #
-      # @param [ Object ] object Object to store the persistance context for.
+      # @param [ Object ] object Object to store the persistence context for.
       # @param [ ActiveDocument::PersistenceContext ] context Context to store
       #
       # @api private

@@ -251,7 +251,7 @@ module ActiveDocument
           # Initialize the new enumerable either with a criteria or an array.
           #
           # @example Initialize the enumerable with a criteria.
-          #   Enumberable.new(Post.where(:person_id => id))
+          #   Enumerable.new(Post.where(:person_id => id))
           #
           # @example Initialize the enumerable with an array.
           #   Enumerable.new([ post ])

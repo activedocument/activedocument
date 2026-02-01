@@ -852,7 +852,7 @@ describe ActiveDocument::Document do
 
       context 'when the document has embedded documents' do
 
-        context 'when the attribtues are protected' do
+        context 'when the attributes are protected' do
 
           let!(:appointment) do
             manager.appointments.build

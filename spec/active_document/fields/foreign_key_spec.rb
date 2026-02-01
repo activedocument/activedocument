@@ -445,7 +445,7 @@ describe ActiveDocument::Fields::ForeignKey do
       end
     end
 
-    context 'when the association is polymoprhic' do
+    context 'when the association is polymorphic' do
 
       let(:association) do
         Agent.reflect_on_association(:names)
