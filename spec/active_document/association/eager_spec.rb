@@ -40,7 +40,7 @@ describe ActiveDocument::Association::EagerLoadable do
       it 'preloads the driver' do
         expect(doc.ivar(:driver)).to be false
         context.preload(inclusions, [doc])
-        expect(doc.ivar(:driver)).to be == Driver.first
+        expect(doc.ivar(:driver)).to eq Driver.first
       end
     end
 
@@ -64,7 +64,7 @@ describe ActiveDocument::Association::EagerLoadable do
       it 'preloads the parent' do
         expect(doc.ivar(:person)).to be false
         context.preload(inclusions, [doc])
-        expect(doc.ivar(:person)).to be == person
+        expect(doc.ivar(:person)).to eq person
       end
     end
 

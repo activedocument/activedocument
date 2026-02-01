@@ -85,7 +85,7 @@ CONFIG = {
         heartbeat_frequency: 180,
         user: SpecConfig.instance.uri.client_options[:user] || MONGOID_ROOT_USER.name,
         password: SpecConfig.instance.uri.client_options[:password] || MONGOID_ROOT_USER.password,
-        auth_source: Mongo::Database::ADMIN,
+        auth_source: Mongo::Database::ADMIN
       )
     }
   },

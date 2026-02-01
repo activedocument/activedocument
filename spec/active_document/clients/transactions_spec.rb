@@ -928,7 +928,7 @@ describe ActiveDocument::Clients::Sessions do
 
             before do
               TransactionsSpecPersonWithAfterUpdateCommit.transaction do
-                subject.update_attributes!(name: 'Foma Kiniaev')
+                subject.update!(name: 'Foma Kiniaev')
               end
             end
 
@@ -942,7 +942,7 @@ describe ActiveDocument::Clients::Sessions do
 
             before do
               TransactionsSpecPersonWithAfterSaveCommit.transaction do
-                subject.update_attributes!(name: 'Foma Kiniaev')
+                subject.update!(name: 'Foma Kiniaev')
               end
             end
 

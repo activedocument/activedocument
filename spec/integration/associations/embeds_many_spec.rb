@@ -227,8 +227,8 @@ describe 'embeds_many associations' do
       shared_examples 'persists correctly' do
         it 'persists correctly' do
           expect(canvas.shapes.length).to eq(2)
-          _canvas = Canvas.find(canvas.id)
-          expect(_canvas.shapes.length).to eq(2)
+          reloaded_canvas = Canvas.find(canvas.id)
+          expect(reloaded_canvas.shapes.length).to eq(2)
         end
       end
 
@@ -297,7 +297,7 @@ describe 'embeds_many associations' do
               comments_attributes: [
                 {
                   _id: grandchild.id,
-                  content: updated_grandchild_content,
+                  content: updated_grandchild_content
                 }
               ]
             }
@@ -308,16 +308,16 @@ describe 'embeds_many associations' do
       context 'when the grandchild is invalid' do
         let(:updated_grandchild_content) { '' } # invalid value
 
-        it 'will not save the parent' do
+        it 'does not save the parent' do
           expect(post.update(attributes)).to be_falsey
-          expect(post.errors).not_to be_empty
-          expect(post.reload.title).not_to eq(updated_parent_title)
-          expect(grandchild.reload.content).not_to eq(updated_grandchild_content)
+          expect(post.errors).to_not be_empty
+          expect(post.reload.title).to_not eq(updated_parent_title)
+          expect(grandchild.reload.content).to_not eq(updated_grandchild_content)
         end
       end
 
       context 'when the grandchild is valid' do
-        it 'will save the parent' do
+        it 'saves the parent' do
           expect(post.update(attributes)).to be_truthy
           expect(post.errors).to be_empty
           expect(post.reload.title).to eq(updated_parent_title)

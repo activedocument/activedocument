@@ -29,8 +29,8 @@ describe 'embeds_one associations' do
     end
 
     it 'loads the association correctly' do
-      expect { klass }.not_to raise_error
-      expect { klass.new.address }.not_to raise_error
+      expect { klass }.to_not raise_error
+      expect { klass.new.address }.to_not raise_error
       instance = klass.new
       address = Address.new
       instance.address = address

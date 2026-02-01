@@ -1339,7 +1339,7 @@ describe ActiveDocument::Contextual::Mongo do
             get_more_events = subscriber.all_events.select do |evt|
               evt.command_name == 'getMore'
             end
-            expect(get_more_events.length).to be == 0
+            expect(get_more_events.length).to eq 0
 
             # force the second batch to be loaded
             enum.next
@@ -1348,7 +1348,6 @@ describe ActiveDocument::Contextual::Mongo do
               evt.command_name == 'getMore'
             end
             expect(get_more_events.length).to be > 0
-
           ensure
             context.view.client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
           end
@@ -3319,8 +3318,8 @@ describe ActiveDocument::Contextual::Mongo do
       expect(context.skip(1).entries).to eq([new_order])
     end
 
-    context "with #last" do
-      it "returns the nth from last element" do
+    context 'with #last' do
+      it 'returns the nth from last element' do
         expect(context.skip(1).last).to eq(depeche_mode)
       end
     end

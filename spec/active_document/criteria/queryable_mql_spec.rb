@@ -46,7 +46,7 @@ describe ActiveDocument::Criteria::Queryable do
           find: collection,
           filter: {
             'origin' => { '$ne' => 'UK' },
-            'y' => { '$in' => [ 1995, 1996 ] }
+            'y' => { '$in' => [1995, 1996] }
           }
         }
       end

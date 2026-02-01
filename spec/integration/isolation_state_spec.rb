@@ -61,13 +61,13 @@ describe 'ActiveDocument::Config.isolation_level' do
         # configured time zone, so we'll save and restore it, too.
         tz_saved = Time.zone
 
-        saved, ActiveSupport::IsolatedExecutionState.isolation_level =
-          ActiveSupport::IsolatedExecutionState.isolation_level, level
+        saved = ActiveSupport::IsolatedExecutionState.isolation_level
+        ActiveSupport::IsolatedExecutionState.isolation_level = level
 
         example.run
       ensure
         ActiveSupport::IsolatedExecutionState.isolation_level = saved
-        Time.zone = tz_saved
+        Time.zone = tz_saved # rubocop:disable Rails/TimeZoneAssignment
       end
     end
 

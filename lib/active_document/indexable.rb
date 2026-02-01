@@ -100,9 +100,9 @@ module ActiveDocument
         # that an index with different options from another, and a different
         # name, will be silently ignored unless duplicate index declarations
         # are allowed.
-        if ActiveDocument.allow_duplicate_index_declarations || !index_specifications.include?(specification)
-          index_specifications.push(specification)
-        end
+        return unless ActiveDocument.allow_duplicate_index_declarations || index_specifications.exclude?(specification)
+
+        index_specifications.push(specification)
       end
 
       # Get an index specification for the provided key.

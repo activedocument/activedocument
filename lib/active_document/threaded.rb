@@ -100,9 +100,7 @@ module ActiveDocument
     # Removes the named variable from local storage.
     #
     # @param [ String | Symbol ] key the name of the variable to remove.
-    def delete(key)
-      storage.delete(key)
-    end
+    delegate :delete, to: :storage
 
     # Queries the presence of a named variable in local storage.
     #

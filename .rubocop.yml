@@ -14,6 +14,10 @@ AllCops:
     - 'test-apps/**/*'
     - 'vendor/**/*'
 
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/active_document/contextual/mongo.rb'
+
 Lint/EmptyClass:
   Exclude:
     - 'spec/**/*'

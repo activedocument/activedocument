@@ -184,11 +184,11 @@ describe ActiveDocument::Criteria do
         before do
           Band.create(name: 'the band',
                       active: true,
-                      genres: %w[ abc def ],
+                      genres: %w[abc def],
                       member_count: 112,
                       rating: 4.2,
-                      created: Time.now,
-                      updated: Time.now,
+                      created: Time.zone.now,
+                      updated: Time.zone.now,
                       sales: 1_234_567.89,
                       decimal: 9_876_543.21,
                       decibels: 140..170,
@@ -206,15 +206,15 @@ describe ActiveDocument::Criteria do
 
         it 'does not demongoize the result' do
           expect(result['genres']).to be_a(Array)
-          expect(result['decibels']).to be == { 'min' => 140, 'max' => 170 }
-          expect(result['location']).to be == [ -111.83, 41.74 ]
+          expect(result['decibels']).to eq('min' => 140, 'max' => 170)
+          expect(result['location']).to eq [-111.83, 41.74]
         end
       end
 
       context 'with associations' do
         before do
           Person.create({
-            addresses: [ Address.new(end_date: 2.months.from_now) ],
+            addresses: [Address.new(end_date: 2.months.from_now)],
             passport: Passport.new(exp: 1.year.from_now)
           })
         end
@@ -239,8 +239,8 @@ describe ActiveDocument::Criteria do
 
           it 'produces a hash with only the _id and the requested key' do
             expect(result).to be_a(Hash)
-            expect(result.keys).to be == %w[ _id dob ]
-            expect(result['dob']).to be == Date.new(1980, 1, 1)
+            expect(result.keys).to eq %w[_id dob]
+            expect(result['dob']).to eq Date.new(1980, 1, 1)
           end
         end
 
@@ -249,7 +249,7 @@ describe ActiveDocument::Criteria do
 
           it 'produces a hash that excludes requested key' do
             expect(result).to be_a(Hash)
-            expect(result.keys).not_to include('dob')
+            expect(result.keys).to_not include('dob')
             expect(result.keys).to be_present
           end
         end
@@ -263,11 +263,11 @@ describe ActiveDocument::Criteria do
         before do
           Band.create(name: 'the band',
                       active: true,
-                      genres: %w[ abc def ],
+                      genres: %w[abc def],
                       member_count: 112,
                       rating: 4.2,
-                      created: Time.now,
-                      updated: Time.now,
+                      created: Time.zone.now,
+                      updated: Time.zone.now,
                       sales: 1_234_567.89,
                       decimal: 9_876_543.21,
                       decibels: 140..170,
@@ -293,7 +293,7 @@ describe ActiveDocument::Criteria do
       context 'with associations' do
         before do
           Person.create({
-            addresses: [ Address.new(end_date: 2.months.from_now) ],
+            addresses: [Address.new(end_date: 2.months.from_now)],
             passport: Passport.new(exp: 1.year.from_now)
           })
         end
@@ -318,8 +318,8 @@ describe ActiveDocument::Criteria do
 
           it 'produces a hash with only the _id and the requested key' do
             expect(result).to be_a(Hash)
-            expect(result.keys).to be == %w[ _id dob ]
-            expect(result['dob']).to be == Date.new(1980, 1, 1)
+            expect(result.keys).to eq %w[_id dob]
+            expect(result['dob']).to eq Date.new(1980, 1, 1)
           end
         end
 
@@ -328,7 +328,7 @@ describe ActiveDocument::Criteria do
 
           it 'produces a hash that excludes requested key' do
             expect(result).to be_a(Hash)
-            expect(result.keys).not_to include('dob')
+            expect(result.keys).to_not include('dob')
             expect(result.keys).to be_present
           end
         end

@@ -14,7 +14,7 @@ module ActiveDocument
     # to models (and which cause errors when loaded out of order).
     #
     # See #ignore_patterns.
-    DEFAULT_IGNORE_PATTERNS = %w( */models/concerns/* ).freeze
+    DEFAULT_IGNORE_PATTERNS = %w[*/models/concerns/*].freeze
 
     # Search a list of model paths to get every model and require it, so
     # that indexing and inheritance work in both development and production
@@ -66,7 +66,7 @@ module ActiveDocument
                   .select { |file_name| File.exist?(file_name) }
               else
                 Dir.glob("#{path}/**/*.rb")
-                  .reject { |file_name| ignored?(file_name) }
+                   .reject { |file_name| ignored?(file_name) }
               end
 
       # strip the path and the suffix from each entry

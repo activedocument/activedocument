@@ -44,7 +44,7 @@ module ActiveDocument
 
             begin
               options[:on_change]&.call(value)
-            rescue
+            rescue StandardError
               # If the on_change callback raises an error, we need to roll
               # the change back.
               settings[name] = old_value

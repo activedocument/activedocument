@@ -966,11 +966,11 @@ module ActiveDocument
 
           # does the key represent an embedded relation on the document?
           aliased_name = klass.aliased_associations[key] || key
-          if (assoc = klass.relations[aliased_name])
-            case value
-            when Array then value.each { |h| demongoize_hash(assoc.klass, h) }
-            when Hash then demongoize_hash(assoc.klass, value)
-            end
+          next unless (assoc = klass.relations[aliased_name])
+
+          case value
+          when Array then value.each { |h| demongoize_hash(assoc.klass, h) }
+          when Hash then demongoize_hash(assoc.klass, value)
           end
         end
 

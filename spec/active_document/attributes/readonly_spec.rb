@@ -272,10 +272,14 @@ describe ActiveDocument::Attributes::Readonly do
         %i[title terms]
       end
 
-      before do
-        class OldPerson < Person
+      let(:old_person_class) do
+        Class.new(Person) do
           attr_readonly :age
         end
+      end
+
+      before do
+        stub_const('OldPerson', old_person_class)
       end
 
       it 'ensures subclass inherits the readonly attributes from parent' do

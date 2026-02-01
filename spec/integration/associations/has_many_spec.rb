@@ -148,7 +148,7 @@ describe 'has_many associations' do
                 {
                   _id: grandchild.id,
                   title: updated_grandchild_title,
-                  num: updated_grandchild_num,
+                  num: updated_grandchild_num
                 }
               ]
             }
@@ -159,19 +159,19 @@ describe 'has_many associations' do
       context 'when the grandchild is invalid' do
         let(:updated_grandchild_num) { -1 } # invalid value
 
-        it 'will not save the parent' do
+        it 'does not save the parent' do
           expect(post.update(attributes)).to be_falsey
-          expect(post.errors).not_to be_empty
-          expect(post.reload.title).not_to eq(updated_parent_title)
-          expect(grandchild.reload.title).not_to eq(updated_grandchild_title)
-          expect(grandchild.num).not_to eq(updated_grandchild_num)
+          expect(post.errors).to_not be_empty
+          expect(post.reload.title).to_not eq(updated_parent_title)
+          expect(grandchild.reload.title).to_not eq(updated_grandchild_title)
+          expect(grandchild.num).to_not eq(updated_grandchild_num)
         end
       end
 
       context 'when the grandchild is valid' do
         let(:updated_grandchild_num) { 1 }
 
-        it 'will save the parent' do
+        it 'saves the parent' do
           expect(post.update(attributes)).to be_truthy
           expect(post.errors).to be_empty
           expect(post.reload.title).to eq(updated_parent_title)

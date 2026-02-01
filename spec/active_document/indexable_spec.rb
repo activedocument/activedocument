@@ -870,7 +870,7 @@ describe ActiveDocument::Indexable do
         config_override :allow_duplicate_index_declarations, false
 
         it 'silently ignores the duplicate definition' do
-          expect { declare_duplicate_indexes! }.not_to raise_exception
+          expect { declare_duplicate_indexes! }.to_not raise_exception
         end
       end
 
@@ -878,7 +878,7 @@ describe ActiveDocument::Indexable do
         config_override :allow_duplicate_index_declarations, true
 
         it 'raises a server error' do
-          expect { declare_duplicate_indexes! }.to raise_exception
+          expect { declare_duplicate_indexes! }.to raise_exception(Mongo::Error::OperationFailure)
         end
       end
     end
@@ -892,13 +892,12 @@ describe ActiveDocument::Indexable do
 
       let(:index_count) { klass.collection.indexes.count }
 
-
       context 'when allow_duplicate_index_declarations is false' do
         config_override :allow_duplicate_index_declarations, false
 
         it 'silently ignores the duplicate definition' do
-          expect { declare_duplicate_indexes! }.not_to raise_exception
-          expect(index_count).to be == 2 # _id and name
+          expect { declare_duplicate_indexes! }.to_not raise_exception
+          expect(index_count).to eq 2 # _id and name
         end
       end
 
@@ -909,8 +908,8 @@ describe ActiveDocument::Indexable do
         config_override :allow_duplicate_index_declarations, true
 
         it 'creates both indexes' do
-          expect { declare_duplicate_indexes! }.not_to raise_exception
-          expect(index_count).to be == 3 # _id, name, alt_name
+          expect { declare_duplicate_indexes! }.to_not raise_exception
+          expect(index_count).to eq 3 # _id, name, alt_name
         end
       end
     end

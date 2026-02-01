@@ -2546,33 +2546,28 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     let(:post_one) { Post.create!(rating: 5) }
     let(:post_two) { Post.create!(rating: 10) }
 
-    let(:max) do
-      person.posts.max do |a, b|
-        a.rating <=> b.rating
-      end
-    end
-
     before do
       person.posts.push(post_one, post_two)
     end
 
-    it 'returns the document with the max value of the supplied field' do
-      expect(max).to eq(post_two)
+    # rubocop:disable Performance/CompareWithBlock
+    it 'returns the document with the max value using a comparator block' do
+      expect(person.posts.max { |a, b| a.rating <=> b.rating }).to eq(post_two)
     end
+    # rubocop:enable Performance/CompareWithBlock
   end
 
   describe '#max_by' do
     let(:person) { Person.create! }
     let(:post_one) { Post.create!(rating: 5) }
     let(:post_two) { Post.create!(rating: 10) }
-    let(:max) { person.posts.max_by(&:rating) }
 
     before do
       person.posts.push(post_one, post_two)
     end
 
     it 'returns the document with the max value of the supplied field' do
-      expect(max).to eq(post_two)
+      expect(person.posts.max_by(&:rating)).to eq(post_two)
     end
   end
 
@@ -2633,34 +2628,28 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
     let(:post_one) { Post.create!(rating: 5) }
     let(:post_two) { Post.create!(rating: 10) }
 
-    let(:min) do
-      person.posts.min do |a, b|
-        a.rating <=> b.rating
-      end
-    end
-
     before do
       person.posts.push(post_one, post_two)
     end
 
-    it 'returns the min value of the supplied field' do
-      expect(min).to eq(post_one)
+    # rubocop:disable Performance/CompareWithBlock
+    it 'returns the document with the min value using a comparator block' do
+      expect(person.posts.min { |a, b| a.rating <=> b.rating }).to eq(post_one)
     end
+    # rubocop:enable Performance/CompareWithBlock
   end
 
   describe '#min_by' do
     let(:person) { Person.create! }
     let(:post_one) { Post.create!(rating: 5) }
-
     let(:post_two) { Post.create!(rating: 10) }
-    let(:min) { person.posts.min_by(&:rating) }
 
     before do
       person.posts.push(post_one, post_two)
     end
 
     it 'returns the min value of the supplied field' do
-      expect(min).to eq(post_one)
+      expect(person.posts.min_by(&:rating)).to eq(post_one)
     end
   end
 
@@ -3256,12 +3245,12 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
       shared_examples_for 'a cache_version generator' do
         it 'produces a trivial cache_version' do
-          expect(posts.cache_version).to be == "#{posts.length}"
+          expect(posts.cache_version).to eq posts.length.to_s
         end
       end
 
       context 'when the relation is already loaded' do
-        let(:posts) { root.posts.tap { |r| r.to_a } }
+        let(:posts) { root.posts.tap(&:to_a) }
 
         context 'when the relation is empty' do
           it_behaves_like 'a cache_version generator'
@@ -3304,13 +3293,14 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
       shared_examples_for 'a cache_version generator' do
         it 'produces a consistent cache_version' do
-          expect(child_pages.cache_version).not_to be_nil
-          expect(child_pages.cache_version).to be == child_pages.cache_version
+          cache_version = child_pages.cache_version
+          expect(cache_version).to_not be_nil
+          expect(cache_version).to eq child_pages.cache_version
         end
       end
 
       context 'when the relation is already loaded' do
-        let(:child_pages) { root.child_pages.tap { |r| r.to_a } }
+        let(:child_pages) { root.child_pages.tap(&:to_a) }
 
         context 'when the relation is empty' do
           it_behaves_like 'a cache_version generator'
@@ -3318,6 +3308,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
         context 'when the relation is not empty' do
           let(:root) { prepopulated_root }
+
           it_behaves_like 'a cache_version generator'
         end
       end
@@ -3331,6 +3322,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
 
         context 'when the relation is not empty' do
           let(:root) { prepopulated_root }
+
           it_behaves_like 'a cache_version generator'
         end
       end
@@ -3344,7 +3336,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
 
@@ -3357,7 +3349,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
 
@@ -3370,7 +3362,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
     end

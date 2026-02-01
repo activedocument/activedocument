@@ -351,12 +351,9 @@ describe ActiveDocument::Tasks::Database do
 
       let(:model) { Profile }
 
-      before do
-        expect(logger).not_to receive(:warn)
-      end
-
-      it "permits load-balanced clusters to act as sharded" do
-        result = described_class.shard_collections([ model ])
+      it 'permits load-balanced clusters to act as sharded' do
+        expect(logger).to_not receive(:warn)
+        result = described_class.shard_collections([model])
         expect(result).to include(model)
       end
     end

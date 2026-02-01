@@ -65,9 +65,9 @@ module ActiveDocument
         # parent's readonly attributes at the time of its creation.
         # Updating the parent does not propagate down to child classes after wards.
         def attr_readonly(*names)
-          self.readonly_attributes = self.readonly_attributes.dup
+          self.readonly_attributes = readonly_attributes.dup
           names.each do |name|
-            self.readonly_attributes << database_field_name(name)
+            readonly_attributes << database_field_name(name)
           end
         end
       end

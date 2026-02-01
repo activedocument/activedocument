@@ -48,7 +48,7 @@ module HabtmSpec
     include ActiveDocument::Document
 
     field :name, type: :string
-    
+
     has_and_belongs_to_many :items, class_name: 'HabtmSpec::Item', inverse_of: :colors
     has_and_belongs_to_many :beams, class_name: 'HabtmSpec::Beam', inverse_of: :colors
 
@@ -94,7 +94,7 @@ describe 'has_and_belongs_to_many associations' do
   context 'with deeply nested trees' do
     let(:item) { HabtmSpec::Item.create!(title: 'Item') }
     let(:beam) { HabtmSpec::Beam.create!(name: 'Beam') }
-    let!(:color) { HabtmSpec::Color.create!(name: 'Red', items: [ item ], beams: [ beam ]) }
+    let!(:color) { HabtmSpec::Color.create!(name: 'Red', items: [item], beams: [beam]) }
 
     let(:updated_item_title) { 'Item Updated' }
     let(:updated_beam_name) { 'Beam Updated' }
@@ -110,7 +110,7 @@ describe 'has_and_belongs_to_many associations' do
               beams_attributes: [
                 {
                   _id: beam.id,
-                  name: updated_beam_name,
+                  name: updated_beam_name
                 }
               ]
             }
@@ -121,16 +121,16 @@ describe 'has_and_belongs_to_many associations' do
       context 'when the beam is invalid' do
         let(:updated_beam_name) { '' } # invalid value
 
-        it 'will not save the parent' do
+        it 'does not save the parent' do
           expect(item.update(attributes)).to be_falsey
-          expect(item.errors).not_to be_empty
-          expect(item.reload.title).not_to eq(updated_item_title)
-          expect(beam.reload.name).not_to eq(updated_beam_name)
+          expect(item.errors).to_not be_empty
+          expect(item.reload.title).to_not eq(updated_item_title)
+          expect(beam.reload.name).to_not eq(updated_beam_name)
         end
       end
 
       context 'when the beam is valid' do
-        it 'will save the parent' do
+        it 'saves the parent' do
           expect(item.update(attributes)).to be_truthy
           expect(item.errors).to be_empty
           expect(item.reload.title).to eq(updated_item_title)

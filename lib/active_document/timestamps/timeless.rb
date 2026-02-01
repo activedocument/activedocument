@@ -55,7 +55,7 @@ module ActiveDocument
         #
         # @api private
         def timeless_table
-          Threaded.get(TIMELESS_TABLE_KEY) { Hash.new }
+          Threaded.get(TIMELESS_TABLE_KEY) { {} }
         end
 
         def_delegators :timeless_table, :[]=, :[]

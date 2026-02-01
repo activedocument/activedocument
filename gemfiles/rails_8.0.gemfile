@@ -7,6 +7,10 @@ gemspec path: '..'
 gem 'actionpack', '~> 8.0.0'
 gem 'activemodel', '~> 8.0.0'
 
+group :test do
+  gem 'activejob', '~> 8.0.0'
+end
+
 require_relative 'standard'
 
 standard_dependencies

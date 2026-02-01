@@ -116,9 +116,9 @@ module ActiveDocument
     # Note that the `:fiber` isolation level is only supported in Ruby 3.2
     # and later, due to semantic differences in how fiber storage is handled
     # in earlier Ruby versions.
-    option :isolation_level, default: :rails, on_change: ->(level) do
+    option :isolation_level, default: :rails, on_change: lambda { |level|
       validate_isolation_level!(level)
-    end
+    }
 
     # Returns the (potentially-dereferenced) isolation level that ActiveDocument
     # will use to store its internal state. If `isolation_level` is set to
