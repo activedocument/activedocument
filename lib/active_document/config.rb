@@ -133,16 +133,11 @@ module ActiveDocument
     def real_isolation_level
       return isolation_level unless isolation_level == :rails
 
-      if defined?(ActiveSupport::IsolatedExecutionState)
-        ActiveSupport::IsolatedExecutionState.isolation_level.tap do |level|
-          # We can't guarantee that Rails will always support the same
-          # isolation levels as ActiveDocument, so we check here to make sure
-          # it's something we can work with.
-          validate_isolation_level!(level)
-        end
-      else
-        # The default, if Rails does not support IsolatedExecutionState,
-        :thread
+      ActiveSupport::IsolatedExecutionState.isolation_level.tap do |level|
+        # We can't guarantee that Rails will always support the same
+        # isolation levels as ActiveDocument, so we check here to make sure
+        # it's something we can work with.
+        validate_isolation_level!(level)
       end
     end
 
@@ -155,13 +150,9 @@ module ActiveDocument
     #
     # @api private
     def validate_isolation_level!(level)
-      unless VALID_ISOLATION_LEVELS.include?(level)
-        raise Errors::UnsupportedIsolationLevel.new(level)
-      end
+      return if VALID_ISOLATION_LEVELS.include?(level)
 
-      if level == :fiber && RUBY_VERSION < '3.2'
-        raise Errors::UnsupportedIsolationLevel.new(level)
-      end
+      raise Errors::UnsupportedIsolationLevel.new(level)
     end
 
     # When this flag is false, a document will become read-only only once the
@@ -511,31 +502,10 @@ module ActiveDocument
     module DeprecatedOptions
       OPTIONS = %i[].freeze
 
-      if RUBY_VERSION < '3.0'
-
-        # Used for DeprecatedOptions mixin behavior.
-        #
-        # @param klass [ Class ] The class to prepend to.
-        #
-        # @api private
-        def self.prepended(klass)
-          klass.class_eval do
-            OPTIONS.each do |option|
-              alias_method :"#{option}_without_deprecation=", :"#{option}="
-
-              define_method(:"#{option}=") do |value|
-                ActiveDocument::Warnings.send(:"warn_#{option}_deprecated")
-                send(:"#{option}_without_deprecation=", value)
-              end
-            end
-          end
-        end
-      else
-        OPTIONS.each do |option|
-          define_method(:"#{option}=") do |value|
-            ActiveDocument::Warnings.send(:"warn_#{option}_deprecated")
-            super(value)
-          end
+      OPTIONS.each do |option|
+        define_method(:"#{option}=") do |value|
+          ActiveDocument::Warnings.send(:"warn_#{option}_deprecated")
+          super(value)
         end
       end
     end

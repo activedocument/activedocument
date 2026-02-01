@@ -15,11 +15,7 @@ describe ActiveDocument::Contextual::Aggregable::Memory do
   end
 
   file = File.read(File.join(File.dirname(__FILE__), 'memory_table.yml'))
-  table = if RUBY_VERSION.start_with?('2.5')
-            YAML.safe_load(file, [BigDecimal])
-          else
-            YAML.safe_load(file, permitted_classes: [BigDecimal])
-          end.deep_symbolize_keys.fetch(:sets)
+  table = YAML.safe_load(file, permitted_classes: [BigDecimal]).deep_symbolize_keys.fetch(:sets)
   field_map = { integer: :views,
                 float: :rating,
                 big_decimal: :sales }

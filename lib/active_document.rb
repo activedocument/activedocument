@@ -4,7 +4,6 @@ require 'active_document/version'
 
 require 'forwardable'
 require 'time'
-require 'set'
 
 require 'active_support'
 require 'active_support/core_ext'
