@@ -306,7 +306,7 @@ module ActiveDocument
 
       # Sets the associations above this one in the inclusion tree.
       #
-      # @param [ Array<String> ] value The associations.
+      # @return [ Array<String> ] The associations.
       attr_writer :parent_inclusions
 
       # The associations above this one in the inclusion tree.

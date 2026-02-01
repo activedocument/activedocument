@@ -56,7 +56,6 @@ module ActiveDocument
                    :take,
                    :take!,
                    :tally,
-                   :text_search,
                    :third,
                    :third!,
                    :third_to_last,
