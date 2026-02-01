@@ -90,8 +90,7 @@ module ActiveDocument
         def transaction(options = {}, session_options: {})
           with_session(session_options) do |session|
             session.start_transaction(options)
-            yield
-            commit_transaction(session)
+            yield.tap { commit_transaction(session) }
           rescue *transactions_not_supported_exceptions
             raise ActiveDocument::Errors::TransactionsNotSupported
           rescue ActiveDocument::Errors::Rollback
@@ -99,12 +98,12 @@ module ActiveDocument
           rescue ActiveDocument::Errors::InvalidSessionNesting
             # Session should be ended here.
             raise ActiveDocument::Errors::InvalidTransactionNesting
-          rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => e
+          rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => error
             abort_transaction(session)
-            raise ActiveDocument::Errors::TransactionError(e)
-          rescue StandardError => e
+            raise ActiveDocument::Errors::TransactionError(error)
+          rescue StandardError => error
             abort_transaction(session)
-            raise e
+            raise error
           end
         end
 
