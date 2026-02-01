@@ -1795,13 +1795,13 @@ describe ActiveDocument::Fields do
     context 'given nil' do
       subject { Person.database_field_name(nil) }
 
-      it { is_expected.to eq '' }
+      it { is_expected.to be_nil }
     end
 
     context 'given an empty String' do
       subject { Person.database_field_name('') }
 
-      it { is_expected.to eq '' }
+      it { is_expected.to be_nil }
     end
 
     context 'given a String' do
