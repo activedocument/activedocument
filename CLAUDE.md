@@ -14,7 +14,8 @@ When porting code from Mongoid, note these intentional differences:
 - **Rubocop directives**: Always remove `# rubocop:todo all` comments when merging upstream code. ActiveDocument enforces Rubocop rules.
 
 ## Tech Stack
-- Runtime: **Ruby** 3.1+
+- Runtime: **Ruby** 3.2+
+- Rails: 7.2+
 - Testing: RSpec
 - Linting: Rubocop
 
@@ -90,4 +91,5 @@ gemfiles/                    # Gemfile variants for CI
 - **Message expectations**: Prefer `expect(...).to receive` over `allow`/`have_received` spy pattern
 - **Exception specs**: Always specify the exception class with `raise_exception(SomeError)`
 - **Example wording**: Don't use "should" or future tense ("will") in `it` descriptions
-- Mongoid .in --> .any_in, Mongoid .nin --> .not_in
+- Mongoid `.in` --> `.any_in`, Mongoid `.nin` --> `.not_in`
+- **Version conditions**: Remove spec version conditions (`min_rails_version`, `ruby_version_lt`, etc.) that don't apply to our minimum versions (Ruby 3.2, Rails 7.2)
