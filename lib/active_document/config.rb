@@ -177,6 +177,8 @@ module ActiveDocument
     # to the server. The server will then validate the indexes and raise an
     # exception if duplicates are detected.
     #
+    # TODO: ActiveDocument: Actually implement the match logic properly.
+    #
     # See https://jira.mongodb.org/browse/MONGOID-5827 for an example of the
     # consequences of duplicate index checking.
     option :allow_duplicate_index_declarations, default: false

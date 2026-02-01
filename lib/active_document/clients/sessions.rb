@@ -214,8 +214,8 @@ module ActiveDocument
 
         # Transforms custom options for after_commit and after_rollback callbacks
         # into options for +set_callback+.
-        def set_options_for_callbacks!(args) # rubocop:disable Naming/AccessorMethodName
-          options = args.extract_options!
+        def set_options_for_callbacks!(args, enforced_options = {}) # rubocop:disable Naming/AccessorMethodName
+          options = args.extract_options!.merge(enforced_options)
           args << options
 
           return unless options[:on]
