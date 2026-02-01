@@ -1792,6 +1792,12 @@ describe ActiveDocument::Interceptable do
     context 'with around callbacks' do
       config_override :around_callbacks_for_embeds, true
 
+      after do
+        Mongoid::Threaded.stack('interceptable').clear
+      end
+
+      let(:stack) { Mongoid::Threaded.stack('interceptable') }
+
       let(:expected) do
         [
           [InterceptableSpec::CbCascadedChild, :before_validation],
@@ -1826,6 +1832,12 @@ describe ActiveDocument::Interceptable do
       it 'calls callbacks in the right order' do
         parent.save!
         expect(registry.calls).to eq expected
+      end
+
+      it 'shows that cascaded callbacks can access Mongoid state' do
+        expect(stack).to be_empty
+        parent.save!
+        expect(stack).not_to be_empty
       end
     end
 

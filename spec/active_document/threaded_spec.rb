@@ -35,11 +35,11 @@ describe ActiveDocument::Threaded do
     context 'when the stack has elements' do
 
       before do
-        Thread.current['[active_document]:load-stack'] = [true]
+        described_class.stack('load').push(true)
       end
 
       after do
-        Thread.current['[active_document]:load-stack'] = []
+        described_class.stack('load').clear
       end
 
       it 'returns true' do
@@ -50,7 +50,7 @@ describe ActiveDocument::Threaded do
     context 'when the stack has no elements' do
 
       before do
-        Thread.current['[active_document]:load-stack'] = []
+        described_class.stack('load').clear
       end
 
       it 'returns false' do
@@ -75,7 +75,7 @@ describe ActiveDocument::Threaded do
     context 'when a stack has been initialized' do
 
       before do
-        Thread.current['[active_document]:load-stack'] = [true]
+        described_class.stack('load').push(true)
       end
 
       let(:loading) do
@@ -83,7 +83,7 @@ describe ActiveDocument::Threaded do
       end
 
       after do
-        Thread.current['[active_document]:load-stack'] = []
+        described_class.stack('load').clear
       end
 
       it 'returns the stack' do

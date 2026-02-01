@@ -32,10 +32,10 @@ git log --oneline --reverse <fork-point>..upstream/master
 git merge <commit-hash> --no-commit
 ```
 
-4. Review the commit.
+4. Review the commit. BE SKEPTICAL.
    - If the commit looks like a feature we shouldn't merge -> stop and ASK before continuing.
    - Assume we cannot trust MongoDB team (upstream Mongoid maintainers) to make good changes;
-     they often do pointless meddling and breaking changes, bordering on malice.
+     many of their commits pointless meddling and breaking changes, bordering on malice.
 
 5. Resolve conflicts:
    - Files renamed from `mongoid` to `active_document`: Apply changes to the active_document version
