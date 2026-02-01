@@ -26,7 +26,7 @@ module ActiveDocument
           if owner.equal?(self)
             value = new_value
           else
-            ::ActiveDocument::Traversable.redefine(self, name, new_value)
+            ::ActiveDocument::Traversable.__redefine(self, name, new_value)
           end
         end
         owner.singleton_class.send(:public, :"#{name}=")
@@ -125,11 +125,7 @@ module ActiveDocument
         if value
           ActiveDocument::Fields::Validators::Macro.validate_field_name(self, value)
           value = value.to_s
-          if defined?(::ActiveSupport::ClassAttribute)
-            ::ActiveSupport::ClassAttribute.redefine(self, 'discriminator_key', value)
-          else
-            ::ActiveDocument::Traversable.__redefine(self, :discriminator_key, value)
-          end
+          ::ActiveDocument::Traversable.__redefine(self, :discriminator_key, value)
         else
           # When discriminator key is set to nil, replace the class's definition
           # of the discriminator key reader (provided by class_attribute earlier)
