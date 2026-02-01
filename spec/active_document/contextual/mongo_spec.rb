@@ -857,11 +857,11 @@ describe ActiveDocument::Contextual::Mongo do
 
           it 'stores the correct types in the database' do
             expect(Person.find(person1.id).ssn).to be_a BSON::Regexp::Raw
-            expect(Person.find(person2.id).ssn).to be_a BigDeimal
+            expect(Person.find(person2.id).ssn).to be_a BigDecimal
           end
 
           it 'tallies the correct type' do
-            expect(tally.keys.map(&:class).sort_by(&:to_s)).to eq([BigDecimal, BSON::Regexp::Raw])
+            expect(tally.keys.map(&:class).sort_by(&:to_s)).to eq([BSON::Regexp::Raw, BigDecimal])
           end
         end
       end

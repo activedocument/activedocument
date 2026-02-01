@@ -1,5 +1,7 @@
+.. _mongoid-7.3:
+
 ***********
-ActiveDocument 7.3
+Mongoid 7.3
 ***********
 
 .. default-domain:: mongodb
@@ -10,7 +12,7 @@ ActiveDocument 7.3
    :depth: 2
    :class: singlecol
 
-This page describes significant changes and improvements in ActiveDocument 7.3.
+This page describes significant changes and improvements in Mongoid 7.3.
 The complete list of releases is available `on GitHub
 <https://github.com/mongodb/active_document/releases>`_ and `in JIRA
 <https://jira.mongodb.org/projects/MONGOID?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page>`_;
@@ -21,22 +23,22 @@ the complete list of issues fixed in each release, including bug fixes.
 ``delete`` Method Does Not Trigger Association Dependent Behavior
 ----------------------------------------------------------------------
 
-**Breaking change:** In ActiveDocument 7.3,
+**Breaking change:** In Mongoid 7.3,
 :ref:`dependent behavior <dependent-behavior>` is not invoked
 when the parent association is deleted using the ``delete`` method.
-For example, after the following code snippet executes, in ActiveDocument 7.3 the
+For example, after the following code snippet executes, in Mongoid 7.3 the
 album will remain in the database:
 
 .. code-block:: ruby
 
   class Band
-    include ActiveDocument::Document
+    include Mongoid::Document
 
     has_many :albums, dependent: :destroy
   end
   
   class Album
-    include ActiveDocument::Document
+    include Mongoid::Document
 
     belongs_to :band
   end
@@ -47,7 +49,7 @@ album will remain in the database:
   # Does not delete the album from the database
   band.delete
 
-Previous versions of ActiveDocument invoked dependent behavior when deleting parents.
+Previous versions of Mongoid invoked dependent behavior when deleting parents.
 
 To invoke dependent behavior, use the ``destroy`` method:
 
@@ -56,41 +58,41 @@ To invoke dependent behavior, use the ``destroy`` method:
   # Deletes the album from the database
   band.destroy
 
-The behavior of ActiveDocument 7.3 is consistent with how ActiveRecord behaves.
+The behavior of Mongoid 7.3 is consistent with how ActiveRecord behaves.
 
 
 ``::Boolean`` Removed
 ---------------------
 
-**Breaking change:** ActiveDocument 7.3 removes the global ``::Boolean`` class.
+**Breaking change:** Mongoid 7.3 removes the global ``::Boolean`` class.
 
 This change should have no impact on classes that simply use ``Boolean``
-fields, as the ``Boolean`` class is aliased from ``ActiveDocument::Fields``
-(which is included in ``ActiveDocument::Document``). The following field definition
+fields, as the ``Boolean`` class is aliased from ``Mongoid::Fields``
+(which is included in ``Mongoid::Document``). The following field definition
 continues to work in 7.3 as it did in 7.2:
 
 .. code-block:: ruby
 
   class User
-    include ActiveDocument::Document
+    include Mongoid::Document
 
     field :verified, type: :boolean
   end
 
 However, code that is not executed in the context of a class including
-``ActiveDocument::Document`` may need to explicitly qualify ``Boolean`` references.
-The following snippet fails with ActiveDocument 7.3 due to ``Boolean`` being
+``Mongoid::Document`` may need to explicitly qualify ``Boolean`` references.
+The following snippet fails with Mongoid 7.3 due to ``Boolean`` being
 unqualified:
 
 .. code-block:: ruby
 
   class User
-    include ActiveDocument::Document
+    include Mongoid::Document
   end
   
   User.field :verified, type: :boolean
 
-To fix it, use the fully-qualified ``ActiveDocument::Boolean`` class:
+To fix it, use the fully-qualified ``Mongoid::Boolean`` class:
 
 .. code-block:: ruby
   
@@ -98,7 +100,7 @@ To fix it, use the fully-qualified ``ActiveDocument::Boolean`` class:
 
 Note that ``class_eval`` is executed in the scope of the caller, not in
 the scope of the class being modified. Thus even when using ``class_eval``
-it is necessary to fully qualify ``ActiveDocument::Boolean``:
+it is necessary to fully qualify ``Mongoid::Boolean``:
 
 .. code-block:: ruby
   
@@ -106,45 +108,45 @@ it is necessary to fully qualify ``ActiveDocument::Boolean``:
     field :verified, type: :boolean
   end
 
-Additionally, in ActiveDocument 7.2 ``::Boolean`` and ``ActiveDocument::Boolean`` were
-different classes. In ActiveDocument 7.3 there is only one class which is
-``ActiveDocument::Boolean``.
+Additionally, in Mongoid 7.2 ``::Boolean`` and ``Mongoid::Boolean`` were
+different classes. In Mongoid 7.3 there is only one class which is
+``Mongoid::Boolean``.
 
 It is possible to restore the global ``::Boolean`` class by executing in
 your application:
 
 .. code-block:: ruby
 
-  Boolean = ActiveDocument::Boolean
+  Boolean = Mongoid::Boolean
 
-Note that this aliases ``ActiveDocument::Boolean`` to ``::Boolean`` such that there
+Note that this aliases ``Mongoid::Boolean`` to ``::Boolean`` such that there
 is still only a single Boolean class:
 
 .. code-block:: ruby
 
-  # With ActiveDocument 7.3:
-  Boolean = ActiveDocument::Boolean
-  Boolean == ActiveDocument::Boolean
+  # With Mongoid 7.3:
+  Boolean = Mongoid::Boolean
+  Boolean == Mongoid::Boolean
   # => true
   
-  # With ActiveDocument 7.2:
-  Boolean == ActiveDocument::Boolean
+  # With Mongoid 7.2:
+  Boolean == Mongoid::Boolean
   # => false
 
 
 Selector Key Stringification
 ----------------------------
 
-Minor change: ActiveDocument now converts symbol keys to string keys in the
+Minor change: Mongoid now converts symbol keys to string keys in the
 ``Criteria`` selectors. This applies to operators as well as hash literals.
 
-ActiveDocument 7.3 behavior:
+Mongoid 7.3 behavior:
 
 .. code-block:: ruby
 
   Band.and(year: {'$in': [2020]})
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"year"=>{"$in"=>[2020]}}
   #   options:  {}
   #   class:    Band
@@ -152,19 +154,19 @@ ActiveDocument 7.3 behavior:
 
   Band.where(tag: {city: 1})
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"tag"=>{"city"=>1}}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
-ActiveDocument 7.2 behavior:
+Mongoid 7.2 behavior:
 
 .. code-block:: ruby
 
   Band.and(year: {'$in': [2020]})
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"year"=>{:$in=>[2020]}}
   #   options:  {}
   #   class:    Band
@@ -172,7 +174,7 @@ ActiveDocument 7.2 behavior:
 
   Band.where(tag: {city: 1})
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"tag"=>{:city=>1}}
   #   options:  {}
   #   class:    Band
@@ -188,13 +190,13 @@ in the same argument using the symbol operator syntax, conditions may be
 combined using ``$eq`` or ``$regex`` operators, as appropriate, instead of
 ``$and``.
 
-ActiveDocument 7.3 behavior:
+Mongoid 7.3 behavior:
 
 .. code-block:: ruby
 
   Band.where(year: 2020, year: { '$gt' => 1960 })
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"year"=>{"$eq"=>2020, "$gt"=>1960}}
   #   options:  {}
   #   class:    Band
@@ -202,19 +204,19 @@ ActiveDocument 7.3 behavior:
 
   Band.where(name: /A/, name: { '$ne' => 'Astral Projection' })
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"name"=>{"$regex"=>/A/, "$ne"=>"Astral"}}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
-ActiveDocument 7.2 behavior:
+Mongoid 7.2 behavior:
 
 .. code-block:: ruby
 
   Band.where(year: 2020, year: { '$gt' => 1960 })
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"year"=>2020, "$and"=>[{"year"=>{"$gt"=>1960}}]}
   #   options:  {}
   #   class:    Band
@@ -222,7 +224,7 @@ ActiveDocument 7.2 behavior:
 
   Band.where(name: /A/, name: { '$ne' => 'Astral Projection' })
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"name"=>/A/, "$and"=>[{"name"=>{"$ne"=>"Astral"}}]}
   #   options:  {}
   #   class:    Band
@@ -234,25 +236,25 @@ an instance of ``Regexp`` or ``BSON::Regexp::Raw`` classes.
 When using the ``not`` method with multiple conditions provided in the same
 argument, the conditions are kept together and negated as a group.
 
-ActiveDocument 7.3 behavior:
+Mongoid 7.3 behavior:
 
 .. code-block:: ruby
 
   Band.not(year: 2020, year: { '$gt' => 1960 })
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"$and"=>[{"$nor"=>[{"year"=>{"$eq"=>2020, "$gt"=>1960}}]}]}
   #   options:  {}
   #   class:    Band
   #   embedded: false>
 
-ActiveDocument 7.2 behavior:
+Mongoid 7.2 behavior:
 
 .. code-block:: ruby
 
   Band.not(year: 2020, year: { '$gt' => 1960 })
   # => 
-  # #<ActiveDocument::Criteria
+  # #<Mongoid::Criteria
   #   selector: {"year"=>{"$ne"=>2020}, "$and"=>[{"$nor"=>[{"year"=>{"$gt"=>1960}}]}]}
   #   options:  {}
   #   class:    Band
@@ -262,7 +264,7 @@ ActiveDocument 7.2 behavior:
 New Embedded Matching Operators
 -------------------------------
 
-ActiveDocument 7.3 adds support for bitwise operators, ``$comment``, ``$mod`` and
+Mongoid 7.3 adds support for bitwise operators, ``$comment``, ``$mod`` and
 ``$type`` operators when :ref:`embedded matching <embedded-matching>`.
 
 
@@ -273,36 +275,36 @@ It is now possible to :ref:`remove the id alias in models <unalias-id>`,
 to make ``id`` a regular field.
 
 
-``ActiveDocument.purge!`` and ``ActiveDocument.truncate`` take the global overrides into account
+``Mongoid.purge!`` and ``Mongoid.truncate`` take the global overrides into account
 ----------------------------------------------------------------------------------
 
-Minor change: ``ActiveDocument.purge!`` and ``ActiveDocument.truncate!`` now consider global
-overrides set with ``ActiveDocument.override_database`` and ``ActiveDocument.override_client``.
+Minor change: ``Mongoid.purge!`` and ``Mongoid.truncate!`` now consider global
+overrides set with ``Mongoid.override_database`` and ``Mongoid.override_client``.
 
-ActiveDocument 7.3 behavior:
+Mongoid 7.3 behavior:
 
 .. code-block:: ruby
 
-  ActiveDocument.override_database("some_other_db")
+  Mongoid.override_database("some_other_db")
   Band.create!(name: "Garage")
   Band.count # => 1
-  ActiveDocument.purge! # or ActiveDocument.truncate!
+  Mongoid.purge! # or Mongoid.truncate!
   Band.count # => 0
 
-ActiveDocument 7.2 behavior:
+Mongoid 7.2 behavior:
 
 .. code-block:: ruby
 
-  ActiveDocument.override_database("some_other_db")
+  Mongoid.override_database("some_other_db")
   Band.create!(name: "Garage")
   Band.count # => 1
-  ActiveDocument.purge! # or ActiveDocument.truncate!
+  Mongoid.purge! # or Mongoid.truncate!
   Band.count # => 1
 
 
 ``update_one`` Warnings in ``upsert``
 -------------------------------------
 
-ActiveDocument 7.3.5 fixes incorrect usage of the driver's ``update_one`` method from
-ActiveDocument's ``upsert`` method. ActiveDocument's ``upsert`` actually performs a
-replacing upsert, and ActiveDocument 7.3.5 and later correctly call ``replace_one``.
+Mongoid 7.3.5 fixes incorrect usage of the driver's ``update_one`` method from
+Mongoid's ``upsert`` method. Mongoid's ``upsert`` actually performs a
+replacing upsert, and Mongoid 7.3.5 and later correctly call ``replace_one``.

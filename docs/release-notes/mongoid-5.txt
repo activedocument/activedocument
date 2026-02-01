@@ -1,5 +1,5 @@
 *********
-ActiveDocument 5
+Mongoid 5
 *********
 
 .. default-domain:: mongodb
@@ -10,7 +10,7 @@ ActiveDocument 5
    :depth: 2
    :class: singlecol
 
-This page describes significant changes and improvements in ActiveDocument 5 releases.
+This page describes significant changes and improvements in Mongoid 5 releases.
 The complete list of releases is available `on GitHub
 <https://github.com/mongodb/active_document/releases>`_ and `in JIRA
 <https://jira.mongodb.org/projects/MONGOID?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page>`_;
@@ -18,14 +18,14 @@ please consult GitHub releases for detailed release notes and JIRA for
 the complete list of issues fixed in each release, including bug fixes.
 
 
-Upgrading to ActiveDocument 5
+Upgrading to Mongoid 5
 ======================
 
 The underlying driver has changed from Moped to the official MongoDB Ruby driver.
 For all users dropping down to the driver level for operations, please see the driver
 documentation for help with that API.
 
-All ActiveDocument configuration options have changed, as the underlying driver has changed
+All Mongoid configuration options have changed, as the underlying driver has changed
 from Moped to the official MongoDB Ruby driver. Please see the
 :ref:`configuration section <configuration>` for a detailed description
 of all the new options.
@@ -43,5 +43,5 @@ MongoDB 2.6 onward.
 provided. In order to guarantee that a document is the first or last, it needs to now
 contain an explicit sort.
 
-ActiveDocument 5 supports MongoDB 2.4 and higher only - MongoDB 2.2 is no longer
+Mongoid 5 supports MongoDB 2.4 and higher only - MongoDB 2.2 is no longer
 supported.

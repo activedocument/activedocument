@@ -149,5 +149,20 @@ module TouchableSpec
 
       embedded_in :floor, touch: true, class_name: 'TouchableSpec::Referenced::Floor'
     end
+
+    class Label
+      include ActiveDocument::Document
+      include ActiveDocument::Timestamps
+
+      field :bands_updated_at, type: :date_time
+      has_many :bands, class_name: 'TouchableSpec::Referenced::Band'
+    end
+
+    class Band
+      include ActiveDocument::Document
+      include ActiveDocument::Timestamps
+
+      belongs_to :label, touch: :bands_updated_at, class_name: 'TouchableSpec::Referenced::Label'
+    end
   end
 end

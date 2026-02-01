@@ -288,6 +288,20 @@ describe ActiveDocument::Attributes do
         end
       end
 
+      context 'when given nil' do
+
+        it 'returns nil' do
+          expect(person[nil]).to be_nil
+        end
+      end
+
+      context 'when given an empty string' do
+
+        it 'returns nil' do
+          expect(person['']).to be_nil
+        end
+      end
+
       context 'when the field was not explicitly defined' do
 
         context 'when excluding with only and the field was not excluded' do
