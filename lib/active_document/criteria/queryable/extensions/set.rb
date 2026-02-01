@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module ActiveDocument
   class Criteria
     module Queryable
