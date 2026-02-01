@@ -83,7 +83,7 @@ module ActiveDocument
         hash.each_pair do |method, args|
           method_sym = method.to_sym
           unless ALLOWED_FROM_HASH_METHODS.include?(method_sym)
-            raise ArgumentError, "Method '#{method}' is not allowed in from_hash"
+            raise ArgumentError.new("Method '#{method}' is not allowed in from_hash")
           end
 
           criteria = criteria.public_send(method_sym, args)

@@ -3887,7 +3887,7 @@ describe ActiveDocument::Criteria do
 
       context 'when attempting to call create!' do
         let(:hash) do
-          { klass: Band, 'create!': { name: 'Malicious' } }
+          { klass: Band, create!: { name: 'Malicious' } }
         end
 
         it 'raises ArgumentError' do

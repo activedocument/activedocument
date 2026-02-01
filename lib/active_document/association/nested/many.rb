@@ -40,7 +40,7 @@ module ActiveDocument
             elsif attrs.is_a?(Array) && attrs.length.even?
               process_attributes(parent, Hash[*attrs].with_indifferent_access)
             else
-              raise ArgumentError, "Attributes for nested association '#{association.name}' must be a Hash or an Array of key/value pairs."
+              raise ArgumentError.new("Attributes for nested association '#{association.name}' must be a Hash or an Array of key/value pairs.")
             end
           end
         end

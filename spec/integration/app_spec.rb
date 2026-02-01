@@ -119,36 +119,32 @@ describe 'ActiveDocument application tests' do
 
       Dir.chdir(name) do
         # Create minimal Sinatra app with Post model
-        File.open('app.rb', 'w') do |f|
-          f.write(<<~RUBY)
-            require 'sinatra'
-            require 'active_document'
-            require 'json'
+        File.write('app.rb', <<~RUBY)
+          require 'sinatra'
+          require 'active_document'
+          require 'json'
 
-            ActiveDocument.load!('config/active_document.yml')
+          ActiveDocument.load!('config/active_document.yml')
 
-            class Post
-              include ActiveDocument::Document
-              field :title, type: :string
-            end
+          class Post
+            include ActiveDocument::Document
+            field :title, type: :string
+          end
 
-            get '/posts' do
-              content_type :json
-              Post.all.to_json
-            end
-          RUBY
-        end
+          get '/posts' do
+            content_type :json
+            Post.all.to_json
+          end
+        RUBY
 
         # Create Gemfile
-        File.open('Gemfile', 'w') do |f|
-          f.write(<<~RUBY)
-            source 'https://rubygems.org'
-            gem 'sinatra'
-            gem 'rackup'
-            gem 'active_document', path: '#{File.expand_path(BASE)}'
-            gem 'puma'
-          RUBY
-        end
+        File.write('Gemfile', <<~RUBY)
+          source 'https://rubygems.org'
+          gem 'sinatra'
+          gem 'rackup'
+          gem 'active_document', path: '#{File.expand_path(BASE)}'
+          gem 'puma'
+        RUBY
 
         FileUtils.mkdir_p('config')
         write_active_document_yml
@@ -171,31 +167,27 @@ describe 'ActiveDocument application tests' do
         adjust_app_gemfile
 
         # Create Post model
-        File.open('app/models/post.rb', 'w') do |f|
-          f.write(<<~RUBY)
-            class Post
-              include ActiveDocument::Document
-              field :title, type: :string
-            end
-          RUBY
-        end
+        File.write('app/models/post.rb', <<~RUBY)
+          class Post
+            include ActiveDocument::Document
+            field :title, type: :string
+          end
+        RUBY
 
         # Create PostsController
-        File.open('app/controllers/posts_controller.rb', 'w') do |f|
-          f.write(<<~RUBY)
-            class PostsController < ApplicationController
-              def index
-                render json: Post.all
-              end
+        File.write('app/controllers/posts_controller.rb', <<~RUBY)
+          class PostsController < ApplicationController
+            def index
+              render json: Post.all
             end
-          RUBY
-        end
+          end
+        RUBY
 
         # Add route
         routes_content = File.read('config/routes.rb')
-        routes_content.sub!(/Rails\.application\.routes\.draw do\n/,
-                           "Rails.application.routes.draw do\n  resources :posts, only: [:index]\n")
-        File.open('config/routes.rb', 'w') { |f| f.write(routes_content) }
+        routes_content.sub!("Rails.application.routes.draw do\n",
+                            "Rails.application.routes.draw do\n  resources :posts, only: [:index]\n")
+        File.write('config/routes.rb', routes_content)
 
         write_active_document_yml
         check_call(%w[bundle install], env: clean_env)
@@ -217,29 +209,25 @@ describe 'ActiveDocument application tests' do
         adjust_app_gemfile
 
         # Create Post model with index
-        File.open('app/models/post.rb', 'w') do |f|
-          f.write(<<~RUBY)
-            class Post
-              include ActiveDocument::Document
-              include ActiveDocument::Timestamps
-              field :subject, type: :string
-              field :message, type: :string
+        File.write('app/models/post.rb', <<~RUBY)
+          class Post
+            include ActiveDocument::Document
+            include ActiveDocument::Timestamps
+            field :subject, type: :string
+            field :message, type: :string
 
-              index subject: 1
-            end
-          RUBY
-        end
+            index subject: 1
+          end
+        RUBY
 
         # Create Comment model
-        File.open('app/models/comment.rb', 'w') do |f|
-          f.write(<<~RUBY)
-            class Comment
-              include ActiveDocument::Document
-              include ActiveDocument::Timestamps
-              belongs_to :post
-            end
-          RUBY
-        end
+        File.write('app/models/comment.rb', <<~RUBY)
+          class Comment
+            include ActiveDocument::Document
+            include ActiveDocument::Timestamps
+            belongs_to :post
+          end
+        RUBY
 
         write_active_document_yml
         check_call(%w[bundle install], env: clean_env)
