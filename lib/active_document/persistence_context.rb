@@ -137,7 +137,7 @@ module ActiveDocument
     # @return [ Symbol ] The client name for this persistence
     #   context.
     def client_name
-      @client_name ||= options[:client] ||
+      @client_name ||= __evaluate__(options[:client]) ||
                        Threaded.client_override ||
                        __evaluate__(storage_options[:client])
     end
