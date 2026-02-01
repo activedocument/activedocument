@@ -3367,4 +3367,84 @@ describe ActiveDocument::Association::Referenced::HasMany::Proxy do
       end
     end
   end
+
+  describe '#pluck' do
+    let(:person) { Person.create! }
+
+    before do
+      person.posts.create!(title: 'First Post')
+      person.posts.create!(title: 'Second Post')
+    end
+
+    it 'plucks the specified field from the association' do
+      expect(person.posts.pluck(:title)).to eq(['First Post', 'Second Post'])
+    end
+
+    it 'plucks multiple fields' do
+      expect(person.posts.pluck(:title, :person_id)).to eq([['First Post', person.id], ['Second Post', person.id]])
+    end
+
+    context 'when documents are added but not persisted' do
+      before do
+        person.posts << Post.new(title: 'Unsaved Post')
+      end
+
+      it 'includes the unsaved documents' do
+        expect(person.posts.pluck(:title)).to include('Unsaved Post')
+      end
+    end
+
+    context 'when using .all' do
+      it 'plucks from the criteria' do
+        expect(person.posts.all.pluck(:title)).to eq(['First Post', 'Second Post']) # rubocop:disable Rails/RedundantActiveRecordAllMethod
+      end
+    end
+  end
+
+  describe '#pluck_each' do
+    let(:person) { Person.create! }
+
+    before do
+      person.posts.create!(title: 'First Post')
+      person.posts.create!(title: 'Second Post')
+    end
+
+    it 'yields each plucked value' do
+      results = []
+      person.posts.pluck_each(:title) { |title| results << title }
+      expect(results).to eq(['First Post', 'Second Post'])
+    end
+
+    it 'returns an enumerator when no block given' do
+      enumerator = person.posts.pluck_each(:title)
+      expect(enumerator).to be_a(Enumerator)
+      expect(enumerator.to_a).to eq(['First Post', 'Second Post'])
+    end
+
+    it 'yields arrays for multiple fields' do
+      results = []
+      person.posts.pluck_each(:title, :person_id) { |values| results << values }
+      expect(results).to eq([['First Post', person.id], ['Second Post', person.id]])
+    end
+
+    context 'when documents are added but not persisted' do
+      before do
+        person.posts << Post.new(title: 'Unsaved Post')
+      end
+
+      it 'includes the unsaved documents' do
+        results = []
+        person.posts.pluck_each(:title) { |title| results << title }
+        expect(results).to include('Unsaved Post')
+      end
+    end
+
+    context 'when using .all' do
+      it 'yields from the criteria' do
+        results = []
+        person.posts.all.pluck_each(:title) { |title| results << title }
+        expect(results).to eq(['First Post', 'Second Post'])
+      end
+    end
+  end
 end

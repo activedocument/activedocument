@@ -55,7 +55,7 @@ module ActiveDocument
 
           extend ClassMethods
 
-          def_delegators :criteria, :find, :pluck
+          def_delegators :criteria, :find, :pluck, :pluck_each
 
           # Instantiate a new embeds_many association.
           #

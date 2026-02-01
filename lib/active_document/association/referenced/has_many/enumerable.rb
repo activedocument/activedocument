@@ -389,31 +389,46 @@ module ActiveDocument
           # @return [ Array | Array<Array> ] The array of field values. If
           #   multiple fields are given, an array of arrays is returned.
           def pluck(*keys)
-            [].tap do |results|
-              if _loaded? || _added.any?
-                document_class = @_association.klass
-                prepared = prepare_pluck(keys, document_class: document_class)
-              end
+            pluck_each(*keys).to_a
+          end
 
-              if _loaded?
-                docs = _loaded.values.map { |v| BSON::Document.new(v.attributes) }
-                results.concat pluck_from_documents(docs, prepared[:field_names], document_class: document_class)
-              elsif _unloaded
-                criteria = if _added.any?
-                             ids_to_exclude = _added.keys
-                             _unloaded.not_in(_id: ids_to_exclude)
-                           else
-                             _unloaded
-                           end
+          # Iterates over each plucked value from the documents in the target.
+          # If the collection has been loaded, it plucks from the loaded
+          # documents; otherwise, it streams from the unloaded criteria.
+          # Regardless, it also plucks from any added documents.
+          #
+          # @example Iterate through the plucked values.
+          #   person.posts.pluck_each(:title) { |title| puts title }
+          #
+          # @param [ Symbol... ] *fields The field names to pluck.
+          #
+          # @return [ Enumerator ] The enumerator, or self if a block was given.
+          def pluck_each(*keys, &block)
+            return to_enum(:pluck_each, *keys) unless block
 
-                results.concat criteria.pluck(*keys)
-              end
+            document_class = @_association.klass
+            prepared = prepare_pluck(keys, document_class: document_class)
 
-              if _added.any?
-                docs = _added.values.map { |v| BSON::Document.new(v.attributes) }
-                results.concat pluck_from_documents(docs, prepared[:field_names], document_class: document_class)
-              end
+            if _loaded?
+              docs = _loaded.values.map { |v| BSON::Document.new(v.attributes) }
+              pluck_from_documents(docs, prepared[:field_names], document_class: document_class).each(&block)
+            elsif _unloaded
+              criteria = if _added.any?
+                           ids_to_exclude = _added.keys
+                           _unloaded.not_in(_id: ids_to_exclude)
+                         else
+                           _unloaded
+                         end
+
+              criteria.pluck_each(*keys, &block)
             end
+
+            if _added.any?
+              docs = _added.values.map { |v| BSON::Document.new(v.attributes) }
+              pluck_from_documents(docs, prepared[:field_names], document_class: document_class).each(&block)
+            end
+
+            self
           end
 
           # Reset the enumerable back to its persisted state.

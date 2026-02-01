@@ -1876,6 +1876,277 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
     end
   end
 
+  describe '#pluck_each' do
+    let(:person) do
+      Person.create!
+    end
+
+    let!(:post) do
+      Post.create!(person_id: person.id, title: 'Test Title')
+    end
+
+    let(:base) { Person }
+    let(:association) { Person.relations['posts'] }
+
+    let(:criteria) do
+      Post.where(person_id: person.id)
+    end
+
+    context 'when the enumerable is not loaded' do
+      let!(:enumerable) do
+        described_class.new(criteria, base, association)
+      end
+
+      context 'when the criteria is present' do
+        it 'yields each plucked value' do
+          results = []
+          enumerable.pluck_each(:title) { |title| results << title }
+          expect(results).to eq(['Test Title'])
+        end
+
+        it 'returns an enumerator when no block given' do
+          enumerator = enumerable.pluck_each(:title)
+          expect(enumerator).to be_a(Enumerator)
+          expect(enumerator.to_a).to eq(['Test Title'])
+        end
+
+        it 'returns self when block given' do
+          result = enumerable.pluck_each(:title) { |_| }
+          expect(result).to eq(enumerable)
+        end
+
+        context 'when added docs are present' do
+          it 'yields values from the criteria and the added docs' do
+            added_post = Post.new(title: 'Added Title', person_id: person.id)
+            enumerable << added_post
+
+            results = []
+            enumerable.pluck_each(:title) { |title| results << title }
+            expect(results).to eq(['Test Title', 'Added Title'])
+          end
+        end
+
+        context 'when plucking multiple fields' do
+          let!(:post) do
+            Post.create!(person_id: person.id, title: 'Test Title', content: 'Test Content')
+          end
+
+          it 'yields arrays of values' do
+            results = []
+            enumerable.pluck_each(:title, :content) { |values| results << values }
+            expect(results).to eq([['Test Title', 'Test Content']])
+          end
+        end
+      end
+
+      context 'when the criteria is not present' do
+        let(:enumerable) { described_class.new([], base, association) }
+
+        it 'yields nothing' do
+          results = []
+          enumerable.pluck_each(:title) { |title| results << title }
+          expect(results).to eq([])
+        end
+
+        context 'when added docs are present' do
+          it 'yields values from the added docs' do
+            added_post = Post.new(title: 'Added Title', person_id: person.id)
+            enumerable << added_post
+
+            results = []
+            enumerable.pluck_each(:title) { |title| results << title }
+            expect(results).to eq(['Added Title'])
+          end
+        end
+      end
+    end
+
+    context 'when the enumerable is loaded' do
+      let(:enumerable) { described_class.new([post], base, association) }
+
+      it 'yields values from the loaded documents' do
+        results = []
+        enumerable.pluck_each(:title) { |title| results << title }
+        expect(results).to eq(['Test Title'])
+      end
+
+      it 'returns an enumerator when no block given' do
+        enumerator = enumerable.pluck_each(:title)
+        expect(enumerator).to be_a(Enumerator)
+        expect(enumerator.to_a).to eq(['Test Title'])
+      end
+
+      context 'when added docs are present' do
+        it 'yields values from both loaded and added docs' do
+          added_post = Post.new(title: 'Added Title', person_id: person.id)
+          enumerable << added_post
+
+          results = []
+          enumerable.pluck_each(:title) { |title| results << title }
+          expect(results).to eq(['Test Title', 'Added Title'])
+        end
+      end
+
+      context 'when plucking multiple fields' do
+        let!(:post) do
+          Post.create!(person_id: person.id, title: 'Test Title', content: 'Test Content')
+        end
+
+        it 'yields arrays of values' do
+          results = []
+          enumerable.pluck_each(:title, :content) { |values| results << values }
+          expect(results).to eq([['Test Title', 'Test Content']])
+        end
+      end
+    end
+  end
+
+  describe '#pluck_each with aliases' do
+    let!(:parent) do
+      Company.create!
+    end
+
+    context 'when the field is aliased' do
+      let!(:expensive) do
+        parent.products.create!(price: 100_000)
+      end
+
+      let!(:cheap) do
+        parent.products.create!(price: 1)
+      end
+
+      context 'when using alias_attribute' do
+        it 'yields the values using aliases' do
+          results = []
+          parent.products.pluck_each(:price) { |price| results << price }
+          expect(results).to eq([100_000, 1])
+        end
+
+        it 'yields the values using aliases via .all' do
+          results = []
+          parent.products.all.pluck_each(:price) { |price| results << price }
+          expect(results).to eq([100_000, 1])
+        end
+      end
+    end
+
+    context 'when plucking a localized field' do
+      with_default_i18n_configs
+
+      before do
+        I18n.with_locale(:en) do
+          product = parent.products.create!(name: 'english-text')
+          I18n.with_locale(:de) do
+            product.name = 'deutsch-text'
+            product.save!
+          end
+        end
+      end
+
+      context 'when plucking the entire field' do
+        it 'yields the demongoized translations' do
+          I18n.with_locale(:de) do
+            results = []
+            parent.products.pluck_each(:name) { |name| results << name }
+            expect(results.first).to eq('deutsch-text')
+          end
+        end
+
+        it 'yields the demongoized translations via .all' do
+          I18n.with_locale(:de) do
+            results = []
+            parent.products.all.pluck_each(:name) { |name| results << name }
+            expect(results.first).to eq('deutsch-text')
+          end
+        end
+
+        it 'yields the full translations hash to _translations' do
+          results = []
+          parent.products.pluck_each(:name_translations) { |name| results << name }
+          expect(results.first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
+        end
+
+        it 'yields both fields together' do
+          I18n.with_locale(:de) do
+            results = []
+            parent.products.pluck_each(:name_translations, :name) { |values| results << values }
+            expect(results.first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text'])
+          end
+        end
+      end
+
+      context 'when plucking a specific locale' do
+        it 'yields the specific translations' do
+          results = []
+          parent.products.pluck_each(:'name.de') { |name| results << name }
+          expect(results.first).to eq('deutsch-text')
+        end
+
+        it 'yields the specific translations via .all' do
+          results = []
+          parent.products.all.pluck_each(:'name.de') { |name| results << name }
+          expect(results.first).to eq('deutsch-text')
+        end
+      end
+
+      context 'when fallbacks are enabled with a locale list' do
+        with_i18n_fallbacks
+
+        before do
+          I18n.fallbacks[:he] = [:en]
+        end
+
+        it 'correctly uses the fallback' do
+          I18n.with_locale(:en) do
+            parent.products.create!(name: 'english-text')
+          end
+          I18n.with_locale(:he) do
+            results = []
+            parent.products.pluck_each(:name) { |name| results << name }
+            expect(results.first).to eq 'english-text'
+          end
+        end
+      end
+
+      context 'when the localized field is aliased' do
+        before do
+          I18n.with_locale(:en) do
+            parent.products.delete_all
+            product = parent.products.create!(name: 'ACME Rocket Skates', tagline: 'english-text')
+            I18n.with_locale(:de) do
+              product.tagline = 'deutsch-text'
+              product.save!
+            end
+          end
+        end
+
+        context 'when plucking the entire field' do
+          it 'yields the demongoized translations' do
+            I18n.with_locale(:de) do
+              results = []
+              parent.products.pluck_each(:tagline) { |tagline| results << tagline }
+              expect(results.first).to eq('deutsch-text')
+            end
+          end
+
+          it 'yields the demongoized translations when unaliased' do
+            I18n.with_locale(:de) do
+              results = []
+              parent.products.pluck_each(:tl) { |tagline| results << tagline }
+              expect(results.first).to eq('deutsch-text')
+            end
+          end
+
+          it 'yields the full translations hash to _translations' do
+            results = []
+            parent.products.pluck_each(:tagline_translations) { |tagline| results << tagline }
+            expect(results.first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
+          end
+        end
+      end
+    end
+  end
+
   describe '#pluck with aliases' do
     let!(:parent) do
       Company.create!
