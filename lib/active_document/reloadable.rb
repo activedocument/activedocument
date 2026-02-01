@@ -23,7 +23,7 @@ module ActiveDocument
       # when the document is reloaded, we want to set new_record to false.
       # This is necessary otherwise saving will fail, as it will try to insert the document,
       # instead of attempting to update the existing document.
-      @new_record = false unless reloaded.nil? || reloaded.empty?
+      @new_record = false if reloaded.present?
 
       reset_object!(reloaded)
 

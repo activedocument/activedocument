@@ -75,6 +75,9 @@ gemfiles/                    # Gemfile variants for CI
 - **Loop literals**: Extract immutable array literals out of loops into constants
 - **Lambdas**: Use `lambda do ... end` for multiline lambdas, not `->(x) do ... end`
 - **Rescue clauses**: Always specify error class (`rescue StandardError` not just `rescue`)
+- **Rescued exception variable**: Use `e` instead of `error` for rescued exception variable names
+- **Presence checks**: Use `if x.present?` instead of `unless x.blank?` (Rails/Present cop)
+- **Argument indentation**: Indent first argument one step (2 spaces) from start of previous line, not aligned with opening paren
 
 ### RSpec Conventions
 - **Equality**: Use `eq` instead of `be ==` for comparisons
@@ -87,7 +90,7 @@ gemfiles/                    # Gemfile variants for CI
 - **Shared examples**: Use `shared_examples` (not `shared_context`) when not defining context
 - **Identical assertions**: Don't compare expression to itself; store in variable first
 - **Leaky constants**: Use `stub_const` and `let` blocks instead of declaring constants/classes directly in specs
-- **Let ordering**: Group all `let`/`let!` blocks together before examples and nested describe blocks
+- **Let ordering**: Group all `let`/`let!` blocks together before `before`/`after` hooks and examples
 - **Message expectations**: Prefer `expect(...).to receive` over `allow`/`have_received` spy pattern
 - **Exception specs**: Always specify the exception class with `raise_exception(SomeError)`
 - **Example wording**: Don't use "should" or future tense ("will") in `it` descriptions

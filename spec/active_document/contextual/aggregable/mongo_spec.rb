@@ -247,6 +247,8 @@ describe ActiveDocument::Contextual::Aggregable::Mongo do
     context 'regarding hints' do
       let(:client) { Person.collection.client }
       let(:subscriber) { EventSubscriber.new }
+      let(:event) { subscriber.single_command_started_event('aggregate') }
+      let(:command) { event.command }
 
       before do
         client.subscribe(Mongo::Monitoring::COMMAND, subscriber)
@@ -256,9 +258,6 @@ describe ActiveDocument::Contextual::Aggregable::Mongo do
       after do
         client.unsubscribe(Mongo::Monitoring::COMMAND, subscriber)
       end
-
-      let(:event) { subscriber.single_command_started_event('aggregate') }
-      let(:command) { event.command }
 
       context 'when no hint is provided' do
         let(:maybe_hint) { Person }

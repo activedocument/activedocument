@@ -98,12 +98,12 @@ module ActiveDocument
           rescue ActiveDocument::Errors::InvalidSessionNesting
             # Session should be ended here.
             raise ActiveDocument::Errors::InvalidTransactionNesting
-          rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => error
+          rescue Mongo::Error::InvalidSession, Mongo::Error::InvalidTransactionOperation => e
             abort_transaction(session)
-            raise ActiveDocument::Errors::TransactionError(error)
-          rescue StandardError => error
+            raise ActiveDocument::Errors::TransactionError(e)
+          rescue StandardError => e
             abort_transaction(session)
-            raise error
+            raise e
           end
         end
 
