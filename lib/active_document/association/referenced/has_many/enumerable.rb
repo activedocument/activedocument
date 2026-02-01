@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_document/pluckable'
-
 module ActiveDocument
   module Association
     module Referenced
@@ -13,7 +11,6 @@ module ActiveDocument
         class Enumerable
           extend Forwardable
           include ::Enumerable
-          include Pluckable
 
           # The three main instance variables are collections of documents.
           #
@@ -403,15 +400,18 @@ module ActiveDocument
           # @param [ Symbol... ] *fields The field names to pluck.
           #
           # @return [ Enumerator ] The enumerator, or self if a block was given.
+          #
+          # TODO: In a future commit, this maybe can be it's own enumerator class
+          # which extends PluckEnumerator (e.g. RelationPluckEnumerator)
           def pluck_each(*keys, &block)
             return to_enum(:pluck_each, *keys) unless block
 
             document_class = @_association.klass
-            prepared = prepare_pluck(keys, document_class: document_class)
+            prepared = PluckEnumerator.prepare_pluck(document_class, keys)
 
             if _loaded?
               docs = _loaded.values.map { |v| BSON::Document.new(v.attributes) }
-              pluck_from_documents(docs, prepared[:field_names], document_class: document_class).each(&block)
+              PluckEnumerator.pluck_from_documents(document_class, docs, prepared[:field_names]).each(&block)
             elsif _unloaded
               criteria = if _added.any?
                            ids_to_exclude = _added.keys
@@ -425,7 +425,7 @@ module ActiveDocument
 
             if _added.any?
               docs = _added.values.map { |v| BSON::Document.new(v.attributes) }
-              pluck_from_documents(docs, prepared[:field_names], document_class: document_class).each(&block)
+              PluckEnumerator.pluck_from_documents(document_class, docs, prepared[:field_names]).each(&block)
             end
 
             self

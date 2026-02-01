@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 require 'active_document/atomic_update_preparer'
-require 'active_document/pluckable'
 require 'active_document/contextual/mongo/documents_loader'
 require 'active_document/contextual/atomic'
 require 'active_document/contextual/aggregable/mongo'
 require 'active_document/contextual/command'
 require 'active_document/contextual/map_reduce'
-require 'active_document/contextual/mongo/pluck_enumerator'
+require 'active_document/pluck_enumerator'
 require 'active_document/association/eager_loadable'
 
 module ActiveDocument
@@ -23,7 +22,6 @@ module ActiveDocument
       include Atomic
       include Association::EagerLoadable
       include Queryable
-      include Pluckable
 
       # Options constant.
       OPTIONS = %i[hint
@@ -349,7 +347,7 @@ module ActiveDocument
       # @return [ Enumerator | ActiveDocument::Contextual::Mongo ] The enumerator,
       #   or the context if a block was given.
       def pluck_each(*fields, &block)
-        enum = PluckEnumerator.new(klass, view, fields).each(&block)
+        enum = ActiveDocument::PluckEnumerator.new(klass, view, fields).each(&block)
         block ? self : enum
       end
 
