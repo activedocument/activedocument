@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Mongoid
+module ActiveDocument
   # Provides shared behavior for any document with "pluck" functionality.
   #
   # @api private

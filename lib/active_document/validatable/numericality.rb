@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Mongoid
+module ActiveDocument
   module Validatable
     # A specialization of the ActiveModel numericality validator, which adds
     # logic to recognize and accept BSON::Decimal128 as a number.
