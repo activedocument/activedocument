@@ -376,6 +376,61 @@ module ActiveDocument
             @_added, @_loaded, @_unloaded, @executed = data
           end
 
+          # Plucks the given field names from the documents in the target.
+          # If the collection has been loaded, it plucks from the loaded
+          # documents; otherwise, it plucks from the unloaded criteria.
+          # Regardless, it also plucks from any added documents.
+          #
+          # @param [ Symbol... ] *fields The field names to pluck.
+          #
+          # @return [ Array | Array<Array> ] The array of field values. If
+          #   multiple fields are given, an array of arrays is returned.
+          def pluck(*keys)
+            pluck_each(*keys).to_a
+          end
+
+          # Iterates over each plucked value from the documents in the target.
+          # If the collection has been loaded, it plucks from the loaded
+          # documents; otherwise, it streams from the unloaded criteria.
+          # Regardless, it also plucks from any added documents.
+          #
+          # @example Iterate through the plucked values.
+          #   person.posts.pluck_each(:title) { |title| puts title }
+          #
+          # @param [ Symbol... ] *fields The field names to pluck.
+          #
+          # @return [ Enumerator ] The enumerator, or self if a block was given.
+          #
+          # TODO: In a future commit, this maybe can be it's own enumerator class
+          # which extends PluckEnumerator (e.g. RelationPluckEnumerator)
+          def pluck_each(*keys, &block)
+            return to_enum(:pluck_each, *keys) unless block
+
+            document_class = @_association.klass
+            prepared = PluckEnumerator.prepare_pluck(document_class, keys)
+
+            if _loaded?
+              docs = _loaded.values.map { |v| BSON::Document.new(v.attributes) }
+              PluckEnumerator.pluck_from_documents(document_class, docs, prepared[:field_names]).each(&block)
+            elsif _unloaded
+              criteria = if _added.any?
+                           ids_to_exclude = _added.keys
+                           _unloaded.not_in(_id: ids_to_exclude)
+                         else
+                           _unloaded
+                         end
+
+              criteria.pluck_each(*keys, &block)
+            end
+
+            if _added.any?
+              docs = _added.values.map { |v| BSON::Document.new(v.attributes) }
+              PluckEnumerator.pluck_from_documents(document_class, docs, prepared[:field_names]).each(&block)
+            end
+
+            self
+          end
+
           # Reset the enumerable back to its persisted state.
           #
           # @example Reset the enumerable.

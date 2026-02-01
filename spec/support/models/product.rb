@@ -16,5 +16,6 @@ class Product
   validates :name, presence: true
   validates :website, format: { with: URI::DEFAULT_PARSER.make_regexp, allow_blank: true }
 
+  belongs_to :company
   embeds_one :seo, as: :seo_tags, cascade_callbacks: true, autobuild: true
 end

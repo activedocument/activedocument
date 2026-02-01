@@ -5033,4 +5033,74 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
       end
     end
   end
+
+  describe '#pluck' do
+    let(:person) { Person.create! }
+
+    before do
+      person.addresses.create!(street: '123 Main St')
+      person.addresses.create!(street: '456 Oak Ave')
+    end
+
+    it 'plucks the specified field from the association' do
+      expect(person.addresses.pluck(:street)).to eq(['123 Main St', '456 Oak Ave'])
+    end
+
+    it 'plucks multiple fields' do
+      person.addresses.first.update!(city: 'NYC')
+      person.addresses.last.update!(city: 'LA')
+      expect(person.addresses.pluck(:street, :city)).to eq([['123 Main St', 'NYC'], ['456 Oak Ave', 'LA']])
+    end
+
+    context 'when documents are added but not persisted' do
+      before do
+        person.addresses << Address.new(street: '789 Pine Rd')
+      end
+
+      it 'includes the unsaved documents' do
+        expect(person.addresses.pluck(:street)).to include('789 Pine Rd')
+      end
+    end
+  end
+
+  describe '#pluck_each' do
+    let(:person) { Person.create! }
+
+    before do
+      person.addresses.create!(street: '123 Main St')
+      person.addresses.create!(street: '456 Oak Ave')
+    end
+
+    it 'yields each plucked value' do
+      results = []
+      person.addresses.pluck_each(:street) { |street| results << street }
+      expect(results).to eq(['123 Main St', '456 Oak Ave'])
+    end
+
+    it 'returns an enumerator when no block given' do
+      enumerator = person.addresses.pluck_each(:street)
+      expect(enumerator).to be_a(Enumerator)
+      expect(enumerator.to_a).to eq(['123 Main St', '456 Oak Ave'])
+    end
+
+    it 'yields arrays for multiple fields' do
+      person.addresses.first.update!(city: 'NYC')
+      person.addresses.last.update!(city: 'LA')
+      results = []
+      person.addresses.pluck_each(:street, :city) { |values| results << values }
+      expect(results).to eq([['123 Main St', 'NYC'], ['456 Oak Ave', 'LA']])
+    end
+
+    context 'when documents are added but not persisted' do
+      before do
+        person.addresses << Address.new(street: '789 Pine Rd')
+      end
+
+      it 'includes the unsaved documents' do
+        results = []
+        person.addresses.pluck_each(:street) { |street| results << street }
+        expect(results).to include('789 Pine Rd')
+      end
+    end
+  end
 end

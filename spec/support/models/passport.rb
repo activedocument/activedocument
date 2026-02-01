@@ -7,6 +7,7 @@ class Passport
   field :country, type: :string
   field :exp, as: :expiration_date, type: :date
   field :name, localize: true
+  field :bp, as: :birthplace, localize: true
   field :localized_translations, localize: true
 
   embedded_in :person, autobuild: true

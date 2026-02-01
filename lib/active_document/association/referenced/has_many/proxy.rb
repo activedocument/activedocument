@@ -43,8 +43,8 @@ module ActiveDocument
 
           extend ClassMethods
 
-          def_delegator :criteria, :count
-          def_delegators :_target, :first, :in_memory, :last, :reset, :uniq
+          def_delegators :criteria, :count
+          def_delegators :_target, :first, :in_memory, :last, :pluck, :pluck_each, :reset, :uniq
 
           # Instantiate a new references_many association. Will set the foreign key
           # and the base on the inverse object.
