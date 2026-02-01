@@ -1,4 +1,5 @@
-# rubocop:todo all
+# frozen_string_literal: true
+
 module InterceptableSpec
   class CallbackRegistry
     def initialize(only: [])
