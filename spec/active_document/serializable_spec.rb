@@ -298,6 +298,22 @@ describe ActiveDocument::Serializable do
             { 'title' => attributes['title'] }
           )
         end
+
+        context 'when serializable_hash_with_legacy_only is true' do
+          config_override :serializable_hash_with_legacy_only, true
+
+          it 'includes all fields when passed an empty array' do
+            expect(person.serializable_hash(only: [])).to include attributes
+          end
+        end
+
+        context 'when serializable_hash_with_legacy_only is false' do
+          config_override :serializable_hash_with_legacy_only, false
+
+          it 'does not include any fields when passed an empty array' do
+            expect(person.serializable_hash(only: [])).to be_empty
+          end
+        end
       end
 
       context 'when specifying extra inclusions' do

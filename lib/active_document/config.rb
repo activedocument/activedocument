@@ -240,6 +240,16 @@ module ActiveDocument
     # consequences of duplicate index checking.
     option :allow_duplicate_index_declarations, default: false
 
+    # When this flag is true, performing a serializable_hash(only: []) will
+    # result in all fields being included. This is the traditional (and default)
+    # behavior in ActiveDocument 9 and earlier.
+    #
+    # Setting this flag to false will change the behavior to suppress all fields
+    # in the serialized hash. This will be the default in ActiveDocument 10.
+    #
+    # See https://jira.mongodb.org/browse/MONGOID-5892 for more details.
+    option :serializable_hash_with_legacy_only, default: true
+
     # Returns the Config singleton, for use in the configure DSL.
     #
     # @return [ self ] The Config singleton.
