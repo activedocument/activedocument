@@ -41,7 +41,8 @@ module ActiveDocument
       #
       # @return [ ActiveDocument::Association::Proxy ] The association.
       def create_relation(object, association, selected_fields = nil)
-        type = @attributes[association.inverse_type]
+        key = @attributes[association.inverse_type]
+        type = key ? association.resolver.model_for(key) : nil
         target = if (t = association.build(self, object, type, selected_fields))
                    association.create_relation(self, t)
                  end
@@ -283,7 +284,11 @@ module ActiveDocument
         # during binding or when cascading callbacks. Whenever we retrieve
         # associations within the codebase, we use without_autobuild.
         if !without_autobuild? && association.embedded? && attribute_missing?(field_name)
-          raise ActiveDocument::Errors::AttributeNotLoaded.new(self.class, field_name)
+          # We always allow accessing the parent document of an embedded one.
+          try_get_parent = association.is_a?(
+            ActiveDocument::Association::Embedded::EmbeddedIn
+          ) && field_name == association.key
+          raise ActiveDocument::Errors::AttributeNotLoaded.new(self.class, field_name) unless try_get_parent
         end
 
         if !reload && (value = ivar(name)) != false

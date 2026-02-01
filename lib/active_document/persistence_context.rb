@@ -24,7 +24,8 @@ module ActiveDocument
     # @return [ Array<Symbol> ] The list of extra options besides client options
     #   that determine the persistence context.
     EXTRA_OPTIONS = %i[client
-                       collection].freeze
+                       collection
+                       collection_options].freeze
 
     # The full list of valid persistence context options.
     #
@@ -115,8 +116,15 @@ module ActiveDocument
     def client
       @client ||= begin
         client = Clients.with_name(client_name)
-        client = client.use(database_name) if database_name_option
-        client = client.with(client_options) unless client_options.empty?
+        options = client_options
+
+        if database_name_option
+          client = client.use(database_name)
+          options = options.except(:database, 'database')
+        end
+
+        client = client.with(options) unless options.empty?
+
         client
       end
     end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_document/fields/validators/macro'
+require 'active_document/model_resolver'
 
 module ActiveDocument
   # Mixin module included in ActiveDocument::Document to provide behavior
@@ -54,6 +55,10 @@ module ActiveDocument
       # @param [ Class ] subclass The inheriting class.
       def inherited(subclass)
         super
+
+        # Register the new subclass with the resolver subsystem
+        ActiveDocument::ModelResolver.register(subclass)
+
         @_type = nil
         subclass.aliased_fields = aliased_fields.dup
         subclass.localized_fields = localized_fields.dup

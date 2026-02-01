@@ -33,7 +33,11 @@ module ActiveDocument
           end
 
           def query_criteria(object, type)
-            cls = type ? type.constantize : relation_class
+            cls = if type
+                    type.is_a?(String) ? type.constantize : type
+                  else
+                    relation_class
+                  end
             crit = cls.criteria
             crit = crit.apply_scope(scope)
             crit.where(primary_key => object)

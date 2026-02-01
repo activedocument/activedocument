@@ -17,6 +17,7 @@ require 'active_document/association'
 require 'active_document/composable'
 require 'active_document/touchable'
 require 'active_document/type_converters'
+require 'active_document/model_resolver'
 
 module ActiveDocument
 
@@ -32,6 +33,7 @@ module ActiveDocument
 
     included do
       ActiveDocument.register_model(self)
+      ActiveDocument::ModelResolver.register(self)
     end
 
     # Regex for matching illegal BSON keys.

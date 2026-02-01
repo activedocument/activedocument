@@ -60,7 +60,8 @@ module ActiveDocument
             re_define_method(meth) do |attrs|
               _assigning do
                 if association.polymorphic? && association.inverse_type
-                  options[:class_name] = send(association.inverse_type)
+                  klass = association.resolver.model_for(send(association.inverse_type))
+                  options[:class_name] = klass
                 end
                 association.nested_builder(attrs, options).build(self)
               end

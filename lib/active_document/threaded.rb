@@ -20,6 +20,7 @@ module ActiveDocument
     CURRENT_SCOPE_KEY = '[active_document]:current-scope'
 
     AUTOSAVES_KEY = '[active_document]:autosaves'
+
     VALIDATIONS_KEY = '[active_document]:validations'
 
     STACK_KEYS = Hash.new do |hash, key|
@@ -378,9 +379,7 @@ module ActiveDocument
     # @return [ Set<ActiveDocument::Document> ] Collection of modified documents before
     #   it was cleared.
     def clear_modified_documents(session)
-      modified_documents[session].dup
-    ensure
-      modified_documents[session].clear
+      modified_documents.delete(session) || []
     end
 
     # Queries whether document callbacks should be executed by default for the

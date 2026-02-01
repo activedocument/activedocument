@@ -4,6 +4,7 @@ require 'active_document/changeable'
 require 'active_document/collection_configurable'
 require 'active_document/encryptable'
 require 'active_document/findable'
+require 'active_document/identifiable'
 require 'active_document/indexable'
 require 'active_document/inspectable'
 require 'active_document/interceptable'
@@ -42,6 +43,7 @@ module ActiveDocument
     include CollectionConfigurable
     include Attributes
     include Fields
+    include Identifiable
     include Indexable
     include Inspectable
     include Matchable
