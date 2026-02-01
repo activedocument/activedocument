@@ -28,13 +28,24 @@ git merge-base master upstream/master
 git log --oneline --reverse <fork-point>..upstream/master
 ```
 
-3. For each commit, merge one at a time (not cherry-pick):
+3. **CRITICAL: Actually merge each commit** (not cherry-pick, not manually apply):
 ```bash
 git merge <commit-hash> --no-commit
 ```
 
-Avoid cherry-pick because it does not preserve commit history. Always merge actual commits individually.
-If using cherry-pick tactically for complex cases, immediately resume proper merging.
+**MANDATORY**: You MUST use `git merge <commit-hash>` for EVERY commit. This is NON-NEGOTIABLE.
+- DO NOT manually read and apply changes from upstream commits
+- DO NOT cherry-pick commits
+- DO NOT copy code from upstream without running `git merge`
+- ALWAYS run `git merge <hash> --no-commit` which actually merges the commit into the working tree
+
+The `git merge` command will:
+- Pull in all changes from the upstream commit
+- Show conflicts where our code differs
+- Preserve proper merge history
+- Ensure no changes are missed
+
+If you "simulate" a merge by reading upstream code and manually applying it, you WILL miss changes and create subtle bugs. ALWAYS let git do the merge.
 
 4. Review the commit. BE SKEPTICAL.
    - If the commit looks like a feature we shouldn't merge -> stop and ASK before continuing.
