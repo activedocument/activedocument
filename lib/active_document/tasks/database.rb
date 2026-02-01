@@ -181,7 +181,7 @@ module ActiveDocument
             next
           end
 
-          unless model.collection.cluster.sharded?
+          unless model.collection.cluster.sharded? || model.collection.cluster.load_balanced?
             logger.warn("MONGOID: #{model} has shard config but is not persisted in a sharded cluster: #{model.collection.cluster.summary}")
             next
           end
