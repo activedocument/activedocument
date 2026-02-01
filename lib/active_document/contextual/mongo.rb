@@ -1,14 +1,13 @@
 # frozen_string_literal: true
-# rubocop:todo all
 
 require 'active_document/atomic_update_preparer'
-require 'active_document/pluckable'
-require "active_document/contextual/mongo/documents_loader"
-require "active_document/contextual/atomic"
-require "active_document/contextual/aggregable/mongo"
-require "active_document/contextual/command"
-require "active_document/contextual/map_reduce"
-require "active_document/association/eager_loadable"
+require 'active_document/contextual/mongo/documents_loader'
+require 'active_document/contextual/atomic'
+require 'active_document/contextual/aggregable/mongo'
+require 'active_document/contextual/command'
+require 'active_document/contextual/map_reduce'
+require 'active_document/contextual/mongo/pluck_enumerator'
+require 'active_document/association/eager_loadable'
 
 module ActiveDocument
   module Contextual
@@ -23,7 +22,6 @@ module ActiveDocument
       include Atomic
       include Association::EagerLoadable
       include Queryable
-      include Pluckable
 
       # Options constant.
       OPTIONS = [ :hint,
@@ -333,12 +331,27 @@ module ActiveDocument
       #   in the array will be a single value. Otherwise, each
       #   result in the array will be an array of values.
       def pluck(*fields)
-        # Multiple fields can map to the same field name. For example,
-        # plucking a field and its _translations field map to the same
-        # field in the database. because of this, we need to prepare the
-        # projection specifically.
-        prep = prepare_pluck(fields, prepare_projection: true)
-        pluck_from_documents(view.projection(prep[:projection]), prep[:field_names])
+        pluck_each(*fields).to_a
+      end
+
+      # Iterate through plucked field value(s) from the database
+      # for the context. Yields result values progressively as they are
+      # read from the database. The yielded results are normalized
+      # according to their ActiveDocument field types.
+      #
+      # @example Iterate through the plucked values from the database.
+      #   context.pluck_each(:name) { |name| puts name }
+      #
+      # @param [ [ String | Symbol ]... ] *fields Field(s) to pluck,
+      #   which may include nested fields using dot-notation.
+      # @param [ Proc ] &block The block to call once for each plucked
+      #   result.
+      #
+      # @return [ Enumerator | ActiveDocument::Contextual::Mongo ] The enumerator,
+      #   or the context if a block was given.
+      def pluck_each(*fields, &block)
+        enum = PluckEnumerator.new(klass, view, fields).each(&block)
+        block ? self : enum
       end
 
       # Pick the single field values from the database.
@@ -871,9 +884,53 @@ module ActiveDocument
       #
       # @param [ Document ] document The document to yield to.
       def yield_document(document, &block)
-        doc = document.respond_to?(:_id) ?
-            document : Factory.from_db(klass, document, criteria)
+        doc = if document.respond_to?(:_id)
+                document
+              elsif criteria.raw_results?
+                if criteria.typecast_results?
+                  demongoize_hash(klass, document)
+                else
+                  document
+                end
+              else
+                Factory.from_db(klass, document, criteria)
+              end
+
         yield(doc)
+      end
+
+      # Demongoizes a hash in place, converting field values to their Ruby
+      # equivalents according to the field definitions.
+      #
+      # @param [ Class ] klass The document class.
+      # @param [ Hash ] hash The hash to demongoize.
+      #
+      # @return [ Hash ] The demongoized hash.
+      #
+      # @api private
+      def demongoize_hash(klass, hash)
+        return nil unless hash
+
+        hash.each_key do |key|
+          value = hash[key]
+
+          # does the key represent a declared field on the document?
+          if (field = klass.fields[key])
+            hash[key] = field.demongoize(value)
+            next
+          end
+
+          # does the key represent an embedded relation on the document?
+          aliased_name = klass.aliased_associations[key] || key
+          if (assoc = klass.relations[aliased_name])
+            case value
+            when Array then value.each { |h| demongoize_hash(assoc.klass, h) }
+            when Hash then demongoize_hash(assoc.klass, value)
+            end
+          end
+        end
+
+        hash
       end
 
       def _session

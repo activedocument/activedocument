@@ -205,6 +205,68 @@ module ActiveDocument
       !!@embedded
     end
 
+    # Return this criteria in "raw" mode, which instructs the driver to return
+    # demongoized hashes for query results, instead of documents.
+    #
+    # @example Return raw results.
+    #   criteria.raw
+    #
+    # @example Return raw results, but without typecasting them.
+    #   criteria.raw(typed: false)
+    #
+    # @example Return instantiated results, but still demongoize them.
+    #   criteria.raw(false, typed: true)
+    #
+    # @param [ true | false ] raw_results If true, query results will be hashes
+    #   instead of documents. (default: true)
+    # @param [ true | false | nil ] typed If true, the results will be typecast
+    #   using the field definitions. If false, the results will be returned
+    #   exactly as the database returns them. (default: !raw_results)
+    #
+    # @return [ Criteria ] The cloned criteria.
+    def raw(raw_results = true, typed: nil)
+      # default for typed is true when raw_results is false, and false when
+      # raw_results is true.
+      typed = !raw_results if typed.nil?
+
+      if !typed && !raw_results
+        raise ArgumentError, 'instantiated results must be typecast'
+      end
+
+      clone.tap do |criteria|
+        criteria._raw_results = { raw: raw_results, typed: typed }
+      end
+    end
+
+    # An internal helper for getting/setting the "raw" flag on a given criteria
+    # object.
+    #
+    # @return [ nil | Hash ] If set, it is a hash with two keys, :raw and :typed,
+    #   that describe whether raw results should be returned, and whether they
+    #   ought to be typecast.
+    #
+    # @api private
+    attr_accessor :_raw_results
+
+    # Predicate that answers the question: is this criteria object currently
+    # in raw mode? (See #raw for a description of raw mode.)
+    #
+    # @return [ true | false ] whether the criteria is in raw mode or not.
+    def raw_results?
+      _raw_results && _raw_results[:raw]
+    end
+
+    # Predicate that answers the question: should the results returned by
+    # this criteria object be typecast? (See #raw for a description of this.)
+    # The answer is meaningless unless #raw_results? is true, since if
+    # instantiated document objects are returned they will always be typecast.
+    #
+    # @return [ true | false ] whether the criteria should return typecast
+    #   results.
+    def typecast_results?
+      _raw_results && _raw_results[:typed]
+    end
+
     # Extract a single id from the provided criteria. Could be in an $and
     # query or a straight _id query.
     #
@@ -312,6 +374,7 @@ module ActiveDocument
       self.documents = other.documents.dup unless other.documents.empty?
       self.scoping_options = other.scoping_options
       self.inclusions = (inclusions + other.inclusions).uniq
+      self._raw_results = self._raw_results || other._raw_results
       self
     end
 
@@ -547,6 +610,7 @@ module ActiveDocument
       @inclusions = other.inclusions.dup
       @scoping_options = other.scoping_options
       @documents = other.documents.dup
+      self._raw_results = other._raw_results
       @context = nil
       super
     end
