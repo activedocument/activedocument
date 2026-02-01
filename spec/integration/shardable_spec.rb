@@ -46,6 +46,7 @@ describe 'Sharding helpers' do
       end
     end
 
+    # NOTE: This test may fail on MongoDB 8.3.0+ due to database validation changes
     context 'when database does not exist' do
       let(:model_cls) { SmMovie }
 
@@ -60,8 +61,6 @@ describe 'Sharding helpers' do
       let(:model_cls) { SmMovie }
 
       before do
-        SmMovie.collection.database.drop
-        SmMovie.collection.create
         SmMovie.collection.drop
       end
 

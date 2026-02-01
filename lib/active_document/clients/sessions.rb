@@ -90,8 +90,7 @@ module ActiveDocument
         def transaction(options = {}, session_options: {})
           with_session(session_options) do |session|
             session.start_transaction(options)
-            yield
-            commit_transaction(session)
+            yield.tap { commit_transaction(session) }
           rescue *transactions_not_supported_exceptions
             raise ActiveDocument::Errors::TransactionsNotSupported
           rescue ActiveDocument::Errors::Rollback
