@@ -2,6 +2,15 @@
 
 Ruby ODM (Object Document Mapper) for NoSQL databases. Fork of Mongoid.
 
+## Differences from Mongoid
+
+When porting code from Mongoid, note these intentional differences:
+
+- **Namespace**: Use `ActiveDocument` instead of `Mongoid` throughout
+- **Test utilities**: Use local `EventSubscriber` class (in `spec/support/event_subscriber.rb`) instead of `Mrss::EventSubscriber`. Do NOT create an Mrss module - adapt to our local versions instead.
+- **Evergreen CI**: Remove any Evergreen CI-specific code or configurations when porting. This project does not use Evergreen.
+- **MRSS shared specs**: When porting tests that reference `Mrss::*` utilities, check `/mnt/c/workspace/mongoid/spec/shared/lib/mrss/` for the source, then adapt to use local equivalents or create simplified local versions without the `Mrss::` namespace.
+
 ## Tech Stack
 - Runtime: **Ruby** 3.1+
 - Testing: RSpec

@@ -506,26 +506,26 @@ describe ActiveDocument::Clients::Options, retry: 3 do
 
   context 'with global overrides' do
     let(:default_subscriber) do
-      Mrss::EventSubscriber.new
+      EventSubscriber.new
     end
 
     let(:override_subscriber) do
-      Mrss::EventSubscriber.new
+      EventSubscriber.new
     end
 
     context 'when global client is overridden' do
       before do
-        Mongoid.clients['override_client'] = { hosts: SpecConfig.instance.addresses, database: 'default_override_database' }
-        Mongoid.override_client('override_client')
-        Mongoid.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
-        Mongoid.client('override_client').subscribe(Mongo::Monitoring::COMMAND, override_subscriber)
+        ActiveDocument.clients['override_client'] = { hosts: SpecConfig.instance.addresses, database: 'default_override_database' }
+        ActiveDocument.override_client('override_client')
+        ActiveDocument.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+        ActiveDocument.client('override_client').subscribe(Mongo::Monitoring::COMMAND, override_subscriber)
       end
 
       after do
-        Mongoid.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
-        Mongoid.client('override_client').unsubscribe(Mongo::Monitoring::COMMAND, override_subscriber)
-        Mongoid.override_client(nil)
-        Mongoid.clients['override_client'] = nil
+        ActiveDocument.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+        ActiveDocument.client('override_client').unsubscribe(Mongo::Monitoring::COMMAND, override_subscriber)
+        ActiveDocument.override_client(nil)
+        ActiveDocument.clients['override_client'] = nil
       end
 
       it 'uses the overridden client for create' do
@@ -544,17 +544,17 @@ describe ActiveDocument::Clients::Options, retry: 3 do
 
       context 'when the client is set on the model level' do
         let(:model_level_subscriber) do
-          Mrss::EventSubscriber.new
+          EventSubscriber.new
         end
 
         around(:example) do |example|
           opts = Minim.storage_options
           Minim.storage_options = Minim.storage_options.merge( { client: 'model_level_client' } )
-          Mongoid.clients['model_level_client'] = { hosts: SpecConfig.instance.addresses, database: 'model_level_database' }
-          Mongoid.client('model_level_client').subscribe(Mongo::Monitoring::COMMAND, override_subscriber)
+          ActiveDocument.clients['model_level_client'] = { hosts: SpecConfig.instance.addresses, database: 'model_level_database' }
+          ActiveDocument.client('model_level_client').subscribe(Mongo::Monitoring::COMMAND, override_subscriber)
           example.run
-          Mongoid.client('model_level_client').unsubscribe(Mongo::Monitoring::COMMAND, override_subscriber)
-          Mongoid.clients['model_level_client'] = nil
+          ActiveDocument.client('model_level_client').unsubscribe(Mongo::Monitoring::COMMAND, override_subscriber)
+          ActiveDocument.clients['model_level_client'] = nil
           Minim.storage_options = opts
         end
 
@@ -580,13 +580,13 @@ describe ActiveDocument::Clients::Options, retry: 3 do
 
     context 'when global database is overridden' do
       before do
-        Mongoid.override_database('override_database')
-        Mongoid.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+        ActiveDocument.override_database('override_database')
+        ActiveDocument.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
       end
 
       after do
-        Mongoid.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
-        Mongoid.override_database(nil)
+        ActiveDocument.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+        ActiveDocument.override_database(nil)
       end
 
       it 'uses the overridden database for create' do
@@ -605,11 +605,11 @@ describe ActiveDocument::Clients::Options, retry: 3 do
         around(:example) do |example|
           opts = Minim.storage_options
           Minim.storage_options = Minim.storage_options.merge( { database: 'model_level_database' } )
-          Mongoid.clients['model_level_client'] = { hosts: SpecConfig.instance.addresses, database: 'model_level_database' }
-          Mongoid.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+          ActiveDocument.clients['model_level_client'] = { hosts: SpecConfig.instance.addresses, database: 'model_level_database' }
+          ActiveDocument.client(:default).subscribe(Mongo::Monitoring::COMMAND, default_subscriber)
           example.run
-          Mongoid.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
-          Mongoid.clients['model_level_client'] = nil
+          ActiveDocument.client(:default).unsubscribe(Mongo::Monitoring::COMMAND, default_subscriber)
+          ActiveDocument.clients['model_level_client'] = nil
           Minim.storage_options = opts
         end
 
