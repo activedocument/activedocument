@@ -35,6 +35,8 @@ describe 'ActiveDocument application tests' do
   context 'demo application' do
     context 'sinatra' do
       it 'runs' do
+        skip 'https://jira.mongodb.org/browse/MONGOID-5826'
+
         clone_application(
           'https://github.com/active_document/active_document-demo',
           subdir: 'sinatra-minimal'
@@ -54,6 +56,8 @@ describe 'ActiveDocument application tests' do
 
     context 'rails-api' do
       it 'runs' do
+        skip 'https://jira.mongodb.org/browse/MONGOID-5826'
+
         clone_application(
           'https://github.com/active_document/active_document-demo',
           subdir: 'rails-api'
@@ -176,7 +180,7 @@ describe 'ActiveDocument application tests' do
     return if rails_version == 'master'
 
     check_call(%w[gem list])
-    check_call(%w[gem install rails --no-document -v] + ["~> #{rails_version}.0"])
+    check_call(%w[gem install rails --no-document --force -v] + ["~> #{rails_version}.0"])
   end
 
   context 'local test applications' do
@@ -316,6 +320,10 @@ describe 'ActiveDocument application tests' do
   end
 
   def adjust_rails_defaults(rails_version: SpecConfig.instance.rails_version)
+    unless rails_version.match?(/^\d+\.\d+$/)
+      # This must be pre-release version, we trim it
+      rails_version = rails_version.split('.')[0..1].join('.')
+    end
     return unless File.exist?('config/application.rb')
 
     lines = File.readlines('config/application.rb')

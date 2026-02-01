@@ -125,7 +125,11 @@ module ActiveDocument
         if value
           ActiveDocument::Fields::Validators::Macro.validate_field_name(self, value)
           value = value.to_s
-          ::ActiveDocument::Traversable.__redefine(self, :discriminator_key, value)
+          if defined?(::ActiveSupport::ClassAttribute)
+            ::ActiveSupport::ClassAttribute.redefine(self, 'discriminator_key', value)
+          else
+            ::ActiveDocument::Traversable.__redefine(self, :discriminator_key, value)
+          end
         else
           # When discriminator key is set to nil, replace the class's definition
           # of the discriminator key reader (provided by class_attribute earlier)

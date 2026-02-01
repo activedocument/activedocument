@@ -19,7 +19,9 @@ module ActiveDocument
           @include_root_in_json.nil? ? ::ActiveDocument.include_root_in_json : @include_root_in_json
         end
 
-        attr_writer :include_root_in_json
+        def include_root_in_json=(new_value)
+          @include_root_in_json = new_value
+        end
       end
     end
 
