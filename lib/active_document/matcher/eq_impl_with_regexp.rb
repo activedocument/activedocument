@@ -25,9 +25,9 @@ module ActiveDocument
       def matches?(_original_operator, value, condition)
         case condition
         when Regexp
-          value =~ condition
+          value.try(:match?, condition)
         when ::BSON::Regexp::Raw
-          value =~ condition.compile
+          value.try(:match?, condition.compile)
         else
           if value.is_a?(Time) && condition.is_a?(Time)
             EqImpl.time_eq?(value, condition)
