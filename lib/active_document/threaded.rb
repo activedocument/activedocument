@@ -7,45 +7,62 @@ module ActiveDocument
   # This module contains logic for easy access to objects that have a lifecycle
   # on the current thread.
   module Threaded
+    # The key for the shared thread- and fiber-local storage. It must be a
+    # symbol because keys for fiber-local storage must be symbols.
+    STORAGE_KEY = :'[active_document]'
 
-    DATABASE_OVERRIDE_KEY = '[active_document]:db-override'
-
-    # Constant for the key to store clients.
-    CLIENTS_KEY = '[active_document]:clients'
+    DATABASE_OVERRIDE_KEY = 'db-override'
 
     # The key to override the client.
-    CLIENT_OVERRIDE_KEY = '[active_document]:client-override'
+    CLIENT_OVERRIDE_KEY = 'client-override'
 
     # The key for the current thread's scope stack.
-    CURRENT_SCOPE_KEY = '[active_document]:current-scope'
+    CURRENT_SCOPE_KEY = 'current-scope'
 
-    AUTOSAVES_KEY = '[active_document]:autosaves'
+    AUTOSAVES_KEY = 'autosaves'
 
-    VALIDATIONS_KEY = '[active_document]:validations'
+    VALIDATIONS_KEY = 'validations'
 
     STACK_KEYS = Hash.new do |hash, key|
-      hash[key] = "[active_document]:#{key}-stack"
+      hash[key] = "#{key}-stack"
     end
 
     # The key for the current thread's sessions.
-    SESSIONS_KEY = '[active_document]:sessions'
+    SESSIONS_KEY = 'sessions'
 
     # The key for storing documents modified inside transactions.
-    MODIFIED_DOCUMENTS_KEY = '[active_document]:modified-documents'
+    MODIFIED_DOCUMENTS_KEY = 'modified-documents'
 
     # The key storing the default value for whether or not callbacks are
     # executed on documents.
-    EXECUTE_CALLBACKS = '[active_document]:execute-callbacks'
+    EXECUTE_CALLBACKS = 'execute-callbacks'
 
     extend self
 
-    # Queries the thread-local variable with the given name. If a block is
+    # Resets the current thread- or fiber-local storage to its initial state.
+    # This is useful for making sure the state is clean when starting a new
+    # thread or fiber.
+    #
+    # The value of ActiveDocument::Config.real_isolation_level is used to determine
+    # whether to reset the storage for the current thread or fiber.
+    def reset!
+      case Config.real_isolation_level
+      when :thread
+        Thread.current.thread_variable_set(STORAGE_KEY, nil)
+      when :fiber
+        Fiber[STORAGE_KEY] = nil
+      else
+        raise "Unknown isolation level: #{Config.real_isolation_level.inspect}"
+      end
+    end
+
+    # Queries the thread- or fiber-local variable with the given name. If a block is
     # given, and the variable does not already exist, the return value of the
     # block will be set as the value of the variable before returning it.
     #
-    # It is very important that applications (and especially Mongoid)
+    # It is very important that applications (and especially ActiveDocument)
     # use this method instead of Thread#[], since Thread#[] is actually for
-    # fiber-local variables, and Mongoid uses Fibers as an implementation
+    # fiber-local variables, and ActiveDocument uses Fibers as an implementation
     # detail in some callbacks. Putting thread-local state in a fiber-local
     # store will result in the state being invisible when relevant callbacks are
     # run in a different fiber.
@@ -59,7 +76,7 @@ module ActiveDocument
     # @return [ Object | nil ] the value of the queried variable, or nil if
     #   it is not set and no default was given.
     def get(key, &default)
-      result = Thread.current.thread_variable_get(key)
+      result = storage[key]
 
       if result.nil? && default
         result = yield
@@ -69,7 +86,7 @@ module ActiveDocument
       result
     end
 
-    # Sets a thread-local variable with the given name to the given value.
+    # Sets a variable in local storage with the given name to the given value.
     # See #get for a discussion of why this method is necessary, and why
     # Thread#[]= should be avoided in cascading callbacks on embedded children.
     #
@@ -77,35 +94,23 @@ module ActiveDocument
     # @param [ Object | nil ] value the value of the variable to set (or `nil`
     #   if you wish to unset the variable)
     def set(key, value)
-      Thread.current.thread_variable_set(key, value)
+      storage[key] = value
     end
 
-    # Removes the named variable from thread-local storage.
+    # Removes the named variable from local storage.
     #
     # @param [ String | Symbol ] key the name of the variable to remove.
     def delete(key)
-      set(key, nil)
+      storage.delete(key)
     end
 
-    # Queries the presence of a named variable in thread-local storage.
+    # Queries the presence of a named variable in local storage.
     #
     # @param [ String | Symbol ] key the name of the variable to query.
     #
     # @return [ true | false ] whether the given variable is present or not.
     def has?(key)
-      # Here we have a classic example of JRuby not behaving like MRI. In
-      # MRI, if you set a thread variable to nil, it removes it from the list
-      # and subsequent calls to thread_variable?(key) will return false. Not
-      # so with JRuby. Once set, you cannot unset the thread variable.
-      #
-      # However, because setting a variable to nil is supposed to remove it,
-      # we can assume a nil-valued variable doesn't actually exist.
-
-      # So, instead of this:
-      # Thread.current.thread_variable?(key)
-
-      # We have to do this:
-      !get(key).nil?
+      storage.key?(key)
     end
 
     # Begin entry into a named thread local stack.
@@ -507,6 +512,27 @@ module ActiveDocument
       scope.delete(klass)
 
       delete(CURRENT_SCOPE_KEY) if scope.empty?
+    end
+
+    # Returns the current thread- or fiber-local storage as a Hash.
+    def storage
+      case Config.real_isolation_level
+      when :thread
+        storage_hash = Thread.current.thread_variable_get(STORAGE_KEY)
+
+        unless storage_hash
+          storage_hash = {}
+          Thread.current.thread_variable_set(STORAGE_KEY, storage_hash)
+        end
+
+        storage_hash
+
+      when :fiber
+        Fiber[STORAGE_KEY] ||= {}
+
+      else
+        raise "Unknown isolation level: #{Config.real_isolation_level.inspect}"
+      end
     end
   end
 end

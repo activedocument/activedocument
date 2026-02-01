@@ -11,6 +11,7 @@ When porting code from Mongoid, note these intentional differences:
 - **Evergreen CI**: Remove any Evergreen CI-specific code or configurations when porting. This project does not use Evergreen.
 - **MRSS shared specs**: When porting tests that reference `Mrss::*` utilities, check `/mnt/c/workspace/mongoid/spec/shared/lib/mrss/` for the source, then adapt to use local equivalents or create simplified local versions without the `Mrss::` namespace.
 - **Symbol operators removed**: ActiveDocument does NOT have Symbol operator methods (`:field.in`, `:field.gt`, `:field.ne`, etc.) that Mongoid has. When porting code that uses this syntax, rewrite to use method syntax (`.any_in`, `.not_in`, `.gt`, `.ne`, etc.) OR hash syntax `{ _id: { '$nin' => values } }` instead of `:_id.in => values`).
+- **Rubocop directives**: Always remove `# rubocop:todo all` comments when merging upstream code. ActiveDocument enforces Rubocop rules.
 
 ## Tech Stack
 - Runtime: **Ruby** 3.1+
