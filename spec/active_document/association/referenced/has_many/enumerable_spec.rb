@@ -1829,7 +1829,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
             added_post = Post.new(title: 'Added Title', person_id: person.id)
             enumerable << added_post
 
-            expect(criteria).to receive(:pluck).with(:title).and_return(['Test Title'])
+            allow(criteria).to receive(:pluck).with(:title).and_return(['Test Title'])
             result = enumerable.pluck(:title)
             expect(result).to eq(['Test Title', 'Added Title'])
           end
@@ -1906,58 +1906,66 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
       with_default_i18n_configs
 
       before do
-        I18n.locale = :en
-        product = parent.products.create!(name: 'english-text')
-        I18n.locale = :de
-        product.name = 'deutsch-text'
-        product.save!
+        I18n.with_locale(:en) do
+          product = parent.products.create!(name: 'english-text')
+          I18n.with_locale(:de) do
+            product.name = 'deutsch-text'
+            product.save!
+          end
+        end
       end
 
       context 'when plucking the entire field' do
-        let(:plucked) do
-          parent.products.all.pluck(:name)
-        end
-
-        let(:plucked_translations) do
-          parent.products.all.pluck(:name_translations)
-        end
-
-        let(:plucked_translations_both) do
-          parent.products.all.pluck(:name_translations, :name)
-        end
-
         it 'returns the demongoized translations' do
-          expect(plucked.first).to eq('deutsch-text')
+          I18n.with_locale(:de) do
+            expect(parent.products.pluck(:name).first).to eq('deutsch-text')
+          end
+        end
+
+        it 'returns the demongoized translations via .all' do
+          I18n.with_locale(:de) do
+            expect(parent.products.all.pluck(:name).first).to eq('deutsch-text') # rubocop:disable Rails/RedundantActiveRecordAllMethod
+          end
         end
 
         it 'returns the full translations hash to _translations' do
-          expect(plucked_translations.first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
+          expect(parent.products.pluck(:name_translations).first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
+        end
+
+        it 'returns the full translations hash to _translations via .all' do
+          expect(parent.products.all.pluck(:name_translations).first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' }) # rubocop:disable Rails/RedundantActiveRecordAllMethod
         end
 
         it 'returns both' do
-          expect(plucked_translations_both.first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text'])
+          I18n.with_locale(:de) do
+            expect(parent.products.pluck(:name_translations, :name).first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text'])
+          end
+        end
+
+        it 'returns both via .all' do
+          I18n.with_locale(:de) do
+            expect(parent.products.all.pluck(:name_translations, :name).first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text']) # rubocop:disable Rails/RedundantActiveRecordAllMethod
+          end
         end
       end
 
       context 'when plucking a specific locale' do
-
-        let(:plucked) do
-          parent.products.all.pluck(:'name.de')
+        it 'returns the specific translations' do
+          expect(parent.products.pluck(:'name.de').first).to eq('deutsch-text')
         end
 
-        it 'returns the specific translations' do
-          expect(plucked.first).to eq('deutsch-text')
+        it 'returns the specific translations via .all' do
+          expect(parent.products.all.pluck(:'name.de').first).to eq('deutsch-text') # rubocop:disable Rails/RedundantActiveRecordAllMethod
         end
       end
 
       context 'when plucking a specific locale from _translations field' do
-
-        let(:plucked) do
-          parent.products.all.pluck(:'name_translations.de')
+        it 'returns the specific translations' do
+          expect(parent.products.pluck(:'name_translations.de').first).to eq('deutsch-text')
         end
 
-        it 'returns the specific translations' do
-          expect(plucked.first).to eq('deutsch-text')
+        it 'returns the specific translations via .all' do
+          expect(parent.products.all.pluck(:'name_translations.de').first).to eq('deutsch-text') # rubocop:disable Rails/RedundantActiveRecordAllMethod
         end
       end
 
@@ -1968,81 +1976,100 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
           I18n.fallbacks[:he] = [:en]
         end
 
-        let(:plucked) do
-          parent.products.all.pluck(:name).first
+        it 'correctly uses the fallback' do
+          I18n.with_locale(:en) do
+            parent.products.create!(name: 'english-text')
+          end
+          I18n.with_locale(:he) do
+            expect(parent.products.pluck(:name).first).to eq 'english-text'
+          end
         end
 
-        it 'correctly uses the fallback' do
-          I18n.locale = :en
-          parent.products.create!(name: 'english-text')
-          I18n.locale = :he
-          expect(plucked).to eq 'english-text'
+        it 'correctly uses the fallback via .all' do
+          I18n.with_locale(:en) do
+            parent.products.create!(name: 'english-text')
+          end
+          I18n.with_locale(:he) do
+            expect(parent.products.all.pluck(:name).first).to eq 'english-text' # rubocop:disable Rails/RedundantActiveRecordAllMethod
+          end
         end
       end
 
       context 'when the localized field is aliased' do
         before do
-          I18n.locale = :en
-          parent.products.delete_all
-          product = parent.products.create!(name: 'ACME Rocket Skates', tagline: 'english-text')
-          I18n.locale = :de
-          product.tagline = 'deutsch-text'
-          product.save!
+          I18n.with_locale(:en) do
+            parent.products.delete_all
+            product = parent.products.create!(name: 'ACME Rocket Skates', tagline: 'english-text')
+            I18n.with_locale(:de) do
+              product.tagline = 'deutsch-text'
+              product.save!
+            end
+          end
         end
 
         context 'when plucking the entire field' do
-          let(:plucked) do
-            parent.products.all.pluck(:tagline)
-          end
-
-          let(:plucked_unaliased) do
-            parent.products.all.pluck(:tl)
-          end
-
-          let(:plucked_translations) do
-            parent.products.all.pluck(:tagline_translations)
-          end
-
-          let(:plucked_translations_both) do
-            parent.products.all.pluck(:tagline_translations, :tagline)
-          end
-
           it 'returns the demongoized translations' do
-            expect(plucked.first).to eq('deutsch-text')
+            I18n.with_locale(:de) do
+              expect(parent.products.pluck(:tagline).first).to eq('deutsch-text')
+            end
+          end
+
+          it 'returns the demongoized translations via .all' do
+            I18n.with_locale(:de) do
+              expect(parent.products.all.pluck(:tagline).first).to eq('deutsch-text') # rubocop:disable Rails/RedundantActiveRecordAllMethod
+            end
           end
 
           it 'returns the demongoized translations when unaliased' do
-            expect(plucked_unaliased.first).to eq('deutsch-text')
+            I18n.with_locale(:de) do
+              expect(parent.products.pluck(:tl).first).to eq('deutsch-text')
+            end
+          end
+
+          it 'returns the demongoized translations when unaliased via .all' do
+            I18n.with_locale(:de) do
+              expect(parent.products.all.pluck(:tl).first).to eq('deutsch-text') # rubocop:disable Rails/RedundantActiveRecordAllMethod
+            end
           end
 
           it 'returns the full translations hash to _translations' do
-            expect(plucked_translations.first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
+            expect(parent.products.pluck(:tagline_translations).first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' })
+          end
+
+          it 'returns the full translations hash to _translations via .all' do
+            expect(parent.products.all.pluck(:tagline_translations).first).to eq({ 'de' => 'deutsch-text', 'en' => 'english-text' }) # rubocop:disable Rails/RedundantActiveRecordAllMethod
           end
 
           it 'returns both' do
-            expect(plucked_translations_both.first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text'])
+            I18n.with_locale(:de) do
+              expect(parent.products.pluck(:tagline_translations, :tagline).first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text'])
+            end
+          end
+
+          it 'returns both via .all' do
+            I18n.with_locale(:de) do
+              expect(parent.products.all.pluck(:tagline_translations, :tagline).first).to eq([{ 'de' => 'deutsch-text', 'en' => 'english-text' }, 'deutsch-text']) # rubocop:disable Rails/RedundantActiveRecordAllMethod
+            end
           end
         end
 
         context 'when plucking a specific locale' do
-
-          let(:plucked) do
-            parent.products.all.pluck(:'tagline.de')
+          it 'returns the specific translations' do
+            expect(parent.products.pluck(:'tagline.de').first).to eq('deutsch-text')
           end
 
-          it 'returns the specific translations' do
-            expect(plucked.first).to eq('deutsch-text')
+          it 'returns the specific translations via .all' do
+            expect(parent.products.all.pluck(:'tagline.de').first).to eq('deutsch-text') # rubocop:disable Rails/RedundantActiveRecordAllMethod
           end
         end
 
         context 'when plucking a specific locale from _translations field' do
-
-          let(:plucked) do
-            parent.products.all.pluck(:'tagline_translations.de')
+          it 'returns the specific translations' do
+            expect(parent.products.pluck(:'tagline_translations.de').first).to eq('deutsch-text')
           end
 
-          it 'returns the specific translations' do
-            expect(plucked.first).to eq('deutsch-text')
+          it 'returns the specific translations via .all' do
+            expect(parent.products.all.pluck(:'tagline_translations.de').first).to eq('deutsch-text') # rubocop:disable Rails/RedundantActiveRecordAllMethod
           end
         end
 
@@ -2053,15 +2080,22 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
             I18n.fallbacks[:he] = [:en]
           end
 
-          let(:plucked) do
-            parent.products.all.pluck(:tagline).first
+          it 'correctly uses the fallback' do
+            I18n.with_locale(:en) do
+              parent.products.create!(tagline: 'english-text')
+            end
+            I18n.with_locale(:he) do
+              expect(parent.products.pluck(:tagline).first).to eq 'english-text'
+            end
           end
 
-          it 'correctly uses the fallback' do
-            I18n.locale = :en
-            parent.products.create!(tagline: 'english-text')
-            I18n.locale = :he
-            expect(plucked).to eq 'english-text'
+          it 'correctly uses the fallback via .all' do
+            I18n.with_locale(:en) do
+              parent.products.create!(tagline: 'english-text')
+            end
+            I18n.with_locale(:he) do
+              expect(parent.products.all.pluck(:tagline).first).to eq 'english-text' # rubocop:disable Rails/RedundantActiveRecordAllMethod
+            end
           end
         end
       end
@@ -2071,37 +2105,29 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
 
         before do
           seo = Seo.new
-          I18n.locale = :en
-          seo.name = 'english-text'
-          I18n.locale = :de
-          seo.name = 'deutsch-text'
+          I18n.with_locale(:en) do
+            seo.name = 'english-text'
+          end
+          I18n.with_locale(:de) do
+            seo.name = 'deutsch-text'
+          end
 
           parent.products.delete_all
           parent.products.create!(name: 'ACME Tunnel Paint', seo: seo)
         end
 
-        let(:plucked) do
-          parent.products.pluck('seo.name').first
-        end
-
-        let(:plucked_translations) do
-          parent.products.pluck('seo.name_translations').first
-        end
-
-        let(:plucked_translations_field) do
-          parent.products.pluck('seo.name_translations.en').first
-        end
-
         it 'returns the translation for the current locale' do
-          expect(plucked).to eq('deutsch-text')
+          I18n.with_locale(:de) do
+            expect(parent.products.pluck('seo.name').first).to eq('deutsch-text')
+          end
         end
 
         it 'returns the full _translation hash' do
-          expect(plucked_translations).to eq({ 'en' => 'english-text', 'de' => 'deutsch-text' })
+          expect(parent.products.pluck('seo.name_translations').first).to eq({ 'en' => 'english-text', 'de' => 'deutsch-text' })
         end
 
         it 'returns the translation for the requested locale' do
-          expect(plucked_translations_field).to eq('english-text')
+          expect(parent.products.pluck('seo.name_translations.en').first).to eq('english-text')
         end
       end
     end
@@ -2111,49 +2137,35 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
 
       before do
         seo = Seo.new
-        I18n.locale = :en
-        seo.description = 'english-text'
-        I18n.locale = :de
-        seo.description = 'deutsch-text'
+        I18n.with_locale(:en) do
+          seo.description = 'english-text'
+        end
+        I18n.with_locale(:de) do
+          seo.description = 'deutsch-text'
+        end
 
         parent.products.delete_all
         parent.products.create!(name: 'ACME Tunnel Paint', seo: seo)
       end
 
-      let(:plucked) do
-        parent.products.pluck('seo.description').first
-      end
-
-      let(:plucked_unaliased) do
-        parent.products.pluck('seo.desc').first
-      end
-
-      let(:plucked_translations) do
-        parent.products.pluck('seo.description_translations').first
-      end
-
-      let(:plucked_translations_field) do
-        parent.products.pluck('seo.description_translations.en').first
-      end
-
       it 'returns the translation for the current locale' do
         I18n.with_locale(:en) do
-          expect(plucked).to eq('english-text')
+          expect(parent.products.pluck('seo.description').first).to eq('english-text')
         end
       end
 
       it 'returns the translation for the current locale when unaliased' do
         I18n.with_locale(:en) do
-          expect(plucked_unaliased).to eq('english-text')
+          expect(parent.products.pluck('seo.desc').first).to eq('english-text')
         end
       end
 
       it 'returns the full _translation hash' do
-        expect(plucked_translations).to eq({ 'en' => 'english-text', 'de' => 'deutsch-text' })
+        expect(parent.products.pluck('seo.description_translations').first).to eq({ 'en' => 'english-text', 'de' => 'deutsch-text' })
       end
 
       it 'returns the translation for the requested locale' do
-        expect(plucked_translations_field).to eq('english-text')
+        expect(parent.products.pluck('seo.description_translations.en').first).to eq('english-text')
       end
     end
 
