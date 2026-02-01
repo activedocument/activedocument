@@ -77,7 +77,7 @@ describe ActiveDocument::Association::Embedded::EmbedsOne::Proxy do
             end
           end
 
-          it 'sets the target without an invinite recursion' do
+          it 'sets the target without an infinite recursion' do
             person.name = name
             expect(person.name).to be_present
           end

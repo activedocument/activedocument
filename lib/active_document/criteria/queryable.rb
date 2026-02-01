@@ -82,6 +82,17 @@ module ActiveDocument
         @selector = other.selector.__deep_copy__
         @pipeline = other.pipeline.__deep_copy__
       end
+
+      # Returns selector and options of the criteria in form of MongoDB command.
+      #
+      # @return [ Hash ] The command.
+      def to_mql
+        {
+          '$db': database_name,
+          find: collection.name,
+          filter: selector
+        }.merge(options)
+      end
     end
   end
 end

@@ -1125,7 +1125,7 @@ describe ActiveDocument::Association::Referenced::HasMany::Enumerable do
             enumerable.first
           end
 
-          context 'when a perviously persisted unloaded doc exists' do
+          context 'when a previously persisted unloaded doc exists' do
 
             it 'returns the first added doc' do
               expect(first).to eq(post)

@@ -39,6 +39,9 @@ module ActiveDocument
         docs_map = {}
         queue = [klass.to_s]
 
+        # account for single-collection inheritance
+        queue.push(klass.root_class.to_s) if klass != klass.root_class
+
         while (klass = queue.shift)
           next unless (as = assoc_map.delete(klass))
 

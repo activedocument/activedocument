@@ -1456,7 +1456,7 @@ describe ActiveDocument::Touchable do
       expect(parent.after_touch_called).to be(true)
     end
 
-    context 'when touch is calles on a child' do
+    context 'when touch is called on a child' do
       before do
         child.touch
       end

@@ -4,43 +4,51 @@ require 'spec_helper'
 require 'active_document/railties/controller_runtime'
 
 describe 'ActiveDocument::Railties::ControllerRuntime' do
-  controller_runtime = ActiveDocument::Railties::ControllerRuntime
-  collector = controller_runtime::Collector
+  let(:controller_runtime) { ActiveDocument::Railties::ControllerRuntime }
+  let(:collector) { controller_runtime::Collector }
 
-  reference_controller_class = Class.new do
-    def process_action(*_)
-      @process_action = true
-    end
+  let(:reference_controller_class) do
+    Class.new do
+      def process_action(*_)
+        @process_action = true
+      end
 
-    def cleanup_view_runtime(*_)
-      @cleanup_view_runtime.call
-    end
+      def cleanup_view_runtime(*_)
+        @cleanup_view_runtime.call
+      end
 
-    def append_info_to_payload(*_)
-      @append_info_to_payload = true
-    end
+      def append_info_to_payload(*_)
+        @append_info_to_payload = true
+      end
 
-    def self.log_process_action(*_)
-      @log_process_action.call
+      def self.log_process_action(*_)
+        @log_process_action.call
+      end
     end
   end
 
-  controller_class = Class.new reference_controller_class do
-    include controller_runtime::ControllerExtension
+  let(:controller_class) do
+    ref_class = reference_controller_class
+    ctrl_runtime = controller_runtime
+    Class.new(ref_class) do
+      include ctrl_runtime::ControllerExtension
+    end
   end
+
+  let(:controller) { controller_class.new }
 
   def set_metric(value) # rubocop:disable Naming/AccessorMethodName
-    Thread.current['ActiveDocument.controller_runtime'] = value
+    ActiveDocument::Threaded.set(
+      ActiveDocument::Railties::ControllerRuntime::Collector::VARIABLE_NAME,
+      value
+    )
   end
 
   def clear_metric!
     set_metric 0
   end
 
-  let(:controller) { controller_class.new }
-
   describe 'Collector' do
-
     it 'stores the metric in thread-safe manner' do
       clear_metric!
       expect(collector.runtime).to eq(0)

@@ -1737,7 +1737,7 @@ describe ActiveDocument::Attributes do
 
     context 'when the key has been specified as a field' do
 
-      it 'retuns the typed value' do
+      it 'returns the typed value' do
         person.send(:typed_value_for, 'age', '51')
       end
     end
@@ -2713,7 +2713,7 @@ describe ActiveDocument::Attributes do
     end
   end
 
-  context 'when modifiying a hash referenced with the [] notation' do
+  context 'when modifying a hash referenced with the [] notation' do
     let(:church) { Church.create!(location: { x: 1 }) }
 
     before do
@@ -2727,7 +2727,7 @@ describe ActiveDocument::Attributes do
     end
   end
 
-  context 'when modifiying a set referenced with the [] notation' do
+  context 'when modifying a set referenced with the [] notation' do
     let(:catalog) { Catalog.create!(set_field: [1].to_set) }
 
     before do

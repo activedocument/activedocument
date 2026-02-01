@@ -22,7 +22,7 @@ module ActiveDocument
       # @return [ true | false ] If the document is new, or if the field is not
       #   readonly.
       def attribute_writable?(name)
-        new_record? || (readonly_attributes.exclude?(name) && _loaded?(name))
+        new_record? || (self.class.readonly_attributes.exclude?(name) && _loaded?(name))
       end
 
       private
@@ -60,7 +60,12 @@ module ActiveDocument
         #   end
         #
         # @param [ Symbol... ] *names The names of the fields.
+        # @note When a parent class contains readonly attributes and is then
+        # inherited by a child class, the child class will inherit the
+        # parent's readonly attributes at the time of its creation.
+        # Updating the parent does not propagate down to child classes after wards.
         def attr_readonly(*names)
+          self.readonly_attributes = readonly_attributes.dup
           names.each do |name|
             readonly_attributes << database_field_name(name)
           end

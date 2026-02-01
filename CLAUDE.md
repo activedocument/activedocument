@@ -10,6 +10,8 @@ When porting code from Mongoid, note these intentional differences:
 - **Test utilities**: Use local `EventSubscriber` class (in `spec/support/event_subscriber.rb`) instead of `Mrss::EventSubscriber`. Do NOT create an Mrss module - adapt to our local versions instead.
 - **Evergreen CI**: Remove any Evergreen CI-specific code or configurations when porting. This project does not use Evergreen.
 - **MRSS shared specs**: When porting tests that reference `Mrss::*` utilities, check `/mnt/c/workspace/mongoid/spec/shared/lib/mrss/` for the source, then adapt to use local equivalents or create simplified local versions without the `Mrss::` namespace.
+- **Symbol operators removed**: ActiveDocument does NOT have Symbol operator methods (`:field.in`, `:field.gt`, `:field.ne`, etc.) that Mongoid has. When porting code that uses this syntax, rewrite to use method syntax (`.any_in`, `.not_in`, `.gt`, `.ne`, etc.) OR hash syntax `{ _id: { '$nin' => values } }` instead of `:_id.in => values`).
+- **Rubocop directives**: Always remove `# rubocop:todo all` comments when merging upstream code. ActiveDocument enforces Rubocop rules.
 
 ## Tech Stack
 - Runtime: **Ruby** 3.1+
@@ -60,16 +62,22 @@ gemfiles/                    # Gemfile variants for CI
 ### Ruby Style Conventions
 - **Strings**: Prefer single quotes when no interpolation or special symbols needed
 - **Arrays**: No spaces inside array brackets (`[1, 2]` not `[ 1, 2 ]`)
-- **Percent literals**: No spaces inside delimiters (`%w[foo bar]` not `%w[ foo bar ]`)
+- **Percent literals**: Use brackets as delimiters (`%w[foo bar]` not `%w( foo bar )`) and no spaces inside
+- **Hash syntax**: Use new-style symbol keys (`:$db =>` becomes `'$db':`)
 - **Ternary operators**: Avoid multi-line ternary; use `if`/`else` instead
 - **Nested ternary**: Never nest ternary operators; use `if`/`elsif`/`else`
 - **Guard clauses**: Prefer early returns over wrapping code in conditionals
 - **Method chaining**: Align chained method calls with the receiver
 - **Raise exceptions**: Use `raise ErrorClass.new(args)` not `raise ErrorClass, args`
 - **Self-assignment**: Don't use `x = x.method!` when `x.method!` suffices
+- **Parameter names**: Method parameters must be at least 3 characters (no `cb`, use `callback`)
+- **Loop literals**: Extract immutable array literals out of loops into constants
+- **Lambdas**: Use `lambda do ... end` for multiline lambdas, not `->(x) do ... end`
+- **Rescue clauses**: Always specify error class (`rescue StandardError` not just `rescue`)
 
 ### RSpec Conventions
 - **Equality**: Use `eq` instead of `be ==` for comparisons
+- **Hash equality**: Use `eq('key' => value)` with parentheses, not `eq { 'key' => value }` which parses as block
 - **Negation**: Prefer `to_not` over `not_to`
 - **Boolean checks**: Use `be(true)`/`be(false)` over `eq(true)`/`eq(false)`
 - **Context naming**: Start context descriptions with "when", "with", or "without"
@@ -77,3 +85,9 @@ gemfiles/                    # Gemfile variants for CI
 - **Empty lines**: Add empty line after final `let` before examples
 - **Shared examples**: Use `shared_examples` (not `shared_context`) when not defining context
 - **Identical assertions**: Don't compare expression to itself; store in variable first
+- **Leaky constants**: Use `stub_const` and `let` blocks instead of declaring constants/classes directly in specs
+- **Let ordering**: Group all `let`/`let!` blocks together before examples and nested describe blocks
+- **Message expectations**: Prefer `expect(...).to receive` over `allow`/`have_received` spy pattern
+- **Exception specs**: Always specify the exception class with `raise_exception(SomeError)`
+- **Example wording**: Don't use "should" or future tense ("will") in `it` descriptions
+- Mongoid .in --> .any_in, Mongoid .nin --> .not_in

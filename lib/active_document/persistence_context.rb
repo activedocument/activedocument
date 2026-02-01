@@ -137,7 +137,7 @@ module ActiveDocument
     # @return [ Symbol ] The client name for this persistence
     #   context.
     def client_name
-      @client_name ||= options[:client] ||
+      @client_name ||= __evaluate__(options[:client]) ||
                        Threaded.client_override ||
                        __evaluate__(storage_options[:client])
     end
@@ -286,33 +286,35 @@ module ActiveDocument
       # @api private
       PERSISTENCE_CONTEXT_KEY = :'[active_document]:persistence_context'
 
+      def context_store
+        Threaded.get(PERSISTENCE_CONTEXT_KEY) { {} }
+      end
+
       # Get the persistence context for a given object from the thread local
       #   storage.
       #
-      # @param [ Object ] object Object to get the persistance context for.
+      # @param [ Object ] object Object to get the persistence context for.
       #
       # @return [ ActiveDocument::PersistenceContext | nil ] The persistence context
       #   for the object if previously stored, otherwise nil.
       #
       # @api private
       def get_context(object)
-        Thread.current[PERSISTENCE_CONTEXT_KEY] ||= {}
-        Thread.current[PERSISTENCE_CONTEXT_KEY][object.object_id]
+        context_store[object.object_id]
       end
 
       # Store persistence context for a given object in the thread local
       #   storage.
       #
-      # @param [ Object ] object Object to store the persistance context for.
+      # @param [ Object ] object Object to store the persistence context for.
       # @param [ ActiveDocument::PersistenceContext ] context Context to store
       #
       # @api private
       def store_context(object, context)
         if context.nil?
-          Thread.current[PERSISTENCE_CONTEXT_KEY]&.delete(object.object_id)
+          context_store.delete(object.object_id)
         else
-          Thread.current[PERSISTENCE_CONTEXT_KEY] ||= {}
-          Thread.current[PERSISTENCE_CONTEXT_KEY][object.object_id] = context
+          context_store[object.object_id] = context
         end
       end
     end

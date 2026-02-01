@@ -282,7 +282,7 @@ describe ActiveDocument::Reloadable do
       end
     end
 
-    context 'when embedded documents are unasssigned and reassigned' do
+    context 'when embedded documents are unassigned and reassigned' do
 
       let(:palette) do
         Palette.new

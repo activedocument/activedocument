@@ -26,7 +26,7 @@ module ActiveDocument
           if owner.equal?(self)
             value = new_value
           else
-            ::ActiveDocument::Traversable.redefine(self, name, new_value)
+            ::ActiveDocument::Traversable.__redefine(self, name, new_value)
           end
         end
         owner.singleton_class.send(:public, :"#{name}=")
@@ -43,6 +43,18 @@ module ActiveDocument
       # @return [ true | false ] True if hereditary, false if not.
       def hereditary?
         !!(superclass < ActiveDocument::Document)
+      end
+
+      # Returns the root class of the STI tree that the current
+      # class participates in. If the class is not an STI subclass, this
+      # returns the class itself.
+      #
+      # @return [ ActiveDocument::Document ] the root of the STI tree
+      def root_class
+        root = self
+        root = root.superclass while root.hereditary?
+
+        root
       end
 
       # When inheriting, we want to copy the fields from the parent class and
@@ -175,7 +187,6 @@ module ActiveDocument
 
     included do
       class_attribute :discriminator_key, instance_accessor: false
-
       class << self
         # The class attribute declaration above creates a default getter which we override with our custom method.
         remove_method :discriminator_key

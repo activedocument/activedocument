@@ -265,7 +265,30 @@ describe ActiveDocument::Attributes::Readonly do
           expect(child.mother).to be_nil
         end
       end
+    end
 
+    context 'when a subclass inherits readonly fields' do
+      let(:attributes) do
+        %i[title terms]
+      end
+
+      let(:old_person_class) do
+        Class.new(Person) do
+          attr_readonly :age
+        end
+      end
+
+      before do
+        stub_const('OldPerson', old_person_class)
+      end
+
+      it 'ensures subclass inherits the readonly attributes from parent' do
+        expect(OldPerson.readonly_attributes.to_a).to include('title', 'terms')
+      end
+
+      it 'ensures subclass does not modify parent readonly attributes' do
+        expect(Person.readonly_attributes.to_a).to_not include('age')
+      end
     end
   end
 end

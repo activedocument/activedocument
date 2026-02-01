@@ -13,7 +13,7 @@ def quarantine(context, polymorphic:, dept_aliases:, team_aliases:)
     # Have to eval this, because otherwise we get syntax errors when defining a class
     # inside a method.
     #
-    # I know the scissors are sharp! But I want to run with them anwyay!
+    # I know the scissors are sharp! But I want to run with them anyway!
     Object.class_eval <<-RUBY, __FILE__, __LINE__ + 1
       class SandboxManager; include ActiveDocument::Document; end
       class SandboxDepartment; include ActiveDocument::Document; end

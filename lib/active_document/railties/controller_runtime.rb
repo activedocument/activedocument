@@ -77,7 +77,7 @@ module ActiveDocument
         #
         # @return [ Integer ] The runtime value.
         def self.runtime
-          Thread.current[VARIABLE_NAME] ||= 0
+          Threaded.get(VARIABLE_NAME) { 0 }
         end
 
         # Set the runtime value on the current thread.
@@ -86,7 +86,7 @@ module ActiveDocument
         #
         # @return [ Integer ] The runtime value.
         def self.runtime=(value)
-          Thread.current[VARIABLE_NAME] = value
+          Threaded.set(VARIABLE_NAME, value)
         end
 
         # Reset the runtime value to zero the current thread.

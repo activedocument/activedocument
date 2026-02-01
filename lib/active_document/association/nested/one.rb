@@ -37,7 +37,7 @@ module ActiveDocument
             parent.send(association.setter, nil)
           else
             check_for_id_violation!
-          end
+          end.tap { parent.children_may_have_changed! }
         end
 
         # Create the new builder for nested attributes on one-to-one

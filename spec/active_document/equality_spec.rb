@@ -188,6 +188,12 @@ describe ActiveDocument::Equality do
     it 'compares based on the document id' do
       expect(first <=> second).to eq(-1)
     end
+
+    it "doesn't break if one isn't a document" do
+      expect do
+        first <=> 'Foo'
+      end.to_not raise_error
+    end
   end
 
   describe '#eql?' do

@@ -334,7 +334,7 @@ describe ActiveDocument::Validatable::UniquenessValidator do
 
                 context 'when the document is not the match' do
 
-                  context 'when signle localization' do
+                  context 'when single localization' do
 
                     before do
                       Dictionary.create!(description: 'english')
@@ -534,7 +534,7 @@ describe ActiveDocument::Validatable::UniquenessValidator do
             Dictionary.reset_callbacks(:validate)
           end
 
-          context 'when the document with the unqiue attribute is not in default scope' do
+          context 'when the document with the unique attribute is not in default scope' do
 
             context 'when the attribute is not unique' do
 

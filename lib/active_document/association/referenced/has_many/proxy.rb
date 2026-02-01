@@ -169,7 +169,7 @@ module ActiveDocument
           # @example Delete all documents in the association.
           #   person.posts.delete_all
           #
-          # @example Conditonally delete all documents in the association.
+          # @example Conditionally delete all documents in the association.
           #   person.posts.delete_all({ :title => "Testing" })
           #
           # @param [ Hash ] conditions Optional conditions to delete with.
@@ -527,7 +527,7 @@ module ActiveDocument
           # @example Delete all documents in the association.
           #   person.posts.delete_all
           #
-          # @example Conditonally delete all documents in the association.
+          # @example Conditionally delete all documents in the association.
           #   person.posts.delete_all({ :title => "Testing" })
           #
           # @param [ Hash ] conditions Optional conditions to delete with.

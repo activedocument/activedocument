@@ -500,7 +500,7 @@ describe ActiveDocument::Fields do
 
     context 'when the attribute has not been assigned' do
 
-      it 'delgates to the getter' do
+      it 'delegates to the getter' do
         expect(person.age_before_type_cast).to eq(person.age)
       end
     end

@@ -3037,7 +3037,7 @@ describe ActiveDocument::Attributes::Nested do
                   person.save!
                 end
 
-                it 'does not perist the invalid value' do
+                it 'does not persist the invalid value' do
                   expect(post_two.reload.title).to eq('First response')
                 end
               end

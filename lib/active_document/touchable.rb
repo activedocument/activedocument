@@ -196,7 +196,7 @@ module ActiveDocument
     # @return [ Hash ] The hash that contains touch callback suppression
     #   statuses
     def touch_callback_statuses
-      Thread.current[SUPPRESS_TOUCH_CALLBACKS_KEY] ||= {}
+      Threaded.get(SUPPRESS_TOUCH_CALLBACKS_KEY) { {} }
     end
 
     # Define the method that will get called for touching belongs_to

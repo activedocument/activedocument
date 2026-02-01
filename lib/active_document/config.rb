@@ -98,6 +98,72 @@ module ActiveDocument
     # to `:global_thread_pool`.
     option :global_executor_concurrency, default: nil
 
+    VALID_ISOLATION_LEVELS = %i[rails thread fiber].freeze
+
+    # Defines the isolation level that ActiveDocument uses to store its internal
+    # state.
+    #
+    # Valid values are:
+    # - `:rails` - Uses the isolation level that Rails currently has
+    #  configured. (This is the default.)
+    # - `:thread` - Uses thread-local storage.
+    # - `:fiber` - Uses fiber-local storage (only supported in Ruby 3.2+).
+    #
+    # If set to `:fiber`, ActiveDocument will use fiber-local storage instead. This
+    # may be necessary if you are using libraries like Falcon, which use
+    # fibers to manage concurrency.
+    #
+    # Note that the `:fiber` isolation level is only supported in Ruby 3.2
+    # and later, due to semantic differences in how fiber storage is handled
+    # in earlier Ruby versions.
+    option :isolation_level, default: :rails, on_change: lambda { |level|
+      validate_isolation_level!(level)
+    }
+
+    # Returns the (potentially-dereferenced) isolation level that ActiveDocument
+    # will use to store its internal state. If `isolation_level` is set to
+    # `:rails`, this will return the isolation level that Rails is current
+    # configured to use (`ActiveSupport::IsolatedExecutionState.isolation_level`).
+    #
+    # If using an older version of Rails that does not support
+    # ActiveSupport::IsolatedExecutionState, this will return `:thread`
+    # instead.
+    #
+    # @api private
+    def real_isolation_level
+      return isolation_level unless isolation_level == :rails
+
+      if defined?(ActiveSupport::IsolatedExecutionState)
+        ActiveSupport::IsolatedExecutionState.isolation_level.tap do |level|
+          # We can't guarantee that Rails will always support the same
+          # isolation levels as ActiveDocument, so we check here to make sure
+          # it's something we can work with.
+          validate_isolation_level!(level)
+        end
+      else
+        # The default, if Rails does not support IsolatedExecutionState,
+        :thread
+      end
+    end
+
+    # Checks to see if the provided isolation level is something that ActiveDocument
+    # supports. Raises Errors::UnsupportedIsolationLevel if it is not.
+    #
+    # This will also raise an error if the isolation level is set to `:fiber`
+    # and the Ruby version is less than 3.2, since fiber-local storage
+    # is not supported in earlier Ruby versions.
+    #
+    # @api private
+    def validate_isolation_level!(level)
+      unless VALID_ISOLATION_LEVELS.include?(level)
+        raise Errors::UnsupportedIsolationLevel.new(level)
+      end
+
+      if level == :fiber && RUBY_VERSION < '3.2'
+        raise Errors::UnsupportedIsolationLevel.new(level)
+      end
+    end
+
     # When this flag is false, a document will become read-only only once the
     # #readonly! method is called, and an error will be raised on attempting
     # to save or update such documents, instead of just on delete. When this
@@ -154,7 +220,7 @@ module ActiveDocument
     #
     # Setting this flag to true restores the pre-9.0 behavior, where callbacks
     # for embedded documents are called. This may lead to stack overflow errors
-    # if there are more than cicrca 1000 embedded documents in the root
+    # if there are more than around 1000 embedded documents in the root
     # document's dependencies graph.
     # See https://jira.mongodb.org/browse/MONGOID-5658 for more details.
     option :around_callbacks_for_embeds, default: false
@@ -167,6 +233,21 @@ module ActiveDocument
     #
     # See https://jira.mongodb.org/browse/MONGOID-5785 for more details.
     option :allow_scopes_to_unset_default_scope, default: false
+
+    # When this flag is false, indexes are (roughly) validated on the client
+    # to prevent duplicate indexes being declared. This validation is
+    # incomplete, however, and can result in some indexes being silently
+    # ignored.
+    #
+    # Setting this to true will allow duplicate indexes to be declared and sent
+    # to the server. The server will then validate the indexes and raise an
+    # exception if duplicates are detected.
+    #
+    # TODO: ActiveDocument: Actually implement the match logic properly.
+    #
+    # See https://jira.mongodb.org/browse/MONGOID-5827 for an example of the
+    # consequences of duplicate index checking.
+    option :allow_duplicate_index_declarations, default: false
 
     # Returns the Config singleton, for use in the configure DSL.
     #
