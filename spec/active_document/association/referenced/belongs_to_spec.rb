@@ -202,9 +202,10 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
       context 'when the polymorphic option is provided' do
 
-        [ true, :default ].each do |opt|
+        [true, :default].each do |opt|
           context "when the polymorphic option is #{opt.inspect}" do
             let(:options) { { polymorphic: opt } }
+
             before { association }
 
             it 'set the polymorphic attribute on the owner class' do
@@ -216,12 +217,12 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
             end
 
             it 'uses the default resolver' do
-              expect(association.resolver).to be == ActiveDocument::ModelResolver.instance
+              expect(association.resolver).to eq ActiveDocument::ModelResolver.instance
             end
           end
         end
 
-        [ false, nil ].each do |opt|
+        [false, nil].each do |opt|
           context "when the polymorphic option is #{opt.inspect}" do
             let(:options) { { polymorphic: opt } }
 
@@ -230,7 +231,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
             end
 
             it 'does not set up a field for the inverse type' do
-              expect(belonging_class.fields.keys).not_to include(association.inverse_type)
+              expect(belonging_class.fields.keys).to_not include(association.inverse_type)
             end
 
             it 'does not use a resolver' do
@@ -245,7 +246,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           # This behavior is intentional, so that the resolver can be registered after the classes
           # are loaded.
           it 'does not immediately raise an exception' do
-            expect { association }.not_to raise_error
+            expect { association }.to_not raise_error
           end
 
           it 'raises error when resolver is accessed' do
@@ -255,6 +256,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
         context 'when the polymorphic option is set to a registered id' do
           let(:options) { { polymorphic: BELONGS_TO_RESOLVER_ID__ } }
+
           before { association }
 
           it 'set the polymorphic attribute on the owner class' do
@@ -266,7 +268,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           end
 
           it 'connects the association to the corresponding resolver' do
-            expect(association.resolver).to be == BELONGS_TO_RESOLVER
+            expect(association.resolver).to eq BELONGS_TO_RESOLVER
           end
         end
 

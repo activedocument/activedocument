@@ -29,14 +29,12 @@ module ActiveDocument
                 bind_polymorphic_inverse_type(_base, key)
               end
 
-              if (inverse = _association.inverse(_target))
-                if set_base_association
-                  if _base.referenced_many?
-                    _target.__send__(inverse).push(_base)
-                  else
-                    remove_associated(_target)
-                    _target.set_relation(inverse, _base)
-                  end
+              if (inverse = _association.inverse(_target)) && set_base_association
+                if _base.referenced_many?
+                  _target.__send__(inverse).push(_base)
+                else
+                  remove_associated(_target)
+                  _target.set_relation(inverse, _base)
                 end
               end
             end

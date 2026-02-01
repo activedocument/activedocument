@@ -208,7 +208,7 @@ describe ActiveDocument::PersistenceContext do
 
         context 'when the options are valid extra options' do
 
-          context 'collection' do
+          context 'with collection option' do
 
             let(:options) do
               { collection: 'other' }
@@ -219,13 +219,13 @@ describe ActiveDocument::PersistenceContext do
             end
           end
 
-          context 'collection_options' do
+          context 'with collection_options option' do
             let(:options) do
               { collection_options: { capped: true } }
             end
 
             it 'does not propagate to client options' do
-              expect(persistence_context.send(:client_options).key?(:collection_options)).to eq(false)
+              expect(persistence_context.send(:client_options).key?(:collection_options)).to be(false)
             end
           end
         end
@@ -541,7 +541,7 @@ describe ActiveDocument::PersistenceContext do
     end
 
     context 'when the database is specified as a proc' do
-      let(:options) { { database: ->{ 'other' } } }
+      let(:options) { { database: -> { 'other' } } }
 
       after { persistence_context.client.close }
 
@@ -629,7 +629,7 @@ describe ActiveDocument::PersistenceContext do
       let(:options) { {} }
 
       before do
-        Band.store_in client: ->{ :alternative }
+        Band.store_in client: -> { :alternative }
       end
 
       after do

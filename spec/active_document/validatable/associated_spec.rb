@@ -61,7 +61,7 @@ describe ActiveDocument::Validatable::AssociatedValidator do
 
         it 'reports all failed validations' do
           errors = user.descriptions.flat_map { |d| d.errors[:details] }
-          expect(errors.length).to be == 2
+          expect(errors.length).to eq 2
         end
 
         it 'only validates the child once' do

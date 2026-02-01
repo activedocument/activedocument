@@ -148,7 +148,7 @@ describe ActiveDocument::Cacheable do
         let(:model) { Dokument.create! }
 
         it 'has a non-nil cache_version' do
-          expect(model.cache_version).not_to be_nil
+          expect(model.cache_version).to_not be_nil
         end
       end
     end

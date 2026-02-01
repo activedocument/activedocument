@@ -4,6 +4,7 @@ require 'spec_helper'
 
 # rubocop:disable RSpec/LeakyConstantDeclaration
 # rubocop:disable Lint/ConstantDefinitionInBlock
+# rubocop:disable RSpec/RemoveConst
 describe 'Collection options' do
   before(:all) do
     class CollectionOptionsCapped
@@ -29,8 +30,9 @@ describe 'Collection options' do
   end
 
   it 'creates a document' do
-    expect { CollectionOptionsCapped.create! }.not_to raise_error
+    expect { CollectionOptionsCapped.create! }.to_not raise_error
   end
 end
 # rubocop:enable Lint/ConstantDefinitionInBlock
 # rubocop:enable RSpec/LeakyConstantDeclaration
+# rubocop:enable RSpec/RemoveConst

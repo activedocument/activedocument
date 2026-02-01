@@ -55,7 +55,7 @@ module ActiveDocument
         when true, :default then instance
         when String, Symbol
           resolvers.fetch(identifier_or_object.to_sym) do |key|
-            raise ActiveDocument::Errors::UnrecognizedResolver, key
+            raise ActiveDocument::Errors::UnrecognizedResolver.new(key)
           end
         else identifier_or_object
         end
@@ -90,7 +90,7 @@ module ActiveDocument
     def register(klass, *keys)
       default_key = klass.name
 
-      @model_to_keys[klass] = [ *keys, *@model_to_keys[klass], default_key ].uniq
+      @model_to_keys[klass] = [*keys, *@model_to_keys[klass], default_key].uniq
       @key_to_model[default_key] = klass
 
       keys.each do |key|
@@ -146,7 +146,7 @@ module ActiveDocument
       # @return [ Class ] the document class that has been registered with the given key.
       def model_for(key)
         @key_to_model.fetch(key) do
-          raise ActiveDocument::Errors::UnrecognizedModelAlias, key
+          raise ActiveDocument::Errors::UnrecognizedModelAlias.new(key)
         end
       end
     end

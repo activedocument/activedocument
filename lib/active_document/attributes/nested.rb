@@ -61,7 +61,7 @@ module ActiveDocument
               _assigning do
                 if association.polymorphic? && association.inverse_type
                   klass = association.resolver.model_for(send(association.inverse_type))
-                  options = options.merge!(class_name: klass)
+                  options[:class_name] = klass
                 end
                 association.nested_builder(attrs, options).build(self)
               end

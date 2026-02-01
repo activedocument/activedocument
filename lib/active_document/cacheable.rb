@@ -45,9 +45,9 @@ module ActiveDocument
     # value from the memory store. It shouldn't find it, because the version
     # has changed.
     def cache_version
-      if has_attribute?('updated_at') && updated_at.present?
-        updated_at.utc.to_formatted_s(cache_timestamp_format)
-      end
+      return unless has_attribute?('updated_at') && updated_at.present?
+
+      updated_at.utc.to_formatted_s(cache_timestamp_format)
     end
   end
 end

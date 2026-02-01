@@ -286,8 +286,8 @@ module ActiveDocument
         if !without_autobuild? && association.embedded? && attribute_missing?(field_name)
           # We always allow accessing the parent document of an embedded one.
           try_get_parent = association.is_a?(
-                             ActiveDocument::Association::Embedded::EmbeddedIn
-                           ) && field_name == association.key
+            ActiveDocument::Association::Embedded::EmbeddedIn
+          ) && field_name == association.key
           raise ActiveDocument::Errors::AttributeNotLoaded.new(self.class, field_name) unless try_get_parent
         end
 

@@ -28,7 +28,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany do
     end
 
     it 'allows accessing the parent' do
-      expect { legislator.congress }.not_to raise_error
+      expect { legislator.congress }.to_not raise_error
     end
 
     context 'when using only with $' do

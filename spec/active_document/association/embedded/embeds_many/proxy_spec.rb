@@ -4945,7 +4945,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
 
       shared_examples_for 'a cache_version generator' do
         it 'produces a trivial cache_version' do
-          expect(pages.cache_version).to be == "#{pages.length}"
+          expect(pages.cache_version).to eq pages.length.to_s
         end
       end
 
@@ -4976,8 +4976,9 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
 
       shared_examples_for 'a cache_version generator' do
         it 'produces a consistent cache_version' do
-          expect(covers.cache_version).not_to be_nil
-          expect(covers.cache_version).to be == covers.cache_version
+          expect(covers.cache_version).to_not be_nil
+          version = covers.cache_version
+          expect(covers.cache_version).to eq version
         end
       end
 
@@ -4987,6 +4988,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
 
       context 'when the relation is not empty' do
         let(:root) { prepopulated_root }
+
         it_behaves_like 'a cache_version generator'
       end
 
@@ -5000,7 +5002,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
 
@@ -5013,7 +5015,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
 
@@ -5026,7 +5028,7 @@ describe ActiveDocument::Association::Embedded::EmbedsMany::Proxy do
         let(:root) { prepopulated_root }
 
         it 'changes the cache_version' do
-          expect(original_cache_version).not_to be == updated_cache_version
+          expect(original_cache_version).to_not eq updated_cache_version
         end
       end
     end
