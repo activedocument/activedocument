@@ -126,6 +126,12 @@ describe 'ActiveDocument application tests' do
   end
 
   context 'new application - rails' do
+    before(:all) do
+      if SpecConfig.instance.rails_version < '7.1'
+        skip '`rails new` with rails < 7.1 fails because modern concurrent-ruby removed logger dependency'
+      end
+    end
+
     it 'creates' do
       prepare_new_rails_app 'active_document-test' do
         check_call(%w[rails g model post], env: clean_env)
