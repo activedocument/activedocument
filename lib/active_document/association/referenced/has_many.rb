@@ -5,6 +5,7 @@ require 'active_document/association/referenced/has_many/buildable'
 require 'active_document/association/referenced/has_many/proxy'
 require 'active_document/association/referenced/has_many/enumerable'
 require 'active_document/association/referenced/has_many/eager'
+require 'active_document/association/referenced/with_polymorphic_criteria'
 
 module ActiveDocument
   module Association
@@ -14,6 +15,7 @@ module ActiveDocument
       class HasMany
         include Relatable
         include Buildable
+        include WithPolymorphicCriteria
 
         # The options available for this type of association, in addition to the
         # common ones.
@@ -138,6 +140,12 @@ module ActiveDocument
         # @param [ Class ] object_class The object class.
         #
         # @return [ ActiveDocument::Criteria ] The criteria object.
+        #
+        # @deprecated in 9.0.x
+        #
+        # It appears as if this method is an artifact left over from a refactoring that renamed it
+        # `with_polymorphic_criterion`, and made it private. Regardless, this method isn't referenced
+        # anywhere else, and is unlikely to be useful to external clients. We should remove it.
         def add_polymorphic_criterion(criteria, object_class)
           if polymorphic?
             criteria.where(type => object_class.name)
@@ -145,6 +153,7 @@ module ActiveDocument
             criteria
           end
         end
+        ActiveDocument.deprecate(self, :add_polymorphic_criterion)
 
         # Is this association polymorphic?
         #
@@ -230,14 +239,6 @@ module ActiveDocument
           crit.association = self
           crit.parent_document = base
           with_ordering(crit)
-        end
-
-        def with_polymorphic_criterion(criteria, base)
-          if polymorphic?
-            criteria.where(type => base.class.name)
-          else
-            criteria
-          end
         end
 
         def with_ordering(criteria)
