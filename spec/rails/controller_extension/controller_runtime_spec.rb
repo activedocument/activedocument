@@ -4,8 +4,47 @@ require 'spec_helper'
 require 'active_document/railties/controller_runtime'
 
 describe 'ActiveDocument::Railties::ControllerRuntime' do
-  controller_runtime = ActiveDocument::Railties::ControllerRuntime
-  collector = controller_runtime::Collector
+  CONTROLLER_RUNTIME = ActiveDocument::Railties::ControllerRuntime
+  COLLECTOR = CONTROLLER_RUNTIME::Collector
+
+  def set_metric(value) # rubocop:disable Naming/AccessorMethodName
+    ActiveDocument::Threaded.set(COLLECTOR::VARIABLE_NAME, value)
+  end
+
+  def clear_metric!
+    set_metric 0
+  end
+
+  describe 'Collector' do
+
+    it 'stores the metric in thread-safe manner' do
+      clear_metric!
+      expect(COLLECTOR.runtime).to eq(0)
+      set_metric 42
+      expect(COLLECTOR.runtime).to eq(42)
+    end
+
+    it 'sets metric on both succeeded and failed' do
+      instance = COLLECTOR.new
+      event_payload = OpenStruct.new duration: 42
+
+      clear_metric!
+      instance.succeeded event_payload
+      expect(COLLECTOR.runtime).to eq(42000)
+
+      clear_metric!
+      instance.failed event_payload
+      expect(COLLECTOR.runtime).to eq(42000)
+    end
+
+    it 'resets the metric and returns the value' do
+      clear_metric!
+      expect(COLLECTOR.reset_runtime).to eq(0)
+      set_metric 42
+      expect(COLLECTOR.reset_runtime).to eq(42)
+      expect(COLLECTOR.runtime).to eq(0)
+    end
+  end
 
   reference_controller_class = Class.new do
     def process_action(*_)
@@ -26,54 +65,15 @@ describe 'ActiveDocument::Railties::ControllerRuntime' do
   end
 
   controller_class = Class.new reference_controller_class do
-    include controller_runtime::ControllerExtension
-  end
-
-  def set_metric(value) # rubocop:disable Naming/AccessorMethodName
-    Thread.current['ActiveDocument.controller_runtime'] = value
-  end
-
-  def clear_metric!
-    set_metric 0
+    include CONTROLLER_RUNTIME::ControllerExtension
   end
 
   let(:controller) { controller_class.new }
 
-  describe 'Collector' do
-
-    it 'stores the metric in thread-safe manner' do
-      clear_metric!
-      expect(collector.runtime).to eq(0)
-      set_metric 42
-      expect(collector.runtime).to eq(42)
-    end
-
-    it 'sets metric on both succeeded and failed' do
-      instance = collector.new
-      event_payload = OpenStruct.new duration: 42
-
-      clear_metric!
-      instance.succeeded event_payload
-      expect(collector.runtime).to eq(42000)
-
-      clear_metric!
-      instance.failed event_payload
-      expect(collector.runtime).to eq(42000)
-    end
-
-    it 'resets the metric and returns the value' do
-      clear_metric!
-      expect(collector.reset_runtime).to eq(0)
-      set_metric 42
-      expect(collector.reset_runtime).to eq(42)
-      expect(collector.runtime).to eq(0)
-    end
-  end
-
   it 'resets the metric before each action' do
     set_metric 42
     controller.send(:process_action, 'foo')
-    expect(collector.runtime).to be(0)
+    expect(COLLECTOR.runtime).to be(0)
     expect(controller.instance_variable_get(:@process_action)).to be(true)
   end
 

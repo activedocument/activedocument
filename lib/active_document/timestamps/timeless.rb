@@ -45,6 +45,9 @@ module ActiveDocument
       class << self
         extend Forwardable
 
+        # The key to use to store the timeless table
+        TIMELESS_TABLE_KEY = '[active_document]:timeless'
+
         # Returns the in-memory thread cache of classes
         # for which to skip timestamping.
         #
@@ -52,7 +55,7 @@ module ActiveDocument
         #
         # @api private
         def timeless_table
-          Thread.current['[active_document]:timeless'] ||= {}
+          Threaded.get(TIMELESS_TABLE_KEY) { Hash.new }
         end
 
         def_delegators :timeless_table, :[]=, :[]

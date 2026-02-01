@@ -46,6 +46,7 @@ module ActiveDocument
                    :pick,
                    :pluck,
                    :pluck_each,
+                   :raw,
                    :read,
                    :second,
                    :second!,
