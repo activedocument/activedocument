@@ -16,6 +16,14 @@ module ActiveDocument
       changed_attributes.keys.select { |attr| attribute_change(attr) }
     end
 
+    # Indicates that the children of this document may have changed, and
+    # ought to be checked when the document is validated.
+    #
+    # @api private
+    def children_may_have_changed!
+      @children_may_have_changed = true
+    end
+
     # Has the document changed?
     #
     # @example Has the document changed?
@@ -32,7 +40,7 @@ module ActiveDocument
     #
     # @return [ true | false ] If any children have changed.
     def children_changed?
-      _children.any?(&:changed?)
+      @children_may_have_changed || _children.any?(&:changed?)
     end
 
     # Get the attribute changes.
@@ -70,6 +78,7 @@ module ActiveDocument
       @previous_changes = changes
       @attributes_before_last_save = @previous_attributes
       @previous_attributes = attributes.dup
+      @children_may_have_changed = false
       reset_atomic_updates!
       changed_attributes.clear
     end

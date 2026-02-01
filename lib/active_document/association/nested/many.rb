@@ -192,6 +192,8 @@ module ActiveDocument
             update_document(doc, attrs)
             existing.push(doc) unless destroyable?(attrs)
           end
+
+          parent.children_may_have_changed!
         end
       end
     end
