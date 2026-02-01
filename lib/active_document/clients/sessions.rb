@@ -62,6 +62,7 @@ module ActiveDocument
         rescue *transactions_not_supported_exceptions
           raise ActiveDocument::Errors::TransactionsNotSupported
         ensure
+          Threaded.clear_modified_documents(session)
           Threaded.clear_session(client: persistence_context.client)
         end
 
