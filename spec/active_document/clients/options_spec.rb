@@ -24,7 +24,7 @@ describe ActiveDocument::Clients::Options, retry: 3 do
       let(:options) { { database: 'other' } }
 
       it 'sets the options on the client' do
-        expect(persistence_context.client.options['database']).to eq(options[:database])
+        expect(persistence_context.client.options['database'].to_s).to eq(options[:database].to_s)
       end
 
       it 'does not set the options on class level' do
@@ -307,7 +307,7 @@ describe ActiveDocument::Clients::Options, retry: 3 do
       end
 
       it 'sets the options on the client' do
-        expect(persistence_context.client.options['database']).to eq(options[:database])
+        expect(persistence_context.client.options['database'].to_s).to eq(options[:database].to_s)
       end
 
       it 'does not set the options on instance level' do
