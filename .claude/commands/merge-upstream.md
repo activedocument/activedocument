@@ -12,6 +12,11 @@ git fetch upstream
 
 ## Process
 
+Firstly, if at any point during this process the user asks you to stop/pause, don't
+automatically revert in-progress work. If the working dir state is messy, ask the user
+how to proceed. If you are in the middle of resolving conflicts, ask user if you should
+finish resolving conflicts and pause merge making the merge commit.
+
 1. Find the fork point:
 ```bash
 git merge-base master upstream/master
@@ -40,16 +45,23 @@ git merge <commit-hash> --no-commit
    - Keep our docs/ folder (Mongoid removed theirs)
    - Skip files we don't need (sbom.json, MongoDB-specific workflows)
 
-6. After resolving, commit with message format:
+6. Re-read the original upstream commit `git show xxx --stat` and compare it to your
+   conflict-resolved code. Correct anything you missed.
+
+7. Commit your final code with message format:
 ```
 Merge upstream commit <hash>: <original subject>
 
 Merges mongodb/mongoid@<hash>
+MONGOID-<ticket number>
+PR#<pr number>
 
 <brief description of what the commit does>
 ```
 
-7. Continue with next commit.
+8. If you're running low on context (<15%) -> /compact the conversation.
+
+9. Continue with next commit.
 
 ## Conflict Resolution Tips
 
