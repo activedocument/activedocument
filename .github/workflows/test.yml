@@ -70,7 +70,7 @@ jobs:
             os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
 
           # JRuby
-          - ruby: jruby-9.4
+          - ruby: jruby-10.0
             gemfile: gemfiles/rails_7.2.gemfile
 
           # Field-Level Encryption
