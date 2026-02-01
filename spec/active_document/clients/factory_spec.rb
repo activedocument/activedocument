@@ -27,6 +27,24 @@ describe ActiveDocument::Clients::Factory do
     end
   end
 
+  shared_examples_for 'includes rails wrapping library' do
+    context 'when Rails is available' do
+      before do
+        stub_const('Rails', Module.new do
+          def self.version
+            '7.2.0'
+          end
+        end)
+      end
+
+      it 'adds Rails as another wrapping library' do
+        expect(client.options[:wrapping_libraries]).to include(
+          { 'name' => 'Rails', 'version' => '7.2.0' }
+        )
+      end
+    end
+  end
+
   describe '.create' do
 
     context 'when provided a name' do
@@ -91,6 +109,8 @@ describe ActiveDocument::Clients::Factory do
             )])
           end
 
+          it_behaves_like 'includes rails wrapping library'
+
           context 'when configuration specifies a wrapping library' do
 
             let(:config) do
@@ -113,6 +133,8 @@ describe ActiveDocument::Clients::Factory do
               ]
               expect(client.options[:wrapping_libraries]).to eq(expected)
             end
+
+            it_behaves_like 'includes rails wrapping library'
           end
         end
 
