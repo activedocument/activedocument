@@ -12,9 +12,9 @@ module ActiveDocument
         # i.e. the array of documents on the opposite-side collection
         # which must be loaded.
         class Proxy < Referenced::HasMany::Proxy
-          # Class-level methods for HasAndBelongsToMany::Proxy
+          # class-level methods for HasAndBelongsToMany::Proxy
           module ClassMethods
-            # Get the eager loader object for this type of association.
+            # Get the Eager object for this type of association.
             #
             # @example Get the eager loader object
             #
@@ -50,9 +50,9 @@ module ActiveDocument
           # @example Concat with other documents.
           #   person.posts.concat([ post_one, post_two ])
           #
-          # @param [ ActiveDocument::Document... ] *args Any number of documents.
+          # @param [ Document... ] *args Any number of documents.
           #
-          # @return [ Array<ActiveDocument::Document> ] The loaded docs.
+          # @return [ Array<Document> ] The loaded docs.
           def <<(*args)
             docs = args.flatten
             return concat(docs) if docs.size > 1
@@ -87,7 +87,8 @@ module ActiveDocument
             end
             unsynced(_base, foreign_key) and self
           end
-          alias_method :push, :<<
+
+          alias push <<
 
           # Appends an array of documents to the association. Performs a batch
           # insert of the documents instead of persisting one at a time.
@@ -95,14 +96,11 @@ module ActiveDocument
           # @example Concat with other documents.
           #   person.posts.concat([ post_one, post_two ])
           #
-          # @param [ Array<ActiveDocument::Document> ] documents The docs to add.
+          # @param [ Array<Document> ] documents The docs to add.
           #
-          # @return [ Array<ActiveDocument::Document> ] The documents.
+          # @return [ Array<Document> ] The documents.
           def concat(documents)
-            ids = {}
-            docs = []
-            inserts = []
-
+            ids, docs, inserts = {}, [], []
             documents.each { |doc| append_document(doc, ids, docs, inserts) }
             _base.push(foreign_key => ids.keys) if persistable? || _creating?
             persist_delayed(docs, inserts)
@@ -118,7 +116,7 @@ module ActiveDocument
           # @param [ Hash ] attributes The attributes of the new document.
           # @param [ Class ] type The optional subclass to build.
           #
-          # @return [ ActiveDocument::Document ] The new document.
+          # @return [ Document ] The new document.
           def build(attributes = {}, type = nil)
             doc = Factory.execute_build(type || klass, attributes, execute_callbacks: false)
             append(doc)
@@ -130,7 +128,7 @@ module ActiveDocument
             doc
           end
 
-          alias_method :new, :build
+          alias new build
 
           # Delete the document from the association. This will set the foreign key
           # on the document to nil. If the dependent options on the association are
@@ -139,9 +137,9 @@ module ActiveDocument
           # @example Delete the document.
           #   person.posts.delete(post)
           #
-          # @param [ ActiveDocument::Document ] document The document to remove.
+          # @param [ Document ] document The document to remove.
           #
-          # @return [ ActiveDocument::Document ] The matching document.
+          # @return [ Document ] The matching document.
           def delete(document)
             doc = super
             if doc && persistable?
@@ -154,7 +152,7 @@ module ActiveDocument
 
           # ActiveDocument::Extensions::Array defines Array#delete_one, so we need
           # to make sure that method behaves reasonably on proxies, too.
-          alias_method :delete_one, :delete
+          alias delete_one delete
 
           # Removes all associations between the base document and the target
           # documents by deleting the foreign keys and the references, orphaning
@@ -163,7 +161,7 @@ module ActiveDocument
           # @example Nullify the association.
           #   person.preferences.nullify
           #
-          # @param [ Array<ActiveDocument::Document> ] replacement The replacement documents.
+          # @param [ Array<Document> ] replacement The replacement documents.
           def nullify(replacement = [])
             _target.each { |doc| execute_callback :before_remove, doc }
             cleanup_inverse_for(replacement) unless _association.forced_nil_inverse?
@@ -171,18 +169,18 @@ module ActiveDocument
             clear_target_for_nullify
           end
 
-          alias_method :nullify_all, :nullify
-          alias_method :clear, :nullify
-          alias_method :purge, :nullify
+          alias nullify_all nullify
+          alias clear nullify
+          alias purge nullify
 
           # Substitutes the supplied target documents for the existing documents
           # in the association. If the new target is nil, perform the necessary
           # deletion.
           #
           # @example Replace the association.
-          #   person.preferences.substitute([ new_post ])
+          # person.preferences.substitute([ new_post ])
           #
-          # @param [ Array<ActiveDocument::Document> ] replacement The replacement target.
+          # @param [ Array<Document> ] replacement The replacement target.
           #
           # @return [ Many ] The association.
           def substitute(replacement)
@@ -202,7 +200,7 @@ module ActiveDocument
           # @example Get the unscoped criteria.
           #   person.preferences.unscoped
           #
-          # @return [ ActiveDocument::Criteria ] The unscoped criteria.
+          # @return [ Criteria ] The unscoped criteria.
           def unscoped
             klass.unscoped.any_in(_id: _base.public_send(foreign_key))
           end
@@ -238,7 +236,7 @@ module ActiveDocument
           # @example Append the document to the association.
           #   relation.append(document)
           #
-          # @param [ ActiveDocument::Document ] document The document to append to the target.
+          # @param [ Document ] document The document to append to the target.
           def append(document)
             execute_callbacks_around(:add, document) do
               _target.push(document)
@@ -265,7 +263,7 @@ module ActiveDocument
           # @example Is the child persistable?
           #   relation.child_persistable?(doc)
           #
-          # @param [ ActiveDocument::Document ] doc The document.
+          # @param [ Document ] doc The document.
           #
           # @return [ true | false ] If the document can be persisted.
           def child_persistable?(doc)
@@ -279,7 +277,7 @@ module ActiveDocument
           # @example Get a criteria for the association.
           #   relation.criteria
           #
-          # @return [ ActiveDocument::Criteria ] A new criteria.
+          # @return [ Criteria ] A new criteria.
           def criteria(id_list = nil)
             _association.criteria(_base, id_list)
           end
@@ -291,10 +289,10 @@ module ActiveDocument
           # @example Flag as unsynced.
           #   relation.unsynced(doc, :preference_ids)
           #
-          # @param [ ActiveDocument::Document ] doc The document to flag.
+          # @param [ Document ] doc The document to flag.
           # @param [ Symbol ] key The key to flag on the document.
           #
-          # @return [ true ] The value true.
+          # @return [ true ] true.
           def unsynced(doc, key)
             doc._synced[key] = false
             true
@@ -303,7 +301,7 @@ module ActiveDocument
           # Does the cleanup for the inverse of the association when
           # replacing the relation with another list of documents.
           #
-          # @param [ Array<ActiveDocument::Document> | nil ] replacement The list of documents
+          # @param [ Array<Document> | nil ] replacement the list of documents
           #   that will replace the current list.
           def cleanup_inverse_for(replacement)
             if replacement
@@ -331,7 +329,7 @@ module ActiveDocument
           # saved, the processing completes, and *then* the exception is
           # re-raised.
           #
-          # @return [ Array<ActiveDocument::Document> ] The replacement documents.
+          # @return [ Array<Document> ] the replacement documents
           def clear_target_for_nullify
             after_remove_error = nil
             many_to_many = _target.clear do |doc|
@@ -352,13 +350,13 @@ module ActiveDocument
 
           # Processes a single document as part of a ``concat`` command.
           #
-          # @param [ ActiveDocument::Document ] doc The document to append.
-          # @param [ Hash ] ids The mapping of primary keys that have been
-          #   visited.
-          # @param [ Array<ActiveDocument::Document> ] docs The list of new docs to be inserted later,
-          #   in bulk.
-          # @param [ Array<Hash> ] inserts The list of Hashes of attributes that will
-          #   be inserted, corresponding to the ``docs`` list.
+          # @param [ ActiveDocument::Document ] doc the document to append
+          # @param [ Hash ] ids the mapping of primary keys that have been
+          #   visited
+          # @param [ Array ] docs the list of new docs to be inserted later,
+          #   in bulk
+          # @param [ Array ] inserts the list of Hashes of attributes that will
+          #   be inserted (corresponding to the ``docs`` list)
           def append_document(doc, ids, docs, inserts)
             return unless doc
 

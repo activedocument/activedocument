@@ -1,14 +1,15 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'active_document/criteria/findable'
-require 'active_document/criteria/includable'
-require 'active_document/criteria/inspectable'
-require 'active_document/criteria/marshalable'
-require 'active_document/criteria/modifiable'
-require 'active_document/criteria/queryable'
-require 'active_document/criteria/scopable'
-require 'active_document/criteria/options'
-require 'active_document/criteria/translator'
+require "active_document/criteria/findable"
+require "active_document/criteria/includable"
+require "active_document/criteria/inspectable"
+require "active_document/criteria/marshalable"
+require "active_document/criteria/modifiable"
+require "active_document/criteria/queryable"
+require "active_document/criteria/scopable"
+require "active_document/criteria/options"
+require "active_document/criteria/translator"
 
 module ActiveDocument
 
@@ -22,14 +23,14 @@ module ActiveDocument
     include Enumerable
 
     # @api private
-    alias_method :_enumerable_find, :find
+    alias :_enumerable_find :find
 
     include Contextual
     include Queryable
     include Findable
 
     # @api private
-    alias_method :_findable_find, :find
+    alias :_findable_find :find
 
     include Inspectable
     include Includable
@@ -40,29 +41,62 @@ module ActiveDocument
     include Clients::Sessions
     include Options
 
+    # Allowed methods for from_hash to prevent arbitrary method execution.
+    # Only query-building methods are allowed, not execution or modification methods.
+    ALLOWED_FROM_HASH_METHODS = %i[
+      all all_in all_of and any_in any_of asc ascending
+      batch_size between
+      collation comment cursor_type
+      desc descending
+      elem_match eq exists extras
+      geo_spatial group gt gte
+      hint
+      in includes
+      limit lt lte
+      max_distance max_scan max_time_ms merge mod
+      ne near near_sphere nin no_timeout none none_of nor not not_in
+      offset only or order order_by
+      project
+      raw read reorder
+      scoped skip slice snapshot
+      text_search type
+      unscoped unwind
+      where with_size with_type without
+    ].freeze
+
     class << self
       # Convert the given hash to a criteria. Will iterate over each keys in the
-      # hash which must correspond to method on a criteria object. The hash
-      # must also include a "klass" key.
+      # hash which must correspond to an allowed method on a criteria object. The hash
+      # can include a "klass" key that specifies the model class for the criteria.
       #
       # @example Convert the hash to a criteria.
       #   Criteria.from_hash({ klass: Band, where: { name: "Depeche Mode" })
       #
+      # @deprecated This method is deprecated and will
+      #  be removed in a future release.
+      #
       # @param [ Hash ] hash The hash to convert.
       #
       # @return [ Criteria ] The criteria.
+      #
+      # @raise [ ArgumentError ] If a method is not allowed in from_hash.
       def from_hash(hash)
         criteria = Criteria.new(hash.delete(:klass) || hash.delete('klass'))
         hash.each_pair do |method, args|
-          criteria = criteria.__send__(method, args)
+          method_sym = method.to_sym
+          unless ALLOWED_FROM_HASH_METHODS.include?(method_sym)
+            raise ArgumentError, "Method '#{method}' is not allowed in from_hash"
+          end
+          criteria = criteria.public_send(method_sym, args)
         end
         criteria
       end
+      ActiveDocument.deprecate(self, :from_hash)
     end
 
     # Static array used to check with method missing - we only need to ever
     # instantiate once.
-    CHECK = [].freeze
+    CHECK = []
 
     attr_accessor :embedded, :klass, :parent_document, :association
 
@@ -76,7 +110,6 @@ module ActiveDocument
     # @return [ true | false ] If the objects are equal.
     def ==(other)
       return super if other.respond_to?(:selector)
-
       entries == other
     end
 
@@ -114,7 +147,7 @@ module ActiveDocument
     # @param &block Optional block to pass.
     # @yield [ Object ] Yields each enumerable element to the block.
     #
-    # @return [ ActiveDocument::Document | Array<ActiveDocument::Document> | nil ] A document or matching documents.
+    # @return [ Document | Array<Document> | nil ] A document or matching documents.
     #
     # @raise Errors::DocumentNotFound If the parameters were _id values and
     #   not all documents are found and the +raise_not_found_error+
@@ -122,7 +155,7 @@ module ActiveDocument
     #
     # @see https://ruby-doc.org/core/Enumerable.html#method-i-find
     def find(*args, &block)
-      if block
+      if block_given?
         _enumerable_find(*args, &block)
       else
         _findable_find(*args)
@@ -146,7 +179,7 @@ module ActiveDocument
     # @example Get the documents.
     #   criteria.documents
     #
-    # @return [ Array<ActiveDocument::Document> ] The documents.
+    # @return [ Array<Document> ] The documents.
     def documents
       @documents ||= []
     end
@@ -155,10 +188,12 @@ module ActiveDocument
     #
     # @example Set the documents.
     #
-    # @param [ Array<ActiveDocument::Document> ] docs The embedded documents.
+    # @param [ Array<Document> ] docs The embedded documents.
     #
-    # @return [ Array<ActiveDocument::Document> ] The embedded documents.
-    attr_writer :documents
+    # @return [ Array<Document> ] The embedded documents.
+    def documents=(docs)
+      @documents = docs
+    end
 
     # Is the criteria for embedded documents?
     #
@@ -168,67 +203,6 @@ module ActiveDocument
     # @return [ true | false ] If the criteria is embedded.
     def embedded?
       !!@embedded
-    end
-
-    # Produce a clone of the current criteria object with it's "raw"
-    # setting set to the given value. A criteria set to "raw" will return
-    # all results as raw hashes. If `typed` is true, the values in the hashes
-    # will be typecast according to the fields that they correspond to.
-    #
-    # When "raw" is not set (or if `raw_results` is false), the criteria will
-    # return all results as instantiated Document instances.
-    #
-    # @example Return query results as raw hashes:
-    #   Person.where(city: 'Boston').raw
-    #
-    # @param [ true | false ] raw_results Whether the new criteria should be
-    #   placed in "raw" mode or not.
-    # @param [ true | false ] typed Whether the raw results should be typecast
-    #   before being returned. Default is true if raw_results is false, and
-    #   false otherwise.
-    #
-    # @return [ Criteria ] the cloned criteria object.
-    def raw(raw_results = true, typed: nil)
-      # default for typed is true when raw_results is false, and false when
-      # raw_results is true.
-      typed = !raw_results if typed.nil?
-
-      if !typed && !raw_results
-        raise ArgumentError, 'instantiated results must be typecast'
-      end
-
-      clone.tap do |criteria|
-        criteria._raw_results = { raw: raw_results, typed: typed }
-      end
-    end
-
-    # An internal helper for getting/setting the "raw" flag on a given criteria
-    # object.
-    #
-    # @return [ nil | Hash ] If set, it is a hash with two keys, :raw and :typed,
-    #   that describe whether raw results should be returned, and whether they
-    #   ought to be typecast.
-    #
-    # @api private
-    attr_accessor :_raw_results
-
-    # Predicate that answers the question: is this criteria object currently
-    # in raw mode? (See #raw for a description of raw mode.)
-    #
-    # @return [ true | false ] whether the criteria is in raw mode or not.
-    def raw_results?
-      _raw_results && _raw_results[:raw]
-    end
-
-    # Predicate that answers the question: should the results returned by
-    # this criteria object be typecast? (See #raw for a description of this.)
-    # The answer is meaningless unless #raw_results? is true, since if
-    # instantiated document objects are returned they will always be typecast.
-    #
-    # @return [ true | false ] whether the criteria should return typecast
-    #   results.
-    def typecast_results?
-      _raw_results && _raw_results[:typed]
     end
 
     # Extract a single id from the provided criteria. Could be in an $and
@@ -250,7 +224,7 @@ module ActiveDocument
     #
     # @param [ Hash ] extras The extra driver options.
     #
-    # @return [ ActiveDocument::Criteria ] The cloned criteria.
+    # @return [ Criteria ] The cloned criteria.
     def extras(extras)
       crit = clone
       crit.options.merge!(extras)
@@ -265,7 +239,7 @@ module ActiveDocument
     # @return [ Array<String> ] The fields.
     def field_list
       if options[:fields]
-        options[:fields].keys.reject { |key| key == klass.discriminator_key }
+        options[:fields].keys.reject{ |key| key == klass.discriminator_key }
       else
         []
       end
@@ -278,7 +252,7 @@ module ActiveDocument
     # @example Freeze the criteria.
     #   criteria.freeze
     #
-    # @return [ ActiveDocument::Criteria ] The frozen criteria.
+    # @return [ Criteria ] The frozen criteria.
     def freeze
       context and inclusions and super
     end
@@ -305,7 +279,8 @@ module ActiveDocument
     #   criteria.merge(other_criteria)
     #
     # @example Merge the criteria with a hash. The hash must contain a klass
-    #   key and the key/value pairs correspond to method names/args.
+    #   key that specifies the model class for the criteria and the key/value
+    #   pairs correspond to method names/args.
     #
     #   criteria.merge({
     #     klass: Band,
@@ -313,9 +288,9 @@ module ActiveDocument
     #     order_by: { name: 1 }
     #   })
     #
-    # @param [ ActiveDocument::Criteria ] other The other criterion to merge with.
+    # @param [ Criteria | Hash ] other The other criterion to merge with.
     #
-    # @return [ ActiveDocument::Criteria ] A cloned self.
+    # @return [ Criteria ] A cloned self.
     def merge(other)
       crit = clone
       crit.merge!(other)
@@ -327,9 +302,9 @@ module ActiveDocument
     # @example Merge another criteria into this criteria.
     #   criteria.merge(Person.where(name: "bob"))
     #
-    # @param [ ActiveDocument::Criteria | Hash ] other The criteria to merge in.
+    # @param [ Criteria | Hash ] other The criteria to merge in.
     #
-    # @return [ ActiveDocument::Criteria ] The merged criteria.
+    # @return [ Criteria ] The merged criteria.
     def merge!(other)
       other = self.class.from_hash(other) if other.is_a?(Hash)
       selector.merge!(other.selector)
@@ -337,7 +312,6 @@ module ActiveDocument
       self.documents = other.documents.dup unless other.documents.empty?
       self.scoping_options = other.scoping_options
       self.inclusions = (inclusions + other.inclusions).uniq
-      self._raw_results = self._raw_results || other._raw_results
       self
     end
 
@@ -347,7 +321,7 @@ module ActiveDocument
     # @example Return a none criteria.
     #   criteria.none
     #
-    # @return [ ActiveDocument::Criteria ] The none criteria.
+    # @return [ Criteria ] The none criteria.
     def none
       @none = true and self
     end
@@ -369,14 +343,16 @@ module ActiveDocument
     #
     # @param [ [ Symbol | Array<Symbol> ]... ] *args The field name(s).
     #
-    # @return [ ActiveDocument::Criteria ] The cloned criteria.
+    # @return [ Criteria ] The cloned criteria.
     def only(*args)
       args = args.flatten
       return clone if args.empty?
-
-      args.unshift(:_id) unless args.intersect?(Fields::IDS)
-      args.push(klass.discriminator_key.to_sym) if klass.hereditary?
-
+      if (args & Fields::IDS).empty?
+        args.unshift(:_id)
+      end
+      if klass.hereditary?
+        args.push(klass.discriminator_key.to_sym)
+      end
       super(*args)
     end
 
@@ -387,7 +363,7 @@ module ActiveDocument
     #
     # @param [ Hash ] value The mode preference.
     #
-    # @return [ ActiveDocument::Criteria ] The cloned criteria.
+    # @return [ Criteria ] The cloned criteria.
     def read(value = nil)
       clone.tap do |criteria|
         criteria.options.merge!(read: value)
@@ -401,7 +377,7 @@ module ActiveDocument
     #
     # @param [ Symbol... ] *args The field name(s).
     #
-    # @return [ ActiveDocument::Criteria ] The cloned criteria.
+    # @return [ Criteria ] The cloned criteria.
     def without(*args)
       args -= id_fields
       super(*args)
@@ -420,7 +396,19 @@ module ActiveDocument
       super || klass.respond_to?(name) || CHECK.respond_to?(name, include_private)
     end
 
-    alias_method :to_ary, :to_a
+    alias :to_ary :to_a
+
+    # Convenience for objects that want to be merged into a criteria.
+    #
+    # @example Convert to a criteria.
+    #   criteria.to_criteria
+    #
+    # @return [ Criteria ] self.
+    # @deprecated
+    def to_criteria
+      self
+    end
+    ActiveDocument.deprecate(self, :to_criteria)
 
     # Convert the criteria to a proc.
     #
@@ -429,7 +417,7 @@ module ActiveDocument
     #
     # @return [ Proc ] The wrapped criteria.
     def to_proc
-      -> { self }
+      ->{ self }
     end
 
     # Adds a criterion to the +Criteria+ that specifies a type or an Array of
@@ -441,9 +429,9 @@ module ActiveDocument
     #
     # @param [ Array<String> ] types The types to match against.
     #
-    # @return [ ActiveDocument::Criteria ] The cloned criteria.
+    # @return [ Criteria ] The cloned criteria.
     def type(types)
-      any_in(discriminator_key.to_sym => Array(types))
+      any_in(self.discriminator_key.to_sym => Array(types))
     end
 
     # This is the general entry point for most MongoDB queries. This either
@@ -462,7 +450,7 @@ module ActiveDocument
     # @raise [ UnsupportedJavascript ] If provided a string and the criteria
     #   is embedded.
     #
-    # @return [ ActiveDocument::Criteria ] The cloned selectable.
+    # @return [ Criteria ] The cloned selectable.
     def where(*args)
       # Historically this method required exactly one argument.
       # As of https://jira.mongodb.org/browse/MONGOID-4804 it also accepts
@@ -472,16 +460,14 @@ module ActiveDocument
       # arguments through this method. This API can be reconsidered in the
       # future.
       if args.length > 1
-        raise ArgumentError.new("Criteria#where requires zero or one arguments (given #{args.length})")
+        raise ArgumentError, "Criteria#where requires zero or one arguments (given #{args.length})"
       end
-
       if args.length == 1
         expression = args.first
         if expression.is_a?(::String) && embedded?
           raise Errors::UnsupportedJavascript.new(klass, expression)
         end
       end
-
       super
     end
 
@@ -490,7 +476,7 @@ module ActiveDocument
     # @example Get the criteria without options.
     #   criteria.without_options
     #
-    # @return [ ActiveDocument::Criteria ] The cloned criteria.
+    # @return [ Criteria ] The cloned criteria.
     def without_options
       crit = clone
       crit.options.clear
@@ -508,16 +494,16 @@ module ActiveDocument
     # @param [ String ] javascript The javascript to execute in the $where.
     # @param [ Hash ] scope The scope for the code.
     #
-    # @return [ ActiveDocument::Criteria ] The criteria.
+    # @return [ Criteria ] The criteria.
     #
     # @deprecated
     def for_js(javascript, scope = {})
       code = if scope.empty?
-               # CodeWithScope is not supported for $where as of MongoDB 4.4
-               BSON::Code.new(javascript)
-             else
-               BSON::CodeWithScope.new(javascript, scope)
-             end
+        # CodeWithScope is not supported for $where as of MongoDB 4.4
+        BSON::Code.new(javascript)
+      else
+        BSON::CodeWithScope.new(javascript, scope)
+      end
       js_query(code)
     end
     ActiveDocument.deprecate(self, :for_js)
@@ -532,15 +518,15 @@ module ActiveDocument
     # @example Check for missing documents.
     #   criteria.check_for_missing_documents!([], [ 1 ])
     #
-    # @param [ Array<ActiveDocument::Document> ] result The result.
+    # @param [ Array<Document> ] result The result.
     # @param [ Array<Object> ] ids The ids.
     #
     # @raise [ Errors::DocumentNotFound ] If none are found and raising an
     #   error.
     def check_for_missing_documents!(result, ids)
-      return unless ActiveDocument.raise_not_found_error && (result.size < ids.size)
-
-      raise Errors::DocumentNotFound.new(klass, ids, ids - result.map(&:_id))
+      if (result.size < ids.size) && ActiveDocument.raise_not_found_error
+        raise Errors::DocumentNotFound.new(klass, ids, ids - result.map(&:_id))
+      end
     end
 
     # Clone or dup the current +Criteria+. This will return a new criteria with
@@ -554,14 +540,13 @@ module ActiveDocument
     # @example Dup a criteria.
     #   criteria.dup
     #
-    # @param [ ActiveDocument::Criteria ] other The criteria getting cloned.
+    # @param [ Criteria ] other The criteria getting cloned.
     #
     # @return [ nil ] nil.
     def initialize_copy(other)
       @inclusions = other.inclusions.dup
       @scoping_options = other.scoping_options
       @documents = other.documents.dup
-      self._raw_results = other._raw_results
       @context = nil
       super
     end
@@ -576,26 +561,16 @@ module ActiveDocument
     # @param [ Object... ] *args The arguments.
     #
     # @return [ Object ] The result of the method call.
-    def method_missing(name, ...)
+    ruby2_keywords def method_missing(name, *args, &block)
       if klass.respond_to?(name)
-        klass.public_send(:with_scope, self) do
-          klass.public_send(name, ...)
+        klass.send(:with_scope, self) do
+          klass.send(name, *args, &block)
         end
       elsif CHECK.respond_to?(name)
-        entries.public_send(name, ...)
+        return entries.send(name, *args, &block)
       else
         super
       end
-    end
-
-    # Check if the method can be handled by method_missing.
-    #
-    # @param [ Symbol | String ] name The name of the method.
-    # @param [ true | false ] _include_private Whether to include private methods.
-    #
-    # @return [ true | false ] True if method can be handled, false otherwise.
-    def respond_to_missing?(name, _include_private = false)
-      klass.respond_to?(name) || CHECK.respond_to?(name)
     end
 
     # For models where inheritance is at play we need to add the type
@@ -619,8 +594,8 @@ module ActiveDocument
     # @return [ true | false ] If type selection should be added.
     def type_selectable?
       klass.hereditary? &&
-        selector.keys.exclude?(discriminator_key) &&
-        selector.keys.exclude?(discriminator_key.to_sym)
+        !selector.keys.include?(self.discriminator_key) &&
+        !selector.keys.include?(self.discriminator_key.to_sym)
     end
 
     # Get the selector for type selection.
@@ -634,7 +609,7 @@ module ActiveDocument
     def type_selection
       klasses = klass._types
       if klasses.size > 1
-        { klass.discriminator_key.to_sym => { '$in' => klass._types } }
+        { klass.discriminator_key.to_sym => { "$in" => klass._types }}
       else
         { klass.discriminator_key.to_sym => klass._types[0] }
       end

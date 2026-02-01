@@ -17,6 +17,10 @@ automatically revert in-progress work. If the working dir state is messy, ask th
 how to proceed. If you are in the middle of resolving conflicts, ask user if you should
 finish resolving conflicts and pause merge making the merge commit.
 
+Second, avoid cherry-pick and other git actions that don't merge the actual commit history.
+If you need to do them tactically to help with complex scenarios in rare cases, it's ok,
+but then IMMEDIATELY get back to merging the actual git commits.
+
 1. Find the fork point:
 ```bash
 git merge-base master upstream/master

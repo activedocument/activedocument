@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 module ActiveDocument
   module Attributes
@@ -22,16 +23,18 @@ module ActiveDocument
       # @return [ true | false ] If the document is new, or if the field is not
       #   readonly.
       def attribute_writable?(name)
-        new_record? || (readonly_attributes.exclude?(name) && _loaded?(name))
+        new_record? || (!self.class.readonly_attributes.include?(name) && _loaded?(name))
       end
 
       private
 
       def as_writable_attribute!(name, value = :nil)
         normalized_name = database_field_name(name)
-        raise Errors::ReadonlyAttribute.new(name, value) unless attribute_writable?(normalized_name)
-
-        yield(normalized_name)
+        if attribute_writable?(normalized_name)
+          yield(normalized_name)
+        else
+          raise Errors::ReadonlyAttribute.new(name, value)
+        end
       end
 
       def _loaded?(name)
@@ -54,15 +57,20 @@ module ActiveDocument
         # @example Flag fields as readonly.
         #   class Band
         #     include ActiveDocument::Document
-        #     field :name, type: :string
-        #     field :genre, type: :string
+        #     field :name, type: String
+        #     field :genre, type: String
         #     attr_readonly :name, :genre
         #   end
         #
         # @param [ Symbol... ] *names The names of the fields.
+        # @note When a parent class contains readonly attributes and is then
+        # inherited by a child class, the child class will inherit the
+        # parent's readonly attributes at the time of its creation.
+        # Updating the parent does not propagate down to child classes after wards.
         def attr_readonly(*names)
+          self.readonly_attributes = self.readonly_attributes.dup
           names.each do |name|
-            readonly_attributes << database_field_name(name)
+            self.readonly_attributes << database_field_name(name)
           end
         end
       end

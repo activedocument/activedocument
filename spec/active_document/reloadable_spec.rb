@@ -129,6 +129,16 @@ describe ActiveDocument::Reloadable do
 
           expect(agent.title).to eq('007')
         end
+
+        it 'sets new_record to false' do
+          expect(agent.new_record?).to be true
+
+          lambda do
+            agent.reload
+          end.should_not raise_error
+
+          expect(agent.new_record?).to be false
+        end
       end
     end
 
@@ -582,6 +592,20 @@ describe ActiveDocument::Reloadable do
           expect(band.id).to_not be_nil
           # _id changes
           expect(band.id).to_not eq(original_id)
+        end
+      end
+
+      context 'when there is no document matching our id' do
+        let(:agent) { Agent.new(id: BSON::ObjectId.new) }
+
+        it 'does not set new_record to false' do
+          expect(agent.new_record?).to be true
+
+          lambda do
+            agent.reload
+          end.should_not raise_error
+
+          expect(agent.new_record?).to be true
         end
       end
     end

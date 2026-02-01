@@ -3,11 +3,9 @@
 require 'active_document/threaded/lifecycle'
 
 module ActiveDocument
-
   # This module contains logic for easy access to objects that have a lifecycle
   # on the current thread.
   module Threaded
-
     DATABASE_OVERRIDE_KEY = '[active_document]:db-override'
 
     # Constant for the key to store clients.
@@ -43,9 +41,9 @@ module ActiveDocument
     # given, and the variable does not already exist, the return value of the
     # block will be set as the value of the variable before returning it.
     #
-    # It is very important that applications (and espcially Mongoid)
+    # It is very important that applications (and espcially ActiveDocument)
     # use this method instead of Thread#[], since Thread#[] is actually for
-    # fiber-local variables, and Mongoid uses Fibers as an implementation
+    # fiber-local variables, and ActiveDocument uses Fibers as an implementation
     # detail in some callbacks. Putting thread-local state in a fiber-local
     # store will result in the state being invisible when relevant callbacks are
     # run in a different fiber.
@@ -183,7 +181,7 @@ module ActiveDocument
     # @example Begin autosave.
     #   Threaded.begin_autosave(doc)
     #
-    # @param [ ActiveDocument::Document ] document The document to autosave.
+    # @param [ Document ] document The document to autosave.
     def begin_autosave(document)
       autosaves_for(document.class).push(document._id)
     end
@@ -193,7 +191,7 @@ module ActiveDocument
     # @example Begin validation.
     #   Threaded.begin_validate(doc)
     #
-    # @param [ ActiveDocument::Document ] document The document to validate.
+    # @param [ Document ] document The document to validate.
     def begin_validate(document)
       validations_for(document.class).push(document._id)
     end
@@ -203,7 +201,7 @@ module ActiveDocument
     # @example Exit autosave.
     #   Threaded.exit_autosave(doc)
     #
-    # @param [ ActiveDocument::Document ] document The document to autosave.
+    # @param [ Document ] document The document to autosave.
     def exit_autosave(document)
       autosaves_for(document.class).delete_one(document._id)
     end
@@ -213,7 +211,7 @@ module ActiveDocument
     # @example Exit validation.
     #   Threaded.exit_validate(doc)
     #
-    # @param [ ActiveDocument::Document ] document The document to validate.
+    # @param [ Document ] document The document to validate.
     def exit_validate(document)
       validations_for(document.class).delete_one(document._id)
     end
@@ -272,7 +270,7 @@ module ActiveDocument
     #
     # @param [ Klass ] klass The class type of the scope.
     #
-    # @return [ ActiveDocument::Criteria ] The scope.
+    # @return [ Criteria ] The scope.
     def current_scope(klass = nil)
       current_scope = get(CURRENT_SCOPE_KEY)
 
@@ -288,9 +286,9 @@ module ActiveDocument
     # @example Set the scope.
     #   Threaded.current_scope = scope
     #
-    # @param [ ActiveDocument::Criteria ] scope The current scope.
+    # @param [ Criteria ] scope The current scope.
     #
-    # @return [ ActiveDocument::Criteria ] The scope.
+    # @return [ Criteria ] The scope.
     def current_scope=(scope)
       set(CURRENT_SCOPE_KEY, scope)
     end
@@ -300,10 +298,10 @@ module ActiveDocument
     # @example Set the scope.
     #   Threaded.current_scope(scope, klass)
     #
-    # @param [ ActiveDocument::Criteria ] scope The current scope.
+    # @param [ Criteria ] scope The current scope.
     # @param [ Class ] klass The current model class.
     #
-    # @return [ ActiveDocument::Criteria ] The scope.
+    # @return [ Criteria ] The scope.
     def set_current_scope(scope, klass)
       if scope.nil?
         unset_current_scope(klass)
@@ -330,7 +328,7 @@ module ActiveDocument
     # @example Is the document autosaved?
     #   Threaded.autosaved?(doc)
     #
-    # @param [ ActiveDocument::Document ] document The document to check.
+    # @param [ Document ] document The document to check.
     #
     # @return [ true | false ] If the document is autosaved.
     def autosaved?(document)
@@ -342,7 +340,7 @@ module ActiveDocument
     # @example Is the document validated?
     #   Threaded.validated?(doc)
     #
-    # @param [ ActiveDocument::Document ] document The document to check.
+    # @param [ Document ] document The document to check.
     #
     # @return [ true | false ] If the document is validated.
     def validated?(document)
@@ -452,8 +450,10 @@ module ActiveDocument
     end
 
     # Queries whether document callbacks should be executed by default for the
-    # current thread. Unless otherwise indicated (by #execute_callbacks=), this
-    # will return true.
+    # current thread.
+    #
+    # Unless otherwise indicated (by #execute_callbacks=), this will return
+    # true.
     #
     # @return [ true | false ] Whether or not document callbacks should be
     #   executed by default.

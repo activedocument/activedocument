@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:todo all
 module ActiveDocument
 
   # Utility module containing methods which assist in performing
@@ -7,9 +6,6 @@ module ActiveDocument
   #
   # @api private
   module Matcher
-
-    extend self
-
     # Extracts field values in the document at the specified key.
     #
     # The document can be a Hash or a model instance.
@@ -43,11 +39,11 @@ module ActiveDocument
     # from and behaves identically to association traversal for the purposes
     # of, for example, subsequent array element retrieval.
     #
-    # @param [ ActiveDocument::Document | Hash | String ] document The document to extract from.
+    # @param [ Document | Hash | String ] document The document to extract from.
     # @param [ String ] key The key path to extract.
     #
     # @return [ Object | Array ] Field value or values.
-    def extract_attribute(document, key)
+    module_function def extract_attribute(document, key)
       # The matcher system will wind up sending atomic values to this as well,
       # when attepting to match more complex types. If anything other than a
       # Document or a Hash is given, we'll short-circuit the logic and just
@@ -59,7 +55,7 @@ module ActiveDocument
       unless key.include?('.')
         hash = document.respond_to?(:attributes) ? document.attributes : document
         key = find_exact_key(hash, key)
-        return key ? [hash[key]] : []
+        return key ? [ hash[key] ] : []
       end
 
       if document.respond_to?(:as_attributes, true)
@@ -77,20 +73,21 @@ module ActiveDocument
           case doc
           when Hash
             actual_key = find_exact_key(doc, field)
-            unless actual_key.nil?
+            if !actual_key.nil?
               new << doc[actual_key]
             end
           when Array
-            if (index = field.to_i).to_s == field && (doc.length > index)
-              new << doc[index]
+            if (index = field.to_i).to_s == field
+              if doc.length > index
+                new << doc[index]
+              end
             end
-
             doc.each do |subdoc|
-              next unless subdoc.is_a?(Hash)
-
-              actual_key = find_exact_key(subdoc, field)
-              unless actual_key.nil?
-                new << subdoc[actual_key]
+              if Hash === subdoc
+                actual_key = find_exact_key(subdoc, field)
+                if !actual_key.nil?
+                  new << subdoc[actual_key]
+                end
               end
             end
           end
@@ -108,7 +105,7 @@ module ActiveDocument
     # @param [ String | Symbol ] key The key to perform indifferent lookups with.
     #
     # @return [ String | Symbol | nil ] The exact key (with the correct type) that exists in the hash, or nil if the key does not exist.
-    def find_exact_key(hash, key)
+    module_function def find_exact_key(hash, key)
       key_s = key.to_s
       return key_s if hash.key?(key_s)
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
 class HomCollege
   include ActiveDocument::Document
@@ -6,9 +7,9 @@ class HomCollege
   has_one :accreditation, class_name: 'HomAccreditation'
 
   # The address is added with different dependency mechanisms in tests:
-  # has_one :address, class_name: 'HomAddress', dependent: :destroy
+  #has_one :address, class_name: 'HomAddress', dependent: :destroy
 
-  field :state, type: :string
+  field :state, type: String
 end
 
 class HomAccreditation
@@ -16,8 +17,8 @@ class HomAccreditation
 
   belongs_to :college, class_name: 'HomCollege'
 
-  field :degree, type: :string
-  field :year, type: :integer, default: 2012
+  field :degree, type: String
+  field :year, type: Integer, default: 2012
 
   def format
     'fmt'
@@ -28,12 +29,10 @@ class HomAccreditation
   end
 end
 
-class HomAccreditation
-  class Child
-    include ActiveDocument::Document
+class HomAccreditation::Child
+  include ActiveDocument::Document
 
-    belongs_to :hom_college
-  end
+  belongs_to :hom_college
 end
 
 class HomAddress
@@ -83,7 +82,7 @@ end
 class HomTrainer
   include ActiveDocument::Document
 
-  field :name, type: :string
+  field :name, type: String
 
   has_one :animal, class_name: 'HomAnimal', scope: :reptile
 end
@@ -91,7 +90,7 @@ end
 class HomAnimal
   include ActiveDocument::Document
 
-  field :taxonomy, type: :string
+  field :taxonomy, type: String
 
   scope :reptile, -> { where(taxonomy: 'reptile') }
 
@@ -101,15 +100,23 @@ end
 class HomPost
   include ActiveDocument::Document
 
-  field :title, type: :string
+  field :title, type: String
 
-  has_one :comment, inverse_of: :post, class_name: 'HomComment'
+  has_one :comment, as: :container, class_name: 'HomComment'
+
+  accepts_nested_attributes_for :comment, allow_destroy: true
 end
 
 class HomComment
   include ActiveDocument::Document
 
-  field :content, type: :string
+  field :content, type: String
+  field :num, type: Integer, default: 0
 
-  belongs_to :post, inverse_of: :comment, optional: true, class_name: 'HomPost'
+  validates :num, numericality: { greater_than_or_equal_to: 0 }
+
+  belongs_to :container, polymorphic: true, optional: true
+  has_one :comment, as: :container, class_name: 'HomComment'
+
+  accepts_nested_attributes_for :comment, allow_destroy: true
 end

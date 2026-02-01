@@ -587,6 +587,14 @@ describe ActiveDocument::PersistenceContext do
         expect(persistence_context.client).to eq(ActiveDocument::Clients.with_name(:alternative))
       end
 
+      context 'when the client option is a proc' do
+        let(:options) { { client: -> { :alternative } } }
+
+        it 'evaluates the proc' do
+          expect(persistence_context.client).to eq(ActiveDocument::Clients.with_name(:alternative))
+        end
+      end
+
       context 'when there is a client override' do
         persistence_context_override :client, :other
 
@@ -638,7 +646,7 @@ describe ActiveDocument::PersistenceContext do
       end
 
       it 'uses the client option' do
-        expect(persistence_context.client).to eq(Mongoid::Clients.with_name(:alternative))
+        expect(persistence_context.client).to eq(ActiveDocument::Clients.with_name(:alternative))
       end
     end
 

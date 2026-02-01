@@ -8,7 +8,6 @@ module ActiveDocument
   # around traversing the document graph.
   module Traversable
     extend ActiveSupport::Concern
-
     # This code is extracted from ActiveSupport so that we do not depend on
     # their private API that may change at any time.
     # This code should be reviewed and maybe removed when implementing
@@ -22,14 +21,14 @@ module ActiveDocument
         end
         owner.redefine_singleton_method(name) { value }
         owner.singleton_class.send(:public, name)
-        owner.redefine_singleton_method(:"#{name}=") do |new_value|
+        owner.redefine_singleton_method("#{name}=") do |new_value|
           if owner.equal?(self)
             value = new_value
           else
             ::ActiveDocument::Traversable.redefine(self, name, new_value)
           end
         end
-        owner.singleton_class.send(:public, :"#{name}=")
+        owner.singleton_class.send(:public, "#{name}=")
       end
     end
 
@@ -45,6 +44,18 @@ module ActiveDocument
         !!(superclass < ActiveDocument::Document)
       end
 
+      # Returns the root class of the STI tree that the current
+      # class participates in. If the class is not an STI subclass, this
+      # returns the class itself.
+      #
+      # @return [ ActiveDocument::Document ] the root of the STI tree
+      def root_class
+        root = self
+        root = root.superclass while root.hereditary?
+
+        root
+      end
+
       # When inheriting, we want to copy the fields from the parent class and
       # set the on the child to start, mimicking the behavior of the old
       # class_inheritable_accessor that was deprecated in Rails edge.
@@ -53,6 +64,8 @@ module ActiveDocument
       #   Person.inherited(Doctor)
       #
       # @param [ Class ] subclass The inheriting class.
+      #
+      # rubocop:disable Metrics/AbcSize
       def inherited(subclass)
         super
 
@@ -77,8 +90,9 @@ module ActiveDocument
         return if fields.key?(discriminator_key)
 
         default_proc = -> { self.class.discriminator_value }
-        field(discriminator_key, default: default_proc, type: :string)
+        field(discriminator_key, default: default_proc, type: String)
       end
+      # rubocop:enable Metrics/AbcSize
     end
 
     # `_parent` is intentionally not implemented via attr_accessor because
@@ -125,7 +139,7 @@ module ActiveDocument
         if value
           ActiveDocument::Fields::Validators::Macro.validate_field_name(self, value)
           value = value.to_s
-          ::ActiveDocument::Traversable.__redefine(self, :discriminator_key, value)
+          ::ActiveDocument::Traversable.__redefine(self, 'discriminator_key', value)
         else
           # When discriminator key is set to nil, replace the class's definition
           # of the discriminator key reader (provided by class_attribute earlier)
@@ -142,7 +156,7 @@ module ActiveDocument
         return if fields.key?(discriminator_key) || descendants.empty?
 
         default_proc = -> { self.class.discriminator_value }
-        field(discriminator_key, default: default_proc, type: :string)
+        field(discriminator_key, default: default_proc, type: String)
       end
 
       # Returns the discriminator key.
@@ -177,8 +191,6 @@ module ActiveDocument
       class_attribute :discriminator_key, instance_accessor: false
 
       class << self
-        # The class attribute declaration above creates a default getter which we override with our custom method.
-        remove_method :discriminator_key
         delegate :discriminator_key, to: ::ActiveDocument
         prepend DiscriminatorAssignment
         include DiscriminatorRetrieval

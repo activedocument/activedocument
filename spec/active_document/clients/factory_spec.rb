@@ -1,13 +1,16 @@
 # frozen_string_literal: true
+# rubocop:todo all
 
-require 'spec_helper'
+require "spec_helper"
 
 describe ActiveDocument::Clients::Factory do
 
   shared_examples_for 'includes seed address' do
     let(:configured_address) do
       address = SpecConfig.instance.addresses.first
-      address = "#{address}:27017" unless address.include?(':')
+      unless address.include?(':')
+        address = "#{address}:27017"
+      end
       address
     end
 
@@ -15,7 +18,7 @@ describe ActiveDocument::Clients::Factory do
       [
         configured_address,
         configured_address.sub(/\Alocalhost:/, '127.0.0.1:'),
-        configured_address.sub(/\A127\.0\.0\.1:/, 'localhost:')
+        configured_address.sub(/\A127\.0\.0\.1:/, 'localhost:'),
       ].uniq
     end
 
@@ -27,13 +30,41 @@ describe ActiveDocument::Clients::Factory do
     end
   end
 
-  describe '.create' do
+  shared_examples_for 'includes rails wrapping library' do
+    context 'when Rails is available' do
+      around do |example|
+        rails_was_defined = defined?(::Rails)
 
-    context 'when provided a name' do
+        if !rails_was_defined
+          module ::Rails
+            def self.version
+              '6.1.0'
+            end
+          end
+        end
 
-      context 'when the configuration exists' do
+        example.run
 
-        context 'when the configuration is standard' do
+        if !rails_was_defined
+          Object.send(:remove_const, :Rails) if defined?(::Rails)
+        end
+      end
+
+      it 'adds Rails as another wrapping library' do
+        expect(client.options[:wrapping_libraries]).to include(
+          {'name' => 'Rails', 'version' => '6.1.0'},
+        )
+      end
+    end
+  end
+
+  describe ".create" do
+
+    context "when provided a name" do
+
+      context "when the configuration exists" do
+
+        context "when the configuration is standard" do
           restore_config_clients
 
           let(:config) do
@@ -41,22 +72,6 @@ describe ActiveDocument::Clients::Factory do
               default: { hosts: SpecConfig.instance.addresses, database: database_id },
               analytics: { hosts: SpecConfig.instance.addresses, database: database_id }
             }
-          end
-
-          let(:cluster_addresses) do
-            cluster.addresses.map(&:to_s)
-          end
-
-          let(:client) do
-            described_class.create(:analytics)
-          end
-
-          let(:cluster) do
-            client.cluster
-          end
-
-          let(:cluster_addresses) do
-            cluster.addresses.map(&:to_s)
           end
 
           before do
@@ -67,16 +82,28 @@ describe ActiveDocument::Clients::Factory do
             client.close
           end
 
-          it 'returns a client' do
+          let(:client) do
+            described_class.create(:analytics)
+          end
+
+          let(:cluster) do
+            client.cluster
+          end
+
+          it "returns a client" do
             expect(client).to be_a(Mongo::Client)
           end
 
           context 'on driver versions that do not report spurious EOF errors' do
 
             it 'does not produce driver warnings' do
-              expect(Mongo::Logger.logger).to_not receive(:warn)
+              Mongo::Logger.logger.should_not receive(:warn)
               client
             end
+          end
+
+          let(:cluster_addresses) do
+            cluster.addresses.map(&:to_s)
           end
 
           it_behaves_like 'includes seed address'
@@ -86,10 +113,11 @@ describe ActiveDocument::Clients::Factory do
           end
 
           it 'sets ActiveDocument as a wrapping library' do
-            expect(client.options[:wrapping_libraries]).to eq([BSON::Document.new(
-              ActiveDocument::Clients::Factory::MONGOID_WRAPPING_LIBRARY
-            )])
+            client.options[:wrapping_libraries].should == [BSON::Document.new(
+              ActiveDocument::Clients::Factory::MONGOID_WRAPPING_LIBRARY)]
           end
+
+          it_behaves_like 'includes rails wrapping library'
 
           context 'when configuration specifies a wrapping library' do
 
@@ -100,30 +128,39 @@ describe ActiveDocument::Clients::Factory do
                   hosts: SpecConfig.instance.addresses,
                   database: database_id,
                   options: {
-                    wrapping_libraries: [{ name: 'Foo' }]
-                  }
+                    wrapping_libraries: [{name: 'Foo'}],
+                  },
                 }
               }
             end
 
             it 'adds ActiveDocument as another wrapping library' do
-              expected = [
+              client.options[:wrapping_libraries].should == [
                 BSON::Document.new(ActiveDocument::Clients::Factory::MONGOID_WRAPPING_LIBRARY),
-                { 'name' => 'Foo' }
+                {'name' => 'Foo'},
               ]
-              expect(client.options[:wrapping_libraries]).to eq(expected)
             end
+
+            it_behaves_like 'includes rails wrapping library'
           end
         end
 
-        context 'when the configuration has no ports' do
+        context "when the configuration has no ports" do
           restore_config_clients
 
           let(:config) do
             {
-              default: { hosts: ['127.0.0.1'], database: database_id },
-              analytics: { hosts: ['127.0.0.1'], database: database_id }
+              default: { hosts: [ "127.0.0.1" ], database: database_id },
+              analytics: { hosts: [ "127.0.0.1" ], database: database_id }
             }
+          end
+
+          before do
+            ActiveDocument::Config.send(:clients=, config)
+          end
+
+          after do
+            client.close
           end
 
           let(:client) do
@@ -138,41 +175,29 @@ describe ActiveDocument::Clients::Factory do
             client.cluster
           end
 
-          before do
-            ActiveDocument::Config.send(:clients=, config)
-          end
-
-          after do
-            client.close
-          end
-
-          it 'returns a client' do
+          it "returns a client" do
             expect(client).to be_a(Mongo::Client)
           end
 
-          it 'sets ips with no ports to 27017' do
-            expect(cluster.addresses.first.to_s).to be_in(%w[127.0.0.1:27017 localhost:27017])
+          it "sets the cluster's seed ports to 27017" do
+            expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
+          end
+
+          it "sets ips with no ports to 27017" do
+            expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
           end
         end
 
-        context 'when configured via a uri' do
+        context "when configured via a uri" do
 
-          context 'when the uri has a single host:port' do
+          context "when the uri has a single host:port" do
             restore_config_clients
 
             let(:config) do
               {
-                default: { hosts: ['127.0.0.1:27017'], database: database_id },
-                analytics: { uri: 'mongodb://127.0.0.1:27017/active_document_test' }
+                default: { hosts: [ "127.0.0.1:27017" ], database: database_id },
+                analytics: { uri: "mongodb://127.0.0.1:27017/active_document_test" }
               }
-            end
-
-            let(:client) do
-              described_class.create(:analytics)
-            end
-
-            let(:cluster) do
-              client.cluster
             end
 
             before do
@@ -183,36 +208,35 @@ describe ActiveDocument::Clients::Factory do
               client.close
             end
 
-            it 'returns a client' do
+            let(:client) do
+              described_class.create(:analytics)
+            end
+
+            let(:cluster) do
+              client.cluster
+            end
+
+            it "returns a client" do
               expect(client).to be_a(Mongo::Client)
             end
 
             it "sets the cluster's seeds" do
-              expect(cluster.addresses.first.to_s).to be_in(%w[127.0.0.1:27017 localhost:27017])
+              expect(%w(127.0.0.1:27017 localhost:27017)).to include(cluster.addresses.first.to_s)
             end
 
-            it 'sets the database' do
-              expect(client.options[:database]).to eq('active_document_test')
+            it "sets the database" do
+              expect(client.options[:database]).to eq("active_document_test")
             end
           end
 
-          context 'when the uri has multiple host:port pairs' do
+          context "when the uri has multiple host:port pairs" do
             restore_config_clients
 
             let(:config) do
               {
-                default: { hosts: ['127.0.0.1:1234'], database: database_id, server_selection_timeout: 1 },
-                analytics: { uri: 'mongodb://127.0.0.1:1234,127.0.0.1:5678/active_document_test?serverSelectionTimeoutMS=1000' }
+                default: { hosts: [ "127.0.0.1:1234" ], database: database_id, server_selection_timeout: 1 },
+                analytics: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/active_document_test?serverSelectionTimeoutMS=1000" }
               }
-            end
-            let(:client) do
-              described_class.create(:analytics)
-            end
-            let(:cluster) do
-              client.cluster
-            end
-            let(:seeds) do
-              cluster.addresses.map(&:to_s)
             end
 
             before do
@@ -223,23 +247,35 @@ describe ActiveDocument::Clients::Factory do
               client.close
             end
 
-            it 'returns a client' do
+            let(:client) do
+              described_class.create(:analytics)
+            end
+
+            let(:cluster) do
+              client.cluster
+            end
+
+            let(:seeds) do
+              cluster.addresses.map{ |address| address.to_s }
+            end
+
+            it "returns a client" do
               expect(client).to be_a(Mongo::Client)
             end
 
             it "sets the cluster's seeds" do
-              expect(seeds).to eq(['127.0.0.1:1234', '127.0.0.1:5678'])
+              expect(seeds).to eq([ "127.0.0.1:1234", "127.0.0.1:5678" ])
             end
           end
         end
       end
 
-      context 'when the configuration does not exist' do
+      context "when the configuration does not exist" do
 
-        it 'raises an error' do
-          expect do
+        it "raises an error" do
+          expect {
             described_class.create(:unknown)
-          end.to raise_error(ActiveDocument::Errors::NoClientConfig)
+          }.to raise_error(ActiveDocument::Errors::NoClientConfig)
         end
       end
 
@@ -280,12 +316,12 @@ describe ActiveDocument::Clients::Factory do
             }
           end
 
-          it 'returns a client' do
+          it "returns a client" do
             expect(client).to be_a(Mongo::Client)
           end
 
           it 'sets schema_map for the client' do
-            expect(client.options[:auto_encryption_options][:schema_map]).to_not be_nil
+            expect(client.options[:auto_encryption_options][:schema_map]).not_to be_nil
           end
         end
 
@@ -309,7 +345,7 @@ describe ActiveDocument::Clients::Factory do
             }
           end
 
-          it 'returns a client' do
+          it "returns a client" do
             expect(client).to be_a(Mongo::Client)
           end
 
@@ -320,11 +356,19 @@ describe ActiveDocument::Clients::Factory do
       end
     end
 
-    context 'when no name is provided' do
+    context "when no name is provided" do
       restore_config_clients
 
       let(:config) do
-        { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
+        { default: { hosts: SpecConfig.instance.addresses, database: database_id }}
+      end
+
+      before do
+        ActiveDocument::Config.send(:clients=, config)
+      end
+
+      after do
+        client.close
       end
 
       let(:client) do
@@ -339,22 +383,14 @@ describe ActiveDocument::Clients::Factory do
         cluster.addresses.map(&:to_s)
       end
 
-      before do
-        ActiveDocument::Config.send(:clients=, config)
-      end
-
-      after do
-        client.close
-      end
-
-      it 'returns the default client' do
+      it "returns the default client" do
         expect(client).to be_a(Mongo::Client)
       end
 
       it_behaves_like 'includes seed address'
     end
 
-    context 'when nil is provided and no default config' do
+    context "when nil is provided and no default config" do
       restore_config_clients
 
       let(:config) { nil }
@@ -363,26 +399,17 @@ describe ActiveDocument::Clients::Factory do
         ActiveDocument.clients[:default] = nil
       end
 
-      it 'raises NoClientsConfig error' do
-        expect { described_class.create(config) }.to raise_error(ActiveDocument::Errors::NoClientsConfig)
+      it "raises NoClientsConfig error" do
+        expect{ ActiveDocument::Clients::Factory.create(config) }.to raise_error(ActiveDocument::Errors::NoClientsConfig)
       end
     end
   end
 
-  describe '.default' do
+  describe ".default" do
     restore_config_clients
 
     let(:config) do
-      { default: { hosts: SpecConfig.instance.addresses, database: database_id } }
-    end
-    let(:client) do
-      described_class.default
-    end
-    let(:cluster) do
-      client.cluster
-    end
-    let(:cluster_addresses) do
-      cluster.addresses.map(&:to_s)
+      { default: { hosts: SpecConfig.instance.addresses, database: database_id }}
     end
 
     before do
@@ -393,14 +420,26 @@ describe ActiveDocument::Clients::Factory do
       client.close
     end
 
-    it 'returns the default client' do
+    let(:client) do
+      described_class.default
+    end
+
+    let(:cluster) do
+      client.cluster
+    end
+
+    let(:cluster_addresses) do
+      cluster.addresses.map(&:to_s)
+    end
+
+    it "returns the default client" do
       expect(client).to be_a(Mongo::Client)
     end
 
     it_behaves_like 'includes seed address'
   end
 
-  context 'when options are provided with string keys' do
+  context "when options are provided with string keys" do
     restore_config_clients
 
     let(:config) do
@@ -409,11 +448,19 @@ describe ActiveDocument::Clients::Factory do
           hosts: SpecConfig.instance.addresses,
           database: database_id,
           options: {
-            'server_selection_timeout' => 10,
-            'write' => { 'w' => 1 }
+            "server_selection_timeout" => 10,
+            "write" => { "w" => 1 }
           }
         }
       }
+    end
+
+    before do
+      ActiveDocument::Config.send(:clients=, config)
+    end
+
+    after do
+      client.close
     end
 
     let(:client) do
@@ -428,25 +475,17 @@ describe ActiveDocument::Clients::Factory do
       cluster.addresses.map(&:to_s)
     end
 
-    before do
-      ActiveDocument::Config.send(:clients=, config)
-    end
-
-    after do
-      client.close
-    end
-
-    it 'returns the default client' do
+    it "returns the default client" do
       expect(client).to be_a(Mongo::Client)
     end
 
     it_behaves_like 'includes seed address'
 
-    it 'sets the server selection timeout' do
+    it "sets the server selection timeout" do
       expect(cluster.options[:server_selection_timeout]).to eq(10)
     end
 
-    it 'sets the write concern' do
+    it "sets the write concern" do
       expect(client.write_concern).to be_a(Mongo::WriteConcern::Acknowledged)
     end
 
@@ -455,21 +494,21 @@ describe ActiveDocument::Clients::Factory do
     end
   end
 
-  context 'unexpected config options' do
+  context "unexpected config options" do
     restore_config_clients
 
     let(:unknown_opts) do
       {
         bad_one: 1,
-        another_one: 'here'
+        another_one: "here"
       }
     end
 
     let(:config) do
       {
         default: { hosts: SpecConfig.instance.addresses, database: database_id },
-        good_one: { hosts: ['127.0.0.1:1234'], database: database_id },
-        bad_one: { hosts: ['127.0.0.1:1234'], database: database_id }.merge(unknown_opts),
+        good_one: { hosts: [ "127.0.0.1:1234" ], database: database_id},
+        bad_one: { hosts: [ "127.0.0.1:1234" ], database: database_id}.merge(unknown_opts),
         good_two: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/#{database_id}" },
         bad_two: { uri: "mongodb://127.0.0.1:1234,127.0.0.1:5678/#{database_id}" }.merge(unknown_opts)
       }
@@ -479,16 +518,16 @@ describe ActiveDocument::Clients::Factory do
       ActiveDocument::Config.send(:clients=, config)
     end
 
-    %i[good_one good_two].each do |env|
+    [:bad_one, :bad_two].each do |env|
       it 'does not log a warning if none' do
-        expect(described_class.send(:default_logger)).to_not receive(:warn)
+        expect(described_class.send(:default_logger)).not_to receive(:warn)
         described_class.create(env).close
       end
     end
 
-    %i[bad_one bad_two].each do |env|
+    [:bad_one, :bad_two].each do |env|
       it 'logs a warning if some' do
-        expect(described_class.send(:default_logger)).to_not receive(:warn)
+        expect(described_class.send(:default_logger)).not_to receive(:warn)
         described_class.create(env).close
       end
     end

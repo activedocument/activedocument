@@ -462,7 +462,7 @@ module ActiveDocument
         # @return [ Selectable ] The new selectable.
         def not(*criteria)
           if criteria.empty?
-            dup.tap { |query| query.negating = true }
+            dup.tap { |query| query.negating = !query.negating }
           else
             criteria.compact.inject(clone) do |c, new_s|
               new_s = new_s.selector if new_s.is_a?(Selectable)
