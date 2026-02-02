@@ -32,10 +32,21 @@ module ActiveDocument
           # @param replacement [ActiveDocument::Document, Object] The replacement document or ID
           # @return [self, nil] The proxy or nil if no replacement
           def substitute(replacement)
-            unbind_one
-            return unless replacement
+            return self unless replacement
 
-            self._target = normalize(replacement)
+            new_target = normalize(replacement)
+
+            # If reassigning the same document, do nothing
+            return self if _target && _target._id == new_target._id
+
+            # Unbind and save the old target
+            old_target = _target
+            unbind_one
+            old_target&.save if old_target&.persisted? && old_target&.changed?
+
+            # Clear cached binding and set new target
+            @binding = nil
+            self._target = new_target
             bind_one
             save_target_if_persistable
             self
