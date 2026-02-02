@@ -1,0 +1,60 @@
+# frozen_string_literal: true
+
+module ActiveDocument
+  module Association
+    module Referenced
+      module V2
+        module Binding
+          # Binding strategy for has_one and has_many associations.
+          # Sets the foreign key on the related document (not the owner).
+          class Has < Base
+            # Bind a document to the association.
+            # Sets foreign key on the related document and inverse reference.
+            #
+            # @param doc [ActiveDocument::Document] The document to bind
+            def bind_one(doc)
+              return unless doc
+
+              binding do
+                bind_from_relational_parent(doc)
+              end
+            end
+
+            # Unbind a document from the association.
+            # Clears foreign key on the related document and inverse reference.
+            #
+            # @param doc [ActiveDocument::Document] The document to unbind
+            def unbind_one(doc)
+              return unless doc
+
+              binding do
+                unbind_from_relational_parent(doc)
+              end
+            end
+
+            private
+
+            # Full binding from parent to child document.
+            # @param doc [ActiveDocument::Document] The document to bind
+            def bind_from_relational_parent(doc)
+              check_inverse!(doc)
+              remove_associated(doc)
+              bind_foreign_key(doc, record_id(base))
+              bind_polymorphic_type(doc, base.class.name)
+              bind_inverse(doc, base)
+            end
+
+            # Full unbinding from parent to child document.
+            # @param doc [ActiveDocument::Document] The document to unbind
+            def unbind_from_relational_parent(doc)
+              check_inverse!(doc)
+              bind_foreign_key(doc, nil)
+              bind_polymorphic_type(doc, nil)
+              bind_inverse(doc, nil)
+            end
+          end
+        end
+      end
+    end
+  end
+end
