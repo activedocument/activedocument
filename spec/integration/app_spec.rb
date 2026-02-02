@@ -32,23 +32,16 @@ describe 'ActiveDocument application tests' do
     FileUtils.mkdir_p(TMP_BASE)
   end
 
-  context 'demo application' do
+  context 'generated application' do
     context 'sinatra' do
       it 'runs' do
-        skip 'https://jira.mongodb.org/browse/MONGOID-5826'
-
-        clone_application(
-          'https://github.com/active_document/active_document-demo',
-          subdir: 'sinatra-minimal'
-        ) do
-
+        create_sinatra_app('active_document-sinatra-test') do
           # JRuby needs a long timeout
           start_app(%w[bundle exec ruby app.rb], 4567, 40) do |_port|
             uri = URI.parse('http://localhost:4567/posts')
             resp = JSON.parse(uri.open.read)
 
             expect(resp).to eq([])
-
           end
         end
       end
@@ -56,13 +49,7 @@ describe 'ActiveDocument application tests' do
 
     context 'rails-api' do
       it 'runs' do
-        skip 'https://jira.mongodb.org/browse/MONGOID-5826'
-
-        clone_application(
-          'https://github.com/active_document/active_document-demo',
-          subdir: 'rails-api'
-        ) do
-
+        create_rails_api_app('active_document-rails-api-test') do
           # JRuby needs a long timeout
           start_app(%w[bundle exec rails s], 3000, 50) do |_port|
             uri = URI.parse('http://localhost:3000/posts')
@@ -113,7 +100,7 @@ describe 'ActiveDocument application tests' do
 
     Dir.chdir(TMP_BASE) do
       FileUtils.rm_rf(name)
-      check_call(insert_rails_gem_version(%W[rails new #{name} --skip-spring --skip-active-record]), env: clean_env)
+      check_call(insert_rails_gem_version(%W[rails new #{name} --skip-spring --skip-active-record]), env: rails_env)
 
       Dir.chdir(name) do
         adjust_rails_defaults
@@ -121,6 +108,129 @@ describe 'ActiveDocument application tests' do
         check_call(%w[bundle install], env: clean_env)
 
         yield
+      end
+    end
+  end
+
+  def create_sinatra_app(name)
+    Dir.chdir(TMP_BASE) do
+      FileUtils.rm_rf(name)
+      FileUtils.mkdir_p(name)
+
+      Dir.chdir(name) do
+        # Create minimal Sinatra app with Post model
+        File.write('app.rb', <<~RUBY)
+          require 'sinatra'
+          require 'active_document'
+          require 'json'
+
+          ActiveDocument.load!('config/active_document.yml')
+
+          class Post
+            include ActiveDocument::Document
+            field :title, type: :string
+          end
+
+          get '/posts' do
+            content_type :json
+            Post.all.to_json
+          end
+        RUBY
+
+        # Create Gemfile
+        File.write('Gemfile', <<~RUBY)
+          source 'https://rubygems.org'
+          gem 'sinatra'
+          gem 'rackup'
+          gem 'active_document', path: '#{File.expand_path(BASE)}'
+          gem 'puma'
+        RUBY
+
+        FileUtils.mkdir_p('config')
+        write_active_document_yml
+        check_call(%w[bundle install], env: clean_env)
+
+        yield
+      end
+    end
+  end
+
+  def create_rails_api_app(name)
+    install_rails
+
+    Dir.chdir(TMP_BASE) do
+      FileUtils.rm_rf(name)
+      check_call(insert_rails_gem_version(%W[rails new #{name} --api --skip-spring --skip-active-record]), env: rails_env)
+
+      Dir.chdir(name) do
+        adjust_rails_defaults
+        adjust_app_gemfile
+
+        # Create Post model
+        File.write('app/models/post.rb', <<~RUBY)
+          class Post
+            include ActiveDocument::Document
+            field :title, type: :string
+          end
+        RUBY
+
+        # Create PostsController
+        File.write('app/controllers/posts_controller.rb', <<~RUBY)
+          class PostsController < ApplicationController
+            def index
+              render json: Post.all
+            end
+          end
+        RUBY
+
+        # Add route
+        routes_content = File.read('config/routes.rb')
+        routes_content.sub!("Rails.application.routes.draw do\n",
+                            "Rails.application.routes.draw do\n  resources :posts, only: [:index]\n")
+        File.write('config/routes.rb', routes_content)
+
+        write_active_document_yml
+        check_call(%w[bundle install], env: clean_env)
+
+        yield
+      end
+    end
+  end
+
+  def create_rails_rake_test_app(name)
+    install_rails
+
+    Dir.chdir(TMP_BASE) do
+      FileUtils.rm_rf(name)
+      check_call(insert_rails_gem_version(%W[rails new #{name} --api --skip-spring --skip-active-record]), env: rails_env)
+
+      Dir.chdir(name) do
+        adjust_rails_defaults
+        adjust_app_gemfile
+
+        # Create Post model with index
+        File.write('app/models/post.rb', <<~RUBY)
+          class Post
+            include ActiveDocument::Document
+            include ActiveDocument::Timestamps
+            field :subject, type: :string
+            field :message, type: :string
+
+            index subject: 1
+          end
+        RUBY
+
+        # Create Comment model
+        File.write('app/models/comment.rb', <<~RUBY)
+          class Comment
+            include ActiveDocument::Document
+            include ActiveDocument::Timestamps
+            belongs_to :post
+          end
+        RUBY
+
+        write_active_document_yml
+        check_call(%w[bundle install], env: clean_env)
       end
     end
   end
@@ -183,12 +293,10 @@ describe 'ActiveDocument application tests' do
     check_call(%w[gem install rails --no-document --force -v] + ["~> #{rails_version}.0"])
   end
 
-  context 'local test applications' do
+  context 'generated test applications' do
     let(:client) { ActiveDocument.default_client }
 
     describe 'create_indexes rake task' do
-
-      APP_PATH = File.join(File.dirname(__FILE__), '../../test-apps/rails-api')
 
       autoloaders = %w[classic zeitwerk]
 
@@ -202,20 +310,11 @@ describe 'ActiveDocument application tests' do
                 clean_env.merge(RAILS_ENV: rails_env, AUTOLOADER: autoloader)
               end
 
+              let(:app_name) { "active_document-rake-test-#{rails_env}-#{autoloader}" }
+              let(:app_path) { File.join(TMP_BASE, app_name) }
+
               before do
-                Dir.chdir(APP_PATH) do
-                  remove_bundler_req
-
-                  if BSON::Environment.jruby?
-                    # Remove existing Gemfile.lock - see
-                    # https://github.com/rubygems/rubygems/issues/3231
-                    require 'fileutils'
-                    FileUtils.rm_f('Gemfile.lock')
-                  end
-
-                  check_call(%w[bundle install], env: env)
-                  write_active_document_yml
-                end
+                create_rails_rake_test_app(app_name)
 
                 client['posts'].drop
                 client['posts'].create
@@ -228,7 +327,7 @@ describe 'ActiveDocument application tests' do
                 expect(index).to be_nil
 
                 check_call(%w[bundle exec rake db:active_document:create_indexes -t],
-                           cwd: APP_PATH,
+                           cwd: app_path,
                            env: env)
 
                 index = client['posts'].indexes.detect do |idx|
@@ -239,23 +338,6 @@ describe 'ActiveDocument application tests' do
             end
           end
         end
-      end
-    end
-  end
-
-  def clone_application(repo_url, subdir: nil)
-    Dir.chdir(TMP_BASE) do
-      FileUtils.rm_rf(File.basename(repo_url))
-      check_call(%w[git clone] + [repo_url])
-      Dir.chdir(File.join(*[File.basename(repo_url), subdir].compact)) do
-        adjust_app_gemfile
-        adjust_rails_defaults
-        check_call(%w[bundle install], env: clean_env)
-        puts `git diff`
-
-        write_active_document_yml
-
-        yield
       end
     end
   end
@@ -352,17 +434,12 @@ describe 'ActiveDocument application tests' do
     end
   end
 
-  def remove_spring
-    # Spring produces this error in Evergreen:
-    # /data/mci/280eb2ecf4fd69208e2106cd3af526f1/src/rubies/ruby-2.7.0/lib/ruby/gems/2.7.0/gems/spring-2.1.0/lib/spring/client/run.rb:26:
-    # in `initialize': too long unix socket path (126bytes given but 108bytes max) (ArgumentError)
-    # Is it trying to create unix sockets in current directory?
-    # https://stackoverflow.com/questions/30302021/rails-runner-without-spring
-    check_call(%w[bin/spring binstub --remove --all], env: clean_env)
-  end
-
   def clean_env
     @clean_env ||= ENV.keys.grep(/BUNDLE|RUBYOPT/).to_h { |k| [k, nil] }
+  end
+
+  def rails_env
+    clean_env.dup
   end
 
   def wait_for_port(port, timeout, process)

@@ -2,7 +2,6 @@
 
 require 'active_document/indexable/specification'
 require 'active_document/indexable/validators/options'
-require 'ostruct'
 
 module ActiveDocument
 

@@ -2740,6 +2740,22 @@ describe ActiveDocument::Attributes do
     end
   end
 
+  context 'when accessing an embedded document with the attribute accessor' do
+    let(:band) { Band.create! }
+
+    before do
+      Band.where(id: band.id).update_all(
+        '$push': { records: { _id: BSON::ObjectId.new } }
+      )
+    end
+
+    it 'does not throw a conflicting update error' do
+      b1 = Band.find(band.id)
+      expect(b1[:records].is_a?(Array)).to be(true)
+      expect { b1.save! }.to_not raise_error
+    end
+  end
+
   context 'when modifying a set referenced with the [] notation' do
     let(:catalog) { Catalog.create!(set_field: [1].to_set) }
 

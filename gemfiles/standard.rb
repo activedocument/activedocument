@@ -26,6 +26,7 @@ def standard_dependencies
     gem 'childprocess'
     gem 'simplecov'
     gem 'simplecov-cobertura'
+    gem 'ostruct'
 
     platform :mri do
       gem 'timeout-interrupt'
