@@ -112,24 +112,6 @@ module ActiveDocument
             end
           end
 
-          # Define ID getter for belongs_to_one: person.account_id
-          def define_id_getter!
-            assoc = association
-            method_name = "#{name}_id"
-            owner_class.re_define_method(method_name) do
-              send(assoc.foreign_key)
-            end
-          end
-
-          # Define ID setter for belongs_to_one: person.account_id = ...
-          def define_id_setter!
-            assoc = association
-            method_name = "#{name}_id="
-            owner_class.re_define_method(method_name) do |value|
-              send("#{assoc.foreign_key}=", value)
-            end
-          end
-
           # Define IDs getter for collections: person.post_ids
           def define_ids_getter!
             assoc = association

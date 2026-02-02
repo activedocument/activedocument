@@ -73,11 +73,8 @@ module ActiveDocument
             def resolve_class(type)
               return target_class unless type
 
-              case type
-              when String then type.constantize
-              when Class then type
-              else type
-              end
+              # Delegate to association's type resolution
+              association.send(:resolve_type, type)
             end
 
             def apply_scope(criteria)

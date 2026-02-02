@@ -32,12 +32,6 @@ module ActiveDocument
             def nested_builder_class
               raise NotImplementedError, "#{self.class} must implement #nested_builder_class"
             end
-
-            # The default validation behavior for this cardinality
-            # @return [Boolean]
-            def validation_default
-              raise NotImplementedError, "#{self.class} must implement #validation_default"
-            end
           end
         end
       end

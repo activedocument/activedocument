@@ -22,15 +22,6 @@ module ActiveDocument
             def nested_builder_class
               ActiveDocument::Association::Nested::One
             end
-
-            # Default validation for single-document associations
-            # belongs_to_one: false by default (historically)
-            # has_one: true by default
-            # @return [Boolean]
-            def validation_default
-              # This is overridden based on association type in the Association class
-              false
-            end
           end
         end
       end

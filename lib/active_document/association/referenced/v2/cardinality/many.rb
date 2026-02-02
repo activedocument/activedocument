@@ -22,12 +22,6 @@ module ActiveDocument
             def nested_builder_class
               ActiveDocument::Association::Nested::Many
             end
-
-            # Default validation for multi-document associations
-            # @return [true] Collections are validated by default
-            def validation_default
-              true
-            end
           end
         end
       end
