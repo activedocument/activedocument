@@ -22,6 +22,9 @@ module ActiveDocument
         # The options wrapper (for code that needs to inspect options)
         attr_reader :options
 
+        # For eager loading - stores parent inclusions
+        attr_accessor :parent_inclusions
+
         # @param owner_class [Class] The class that owns this association
         # @param name [Symbol] The name of the association
         # @param type [Symbol] The association type (:belongs_to_one, :belongs_to_many, :has_one, :has_many)
@@ -68,19 +71,27 @@ module ActiveDocument
         # Build target document(s) from raw data.
         #
         # @param base [ActiveDocument::Document] The base document
-        # @param object [Object] The object to build from
+        # @param object [Object] The object to build from (document, ID, or nil)
         # @param type [Class, nil] The polymorphic type
         # @param selected_fields [Hash, nil] Selected fields
         # @return [ActiveDocument::Document, Array, Criteria, nil]
         def build(base, object, type = nil, selected_fields = nil)
-          # For has_one/has_many, return criteria to query related documents
+          # If object is a document, return it directly (used when setting associations)
+          return object if object.is_a?(Document)
+
+          # For has_one/has_many, query related documents (FK on other side)
           unless stores_foreign_key?
-            return criteria(base)
+            crit = criteria(base)
+            return one? ? crit.first : crit
           end
 
-          # For belongs_to_*, return the object if it doesn't need a query
-          return object unless query?(object)
+          # For belongs_to_many, always return a criteria
+          return criteria(base) if association_type == :belongs_to_many
 
+          # For belongs_to_one, return nil if no object
+          return nil if object.nil?
+
+          # For belongs_to_one with an ID, query for the document
           execute_query(object, type)
         end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative './has_many_models'
 
-describe ActiveDocument::Association::Referenced::HasMany do
+describe ActiveDocument::Association::Referenced::Association do # has_many type
   context 'when projecting with #only' do
     before do
       school = HmmSchool.create!(district: 'foo')

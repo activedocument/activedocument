@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../has_and_belongs_to_many_models'
 
-describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Eager do
+describe ActiveDocument::Association::Referenced::Eager::BelongsToMany do
 
   describe '.keys_from_docs' do
 

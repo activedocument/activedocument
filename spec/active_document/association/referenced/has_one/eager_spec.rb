@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../has_one_models'
 
-describe ActiveDocument::Association::Referenced::HasOne::Eager do
+describe ActiveDocument::Association::Referenced::Eager::HasOne do
 
   describe '.grouped_doc' do
 

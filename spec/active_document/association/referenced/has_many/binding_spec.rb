@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::Association::Referenced::HasMany::Binding do
+describe ActiveDocument::Association::Referenced::Binding::Has do
 
   let(:person) do
     Person.new

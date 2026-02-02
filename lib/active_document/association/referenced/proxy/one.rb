@@ -16,6 +16,7 @@ module ActiveDocument
             super do
               characterize_one(_target) if _target
               bind_one
+              save_target_if_base_persisted
             end
           end
 
@@ -36,7 +37,28 @@ module ActiveDocument
 
             self._target = normalize(replacement)
             bind_one
+            save_target_if_persistable
             self
+          end
+
+          # Save the target document if the base is persisted and we're not in a
+          # building block.
+          def save_target_if_persistable
+            return unless persistable?
+
+            _target.save
+          end
+
+          # Save the target when the base is persisted (for has_one/has_many).
+          # This persists the FK on the target document.
+          def save_target_if_base_persisted
+            return unless _base&.persisted? && _target&.persisted?
+            return if _building?
+
+            # Only save if the target has FK changes
+            return unless _target.changed?
+
+            _target.save
           end
 
           private

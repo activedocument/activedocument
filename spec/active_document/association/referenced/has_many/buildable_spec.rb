@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::Association::Referenced::HasMany::Buildable do
+describe ActiveDocument::Association::Referenced::Association do
 
   let(:base) do
     double

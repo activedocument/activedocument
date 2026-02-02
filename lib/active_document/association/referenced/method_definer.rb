@@ -24,7 +24,9 @@ module ActiveDocument
             define_creator!
             # Note: For belongs_to_one, the foreign key field creates the _id accessor.
             # We don't need separate _id getter/setter methods.
-          else
+          elsif association.association_type == :has_many
+            # Only define _ids accessors for has_many.
+            # For belongs_to_many, the foreign key field already provides _ids accessor.
             define_ids_getter!
             define_ids_setter!
           end

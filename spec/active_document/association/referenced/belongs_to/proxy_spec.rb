@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'support/models/canvas'
 require_relative '../belongs_to_models'
 
-describe ActiveDocument::Association::Referenced::BelongsTo::Proxy do
+describe ActiveDocument::Association::Referenced::Proxy::One do
 
   before(:all) do
     Person.reset_callbacks(:validate)

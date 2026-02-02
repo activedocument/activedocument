@@ -186,13 +186,12 @@ module ActiveDocument
           def substitute(replacement)
             if replacement
               new_docs = replacement.compact
-              docs = []
-              new_ids = new_docs.map(&:_id)
-              remove_not_in(new_ids)
-              new_docs.each do |doc|
-                docs.push(doc) if doc.send(_association.foreign_key) != _base.send(_association.primary_key)
+
+              if belongs_to_many?
+                substitute_belongs_to_many(new_docs)
+              else
+                substitute_has_many(new_docs)
               end
-              concat(docs)
             else
               purge
             end
@@ -397,6 +396,40 @@ module ActiveDocument
 
           def _session
             _base.send(:_session)
+          end
+
+          # Check if this is a belongs_to_many association.
+          #
+          # @return [Boolean]
+          def belongs_to_many?
+            _association.association_type == :belongs_to_many
+          end
+
+          # Substitute for has_many associations.
+          # FK is on the target side, so we need to update target documents.
+          #
+          # @param new_docs [Array<ActiveDocument::Document>] The new documents
+          def substitute_has_many(new_docs)
+            docs = []
+            new_ids = new_docs.map(&:_id)
+            remove_not_in(new_ids)
+            new_docs.each do |doc|
+              docs.push(doc) if doc.send(_association.foreign_key) != _base.send(_association.primary_key)
+            end
+            concat(docs)
+          end
+
+          # Substitute for belongs_to_many associations.
+          # FK is on our side as an array, so we just need to update _base's FK array.
+          #
+          # @param new_docs [Array<ActiveDocument::Document>] The new documents
+          def substitute_belongs_to_many(new_docs)
+            # Unbind current documents
+            in_memory.each { |doc| unbind_one(doc) }
+            _target.clear
+
+            # Bind new documents
+            new_docs.each { |doc| append(doc) }
           end
 
           class << self

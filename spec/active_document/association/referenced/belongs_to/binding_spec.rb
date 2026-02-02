@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::Association::Referenced::BelongsTo::Binding do
+describe ActiveDocument::Association::Referenced::Binding::BelongsToOne do
 
   let(:person) do
     Person.new

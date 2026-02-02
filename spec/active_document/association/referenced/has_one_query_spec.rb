@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative './has_one_models'
 
-describe ActiveDocument::Association::Referenced::HasOne do
+describe ActiveDocument::Association::Referenced::Association do # has_one type
   context 'when projecting with #only' do
     before do
       college = HomCollege.create!(state: 'ny')

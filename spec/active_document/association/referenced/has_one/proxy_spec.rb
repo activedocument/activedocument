@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::Association::Referenced::HasOne::Proxy do
+describe ActiveDocument::Association::Referenced::Proxy::One do
 
   describe '#=' do
 
