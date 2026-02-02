@@ -127,14 +127,14 @@ module ActiveDocument
           define_association!(__method__, name, options, &block)
         end
 
-        # Adds a referenced association from the child Document to a Document
-        # in another database or collection.
+        # Adds a referenced association from the child Document to a single Document
+        # in another database or collection. The foreign key is stored on this document.
         #
         # @example Define the association.
         #
         #   class Game
         #     include ActiveDocument::Document
-        #     belongs_to :person
+        #     belongs_to_one :person
         #   end
         #
         #   class Person
@@ -145,12 +145,41 @@ module ActiveDocument
         # @param [ Symbol ] name The name of the association.
         # @param [ Hash ] options The association options.
         # @param &block Optional block for defining extensions.
-        def belongs_to(name, options = {}, &block)
-          define_association!(__method__, name, options, &block)
+        def belongs_to_one(name, options = {}, &block)
+          define_v2_association!(name, :belongs_to_one, options, &block)
+        end
+
+        # Alias for backwards compatibility.
+        alias_method :belongs_to, :belongs_to_one
+
+        # Adds a referenced association from the child Document to multiple Documents
+        # in another database or collection. The foreign key array is stored on this document.
+        #
+        # This replaces has_and_belongs_to_many with clearer semantics about where
+        # the foreign keys are stored.
+        #
+        # @example Define the association.
+        #
+        #   class Person
+        #     include ActiveDocument::Document
+        #     belongs_to_many :preferences
+        #   end
+        #
+        #   class Preference
+        #     include ActiveDocument::Document
+        #     has_many :people, inverse_of: :preferences
+        #   end
+        #
+        # @param [ Symbol ] name The name of the association.
+        # @param [ Hash ] options The association options.
+        # @param &block Optional block for defining extensions.
+        def belongs_to_many(name, options = {}, &block)
+          define_v2_association!(name, :belongs_to_many, options, &block)
         end
 
         # Adds a referenced association from a parent Document to many
-        # Documents in another database or collection.
+        # Documents in another database or collection. The foreign key is
+        # stored on the target documents.
         #
         # @example Define the association.
         #
@@ -159,20 +188,23 @@ module ActiveDocument
         #     has_many :posts
         #   end
         #
-        #   class Game
+        #   class Post
         #     include ActiveDocument::Document
-        #     belongs_to :person
+        #     belongs_to_one :person
         #   end
         #
         # @param [ Symbol ] name The name of the association.
         # @param [ Hash ] options The association options.
         # @param &block Optional block for defining extensions.
         def has_many(name, options = {}, &block)
-          define_association!(__method__, name, options, &block)
+          define_v2_association!(name, :has_many, options, &block)
         end
 
         # Adds a referenced many-to-many association between many of this
         # Document and many of another Document.
+        #
+        # @deprecated Use {#belongs_to_many} instead. This method will be removed
+        #   in a future version.
         #
         # @example Define the association.
         #
@@ -190,29 +222,34 @@ module ActiveDocument
         # @param [ Hash ] options The association options.
         # @param &block Optional block for defining extensions.
         def has_and_belongs_to_many(name, options = {}, &block)
-          define_association!(__method__, name, options, &block)
+          ActiveDocument.logger&.warn(
+            "DEPRECATION WARNING: has_and_belongs_to_many is deprecated. Use belongs_to_many instead. " \
+            "(called from #{caller_locations(1, 1).first})"
+          )
+          belongs_to_many(name, options, &block)
         end
 
-        # Adds a referenced association from the child Document to a Document
-        # in another database or collection.
+        # Adds a referenced association from a parent Document to a single
+        # Document in another database or collection. The foreign key is
+        # stored on the target document.
         #
         # @example Define the association.
-        #
-        #   class Game
-        #     include ActiveDocument::Document
-        #     belongs_to :person
-        #   end
         #
         #   class Person
         #     include ActiveDocument::Document
         #     has_one :game
         #   end
         #
+        #   class Game
+        #     include ActiveDocument::Document
+        #     belongs_to_one :person
+        #   end
+        #
         # @param [ Symbol ] name The name of the association.
         # @param [ Hash ] options The association options.
         # @param &block Optional block for defining extensions.
         def has_one(name, options = {}, &block)
-          define_association!(__method__, name, options, &block)
+          define_v2_association!(name, :has_one, options, &block)
         end
 
         private
@@ -225,6 +262,13 @@ module ActiveDocument
               aliased_associations[assoc.store_as] = name
               stored_as_associations << assoc.store_as
             end
+          end
+        end
+
+        def define_v2_association!(name, type, options = {}, &block)
+          Referenced::V2::Association.new(self, name, type, options, &block).tap do |assoc|
+            assoc.setup!
+            self.relations = relations.merge(name.to_s => assoc)
           end
         end
       end

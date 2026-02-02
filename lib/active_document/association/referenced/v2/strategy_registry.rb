@@ -65,16 +65,17 @@ module ActiveDocument
             # @param type [Symbol] The association type
             # @return [Hash] The configuration
             # @raise [ArgumentError] If type is unknown
-            def for(type)
+            def [](type)
               CONFIGURATIONS[type] || raise(ArgumentError, "Unknown association type: #{type}")
             end
+            alias_method :for, :[]
 
             # Get the foreign key strategy class for a type.
             #
             # @param type [Symbol] The association type
             # @return [Class] The foreign key strategy class
             def foreign_key_class(type)
-              for(type)[:foreign_key]
+              self[type][:foreign_key]
             end
 
             # Get the cardinality strategy class for a type.
@@ -82,7 +83,7 @@ module ActiveDocument
             # @param type [Symbol] The association type
             # @return [Class] The cardinality strategy class
             def cardinality_class(type)
-              for(type)[:cardinality]
+              self[type][:cardinality]
             end
 
             # Get the binder class for a type.
@@ -90,7 +91,7 @@ module ActiveDocument
             # @param type [Symbol] The association type
             # @return [Class] The binder class
             def binder_class(type)
-              for(type)[:binder]
+              self[type][:binder]
             end
 
             # Get the proxy class for a type.
@@ -98,7 +99,7 @@ module ActiveDocument
             # @param type [Symbol] The association type
             # @return [Class] The proxy class
             def proxy_class(type)
-              for(type)[:proxy]
+              self[type][:proxy]
             end
 
             # Get the eager loader class for a type.
@@ -106,7 +107,7 @@ module ActiveDocument
             # @param type [Symbol] The association type
             # @return [Class] The eager loader class
             def eager_loader_class(type)
-              for(type)[:eager_loader]
+              self[type][:eager_loader]
             end
 
             # Get the default validation setting for a type.
@@ -114,7 +115,7 @@ module ActiveDocument
             # @param type [Symbol] The association type
             # @return [Boolean] The default validation setting
             def validation_default(type)
-              for(type)[:validation_default]
+              self[type][:validation_default]
             end
 
             # Get the valid relation complements for a type.
@@ -122,7 +123,7 @@ module ActiveDocument
             # @param type [Symbol] The association type
             # @return [Array<Symbol>] The valid complement types
             def relation_complements(type)
-              for(type)[:relation_complements]
+              self[type][:relation_complements]
             end
           end
         end
