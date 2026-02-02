@@ -516,6 +516,81 @@ describe ActiveDocument::Document do
         expect(person.as_document).to_not have_key('name')
       end
     end
+
+    # MONGOID-5810: as_document should not leak internal state
+    context 'when modifying the returned document' do
+
+      it 'does not affect the original document attributes' do
+        doc = person.as_document
+        doc['title'] = 'Modified'
+
+        expect(person.title).to eq('Sir')
+        expect(person.as_document['title']).to eq('Sir')
+      end
+
+      it 'does not affect previously returned as_document results' do
+        doc1 = person.as_document
+        doc2 = person.as_document
+        doc2['title'] = 'Modified'
+
+        expect(doc1['title']).to eq('Sir')
+      end
+
+      it 'does not leak nested embedded document modifications' do
+        doc1 = person.as_document
+        addresses = doc1['addresses']
+        addresses.first['street'] = 'Modified Street'
+
+        # The original address should be unchanged
+        expect(person.addresses.first.street).to eq('Upper')
+        # A new as_document call should return the original value
+        expect(person.as_document['addresses'].first['street']).to eq('Upper')
+      end
+
+      it 'does not leak deeply nested embedded document modifications' do
+        doc1 = person.as_document
+        locations = doc1['addresses'].first['locations']
+        locations.first['name'] = 'Modified Location'
+
+        # The original location should be unchanged
+        expect(person.addresses.first.locations.first.name).to eq('Home')
+        # A new as_document call should return the original value
+        expect(person.as_document['addresses'].first['locations'].first['name']).to eq('Home')
+      end
+    end
+
+    context 'when document is loaded from database' do
+
+      before do
+        person.save!
+      end
+
+      let(:loaded_person) do
+        Person.find(person.id)
+      end
+
+      it 'does not leak embedded document modifications from database-loaded docs' do
+        doc1 = loaded_person.as_document
+        doc1['addresses'].first['street'] = 'Modified'
+
+        expect(loaded_person.addresses.first.street).to eq('Upper')
+        expect(loaded_person.as_document['addresses'].first['street']).to eq('Upper')
+      end
+
+      it 'returns independent copies on each call' do
+        doc1 = loaded_person.as_document
+        doc2 = loaded_person.as_document
+
+        doc1['addresses'].first['street'] = 'Modified1'
+        doc2['addresses'].first['street'] = 'Modified2'
+
+        # Each call should be independent
+        expect(doc1['addresses'].first['street']).to eq('Modified1')
+        expect(doc2['addresses'].first['street']).to eq('Modified2')
+        # And neither should affect the actual document
+        expect(loaded_person.addresses.first.street).to eq('Upper')
+      end
+    end
   end
 
   describe '#to_key' do

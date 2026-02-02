@@ -40,6 +40,7 @@ jobs:
           - ruby-3.2
           - ruby-3.3
           - ruby-3.4
+          - ruby-4.0
         os:
           - ubuntu-latest
         topology:
@@ -57,15 +58,18 @@ jobs:
           - ruby: ruby-3.4
             rails: '8.1'
             gemfile: gemfiles/rails_8.1.gemfile
+          - ruby: ruby-4.0
+            rails: '8.1'
+            gemfile: gemfiles/rails_8.1.gemfile
 
           # TODO: Test driver versions
           # TODO: Test BSON versions
 
           # Older MongoDB Server versions
-          - ruby: ruby-3.4
+          - ruby: ruby-3.2
             mongodb: '6.0'
             os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
-          - ruby: ruby-3.4
+          - ruby: ruby-4.0
             mongodb: '7.0'
             os: 'ubuntu-22.04' # see https://github.com/mongodb-labs/drivers-evergreen-tools/issues/652
 
@@ -75,14 +79,14 @@ jobs:
 
           # Field-Level Encryption
           # TODO: support LIBMONGOCRYPT via path
-          - ruby: ruby-3.4
-            topology: sharded_cluster
+          - ruby: ruby-3.3
+            topology: server
             fle: helper
           - ruby: ruby-3.4
             topology: replica_set
             fle: helper
-          - ruby: ruby-3.4
-            topology: server
+          - ruby: ruby-4.0
+            topology: sharded_cluster
             fle: helper
     steps:
       - name: repo checkout
