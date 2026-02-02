@@ -84,12 +84,14 @@ module ActiveDocument
             end
           end
 
+          # Build unscoped criteria for syncing - we want to update ALL documents
+          # in the ID list, not just those matching the association scope
           unless adds.empty?
-            association.criteria(self, adds).without_options.add_to_set(association.inverse_foreign_key => _id)
+            association.unscoped_criteria(adds).add_to_set(association.inverse_foreign_key => _id)
           end
 
           unless subs.empty?
-            association.criteria(self, subs).without_options.pull(association.inverse_foreign_key => _id)
+            association.unscoped_criteria(subs).pull(association.inverse_foreign_key => _id)
           end
         end
 

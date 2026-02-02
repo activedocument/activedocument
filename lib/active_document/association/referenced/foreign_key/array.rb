@@ -65,7 +65,7 @@ module ActiveDocument
               "#{association.options.inverse_of.to_s.singularize}#{SUFFIX}"
             elsif (inv = association.inverse_association&.foreign_key)
               inv
-            else
+            elsif association.inverse_class_name
               "#{association.inverse_class_name.demodulize.underscore}#{SUFFIX}"
             end
           end

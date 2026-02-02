@@ -104,12 +104,12 @@ module ActiveDocument
           owner_class.re_define_method("create_#{name}") do |*args|
             attributes, _options = parse_args(*args)
             document = Factory.build(assoc.klass, attributes)
-            doc = _assigning do
+            _assigning do
               send(:"#{assoc.name}=", document)
             end
-            doc.save
+            document.save
             save if new_record? && assoc.stores_foreign_key?
-            doc
+            document
           end
         end
 

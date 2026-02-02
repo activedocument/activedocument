@@ -129,8 +129,26 @@ module ActiveDocument
           # @param inverse [Symbol] The inverse association name
           def remove_associated_in_to(doc, inverse)
             return unless (associated = doc.ivar(inverse))
+            # Don't remove if already associated with the same base
+            return if associated.equal?(base)
 
-            associated.send(association.setter, nil)
+            # Get the inverse association on the associated document
+            # (e.g., if doc is a trainer, associated is the old animal,
+            # and we need the belongs_to :trainer association on animal)
+            inverse_assoc = associated.relations[association.name.to_s]
+            return unless inverse_assoc
+
+            # Directly clear the foreign key and relation without going through
+            # the setter, which would be blocked by the binding guard
+            if inverse_assoc.stores_foreign_key?
+              associated.write_attribute(inverse_assoc.foreign_key, nil)
+              # Clear polymorphic type if applicable
+              if inverse_assoc.type
+                associated.write_attribute(inverse_assoc.type, nil)
+              end
+            end
+            # Clear the relation ivar
+            associated.set_relation(association.name, nil)
           end
 
           # Try to call a method if it exists

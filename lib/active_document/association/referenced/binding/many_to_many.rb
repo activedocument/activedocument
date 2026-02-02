@@ -8,15 +8,22 @@ module ActiveDocument
         # Manages arrays of foreign keys on both sides (bidirectional).
         class ManyToMany < Base
           # Bind a document to the association.
-          # Adds the base's ID to the document's inverse foreign key array.
+          # Adds the doc's ID to the base's FK array and base's ID to doc's inverse FK array.
           #
           # @param doc [ActiveDocument::Document] The document to bind
           def bind_one(doc)
             return unless doc
 
             binding do
-              inverse_keys = try_method(doc, association.inverse_foreign_key) unless doc.frozen?
+              # Add doc's ID to base's foreign key array (e.g., animal.trainer_ids << trainer._id)
+              base_keys = base.send(association.foreign_key)
+              doc_id = record_id(doc)
+              unless base_keys.include?(doc_id)
+                base_keys.push(doc_id)
+              end
 
+              # Add base's ID to doc's inverse foreign key array (e.g., trainer.animal_ids << animal._id)
+              inverse_keys = try_method(doc, association.inverse_foreign_key) unless doc.frozen?
               if inverse_keys
                 inv_record_id = inverse_record_id(doc)
                 unless inverse_keys.include?(inv_record_id)
@@ -25,9 +32,10 @@ module ActiveDocument
                 doc.reset_relation_criteria(association.inverse)
               end
 
-              # Mark both sides as synced to prevent redundant updates
-              base._synced[association.foreign_key] = true
-              doc._synced[association.inverse_foreign_key] = true if association.inverse_foreign_key
+              # Note: Don't mark as synced here - the after_save callback needs to
+              # run update_inverse_keys to persist the inverse FK arrays in the database.
+              # The _synced flag is only used during the save callback itself to prevent
+              # redundant updates within the same save operation.
             end
           end
 

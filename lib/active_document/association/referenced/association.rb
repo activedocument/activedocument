@@ -113,6 +113,17 @@ module ActiveDocument
           end
         end
 
+        # Build criteria for belongs_to_many without applying scope.
+        # Used for syncing FK arrays where we need to update all documents in the ID list.
+        #
+        # @param id_list [Array] The IDs to query for
+        # @return [ActiveDocument::Criteria]
+        def unscoped_criteria(id_list)
+          return relation_class.none if id_list.blank?
+
+          relation_class.criteria.where(primary_key => { '$in' => id_list })
+        end
+
         # == Delegation to strategies ==
 
         delegate :stores_foreign_key?, :foreign_key, :foreign_key_setter,
@@ -233,7 +244,17 @@ module ActiveDocument
         # @param other [Object] Optional context
         # @return [Association, nil]
         def inverse_association(other = nil)
-          (other || relation_class).relations[inverse(other)]
+          # For polymorphic belongs_to (e.g., belongs_to :unit, polymorphic: true),
+          # we need to use 'other' to determine which class to look up the inverse on.
+          # For has_one/has_many with :as (polymorphic parent), we use relation_class.
+          klass = if polymorphic? && in_to? && other
+                    # Polymorphic belongs_to: look up on the other document's class
+                    other.class
+                  else
+                    # Non-polymorphic or has_one/has_many: look up on relation_class
+                    relation_class
+                  end
+          klass.relations[inverse(other)]
         end
 
         # == Type checking ==
@@ -638,8 +659,8 @@ module ActiveDocument
 
         def synced_save
           assoc = self
-          inverse_class.set_callback(
-            :persist_parent,
+          owner_class.set_callback(
+            :save,
             :after,
             if: ->(doc) { doc._syncable?(assoc) }
           ) do |doc|
@@ -649,7 +670,7 @@ module ActiveDocument
 
         def synced_destroy
           assoc = self
-          inverse_class.set_callback(
+          owner_class.set_callback(
             :destroy,
             :after
           ) do |doc|
@@ -711,8 +732,9 @@ module ActiveDocument
             # When no other object provided, return the :as option as the inverse name
             return [as_name] if other.nil?
 
-            # Look for belongs_to :as_name, polymorphic: true
-            matches = other.relations.values.select do |rel|
+            # Look for belongs_to :as_name, polymorphic: true on the related class
+            # We look in relation_class.relations, not other.relations
+            matches = relation_class.relations.values.select do |rel|
               next false unless valid_complement?(rel)
 
               rel.name.to_sym == as_name.to_sym && rel.polymorphic?

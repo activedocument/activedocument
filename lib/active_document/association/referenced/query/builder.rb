@@ -49,13 +49,14 @@ module ActiveDocument
           #
           # @param base [ActiveDocument::Document] The owning document
           # @param id_list [Array, nil] Optional explicit list of IDs
+          # @param apply_scope [Boolean] Whether to apply association scope (default true)
           # @return [ActiveDocument::Criteria]
-          def criteria_by_id_list(base, id_list = nil)
+          def criteria_by_id_list(base, id_list = nil, skip_scope: false)
             ids = id_list || base.public_send(association.foreign_key)
 
             crit = target_class.criteria
             crit = if ids.present?
-                     crit = apply_scope(crit)
+                     crit = apply_scope(crit) unless skip_scope
                      crit.all_of(association.primary_key => { '$in' => ids })
                    else
                      crit.none
@@ -91,7 +92,28 @@ module ActiveDocument
           def with_polymorphic_criterion(criteria, base)
             return criteria unless association.type
 
-            criteria.where(association.type => base.class.name)
+            # Get all possible keys for this class (aliases + class name) from the resolver
+            # This allows matching when unit_type is stored as an alias like 'dept' instead of 'SandboxDepartment'
+            keys = polymorphic_keys_for(base)
+            if keys.size == 1
+              criteria.where(association.type => keys.first)
+            else
+              criteria.where(association.type => { '$in' => keys })
+            end
+          end
+
+          def polymorphic_keys_for(base)
+            # Get keys from the default model resolver first (covers most cases)
+            # The resolver tracks all aliases for a class via identify_as
+            keys = ActiveDocument::ModelResolver.instance.keys_for(base)
+
+            # If the inverse association uses a custom resolver, also check that
+            inverse_assoc = association.inverse_association(base)
+            if inverse_assoc&.resolver && inverse_assoc.resolver != ActiveDocument::ModelResolver.instance
+              keys = (keys + inverse_assoc.resolver.keys_for(base)).uniq
+            end
+
+            keys.presence || [base.class.name]
           end
 
           def configure_criteria(criteria, base)
