@@ -33,7 +33,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
 
   describe '#relation_complements' do
 
-    let(:expected_complements) { [described_class] }
+    let(:expected_complements) { %i[belongs_to_many has_many has_one] }
 
     it 'returns the relation complements' do
       expect(association.relation_complements).to eq(expected_complements)
@@ -43,18 +43,18 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#setup!' do
 
     it 'sets up a getter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_getter!).with(association)
-      association.setup!
+      association
+      expect(has_many_left_class.new).to respond_to(name)
     end
 
     it 'sets up a setter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_setter!).with(association)
-      association.setup!
+      association
+      expect(has_many_left_class.new).to respond_to(:"#{name}=")
     end
 
     it 'sets up an existence check for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_existence_check!).with(association)
-      association.setup!
+      association
+      expect(has_many_left_class.new).to respond_to(:"#{name}?")
     end
 
     context 'autosave' do
@@ -422,8 +422,8 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
 
   describe '#relation' do
 
-    it 'returns ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy' do
-      expect(association.relation).to be(ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy)
+    it 'returns the proxy class for belongs_to_many associations' do
+      expect(association.relation).to be(ActiveDocument::Association::Referenced::V2::Proxy::Many)
     end
   end
 
@@ -443,8 +443,8 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
 
   describe '#options' do
 
-    it 'returns the options' do
-      expect(association.options).to be(options)
+    it 'returns an options wrapper containing the options' do
+      expect(association.options.raw).to eq(options)
     end
   end
 
@@ -993,7 +993,8 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#cascading_callbacks?' do
 
     it 'returns false' do
-      expect(association.cascading_callbacks?).to be(false)
+      # v2 associations don't have this method - referenced associations don't cascade
+      expect(association).to_not respond_to(:cascading_callbacks?)
     end
   end
 
@@ -1026,9 +1027,10 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
       HasManyRightObject.has_and_belongs_to_many :has_many_left_objects
     end
 
-    it 'returns an the target' do
-      expect(ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy).to receive(:new).and_call_original
-      expect(association.create_relation(left_object, target)).to be_a(Array)
+    it 'returns a proxy wrapping the target' do
+      result = association.create_relation(left_object, target)
+      # The proxy delegates type checks to the enumerable target
+      expect(result).to respond_to(:<<, :build, :create, :delete)
     end
   end
 

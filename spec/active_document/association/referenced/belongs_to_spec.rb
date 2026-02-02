@@ -38,10 +38,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   describe '#relation_complements' do
 
     let(:expected_complements) do
-      [
-        ActiveDocument::Association::Referenced::HasMany,
-        ActiveDocument::Association::Referenced::HasOne
-      ]
+      %i[has_many has_one]
     end
 
     it 'returns the relation complements' do
@@ -52,28 +49,28 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   describe '#setup!' do
 
     it 'sets up a getter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_getter!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(name)
     end
 
     it 'sets up a setter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_setter!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(:"#{name}=")
     end
 
     it 'sets up an existence check for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_existence_check!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(:"#{name}?")
     end
 
     it 'sets up the builder for the relation' do
-      expect(ActiveDocument::Association::Builders).to receive(:define_builder!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(:"build_#{name}")
     end
 
     it 'sets up the creator for the relation' do
-      expect(ActiveDocument::Association::Builders).to receive(:define_creator!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(:"create_#{name}")
     end
 
     context 'autosave' do
@@ -1016,8 +1013,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
   describe '#relation' do
 
-    it 'returns ActiveDocument::Association::Referenced::BelongsTo::Proxy' do
-      expect(association.relation).to be(ActiveDocument::Association::Referenced::BelongsTo::Proxy)
+    it 'returns the proxy class for this association type' do
+      expect(association.relation).to be(ActiveDocument::Association::Referenced::V2::Proxy::One)
     end
   end
 
@@ -1038,7 +1035,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   describe '#options' do
 
     it 'returns the options' do
-      expect(association.options).to be(options)
+      # V2 wraps options in an Options value object
+      expect(association.options.class_name).to eq(options[:class_name])
     end
   end
 
@@ -2078,9 +2076,9 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
       OwnerObject.has_one :belonging_object
     end
 
-    it 'returns an instance of ActiveDocument::Association::Referenced::BelongsTo::Proxy' do
-      expect(ActiveDocument::Association::Referenced::BelongsTo::Proxy).to receive(:new).and_call_original
-      expect(association.create_relation(owner, target)).to be_a(OwnerObject)
+    it 'returns a proxy instance wrapping the target' do
+      result = association.create_relation(owner, target)
+      expect(result._target).to be(target)
     end
   end
 end

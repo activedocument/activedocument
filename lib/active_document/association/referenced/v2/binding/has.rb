@@ -11,8 +11,8 @@ module ActiveDocument
             # Bind a document to the association.
             # Sets foreign key on the related document and inverse reference.
             #
-            # @param doc [ActiveDocument::Document] The document to bind
-            def bind_one(doc)
+            # @param doc [ActiveDocument::Document] The document to bind (defaults to target)
+            def bind_one(doc = target)
               return unless doc
 
               binding do
@@ -23,8 +23,8 @@ module ActiveDocument
             # Unbind a document from the association.
             # Clears foreign key on the related document and inverse reference.
             #
-            # @param doc [ActiveDocument::Document] The document to unbind
-            def unbind_one(doc)
+            # @param doc [ActiveDocument::Document] The document to unbind (defaults to target)
+            def unbind_one(doc = target)
               return unless doc
 
               binding do

@@ -11,7 +11,6 @@ module ActiveDocument
           PRIMARY_KEY_DEFAULT = '_id'
 
           attr_reader :name, :owner_class, :association_type
-          attr_reader :options
           attr_reader :foreign_key_strategy, :cardinality_strategy
           attr_reader :binder_class, :proxy_class, :eager_loader_class
 
@@ -20,6 +19,9 @@ module ActiveDocument
 
           # Extension module for this association
           attr_reader :extension
+
+          # The options wrapper (for code that needs to inspect options)
+          attr_reader :options
 
           # @param owner_class [Class] The class that owns this association
           # @param name [Symbol] The name of the association
@@ -31,6 +33,7 @@ module ActiveDocument
             @name = name
             @association_type = type
             @options = Options.new(opts)
+            @autosave_enabled = false
             @extension = nil
 
             @module_path = owner_class.name ? owner_class.name.split('::')[0..-2].join('::') : ''
@@ -107,7 +110,7 @@ module ActiveDocument
           #
           # @return [String]
           def relation_class_name
-            @class_name ||= options.class_name || ActiveSupport::Inflector.classify(name)
+            @class_name ||= @options.class_name || ActiveSupport::Inflector.classify(name)
           end
           alias_method :class_name, :relation_class_name
 
@@ -116,7 +119,7 @@ module ActiveDocument
           # @return [Class]
           def relation_class
             @klass ||= begin
-              cls_name = options.class_name || ActiveSupport::Inflector.classify(name)
+              cls_name = @options.class_name || ActiveSupport::Inflector.classify(name)
               resolve_name(inverse_class, cls_name)
             end
           end
@@ -141,7 +144,15 @@ module ActiveDocument
           #
           # @return [String]
           def primary_key
-            options.primary_key
+            @options.primary_key
+          end
+
+          # The explicitly configured foreign key option (if any).
+          # Used by ForeignKey strategies to determine the field name.
+          #
+          # @return [String, nil]
+          def foreign_key_option
+            @options.foreign_key
           end
 
           # The setter method name.
@@ -182,8 +193,8 @@ module ActiveDocument
           # @param other [Object] Optional context
           # @return [Array<Symbol>]
           def inverses(other = nil)
-            return [options.inverse_of] if options.inverse_of
-            return [] if options.forced_nil_inverse?
+            return [@options.inverse_of] if @options.inverse_of
+            return [] if @options.forced_nil_inverse?
 
             if polymorphic?
               polymorphic_inverses(other)
@@ -225,20 +236,58 @@ module ActiveDocument
             false
           end
 
+          # Whether this association is cyclic.
+          # Referenced associations are never cyclic (only embedded can be).
+          #
+          # @return [false]
+          def cyclic?
+            false
+          end
+
+          # The store_as option (only applies to embedded).
+          #
+          # @return [nil]
+          def store_as
+            nil
+          end
+
+          # The proxy class for this association type.
+          # Compatibility method for code expecting the old API.
+          #
+          # @return [Class]
+          def relation
+            proxy_class
+          end
+
+          # The inverse_of option value.
+          #
+          # @return [Symbol, nil]
+          def inverse_of
+            @options.inverse_of
+          end
+
+          # Returns the autosave setting.
+          # Alias for autosave? for compatibility with old API.
+          #
+          # @return [Boolean]
+          def autosave
+            @options.autosave?
+          end
+
           # == Options ==
 
           # Whether this association is polymorphic.
           #
           # @return [Boolean]
           def polymorphic?
-            @polymorphic ||= !!options[:polymorphic] || !!options[:as]
+            @polymorphic ||= @options.polymorphic? || !!@options.as
           end
 
           # The polymorphic type field name.
           #
           # @return [String, nil]
           def type
-            @type ||= "#{options[:as]}_type" if options[:as]
+            @type ||= "#{@options.as}_type" if @options.as
           end
 
           # The type setter method name.
@@ -266,15 +315,15 @@ module ActiveDocument
           #
           # @return [ActiveDocument::ModelResolver, nil]
           def resolver
-            @resolver ||= ActiveDocument::ModelResolver.resolver(options[:polymorphic]) if polymorphic?
+            @resolver ||= ActiveDocument::ModelResolver.resolver(@options[:polymorphic]) if polymorphic?
           end
 
           # Whether to validate the association.
           #
           # @return [Boolean]
           def validate?
-            @validate ||= if options.validate?
-                            !!options.validate
+            @validate ||= if @options.validate?
+                            !!@options.validate
                           else
                             validation_default
                           end
@@ -291,28 +340,38 @@ module ActiveDocument
           #
           # @return [Boolean]
           def autosave?
-            options.autosave?
+            @autosave_enabled || @options.autosave?
+          end
+
+          # Enable autosave for this association (called by accepts_nested_attributes_for).
+          #
+          # @return [void]
+          def enable_autosave!
+            return if @autosave_enabled
+
+            @autosave_enabled = true
+            ActiveDocument::Association::Referenced::AutoSave.define_autosave!(self)
           end
 
           # Whether to autobuild.
           #
           # @return [Boolean]
           def autobuilding?
-            options.autobuild?
+            @options.autobuild?
           end
 
           # Whether indexed.
           #
           # @return [Boolean]
           def indexed?
-            options.indexed?
+            @options.indexed?
           end
 
           # The dependent option.
           #
           # @return [Symbol, nil]
           def dependent
-            options.dependent
+            @options.dependent
           end
 
           # Whether destructive dependent.
@@ -326,51 +385,51 @@ module ActiveDocument
           #
           # @return [Boolean]
           def counter_cached?
-            options.counter_cached?
+            @options.counter_cached?
           end
 
           # Whether touchable.
           #
           # @return [Boolean]
           def touchable?
-            options.touchable?
+            @options.touchable?
           end
 
           # The touch field.
           #
           # @return [String, Symbol, nil]
           def touch_field
-            options.touch_field
+            @options.touch_field
           end
 
           # The order option.
           #
           # @return [Hash, nil]
           def order
-            options.order
+            @options.order
           end
 
           # The scope option.
           #
           # @return [Proc, Symbol, nil]
           def scope
-            options.scope
+            @options.scope
           end
 
           # The :as option (polymorphic name).
           #
           # @return [Symbol, nil]
           def as
-            options.as
+            @options.as
           end
 
           # The counter cache column name.
           #
           # @return [String]
           def counter_cache_column_name
-            @counter_cache_column_name ||= if options.counter_cache.is_a?(String) ||
-                                              options.counter_cache.is_a?(Symbol)
-                                             options.counter_cache
+            @counter_cache_column_name ||= if @options.counter_cache.is_a?(String) ||
+                                              @options.counter_cache.is_a?(Symbol)
+                                             @options.counter_cache
                                            else
                                              "#{inverse || inverse_class_name.demodulize.underscore.pluralize}_count"
                                            end
@@ -381,14 +440,14 @@ module ActiveDocument
           # @param callback_type [Symbol] The callback type
           # @return [Array<Proc, Symbol>]
           def get_callbacks(callback_type)
-            options.get_callbacks(callback_type)
+            @options.get_callbacks(callback_type)
           end
 
           # Whether the inverse was forced to nil.
           #
           # @return [Boolean]
           def forced_nil_inverse?
-            options.forced_nil_inverse?
+            @options.forced_nil_inverse?
           end
 
           # Whether this association can bind a document.
@@ -396,9 +455,14 @@ module ActiveDocument
           # @param doc [ActiveDocument::Document] The document
           # @return [Boolean]
           def bindable?(doc)
+            return true if forced_nil_inverse?
+
             case association_type
             when :belongs_to_many
-              forced_nil_inverse? || (!!inverse && doc.fields.key?(foreign_key))
+              !!inverse && doc.fields.key?(foreign_key)
+            when :has_one, :has_many
+              # For has_one/has_many, the FK is on the target side
+              !!inverse(doc) && doc.fields.key?(foreign_key)
             else
               false
             end
@@ -409,6 +473,24 @@ module ActiveDocument
           # @return [String]
           def key
             stores_foreign_key? ? foreign_key : primary_key
+          end
+
+          # Convert the supplied object to the appropriate type to set as the
+          # foreign key for an association.
+          #
+          # @param object [Object] The object to convert.
+          # @return [Object] The object cast to the correct type.
+          def convert_to_foreign_key(object)
+            return convert_polymorphic(object) if polymorphic?
+
+            field = relation_class.fields['_id']
+            if relation_class.using_object_ids?
+              ActiveDocument::TypeConverters::ForeignKey.to_database_cast(object)
+            elsif object.is_a?(::Array)
+              object.map! { |obj| field.mongoize(obj) }
+            else
+              field.mongoize(object)
+            end
           end
 
           # The nested builder.
@@ -444,11 +526,18 @@ module ActiveDocument
 
             relation_class_name == other.relation_class_name &&
               inverse_class_name == other.inverse_class_name &&
-              name == other.name &&
-              options.raw == other.options.raw
+              name == other.name
           end
 
           private
+
+          def convert_polymorphic(object)
+            if object.is_a?(ActiveDocument::Document)
+              object._id
+            else
+              ActiveDocument::TypeConverters::ForeignKey.to_database_cast(object)
+            end
+          end
 
           def configure_strategies!
             config = StrategyRegistry.for(association_type)
@@ -471,7 +560,7 @@ module ActiveDocument
           end
 
           def validate_options!
-            options.validate!(association_type, owner_class, name)
+            @options.validate!(association_type, owner_class, name)
 
             [name, :"#{name}?", :"#{name}="].each do |n|
               next unless ActiveDocument.destructive_fields.include?(n)
@@ -486,14 +575,16 @@ module ActiveDocument
           end
 
           def setup_polymorphic!
-            return unless polymorphic? && association_type == :belongs_to_one
+            return unless polymorphic?
 
             owner_class.polymorphic = true
-            owner_class.field(inverse_type, type: :string)
+
+            # For belongs_to_one, create the inverse_type field on this document
+            owner_class.field(inverse_type, type: :string) if association_type == :belongs_to_one
           end
 
           def setup_callbacks!
-            setup_autosave! if autosave?
+            setup_autosave! if @options.autosave?
             setup_counter_cache! if counter_cached?
             setup_dependency! if dependent
             setup_touchable! if touchable?
@@ -503,19 +594,20 @@ module ActiveDocument
           end
 
           def setup_autosave!
-            Association::Referenced::AutoSave.define_autosave!(self)
+            ActiveDocument::Association::Referenced::AutoSave.define_autosave!(self)
+            @autosave_enabled = true
           end
 
           def setup_counter_cache!
-            Association::Referenced::CounterCache.define_callbacks!(self)
+            ActiveDocument::Association::Referenced::CounterCache.define_callbacks!(self)
           end
 
           def setup_dependency!
-            Association::Depending.define_dependency!(self)
+            ActiveDocument::Association::Depending.define_dependency!(self)
           end
 
           def setup_touchable!
-            Association::Touchable.define_touchable!(self)
+            ActiveDocument::Touchable.define_touchable!(self)
           end
 
           def setup_syncing!
@@ -560,8 +652,8 @@ module ActiveDocument
           def require_association?
             return false unless association_type == :belongs_to_one
 
-            required = options[:required] if options.key?(:required)
-            required = !options[:optional] if options.key?(:optional) && required.nil?
+            required = @options[:required] if @options.key?(:required)
+            required = !@options[:optional] if @options.key?(:optional) && required.nil?
             required.nil? ? ActiveDocument.belongs_to_required_by_default : required
           end
 
@@ -596,10 +688,33 @@ module ActiveDocument
           end
 
           def polymorphic_inverses(other)
-            return unless other
+            as_name = @options.as
+
+            # For has_one/has_many with :as option
+            if as_name
+              # When no other object provided, return the :as option as the inverse name
+              return [as_name] if other.nil?
+
+              # Look for belongs_to :as_name, polymorphic: true
+              matches = other.relations.values.select do |rel|
+                next false unless valid_complement?(rel)
+
+                rel.name.to_sym == as_name.to_sym && rel.polymorphic?
+              end
+
+              return matches.collect(&:name)
+            end
+
+            # For polymorphic belongs_to, look for has_one/has_many with as: matching our name
+            return nil unless other
 
             matches = other.relations.values.select do |rel|
-              valid_complement?(rel) && rel.as == name && rel.relation_class_name == inverse_class_name
+              next false unless valid_complement?(rel)
+
+              # The inverse has_one/has_many should have :as matching our name
+              # and its class should point to our owner class
+              rel.as&.to_sym == name.to_sym &&
+                rel.relation_class_name == inverse_class_name
             end
 
             matches.collect(&:name)

@@ -46,9 +46,12 @@ module ActiveDocument
             BELONGS_TO_MANY + INDEX
           ).freeze
 
+          # has_one specific options
+          HAS_ONE = %i[autosave autobuild].freeze
+
           # All valid options for has_one
           HAS_ONE_OPTIONS = (
-            SHARED + FOREIGN_KEY + DEPENDENT + POLYMORPHIC + INDEX
+            SHARED + FOREIGN_KEY + DEPENDENT + HAS_ONE + QUERYING + POLYMORPHIC + INDEX
           ).freeze
 
           # All valid options for has_many

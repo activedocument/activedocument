@@ -36,7 +36,7 @@ module ActiveDocument
             # The foreign key field name
             # @return [String]
             def foreign_key
-              @foreign_key ||= association.options.foreign_key || default_foreign_key
+              @foreign_key ||= association.foreign_key_option || default_foreign_key
             end
 
             # The foreign key setter method name

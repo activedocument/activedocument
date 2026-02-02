@@ -289,8 +289,13 @@ module ActiveDocument
               end
             end
 
+            # Methods that should never be delegated to target
+            NON_DELEGATED_METHODS = %i[class is_a? kind_of? instance_of?].freeze
+
             # Delegate unknown methods to target or criteria.
             def method_missing(name, ...)
+              return super if NON_DELEGATED_METHODS.include?(name)
+
               if _target.respond_to?(name)
                 _target.send(name, ...)
               else
@@ -306,6 +311,8 @@ module ActiveDocument
             # @param _include_private [Boolean] Include private methods
             # @return [Boolean]
             def respond_to_missing?(name, _include_private = false)
+              return false if NON_DELEGATED_METHODS.include?(name)
+
               _target.respond_to?(name) || criteria.respond_to?(name)
             end
 

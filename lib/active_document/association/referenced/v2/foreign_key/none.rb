@@ -34,7 +34,13 @@ module ActiveDocument
             # The foreign key field name on the related document
             # @return [String]
             def foreign_key
-              @foreign_key ||= association.options.foreign_key || default_foreign_key
+              @foreign_key ||= association.foreign_key_option || default_foreign_key
+            end
+
+            # No foreign key check for associations that don't store the FK
+            # @return [nil]
+            def foreign_key_check
+              nil
             end
 
             # No index created on this side

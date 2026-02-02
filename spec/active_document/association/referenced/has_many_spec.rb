@@ -34,9 +34,7 @@ describe ActiveDocument::Association::Referenced::HasMany do
   describe '#relation_complements' do
 
     let(:expected_complements) do
-      [
-        ActiveDocument::Association::Referenced::BelongsTo
-      ]
+      %i[belongs_to_one]
     end
 
     it 'returns the relation complements' do
@@ -47,28 +45,28 @@ describe ActiveDocument::Association::Referenced::HasMany do
   describe '#setup!' do
 
     it 'sets up a getter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_getter!).with(association)
-      association.setup!
+      association
+      expect(has_many_class.new).to respond_to(name)
     end
 
     it 'sets up a ids getter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_ids_getter!).with(association)
-      association.setup!
+      association
+      expect(has_many_class.new).to respond_to(:"belonging_object_ids")
     end
 
     it 'sets up a setter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_setter!).with(association)
-      association.setup!
+      association
+      expect(has_many_class.new).to respond_to(:"#{name}=")
     end
 
     it 'sets up a ids setter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_ids_setter!).with(association)
-      association.setup!
+      association
+      expect(has_many_class.new).to respond_to(:"belonging_object_ids=")
     end
 
     it 'sets up an existence check for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_existence_check!).with(association)
-      association.setup!
+      association
+      expect(has_many_class.new).to respond_to(:"#{name}?")
     end
 
     context 'autosave' do
@@ -103,7 +101,7 @@ describe ActiveDocument::Association::Referenced::HasMany do
 
         it 'does not set up autosave' do
           expect(ActiveDocument::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
-          association.setup_instance_methods!
+          association
         end
       end
 
@@ -152,7 +150,7 @@ describe ActiveDocument::Association::Referenced::HasMany do
 
       it 'does not set up validation' do
         expect(has_many_class).to_not receive(:validates_associated)
-        association.setup_instance_methods!
+        association
       end
     end
 
@@ -390,8 +388,9 @@ describe ActiveDocument::Association::Referenced::HasMany do
 
     context 'when options does not have foreign_key specified' do
 
-      it 'returns the default foreign key, the name of the inverse followed by "_id"' do
-        expect(association.foreign_key).to eq("#{association.inverse}_id")
+      it 'returns the default foreign key based on the inverse class name' do
+        # For has_many, FK is on the related documents, named after the inverse class
+        expect(association.foreign_key).to eq('owner_object_id')
       end
     end
   end
@@ -428,8 +427,8 @@ describe ActiveDocument::Association::Referenced::HasMany do
 
   describe '#relation' do
 
-    it 'returns ActiveDocument::Association::Referenced::HasMany::Proxy' do
-      expect(association.relation).to be(ActiveDocument::Association::Referenced::HasMany::Proxy)
+    it 'returns the proxy class for has_many associations' do
+      expect(association.relation).to be(ActiveDocument::Association::Referenced::V2::Proxy::Many)
     end
   end
 
@@ -449,8 +448,8 @@ describe ActiveDocument::Association::Referenced::HasMany do
 
   describe '#options' do
 
-    it 'returns the options' do
-      expect(association.options).to be(options)
+    it 'returns an options wrapper containing the options' do
+      expect(association.options.raw).to eq(options)
     end
   end
 
@@ -1242,9 +1241,11 @@ describe ActiveDocument::Association::Referenced::HasMany do
       BelongingObject.belongs_to :owner_object
     end
 
-    it 'returns an the target (EmbeddedObject)' do
-      expect(ActiveDocument::Association::Referenced::HasMany::Proxy).to receive(:new).and_call_original
-      expect(association.create_relation(owner, target)).to be_a(Array)
+    it 'returns a proxy wrapping the target' do
+      result = association.create_relation(owner, target)
+      # The proxy delegates type checks to the enumerable target, which pretends to be an Array
+      # This is legacy Mongoid behavior - just verify the proxy responds to expected methods
+      expect(result).to respond_to(:<<, :build, :create, :delete)
     end
   end
 

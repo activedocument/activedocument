@@ -23,8 +23,8 @@ module ActiveDocument
             if association.one?
               define_builder!
               define_creator!
-              define_id_getter! if association.stores_foreign_key?
-              define_id_setter! if association.stores_foreign_key?
+              # Note: For belongs_to_one, the foreign key field creates the _id accessor.
+              # We don't need separate _id getter/setter methods.
             else
               define_ids_getter!
               define_ids_setter!
