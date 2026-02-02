@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_relative './has_one_models'
 
-describe ActiveDocument::Association::Referenced::HasOne do
+describe ActiveDocument::Association::Referenced::Association do
+  describe 'has_one type' do
 
   before do
     class OwnerObject; include ActiveDocument::Document; end
@@ -82,7 +83,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :has_one macro
-          described_class.new(has_one_class, name, options)
+          described_class.new(has_one_class, name, :has_one, options)
         end
 
         it 'sets up autosave' do
@@ -110,7 +111,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :has_one macro
-          described_class.new(has_one_class, name, options)
+          described_class.new(has_one_class, name, :has_one, options)
         end
 
         it 'does not set up autosave' do
@@ -131,7 +132,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
       let(:association) do
         # Note that it is necessary to create the association directly, otherwise the
         # setup! method will be called by the :has_one macro
-        described_class.new(has_one_class, name, options)
+        described_class.new(has_one_class, name, :has_one, options)
       end
 
       it 'sets up validation' do
@@ -159,7 +160,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
       let(:association) do
         # Note that it is necessary to create the association directly, otherwise the
         # setup! method will be called by the :embeds_one macro
-        described_class.new(has_one_class, name, options)
+        described_class.new(has_one_class, name, :has_one, options)
       end
 
       it 'sets up the validation because it uses the validation default (true)' do
@@ -210,7 +211,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_one_class, name, options)
+            described_class.new(has_one_class, name, :has_one, options)
           end
 
           it 'sets up the dependency' do
@@ -230,7 +231,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_one_class, name, options)
+            described_class.new(has_one_class, name, :has_one, options)
           end
 
           it 'sets up the dependency' do
@@ -250,7 +251,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_one_class, name, options)
+            described_class.new(has_one_class, name, :has_one, options)
           end
 
           it 'sets up the dependency' do
@@ -270,7 +271,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_one_class, name, options)
+            described_class.new(has_one_class, name, :has_one, options)
           end
 
           it 'sets up the dependency' do
@@ -290,7 +291,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_one_class, name, options)
+            described_class.new(has_one_class, name, :has_one, options)
           end
 
           it 'sets up the dependency' do
@@ -435,7 +436,7 @@ describe ActiveDocument::Association::Referenced::HasOne do
   describe '#relation' do
 
     it 'returns the proxy class for has_one associations' do
-      expect(association.relation).to be(ActiveDocument::Association::Referenced::V2::Proxy::One)
+      expect(association.relation).to be(ActiveDocument::Association::Referenced::Proxy::One)
     end
   end
 
@@ -1380,5 +1381,6 @@ describe ActiveDocument::Association::Referenced::HasOne do
       result = association.create_relation(owner, target)
       expect(result._target).to be(target)
     end
+  end
   end
 end

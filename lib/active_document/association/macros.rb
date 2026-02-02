@@ -146,7 +146,7 @@ module ActiveDocument
         # @param [ Hash ] options The association options.
         # @param &block Optional block for defining extensions.
         def belongs_to_one(name, options = {}, &block)
-          define_v2_association!(name, :belongs_to_one, options, &block)
+          define_referenced_association!(name, :belongs_to_one, options, &block)
         end
 
         # Alias for backwards compatibility.
@@ -174,7 +174,7 @@ module ActiveDocument
         # @param [ Hash ] options The association options.
         # @param &block Optional block for defining extensions.
         def belongs_to_many(name, options = {}, &block)
-          define_v2_association!(name, :belongs_to_many, options, &block)
+          define_referenced_association!(name, :belongs_to_many, options, &block)
         end
 
         # Adds a referenced association from a parent Document to many
@@ -197,7 +197,7 @@ module ActiveDocument
         # @param [ Hash ] options The association options.
         # @param &block Optional block for defining extensions.
         def has_many(name, options = {}, &block)
-          define_v2_association!(name, :has_many, options, &block)
+          define_referenced_association!(name, :has_many, options, &block)
         end
 
         # Adds a referenced many-to-many association between many of this
@@ -249,7 +249,7 @@ module ActiveDocument
         # @param [ Hash ] options The association options.
         # @param &block Optional block for defining extensions.
         def has_one(name, options = {}, &block)
-          define_v2_association!(name, :has_one, options, &block)
+          define_referenced_association!(name, :has_one, options, &block)
         end
 
         private
@@ -265,8 +265,8 @@ module ActiveDocument
           end
         end
 
-        def define_v2_association!(name, type, options = {}, &block)
-          Referenced::V2::Association.new(self, name, type, options, &block).tap do |assoc|
+        def define_referenced_association!(name, type, options = {}, &block)
+          Referenced::Association.new(self, name, type, options, &block).tap do |assoc|
             assoc.setup!
             self.relations = relations.merge(name.to_s => assoc)
           end

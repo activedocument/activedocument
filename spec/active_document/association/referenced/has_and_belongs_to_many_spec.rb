@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_relative './has_and_belongs_to_many_models'
 
-describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
+describe ActiveDocument::Association::Referenced::Association do
+  describe 'belongs_to_many type' do
 
   before do
     class HasManyLeftObject; include ActiveDocument::Document; end
@@ -70,7 +71,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :has_many macro
-          described_class.new(has_many_left_class, name, options)
+          described_class.new(has_many_left_class, name, :belongs_to_many, options)
         end
 
         it 'sets up autosave' do
@@ -98,7 +99,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :has_many macro
-          described_class.new(has_many_left_class, name, options)
+          described_class.new(has_many_left_class, name, :belongs_to_many, options)
         end
 
         it 'does not set up autosave' do
@@ -119,7 +120,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
       let(:association) do
         # Note that it is necessary to create the association directly, otherwise the
         # setup! method will be called by the :has_and_belongs_to_many macro
-        described_class.new(has_many_left_class, name, options)
+        described_class.new(has_many_left_class, name, :belongs_to_many, options)
       end
 
       it 'sets up validation' do
@@ -147,7 +148,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
       let(:association) do
         # Note that it is necessary to create the association directly, otherwise the
         # setup! method will be called by the :has_many macro
-        described_class.new(has_many_left_class, name, options)
+        described_class.new(has_many_left_class, name, :belongs_to_many, options)
       end
 
       it 'sets up the validation because it uses the validation default (true)' do
@@ -209,7 +210,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_many_left_class, name, options)
+            described_class.new(has_many_left_class, name, :belongs_to_many, options)
           end
 
           it 'sets up the dependency' do
@@ -229,7 +230,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_many_left_class, name, options)
+            described_class.new(has_many_left_class, name, :belongs_to_many, options)
           end
 
           it 'sets up the dependency' do
@@ -249,7 +250,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_many_left_class, name, options)
+            described_class.new(has_many_left_class, name, :belongs_to_many, options)
           end
 
           it 'sets up the dependency' do
@@ -269,7 +270,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_many_left_class, name, options)
+            described_class.new(has_many_left_class, name, :belongs_to_many, options)
           end
 
           it 'sets up the dependency' do
@@ -289,7 +290,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(has_many_left_class, name, options)
+            described_class.new(has_many_left_class, name, :belongs_to_many, options)
           end
 
           it 'sets up the dependency' do
@@ -423,7 +424,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#relation' do
 
     it 'returns the proxy class for belongs_to_many associations' do
-      expect(association.relation).to be(ActiveDocument::Association::Referenced::V2::Proxy::Many)
+      expect(association.relation).to be(ActiveDocument::Association::Referenced::Proxy::Many)
     end
   end
 
@@ -1099,5 +1100,6 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
       pending 'MONGOID-4953'
       expect(school.updated_at).to eq(update_time)
     end
+  end
   end
 end
