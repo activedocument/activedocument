@@ -20,9 +20,26 @@ module ActiveDocument
               entries[fk] << doc
             end
 
-            # Set collections on parents
+            # Set collections on parents and inverse on children
             entries.each do |id, matched_docs|
               set_on_parent(id, matched_docs)
+            end
+          end
+
+          # Override to also set the inverse on each child document
+          def set_on_parent(id, element)
+            grouped_docs[id]&.each do |parent|
+              set_relation(parent, element)
+              # Set the inverse on each child to point back to the parent
+              set_inverse_on_children(parent, element) if association.inverse && element.is_a?(Array)
+            end
+          end
+
+          # Set the inverse relationship on each child document
+          def set_inverse_on_children(parent, children)
+            inverse_name = association.inverse
+            children.each do |child|
+              child.set_relation(inverse_name, parent) if child.is_a?(ActiveDocument::Document)
             end
           end
 

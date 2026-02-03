@@ -32,10 +32,10 @@ module ActiveDocument
                 doc.reset_relation_criteria(association.inverse)
               end
 
-              # Note: Don't mark as synced here - the after_save callback needs to
-              # run update_inverse_keys to persist the inverse FK arrays in the database.
-              # The _synced flag is only used during the save callback itself to prevent
-              # redundant updates within the same save operation.
+              # Mark both sides as synced to prevent the save callback from
+              # running redundant updates
+              base._synced[association.foreign_key] = true
+              doc._synced[association.inverse_foreign_key] = true if association.inverse_foreign_key && !doc.frozen?
             end
           end
 

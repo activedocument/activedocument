@@ -80,13 +80,16 @@ module ActiveDocument
           return object if object.is_a?(Document)
           return object if object.is_a?(::Array) && !object.empty? && object.first.is_a?(Document)
 
+          # For many associations, empty arrays should be returned as-is (for eager loading)
+          return object if object.is_a?(::Array) && object.empty? && many?
+
           # For has_one/has_many, query related documents (FK on other side)
           unless stores_foreign_key?
             crit = criteria(base)
             return one? ? crit.first : crit
           end
 
-          # For belongs_to_many, always return a criteria
+          # For belongs_to_many, return a criteria (to allow lazy loading)
           return criteria(base) if association_type == :belongs_to_many
 
           # For belongs_to_one, return nil if no object

@@ -36,6 +36,7 @@ module ActiveDocument
               append(doc)
               doc.save if persistable? && !_assigning? && !doc.validated?
             end
+            unsynced_base
             self
           end
 
@@ -48,14 +49,25 @@ module ActiveDocument
           def concat(documents)
             docs = []
             inserts = []
+            ids = []
             documents.each do |doc|
               next unless doc
 
-              append(doc)
-              save_or_delay(doc, docs, inserts) if persistable?
+              # Don't persist base FK individually - we'll batch it below
+              append(doc, persist_base: false)
+              if persistable?
+                ids << doc.public_send(_association.primary_key)
+                save_or_delay(doc, docs, inserts)
+              end
+            end
+
+            # For belongs_to_many, batch persist base's FK array with $push
+            if belongs_to_many? && (persistable? || _creating?) && ids.any? && _base.persisted?
+              _base.push(_association.foreign_key => ids)
             end
 
             persist_delayed(docs, inserts)
+            unsynced_base
             self
           end
 
@@ -221,11 +233,18 @@ module ActiveDocument
           # Append a document to the target.
           #
           # @param document [ActiveDocument::Document] The document to append
-          def append(document)
+          # @param persist_base [Boolean] Whether to persist base FK immediately
+          def append(document, persist_base: true)
             with_add_callbacks(document, already_related?(document)) do
               _target.push(document)
               characterize_one(document)
               bind_one(document)
+
+              # For belongs_to_many, persist base's FK array atomically when
+              # adding documents to the association (not during build operations)
+              if persist_base && belongs_to_many? && persistable? && _base.persisted? && !_building?
+                _base.add_to_set(_association.foreign_key => document.public_send(_association.primary_key))
+              end
             end
           end
 
@@ -405,6 +424,16 @@ module ActiveDocument
             _association.association_type == :belongs_to_many
           end
 
+          # Mark the base as unsynced with respect to the foreign key.
+          # This allows the sync callbacks to run.
+          #
+          # @return [nil]
+          def unsynced_base
+            return unless belongs_to_many?
+
+            _base._synced[_association.foreign_key] = false
+          end
+
           # Substitute for has_many associations.
           # FK is on the target side, so we need to update target documents.
           #
@@ -449,6 +478,10 @@ module ActiveDocument
                 doc.save if doc.new_record? || doc.changed?
               end
             end
+
+            # Mark as unsynced so the sync callback can run when base is saved
+            # This ensures the inverse FK is persisted on related documents
+            unsynced_base
           end
 
           class << self

@@ -59,8 +59,14 @@ module ActiveDocument
                 __autosaving__ do
                   if (assoc_value = ivar(association.name))
                     Array(assoc_value).each do |doc|
+                      next unless changed_for_autosave?(doc)
+
                       pc = doc.persistence_context? ? doc.persistence_context : persistence_context.for_child(doc)
-                      doc.with(pc, &:save)
+                      saved = doc.with(pc, &:save)
+                      # If associated document failed to save, halt the callback chain
+                      unless saved
+                        throw(:abort)
+                      end
                     end
                   end
                 end
