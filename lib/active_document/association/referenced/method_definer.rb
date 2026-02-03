@@ -65,6 +65,13 @@ module ActiveDocument
                 end
                 set_relation(assoc.name, value.substitute(object.substitutable))
               else
+                # When relation isn't loaded, we still need to clear the FK for
+                # belongs_to_many when setting to nil/empty
+                if assoc.stores_foreign_key? && assoc.many? && (object.nil? || object.blank?)
+                  # Clear the FK array in the database
+                  send(assoc.foreign_key_setter, [])
+                  set(assoc.foreign_key => []) if persisted?
+                end
                 __build__(assoc.name, object.substitutable, assoc)
               end
             end

@@ -162,13 +162,20 @@ module ActiveDocument
 
           # Remove all associations without deleting.
           def nullify
+            # Run before_remove callbacks first - if any raise, abort without clearing
+            in_memory.each { |doc| execute_callback :before_remove, doc }
+
+            # Now do the actual FK clearing
             if belongs_to_many?
               # For belongs_to_many, remove base's ID from target's inverse FK array
               # and clear base's FK array
               if _association.inverse_foreign_key
                 criteria.pull(_association.inverse_foreign_key => _base._id)
               end
+              _base.send(_association.foreign_key_setter, [])
               _base.set(_association.foreign_key => []) if _base.persisted?
+              # Reset the cached criteria and target's unloaded criteria since FK array changed
+              @criteria = nil
             else
               # For has_many, set target's FK to nil
               criteria.update_all(_association.foreign_key => nil)
@@ -176,7 +183,6 @@ module ActiveDocument
 
             after_remove_error = nil
             _target.clear do |doc|
-              execute_callback :before_remove, doc
               unbind_one(doc)
               doc.changed_attributes.delete(_association.foreign_key) unless belongs_to_many?
               begin
@@ -186,7 +192,12 @@ module ActiveDocument
               end
             end
 
+            # Reset the enumerable's unloaded criteria to use the new (empty) criteria for BTM
+            _target.reset_unloaded(criteria) if belongs_to_many? && _target.respond_to?(:reset_unloaded)
+
             raise after_remove_error if after_remove_error
+
+            self
           end
 
           alias_method :nullify_all, :nullify
@@ -493,6 +504,20 @@ module ActiveDocument
             # Unbind current documents (removes base's ID from their inverse FK arrays)
             old_docs.each { |doc| unbind_one(doc) }
             _target.clear
+
+            # Clear the FK array on base when setting to empty
+            # This handles the case where relation wasn't loaded (in_memory empty)
+            if new_docs.empty?
+              # Use criteria before resetting FK (it still has old IDs for the $pull)
+              if _base.persisted? && _association.inverse_foreign_key
+                criteria.pull(_association.inverse_foreign_key => _base._id)
+              end
+              _base.send(_association.foreign_key_setter, [])
+              # Reset the cached criteria and target's unloaded criteria since FK array changed
+              @criteria = nil
+              # Reset the enumerable's unloaded criteria to use the new (empty) criteria
+              _target.reset_unloaded(criteria) if _target.respond_to?(:reset_unloaded)
+            end
 
             # Bind new documents
             new_docs.each { |doc| append(doc) }
