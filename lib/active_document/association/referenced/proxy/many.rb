@@ -34,7 +34,9 @@ module ActiveDocument
 
             if (doc = docs.first)
               append(doc)
-              doc.save if persistable? && !_assigning? && !doc.validated?
+              # Only save if doc is new or has changes (e.g., inverse FK was added)
+              # For inverse_of: nil, the doc won't have changes since there's no inverse FK
+              doc.save if persistable? && !_assigning? && !doc.validated? && (doc.new_record? || doc.changed?)
             end
             unsynced_base
             self
@@ -62,9 +64,10 @@ module ActiveDocument
               end
             end
 
-            # For belongs_to_many, batch persist base's FK array with $push
+            # For belongs_to_many, batch persist base's FK array with $addToSet
+            # Use add_to_set (not push) to avoid duplicates in the FK array
             if belongs_to_many? && (persistable? || _creating?) && ids.any? && _base.persisted?
-              _base.push(_association.foreign_key => ids)
+              _base.add_to_set(_association.foreign_key => ids)
             end
 
             persist_delayed(docs, inserts)
@@ -98,6 +101,8 @@ module ActiveDocument
               result = _target.delete(document) do |doc|
                 if doc
                   unbind_one(doc)
+                  # For belongs_to_many, persist FK changes to the database
+                  persist_delete_fk(doc) if belongs_to_many? && _base.persisted?
                   cascade!(doc) unless _assigning?
                 end
               end
@@ -168,10 +173,20 @@ module ActiveDocument
               # For has_many, set target's FK to nil
               criteria.update_all(_association.foreign_key => nil)
             end
+
+            after_remove_error = nil
             _target.clear do |doc|
+              execute_callback :before_remove, doc
               unbind_one(doc)
               doc.changed_attributes.delete(_association.foreign_key) unless belongs_to_many?
+              begin
+                execute_callback :after_remove, doc
+              rescue StandardError => e
+                after_remove_error = e
+              end
             end
+
+            raise after_remove_error if after_remove_error
           end
 
           alias_method :nullify_all, :nullify
@@ -225,7 +240,14 @@ module ActiveDocument
           #
           # @return [ActiveDocument::Criteria]
           def unscoped
-            klass.unscoped.where(_association.foreign_key => _base.send(_association.primary_key))
+            if belongs_to_many?
+              # For belongs_to_many, FK is on base as array, query targets by primary key
+              ids = _base.send(_association.foreign_key) || []
+              klass.unscoped.where(_association.primary_key => { '$in' => ids })
+            else
+              # For has_many, FK is on target
+              klass.unscoped.where(_association.foreign_key => _base.send(_association.primary_key))
+            end
           end
 
           private
@@ -493,6 +515,20 @@ module ActiveDocument
             # Mark as unsynced so the sync callback can run when base is saved
             # This ensures the inverse FK is persisted on related documents
             unsynced_base
+          end
+
+          # Persist the FK removal for belongs_to_many delete operations.
+          # Uses atomic $pull to remove IDs from both sides.
+          #
+          # @param doc [ActiveDocument::Document] The deleted document
+          def persist_delete_fk(doc)
+            # Pull the document's ID from base's FK array
+            _base.pull(_association.foreign_key => doc.public_send(_association.primary_key))
+
+            # Pull base's ID from the document's inverse FK array
+            if _association.inverse_foreign_key && doc.persisted?
+              doc.pull(_association.inverse_foreign_key => _base._id)
+            end
           end
 
           class << self

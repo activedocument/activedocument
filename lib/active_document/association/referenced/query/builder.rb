@@ -52,15 +52,11 @@ module ActiveDocument
           # @param apply_scope [Boolean] Whether to apply association scope (default true)
           # @return [ActiveDocument::Criteria]
           def criteria_by_id_list(base, id_list = nil, skip_scope: false)
-            ids = id_list || base.public_send(association.foreign_key)
+            ids = id_list || base.public_send(association.foreign_key) || []
 
             crit = target_class.criteria
-            crit = if ids.present?
-                     crit = apply_scope(crit) unless skip_scope
-                     crit.all_of(association.primary_key => { '$in' => ids })
-                   else
-                     crit.none
-                   end
+            crit = apply_scope(crit) unless skip_scope
+            crit = crit.all_of(association.primary_key => { '$in' => ids })
             with_ordering(crit)
           end
 
