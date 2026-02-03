@@ -52,27 +52,41 @@ module ActiveDocument
         def self.define_autosave!(association)
           association.inverse_class.tap do |klass|
             save_method = :"autosave_documents_for_#{association.name}"
-            klass.send(:define_method, save_method) do
+            # Use around callback so we can halt if associated documents fail to save
+            assoc = association
+            klass.send(:define_method, save_method) do |&block|
               if before_callback_halted?
                 self.before_callback_halted = false
+                block.call if block
               else
+                # First, yield to actually persist this document
+                block.call if block
+
+                # Then try to save associated documents
                 __autosaving__ do
-                  if (assoc_value = ivar(association.name))
+                  if (assoc_value = ivar(assoc.name))
                     Array(assoc_value).each do |doc|
                       next unless changed_for_autosave?(doc)
 
                       pc = doc.persistence_context? ? doc.persistence_context : persistence_context.for_child(doc)
                       saved = doc.with(pc, &:save)
-                      # If associated document failed to save, halt the callback chain
-                      unless saved
-                        throw(:abort)
+                      # If associated document failed to save and the association is required,
+                      # delete this document to rollback.
+                      # If the association is optional, the child can still be saved.
+                      # Note: We can't use throw(:abort) in after callbacks
+                      # See: https://github.com/rails/rails/issues/33192
+                      if !saved && assoc.send(:require_association?)
+                        delete if persisted?
+                        self.new_record = true
+                        self.before_callback_halted = true
+                        break
                       end
                     end
                   end
                 end
               end
             end
-            klass.after_persist_parent save_method, unless: :autosaved?
+            klass.around_persist_parent save_method, unless: :autosaved?
           end
         end
       end

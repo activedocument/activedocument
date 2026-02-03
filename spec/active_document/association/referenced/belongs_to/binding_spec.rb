@@ -83,8 +83,8 @@ describe ActiveDocument::Association::Referenced::Binding::BelongsToOne do
         end
 
         it 'does nothing' do
-          expect(game).to_not receive(:person=).with(person)
-          expect(game).to receive(:person=).with(nil).once
+          # When already correctly bound, no setter should be called at all
+          expect(game).to_not receive(:person=)
           binding.bind_one
         end
       end

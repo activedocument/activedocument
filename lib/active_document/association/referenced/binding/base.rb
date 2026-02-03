@@ -133,6 +133,8 @@ module ActiveDocument
           # @param inverse [Symbol] The inverse association name
           def remove_associated_in_to(doc, inverse)
             return unless (associated = doc.ivar(inverse))
+            # Don't remove if we're binding to the same base (already bound correctly)
+            return if associated == base
 
             # Call the setter to clear the association
             # This sets the association to nil, triggering proper unbinding

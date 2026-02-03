@@ -56,7 +56,8 @@ module ActiveDocument
               # Don't persist base FK individually - we'll batch it below
               append(doc, persist_base: false)
               if persistable?
-                ids << doc.public_send(_association.primary_key)
+                # Only collect IDs for belongs_to_many where we need to update base's FK array
+                ids << doc.public_send(_association.primary_key) if belongs_to_many?
                 save_or_delay(doc, docs, inserts)
               end
             end
@@ -156,10 +157,20 @@ module ActiveDocument
 
           # Remove all associations without deleting.
           def nullify
-            criteria.update_all(_association.foreign_key => nil)
+            if belongs_to_many?
+              # For belongs_to_many, remove base's ID from target's inverse FK array
+              # and clear base's FK array
+              if _association.inverse_foreign_key
+                criteria.pull(_association.inverse_foreign_key => _base._id)
+              end
+              _base.set(_association.foreign_key => []) if _base.persisted?
+            else
+              # For has_many, set target's FK to nil
+              criteria.update_all(_association.foreign_key => nil)
+            end
             _target.clear do |doc|
               unbind_one(doc)
-              doc.changed_attributes.delete(_association.foreign_key)
+              doc.changed_attributes.delete(_association.foreign_key) unless belongs_to_many?
             end
           end
 
