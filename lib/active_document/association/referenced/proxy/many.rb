@@ -82,8 +82,10 @@ module ActiveDocument
           # @return [ActiveDocument::Document] The new document
           def build(attributes = {}, type = nil)
             doc = Factory.execute_build(type || klass, attributes, execute_callbacks: false)
-            append(doc)
+            # Apply defaults BEFORE appending so that custom _id defaults are set
+            # before the ID is added to the FK array
             doc.apply_post_processed_defaults
+            append(doc)
             yield(doc) if block_given?
             doc.run_pending_callbacks
             doc.run_callbacks(:build) { doc }
@@ -161,38 +163,77 @@ module ActiveDocument
           end
 
           # Remove all associations without deleting.
-          def nullify
+          #
+          # @param replacement [Array, nil] Optional documents to keep associated
+          def nullify(replacement = nil)
+            replacement_ids = replacement&.map { |doc| doc.send(_association.primary_key) }&.to_set
+            docs_to_remove = replacement_ids ? in_memory.reject { |doc| replacement_ids.include?(doc.send(_association.primary_key)) } : in_memory.dup
+
             # Run before_remove callbacks first - if any raise, abort without clearing
-            in_memory.each { |doc| execute_callback :before_remove, doc }
+            docs_to_remove.each { |doc| execute_callback :before_remove, doc }
 
             # Now do the actual FK clearing
             if belongs_to_many?
-              # For belongs_to_many, remove base's ID from target's inverse FK array
-              # and clear base's FK array
+              # For belongs_to_many, remove base's primary key value from target's inverse FK array
+              # and clear/update base's FK array
               if _association.inverse_foreign_key
-                criteria.pull(_association.inverse_foreign_key => _base._id)
+                if replacement_ids
+                  # Only pull from docs being removed
+                  docs_to_remove.each do |doc|
+                    doc.pull(_association.inverse_foreign_key => base_pk_value) if doc.persisted?
+                  end
+                else
+                  criteria.pull(_association.inverse_foreign_key => base_pk_value)
+                end
               end
-              _base.send(_association.foreign_key_setter, [])
-              _base.set(_association.foreign_key => []) if _base.persisted?
+              if replacement_ids
+                # Keep replacement docs' IDs in base FK array
+                new_ids = replacement.map { |doc| doc.send(_association.primary_key) }
+                _base.send(_association.foreign_key_setter, new_ids)
+                _base.set(_association.foreign_key => new_ids) if _base.persisted?
+              else
+                _base.send(_association.foreign_key_setter, [])
+                _base.set(_association.foreign_key => []) if _base.persisted?
+              end
               # Reset the cached criteria and target's unloaded criteria since FK array changed
               @criteria = nil
             else
               # For has_many, set target's FK to nil
-              criteria.update_all(_association.foreign_key => nil)
-            end
-
-            after_remove_error = nil
-            _target.clear do |doc|
-              unbind_one(doc)
-              doc.changed_attributes.delete(_association.foreign_key) unless belongs_to_many?
-              begin
-                execute_callback :after_remove, doc
-              rescue StandardError => e
-                after_remove_error = e
+              if replacement_ids
+                docs_to_remove.each do |doc|
+                  doc.update_attribute(_association.foreign_key, nil) if doc.persisted?
+                end
+              else
+                criteria.update_all(_association.foreign_key => nil)
               end
             end
 
-            # Reset the enumerable's unloaded criteria to use the new (empty) criteria for BTM
+            after_remove_error = nil
+            if replacement_ids
+              # Remove only the docs not in replacement
+              docs_to_remove.each do |doc|
+                _target.delete(doc)
+                unbind_one(doc)
+                doc.changed_attributes.delete(_association.foreign_key) unless belongs_to_many?
+                begin
+                  execute_callback :after_remove, doc
+                rescue StandardError => e
+                  after_remove_error = e
+                end
+              end
+            else
+              _target.clear do |doc|
+                unbind_one(doc)
+                doc.changed_attributes.delete(_association.foreign_key) unless belongs_to_many?
+                begin
+                  execute_callback :after_remove, doc
+                rescue StandardError => e
+                  after_remove_error = e
+                end
+              end
+            end
+
+            # Reset the enumerable's unloaded criteria to use the new criteria for BTM
             _target.reset_unloaded(criteria) if belongs_to_many? && _target.respond_to?(:reset_unloaded)
 
             raise after_remove_error if after_remove_error
@@ -289,6 +330,9 @@ module ActiveDocument
               if persist_base && belongs_to_many? && persistable? && _base.persisted? && !_building?
                 _base.add_to_set(_association.foreign_key => document.public_send(_association.primary_key))
               end
+
+              # Reset cached criteria for belongs_to_many since FK array changed
+              @criteria = nil if belongs_to_many?
             end
           end
 
@@ -318,6 +362,18 @@ module ActiveDocument
           # @return [Binding::Base] The binding
           def binding
             @binding ||= _association.binder_class.new(_base, _target, _association)
+          end
+
+          # Get the base's primary key value for inverse FK operations.
+          # For belongs_to_many, this is the value stored in target's inverse FK array.
+          #
+          # @return [Object] The base's primary key value
+          def base_pk_value
+            if (pk = _association.options.inverse_primary_key)
+              _base.send(pk)
+            else
+              _base._id
+            end
           end
 
           # Get the collection.
@@ -500,35 +556,41 @@ module ActiveDocument
           def substitute_belongs_to_many(new_docs)
             # Remember old docs to save after unbinding
             old_docs = in_memory.dup
+            new_doc_ids = new_docs.map { |doc| doc.send(_association.primary_key) }.to_set
 
-            # Unbind current documents (removes base's ID from their inverse FK arrays)
+            # Find docs being removed (not in new_docs)
+            docs_to_remove = old_docs.reject { |doc| new_doc_ids.include?(doc.send(_association.primary_key)) }
+
+            # Remove base's ID from removed documents' inverse FK arrays
+            if _base.persisted? && _association.inverse_foreign_key && docs_to_remove.any?
+              docs_to_remove.each do |doc|
+                doc.pull(_association.inverse_foreign_key => base_pk_value) if doc.persisted?
+              end
+            end
+
+            # Unbind current documents (removes base's ID from their inverse FK arrays in memory)
             old_docs.each { |doc| unbind_one(doc) }
             _target.clear
 
-            # Clear the FK array on base when setting to empty
-            # This handles the case where relation wasn't loaded (in_memory empty)
-            if new_docs.empty?
-              # Use criteria before resetting FK (it still has old IDs for the $pull)
-              if _base.persisted? && _association.inverse_foreign_key
-                criteria.pull(_association.inverse_foreign_key => _base._id)
-              end
-              _base.send(_association.foreign_key_setter, [])
-              # Reset the cached criteria and target's unloaded criteria since FK array changed
-              @criteria = nil
-              # Reset the enumerable's unloaded criteria to use the new (empty) criteria
-              _target.reset_unloaded(criteria) if _target.respond_to?(:reset_unloaded)
+            # Clear the FK array on base, then add new IDs (prevents append from using add_to_set)
+            _base.send(_association.foreign_key_setter, [])
+            if _base.persisted?
+              new_ids = new_docs.map { |doc| doc.send(_association.primary_key) }
+              _base.set(_association.foreign_key => new_ids)
             end
 
-            # Bind new documents
-            new_docs.each { |doc| append(doc) }
+            # Reset the cached criteria since FK array changed
+            @criteria = nil
+            # Reset the enumerable's unloaded criteria to use the new criteria
+            _target.reset_unloaded(criteria) if _target.respond_to?(:reset_unloaded)
+
+            # Bind new documents (without persisting since we already set the FK array)
+            new_docs.each { |doc| append(doc, persist_base: false) }
 
             # Auto-save documents if base is persisted
             if _base.persisted? && !_building?
-              # Save base to persist its FK array change
-              _base.save if _base.changed?
-
-              # Save old docs to persist the removal of base's ID from their inverse FK
-              old_docs.each do |doc|
+              # Save removed docs to persist the removal of base's ID from their inverse FK
+              docs_to_remove.each do |doc|
                 doc.save if doc.persisted? && doc.changed?
               end
               # Save new docs to persist the addition of base's ID to their inverse FK
@@ -550,9 +612,9 @@ module ActiveDocument
             # Pull the document's ID from base's FK array
             _base.pull(_association.foreign_key => doc.public_send(_association.primary_key))
 
-            # Pull base's ID from the document's inverse FK array
+            # Pull base's primary key value from the document's inverse FK array
             if _association.inverse_foreign_key && doc.persisted?
-              doc.pull(_association.inverse_foreign_key => _base._id)
+              doc.pull(_association.inverse_foreign_key => base_pk_value)
             end
           end
 
