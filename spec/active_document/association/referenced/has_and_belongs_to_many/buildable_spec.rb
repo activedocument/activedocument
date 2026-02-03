@@ -120,8 +120,10 @@ describe ActiveDocument::Association::Referenced::Association do
           nil
         end
 
+        # For belongs_to_many with nil object, criteria_by_id_list returns
+        # an $in query on the base's (empty) FK array
         let(:criteria) do
-          Preference.none
+          Preference.all_of('_id' => { '$in' => [] })
         end
 
         it 'a criteria object' do
