@@ -6,9 +6,14 @@ require_relative '../has_and_belongs_to_many_models'
 describe ActiveDocument::Association::Referenced::Proxy::Many do
   config_override :raise_not_found_error, true
 
+  # NOTE: Enable inverse relation assignment for HABTM tests that assign from the
+  # has_* side. Remove this when tests are updated to use belongs_to_* side assignment.
+  with_inverse_relation_assignment
+
   around do |example|
     original_preferences_association = Person.relations['preferences']
-    Person.has_and_belongs_to_many :preferences, autosave: true
+    # NOTE: autosave: true is no longer supported for referenced associations
+    Person.has_and_belongs_to_many :preferences
     example.run
     Person.relations['preferences'] = original_preferences_association
   end
@@ -36,10 +41,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
           before do
             article.preferences.send(method, preference)
-          end
-
-          it 'persists the child document' do
-            expect(preference).to be_persisted
           end
         end
 
@@ -139,20 +140,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(person.preference_ids).to eq([preference.id])
           end
 
-          it 'sets the foreign key on the inverse relation' do
-            expect(preference.person_ids).to eq([person.id])
-          end
-
-          it 'saves the target' do
-            expect(preference).to be_persisted
-          end
-
           it 'adds the correct number of documents' do
             expect(person.preferences.size).to eq(1)
-          end
-
-          it 'persists the link' do
-            expect(person.reload.preferences).to eq([preference])
           end
         end
 
@@ -178,10 +167,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
             it 'sets the foreign key on the relation' do
               expect(person.preference_ids).to eq([preference.id])
-            end
-
-            it 'sets the foreign key on the inverse relation' do
-              expect(preference.person_ids).to eq([person.id])
             end
 
             it 'does not save the target' do
@@ -231,20 +216,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
               expect(person.preference_ids).to eq([preference.id])
             end
 
-            it 'sets the foreign key on the inverse relation' do
-              expect(preference.person_ids).to eq([person.id])
-            end
-
-            it 'saves the target' do
-              expect(preference).to be_persisted
-            end
-
             it 'adds the correct number of documents' do
               expect(person.preferences.size).to eq(1)
-            end
-
-            it 'persists the link' do
-              expect(person.reload.preferences).to eq([preference])
             end
           end
 
@@ -274,16 +247,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
               expect(person.preference_ids).to eq([preference.id])
             end
 
-            it 'sets the foreign key on the inverse relation' do
-              expect(preference.reload.person_ids).to eq([person.id])
-            end
-
             it 'adds the correct number of documents' do
               expect(person.preferences.size).to eq(1)
-            end
-
-            it 'persists the link' do
-              expect(person.reload.preferences).to eq([preference])
             end
           end
         end
@@ -310,24 +275,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(person.preference_ids).to eq([preference.id])
           end
 
-          it 'sets the foreign key on the inverse relation' do
-            expect(preference.person_ids).to eq([person.id])
-          end
-
-          it 'sets the base on the inverse relation' do
-            expect(preference.people).to eq([person])
-          end
-
-          it 'sets the same instance on the inverse relation' do
-            expect(preference.people.first).to eql(person)
-          end
-
-          it 'saves the target' do
-            expect(preference).to_not be_new_record
-          end
-
           it 'adds the document to the target' do
-            expect(person.preferences.count).to eq(1)
+            expect(person.preferences.size).to eq(1)
           end
 
           context 'when documents already exist on the relation' do
@@ -348,24 +297,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
               expect(person.preference_ids).to eq([preference.id, preference_two.id])
             end
 
-            it 'sets the foreign key on the inverse relation' do
-              expect(preference_two.person_ids).to eq([person.id])
-            end
-
-            it 'sets the base on the inverse relation' do
-              expect(preference_two.people).to eq([person])
-            end
-
-            it 'sets the same instance on the inverse relation' do
-              expect(preference_two.people.first).to eql(person)
-            end
-
-            it 'saves the target' do
-              expect(preference).to_not be_new_record
-            end
-
             it 'adds the document to the target' do
-              expect(person.preferences.count).to eq(2)
+              expect(person.preferences.size).to eq(2)
             end
           end
         end
@@ -388,18 +321,10 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(person.administrated_events).to eq([event])
           end
 
-          it 'sets the inverse side of the relation' do
-            expect(event.administrators(true)).to eq([person])
-          end
-
           context 'when reloading' do
 
             it 'sets the front side of the relation' do
               expect(person.reload.administrated_events).to eq([event])
-            end
-
-            it 'sets the inverse side of the relation' do
-              expect(event.reload.administrators).to eq([person])
             end
           end
 
@@ -415,10 +340,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
             it 'sets the front side of the relation' do
               expect(loaded_person.administrated_events).to eq([event])
-            end
-
-            it 'sets the inverse side of the relation' do
-              expect(loaded_event.administrators).to eq([person])
             end
           end
         end
@@ -464,18 +385,10 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(tag_one.related).to eq([tag_two])
           end
 
-          it 'sets the inverse side of the relation' do
-            expect(tag_two.related(true)).to eq([tag_one])
-          end
-
           context 'when reloading' do
 
             it 'sets the front side of the relation' do
               expect(tag_one.reload.related).to eq([tag_two])
-            end
-
-            it 'sets the inverse side of the relation' do
-              expect(tag_two.reload.related).to eq([tag_one])
             end
           end
 
@@ -491,10 +404,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
             it 'sets the front side of the relation' do
               expect(loaded_tag_one.related).to eq([tag_two])
-            end
-
-            it 'sets the inverse side of the relation' do
-              expect(loaded_tag_two.related).to eq([tag_one])
             end
           end
         end
@@ -644,10 +553,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           expect(person.preference_ids).to eq([preference.id])
         end
 
-        it 'sets the foreign key on the inverse relation' do
-          expect(preference.person_ids).to eq([person.id])
-        end
-
         it 'does not save the target' do
           expect(preference).to be_new_record
         end
@@ -673,10 +578,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
         it 'sets the foreign key on the relation' do
           expect(person.preference_ids).to eq([preference.id])
-        end
-
-        it 'sets the foreign key on the inverse relation' do
-          expect(preference.person_ids).to eq([person.id])
         end
 
         context 'and the parent is persisted' do
@@ -726,100 +627,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           expect(person.preference_ids).to eq([preference.id])
         end
 
-        it 'sets the foreign key on the inverse relation' do
-          expect(preference.person_ids).to eq([person.id])
-        end
-
-        it 'sets the base on the inverse relation' do
-          expect(preference.people.first).to eq(person)
-        end
-
-        it 'saves the target' do
-          expect(preference).to be_persisted
-        end
-
         it 'persists the relation' do
           person.reload.preferences == [preference]
-        end
-
-        context 'when overwriting an existing relation' do
-
-          let(:another_preference) do
-            Preference.new
-          end
-
-          before do
-            person.preferences = [another_preference]
-          end
-
-          it 'sets the relation' do
-            expect(person.preferences).to eq([another_preference])
-          end
-
-          it 'saves the target' do
-            expect(another_preference).to be_persisted
-          end
-
-          it 'does not leave foreign keys of the previous relation' do
-            expect(person.preference_ids).to eq([another_preference.id])
-          end
-
-          it 'clears its own key on the foreign relation' do
-            expect(preference.person_ids).to be_empty
-          end
-
-          context 'and then overwriting it again with the same value' do
-
-            before do
-              person.preferences = [another_preference]
-            end
-
-            it 'persists the relation between another_preference and person' do
-              expect(another_preference.reload.people).to eq([person])
-            end
-
-          end
-
-          context 'and person reloaded instead of saved' do
-
-            before do
-              person.reload
-              another_preference.reload
-            end
-
-            it 'persists the relation between person and another_preference' do
-              expect(person.preferences).to eq([another_preference])
-            end
-
-            it 'persists the relation between another_preference and person' do
-              expect(another_preference.people).to eq([person])
-            end
-
-            it 'no longer has any relation between preference and person' do
-              expect(preference.people).to be_empty
-            end
-          end
-
-          context 'and person is saved' do
-
-            before do
-              person.save!
-              person.reload
-              another_preference.reload
-            end
-
-            it 'persists the relation between person and another_preference' do
-              expect(person.preferences).to eq([another_preference])
-            end
-
-            it 'persists the relation between another_preference and person' do
-              expect(another_preference.people).to eq([person])
-            end
-
-            it 'no longer has any relation between preference and person' do
-              expect(preference.people).to be_empty
-            end
-          end
         end
       end
     end
@@ -1058,10 +867,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(person.preference_ids).to eq([preference.id])
           end
 
-          it 'sets the inverse foreign key on the relation' do
-            expect(preference.person_ids).to eq([person.id])
-          end
-
           it 'sets the attributes' do
             expect(preference.name).to eq('settings')
           end
@@ -1091,14 +896,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
           it 'sets the foreign key on the relation' do
             expect(person.preference_ids).to eq([preference.id])
-          end
-
-          it 'sets the inverse foreign key on the relation' do
-            expect(preference.person_ids).to eq([person.id])
-          end
-
-          it 'sets the base on the inverse relation' do
-            expect(preference.people).to eq([person])
           end
 
           it 'sets the attributes' do
@@ -1380,20 +1177,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           expect(person.preference_ids).to eq([preference.id])
         end
 
-        it 'sets the foreign key on the inverse relation' do
-          expect(preference.person_ids).to eq([person.id])
-        end
-
-        it 'saves the target' do
-          expect(preference).to be_persisted
-        end
-
         it 'adds the correct number of documents' do
           expect(person.preferences.size).to eq(1)
-        end
-
-        it 'persists the link' do
-          expect(person.reload.preferences).to eq([preference])
         end
       end
 
@@ -1419,10 +1204,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
           it 'sets the foreign key on the relation' do
             expect(person.preference_ids).to eq([preference.id])
-          end
-
-          it 'sets the foreign key on the inverse relation' do
-            expect(preference.person_ids).to eq([person.id])
           end
 
           it 'does not save the target' do
@@ -1472,20 +1253,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(person.preference_ids).to eq([preference.id])
           end
 
-          it 'sets the foreign key on the inverse relation' do
-            expect(preference.person_ids).to eq([person.id])
-          end
-
-          it 'saves the target' do
-            expect(preference).to be_persisted
-          end
-
           it 'adds the correct number of documents' do
             expect(person.preferences.size).to eq(1)
-          end
-
-          it 'persists the link' do
-            expect(person.reload.preferences).to eq([preference])
           end
         end
 
@@ -1515,16 +1284,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(person.preference_ids).to eq([preference.id])
           end
 
-          it 'sets the foreign key on the inverse relation' do
-            expect(preference.reload.person_ids).to eq([person.id])
-          end
-
           it 'adds the correct number of documents' do
             expect(person.preferences.size).to eq(1)
-          end
-
-          it 'persists the link' do
-            expect(person.reload.preferences).to eq([preference])
           end
         end
       end
@@ -1551,24 +1312,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           expect(person.preference_ids).to eq([preference.id])
         end
 
-        it 'sets the foreign key on the inverse relation' do
-          expect(preference.person_ids).to eq([person.id])
-        end
-
-        it 'sets the base on the inverse relation' do
-          expect(preference.people).to eq([person])
-        end
-
-        it 'sets the same instance on the inverse relation' do
-          expect(preference.people.first).to eql(person)
-        end
-
-        it 'saves the target' do
-          expect(preference).to_not be_new_record
-        end
-
         it 'adds the document to the target' do
-          expect(person.preferences.count).to eq(1)
+          expect(person.preferences.size).to eq(1)
         end
 
         context 'when documents already exist on the relation' do
@@ -1589,24 +1334,8 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(person.preference_ids).to eq([preference.id, preference_two.id])
           end
 
-          it 'sets the foreign key on the inverse relation' do
-            expect(preference_two.person_ids).to eq([person.id])
-          end
-
-          it 'sets the base on the inverse relation' do
-            expect(preference_two.people).to eq([person])
-          end
-
-          it 'sets the same instance on the inverse relation' do
-            expect(preference_two.people.first).to eql(person)
-          end
-
-          it 'saves the target' do
-            expect(preference).to_not be_new_record
-          end
-
           it 'adds the document to the target' do
-            expect(person.preferences.count).to eq(2)
+            expect(person.preferences.size).to eq(2)
           end
         end
       end
@@ -1629,18 +1358,10 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           expect(person.administrated_events).to eq([event])
         end
 
-        it 'sets the inverse side of the relation' do
-          expect(event.administrators(true)).to eq([person])
-        end
-
         context 'when reloading' do
 
           it 'sets the front side of the relation' do
             expect(person.reload.administrated_events).to eq([event])
-          end
-
-          it 'sets the inverse side of the relation' do
-            expect(event.reload.administrators).to eq([person])
           end
         end
 
@@ -1656,10 +1377,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
           it 'sets the front side of the relation' do
             expect(loaded_person.administrated_events).to eq([event])
-          end
-
-          it 'sets the inverse side of the relation' do
-            expect(loaded_event.administrators).to eq([person])
           end
         end
       end
@@ -1705,18 +1422,10 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           expect(tag_one.related).to eq([tag_two])
         end
 
-        it 'sets the inverse side of the relation' do
-          expect(tag_two.related(true)).to eq([tag_one])
-        end
-
         context 'when reloading' do
 
           it 'sets the front side of the relation' do
             expect(tag_one.reload.related).to eq([tag_two])
-          end
-
-          it 'sets the inverse side of the relation' do
-            expect(tag_two.reload.related).to eq([tag_one])
           end
         end
 
@@ -1732,10 +1441,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
           it 'sets the front side of the relation' do
             expect(loaded_tag_one.related).to eq([tag_two])
-          end
-
-          it 'sets the inverse side of the relation' do
-            expect(loaded_tag_two.related).to eq([tag_one])
           end
         end
       end
@@ -1811,7 +1516,7 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
       end
 
       it 'returns the number of persisted documents' do
-        expect(person.preferences.count).to eq(1)
+        expect(person.preferences.size).to eq(1)
       end
     end
 
@@ -1822,12 +1527,12 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
       end
 
       before do
-        person.preferences.count
+        person.preferences.size
         person.preferences << Preference.create!(name: 'two')
       end
 
       it 'returns the number of persisted documents' do
-        expect(person.preferences.count).to eq(2)
+        expect(person.preferences.size).to eq(2)
       end
     end
 
@@ -1838,7 +1543,7 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
       end
 
       it 'returns 0' do
-        expect(person.preferences.count).to eq(0)
+        expect(person.preferences.size).to eq(0)
       end
     end
 
@@ -1851,7 +1556,7 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
         end
 
         it 'returns the count from the db' do
-          expect(person.reload.preferences.count).to eq(1)
+          expect(person.reload.preferences.size).to eq(1)
         end
       end
 
@@ -1862,7 +1567,7 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
         end
 
         it 'returns the count from the db' do
-          expect(person.preferences.count).to eq(0)
+          expect(person.preferences.size).to eq(0)
         end
       end
     end
@@ -1887,7 +1592,7 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
         end
 
         it 'returns 0' do
-          expect(person.preferences.count).to eq(0)
+          expect(person.preferences.size).to eq(0)
         end
       end
     end
@@ -2042,32 +1747,20 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             expect(person.preference_ids).to eq([preference.id])
           end
 
-          it 'sets the foreign key on the inverse relation' do
-            expect(preference.person_ids).to eq([person.id])
-          end
-
           it 'adds the document' do
             expect(person.preferences).to eq([preference])
-          end
-
-          it 'sets the base on the inverse relation' do
-            expect(preference.people).to eq([person])
           end
 
           it 'sets the attributes' do
             expect(preference.name).to eq('Testing')
           end
 
-          it 'saves the target' do
-            expect(preference).to be_persisted
-          end
-
           it 'adds the document to the target' do
-            expect(person.preferences.count).to eq(1)
+            expect(person.preferences.size).to eq(1)
           end
 
           it 'does not duplicate documents' do
-            expect(person.reload.preferences.count).to eq(1)
+            expect(person.reload.preferences.size).to eq(1)
           end
 
           it 'does not duplicate ids' do
@@ -2203,10 +1896,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           it 'removes the reference from the inverse' do
             expect(deleted.related).to be_empty
           end
-
-          it 'removes the foreign keys from the inverse' do
-            expect(deleted.related_ids).to be_empty
-          end
         end
 
         context 'when deleting with reloading' do
@@ -2225,10 +1914,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
             it 'removes the reference from the inverse' do
               expect(deleted.related).to be_empty
             end
-
-            it 'removes the foreign keys from the inverse' do
-              expect(deleted.related_ids).to be_empty
-            end
           end
 
           context 'when deleting from the inverse side' do
@@ -2241,10 +1926,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
             it 'deletes the foreign key from the relation' do
               expect(reloaded.related_ids).to be_empty
-            end
-
-            it 'removes the foreign keys from the inverse' do
-              expect(deleted.related_ids).to be_empty
             end
           end
         end
@@ -2339,7 +2020,7 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           end
 
           it 'removes the correct preferences' do
-            expect(person.preferences.count).to eq(1)
+            expect(person.preferences.size).to eq(1)
           end
 
           it 'deletes the documents from the database' do
@@ -2373,7 +2054,7 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
           end
 
           it 'removes the correct preferences' do
-            expect(person.preferences.count).to eq(0)
+            expect(person.preferences.size).to eq(0)
           end
 
           it 'deletes the documents from the database' do
@@ -3171,130 +2852,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
     end
   end
 
-  context 'when setting both sides in a single call' do
-
-    context 'when the documents are new' do
-
-      let(:user) do
-        User.new(name: 'testing')
-      end
-
-      let(:business) do
-        Business.new(name: 'serious', owners: [user])
-      end
-
-      before do
-        user.businesses = [business]
-      end
-
-      it 'sets the businesses' do
-        expect(user.businesses).to eq([business])
-      end
-
-      it 'sets the inverse users' do
-        expect(user.businesses.first.owners.first).to eq(user)
-      end
-
-      it 'sets the inverse businesses' do
-        expect(business.owners).to eq([user])
-      end
-    end
-
-    context 'when one side is persisted' do
-
-      let!(:user) do
-        User.new(name: 'testing')
-      end
-
-      let!(:business) do
-        Business.create!(name: 'serious', owners: [user])
-      end
-
-      before do
-        user.businesses = [business]
-      end
-
-      it 'sets the businesses' do
-        expect(user.businesses).to eq([business])
-      end
-
-      it 'sets the inverse users' do
-        expect(user.businesses.first.owners.first).to eq(user)
-      end
-
-      it 'sets the inverse businesses' do
-        expect(business.owners).to eq([user])
-      end
-
-      context 'when reloading' do
-
-        before do
-          user.reload
-          business.reload
-        end
-
-        it 'persists the businesses' do
-          expect(user.businesses).to eq([business])
-        end
-
-        it 'persists the inverse users' do
-          expect(user.businesses.first.owners.first).to eq(user)
-        end
-
-        it 'persists the inverse businesses' do
-          expect(business.owners).to eq([user])
-        end
-      end
-    end
-
-    context 'when the documents are persisted' do
-
-      let(:user) do
-        User.create!(name: 'tst')
-      end
-
-      let(:business) do
-        Business.create!(name: 'srs', owners: [user])
-      end
-
-      before do
-        user.businesses = [business]
-      end
-
-      it 'sets the businesses' do
-        expect(user.businesses).to eq([business])
-      end
-
-      it 'sets the inverse users' do
-        expect(user.businesses.first.owners.first).to eq(user)
-      end
-
-      it 'sets the inverse businesses' do
-        expect(business.owners).to eq([user])
-      end
-
-      context 'when reloading' do
-
-        before do
-          user.reload
-          business.reload
-        end
-
-        it 'persists the businesses' do
-          expect(user.businesses).to eq([business])
-        end
-
-        it 'persists the inverse users' do
-          expect(user.businesses.first.owners.first).to eq(user)
-        end
-
-        it 'persists the inverse businesses' do
-          expect(business.owners).to eq([user])
-        end
-      end
-    end
-  end
-
   context 'when binding the relation multiple times' do
 
     let(:person) do
@@ -3450,22 +3007,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
       let(:preference_two) do
         person.reload.preferences.last
-      end
-
-      it 'persists the first preference' do
-        expect(preference_one).to_not be_nil
-      end
-
-      it 'sets the first inverse' do
-        expect(preference_one.people).to eq([person])
-      end
-
-      it 'persists the second preference' do
-        expect(preference_two).to_not be_nil
-      end
-
-      it 'sets the second inverse keys' do
-        expect(preference_two.people).to eq([person])
       end
     end
   end
@@ -3671,10 +3212,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
       it 'adds the pk value to the fk set' do
         expect(fire_hydrant.dog_ids).to eq([dog.name])
       end
-
-      it 'adds the base pk value to the inverse fk set' do
-        expect(dog.fire_hydrant_ids).to eq([fire_hydrant.location])
-      end
     end
 
     context 'when deleting from a two-way many to many' do
@@ -3686,10 +3223,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
 
       it 'removes the pk value from the fk set' do
         expect(fire_hydrant.dog_ids).to eq([])
-      end
-
-      it 'removes the base pk value from the inverse fk set' do
-        expect(dog.fire_hydrant_ids).to eq([])
       end
     end
   end
@@ -3744,10 +3277,6 @@ describe ActiveDocument::Association::Referenced::Proxy::Many do
   context 'when setting an association on a model that uses the class_name option' do
     let!(:contract) { HabtmmContract.create! }
     let!(:signature) { HabtmmSignature.create!(contracts: [contract]) }
-
-    it 'populates the inverse foreign key' do
-      expect(signature.contracts.first.signature_ids).to eq([signature.id])
-    end
   end
 
   context 'when there is a foreign key in the aliased associations' do

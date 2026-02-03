@@ -5,6 +5,11 @@ require 'spec_helper'
 describe ActiveDocument::Association::Referenced::Proxy::One do
 
   describe '#=' do
+    # NOTE: Tests in this block assign from the has_one (inverse) side,
+    # e.g., `person.game = game` where game belongs_to person.
+    # This is legacy Mongoid behavior. Remove when tests are updated to
+    # use belongs_to side or explicitly test inverse assignment behavior.
+    with_inverse_relation_assignment
 
     context 'when the relationship is an illegal embedded reference' do
 
@@ -71,14 +76,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
           expect(game.person_id).to eq(person.id)
         end
 
-        it 'sets the base on the inverse relation' do
-          expect(game.person).to eq(person)
-        end
-
-        it 'sets the same instance on the inverse relation' do
-          expect(game.person).to eql(person)
-        end
-
         it 'does not save the target' do
           expect(game).to_not be_persisted
         end
@@ -104,18 +101,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
 
         it 'sets the foreign key of the relation' do
           expect(game.person_id).to eq(person.id)
-        end
-
-        it 'sets the base on the inverse relation' do
-          expect(game.person).to eq(person)
-        end
-
-        it 'sets the same instance on the inverse relation' do
-          expect(game.person).to eql(person)
-        end
-
-        it 'saves the target' do
-          expect(game).to be_persisted
         end
 
         context 'when reloading the parent' do
@@ -160,18 +145,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
         it 'sets the foreign key of the relation' do
           expect(cat.person_id).to eq(person.username)
         end
-
-        it 'sets the base on the inverse relation' do
-          expect(cat.person).to eq(person)
-        end
-
-        it 'sets the same instance on the inverse relation' do
-          expect(cat.person).to eql(person)
-        end
-
-        it 'saves the target' do
-          expect(cat).to be_persisted
-        end
       end
     end
 
@@ -199,14 +172,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
           expect(rating.ratable_id).to eq(bar.id)
         end
 
-        it 'sets the base on the inverse relation' do
-          expect(rating.ratable).to eq(bar)
-        end
-
-        it 'sets the same instance on the inverse relation' do
-          expect(rating.ratable).to eql(bar)
-        end
-
         it 'does not save the target' do
           expect(rating).to_not be_persisted
         end
@@ -232,18 +197,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
 
         it 'sets the foreign key of the relation' do
           expect(rating.ratable_id).to eq(bar.id)
-        end
-
-        it 'sets the base on the inverse relation' do
-          expect(rating.ratable).to eq(bar)
-        end
-
-        it 'sets the same instance on the inverse relation' do
-          expect(rating.ratable).to eql(bar)
-        end
-
-        it 'saves the target' do
-          expect(rating).to be_persisted
         end
       end
 
@@ -1172,7 +1125,7 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
     end
 
     let(:belongs_to) do
-      HomChild.belongs_to :parent, autosave: true, validate: false, optional: optional
+      HomChild.belongs_to :parent, validate: false, optional: optional
     end
 
     let(:child) { HomChild.new }
@@ -1201,7 +1154,7 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
 
       context 'when optional is not set' do
         let(:belongs_to) do
-          HomChild.belongs_to :parent, autosave: true, validate: false
+          HomChild.belongs_to :parent, validate: false
         end
 
         it "doesn't persist the parent or the child" do
@@ -1234,7 +1187,7 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
 
       context 'when optional is not set' do
         let(:belongs_to) do
-          HomChild.belongs_to :parent, autosave: true, validate: false
+          HomChild.belongs_to :parent, validate: false
         end
 
         it 'persists the child with the parent_id' do

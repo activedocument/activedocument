@@ -63,7 +63,7 @@ module InterceptableSpec
     include CallbackTracking
     include RootInsertable
 
-    has_one :child, autosave: true, class_name: 'CbHasOneChild', inverse_of: :parent
+    has_one :child, class_name: 'CbHasOneChild', inverse_of: :parent
   end
 
   class CbHasOneChild
@@ -78,7 +78,7 @@ module InterceptableSpec
     include CallbackTracking
     include RootInsertable
 
-    has_many :children, autosave: true, class_name: 'CbHasManyChild', inverse_of: :parent
+    has_many :children, class_name: 'CbHasManyChild', inverse_of: :parent
   end
 
   class CbHasManyChild

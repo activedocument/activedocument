@@ -216,7 +216,7 @@ describe ActiveDocument::Validatable::PresenceValidator do
 
       around do |example|
         original_relations = Person.relations
-        Person.has_one :game, autosave: true
+        Person.has_one :game
         Person.validates :game, presence: true
         example.run
         Person.reset_callbacks(:save)

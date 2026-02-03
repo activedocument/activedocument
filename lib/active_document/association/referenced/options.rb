@@ -115,9 +115,9 @@ module ActiveDocument
           !!raw[:polymorphic]
         end
 
-        # @return [Boolean] Whether to auto-save associated documents
+        # @return [false] Autosave is not supported for referenced associations
         def autosave?
-          !!raw[:autosave]
+          false
         end
 
         # @return [Boolean] Whether to auto-build on access

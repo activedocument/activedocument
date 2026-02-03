@@ -219,7 +219,7 @@ describe ActiveDocument::Attributes::Nested do
     context 'when the relation is a referenced in' do
 
       before do
-        Post.accepts_nested_attributes_for :person, autosave: false
+        Post.accepts_nested_attributes_for :person
       end
 
       after do
@@ -4770,17 +4770,13 @@ describe ActiveDocument::Attributes::Nested do
 
         around do |example|
           original_relations = User.relations
-          User.has_many :posts, foreign_key: :author_id, validate: false, autosave: true
+          User.has_many :posts, foreign_key: :author_id, validate: false
           example.run
           user.relations = original_relations
         end
 
         it 'adds the new document to the relation' do
           expect(post.title).to eq('Testing')
-        end
-
-        it 'autosaves the relation' do
-          expect(user.posts(true).first.title).to eq('Testing')
         end
       end
 

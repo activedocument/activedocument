@@ -125,7 +125,7 @@ module ActiveDocument
 
     # Enable inverse relation assignment for tests that assign from has_* side.
     # Use this on specific contexts/examples that need to test inverse assignment.
-    def allow_inverse_relation_assignment
+    def with_inverse_relation_assignment
       config_override :allow_inverse_relation_assignment, true
     end
   end

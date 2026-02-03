@@ -7,5 +7,5 @@ class Sandwich
   field :name, type: :string
 
   belongs_to :posteable, polymorphic: true
-  accepts_nested_attributes_for :posteable, autosave: true
+  accepts_nested_attributes_for :posteable
 end

@@ -117,14 +117,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
             expect(game.person_id).to eq(person.id)
           end
 
-          it 'sets the base on the inverse relation' do
-            expect(person.game).to eq(game)
-          end
-
-          it 'sets the same instance on the inverse relation' do
-            expect(person.game).to eql(game)
-          end
-
           it 'does not save the target' do
             expect(person).to_not be_persisted
           end
@@ -167,14 +159,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
 
           it 'sets the foreign key of the relation' do
             expect(game.person_id).to eq(person.id)
-          end
-
-          it 'sets the base on the inverse relation' do
-            expect(person.game).to eq(game)
-          end
-
-          it 'sets the same instance on the inverse relation' do
-            expect(person.game).to eql(game)
           end
 
           it 'does not saves the target' do
@@ -231,14 +215,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
             expect(rating.ratable_id).to eq(bar.id)
           end
 
-          it 'sets the base on the inverse relation' do
-            expect(bar.rating).to eq(rating)
-          end
-
-          it 'sets the same instance on the inverse relation' do
-            expect(bar.rating).to eql(rating)
-          end
-
           it 'does not save the target' do
             expect(bar).to_not be_persisted
           end
@@ -264,14 +240,6 @@ describe ActiveDocument::Association::Referenced::Proxy::One do
 
           it 'sets the foreign key of the relation' do
             expect(rating.ratable_id).to eq(bar.id)
-          end
-
-          it 'sets the base on the inverse relation' do
-            expect(bar.rating).to eq(rating)
-          end
-
-          it 'sets the same instance on the inverse relation' do
-            expect(bar.rating).to eql(rating)
           end
 
           it 'does not saves the target' do

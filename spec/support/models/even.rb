@@ -5,5 +5,5 @@ class Even
   field :name
 
   belongs_to :parent, class_name: 'Odd', inverse_of: :evens
-  has_many :odds, inverse_of: :parent, autosave: true
+  has_many :odds, inverse_of: :parent
 end

@@ -86,6 +86,7 @@ module ActiveDocument
           def check_inverse_assignment_allowed!
             return if _association.stores_foreign_key? # belongs_to_* side - always OK
             return if _base.allow_inverse_relation_assignment?
+            return if _binding? # Allow inverse setup during binding from belongs_to side
 
             raise Errors::InverseRelationAssignmentDisallowed.new(
               _association.name,

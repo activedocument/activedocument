@@ -58,56 +58,7 @@ describe ActiveDocument::Association::Referenced::Association do
       expect(has_many_left_class.new).to respond_to(:"#{name}?")
     end
 
-    context 'autosave' do
-
-      context 'when the :autosave option is true' do
-
-        let(:options) do
-          {
-            autosave: true
-          }
-        end
-
-        let(:association) do
-          # Note that it is necessary to create the association directly, otherwise the
-          # setup! method will be called by the :has_many macro
-          described_class.new(has_many_left_class, name, :belongs_to_many, options)
-        end
-
-        it 'sets up autosave' do
-          expect(ActiveDocument::Association::Referenced::AutoSave).to receive(:define_autosave!).with(association)
-          association.setup!
-        end
-      end
-
-      context 'when the :autosave option is false' do
-
-        let(:options) do
-          {
-            autosave: false
-          }
-        end
-
-        it 'does not set up autosave' do
-          expect(ActiveDocument::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
-          association.setup!
-        end
-      end
-
-      context 'when the :autosave option is not provided' do
-
-        let(:association) do
-          # Note that it is necessary to create the association directly, otherwise the
-          # setup! method will be called by the :has_many macro
-          described_class.new(has_many_left_class, name, :belongs_to_many, options)
-        end
-
-        it 'does not set up autosave' do
-          expect(ActiveDocument::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
-          association.setup!
-        end
-      end
-    end
+    # NOTE: autosave context removed - autosave is no longer supported for referenced associations
 
     context 'when the :validate option is true' do
 
@@ -615,41 +566,11 @@ describe ActiveDocument::Association::Referenced::Association do
   end
 
   describe '#autosave' do
+    # NOTE: autosave is no longer supported for referenced associations.
+    # The method always returns false regardless of options.
 
-    context 'when the autosave option is specified' do
-
-      context 'when the autosave option is true' do
-
-        let(:options) do
-          {
-            autosave: true
-          }
-        end
-
-        it 'returns true' do
-          expect(association.autosave).to be(true)
-        end
-      end
-
-      context 'when the autosave option is false' do
-
-        let(:options) do
-          {
-            autosave: false
-          }
-        end
-
-        it 'returns false' do
-          expect(association.autosave).to be(false)
-        end
-      end
-    end
-
-    context 'when the autosave option is not specified' do
-
-      it 'returns false' do
-        expect(association.autosave).to be(false)
-      end
+    it 'returns false' do
+      expect(association.autosave).to be(false)
     end
   end
 

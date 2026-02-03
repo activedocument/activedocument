@@ -119,8 +119,37 @@ describe 'has_one assignment' do
 end
 ```
 
+## Additional Changes
+
+### 5. Migration Rake Task
+
+Added `lib/tasks/mongoid_migration.rake` with:
+- `rake active_document:analyze_migration[path]` - Analyzes codebase for Mongoid patterns that need migration
+- `rake active_document:auto_fix_migration[path]` - Auto-removes `autosave: false` (now a no-op)
+
+### 6. Spec Updates
+
+- Removed `autosave: true/false` from model files and spec files
+- Removed tests for bidirectional FK sync (`sets the foreign key on the inverse relation`)
+- Removed tests for autosave behavior (`saves the target`, `persists the link`)
+- Changed `.count` to `.size` in tests to use in-memory count (DB queries return 0 without autosave)
+- Added `with_inverse_relation_assignment` macro to spec files that test inverse assignment
+
+## Remaining Test Failures
+
+~83 tests still failing, primarily:
+1. Tests expecting persistence without explicit save (autosave removed)
+2. Tests expecting inverse FK to be set (bidirectional BTM removed)
+3. Reload tests that expect DB to have persisted data
+
+These tests need to be updated to:
+1. Explicitly call `.save` after FK changes
+2. Test from the `belongs_to_*` side instead of `has_*` side
+3. Avoid using `.count` (DB query) when testing in-memory state - use `.size` instead
+
 ## Future Work
 
+- Continue updating remaining test failures
 - Update specs to prefer `belongs_to_*` side assignment
-- Remove `allow_inverse_relation_assignment` overrides from specs when no longer needed
+- Remove `with_inverse_relation_assignment` overrides from specs when no longer needed
 - Consider deprecation warnings when inverse assignment is used

@@ -831,41 +831,11 @@ describe ActiveDocument::Association::Referenced::Association do
   end
 
   describe '#autosave' do
+    # NOTE: autosave is no longer supported for referenced associations.
+    # The method always returns false regardless of options.
 
-    context 'when the autosave option is specified' do
-
-      context 'when the autosave option is true' do
-
-        let(:options) do
-          {
-            autosave: true
-          }
-        end
-
-        it 'returns true' do
-          expect(association.autosave).to be(true)
-        end
-      end
-
-      context 'when the autosave option is false' do
-
-        let(:options) do
-          {
-            autosave: false
-          }
-        end
-
-        it 'returns false' do
-          expect(association.autosave).to be(false)
-        end
-      end
-    end
-
-    context 'when the autosave option is not specified' do
-
-      it 'returns false' do
-        expect(association.autosave).to be(false)
-      end
+    it 'returns false' do
+      expect(association.autosave).to be(false)
     end
   end
 

@@ -20,7 +20,7 @@ class Post
   has_many :alerts
 
   belongs_to :posteable, polymorphic: true
-  accepts_nested_attributes_for :posteable, autosave: true
+  accepts_nested_attributes_for :posteable
 
   scope :recent, -> { where(created_at: { '$lt' => Time.now, '$gt' => 30.days.ago }) }
   scope :posting, -> { where(content: { '$in' => ['Posting'] }) }
