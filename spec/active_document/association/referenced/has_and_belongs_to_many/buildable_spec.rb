@@ -2,10 +2,13 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Buildable do
+describe ActiveDocument::Association::Referenced::Association do
+
+  # For belongs_to_many, base needs to respond to the foreign key getter (preference_ids)
+  let(:base_preference_ids) { [] }
 
   let(:base) do
-    double
+    double(preference_ids: base_preference_ids)
   end
 
   let(:options) do
@@ -19,7 +22,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Buildable
     end
 
     let(:association) do
-      ActiveDocument::Association::Referenced::HasAndBelongsToMany.new(Person, :preferences, options)
+      ActiveDocument::Association::Referenced::Association.new(Person, :preferences, :belongs_to_many, options)
     end
 
     context 'when provided ids' do
@@ -28,12 +31,15 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Buildable
         BSON::ObjectId.new
       end
 
+      # For belongs_to_many, the IDs come from base.preference_ids
+      let(:base_preference_ids) { [object_id] }
+
       let(:object) do
         [object_id]
       end
 
       let(:criteria) do
-        Preference.all_of('_id' => { '$in' => object })
+        Preference.all_of('_id' => { '$in' => base_preference_ids })
       end
 
       it 'returns the criteria' do
@@ -53,12 +59,14 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Buildable
         }
       end
 
+      let(:base_preference_ids) { [object_id] }
+
       let(:object) do
         [object_id]
       end
 
       let(:criteria) do
-        Preference.all_of('_id' => { '$in' => object }).order_by(options[:order])
+        Preference.all_of('_id' => { '$in' => base_preference_ids }).order_by(options[:order])
       end
 
       it 'returns the criteria' do
@@ -78,12 +86,14 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Buildable
         }
       end
 
+      let(:base_preference_ids) { [object_id] }
+
       let(:object) do
         [object_id]
       end
 
       let(:criteria) do
-        Preference.all_of('_id' => { '$in' => object }).where(rating: 3)
+        Preference.all_of('_id' => { '$in' => base_preference_ids }).where(rating: 3)
       end
 
       it 'returns the criteria' do

@@ -41,10 +41,12 @@ module ActiveDocument
       embeds_one: Association::Embedded::EmbedsOne,
       embeds_many: Association::Embedded::EmbedsMany,
       embedded_in: Association::Embedded::EmbeddedIn,
-      has_one: Association::Referenced::HasOne,
-      has_many: Association::Referenced::HasMany,
-      has_and_belongs_to_many: Association::Referenced::HasAndBelongsToMany,
-      belongs_to: Association::Referenced::BelongsTo
+      has_one: Association::Referenced::Association,
+      has_many: Association::Referenced::Association,
+      has_and_belongs_to_many: Association::Referenced::Association,
+      belongs_to_many: Association::Referenced::Association,
+      belongs_to: Association::Referenced::Association,
+      belongs_to_one: Association::Referenced::Association
     }.freeze
 
     attr_accessor :_association
@@ -107,7 +109,8 @@ module ActiveDocument
     #
     # @return [ true | false ] True if in a references many.
     def referenced_many?
-      _association&.is_a?(Association::Referenced::HasMany)
+      _association&.is_a?(Association::Referenced::Association) &&
+        _association.association_type == :has_many
     end
 
     # Determine if the document is part of an references_one association.
@@ -117,7 +120,8 @@ module ActiveDocument
     #
     # @return [ true | false ] True if in a references one.
     def referenced_one?
-      _association&.is_a?(Association::Referenced::HasOne)
+      _association&.is_a?(Association::Referenced::Association) &&
+        _association.association_type == :has_one
     end
 
     # Convenience method for iterating through the loaded associations and

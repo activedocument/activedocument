@@ -341,6 +341,47 @@ module ActiveDocument
       alias_method :find_first, :first
       alias_method :one, :first
 
+      # Update all documents in the null context.
+      # No-op for null context since there are no documents.
+      #
+      # @example Update all in null context.
+      #   context.update_all(name: "test")
+      #
+      # @param [ Hash ] _attributes The attributes to update.
+      # @param [ Hash ] _opts The options.
+      #
+      # @return [ Integer ] Always returns 0.
+      def update_all(_attributes = nil, _opts = {})
+        0
+      end
+
+      # Delete all documents in the null context.
+      # No-op for null context since there are no documents.
+      #
+      # @example Delete all in null context.
+      #   context.delete_all
+      #
+      # @param [ Hash ] _conditions Additional conditions.
+      #
+      # @return [ Integer ] Always returns 0.
+      def delete_all(_conditions = {})
+        0
+      end
+      alias_method :delete, :delete_all
+
+      # Destroy all documents in the null context.
+      # No-op for null context since there are no documents.
+      #
+      # @example Destroy all in null context.
+      #   context.destroy_all
+      #
+      # @param [ Hash ] _conditions Additional conditions.
+      #
+      # @return [ Integer ] Always returns 0.
+      def destroy_all(_conditions = {})
+        0
+      end
+
       private
 
       def raise_document_not_found_error

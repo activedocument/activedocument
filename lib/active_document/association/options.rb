@@ -72,6 +72,16 @@ module ActiveDocument
       end
       alias_method :autosave?, :autosave
 
+      # Enable autosave for this association (called by accepts_nested_attributes_for).
+      #
+      # @return [void]
+      def enable_autosave!
+        return if @options[:autosave]
+
+        @options[:autosave] = true
+        Association::Referenced::AutoSave.define_autosave!(self) unless embedded?
+      end
+
       # Whether the association is counter-cached.
       #
       # @return [ true | false ]

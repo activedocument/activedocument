@@ -320,14 +320,20 @@ module ActiveDocument
       #
       # @return [ true | false ] true if it is a *_many association, false if not.
       def many?
-        [Referenced::HasMany, Embedded::EmbedsMany].any? { |a| is_a?(a) }
+        return true if is_a?(Embedded::EmbedsMany)
+        return association_type == :has_many if respond_to?(:association_type)
+
+        false
       end
 
       # Is this association an embeds_one or has_one association?
       #
       # @return [ true | false ] true if it is a *_one association, false if not.
       def one?
-        [Referenced::HasOne, Embedded::EmbedsOne].any? { |a| is_a?(a) }
+        return true if is_a?(Embedded::EmbedsOne)
+        return association_type == :has_one if respond_to?(:association_type)
+
+        false
       end
 
       # Is this association an embedded_in or belongs_to association?
@@ -335,7 +341,10 @@ module ActiveDocument
       # @return [ true | false ] true if it is an embedded_in or belongs_to
       #   association, false if not.
       def in_to?
-        [Referenced::BelongsTo, Embedded::EmbeddedIn].any? { |a| is_a?(a) }
+        return true if is_a?(Embedded::EmbeddedIn)
+        return %i[belongs_to_one belongs_to_many].include?(association_type) if respond_to?(:association_type)
+
+        false
       end
 
       private

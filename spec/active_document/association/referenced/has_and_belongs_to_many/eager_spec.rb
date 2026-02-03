@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../has_and_belongs_to_many_models'
 
-describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Eager do
+describe ActiveDocument::Association::Referenced::Eager::BelongsToMany do
 
   describe '.keys_from_docs' do
 
@@ -24,9 +24,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Eager do
     end
 
     let(:eager) do
-      described_class.new([association], docs).tap do |b|
-        b.send(:shift_association)
-      end
+      described_class.new(association, docs)
     end
 
     it 'aggregates by the foreign key' do

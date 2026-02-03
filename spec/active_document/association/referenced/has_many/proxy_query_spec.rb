@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../has_many_models'
 
-describe ActiveDocument::Association::Referenced::HasMany::Proxy do
+describe ActiveDocument::Association::Referenced::Proxy::Many do
   context 'with primary_key and foreign_key given' do
     let(:company) { HmmCompany.create!(p: 123) }
     let(:criteria) { company.emails }

@@ -3,9 +3,9 @@
 require 'spec_helper'
 require_relative '../has_one_models'
 
-describe ActiveDocument::Association::Referenced::HasOne::Eager do
+describe ActiveDocument::Association::Referenced::Eager::HasOne do
 
-  describe '.grouped_doc' do
+  describe '.grouped_docs' do
 
     let(:person) do
       Person.create!
@@ -20,9 +20,7 @@ describe ActiveDocument::Association::Referenced::HasOne::Eager do
     end
 
     let(:eager) do
-      described_class.new([association], docs).tap do |b|
-        b.send(:shift_association)
-      end
+      described_class.new(association, docs)
     end
 
     before do
@@ -49,9 +47,7 @@ describe ActiveDocument::Association::Referenced::HasOne::Eager do
     end
 
     let(:eager) do
-      described_class.new([association], docs).tap do |b|
-        b.send(:shift_association)
-      end
+      described_class.new(association, docs)
     end
 
     before do

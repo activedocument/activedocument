@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative './has_and_belongs_to_many_models'
 
-describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
+describe ActiveDocument::Association::Referenced::Association do # belongs_to_many type
   context 'when projecting with #only' do
     before do
       contract = HabtmmContract.create!(item: 'foo')

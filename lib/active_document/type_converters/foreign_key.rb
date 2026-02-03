@@ -36,7 +36,7 @@ module ActiveDocument
             value # TODO: RawValue?
           end
         when ActiveDocument::Document,
-             ActiveDocument::Association::Referenced::BelongsTo::Proxy
+             ActiveDocument::Association::Referenced::Proxy::One
           value._id
         when ActiveDocument::Association::One
           value._target._id

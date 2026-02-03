@@ -7,7 +7,8 @@ BELONGS_TO_RESOLVER_ID__ = :__belongs_to_resolver_id
 BELONGS_TO_RESOLVER = ActiveDocument::ModelResolver.new
 ActiveDocument::ModelResolver.register_resolver BELONGS_TO_RESOLVER, BELONGS_TO_RESOLVER_ID__
 
-describe ActiveDocument::Association::Referenced::BelongsTo do
+describe ActiveDocument::Association::Referenced::Association do
+  describe 'belongs_to_one type' do
 
   before do
     class OwnerObject; include ActiveDocument::Document; end
@@ -38,10 +39,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   describe '#relation_complements' do
 
     let(:expected_complements) do
-      [
-        ActiveDocument::Association::Referenced::HasMany,
-        ActiveDocument::Association::Referenced::HasOne
-      ]
+      %i[has_many has_one]
     end
 
     it 'returns the relation complements' do
@@ -52,28 +50,28 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   describe '#setup!' do
 
     it 'sets up a getter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_getter!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(name)
     end
 
     it 'sets up a setter for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_setter!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(:"#{name}=")
     end
 
     it 'sets up an existence check for the relation' do
-      expect(ActiveDocument::Association::Accessors).to receive(:define_existence_check!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(:"#{name}?")
     end
 
     it 'sets up the builder for the relation' do
-      expect(ActiveDocument::Association::Builders).to receive(:define_builder!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(:"build_#{name}")
     end
 
     it 'sets up the creator for the relation' do
-      expect(ActiveDocument::Association::Builders).to receive(:define_creator!).with(association)
-      association.setup!
+      association
+      expect(belonging_class.new).to respond_to(:"create_#{name}")
     end
 
     context 'autosave' do
@@ -89,7 +87,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup!! method will be called by the :belongs_to macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'sets up autosave' do
@@ -117,7 +115,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup!! method will be called by the :embeds_many macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'does not set up autosave' do
@@ -140,7 +138,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :belongs_to macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'sets up counter cache callbacks' do
@@ -160,7 +158,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :belongs_to macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'sets up counter cache callbacks' do
@@ -188,7 +186,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :embeds_many macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'does not set up counter cache callbacks' do
@@ -320,7 +318,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(belonging_class, name, options)
+            described_class.new(belonging_class, name, :belongs_to_one, options)
           end
 
           it 'sets up the dependency' do
@@ -340,7 +338,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(belonging_class, name, options)
+            described_class.new(belonging_class, name, :belongs_to_one, options)
           end
 
           it 'sets up the dependency' do
@@ -360,7 +358,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(belonging_class, name, options)
+            described_class.new(belonging_class, name, :belongs_to_one, options)
           end
 
           it 'sets up the dependency' do
@@ -380,7 +378,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(belonging_class, name, options)
+            described_class.new(belonging_class, name, :belongs_to_one, options)
           end
 
           it 'sets up the dependency' do
@@ -400,7 +398,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
           let(:association) do
             # Note that it is necessary to create the association directly, otherwise the
             # setup! method will be called by the :belongs_to macro
-            described_class.new(belonging_class, name, options)
+            described_class.new(belonging_class, name, :belongs_to_one, options)
           end
 
           it 'sets up the dependency' do
@@ -503,7 +501,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :belongs_to macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'sets up touch' do
@@ -531,7 +529,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :embeds_many macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'does not set up touch' do
@@ -554,7 +552,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :belongs_to macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'sets up validation' do
@@ -582,7 +580,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
         let(:association) do
           # Note that it is necessary to create the association directly, otherwise the
           # setup! method will be called by the :belongs_to macro
-          described_class.new(belonging_class, name, options)
+          described_class.new(belonging_class, name, :belongs_to_one, options)
         end
 
         it 'does not set up the validation because it uses the validation default (false)' do
@@ -597,7 +595,7 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
       let(:association) do
         # Note that it is necessary to create the association directly, otherwise the
         # setup! method will be called by the :belongs_to macro
-        described_class.new(belonging_class, name, options)
+        described_class.new(belonging_class, name, :belongs_to_one, options)
       end
 
       context 'when the global config option is true' do
@@ -1016,8 +1014,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
 
   describe '#relation' do
 
-    it 'returns ActiveDocument::Association::Referenced::BelongsTo::Proxy' do
-      expect(association.relation).to be(ActiveDocument::Association::Referenced::BelongsTo::Proxy)
+    it 'returns the proxy class for this association type' do
+      expect(association.relation).to be(ActiveDocument::Association::Referenced::Proxy::One)
     end
   end
 
@@ -1038,7 +1036,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
   describe '#options' do
 
     it 'returns the options' do
-      expect(association.options).to be(options)
+      # V2 wraps options in an Options value object
+      expect(association.options.class_name).to eq(options[:class_name])
     end
   end
 
@@ -2078,9 +2077,10 @@ describe ActiveDocument::Association::Referenced::BelongsTo do
       OwnerObject.has_one :belonging_object
     end
 
-    it 'returns an instance of ActiveDocument::Association::Referenced::BelongsTo::Proxy' do
-      expect(ActiveDocument::Association::Referenced::BelongsTo::Proxy).to receive(:new).and_call_original
-      expect(association.create_relation(owner, target)).to be_a(OwnerObject)
+    it 'returns a proxy instance wrapping the target' do
+      result = association.create_relation(owner, target)
+      expect(result._target).to be(target)
     end
+  end
   end
 end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../has_and_belongs_to_many_models'
 
-describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
+describe ActiveDocument::Association::Referenced::Proxy::Many do
   context 'with primary_key and foreign_key given' do
     let(:company) { HabtmmCompany.create!(c_id: 123) }
     let(:employee) { HabtmmEmployee.create!(e_id: 456) }

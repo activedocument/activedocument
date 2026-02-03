@@ -22,7 +22,7 @@ module RefHasManySpec
   end
 end
 
-describe ActiveDocument::Association::Referenced::HasMany::Proxy do
+describe ActiveDocument::Association::Referenced::Proxy::Many do
   config_override :raise_not_found_error, true
 
   before :all do

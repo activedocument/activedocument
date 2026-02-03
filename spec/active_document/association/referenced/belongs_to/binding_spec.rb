@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ActiveDocument::Association::Referenced::BelongsTo::Binding do
+describe ActiveDocument::Association::Referenced::Binding::BelongsToOne do
 
   let(:person) do
     Person.new
@@ -83,8 +83,8 @@ describe ActiveDocument::Association::Referenced::BelongsTo::Binding do
         end
 
         it 'does nothing' do
-          expect(game).to_not receive(:person=).with(person)
-          expect(game).to receive(:person=).with(nil).once
+          # When already correctly bound, no setter should be called at all
+          expect(game).to_not receive(:person=)
           binding.bind_one
         end
       end

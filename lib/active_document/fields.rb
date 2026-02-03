@@ -417,7 +417,7 @@ module ActiveDocument
         # 1. This is the last item, i.e. there is no remaining.
         # 2. It is not an association.
         # 3. It is not a belongs association
-        if !remaining || !relations.key?(segment) || !relations[segment].is_a?(Association::Referenced::BelongsTo)
+        if !remaining || !relations.key?(segment) || !relations[segment].in_to?
           segment = aliased_fields[segment]&.dup || segment
         end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative './has_many_models'
 
-describe ActiveDocument::Association::Referenced::BelongsTo do
+describe ActiveDocument::Association::Referenced::Association do # belongs_to_one type
   context 'when projecting with #only' do
     before do
       school = HmmSchool.create!(district: 'foo', team: 'Bulldogs')

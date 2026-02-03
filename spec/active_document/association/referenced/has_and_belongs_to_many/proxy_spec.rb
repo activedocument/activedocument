@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../has_and_belongs_to_many_models'
 
-describe ActiveDocument::Association::Referenced::HasAndBelongsToMany::Proxy do
+describe ActiveDocument::Association::Referenced::Proxy::Many do
   config_override :raise_not_found_error, true
 
   around do |example|
