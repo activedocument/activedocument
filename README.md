@@ -187,6 +187,15 @@ ActiveDocument is a fork of [Mongoid](https://www.github.com/mongodb/mongoid) ve
 Mongoid is maintained by MongoDB, Inc. and only supports MongoDB database. ActiveDocument aims to provide
 an equally-robust level of support for MongoDB, while also adding support for other NoSQL databases.
 
+## Intentional Differences from Mongoid
+
+ActiveDocument makes some intentional API changes from Mongoid:
+
+- **No autosave for referenced associations**: ActiveDocument does not auto-save related documents when the parent is saved. FK changes are in-memory only; you must explicitly call `save` on each document. The `autosave: true` option is ignored for referenced associations.
+- **No bidirectional `belongs_to_many`**: The `belongs_to_many` association must pair with `has_many` (or use `inverse_of: nil`). You cannot have `belongs_to_many <-> belongs_to_many` (bidirectional FK arrays).
+- **Inverse relation assignment disabled by default**: Modifying associations from the `has_*` (inverse) side raises an error by default. Enable with `config.allow_inverse_relation_assignment = true` or per-instance with `doc.allow_inverse_relation_assignment!`.
+- **No Symbol operators**: ActiveDocument does not have Symbol operator methods (`:field.in`, `:field.gt`, etc.). Use method syntax (`.any_in`, `.gt`, etc.) or hash syntax instead.
+
 ## Roadmap
 
 Refer to the [Roadmap issue](https://github.com/activedocument/activedocument/issues/1).

@@ -143,18 +143,10 @@ module ActiveDocument
       # @param [ ActiveModel::Validator..., Hash ] *args The validator classes
       #   and options hash.
       #
-      # @note See ActiveModel::Validations::With for full options. This is
-      #   overridden to add autosave functionality when presence validation is
-      #   added.
+      # @note See ActiveModel::Validations::With for full options.
       def validates_with(*args, &block)
-        if args.first == PresenceValidator
-          args.last[:attributes].each do |name|
-            next unless (association = relations[name.to_s])&.autosave?
-
-            Association::Referenced::AutoSave.define_autosave!(association)
-          end
-        end
-
+        # Autosave is only supported for embedded associations
+        # Referenced associations do not auto-save on validation
         super
       end
 

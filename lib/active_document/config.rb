@@ -240,6 +240,18 @@ module ActiveDocument
     # consequences of duplicate index checking.
     option :allow_duplicate_index_declarations, default: false
 
+    # When this flag is false (the default), modifying associations from the
+    # inverse (has_*) side will raise an InverseRelationAssignmentDisallowed
+    # error. For example, with `belongs_to_many :parks` on Dog and
+    # `has_many :dogs` on Park, you must use `dog.parks << park` rather than
+    # `park.dogs << dog`.
+    #
+    # Setting this flag to true allows assignment from the inverse side.
+    # The FK change is queued and persisted when the base document is saved.
+    #
+    # This can also be enabled per-instance with `doc.allow_inverse_relation_assignment!`
+    option :allow_inverse_relation_assignment, default: false
+
     # When this flag is true, performing a serializable_hash(only: []) will
     # result in all fields being included. This is the traditional (and default)
     # behavior in ActiveDocument 9 and earlier.

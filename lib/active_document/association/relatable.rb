@@ -365,12 +365,6 @@ module ActiveDocument
         Touchable.define_touchable!(self)
       end
 
-      def define_autosaver!
-        return unless autosave?
-
-        Association::Referenced::AutoSave.define_autosave!(self)
-      end
-
       def define_builder!
         Association::Builders.define_builder!(self)
       end

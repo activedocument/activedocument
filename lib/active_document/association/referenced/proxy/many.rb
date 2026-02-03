@@ -28,15 +28,17 @@ module ActiveDocument
           #
           # @param args [Array<ActiveDocument::Document>] Documents to append
           # @return [self] The proxy
+          #
+          # @raise [Errors::InverseRelationAssignmentDisallowed] If assigning from inverse side
+          #   when allow_inverse_relation_assignment is false
           def <<(*args)
+            check_inverse_assignment_allowed!
             docs = args.flatten
             return concat(docs) if docs.size > 1
 
             if (doc = docs.first)
               append(doc)
-              # Only save if doc is new or has changes (e.g., inverse FK was added)
-              # For inverse_of: nil, the doc won't have changes since there's no inverse FK
-              doc.save if persistable? && !_assigning? && !doc.validated? && (doc.new_record? || doc.changed?)
+              # FK is set in memory; user must save doc to persist
             end
             unsynced_base
             self
@@ -48,7 +50,11 @@ module ActiveDocument
           #
           # @param documents [Array<ActiveDocument::Document>] Documents to append
           # @return [self] The proxy
+          #
+          # @raise [Errors::InverseRelationAssignmentDisallowed] If assigning from inverse side
+          #   when allow_inverse_relation_assignment is false
           def concat(documents)
+            check_inverse_assignment_allowed!
             docs = []
             inserts = []
             ids = []
@@ -276,7 +282,11 @@ module ActiveDocument
           #
           # @param replacement [Array<ActiveDocument::Document>] The new documents
           # @return [self] The proxy
+          #
+          # @raise [Errors::InverseRelationAssignmentDisallowed] If assigning from inverse side
+          #   when allow_inverse_relation_assignment is false
           def substitute(replacement)
+            check_inverse_assignment_allowed!
             if replacement
               new_docs = replacement.compact
 
@@ -404,8 +414,7 @@ module ActiveDocument
               document.delete
             when :destroy
               document.destroy
-            else
-              document.save
+            # No else - FK is set in memory; user must save to persist
             end
           end
 
@@ -511,9 +520,8 @@ module ActiveDocument
               doc.run_before_callbacks(:save, :create)
               docs.push(doc)
               inserts.push(doc.send(:as_attributes))
-            else
-              doc.save
             end
+            # For existing docs, FK is set in memory; user must save to persist
           end
 
           def _session
@@ -525,6 +533,21 @@ module ActiveDocument
           # @return [Boolean]
           def belongs_to_many?
             _association.association_type == :belongs_to_many
+          end
+
+          # Check if inverse relation assignment is allowed.
+          # Raises error if assigning from has_* side when not allowed.
+          #
+          # @raise [Errors::InverseRelationAssignmentDisallowed] If not allowed
+          def check_inverse_assignment_allowed!
+            return if _association.stores_foreign_key?  # belongs_to_* side - always OK
+            return if _base.allow_inverse_relation_assignment?
+
+            raise Errors::InverseRelationAssignmentDisallowed.new(
+              _association.name,
+              _base.class,
+              _association.relation_class
+            )
           end
 
           # Mark the base as unsynced with respect to the foreign key.
@@ -603,20 +626,10 @@ module ActiveDocument
             # Bind new documents (without persisting since FK is handled by save)
             new_docs.each { |doc| append(doc, persist_base: false) }
 
-            # Auto-save related documents only when base is persisted (not for new records)
-            if !_building? && _base.persisted?
-              # Save removed docs to persist the removal of base's ID from their inverse FK
-              docs_to_remove.each do |doc|
-                doc.save if doc.persisted? && doc.changed?
-              end
-              # Save new docs to persist the addition of base's ID to their inverse FK
-              new_docs.each do |doc|
-                doc.save if doc.new_record? || doc.changed?
-              end
-            end
+            # FK changes are in memory; user must save related docs to persist
+            # Base's FK array is already persisted via atomic $set above
 
             # Mark as unsynced so the sync callback can run when base is saved
-            # This ensures the inverse FK is persisted on related documents
             unsynced_base
           end
 

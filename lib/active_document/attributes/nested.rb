@@ -71,19 +71,16 @@ module ActiveDocument
 
         private
 
-        # Add the autosave information for the nested association.
+        # Autosave configuration for nested associations.
+        # For referenced associations, this is a no-op (autosave not supported).
+        # Embedded associations handle autosave through their own mechanism.
         #
         # @api private
         #
-        # @example Add the autosave if appropriate.
-        #   Person.autosave_nested_attributes(metadata)
-        #
         # @param [ ActiveDocument::Association::Relatable ] association The existing association metadata.
         def autosave_nested_attributes(association)
-          return if association.autosave?
-          return if association.embedded?
-
-          association.enable_autosave!
+          # Autosave is only supported for embedded associations
+          # Referenced associations do not support autosave - user must save explicitly
         end
       end
     end

@@ -35,7 +35,6 @@ module ActiveDocument
           @name = name
           @association_type = type
           @options = Options.new(opts)
-          @autosave_enabled = false
           @extension = nil
 
           @module_path = owner_class.name ? owner_class.name.split('::')[0..-2].join('::') : ''
@@ -378,20 +377,11 @@ module ActiveDocument
         end
 
         # Whether to autosave.
+        # Autosave is not supported for referenced associations.
         #
-        # @return [Boolean]
+        # @return [false] Always returns false
         def autosave?
-          @autosave_enabled || @options.autosave?
-        end
-
-        # Enable autosave for this association (called by accepts_nested_attributes_for).
-        #
-        # @return [void]
-        def enable_autosave!
-          return if @autosave_enabled
-
-          @autosave_enabled = true
-          ActiveDocument::Association::Referenced::AutoSave.define_autosave!(self)
+          false
         end
 
         # Whether to autobuild.
@@ -625,20 +615,13 @@ module ActiveDocument
         end
 
         def setup_callbacks!
-          # Enable autosave for belongs_to_many by default (HABTM behavior),
-          # or when explicitly set via autosave: true option
-          setup_autosave! if @options.autosave? || association_type == :belongs_to_many
+          # Autosave is not supported for referenced associations
           setup_counter_cache! if counter_cached?
           setup_dependency! if dependent
           setup_touchable! if touchable?
           setup_syncing! if needs_syncing?
           setup_validation! if validate?
           setup_required! if require_association?
-        end
-
-        def setup_autosave!
-          ActiveDocument::Association::Referenced::AutoSave.define_autosave!(self)
-          @autosave_enabled = true
         end
 
         def setup_counter_cache!

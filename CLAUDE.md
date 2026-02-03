@@ -13,6 +13,9 @@ When porting code from Mongoid, note these intentional differences:
 - **Symbol operators removed**: ActiveDocument does NOT have Symbol operator methods (`:field.in`, `:field.gt`, `:field.ne`, etc.) that Mongoid has. When porting code that uses this syntax, rewrite to use method syntax (`.any_in`, `.not_in`, `.gt`, `.ne`, etc.) OR hash syntax `{ _id: { '$nin' => values } }` instead of `:_id.in => values`).
 - **Rubocop directives**: Always remove `# rubocop:todo all` comments when merging upstream code. ActiveDocument enforces Rubocop rules.
 - **Pluckable**: ActiveDocument uses a #pluck_each structure different than Mongoid, see commit b05fd4d (activedocument PR #51)
+- **Autosave removed**: ActiveDocument does NOT have autosave for referenced associations. FK changes are in-memory only; you must explicitly save documents to persist. The `autosave: true` option is ignored for referenced associations.
+- **No bidirectional belongs_to_many**: `belongs_to_many` must pair with `has_many` or use `inverse_of: nil`. You cannot have `belongs_to_many <-> belongs_to_many` (bidirectional FK arrays on both sides).
+- **Inverse relation assignment**: By default, you cannot modify associations from the `has_*` (inverse) side. Set `config.allow_inverse_relation_assignment = true` or call `doc.allow_inverse_relation_assignment!` to enable modifying from the inverse side.
 
 ## Tech Stack
 - Runtime: **Ruby** 3.2+

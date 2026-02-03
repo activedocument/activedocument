@@ -16,29 +16,34 @@ module ActiveDocument
             super do
               characterize_one(_target) if _target
               bind_one
-              save_target_if_base_persisted
             end
           end
 
           # Remove the association by clearing the foreign key.
-          # Saves the target document.
+          # FK is set in memory; user must save target document to persist.
           def nullify
             unbind_one
-            _target&.save
+            # FK is cleared in memory by unbind_one; user must save target to persist
           end
 
           # Replace the current target with a new document.
           #
           # @param replacement [ActiveDocument::Document, Object, nil] The replacement document, ID, or nil
           # @return [self, nil] The proxy or nil if no replacement
+          #
+          # @raise [Errors::InverseRelationAssignmentDisallowed] If assigning from inverse side
+          #   when allow_inverse_relation_assignment is false
           def substitute(replacement)
+            # Check if we're assigning from the inverse (has_*) side
+            check_inverse_assignment_allowed!
+
             # Handle nil assignment - unbind and clear the relation
             if replacement.nil?
               # Unbind first to clear FK and inverse references before
               # the document is potentially frozen by destroy
               unbind_one
               apply_dependent_option!(_target)
-              _target&.save if _target&.persisted? && _target&.changed?
+              # FK is cleared in memory; user must save target to persist
               self._target = nil
               return nil
             end
@@ -62,44 +67,32 @@ module ActiveDocument
             old_target = _target
             unbind_one
             apply_dependent_option!(old_target)
-            old_target&.save if old_target&.persisted? && old_target&.changed?
+            # FK is cleared in memory on old_target; user must save to persist
 
             # Clear cached binding and set new target
             @binding = nil
             self._target = new_target
             bind_one
-            save_target_if_persistable
+            # FK is set in memory on new_target; user must save to persist
             self
           end
 
-          # Save the target document if the base is persisted.
-          # This handles both new documents (insert) and existing documents (update).
-          # Only saves for has_* associations (where FK is on the target).
-          # For belongs_to_*, the FK is on the base, so we don't auto-save the target.
-          def save_target_if_persistable
-            return unless _base&.persisted? && _target
-            return if _binding? || _building?
-            # Only save target for has_* associations (where FK is on target)
-            return if _association.stores_foreign_key?
-
-            # Save if target is new or has changes
-            _target.save if _target.new_record? || _target.changed?
-          end
-
-          # Save the target when the base is persisted (for has_one/has_many).
-          # This persists the FK on the target document.
-          # Only saves for has_* associations (where FK is on the target).
-          def save_target_if_base_persisted
-            return unless _base&.persisted? && _target
-            return if _building?
-            # Only save target for has_* associations (where FK is on target)
-            return if _association.stores_foreign_key?
-
-            # Save if target is new or has changes
-            _target.save if _target.new_record? || _target.changed?
-          end
-
           private
+
+          # Check if inverse relation assignment is allowed.
+          # Raises error if assigning from has_* side when not allowed.
+          #
+          # @raise [Errors::InverseRelationAssignmentDisallowed] If not allowed
+          def check_inverse_assignment_allowed!
+            return if _association.stores_foreign_key?  # belongs_to_* side - always OK
+            return if _base.allow_inverse_relation_assignment?
+
+            raise Errors::InverseRelationAssignmentDisallowed.new(
+              _association.name,
+              _base.class,
+              _association.relation_class
+            )
+          end
 
           # Apply the dependent option when clearing a relation.
           # Handles :destroy, :delete_all, :nullify, etc.
@@ -116,7 +109,7 @@ module ActiveDocument
             when :delete_all
               doc.delete
             when :nullify
-              # nullify is handled by unbind_one + save
+              # nullify is handled by unbind_one; user must save to persist
             when :restrict_with_exception
               raise Errors::DeleteRestriction.new(doc, _association.name)
             when :restrict_with_error

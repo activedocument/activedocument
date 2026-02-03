@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Shared modules
-require 'active_document/association/referenced/auto_save'
 require 'active_document/association/referenced/counter_cache'
 require 'active_document/association/referenced/syncable'
 

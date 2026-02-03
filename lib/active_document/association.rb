@@ -25,7 +25,6 @@ module ActiveDocument
   module Association
     extend ActiveSupport::Concern
     include Embedded::Cyclic
-    include Referenced::AutoSave
     include Referenced::CounterCache
     include Referenced::Syncable
     include Accessors
@@ -122,6 +121,29 @@ module ActiveDocument
     def referenced_one?
       _association&.is_a?(Association::Referenced::Association) &&
         _association.association_type == :has_one
+    end
+
+    # Enable inverse relation assignment for this document instance.
+    # This allows modifying associations from the inverse (has_*) side.
+    #
+    # @example Enable inverse relation assignment.
+    #   park.allow_inverse_relation_assignment!
+    #   park.dogs << fido  # Now allowed
+    #
+    # @return [ true ] Always returns true.
+    def allow_inverse_relation_assignment!
+      @allow_inverse_relation_assignment = true
+    end
+
+    # Check if inverse relation assignment is allowed for this document.
+    # Returns true if enabled per-instance or via global config.
+    #
+    # @example Check if allowed.
+    #   park.allow_inverse_relation_assignment?
+    #
+    # @return [ true | false ] Whether inverse assignment is allowed.
+    def allow_inverse_relation_assignment?
+      @allow_inverse_relation_assignment || ActiveDocument.allow_inverse_relation_assignment
     end
 
     # Convenience method for iterating through the loaded associations and
