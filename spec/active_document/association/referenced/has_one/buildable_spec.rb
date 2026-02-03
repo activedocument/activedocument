@@ -19,7 +19,7 @@ describe ActiveDocument::Association::Referenced::Association do
     end
 
     let(:association) do
-      ActiveDocument::Association::Referenced::HasOne.new(Person, :account, options)
+      ActiveDocument::Association::Referenced::Association.new(Person, :account, :has_one, options)
     end
 
     context 'when provided an id' do

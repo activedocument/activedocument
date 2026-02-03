@@ -36,11 +36,22 @@ module ActiveDocument
           # Full binding from parent to child document.
           # @param doc [ActiveDocument::Document] The document to bind
           def bind_from_relational_parent(doc)
+            check_mixed!(doc)
             check_inverse!(doc)
             remove_associated(doc)
             bind_foreign_key(doc, record_id(base))
             bind_polymorphic_type(doc, base.class.name)
             bind_inverse(doc, base)
+          end
+
+          # Check if trying to set an embedded document on a referenced association
+          # @param doc [ActiveDocument::Document] The document to check
+          # @raise [Errors::MixedRelations] If the doc is embedded
+          def check_mixed!(doc)
+            # Check if the document class has any embedded_in associations
+            return unless doc.class.respond_to?(:embedded?) && doc.class.embedded?
+
+            raise Errors::MixedRelations.new(base.class, doc.class)
           end
 
           # Full unbinding from parent to child document.

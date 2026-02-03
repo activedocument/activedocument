@@ -19,7 +19,7 @@ describe ActiveDocument::Association::Referenced::Association do
     end
 
     let(:association) do
-      ActiveDocument::Association::Referenced::HasMany.new(Person, :posts, options)
+      ActiveDocument::Association::Referenced::Association.new(Person, :posts, :has_many, options)
     end
 
     context 'when provided an id' do
