@@ -46,6 +46,7 @@ gemfiles/                    # Gemfile variants for CI
 - **NEVER** implement no-op tests or simplify tests to the point where they are meaningless.
 - **100% pass rate required** - 95% is not acceptable.
 - Avoid `sleep` in tests; use proper waiting patterns.
+- When fixing a large number of tests, identify the failures then use the Todo tool to track failures and fix 1-by-1.
 
 ## Workflow
 - After making each change/feature, write tests for it.
