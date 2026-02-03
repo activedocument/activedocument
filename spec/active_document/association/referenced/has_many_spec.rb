@@ -70,57 +70,6 @@ describe ActiveDocument::Association::Referenced::Association do
       expect(has_many_class.new).to respond_to(:"#{name}?")
     end
 
-    context 'autosave' do
-
-      context 'when the :autosave option is true' do
-
-        let(:options) do
-          {
-            autosave: true
-          }
-        end
-
-        let(:association) do
-          # Note that it is necessary to create the association directly, otherwise the
-          # setup! method will be called by the :has_many macro
-          described_class.new(has_many_class, name, :has_many, options)
-        end
-
-        it 'sets up autosave' do
-          expect(ActiveDocument::Association::Referenced::AutoSave).to receive(:define_autosave!).with(association)
-          association.setup!
-        end
-      end
-
-      context 'when the :autosave option is false' do
-
-        let(:options) do
-          {
-            autosave: false
-          }
-        end
-
-        it 'does not set up autosave' do
-          expect(ActiveDocument::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
-          association
-        end
-      end
-
-      context 'when the :autosave option is not provided' do
-
-        let(:association) do
-          # Note that it is necessary to create the association directly, otherwise the
-          # setup! method will be called by the :has_many macro
-          described_class.new(has_many_class, name, :has_many, options)
-        end
-
-        it 'does not set up autosave' do
-          expect(ActiveDocument::Association::Referenced::AutoSave).to_not receive(:define_autosave!)
-          association.setup!
-        end
-      end
-    end
-
     context 'when the :validate option is true' do
 
       let(:options) do
