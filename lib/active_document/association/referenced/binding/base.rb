@@ -111,6 +111,10 @@ module ActiveDocument
               remove_associated_many(doc, inverse)
             elsif association.in_to?
               remove_associated_in_to(doc, inverse)
+            elsif association.one?
+              # For has_one, the doc has a belongs_to inverse.
+              # Need to clear the inverse on the old owner.
+              remove_associated_in_to(doc, inverse)
             end
           end
 

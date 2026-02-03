@@ -4,8 +4,10 @@ require 'spec_helper'
 
 describe ActiveDocument::Association::Referenced::Association do
 
+  let(:base_id) { BSON::ObjectId.new }
+
   let(:base) do
-    double(new_record?: false)
+    double(_id: base_id, new_record?: false)
   end
 
   describe '#build' do
@@ -25,7 +27,8 @@ describe ActiveDocument::Association::Referenced::Association do
     context 'when provided an id' do
 
       let!(:account) do
-        Account.create!(person_id: object, name: 'banking', balance: 200)
+        # For has_one, FK is on Account (person_id), create with base_id
+        Account.create!(person_id: base_id, name: 'banking', balance: 200)
       end
 
       let(:object) do
@@ -33,7 +36,8 @@ describe ActiveDocument::Association::Referenced::Association do
       end
 
       before do
-        expect_any_instance_of(ActiveDocument::Criteria).to receive(:where).with(association.foreign_key => object).and_call_original
+        # has_one queries using base._id (base_id)
+        expect_any_instance_of(ActiveDocument::Criteria).to receive(:where).with(association.foreign_key => base_id).and_call_original
       end
 
       it 'sets the document' do
@@ -44,7 +48,7 @@ describe ActiveDocument::Association::Referenced::Association do
     context 'when scope is specified' do
 
       let!(:account) do
-        Account.create!(person_id: object, name: 'banking', balance: 200)
+        Account.create!(person_id: base_id, name: 'banking', balance: 200)
       end
 
       let(:object) do
@@ -58,7 +62,7 @@ describe ActiveDocument::Association::Referenced::Association do
       end
 
       before do
-        expect_any_instance_of(ActiveDocument::Criteria).to receive(:where).with(association.foreign_key => object).and_call_original
+        expect_any_instance_of(ActiveDocument::Criteria).to receive(:where).with(association.foreign_key => base_id).and_call_original
         expect_any_instance_of(ActiveDocument::Criteria).to receive(:gt).with(balance: 100).and_call_original
       end
 
@@ -72,7 +76,7 @@ describe ActiveDocument::Association::Referenced::Association do
       context 'when document does not satisfy scope' do
 
         let!(:account) do
-          Account.create!(person_id: object, name: 'banking', balance: 50)
+          Account.create!(person_id: base_id, name: 'banking', balance: 50)
         end
 
         it 'returns nil' do
@@ -97,20 +101,26 @@ describe ActiveDocument::Association::Referenced::Association do
           Person.new
         end
 
+        let(:new_person) do
+          Person.new
+        end
+
         let(:object) do
           Account.new(person: original_person)
         end
 
-        let!(:document) do
-          association.build(Person.new, object)
+        # In v2, binding happens when setting the association, not during build.
+        # Test the normal flow through the setter instead of direct build call.
+        before do
+          new_person.account = object
         end
 
         it 'clears the object of its previous association' do
           expect(original_person.account).to be_nil
         end
 
-        it 'returns the object' do
-          expect(document).to eq(object)
+        it 'sets the object on the new parent' do
+          expect(new_person.account).to eq(object)
         end
       end
     end

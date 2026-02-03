@@ -76,8 +76,9 @@ module ActiveDocument
         # @param selected_fields [Hash, nil] Selected fields
         # @return [ActiveDocument::Document, Array, Criteria, nil]
         def build(base, object, type = nil, selected_fields = nil)
-          # If object is a document, return it directly (used when setting associations)
+          # If object is a document or array of documents, return directly
           return object if object.is_a?(Document)
+          return object if object.is_a?(::Array) && !object.empty? && object.first.is_a?(Document)
 
           # For has_one/has_many, query related documents (FK on other side)
           unless stores_foreign_key?

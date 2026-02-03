@@ -4,8 +4,10 @@ require 'spec_helper'
 
 describe ActiveDocument::Association::Referenced::Association do
 
+  let(:base_id) { BSON::ObjectId.new }
+
   let(:base) do
-    double
+    double(_id: base_id)
   end
 
   describe '#build' do
@@ -29,7 +31,8 @@ describe ActiveDocument::Association::Referenced::Association do
       end
 
       let(:criteria) do
-        Post.where(association.foreign_key => object)
+        # For has_many, FK is on Post (person_id), so query uses base._id
+        Post.where(association.foreign_key => base_id)
       end
 
       it 'returns the criteria' do
@@ -50,7 +53,7 @@ describe ActiveDocument::Association::Referenced::Association do
       end
 
       let(:criteria) do
-        Post.where(association.foreign_key => object).order_by(options[:order])
+        Post.where(association.foreign_key => base_id).order_by(options[:order])
       end
 
       it 'adds the ordering to the criteria' do
@@ -71,7 +74,7 @@ describe ActiveDocument::Association::Referenced::Association do
       end
 
       let(:criteria) do
-        Post.where(association.foreign_key => object, rating: 3)
+        Post.where(association.foreign_key => base_id, rating: 3)
       end
 
       it 'adds the ordering to the criteria' do
@@ -96,7 +99,7 @@ describe ActiveDocument::Association::Referenced::Association do
       end
 
       let(:criteria) do
-        Post.where(association.foreign_key => object, 'ratable_type' => 'Rating')
+        Post.where(association.foreign_key => base._id, 'ratable_type' => 'Rating')
       end
 
       before do
