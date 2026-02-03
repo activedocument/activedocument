@@ -82,10 +82,13 @@ module ActiveDocument
           # @return [ActiveDocument::Document] The new document
           def build(attributes = {}, type = nil)
             doc = Factory.execute_build(type || klass, attributes, execute_callbacks: false)
-            # Apply defaults BEFORE appending so that custom _id defaults are set
-            # before the ID is added to the FK array
-            doc.apply_post_processed_defaults
+            # For belongs_to_many: Apply defaults BEFORE appending so that custom _id
+            # defaults are set before the ID is added to the FK array
+            # For has_many: Apply defaults AFTER appending so that defaults can
+            # access the parent via the association
+            doc.apply_post_processed_defaults if belongs_to_many?
             append(doc)
+            doc.apply_post_processed_defaults unless belongs_to_many?
             yield(doc) if block_given?
             doc.run_pending_callbacks
             doc.run_callbacks(:build) { doc }
