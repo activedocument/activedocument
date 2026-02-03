@@ -583,7 +583,17 @@ module ActiveDocument
             _base.send(_association.foreign_key_setter, new_ids)
 
             # Persist base's FK atomically when base is already persisted
-            _base.set(_association.foreign_key => new_ids) if _base.persisted?
+            if _base.persisted?
+              updates = { _association.foreign_key => new_ids }
+              # Also update timestamps if the model has them
+              updated_at_field = _base.class.database_field_name(:updated_at)
+              if updated_at_field && _base.respond_to?(:updated_at=)
+                now = Time.now
+                _base.updated_at = now
+                updates[updated_at_field] = now
+              end
+              _base.set(updates)
+            end
 
             # Reset the cached criteria since FK array changed
             @criteria = nil

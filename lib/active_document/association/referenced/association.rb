@@ -625,7 +625,9 @@ module ActiveDocument
         end
 
         def setup_callbacks!
-          setup_autosave! if @options.autosave?
+          # Enable autosave for belongs_to_many by default (HABTM behavior),
+          # or when explicitly set via autosave: true option
+          setup_autosave! if @options.autosave? || association_type == :belongs_to_many
           setup_counter_cache! if counter_cached?
           setup_dependency! if dependent
           setup_touchable! if touchable?
