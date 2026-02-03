@@ -557,6 +557,9 @@ module ActiveDocument
           #
           # @param new_docs [Array<ActiveDocument::Document>] The new documents
           def substitute_belongs_to_many(new_docs)
+            # Deduplicate documents by primary key to prevent duplicate IDs
+            new_docs = new_docs.uniq { |doc| doc.send(_association.primary_key) }
+
             # Remember old docs to save after unbinding
             old_docs = in_memory.dup
             new_doc_ids = new_docs.map { |doc| doc.send(_association.primary_key) }.to_set
@@ -575,23 +578,23 @@ module ActiveDocument
             old_docs.each { |doc| unbind_one(doc) }
             _target.clear
 
-            # Clear the FK array on base, then add new IDs (prevents append from using add_to_set)
-            _base.send(_association.foreign_key_setter, [])
-            if _base.persisted?
-              new_ids = new_docs.map { |doc| doc.send(_association.primary_key) }
-              _base.set(_association.foreign_key => new_ids)
-            end
+            # Set the FK array on base to new IDs
+            new_ids = new_docs.map { |doc| doc.send(_association.primary_key) }
+            _base.send(_association.foreign_key_setter, new_ids)
+
+            # Persist base's FK atomically when base is already persisted
+            _base.set(_association.foreign_key => new_ids) if _base.persisted?
 
             # Reset the cached criteria since FK array changed
             @criteria = nil
             # Reset the enumerable's unloaded criteria to use the new criteria
             _target.reset_unloaded(criteria) if _target.respond_to?(:reset_unloaded)
 
-            # Bind new documents (without persisting since we already set the FK array)
+            # Bind new documents (without persisting since FK is handled by save)
             new_docs.each { |doc| append(doc, persist_base: false) }
 
-            # Auto-save documents if base is persisted
-            if _base.persisted? && !_building?
+            # Auto-save related documents only when base is persisted (not for new records)
+            if !_building? && _base.persisted?
               # Save removed docs to persist the removal of base's ID from their inverse FK
               docs_to_remove.each do |doc|
                 doc.save if doc.persisted? && doc.changed?
