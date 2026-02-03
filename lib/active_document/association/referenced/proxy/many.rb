@@ -421,15 +421,34 @@ module ActiveDocument
 
           # Substitute for belongs_to_many associations.
           # FK is on our side as an array, so we just need to update _base's FK array.
+          # When base is persisted, documents should be auto-saved for FK sync.
           #
           # @param new_docs [Array<ActiveDocument::Document>] The new documents
           def substitute_belongs_to_many(new_docs)
-            # Unbind current documents
-            in_memory.each { |doc| unbind_one(doc) }
+            # Remember old docs to save after unbinding
+            old_docs = in_memory.dup
+
+            # Unbind current documents (removes base's ID from their inverse FK arrays)
+            old_docs.each { |doc| unbind_one(doc) }
             _target.clear
 
             # Bind new documents
             new_docs.each { |doc| append(doc) }
+
+            # Auto-save documents if base is persisted
+            if _base.persisted? && !_building?
+              # Save base to persist its FK array change
+              _base.save if _base.changed?
+
+              # Save old docs to persist the removal of base's ID from their inverse FK
+              old_docs.each do |doc|
+                doc.save if doc.persisted? && doc.changed?
+              end
+              # Save new docs to persist the addition of base's ID to their inverse FK
+              new_docs.each do |doc|
+                doc.save if doc.new_record? || doc.changed?
+              end
+            end
           end
 
           class << self
