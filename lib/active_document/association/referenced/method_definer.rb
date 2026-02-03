@@ -91,9 +91,9 @@ module ActiveDocument
             attributes, _options = parse_args(*args)
             document = Factory.build(assoc.relation_class, attributes)
             _building do
-              child = send(:"#{assoc.name}=", document)
-              child.run_callbacks(:build)
-              child
+              send(:"#{assoc.name}=", document)
+              document.run_callbacks(:build)
+              document
             end
           end
         end

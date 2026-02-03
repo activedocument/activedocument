@@ -44,14 +44,16 @@ module ActiveDocument
             bind_inverse(doc, base)
           end
 
-          # Check if trying to set an embedded document on a referenced association
+          # Check if trying to set an embedded document on a referenced association.
+          # Raises MixedRelations if the document class is embedded-only (not cyclic).
           # @param doc [ActiveDocument::Document] The document to check
-          # @raise [Errors::MixedRelations] If the doc is embedded
+          # @raise [Errors::MixedRelations] If the doc class is embedded and not cyclic
           def check_mixed!(doc)
-            # Check if the document class has any embedded_in associations
-            return unless doc.class.respond_to?(:embedded?) && doc.class.embedded?
+            klass = doc.class
+            return unless klass.respond_to?(:embedded?) && klass.embedded?
+            return if klass.respond_to?(:cyclic?) && klass.cyclic?
 
-            raise Errors::MixedRelations.new(base.class, doc.class)
+            raise Errors::MixedRelations.new(base.class, klass)
           end
 
           # Full unbinding from parent to child document.
