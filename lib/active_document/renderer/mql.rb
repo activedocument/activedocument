@@ -8,6 +8,7 @@ module ActiveDocument
       class << self
 
         FIELD_OPERATOR_NODES = {
+          # comparison
           AST::Eq => '$eq',
           AST::Gt => '$gt',
           AST::Gte => '$gte',
@@ -15,7 +16,37 @@ module ActiveDocument
           AST::Lt => '$lt',
           AST::Lte => '$lte',
           AST::NotEq => '$ne',
-          AST::NotIn => '$nin'
+          AST::NotIn => '$nin',
+          # element
+          AST::Exists => '$exists',
+          AST::Type => '$type',
+          # array
+          AST::All => '$all',
+          AST::ElemMatch => '$elemMatch',
+          AST::Size => '$size',
+          # evaluation
+          AST::Expr => '$expr',
+          AST::JsonSchema => '$jsonSchema',
+          AST::Mod => '$mod',
+          AST::Regex => '$regex',
+          AST::Regexp => '$regexp',
+          AST::Options => '$options',
+          AST::Search => '$search',
+          AST::Text => '$text',
+          AST::Where => '$where',
+          # bitwise
+          AST::BitsAllClear => '$bitsAllClear',
+          AST::BitsAllSet => '$bitsAllSet',
+          AST::BitsAnyClear => '$bitsAnyClear',
+          AST::BitsAnySet => '$bitsAnySet',
+          # geospatial
+          AST::GeoIntersects => '$geoIntersects',
+          AST::GeoWithin => '$geoWithin',
+          AST::Near => '$near',
+          AST::MaxDistance => '$maxDistance',
+          AST::NearSphere => '$nearSphere',
+          # misc
+          AST::Comment => '$comment'
         }.freeze
 
         LOGICAL_OPERATOR_NODES = {
@@ -68,7 +99,6 @@ module ActiveDocument
         end
 
         def primitive_items?(data)
-          # require 'pry'; require 'pry-nav'; binding.pry
           data.all? do |item|
             item.is_a?(Integer) ||
               item.is_a?(Set) ||

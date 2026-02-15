@@ -614,11 +614,11 @@ describe ActiveDocument::Criteria do
       end
 
       it 'contains an equal selector' do
-        expect(clone.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(clone.selector_smash).to eq({ 'name' => 'Depeche Mode' })
       end
 
       it 'clones the selector' do
-        expect(clone.selector).to_not equal(criteria.selector)
+        expect(clone.selector_smash).to_not equal(criteria.selector_smash)
       end
 
       it 'contains equal options' do
@@ -921,7 +921,7 @@ describe ActiveDocument::Criteria do
 
       let(:criteria) do
         described_class.new(Band) do |criteria|
-          criteria.selector[:id] = id
+          criteria.selector_smash[:id] = id
         end
       end
 
@@ -934,7 +934,7 @@ describe ActiveDocument::Criteria do
 
       let(:criteria) do
         described_class.new(Band) do |criteria|
-          criteria.selector[:_id] = id
+          criteria.selector_smash[:_id] = id
         end
       end
 
@@ -1545,7 +1545,7 @@ describe ActiveDocument::Criteria do
       end
 
       it 'merges the selector' do
-        expect(merged.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(merged.selector_smash).to eq({ 'name' => 'Depeche Mode' })
       end
 
       it 'merges the options' do
@@ -1584,7 +1584,7 @@ describe ActiveDocument::Criteria do
       end
 
       it 'merges the selector' do
-        expect(merged.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(merged.selector_smash).to eq({ 'name' => 'Depeche Mode' })
       end
 
       it 'merges the options' do
@@ -1618,7 +1618,7 @@ describe ActiveDocument::Criteria do
       end
 
       it 'merges the selector' do
-        expect(merged.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(merged.selector_smash).to eq({ 'name' => 'Depeche Mode' })
       end
 
       it 'merges the options' do
@@ -1646,7 +1646,7 @@ describe ActiveDocument::Criteria do
       end
 
       it 'merges the selector' do
-        expect(merged.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(merged.selector_smash).to eq({ 'name' => 'Depeche Mode' })
       end
 
       it 'merges the options' do
@@ -2949,13 +2949,13 @@ describe ActiveDocument::Criteria do
     context 'when provided no arguments' do
       context 'on a model class' do
         it 'returns an empty criteria' do
-          expect(Band.where.selector).to eq({})
+          expect(Band.where.selector_smash).to eq({})
         end
       end
 
       context 'on an association' do
         it 'returns an empty criteria' do
-          expect(match.records.where.selector).to eq({})
+          expect(match.records.where.selector_smash).to eq({})
         end
       end
     end
@@ -3029,7 +3029,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'does not wrap the array in another array' do
-          expect(criteria.selector).to eq({ 'agent_ids' => [id_one, id_two] })
+          expect(criteria.selector_smash).to eq({ 'agent_ids' => [id_one, id_two] })
         end
       end
 
@@ -3187,7 +3187,7 @@ describe ActiveDocument::Criteria do
         end
 
         let(:selector) do
-          Rating.where(ratable: movie).selector
+          Rating.where(ratable: movie).selector_smash
         end
 
         it 'properly converts the object to an ObjectId' do
@@ -3202,7 +3202,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'expands the aliases' do
-          expect(criteria.selector).to eq('mobile_phones.ext' => '123')
+          expect(criteria.selector_smash).to eq('mobile_phones.ext' => '123')
         end
       end
     end
@@ -3211,7 +3211,7 @@ describe ActiveDocument::Criteria do
       let(:criteria) { Band.where(foo: 1).where(bar: 2) }
 
       it 'combines criteria' do
-        expect(criteria.selector).to eq('foo' => 1, 'bar' => 2)
+        expect(criteria.selector_smash).to eq('foo' => 1, 'bar' => 2)
       end
     end
 
@@ -3219,7 +3219,7 @@ describe ActiveDocument::Criteria do
       let(:criteria) { Band.where(foo: 1).where(foo: 2) }
 
       it 'combines criteria' do
-        expect(criteria.selector).to eq('foo' => 1, '$and' => [{ 'foo' => 2 }])
+        expect(criteria.selector_smash).to eq('foo' => 1, '$and' => [{ 'foo' => 2 }])
       end
     end
 
@@ -3227,7 +3227,7 @@ describe ActiveDocument::Criteria do
       let(:criteria) { Band.where(foo: 1, bar: 3).where(foo: 2) }
 
       it 'combines criteria' do
-        expect(criteria.selector).to eq(
+        expect(criteria.selector_smash).to eq(
           'foo' => 1, '$and' => [{ 'foo' => 2 }], 'bar' => 3
         )
       end
@@ -3237,7 +3237,7 @@ describe ActiveDocument::Criteria do
       let(:criteria) { Band.where(foo: 1).where(foo: 2).where(bar: 3) }
 
       it 'combines criteria' do
-        expect(criteria.selector).to eq(
+        expect(criteria.selector_smash).to eq(
           'foo' => 1, '$and' => [{ 'foo' => 2 }], 'bar' => 3
         )
       end
@@ -3247,7 +3247,7 @@ describe ActiveDocument::Criteria do
       let(:criteria) { Sound.where(active: true).where(active: true) }
 
       it 'does not duplicate criteria' do
-        expect(criteria.selector).to eq('active' => true)
+        expect(criteria.selector_smash).to eq('active' => true)
       end
     end
 
@@ -3255,7 +3255,7 @@ describe ActiveDocument::Criteria do
       let(:criteria) { Sound.where(active: true).where(active: false).where(active: true).where(active: false) }
 
       it 'does not duplicate criteria' do
-        expect(criteria.selector).to eq(
+        expect(criteria.selector_smash).to eq(
           'active' => true, '$and' => [{ 'active' => false }]
         )
       end
@@ -3272,7 +3272,7 @@ describe ActiveDocument::Criteria do
       let(:dup_criteria) { criteria.where(_id: _id) }
 
       it 'does not duplicate the criteria' do
-        expect(dup_criteria.selector).to eq({ '_id' => _id })
+        expect(dup_criteria.selector_smash).to eq({ '_id' => _id })
       end
     end
 
@@ -3280,7 +3280,7 @@ describe ActiveDocument::Criteria do
       let(:criteria) { Band.where('label.name': 12345) }
 
       it 'mongoizes the embedded field in the selector' do
-        expect(criteria.selector).to eq('label.name' => '12345')
+        expect(criteria.selector_smash).to eq('label.name' => '12345')
       end
     end
 
@@ -3292,7 +3292,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses elemMatch without an inner key' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'labels' => {
               '$elemMatch' => { '$gte' => 10, '$lte' => 15 }
             }
@@ -3306,7 +3306,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses elemMatch' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'labels' => {
               '$elemMatch' => {
                 'age' => { '$gte' => 10, '$lte' => 15 }
@@ -3322,7 +3322,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses elemMatch without an inner key' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'genres' => {
               '$elemMatch' => { '$gte' => 10, '$lte' => 15 }
             }
@@ -3336,7 +3336,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses the aliased field and elemMatch' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'a' => {
               '$elemMatch' => { '$gte' => 10, '$lte' => 15 }
             }
@@ -3350,7 +3350,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses elemMatch' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'genres' => {
               '$elemMatch' => {
                 'age' => { '$gte' => 10, '$lte' => 15 }
@@ -3366,7 +3366,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'does not use elemMatch' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'fans.info.age' => { '$gte' => 10, '$lte' => 15 }
           )
         end
@@ -3378,7 +3378,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses elemMatch' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'labels' => {
               '$elemMatch' => {
                 'age.number' => { '$gte' => 10, '$lte' => 15 }
@@ -3394,7 +3394,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses elemMatch' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'genres' => {
               '$elemMatch' => {
                 'name.length' => { '$gte' => 10, '$lte' => 15 }
@@ -3411,7 +3411,7 @@ describe ActiveDocument::Criteria do
           end
 
           it 'correctly uses elemMatch' do
-            expect(criteria.selector).to eq(
+            expect(criteria.selector_smash).to eq(
               'records.tracks' => {
                 '$elemMatch' => {
                   'name.length' => { '$gte' => 10, '$lte' => 15 }
@@ -3427,7 +3427,7 @@ describe ActiveDocument::Criteria do
           end
 
           it 'correctly uses elemMatch' do
-            expect(criteria.selector).to eq(
+            expect(criteria.selector_smash).to eq(
               'name.translations' => {
                 '$elemMatch' => {
                   'language.length' => { '$gte' => 10, '$lte' => 15 }
@@ -3444,7 +3444,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses elemMatch' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'addresses.code.deepest.array' => {
               '$elemMatch' => {
                 'element.item' => { '$gte' => 10, '$lte' => 15 }
@@ -3460,7 +3460,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly combines the conditions' do
-          expect(criteria.selector).to eq({
+          expect(criteria.selector_smash).to eq({
             '$or' => [
               { 'labels' => { '$elemMatch' => { 'age' => { '$gte' => 10, '$lte' => 15 } } } },
               { 'labels' => 8 }
@@ -3475,7 +3475,7 @@ describe ActiveDocument::Criteria do
         end
 
         it 'correctly uses the aliased association' do
-          expect(criteria.selector).to eq(
+          expect(criteria.selector_smash).to eq(
             'pass.passport_pages' => {
               '$elemMatch' => {
                 'num_stamps' => { '$gte' => 10, '$lte' => 18 }
@@ -3491,7 +3491,7 @@ describe ActiveDocument::Criteria do
       let(:criteria) { Person.where(species: /ell/) }
 
       it 'creates the correct criteria' do
-        expect(criteria.selector).to eq({ 'species' => /ell/ })
+        expect(criteria.selector_smash).to eq({ 'species' => /ell/ })
       end
 
       it 'finds the document' do
@@ -3646,7 +3646,7 @@ describe ActiveDocument::Criteria do
     end
 
     it 'retains the criteria selection' do
-      expect(criteria.selector).to eq('name' => 'Depeche Mode')
+      expect(criteria.selector_smash).to eq('name' => 'Depeche Mode')
     end
 
     it 'sets the persistence options' do
@@ -3803,7 +3803,7 @@ describe ActiveDocument::Criteria do
       end
 
       it 'sets the selector' do
-        expect(criteria.selector).to eq({ 'name' => 'Songs Ohia' })
+        expect(criteria.selector_smash).to eq({ 'name' => 'Songs Ohia' })
       end
     end
 
@@ -3821,7 +3821,7 @@ describe ActiveDocument::Criteria do
       end
 
       it 'sets the selector' do
-        expect(criteria.selector).to eq({ 'name' => 'Songs Ohia' })
+        expect(criteria.selector_smash).to eq({ 'name' => 'Songs Ohia' })
       end
     end
 

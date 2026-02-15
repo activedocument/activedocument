@@ -57,7 +57,7 @@ module ActiveDocument
       # @return [ ActiveDocument::Criteria ] The criteria with scoping removed.
       def remove_scoping(other)
         if other
-          reject_matching(other, :selector, :options)
+          reject_matching(other, :selector_smash, :options)
           other.inclusions.each do |meta|
             inclusions.delete_one(meta)
           end
@@ -100,7 +100,7 @@ module ActiveDocument
         crit = clone
         unless unscoped?
           crit.scoping_options = false, true
-          crit.selector.clear
+          crit.selector_smash.clear
           crit.options.clear
         end
         crit

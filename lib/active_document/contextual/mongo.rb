@@ -91,7 +91,7 @@ module ActiveDocument
       #
       # @return [ Integer ] The number of matches.
       def estimated_count(options = {})
-        unless criteria.selector.empty?
+        unless criteria.selector_smash.empty?
           raise ActiveDocument::Errors::InvalidEstimatedCountScoping.new(klass) if klass.default_scoping?
 
           raise ActiveDocument::Errors::InvalidEstimatedCountCriteria.new(klass)
@@ -100,7 +100,7 @@ module ActiveDocument
         view.estimated_document_count(options)
       end
 
-      # Delete all documents in the database that match the selector.
+      # Delete all documents in the database that match the selector_comment.
       #
       # @example Delete all the documents.
       #   context.delete
@@ -111,7 +111,7 @@ module ActiveDocument
       end
       alias_method :delete_all, :delete
 
-      # Destroy all documents in the database that match the selector.
+      # Destroy all documents in the database that match the selector_comment.
       #
       # @example Destroy all the documents.
       #   context.destroy
@@ -268,14 +268,14 @@ module ActiveDocument
         @klass = criteria.klass
         @collection = @klass.collection
         criteria.send(:merge_type_selection)
-        @view = collection.find(criteria.selector, session: _session)
+        @view = collection.find(criteria.selector_smash, session: _session)
         apply_options
       end
 
       def_delegator :@klass, :database_field_name
 
       # Returns the number of documents in the database matching
-      # the query selector.
+      # the query selector_comment.
       #
       # @example Get the length.
       #   context.length
@@ -537,7 +537,7 @@ module ActiveDocument
         update_documents(attributes, :update_many, opts)
       end
 
-      # Get the first document in the database for the criteria's selector.
+      # Get the first document in the database for the criteria's selector_comment.
       #
       # @example Get the first document.
       #   context.first
@@ -560,7 +560,7 @@ module ActiveDocument
       end
       alias_method :one, :first
 
-      # Get the first document in the database for the criteria's selector or
+      # Get the first document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the first document.
@@ -580,7 +580,7 @@ module ActiveDocument
         first || raise_document_not_found_error
       end
 
-      # Get the last document in the database for the criteria's selector.
+      # Get the last document in the database for the criteria's selector_comment.
       #
       # @example Get the last document.
       #   context.last
@@ -602,7 +602,7 @@ module ActiveDocument
         end
       end
 
-      # Get the last document in the database for the criteria's selector or
+      # Get the last document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the last document.
@@ -622,7 +622,7 @@ module ActiveDocument
         last || raise_document_not_found_error
       end
 
-      # Get the second document in the database for the criteria's selector.
+      # Get the second document in the database for the criteria's selector_comment.
       #
       # @example Get the second document.
       #   context.second
@@ -632,7 +632,7 @@ module ActiveDocument
         retrieve_nth(1)
       end
 
-      # Get the second document in the database for the criteria's selector or
+      # Get the second document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the second document.
@@ -646,7 +646,7 @@ module ActiveDocument
         second || raise_document_not_found_error
       end
 
-      # Get the third document in the database for the criteria's selector.
+      # Get the third document in the database for the criteria's selector_comment.
       #
       # @example Get the third document.
       #   context.third
@@ -656,7 +656,7 @@ module ActiveDocument
         retrieve_nth(2)
       end
 
-      # Get the third document in the database for the criteria's selector or
+      # Get the third document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the third document.
@@ -670,7 +670,7 @@ module ActiveDocument
         third || raise_document_not_found_error
       end
 
-      # Get the fourth document in the database for the criteria's selector.
+      # Get the fourth document in the database for the criteria's selector_comment.
       #
       # @example Get the fourth document.
       #   context.fourth
@@ -680,7 +680,7 @@ module ActiveDocument
         retrieve_nth(3)
       end
 
-      # Get the fourth document in the database for the criteria's selector or
+      # Get the fourth document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the fourth document.
@@ -694,7 +694,7 @@ module ActiveDocument
         fourth || raise_document_not_found_error
       end
 
-      # Get the fifth document in the database for the criteria's selector.
+      # Get the fifth document in the database for the criteria's selector_comment.
       #
       # @example Get the fifth document.
       #   context.fifth
@@ -704,7 +704,7 @@ module ActiveDocument
         retrieve_nth(4)
       end
 
-      # Get the fifth document in the database for the criteria's selector or
+      # Get the fifth document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the fifth document.
@@ -719,7 +719,7 @@ module ActiveDocument
       end
 
       # Get the second to last document in the database for the criteria's
-      # selector.
+      # selector_comment.
       #
       # @example Get the second to last document.
       #   context.second_to_last
@@ -731,7 +731,7 @@ module ActiveDocument
       end
 
       # Get the second to last document in the database for the criteria's
-      # selector or raise an error if none is found.
+      # selector_comment or raise an error if none is found.
       #
       # @example Get the second to last document.
       #   context.second_to_last!
@@ -745,7 +745,7 @@ module ActiveDocument
       end
 
       # Get the third to last document in the database for the criteria's
-      # selector.
+      # selector_comment.
       #
       # @example Get the third to last document.
       #   context.third_to_last
@@ -757,7 +757,7 @@ module ActiveDocument
       end
 
       # Get the third to last document in the database for the criteria's
-      # selector or raise an error if none is found.
+      # selector_comment or raise an error if none is found.
       #
       # @example Get the third to last document.
       #   context.third_to_last!

@@ -29,6 +29,10 @@ module ActiveDocument
         false
       end
 
+      def sort_cond
+        [class_name, field, value].join('-')
+      end
+
       def inspect(_depth = 1)
         "(#{class_name}: field=#{@field.inspect}, value=#{@value})"
       end

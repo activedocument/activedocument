@@ -12,13 +12,13 @@ module ActiveDocument
       # @api private
       attr_reader :create_attrs
 
-      # Build a document given the selector and return it.
+      # Build a document given the selector_comment and return it.
       # Complex criteria, such as $in and $or operations will get ignored.
       #
       # @example build the document.
       #   Person.where(:title => "Sir").build
       #
-      # @example Build with selectors getting ignored.
+      # @example Build with selector_comments getting ignored.
       #   Person.where(age: { '$gt' => 5 }).build
       #
       # @return [ ActiveDocument::Document ] A non-persisted document.
@@ -26,14 +26,15 @@ module ActiveDocument
         create_document(:new, attrs, &block)
       end
       alias_method :new, :build
+      # TODO: why build+alias new instead of #initialize ?
 
-      # Create a document in the database given the selector and return it.
+      # Create a document in the database given the selector_comment and return it.
       # Complex criteria, such as $in and $or operations will get ignored.
       #
       # @example Create the document.
       #   Person.where(:title => "Sir").create
       #
-      # @example Create with selectors getting ignored.
+      # @example Create with selector_comments getting ignored.
       #   Person.where(age: { '$gt' => 5 }).create
       #
       # @return [ ActiveDocument::Document ] A newly created document.
@@ -41,14 +42,14 @@ module ActiveDocument
         create_document(:create, attrs, &block)
       end
 
-      # Create a document in the database given the selector and return it.
+      # Create a document in the database given the selector_comment and return it.
       # Complex criteria, such as $in and $or operations will get ignored.
       # If validation fails, an error will be raised.
       #
       # @example Create the document.
       #   Person.where(:title => "Sir").create
       #
-      # @example Create with selectors getting ignored.
+      # @example Create with selector_comments getting ignored.
       #   Person.where(age: { '$gt' => 5 }).create
       #
       # @raise [ Errors::Validations ] on a validation error.
@@ -159,7 +160,7 @@ module ActiveDocument
       private
 
       # Create a document given the provided method and attributes from the
-      # existing selector.
+      # existing selector_comment.
       #
       # @api private
       #
@@ -172,10 +173,20 @@ module ActiveDocument
       # @return [ ActiveDocument::Document ] The new or saved document.
       def create_document(method, attrs = nil, &block)
         attrs = (create_attrs || {}).merge(attrs || {})
-        attributes = selector.each_with_object(attrs) do |(key, value), hash|
-          next if invalid_key?(hash, key) || invalid_embedded_doc?(value)
+        attributes = selector_smash.each_with_object(attrs) do |(key, value), hash|
+          if key == '$and'
+            value.each do |v|
+              v.each_pair do |k, val|
+                next if invalid_key?(hash, k) || invalid_embedded_doc?(v)
 
-          hash[key] = value
+                hash[k] = val.key?('$eq') ? val['$eq'] : val
+              end
+            end
+          else
+            next if invalid_key?(hash, key) || invalid_embedded_doc?(value)
+
+            hash[key] = value.key?('$eq') ? value['$eq'] : value
+          end
         end
         if embedded?
           attributes[:_parent] = parent_document
@@ -228,7 +239,14 @@ module ActiveDocument
         # @todo Change this to BSON::String::ILLEGAL_KEY when ruby driver 2.3.0 is
         # released and active_document is updated to depend on driver >= 2.3.0
         value.is_a?(Hash) && value.any? do |key, v|
-          key.to_s =~ ActiveDocument::Document::ILLEGAL_KEY || invalid_embedded_doc?(v)
+          key_cond =
+            if key == '$eq'
+              false
+            else
+              key.to_s =~ ActiveDocument::Document::ILLEGAL_KEY
+            end
+
+          key_cond || invalid_embedded_doc?(v)
         end
       end
     end

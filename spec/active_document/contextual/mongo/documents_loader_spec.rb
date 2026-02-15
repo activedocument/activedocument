@@ -82,7 +82,7 @@ describe ActiveDocument::Contextual::Mongo::DocumentsLoader do
 
   context 'loading documents' do
     let(:view) do
-      klass.collection.find(criteria.selector, session: criteria.send(:_session))
+      klass.collection.find(criteria.selector_smash, session: criteria.send(:_session))
     end
 
     let(:criteria) do

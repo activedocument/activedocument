@@ -4,7 +4,7 @@ module ActiveDocument
   class Criteria
     module Queryable
 
-      # This is a smart hash for use with options and selectors.
+      # This is a smart hash for use with options and selector_comments.
       class Smash < Hash
 
         # @attribute [r] aliases The aliases.
@@ -33,9 +33,9 @@ module ActiveDocument
           end
         end
 
-        # Initialize the new selector.
+        # Initialize the new selector_comment.
         #
-        # @example Initialize the new selector.
+        # @example Initialize the new selector_comment.
         #   Queryable::Smash.new(aliases, serializers)
         #
         # @param [ Hash ] aliases A hash of mappings from aliases to the actual

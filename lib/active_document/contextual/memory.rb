@@ -19,9 +19,9 @@ module ActiveDocument
 
       # @attribute [r] root The root document.
       # @attribute [r] path The atomic path.
-      # @attribute [r] selector The root document selector.
+      # @attribute [r] selector_comment The root document selector_comment.
       # @attribute [r] matching The in memory documents that match the selector.
-      attr_reader :documents, :path, :root, :selector
+      attr_reader :documents, :path, :root, :selector_memory
 
       # Check if the context is equal to the other object.
       #
@@ -37,7 +37,7 @@ module ActiveDocument
         entries == other.entries
       end
 
-      # Delete all documents in the database that match the selector.
+      # Delete all documents in the database that match the selector_comment.
       #
       # @example Delete all the documents.
       #   context.delete
@@ -50,8 +50,8 @@ module ActiveDocument
           doc.send(:as_attributes)
         end
         unless removed.empty?
-          collection.find(selector).update_one(
-            positionally(selector, '$pullAll' => { path => removed }),
+          collection.find(selector_memory).update_one(
+            positionally(selector_memory, '$pullAll' => { path => removed }),
             session: _session
           )
         end
@@ -59,7 +59,7 @@ module ActiveDocument
       end
       alias_method :delete_all, :delete
 
-      # Destroy all documents in the database that match the selector.
+      # Destroy all documents in the database that match the selector_comment.
       #
       # @example Destroy all the documents.
       #   context.destroy
@@ -130,7 +130,7 @@ module ActiveDocument
         end
       end
 
-      # Get the first document in the database for the criteria's selector.
+      # Get the first document in the database for the criteria's selector_comment.
       #
       # @example Get the first document.
       #   context.first
@@ -148,7 +148,7 @@ module ActiveDocument
       alias_method :one, :first
       alias_method :find_first, :first
 
-      # Get the first document in the database for the criteria's selector or
+      # Get the first document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the first document.
@@ -174,7 +174,7 @@ module ActiveDocument
         @documents = criteria.documents.select do |doc|
           @root ||= doc._root
           @collection ||= root.collection
-          doc._matches?(criteria.selector)
+          doc._matches?(criteria.selector_smash)
         end
         apply_sorting
         apply_options
@@ -194,7 +194,7 @@ module ActiveDocument
         end
       end
 
-      # Get the last document in the database for the criteria's selector.
+      # Get the last document in the database for the criteria's selector_comment.
       #
       # @example Get the last document.
       #   context.last
@@ -210,7 +210,7 @@ module ActiveDocument
         end
       end
 
-      # Get the last document in the database for the criteria's selector or
+      # Get the last document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the last document.
@@ -398,7 +398,7 @@ module ActiveDocument
         update_documents(attributes, entries)
       end
 
-      # Get the second document in the database for the criteria's selector.
+      # Get the second document in the database for the criteria's selector_comment.
       #
       # @example Get the second document.
       #   context.second
@@ -408,7 +408,7 @@ module ActiveDocument
         eager_load([documents.second]).first
       end
 
-      # Get the second document in the database for the criteria's selector or
+      # Get the second document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the second document.
@@ -420,7 +420,7 @@ module ActiveDocument
         second || raise_document_not_found_error
       end
 
-      # Get the third document in the database for the criteria's selector.
+      # Get the third document in the database for the criteria's selector_comment.
       #
       # @example Get the third document.
       #   context.third
@@ -430,7 +430,7 @@ module ActiveDocument
         eager_load([documents.third]).first
       end
 
-      # Get the third document in the database for the criteria's selector or
+      # Get the third document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the third document.
@@ -442,7 +442,7 @@ module ActiveDocument
         third || raise_document_not_found_error
       end
 
-      # Get the fourth document in the database for the criteria's selector.
+      # Get the fourth document in the database for the criteria's selector_comment.
       #
       # @example Get the fourth document.
       #   context.fourth
@@ -452,7 +452,7 @@ module ActiveDocument
         eager_load([documents.fourth]).first
       end
 
-      # Get the fourth document in the database for the criteria's selector or
+      # Get the fourth document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the fourth document.
@@ -464,7 +464,7 @@ module ActiveDocument
         fourth || raise_document_not_found_error
       end
 
-      # Get the fifth document in the database for the criteria's selector.
+      # Get the fifth document in the database for the criteria's selector_comment.
       #
       # @example Get the fifth document.
       #   context.fifth
@@ -474,7 +474,7 @@ module ActiveDocument
         eager_load([documents.fifth]).first
       end
 
-      # Get the fifth document in the database for the criteria's selector or
+      # Get the fifth document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the fifth document.
@@ -488,7 +488,7 @@ module ActiveDocument
         fifth || raise_document_not_found_error
       end
 
-      # Get the second to last document in the database for the criteria's selector.
+      # Get the second to last document in the database for the criteria's selector_comment.
       #
       # @example Get the second to last document.
       #   context.second_to_last
@@ -498,7 +498,7 @@ module ActiveDocument
         eager_load([documents.second_to_last]).first
       end
 
-      # Get the second to last document in the database for the criteria's selector or
+      # Get the second to last document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the second to last document.
@@ -512,7 +512,7 @@ module ActiveDocument
         second_to_last || raise_document_not_found_error
       end
 
-      # Get the third to last document in the database for the criteria's selector.
+      # Get the third to last document in the database for the criteria's selector_comment.
       #
       # @example Get the third to last document.
       #   context.third_to_last
@@ -522,7 +522,7 @@ module ActiveDocument
         eager_load([documents.third_to_last]).first
       end
 
-      # Get the third to last document in the database for the criteria's selector or
+      # Get the third to last document in the database for the criteria's selector_comment or
       # raise an error if none is found.
       #
       # @example Get the third to last document.
@@ -566,12 +566,12 @@ module ActiveDocument
 
         updates = { '$set' => {} }
         docs.each do |doc|
-          @selector ||= root.atomic_selector
+          @selector_memory ||= root.atomic_selector
           doc.write_attributes(attributes)
           updates['$set'].merge!(doc.atomic_updates['$set'] || {})
           doc.move_changes
         end
-        collection.find(selector).update_one(updates, session: _session) unless updates['$set'].empty?
+        collection.find(selector_memory).update_one(updates, session: _session) unless updates['$set'].empty?
       end
 
       # Get the limiting value.
@@ -685,7 +685,7 @@ module ActiveDocument
       #
       # @param [ ActiveDocument::Document ] doc The document.
       def prepare_remove(doc)
-        @selector ||= root.atomic_selector
+        @selector_memory ||= root.atomic_selector
         @path ||= doc.atomic_path
         documents.delete_one(doc)
         doc._parent.remove_child(doc)

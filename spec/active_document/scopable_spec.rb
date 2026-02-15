@@ -137,19 +137,19 @@ describe ActiveDocument::Scopable do
       end
 
       it 'adds the first default scope' do
-        expect(Band.default_scoping.call.selector['name']).to eq('Depeche Mode')
+        expect(Band.default_scoping.call.selector_smash['name']).to eq('Depeche Mode')
       end
 
       it 'adds the additional default scope' do
-        expect(Band.default_scoping.call.selector['origin']).to eq('England')
+        expect(Band.default_scoping.call.selector_smash['origin']).to eq('England')
       end
 
       it 'adds the proc default scope' do
-        expect(Band.default_scoping.call.selector['active']).to be true
+        expect(Band.default_scoping.call.selector_smash['active']).to be true
       end
 
       it 'delays execution of the merge until called' do
-        expect(Band.all.selector['likes']).to_not eq(Band.all.selector['likes'])
+        expect(Band.all.selector_smash['likes']).to_not eq(Band.all.selector_smash['likes'])
       end
 
       it 'flags as being default scoped' do
@@ -160,7 +160,7 @@ describe ActiveDocument::Scopable do
     context 'when parent class has default scope' do
 
       let(:selector) do
-        AudibleSound.all.selector
+        AudibleSound.all.selector_smash
       end
 
       it "the subclass doesn't duplicate the default scope in the selector" do
@@ -285,7 +285,7 @@ describe ActiveDocument::Scopable do
     context 'when no criteria exists on the stack' do
 
       it 'returns an empty criteria' do
-        expect(Band.queryable.selector).to be_empty
+        expect(Band.queryable.selector_smash).to be_empty
       end
 
       context 'when the class is not embedded' do
@@ -373,7 +373,7 @@ describe ActiveDocument::Scopable do
         before do
           Band.scope(:active, -> { Band.where(active: true) }) do
             def add_origin
-              tap { |c| c.selector[:origin] = 'Deutschland' }
+              tap { |c| c.selector_smash[:origin] = 'Deutschland' }
             end
           end
         end
@@ -390,7 +390,7 @@ describe ActiveDocument::Scopable do
         end
 
         it 'adds the extension to the scope' do
-          expect(scope.selector).to eq({ 'active' => true, 'origin' => 'Deutschland' })
+          expect(scope.selector_smash).to eq({ 'active' => true, 'origin' => 'Deutschland' })
         end
       end
 
@@ -460,7 +460,7 @@ describe ActiveDocument::Scopable do
             end
 
             it 'contains the proper selector' do
-              expect(scope.selector).to eq({ 'active' => true })
+              expect(scope.selector_smash).to eq({ 'active' => true })
             end
 
             it 'contains the proper options' do
@@ -490,7 +490,7 @@ describe ActiveDocument::Scopable do
             end
 
             it 'contains the proper selector' do
-              expect(scope.selector).to eq({ 'active' => true, 'origin' => 'England' })
+              expect(scope.selector_smash).to eq({ 'active' => true, 'origin' => 'England' })
             end
 
             it 'contains the proper options' do
@@ -498,7 +498,7 @@ describe ActiveDocument::Scopable do
             end
 
             it 'does not modify the original scope' do
-              expect(Band.active.selector).to eq({ 'active' => true })
+              expect(Band.active.selector_smash).to eq({ 'active' => true })
             end
           end
 
@@ -517,7 +517,7 @@ describe ActiveDocument::Scopable do
             end
 
             it 'contains the proper selector' do
-              expect(scope.selector).to eq({ 'origin' => 'England', 'active' => true })
+              expect(scope.selector_smash).to eq({ 'origin' => 'England', 'active' => true })
             end
 
             it 'contains the proper options' do
@@ -525,11 +525,11 @@ describe ActiveDocument::Scopable do
             end
 
             it 'does not modify the original scope' do
-              expect(Band.active.selector).to eq({ 'active' => true })
+              expect(Band.active.selector_smash).to eq({ 'active' => true })
             end
 
             it 'does not modify the original criteria' do
-              expect(criteria.selector).to eq({ 'origin' => 'England' })
+              expect(criteria.selector_smash).to eq({ 'origin' => 'England' })
             end
           end
         end
@@ -589,7 +589,7 @@ describe ActiveDocument::Scopable do
           end
 
           it 'sets the conditions from keyword arguments' do
-            expect(scope.selector).to eq({ 'name' => 'Emily', 'deleted' => true })
+            expect(scope.selector_smash).to eq({ 'name' => 'Emily', 'deleted' => true })
           end
         end
 
@@ -597,7 +597,7 @@ describe ActiveDocument::Scopable do
           before do
             Band.scope(:active, -> { Band.where(active: true) }) do
               def add_origin
-                tap { |c| c.selector[:origin] = 'Deutschland' }
+                tap { |c| c.selector_smash[:origin] = 'Deutschland' }
               end
             end
           end
@@ -614,7 +614,7 @@ describe ActiveDocument::Scopable do
           end
 
           it 'adds the extension to the scope' do
-            expect(scope.selector).to eq({ 'active' => true, 'origin' => 'Deutschland' })
+            expect(scope.selector_smash).to eq({ 'active' => true, 'origin' => 'Deutschland' })
           end
         end
       end
@@ -697,7 +697,7 @@ describe ActiveDocument::Scopable do
             end
 
             it 'contains the proper selector' do
-              expect(scope.selector).to eq({ 'active' => true })
+              expect(scope.selector_smash).to eq({ 'active' => true })
             end
 
             it 'contains the proper options' do
@@ -727,7 +727,7 @@ describe ActiveDocument::Scopable do
             end
 
             it 'contains the proper selector' do
-              expect(scope.selector).to eq({ 'active' => true, 'origin' => 'England' })
+              expect(scope.selector_smash).to eq({ 'active' => true, 'origin' => 'England' })
             end
 
             it 'contains the proper options' do
@@ -735,7 +735,7 @@ describe ActiveDocument::Scopable do
             end
 
             it 'does not modify the original scope' do
-              expect(Band.active.selector).to eq({ 'active' => true })
+              expect(Band.active.selector_smash).to eq({ 'active' => true })
             end
           end
 
@@ -754,7 +754,7 @@ describe ActiveDocument::Scopable do
             end
 
             it 'contains the proper selector' do
-              expect(scope.selector).to eq({ 'origin' => 'England', 'active' => true })
+              expect(scope.selector_smash).to eq({ 'origin' => 'England', 'active' => true })
             end
 
             it 'contains the proper options' do
@@ -762,11 +762,11 @@ describe ActiveDocument::Scopable do
             end
 
             it 'does not modify the original scope' do
-              expect(Band.active.selector).to eq({ 'active' => true })
+              expect(Band.active.selector_smash).to eq({ 'active' => true })
             end
 
             it 'does not modify the original criteria' do
-              expect(criteria.selector).to eq({ 'origin' => 'England' })
+              expect(criteria.selector_smash).to eq({ 'origin' => 'England' })
             end
           end
 
@@ -893,7 +893,7 @@ describe ActiveDocument::Scopable do
         end
 
         it 'properly chains the $or queries together' do
-          expect(criteria.selector).to eq({
+          expect(criteria.selector_smash).to eq({
             '$or' => [
               { 'ccc' => nil },
               { 'ccc' => { '$gt' => 1.0 } }
@@ -977,7 +977,7 @@ describe ActiveDocument::Scopable do
       end
 
       it 'uses subclass context for all the other used scopes' do
-        expect(Circle.visible.selector).to eq('radius' => 5)
+        expect(Circle.visible.selector_smash).to eq('radius' => 5)
       end
     end
   end
@@ -995,7 +995,7 @@ describe ActiveDocument::Scopable do
       end
 
       it 'contains an empty selector' do
-        expect(scoped.selector).to be_empty
+        expect(scoped.selector_smash).to be_empty
       end
 
       it 'contains empty options' do
@@ -1014,7 +1014,7 @@ describe ActiveDocument::Scopable do
       end
 
       it 'contains an empty selector' do
-        expect(scoped.selector).to be_empty
+        expect(scoped.selector_smash).to be_empty
       end
 
       it 'contains the options' do
@@ -1041,7 +1041,7 @@ describe ActiveDocument::Scopable do
       end
 
       it 'allows the default scope to be added' do
-        expect(scoped.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(scoped.selector_smash).to eq({ 'name' => 'Depeche Mode' })
       end
 
       context 'when chained after an unscoped criteria' do
@@ -1051,7 +1051,7 @@ describe ActiveDocument::Scopable do
         end
 
         it 'reapplies the default scope' do
-          expect(scoped.selector).to eq({ 'name' => 'Depeche Mode' })
+          expect(scoped.selector_smash).to eq({ 'name' => 'Depeche Mode' })
         end
       end
     end
@@ -1078,7 +1078,7 @@ describe ActiveDocument::Scopable do
       end
 
       it 'removes the default scope from the criteria' do
-        expect(unscoped.selector).to be_empty
+        expect(unscoped.selector_smash).to be_empty
       end
 
       context 'when chained after a scoped criteria' do
@@ -1088,7 +1088,7 @@ describe ActiveDocument::Scopable do
         end
 
         it 'removes all scoping' do
-          expect(unscoped.selector).to be_empty
+          expect(unscoped.selector_smash).to be_empty
         end
       end
 
@@ -1102,7 +1102,7 @@ describe ActiveDocument::Scopable do
           end
 
           it 'clears default scope' do
-            expect(unscoped.selector).to eq({ 'active' => true })
+            expect(unscoped.selector_smash).to eq({ 'active' => true })
           end
         end
 
@@ -1124,7 +1124,7 @@ describe ActiveDocument::Scopable do
           end
 
           it 'clears default scope' do
-            expect(unscoped.selector).to eq({ 'active' => true })
+            expect(unscoped.selector_smash).to eq({ 'active' => true })
           end
         end
       end
@@ -1136,7 +1136,7 @@ describe ActiveDocument::Scopable do
 
         it 'does not allow default scoping to be added in the block' do
           Band.unscoped do
-            expect(Band.skip(10).selector).to be_empty
+            expect(Band.skip(10).selector_smash).to be_empty
           end
         end
       end
@@ -1145,7 +1145,7 @@ describe ActiveDocument::Scopable do
 
         it 'does not allow default scoping to be added in the block' do
           Band.unscoped do
-            expect(Band.scoped.selector).to be_empty
+            expect(Band.scoped.selector_smash).to be_empty
           end
         end
       end
@@ -1165,7 +1165,7 @@ describe ActiveDocument::Scopable do
 
         it 'does not allow the default scope to be applied' do
           Band.unscoped do
-            expect(Band.skipped.selector).to be_empty
+            expect(Band.skipped.selector_smash).to be_empty
           end
         end
       end
@@ -1190,7 +1190,7 @@ describe ActiveDocument::Scopable do
 
       it 'returns an empty criteria' do
         Band.unscoped do
-          expect(Band.with_default_scope.selector).to be_empty
+          expect(Band.with_default_scope.selector_smash).to be_empty
         end
       end
     end
@@ -1202,7 +1202,7 @@ describe ActiveDocument::Scopable do
       end
 
       it 'returns an empty criteria' do
-        expect(scoped.selector).to be_empty
+        expect(scoped.selector_smash).to be_empty
       end
     end
 
@@ -1213,7 +1213,7 @@ describe ActiveDocument::Scopable do
       end
 
       it 'returns a scoped criteria' do
-        expect(scoped.selector).to eq({ 'name' => 'Depeche Mode' })
+        expect(scoped.selector_smash).to eq({ 'name' => 'Depeche Mode' })
       end
     end
   end
@@ -1226,7 +1226,7 @@ describe ActiveDocument::Scopable do
 
     it 'yields to the criteria' do
       Band.with_scope(criteria) do |crit|
-        expect(crit.selector).to eq({ 'active' => true })
+        expect(crit.selector_smash).to eq({ 'active' => true })
       end
     end
 
@@ -1254,13 +1254,13 @@ describe ActiveDocument::Scopable do
         Band.with_scope(c1) do
           Band.with_scope(c2) do
 
-            expect(ActiveDocument::Threaded.current_scope(Band).selector).to eq({
+            expect(ActiveDocument::Threaded.current_scope(Band).selector_smash).to eq({
               'active' => true,
               '$and' => ['active' => false]
             })
           end
 
-          expect(ActiveDocument::Threaded.current_scope(Band).selector).to eq({
+          expect(ActiveDocument::Threaded.current_scope(Band).selector_smash).to eq({
             'active' => true
           })
         end
@@ -1276,7 +1276,7 @@ describe ActiveDocument::Scopable do
             expect(ActiveDocument::Threaded.current_scope(Band)).to be_nil
           end
 
-          expect(ActiveDocument::Threaded.current_scope(Band).selector).to eq({
+          expect(ActiveDocument::Threaded.current_scope(Band).selector_smash).to eq({
             'active' => true
           })
         end
@@ -1295,13 +1295,13 @@ describe ActiveDocument::Scopable do
 
     it 'suppresses default scope on the given model within the given block' do
       Appointment.without_default_scope do
-        expect(Appointment.all.selector).to be_empty
+        expect(Appointment.all.selector_smash).to be_empty
       end
     end
 
     it "does not affect other models' default scopes within the given block" do
       Appointment.without_default_scope do
-        expect(Audio.all.selector).to_not be_empty
+        expect(Audio.all.selector_smash).to_not be_empty
       end
     end
   end

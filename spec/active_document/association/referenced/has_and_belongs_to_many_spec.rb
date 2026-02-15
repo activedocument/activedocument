@@ -6,21 +6,21 @@ require_relative './has_and_belongs_to_many_models'
 describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
 
   before do
-    class HasManyLeftObject; include ActiveDocument::Document; end
-    class HasManyRightObject; include ActiveDocument::Document; end
+    class HasManyLeftModel; include ActiveDocument::Document; end
+    class HasManyRightModel; include ActiveDocument::Document; end
   end
 
   after do
-    Object.send(:remove_const, :HasManyLeftObject)
-    Object.send(:remove_const, :HasManyRightObject)
+    Object.send(:remove_const, :HasManyLeftModel)
+    Object.send(:remove_const, :HasManyRightModel)
   end
 
   let(:has_many_left_class) do
-    HasManyLeftObject
+    HasManyLeftModel
   end
 
   let(:name) do
-    :has_many_right_objects
+    :has_many_right_models
   end
 
   let(:association) do
@@ -548,7 +548,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#inverses' do
 
     before do
-      HasManyRightObject.has_and_belongs_to_many :has_many_left_objects
+      HasManyRightModel.has_and_belongs_to_many :has_many_left_models
     end
 
     context 'when inverse_of is specified' do
@@ -565,7 +565,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
     context 'when inverse_of is not specified' do
 
       it 'uses the inverse class to find the inverse name' do
-        expect(association.inverses).to eq([:has_many_left_objects])
+        expect(association.inverses).to eq([:has_many_left_models])
       end
     end
 
@@ -580,7 +580,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '##inverse' do
 
     before do
-      HasManyRightObject.has_and_belongs_to_many :has_many_left_objects
+      HasManyRightModel.has_and_belongs_to_many :has_many_left_models
     end
 
     context 'when inverse_of is specified' do
@@ -597,7 +597,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
     context 'when inverse_of is not specified' do
 
       it 'uses the inverse class to find the inverse name' do
-        expect(association.inverse).to eq(:has_many_left_objects)
+        expect(association.inverse).to eq(:has_many_left_models)
       end
     end
 
@@ -657,18 +657,18 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
     context 'when the :class_name option is specified' do
 
       let(:options) do
-        { class_name: 'OtherHasManyRightObject' }
+        { class_name: 'OtherHasManyRightModel' }
       end
 
       it 'returns the class name option' do
-        expect(association.relation_class_name).to eq('OtherHasManyRightObject')
+        expect(association.relation_class_name).to eq('OtherHasManyRightModel')
       end
     end
 
     context 'when the class_name option is not specified' do
 
       it 'uses the name of the relation to deduce the class name' do
-        expect(association.relation_class_name).to eq('HasManyRightObject')
+        expect(association.relation_class_name).to eq('HasManyRightModel')
       end
     end
   end
@@ -678,12 +678,12 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
     context 'when the :class_name option is specified' do
 
       let!(:_class) do
-        class OtherHasManyRightObject; end
-        OtherHasManyRightObject
+        class OtherHasManyRightModel; end
+        OtherHasManyRightModel
       end
 
       let(:options) do
-        { class_name: 'OtherHasManyRightObject' }
+        { class_name: 'OtherHasManyRightModel' }
       end
 
       it 'returns the class name option' do
@@ -694,7 +694,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
     context 'when the class_name option is not specified' do
 
       it 'uses the name of the relation to deduce the class name' do
-        expect(association.relation_class).to eq(HasManyRightObject)
+        expect(association.relation_class).to eq(HasManyRightModel)
       end
     end
   end
@@ -702,14 +702,14 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#inverse_class_name' do
 
     it 'returns the name of the owner class' do
-      expect(association.inverse_class_name).to eq(HasManyLeftObject.name)
+      expect(association.inverse_class_name).to eq(HasManyLeftModel.name)
     end
   end
 
   describe '#inverse_class' do
 
     it 'returns the owner class' do
-      expect(association.inverse_class).to be(HasManyLeftObject)
+      expect(association.inverse_class).to be(HasManyLeftModel)
     end
   end
 
@@ -718,7 +718,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
     context 'when :inverse_of is specified in the options' do
 
       let(:options) do
-        { inverse_of: :a_has_many_left_object }
+        { inverse_of: :a_has_many_left_model }
       end
 
       it 'returns the inverse_of value' do
@@ -847,11 +847,11 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
     context 'when an inverse can be determined' do
 
       before do
-        HasManyRightObject.has_and_belongs_to_many :has_many_left_objects
+        HasManyRightModel.has_and_belongs_to_many :has_many_left_models
       end
 
       it 'returns the name of the inverse followed by =' do
-        expect(association.inverse_setter).to eq('has_many_left_objects=')
+        expect(association.inverse_setter).to eq('has_many_left_models=')
       end
     end
 
@@ -901,7 +901,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#criteria' do
 
     it 'returns a criteria object' do
-      expect(association.criteria(BSON::ObjectId.new, HasManyLeftObject)).to be_a(ActiveDocument::Criteria)
+      expect(association.criteria(BSON::ObjectId.new, HasManyLeftModel.new)).to be_a(ActiveDocument::Criteria)
     end
   end
 
@@ -1007,23 +1007,23 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#foreign_key_check' do
 
     it 'returns the foreign_key followed by "_previously_changed?"' do
-      expect(association.foreign_key_check).to eq('has_many_right_object_ids_previously_changed?')
+      expect(association.foreign_key_check).to eq('has_many_right_model_ids_previously_changed?')
     end
   end
 
   describe '#create_relation' do
 
     let(:left_object) do
-      HasManyLeftObject.new
+      HasManyLeftModel.new
     end
 
     let(:target) do
-      [HasManyRightObject.new]
+      [HasManyRightModel.new]
     end
 
     before do
       association
-      HasManyRightObject.has_and_belongs_to_many :has_many_left_objects
+      HasManyRightModel.has_and_belongs_to_many :has_many_left_models
     end
 
     it 'returns an the target' do
@@ -1035,7 +1035,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#inverse_foreign_key' do
 
     it 'returns generated key' do
-      expect(association.inverse_foreign_key).to eq('has_many_left_object_ids')
+      expect(association.inverse_foreign_key).to eq('has_many_left_model_ids')
     end
 
     context 'with inverse given' do
@@ -1071,7 +1071,7 @@ describe ActiveDocument::Association::Referenced::HasAndBelongsToMany do
   describe '#inverse_foreign_key_setter' do
 
     it 'returns generated method name' do
-      expect(association.inverse_foreign_key_setter).to eq('has_many_left_object_ids=')
+      expect(association.inverse_foreign_key_setter).to eq('has_many_left_model_ids=')
     end
   end
 

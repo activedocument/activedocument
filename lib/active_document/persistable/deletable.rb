@@ -59,9 +59,9 @@ module ActiveDocument
       def delete_as_embedded(options = {})
         _parent.remove_child(self) if notifying_parent?(options)
         if _parent.persisted?
-          selector = _parent.atomic_selector
-          _root.collection.find(selector).update_one(
-            positionally(selector, atomic_deletes),
+          selector_local = _parent.atomic_selector
+          _root.collection.find(selector_local).update_one(
+            positionally(selector_local, atomic_deletes),
             session: _session
           )
         end
@@ -129,8 +129,8 @@ module ActiveDocument
         #
         # @return [ Integer ] The number of documents deleted.
         def delete_all(conditions = {})
-          selector = hereditary? ? conditions.merge(discriminator_key.to_sym => discriminator_value) : conditions
-          where(selector).delete
+          selector_local = hereditary? ? conditions.merge(discriminator_key.to_sym => discriminator_value) : conditions
+          where(selector_local).delete
         end
       end
     end

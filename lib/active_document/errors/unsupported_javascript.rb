@@ -3,10 +3,10 @@
 module ActiveDocument
   module Errors
 
-    # Raised when Javascript criteria selector is passed for embedded document.
+    # Raised when Javascript criteria selector_comment is passed for embedded document.
     class UnsupportedJavascript < BaseError
 
-      # Create the new error caused by using Javascript in embedded document criteria selector.
+      # Create the new error caused by using Javascript in embedded document criteria selector_comment.
       #
       # @example Create the error.
       #   UnsupportedJavascriptSelector.new(Album, "this.name == '101'")

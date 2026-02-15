@@ -535,10 +535,10 @@ module ActiveDocument
           #
           # @return [ Integer ] The number of documents deleted.
           def remove_all(conditions = nil, method = :delete_all)
-            selector = conditions || {}
-            removed = klass.send(method, selector.merge!(criteria.selector))
+            selector_local = conditions || {}
+            removed = klass.send(method, selector_local.merge!(criteria.selector_smash))
             _target.delete_if do |doc|
-              doc._matches?(selector).tap do |b|
+              doc._matches?(selector_local).tap do |b|
                 unbind_one(doc) if b
               end
             end

@@ -34,8 +34,8 @@ module ActiveDocument
         def batch_clear(docs)
           pre_process_batch_remove(docs, :delete)
           unless docs.empty?
-            collection.find(selector).update_one(
-              positionally(selector, '$unset' => { path => true }),
+            collection.find(selector_batchable).update_one(
+              positionally(selector_batchable, '$unset' => { path => true }),
               session: _session
             )
             # This solves the case in which a user sets, clears and resets an
@@ -68,20 +68,20 @@ module ActiveDocument
           end
 
           if docs.empty?
-            collection.find(selector).update_one(
-              positionally(selector, '$set' => { path => [] }),
+            collection.find(selector_batchable).update_one(
+              positionally(selector_batchable, '$set' => { path => [] }),
               session: _session
             )
           else
             unless pulls.empty?
-              collection.find(selector).update_one(
-                positionally(selector, '$pull' => { path => { '_id' => { '$in' => pulls.pluck('_id') } } }),
+              collection.find(selector_batchable).update_one(
+                positionally(selector_batchable, '$pull' => { path => { '_id' => { '$in' => pulls.pluck('_id') } } }),
                 session: _session
               )
             end
             unless pull_alls.empty?
-              collection.find(selector).update_one(
-                positionally(selector, '$pullAll' => { path => pull_alls }),
+              collection.find(selector_batchable).update_one(
+                positionally(selector_batchable, '$pullAll' => { path => pull_alls }),
                 session: _session
               )
             end
@@ -155,8 +155,8 @@ module ActiveDocument
           self.inserts_valid = true
           inserts = pre_process_batch_insert(docs)
           if insertable?
-            collection.find(selector).update_one(
-              positionally(selector, '$set' => { path => inserts }),
+            collection.find(selector_batchable).update_one(
+              positionally(selector_batchable, '$set' => { path => inserts }),
               session: _session
             )
             post_process_batch_insert(docs)
@@ -178,8 +178,8 @@ module ActiveDocument
           self.inserts_valid = true
           pushes = pre_process_batch_insert(docs)
           if insertable?
-            collection.find(selector).update_one(
-              positionally(selector, '$push' => { path => { '$each' => pushes } }),
+            collection.find(selector_batchable).update_one(
+              positionally(selector_batchable, '$push' => { path => { '$each' => pushes } }),
               session: _session
             )
             post_process_batch_insert(docs)
@@ -289,16 +289,16 @@ module ActiveDocument
           @path = value
         end
 
-        # Get the selector for executing atomic operations on the collection.
+        # Get the selector_comment for executing atomic operations on the collection.
         #
         # @api private
         #
-        # @example Get the selector.
-        #   batchable.selector
+        # @example Get the selector_comment.
+        #   batchable.selector_comment
         #
-        # @return [ Hash ] The atomic selector.
-        def selector
-          @selector ||= _base.atomic_selector
+        # @return [ Hash ] The atomic selector_batchable.
+        def selector_batchable
+          @selector_batchable ||= _base.atomic_selector
         end
 
         # Pre processes the batch insert for the provided documents.

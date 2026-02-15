@@ -94,7 +94,7 @@ module ActiveDocument
         #
         # @return [ Hash ] The evolved entry.
         def evolve(entry)
-          aggregate = Selector.new(aliases)
+          aggregate = SelectorSmash.new(aliases)
           entry.each_pair do |field, value|
             aggregate.merge!(field.to_s => value)
           end

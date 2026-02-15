@@ -204,20 +204,22 @@ module ActiveDocument
       def inspect
         <<~INSPECT
           #<ActiveDocument::Contextual::MapReduce
-            selector: #{criteria.selector.inspect}
-            class:    #{criteria.klass}
-            map:      #{command[:map]}
-            reduce:   #{command[:reduce]}
-            finalize: #{command[:finalize]}
-            out:      #{command[:out].inspect}>
+            selector_smash:  #{criteria.selector_smash.inspect}
+            selector_ast:    #{criteria.selector_ast.inspect}
+            selector_render: #{criteria.selector_render.inspect}
+            class:           #{criteria.klass}
+            map:             #{command[:map]}
+            reduce:          #{command[:reduce]}
+            finalize:        #{command[:finalize]}
+            out:             #{command[:out].inspect}>
         INSPECT
       end
 
-      # Returns the selector of the command spec.
+      # Returns the selector_comment of the command spec.
       #
-      # @return [ Hash ] The selector.
+      # @return [ Hash ] The selector_comment.
       def command
-        @map_reduce.send(:map_reduce_spec)[:selector]
+        @map_reduce.send(:map_reduce_spec)[:selector_smash]
       end
 
       private

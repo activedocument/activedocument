@@ -19,17 +19,19 @@ module ActiveDocument
       # @param [ true | false ] _exists Not used.
       # @param [ Object ] value The value to check.
       # @param [ Object | Range ] condition The equality condition predicate.
-      # @param [ String ] original_operator Operator to use in exception messages.
+      # @param [ String ] _original_operator Operator to use in exception messages. Not used.
       #
       # @return [ true | false ] Whether the value matches.
       #
       # @api private
-      def matches?(_exists, value, condition, original_operator)
+      def matches?(_exists, value, condition, _original_operator)
         case condition
         when Range
-          # Since $ne invokes $eq, the exception message needs to handle
-          # both operators.
-          raise Errors::InvalidQuery.new("Range is not supported as an argument to '#{original_operator}'")
+          if value.is_a?(Array)
+            value.any? { |v| condition.include?(v) }
+          else
+            condition.include?(value)
+          end
         else
           # When doing a comparison with Time objects, compare using millisecond precision
           if value.is_a?(Time) && condition.is_a?(Time)

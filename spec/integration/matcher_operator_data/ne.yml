@@ -124,8 +124,9 @@
         end: 20
         excl: false
   # https://jira.mongodb.org/browse/MONGOID-4908
-  error: [matcher, driver]
-  # Server matches because the query is negation of a bogus query
+  error: [driver]
+  # Driver matches because the query is negation of a bogus query
+  # but DSL will generate correct selector {"age"=>{"$not"=>{"$gte"=>11, "$lte"=>20}}}
   matches: true
 
 - name: not matching range
@@ -138,8 +139,8 @@
         end: 20
         excl: false
   # https://jira.mongodb.org/browse/MONGOID-4908
-  error: [matcher, driver]
-  matches: true
+  error: [driver]
+  matches: false
 
 - name: nil argument
   document:

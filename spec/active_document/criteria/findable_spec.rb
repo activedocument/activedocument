@@ -1246,7 +1246,7 @@ describe ActiveDocument::Criteria::Findable do
       end
 
       it 'does not turn the selector into an $in' do
-        expect(criteria.selector).to eq({ '_id' => id })
+        expect(criteria.selector_smash).to eq({ '_id' => id })
       end
     end
   end
@@ -1306,7 +1306,7 @@ describe ActiveDocument::Criteria::Findable do
 
     context 'when criteria is empty' do
       it 'adds id' do
-        expect(result.selector).to eq('_id' => 1)
+        expect(result.selector_smash).to eq('_id' => 1)
       end
     end
 
@@ -1314,7 +1314,7 @@ describe ActiveDocument::Criteria::Findable do
       let(:criteria) { ActiveDocument::Criteria.new(Band).where(id: 2) }
 
       it 'adds id' do
-        expect(result.selector).to eq('_id' => 2, '$and' => [{ '_id' => 1 }])
+        expect(result.selector_smash).to eq('_id' => 2, '$and' => [{ '_id' => 1 }])
       end
     end
   end

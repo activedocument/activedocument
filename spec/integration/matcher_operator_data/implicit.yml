@@ -306,7 +306,7 @@
       begin: 1
       end: 20
       excl: false
-  error: [matcher, driver]
+  error: [driver]
   # DSL expands Range to $gte/$lte pair
   matches: true
 
@@ -318,7 +318,7 @@
       begin: 11
       end: 20
       excl: false
-  error: [matcher, driver]
+  error: [driver]
   # DSL expands Range to $gte/$lte pair
   matches: false
 

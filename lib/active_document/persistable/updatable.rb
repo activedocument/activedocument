@@ -130,11 +130,11 @@ module ActiveDocument
           updates, conflicts = init_atomic_updates
           unless updates.empty?
             coll = collection(_root)
-            selector = atomic_selector
+            selector_local = atomic_selector
 
             # TODO: DRIVERS-716: If a new "Bulk Write" API is introduced, it may
             # become possible to handle the writes for conflicts in the following call.
-            coll.find(selector).update_one(positionally(selector, updates), session: _session)
+            coll.find(selector_local).update_one(positionally(selector_local, updates), session: _session)
 
             # The following code applies updates which would cause
             # path conflicts in MongoDB, for example when changing attributes
@@ -153,8 +153,8 @@ module ActiveDocument
               # field-conflict group round-robin until all changes
               # have been applied.
               while (batched_changes = conflicting_change_groups.filter_map(&:pop).to_h.presence)
-                coll.find(selector).update_one(
-                  positionally(selector, modifier => batched_changes),
+                coll.find(selector_local).update_one(
+                  positionally(selector_local, modifier => batched_changes),
                   session: _session
                 )
               end

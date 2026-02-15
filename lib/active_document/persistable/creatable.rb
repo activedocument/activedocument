@@ -54,9 +54,9 @@ module ActiveDocument
         if _parent.new_record?
           _parent.insert
         else
-          selector = _parent.atomic_selector
-          _root.collection.find(selector).update_one(
-            positionally(selector, atomic_inserts),
+          selector_local = _parent.atomic_selector
+          _root.collection.find(selector_local).update_one(
+            positionally(selector_local, atomic_inserts),
             session: _session
           )
         end

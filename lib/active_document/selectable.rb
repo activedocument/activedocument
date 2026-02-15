@@ -2,6 +2,7 @@
 
 module ActiveDocument
 
+  # TODO: AST
   # Provides behavior for generating the selector for a specific document.
   module Selectable
     extend ActiveSupport::Concern

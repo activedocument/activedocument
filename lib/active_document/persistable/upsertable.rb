@@ -61,7 +61,7 @@ module ActiveDocument
       #
       # @example Prepare the upsert
       #   document.prepare_upsert do
-      #     collection.find(selector).update(as_document)
+      #     collection.find(selector_comment).update(as_document)
       #   end
       #
       # @param [ Hash ] options The options hash.
